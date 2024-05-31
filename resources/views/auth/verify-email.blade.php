@@ -1,31 +1,114 @@
-<x-guest-layout>
-    <div class="mb-4 text-sm text-gray-600 dark:text-gray-400">
-        {{ __('Thanks for signing up! Before getting started, could you verify your email address by clicking on the link we just emailed to you? If you didn\'t receive the email, we will gladly send you another.') }}
-    </div>
+<!DOCTYPE html>
+<html lang="en" dir="ltr" class="h-full">
 
-    @if (session('status') == 'verification-link-sent')
-        <div class="mb-4 font-medium text-sm text-green-600 dark:text-green-400">
-            {{ __('A new verification link has been sent to the email address you provided during registration.') }}
-        </div>
-    @endif
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> Synto - Tailwind Admin Template </title>
+    <meta name="description" content="A Tailwind CSS admin template is a pre-designed web page for an admin dashboard. Optimizing it for SEO includes using meta descriptions and ensuring it's responsive and fast-loading.">
+    <meta name="keywords" content="analytics dashboard,jobs dashboard,crm dashboard examples,personal dashboard,sales dashboard sample,best crm dashboard,crypto dashboard template,sales analytics dashboard,stocks dashboard,hrm dashboard,ecommerce admin panel template,sales admin dashboard,admin panel for ecommerce website,website template ecommerce,template dashboard,course dashboard,template ecommerce website">
 
-    <div class="mt-4 flex items-center justify-between">
-        <form method="POST" action="{{ route('verification.send') }}">
-            @csrf
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="../assets/img/brand-logos/favicon.ico">
 
-            <div>
-                <x-primary-button>
-                    {{ __('Resend Verification Email') }}
-                </x-primary-button>
+    <!-- Style Css -->
+    <link rel="stylesheet" href="../assets/css/style.css">
+
+    <!-- Simplebar Css -->
+    <link rel="stylesheet" href="../assets/libs/simplebar/simplebar.min.css">
+
+    <!-- Color Picker Css -->
+    <link rel="stylesheet" href="../assets/libs/@simonwep/pickr/themes/nano.min.css">
+
+</head>
+
+<body class="error-page flex h-full !py-0 bg-white dark:bg-bgdark">
+    <div class="grid grid-cols-12 gap-6 w-full h-full">
+        <div class="lg:col-span-6 col-span-12 hidden lg:block relative">
+            <div class="cover relative w-full h-full z-[1]">
+                <img src="../assets/img/authentication/auth.jpg" alt="logo" class="object-cover mx-auto h-full">
             </div>
-        </form>
+        </div>
+        <div class="lg:col-span-6 col-span-12">
+            <div class="authentication-page w-full">
+                <!-- ========== MAIN CONTENT ========== -->
+                <main id="content" class="w-full max-w-md mx-auto p-6">
+                    {{-- <a href="#" class="header-logo lg:hidden">
+                        <img src="../assets/img/brand-logos/desktop-logo.png" alt="logo" class="mx-auto block dark:hidden">
+                        <img src="../assets/img/brand-logos/desktop-dark.png" alt="logo" class="mx-auto hidden dark:block">
+                    </a> --}}
+                    <div class="mt-7">
+                        <div class="p-4 sm:p-7">
+                            <a href="#" class="header-logo">
+                                <img src="../../assets/img/logos/Crystalpay.png" alt="logo"
+                                class="w-20 h-20 mx-auto block dark:hidden" alt="logo" class="">
+                                {{-- <img src="../../assets/img/logos/Crystalpay.png" alt="logo"
+                                class="w-20 h-20 mx-auto hidden dark:block" alt="logo" class=""> --}}
+                                {{-- <img src="../assets/img/brand-logos/desktop-dark.png" alt="logo" class="mx-auto hidden dark:block"> --}}
+                            </a>
+                             <br>
+                            <hr>
+                            <br>
 
-        <form method="POST" action="{{ route('logout') }}">
-            @csrf
+                            <div class="text-center">
+                                @if (session('status') == 'verification-link-sent')
+                                <div class="mb-4 font-medium text-sm text-green-600 dark:text-green-400">
+                                    {{ __('A new verification link has been sent to the email address you provided during registration.') }}
+                                </div>
+                                @endif
+                                <h1 class="block text-2xl font-bold text-gray-800 dark:text-white">Email Verification</h1>
+                                <p class="mt-3 text-sm text-gray-600 dark:text-white/70">
+                                    Thanks for your interest in our platform! <br> Before getting started, could you verify your email address by clicking on the link we just emailed to you? If you didn't receive the email, we will gladly send you another.
+                                </p>
+                            </div>
 
-            <button type="submit" class="underline text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800">
-                {{ __('Log Out') }}
-            </button>
-        </form>
+                            <div class="mt-5">
+                                {{-- <button type="button"
+                                    class="w-full py-2 px-3 inline-flex justify-center items-center gap-2 rounded-sm border font-medium bg-white text-gray-700 shadow-sm align-middle hover:bg-gray-50 focus:outline-none focus:ring-0 focus:ring-offset-0 focus:ring-offset-white focus:ring-primary transition-all text-sm dark:bg-bgdark dark:hover:bg-black/20 dark:border-white/10 dark:text-white/70 dark:hover:text-white dark:focus:ring-offset-white/10">
+                                    <img src="../assets/img/authentication/social/1.png" class="w-4 h-4"
+                                        alt="google-img">
+                                    Sign in with Google
+                                </button>
+
+                                <div
+                                    class="py-3 flex items-center text-xs text-gray-400 uppercase before:flex-[1_1_0%] before:border-t before:border-gray-200 before:me-6 after:flex-[1_1_0%] after:border-t after:border-gray-200 after:ms-6 dark:text-white/70 dark:before:border-white/10 dark:after:border-white/10">
+                                    Or
+                                </div> --}}
+
+                                <!-- Form -->
+                                <form method="POST" action="{{ route('verification.send') }}">
+                                    @csrf
+                                    <div>
+                                        <div class="grid gap-y-4">
+                                          
+                                            <!-- End Checkbox -->
+                                            <x-primary-button class="ms-3">
+                                                {{ __('Resend verification email') }}
+                                            </x-primary-button>
+                                        </div>
+                                    </div>
+                                </form>
+
+                                <!-- End Form -->
+                            </div>
+                        </div>
+                    </div>
+                </main>
+                <!-- ========== END MAIN CONTENT ========== -->
+            </div>
+        </div>
     </div>
-</x-guest-layout>
+
+    <!-- popperjs -->
+    <script src="../assets/libs/@popperjs/core/umd/popper.min.js"></script>
+
+    <!-- Custom-Switcher JS -->
+    <script src="../assets/js/custom-switcher.js"></script>
+
+    <!-- Preline JS -->
+    <script src="../assets/libs/preline/preline.js"></script>
+
+
+</body>
+
+</html>
