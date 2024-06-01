@@ -19,7 +19,7 @@ class AirtimeController extends Controller
      */
     public function buy_airtime()
     {
-        return view('user.buy_airtime');
+        return view('user.airtime.buy_airtime');
     }
 
     /**

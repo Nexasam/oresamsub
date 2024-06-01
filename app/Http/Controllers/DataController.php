@@ -19,7 +19,7 @@ class DataController extends Controller
      */
     public function buy_data()
     {
-        return view('user.buy_data');
+        return view('user.data.buy_data');
     }
 
     /**

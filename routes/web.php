@@ -68,8 +68,8 @@ Route::middleware(['auth','verified'])->get('admin/product_categories', [Product
 
 Route::middleware(['auth','verified'])->get('admin/settings', [SettingsController::class, 'index'])->name('admin.settings.index');
 
-Route::get('user/buy_data', [DataController::class, 'buy_data'])->name('user.buy_data');
-Route::get('user/buy_airtime', [AirtimeController::class, 'buy_airtime'])->name('user.buy_airtime');
+Route::get('user/data/buy_data', [DataController::class, 'buy_data'])->name('user.data.buy_data');
+Route::get('user/airtime/buy_airtime', [AirtimeController::class, 'buy_airtime'])->name('user.airtime.buy_airtime');
 
 //ADMIN ENDS HERE
 //ADMIN ENDS HERE

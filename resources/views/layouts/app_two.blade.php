@@ -758,50 +758,76 @@
   </script>
 
   <!-- popperjs -->
-  <script src="../../../assets/libs/@popperjs/core/umd/popper.min.js"></script>
+  {{-- <script src="../../../assets/libs/@popperjs/core/umd/popper.min.js"></script> --}}
+  <script src=" {{asset('assets/libs/@popperjs/core/umd/popper.min.js') }}"></script>
+
 
   <!-- Color Picker JS -->
-  <script src="../../../assets/libs/@simonwep/pickr/pickr.es5.min.js"></script>
+  {{-- <script src="../../../assets/libs/@simonwep/pickr/pickr.es5.min.js"></script> --}}
+  <script src=" {{asset('assets/libs/@simonwep/pickr/pickr.es5.min.js') }}"></script>
+
 
   <!-- sidebar JS -->
-  <script src="../../../assets/js/defaultmenu.js"></script>
+  {{-- <script src="../../../assets/js/defaultmenu.js"></script> --}}
+  <script src=" {{asset('assets/js/defaultmenu.js') }}"></script>
+
 
   <!-- sticky JS -->
-  <script src="../../../assets/js/sticky.js"></script>
+  {{-- <script src="../../../assets/js/sticky.js"></script> --}}
+  <script src=" {{asset('assets/js/sticky.js') }}"></script>
+
 
   <!-- Switch JS -->
-  <script src="../../../assets/js/switch.js"></script>
+  {{-- <script src="../../../assets/js/switch.js"></script> --}}
+  <script src=" {{asset('assets/js/switch.js') }}"></script>
+
 
   <!-- Preline JS -->
-  <script src="../../../assets/libs/preline/preline.js"></script>
+  {{-- <script src="../../../assets/libs/preline/preline.js"></script> --}}
+  <script src=" {{asset('assets/libs/preline/preline.js') }}"></script>
+
 
   <!-- Simplebar JS -->
-  <script src="../../../assets/libs/simplebar/simplebar.min.js"></script>
+  {{-- <script src="../../../assets/libs/simplebar/simplebar.min.js"></script> --}}
+  <script src=" {{asset('assets/js/assets/libs/simplebar/simplebar.min.js') }}"></script>
+
 
   <!-- Custom JS -->
-  <script src="../../../assets/js/custom.js"></script>
+  {{-- <script src="../../../assets/js/custom.js"></script> --}}
+  <script src=" {{asset('assets/js/custom.js') }}"></script>
+
 
 
 
     
     <!-- Custom-Switcher JS -->
-    <script src="../../../assets/js/custom-switcher.js"></script>
+    {{-- <script src="../../../assets/js/custom-switcher.js"></script> --}}
+  <script src=" {{asset('assets/js/custom-switcher.js') }}"></script>
+
 
   <!-- Tabulator JS -->
-  <script src="../../../assets/libs/tabulator-tables/js/tabulator.min.js"></script>
+  {{-- <script src="../../../assets/libs/tabulator-tables/js/tabulator.min.js"></script> --}}
+  <script src=" {{asset('assets/libs/tabulator-tables/js/tabulator.min.js') }}"></script>
+
 
   <!-- Choices JS -->
-  <script src="../../../assets/libs/choices.js/public/assets/scripts/choices.min.js"></script>
+  {{-- <script src="../../../assets/libs/choices.js/public/assets/scripts/choices.min.js"></script> --}}
+  <script src=" {{asset('assets/libs/choices.js/public/assets/scripts/choices.min.js') }}"></script>
+
 
   <!-- XLXS JS -->
-  <script src="../../../assets/libs/xlsx/xlsx.full.min.js"></script>
+  {{-- <script src="../../../assets/libs/xlsx/xlsx.full.min.js"></script> --}}
+  <script src=" {{asset('assets/libs/xlsx/xlsx.full.min.js') }}"></script>
+
 
   <!-- JSPDF JS -->
-  <script src="../../../assets/libs/jspdf/jspdf.umd.min.js"></script>
-  <script src="../../../assets/libs/jspdf-autotable/jspdf.plugin.autotable.min.js"></script>
+  {{-- <script src="../../../assets/libs/jspdf/jspdf.umd.min.js"></script> --}}
+  <script src=" {{asset('assets/libs/jspdf/jspdf.umd.min.js') }}"></script>
 
   <!-- Tabulator Custom JS -->
-  <script src="../../../assets/js/datatable.js"></script>
+  {{-- <script src="../../../assets/js/datatable.js"></script> --}}
+  <script src=" {{asset('assets/js/datatable.js') }}"></script>
+
 
 
   

@@ -7,7 +7,7 @@
             <img src="../assets/img/brand-logos/toggle-logo.png" alt="logo" class="main-logo toggle-logo">
             <img src="../assets/img/brand-logos/desktop-dark.png" alt="logo" class="main-logo desktop-dark">
             <img src="../assets/img/brand-logos/toggle-dark.png" alt="logo" class="main-logo toggle-dark"> --}}
-            <img src="../../../assets/img/logos/Crystalpay.png" alt="logo"
+            <img src="{{ asset('assets/img/logos/Crystalpay.png') }}" alt="logo"
             class="w-14 h-16 mx-auto block dark:hidden" >
           
 
@@ -98,7 +98,7 @@
                         <i class="ri ri-arrow-right-s-line side-menu__angle"></i>
                     </a>
                     <ul class="slide-menu child1">
-                        <li class="slide"><a href="{{ route('user.buy_data') }}" class="side-menu__item">Buy Data</a></li>
+                        <li class="slide"><a href="{{ route('user.data.buy_data') }}" class="side-menu__item">Buy Data</a></li>
                       
                     </ul>
                 </li>
@@ -112,7 +112,7 @@
                         <i class="ri ri-arrow-right-s-line side-menu__angle"></i>
                     </a>
                     <ul class="slide-menu child1">
-                            <li class="slide"><a href="{{ route('user.buy_airtime') }}" class="side-menu__item">Buy Airtime</a></li>
+                            <li class="slide"><a href="{{ route('user.airtime.buy_airtime') }}" class="side-menu__item">Buy Airtime</a></li>
                             {{-- <li class="slide"><a href="#" class="side-menu__item">Airtime Transactions</a></li> --}}
                     </ul>
                 </li>

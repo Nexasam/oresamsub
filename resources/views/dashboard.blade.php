@@ -521,7 +521,7 @@
                                                 <div class="leading-none">
                                                     <div class="relative inline-block">
                                                         <img class="avatar avatar-xs rounded-full"
-                                                            src="../assets/img/users/2.jpg"
+                                                            src="{{ asset('assets/img/users/2.jpg') }}"
                                                             alt="Image Description">
                                                         <span
                                                             class="absolute bottom-0 end-0 block h-1.5 w-1.5 rounded-full ring-2 ring-white bg-gray-400"></span>
