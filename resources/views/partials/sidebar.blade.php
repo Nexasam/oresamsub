@@ -7,7 +7,7 @@
             <img src="../assets/img/brand-logos/toggle-logo.png" alt="logo" class="main-logo toggle-logo">
             <img src="../assets/img/brand-logos/desktop-dark.png" alt="logo" class="main-logo desktop-dark">
             <img src="../assets/img/brand-logos/toggle-dark.png" alt="logo" class="main-logo toggle-dark"> --}}
-            <img src="{{ asset('assets/img/logos/Crystalpay.png') }}" alt="logo"
+            <img src="{{ asset('public/assets/img/logos/Crystalpay.png') }}" alt="logo"
             class="w-14 h-16 mx-auto block dark:hidden" >
           
 
