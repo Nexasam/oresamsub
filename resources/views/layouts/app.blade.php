@@ -9,22 +9,22 @@
     <meta name="keywords" content="analytics dashboard,jobs dashboard,crm dashboard examples,personal dashboard,sales dashboard sample,best crm dashboard,crypto dashboard template,sales analytics dashboard,stocks dashboard,hrm dashboard,ecommerce admin panel template,sales admin dashboard,admin panel for ecommerce website,website template ecommerce,template dashboard,course dashboard,template ecommerce website">
 
     <!-- Favicon -->
-    <link rel="shortcut icon" href="{{ asset('assets/img/brand-logos/favicon.ico') }}">
+    <link rel="shortcut icon" href="{{ asset( env('APP_ASSETS_BASE_URL').'img/brand-logos/favicon.ico') }}">
 
     <!-- Main JS -->
-    <script src="{{ asset('assets/js/main.js') }}"></script>
+    <script src="{{ asset(env('APP_ASSETS_BASE_URL').'js/main.js') }}"></script>
 
     <!-- Style Css -->
     {{-- <link rel="stylesheet" href="../../assets/css/style.css"> --}}
-    <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}">
+    <link rel="stylesheet" href="{{ asset(env('APP_ASSETS_BASE_URL').'css/style.css') }}">
 
     <!-- Simplebar Css -->
     {{-- <link rel="stylesheet" href="../../assets/libs/simplebar/simplebar.min.css"> --}}
-    <link rel="stylesheet" href="{{ asset('assets/libs/simplebar/simplebar.min.css') }}">
+    <link rel="stylesheet" href="{{ asset(env('APP_ASSETS_BASE_URL').'libs/simplebar/simplebar.min.css') }}">
 
     <!-- Color Picker Css -->
     {{-- <link rel="stylesheet" href="../../assets/libs/@simonwep/pickr/themes/nano.min.css"> --}}
-    <link rel="stylesheet" href="{{ asset('assets/libs/@simonwep/pickr/themes/nano.min.css') }}">
+    <link rel="stylesheet" href="{{ asset(env('APP_ASSETS_BASE_URL').'libs/@simonwep/pickr/themes/nano.min.css') }}">
 
 </head>
 
@@ -439,7 +439,7 @@
      <!-- Loader -->
      <div id="loader" >
         {{-- <img src="../../assets/img/media/loader.svg" alt=""> --}}
-        <img src="{{ asset('assets/img/media/loader.svg') }}" alt="">
+        <img src="{{ asset(env('APP_ASSETS_BASE_URL').'img/media/loader.svg') }}" alt="">
     </div>
     <!-- Loader -->
 
@@ -612,12 +612,12 @@
 
     <!-- Apex Charts JS -->
     {{-- <script src="../../assets/libs/apexcharts/apexcharts.min.js"></script> --}}
-    <script src=" {{asset('assets/libs/apexcharts/apexcharts.min.js') }}"></script>
+    <script src=" {{asset(env('APP_ASSETS_BASE_URL').'libs/apexcharts/apexcharts.min.js') }}"></script>
 
 
     <!-- Index JS -->
     {{-- <script src="../../assets/js/index-2.js"></script> --}}
-    <script src=" {{ asset('assets/js/index-2.js') }}"></script>
+    <script src=" {{ asset(env('APP_ASSETS_BASE_URL').'js/index-2.js') }}"></script>
 
     <!-- Back To Top -->
     <div class="scrollToTop">
@@ -628,42 +628,42 @@
 
     <!-- popperjs -->
     {{-- <script src="../../assets/libs/@popperjs/core/umd/popper.min.js"></script> --}}
-    <script src=" {{ asset('assets/libs/@popperjs/core/umd/popper.min.js') }}"></script>
+    <script src=" {{ asset(env('APP_ASSETS_BASE_URL').'libs/@popperjs/core/umd/popper.min.js') }}"></script>
     
 
     <!-- Color Picker JS -->
     {{-- <script src="../../assets/libs/@simonwep/pickr/pickr.es5.min.js"></script> --}}
-    <script src=" {{ asset('assets/libs/@simonwep/pickr/pickr.es5.min.js') }}"></script>
+    <script src=" {{ asset(env('APP_ASSETS_BASE_URL').'libs/@simonwep/pickr/pickr.es5.min.js') }}"></script>
 
 
     <!-- sidebar JS -->
     {{-- <script src="../../assets/js/defaultmenu.js"></script> --}}
-    <script src=" {{ asset('assets/js/defaultmenu.js') }}"></script>
+    <script src=" {{ asset(env('APP_ASSETS_BASE_URL').'js/defaultmenu.js') }}"></script>
 
 
     <!-- sticky JS -->
     {{-- <script src="../../assets/js/sticky.js"></script> --}}
-    <script src=" {{ asset('assets/js/sticky.js') }}"></script>
+    <script src=" {{ asset(env('APP_ASSETS_BASE_URL').'js/sticky.js') }}"></script>
 
 
     <!-- Switch JS -->
     {{-- <script src="../../assets/js/switch.js"></script> --}}
-    <script src=" {{ asset('assets/js/switch.js') }}"></script>
+    <script src=" {{ asset(env('APP_ASSETS_BASE_URL').'js/switch.js') }}"></script>
 
 
     <!-- Preline JS -->
     {{-- <script src="../../assets/libs/preline/preline.js"></script> --}}
-    <script src=" {{ asset('assets/libs/preline/preline.js') }}"></script>
+    <script src=" {{ asset(env('APP_ASSETS_BASE_URL').'libs/preline/preline.js') }}"></script>
 
 
     <!-- Simplebar JS -->
     {{-- <script src="../../assets/libs/simplebar/simplebar.min.js"></script> --}}
-    <script src=" {{ asset('assets/libs/simplebar/simplebar.min.js') }}"></script>
+    <script src=" {{ asset(env('APP_ASSETS_BASE_URL').'libs/simplebar/simplebar.min.js') }}"></script>
 
 
     <!-- Custom JS -->
     {{-- <script src="../../assets/js/custom.js"></script> --}}
-    <script src=" {{ asset('assets/js/custom.js') }}"></script>
+    <script src=" {{ asset(env('APP_ASSETS_BASE_URL').'js/custom.js') }}"></script>
 
 
 
@@ -671,7 +671,7 @@
     
     <!-- Custom-Switcher JS -->
     {{-- <script src="../../assets/js/custom-switcher.js"></script> --}}
-    <script src=" {{ asset('assets/js/custom-switcher.js') }}"></script>
+    <script src=" {{ asset(env('APP_ASSETS_BASE_URL').'js/custom-switcher.js') }}"></script>
 
 
 </body>

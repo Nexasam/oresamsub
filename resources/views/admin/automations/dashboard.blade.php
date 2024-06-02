@@ -92,6 +92,8 @@
                                                     </td>
                                                     <td> 
                                                         <div class="mb-3">
+                                                          <input type="hidden" value="9c29efbb-0062-4f47-9e64-92ff101274d5" name="network_id_{{  $mtn_products['planId'] }}" id="network_id_{{  $mtn_products['planId'] }}">     
+
                                                             @if (strpos($mtn_products['name'],"MB"))
                                                               <input type="hidden" value="{{ (float) $mtn_products['name'] }}" name="data_size_in_mb_{{  $mtn_products['planId'] }}" id="data_size_in_mb_{{  $mtn_products['planId'] }}">                                                               
                                                             @else
@@ -261,6 +263,8 @@
                                                     </td>
                                                     <td> 
                                                         <div class="mb-3">
+                                                          <input type="hidden" value="9c29efbb-0609-4468-bfb3-880b06035f11" name="network_id_{{  $glo_products['planId'] }}" id="network_id_{{  $glo_products['planId'] }}">     
+
                                                             @if (strpos($glo_products['name'],"MB"))
                                                               <input type="hidden" value="{{ (float) $glo_products['name'] }}" name="data_size_in_mb_{{  $glo_products['planId'] }}" id="data_size_in_mb_{{  $glo_products['planId'] }}">                                                               
                                                             @else
@@ -410,8 +414,10 @@
                                                     </td>
                                                     <td> 
                                                         <div class="mb-3">
+                                                            <input type="hidden" value="9c29efbb-06a8-4441-bb6c-2de40276150b" name="network_id_{{  $airtel_products['planId'] }}" id="network_id_{{  $airtel_products['planId'] }}">     
                                                             @if (strpos($airtel_products['name'],"MB"))
-                                                              <input type="hidden" value="{{ (float) $airtel_products['name'] }}" name="data_size_in_mb_{{  $airtel_products['planId'] }}" id="data_size_in_mb_{{  $airtel_products['planId'] }}">                                                               
+                                                              <input type="hidden" value="{{ (float) $airtel_products['name'] }}" name="data_size_in_mb_{{  $airtel_products['planId'] }}" id="data_size_in_mb_{{  $airtel_products['planId'] }}">                                                                   
+                                                              
                                                             @else
                                                               <input type="hidden" value="{{ (float) $airtel_products['name'] * 1000 }}"  name="data_size_in_mb_{{  $airtel_products['planId'] }}" id="data_size_in_mb_{{  $airtel_products['planId'] }}">      
                                                             @endif
@@ -574,6 +580,8 @@
                                                     </td>
                                                     <td> 
                                                         <div class="mb-3">
+                                                            <input type="hidden" value="9c29efbb-0740-4e48-8b55-d1c57fe3b916" name="network_id_{{  $_9mobile_products['planId'] }}" id="network_id_{{  $_9mobile_products['planId'] }}">     
+                                                            
                                                             @if (strpos($_9mobile_products['name'],"MB"))
                                                               <input type="hidden" value="{{ (float) $_9mobile_products['name'] }}" name="data_size_in_mb_{{  $_9mobile_products['planId'] }}" id="data_size_in_mb_{{  $_9mobile_products['planId'] }}">                                                               
                                                             @else

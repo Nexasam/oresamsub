@@ -1,4 +1,4 @@
-@extends('layouts.app_two')
+@extends('layouts.app')
 @section('content')
 
       <!-- Start::main-content -->

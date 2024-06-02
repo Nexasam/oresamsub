@@ -52,6 +52,7 @@ class ProductPlanController extends Controller
           $data['user_level_6_selling_price'] = NULL;
           $data['visibility'] = 1;
           $data['active_status'] = 1;
+          $data['network_id'] = $request->network_id;
 
         //   return response()->json(['status'=>'-1', 'message'=>$request->all()  ]);
 

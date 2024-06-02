@@ -1,4 +1,4 @@
-@extends('layouts.app_two')
+@extends('layouts.app')
 @section('content')
 
       <!-- Start::main-content -->
@@ -167,34 +167,49 @@
 <div id="responsive-overlay"></div>
 
 <!-- popperjs -->
-<script src="../assets/libs/@popperjs/core/umd/popper.min.js"></script>
+{{-- <script src="../assets/libs/@popperjs/core/umd/popper.min.js"></script> --}}
+<script src="{{  asset(env('APP_ASSETS_BASE_URL').'libs/@popperjs/core/umd/popper.min.js') }}"></script>
+
 
 <!-- Color Picker JS -->
-<script src="../assets/libs/@simonwep/pickr/pickr.es5.min.js"></script>
+{{-- <script src="../assets/libs/@simonwep/pickr/pickr.es5.min.js"></script> --}}
+<script src="{{  asset(env('APP_ASSETS_BASE_URL').'libs/@simonwep/pickr/pickr.es5.min.js') }}"></script>
+
 
 <!-- sidebar JS -->
 {{-- <script src="../assets/js/defaultmenu.js"></script> --}}
 
 <!-- sticky JS -->
-<script src="../assets/js/sticky.js"></script>
+{{-- <script src="../assets/js/sticky.js"></script> --}}
+<script src="{{  asset(env('APP_ASSETS_BASE_URL').'js/sticky.js') }}"></script>
+
 
 <!-- Switch JS -->
-<script src="../assets/js/switch.js"></script>
+{{-- <script src="../assets/js/switch.js"></script> --}}
+<script src="{{  asset(env('APP_ASSETS_BASE_URL').'js/switch.js') }}"></script>
+
 
 <!-- Preline JS -->
-<script src="../assets/libs/preline/preline.js"></script>
+{{-- <script src="../assets/libs/preline/preline.js"></script> --}}
+<script src="{{  asset(env('APP_ASSETS_BASE_URL').'libs/preline/preline.js') }}"></script>
+
 
 <!-- Simplebar JS -->
-<script src="../assets/libs/simplebar/simplebar.min.js"></script>
+{{-- <script src="../assets/libs/simplebar/simplebar.min.js"></script> --}}
+<script src="{{  asset(env('APP_ASSETS_BASE_URL').'libs/simplebar/simplebar.min.js') }}"></script>
+
 
 <!-- Custom JS -->
-<script src="../assets/js/custom.js"></script>
+{{-- <script src="../assets/js/custom.js"></script> --}}
+<script src="{{  asset(env('APP_ASSETS_BASE_URL').'js/custom.js') }}"></script>
+
 
 
 
   
   <!-- Custom-Switcher JS -->
-  <script src="../assets/js/custom-switcher.js"></script>
+{{-- <script src="../assets/js/custom-switcher.js"></script> --}}
+<script src="{{  asset(env('APP_ASSETS_BASE_URL').'js/custom-switcher.js') }}"></script>
 
 
 <script type="text/javascript">
@@ -202,7 +217,7 @@
           var table = $('#users_table').DataTable({
               processing: true,
               serverSide: true,
-              ajax:  "http://127.0.0.1:8080/admin/users/fetch_users",
+              ajax:  {{ env('APP_URL') }}"admin/users/fetch_users",
               columns: [
                   // {data: 'DT_RowIndex', name: 'DT_RowIndex'},
                   {data: 'first_name', name: 'first_name'},

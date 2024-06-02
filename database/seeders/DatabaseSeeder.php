@@ -57,25 +57,26 @@ class DatabaseSeeder extends Seeder
 
         //NETWORKS
         $mtn_network = Network::create([
+            'id' => '9c29efbb-0062-4f47-9e64-92ff101274d5',
             'network_name' => 'MTN'
         ]);
 
         $glo_network = Network::create([
+            'id' => '9c29efbb-0609-4468-bfb3-880b06035f11',
             'network_name' => 'GLO'
         ]);
 
         $airtel_network = Network::create([
+            'id' => '9c29efbb-06a8-4441-bb6c-2de40276150b',
             'network_name' => 'AIRTEL'
         ]);
 
         $_9mobile_network = Network::create([
+            'id' => '9c29efbb-0740-4e48-8b55-d1c57fe3b916',
             'network_name' => '9MOBILE'
         ]);
 
-        
-        
-        
-        
+           
         
         //USER PLANS -     
         // $user_product_plans_percentage_for_basic_user_plan = 0;
@@ -332,7 +333,7 @@ class DatabaseSeeder extends Seeder
             'product_name' => 'RESULT CHECKER',
             'network_id' => NULL,
             'slug' => 'e_pins_product',
-            'product_categories_id' => $product_category_result_checker->id,
+            'product_categories_id' => $product_category_epins->id,
             'visibility' => 1,
             'active_status' => 1
         ]);
