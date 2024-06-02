@@ -40,6 +40,14 @@ class DatabaseSeeder extends Seeder
             "slug" =>'ogdams',
         ]);
 
+         //ogdams - 2
+         $ogdamsv2 =Automation::create([
+            "id" => "9c2887ea-59c7-471a-9407-1ff44b61akj1",
+            "automation_name" => 'OGDAMS v2',
+            "slug" =>'ogdams_v2',
+        ]);
+
+
         //autopilot
         $autopilot = Automation::create([
             "id" => "9c2887ea-5a69-410a-8d67-a6f62f90d19b",

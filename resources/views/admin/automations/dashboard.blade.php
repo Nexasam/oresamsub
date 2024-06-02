@@ -79,7 +79,7 @@
                                             $count = 1;
                                         @endphp
                                         {{-- //TODO: move to enums --}}
-                                        @if ($slug == 'ogdams')
+                                        @if ($slug == 'ogdams' || $slug == 'ogdams_v2' ))
                                             @foreach ($ogdams_mtn_products as $key=>$mtn_products)
                                                 
                                                 <tr>
@@ -250,7 +250,7 @@
                                             $count = 1;
                                         @endphp
                                         {{-- //TODO: move to enums --}}
-                                        @if ($slug == 'ogdams')
+                                        @if ($slug == 'ogdams' || $slug == 'ogdams_v2' ))
                                             @foreach ($ogdams_glo_products as $key=>$glo_products)
                                                 
                                                 <tr>
@@ -401,7 +401,7 @@
                                             $count = 1;
                                         @endphp
                                         {{-- //TODO: move to enums --}}
-                                        @if ($slug == 'ogdams')
+                                        @if ($slug == 'ogdams' || $slug == 'ogdams_v2' ))
                                             @foreach ($ogdams_airtel_products as $key=>$airtel_products)
                                                 
                                                 <tr>
@@ -567,7 +567,7 @@
                                             $count = 1;
                                         @endphp
                                         {{-- //TODO: move to enums --}}
-                                        @if ($slug == 'ogdams')
+                                        @if ($slug == 'ogdams' || $slug == 'ogdams_v2' ))
                                             @foreach ($ogdams__9mobile_products as $key=>$_9mobile_products)
                                                 
                                                 <tr>

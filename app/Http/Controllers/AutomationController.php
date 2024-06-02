@@ -22,7 +22,7 @@ class AutomationController extends Controller
             //call plans api 
         }
 
-        if($slug == 'ogdams'){
+        if($slug == 'ogdams' || $slug == 'ogdams_v2'){
             //call plans api 
             $selection = 'selected';
             $ogdams_live_key = 'sk_live_8bd499ea-66f6-4650-8c7f-09a59e7c03a5';

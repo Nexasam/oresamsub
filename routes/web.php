@@ -7,6 +7,7 @@ use App\Http\Controllers\AirtimeController;
 use App\Http\Controllers\NetworkController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\WalletsController;
 use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\AutomationController;
 use App\Http\Controllers\ProductPlanController;
@@ -41,6 +42,8 @@ Route::get('/dashboard', function () {
 // //     return view('users');
 // // })->middleware(['auth', 'verified'])->name('admin.users');
 
+
+Route::get('admin/wallets/webhook', [WalletsController::class, 'webhook'])->name('admin.wallet.crystalpay.webhook');
 
 Route::middleware(['auth','verified'])->get('admin/users', [UsersController::class, 'index'])->name('admin.users.index');
 Route::middleware(['auth','verified'])->get('admin/users/create', [UsersController::class, 'create'])->name('admin.users.create');
