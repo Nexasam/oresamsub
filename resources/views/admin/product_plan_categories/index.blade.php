@@ -52,6 +52,8 @@
                                     <th>ID</th>
                                     <th>Product Plan Category Name</th>
                                     <th>Automation</th>
+                                    <th>Network</th>
+                                    <th>Product</th>
                                     <th>Date Added</th>
                                 </tr>
                             </thead>
@@ -60,7 +62,8 @@
                                   $count = 1;
                               @endphp
                               @foreach ($product_plan_categories as $product_plan_category)
-                                <tr>
+                                  
+                                  <tr>
                                   <td>{{ $count++ }}</td>
                                   <td>{{ $product_plan_category->product_plan_category_name ?? 'nil' }}</td>
                                   <td>
@@ -78,7 +81,8 @@
                                           <span class="notify_span" id="notify_span{{  $product_plan_category['id'] }}""></span>
                                       </div>  
                                   </td>
-                                  {{-- <td>{{ $product_plan_category->product->product_name ?? 'nil' }}</td> --}}
+                                  <td>{{ $product_plan_category->network->network_name ?? 'nil' }}</td>
+                                  <td>{{ $product_plan_category->product->product_name ?? 'nil' }}</td>
                                   <td>{{ $product_plan_category->created_at }}</td>
                                  </tr>   
                               @endforeach
@@ -126,12 +130,12 @@
                                             <div class="grid w-full lg:w-1/2 lg:grid-cols-1 gap-6 space-y-4 lg:space-y-0">
                                             
                                                 <div class="space-y-2">
-                                                  <label class="ti-form-label mb-0">Product Name</label>
-                                                  <input type="text" required class="my-auto ti-form-input"  id="product_name" name="product_name" placeholder="Enter product name">
+                                                  <label class="ti-form-label mb-0">Product Plan Category Name</label>
+                                                  <input type="text" required class="my-auto ti-form-input"  id="product_name" name="product_name" placeholder="Enter product plan category name">
                                                 </div>
                                           
                                                 <div class="space-y-2">
-                                                    <label class="ti-form-label mb-0">Choose Product Plan Category (Optional)</label>
+                                                    <label class="ti-form-label mb-0">Choose Product</label>
                                                     <select id="product_category_id" name="product_category_id"  class="my-auto ti-form-select">
                                                         <option selected>Select</option>
                                                         <option>Nil</option>
@@ -140,6 +144,28 @@
                                                          @endforeach
                                                       </select>
                                                 </div>
+
+                                                <div class="space-y-2">
+                                                  <label class="ti-form-label mb-0">Choose Network (Optional)</label>
+                                                  <select id="product_category_id" name="product_category_id"  class="my-auto ti-form-select">
+                                                      <option selected>Select</option>
+                                                      <option>Nil</option>
+                                                       @foreach ($product_plan_categories as $product_category)
+                                                           <option value="{{ $product_category->id }}">{{ $product_category->product_plan_category_name }}</option>
+                                                       @endforeach
+                                                    </select>
+                                              </div>
+
+                                              <div class="space-y-2">
+                                                <label class="ti-form-label mb-0">Choose Automation</label>
+                                                <select id="product_category_id" name="product_category_id"  class="my-auto ti-form-select">
+                                                    <option selected>Select</option>
+                                                    <option>Nil</option>
+                                                     @foreach ($product_plan_categories as $product_category)
+                                                         <option value="{{ $product_category->id }}">{{ $product_category->product_plan_category_name }}</option>
+                                                     @endforeach
+                                                  </select>
+                                            </div>
 
                                                 <div class="space-y-2">
                                                   <label class="ti-form-label mb-0">Visibility</label>

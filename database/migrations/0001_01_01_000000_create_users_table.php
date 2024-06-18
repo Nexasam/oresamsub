@@ -17,6 +17,8 @@ return new class extends Migration
             $table->string('last_name');
             $table->string('other_names')->nullable();
             $table->string('phone_number')->nullable();
+            $table->string('main_wallet')->default(0)->nullable();
+            $table->string('data_wallet')->default(0)->nullable();
             $table->string('role');
             $table->string('user_plan_id')->nullable();
             $table->string('email')->unique();

@@ -133,8 +133,9 @@ class DatabaseSeeder extends Seeder
         User::factory()->create([
             'first_name' => 'Samuel',
             'last_name' => 'Adebunmi',
+            'main_wallet' => 20000,
             'role' => $admin_role,
-            'user_plan_id' => NULL,
+            'user_plan_id' => $user_plan_diamond->id,
             'email' => 'adebsholey4real@gmail.com',
             'phone_number' => '08168509044',
             'password' => Hash::make('password'),
@@ -178,213 +179,300 @@ class DatabaseSeeder extends Seeder
         User::factory(1000)->create();
 
 
-        //PRODUCT CATEGORIES
-        $product_category_data = ProductCategory::create([
-            'product_category_name' => 'DATA',
+        //PRODUCT CATEGORIES change to===> PRODUCTS
+        $product_data = Product::create([
+            'id' => '9c3a0c19-1920-434b-b98d-8d3d370afa9b',
+            'product_name' => 'DATA',
             'slug' => 'data',
             'visibility' => 1,
             'active_status' => 1
         ]);
-        $product_category_airtime = ProductCategory::create([
-            'product_category_name' => 'AIRTIME',
+
+        $product_airtime = Product::create([
+            'id' => '9c3a0c19-1d05-4a07-8135-9dcaab9c3994',
+            'product_name' => 'AIRTIME',
             'slug' => 'airtime',
             'visibility' => 1,
             'active_status' => 1
         ]);
-        $product_category_bills = ProductCategory::create([
-            'product_category_name' => 'UTILITY BILLS',
+        $product_bills = Product::create([
+            'id' => '9c3a0c19-1da5-49e2-b9fd-6094c7f37610',
+            'product_name' => 'UTILITY BILLS',
             'slug' => 'utility_bills',
             'visibility' => 1,
             'active_status' => 1
         ]);
-        $product_category_cable = ProductCategory::create([
-            'product_category_name' => 'CABLE SUBSCRIPTION',
+        $product_cable = Product::create([
+            'id' => '9c3a0c19-1e76-4e58-9ebb-a74853b4eebb',
+            'product_name' => 'CABLE SUBSCRIPTION',
             'slug' => 'cable_subscription',
             'visibility' => 1,
             'active_status' => 1
         ]);
-        $product_category_epins = ProductCategory::create([
-            'product_category_name' => 'E-PINS',
+        $product_epins = Product::create([
+            'id' => '9c3a0c19-2059-4423-a413-91dff2688730',
+            'product_name' => 'E-PINS',
             'slug' => 'e_pins',
             'visibility' => 1,
             'active_status' => 1
         ]);
-        $product_category_result_checker = ProductCategory::create([
-            'product_category_name' => 'RESULT CHECKER',
+        $product_result_checker = Product::create([
+            'id' => '9c3a0c19-214a-4fad-96e0-fa0438dae861',
+            'product_name' => 'RESULT CHECKER',
             'slug' => 'result_checker',
             'visibility' => 1,
             'active_status' => 1
-        ]);
+        ]); 
 
 
-        //PRODUCTS
-        $mtn_data_product = Product::create([
-            'id' => '9c2887f1-0fea-484a-ba7e-2fdce05241bf',
-            'product_name' => 'MTN Data',
+
+
+        // PRODUCT PLAN CATEGORIES - compulsory*** - for deeper classification
+        // SME
+        $pr_plan_mtn_sme_data = ProductPlanCategory::create([
+            'id' => '9c39f216-00a0-42ab-b195-558133f67a15',
+            'product_plan_category_name' => 'MTN SME DATA',
+            'product_id' => $product_data->id,
             'network_id' => $mtn_network->id,
-            'slug' => 'mtn_data_product',
-            'product_categories_id' => $product_category_data->id,
-            'visibility' => 1,
-            'active_status' => 1
-        ]);
-
-        $mtn_airtime_product = Product::create([
-            'product_name' => 'MTN Airtime',
-            'network_id' => $mtn_network->id,
-            'slug' => 'mtn_airtime_product',
-            'product_categories_id' => $product_category_airtime->id,
-            'visibility' => 1,
-            'active_status' => 1
-        ]);
-
-        $glo_data_product = Product::create([
-            'id' => '9c2887f1-1196-491c-8648-ba226a592790',
-            'product_name' => 'GLO Data',
-            'network_id' => $glo_network->id,
-            'slug' => 'glo_data_product',
-            'product_categories_id' => $product_category_data->id,
-            'visibility' => 1,
-            'active_status' => 1
-        ]);
-
-        $glo_airtime_product = Product::create([
-           
-            'product_name' => 'GLO Airtime',
-            'network_id' => $glo_network->id,
-            'slug' => 'glo_airtime_product',
-            'product_categories_id' => $product_category_airtime->id,
-            'visibility' => 1,
-            'active_status' => 1
-        ]);
-
-        $airtel_data_product = Product::create([
-            'id' => '9c2887f1-1309-4277-b6cf-0ba63316acfc',
-            'product_name' => 'AIRTEL Data',
-            'network_id' => $airtel_network->id,
-            'slug' => 'airtel_data_product',
-            'product_categories_id' => $product_category_data->id,
-            'visibility' => 1,
-            'active_status' => 1
-        ]);
-
-        $airtel_airtime_product = Product::create([
-            'product_name' => 'AIRTEL Airtime',
-            'network_id' => $airtel_network->id,
-            'slug' => 'airtel_airtime_product',
-            'product_categories_id' => $product_category_airtime->id,
-            'visibility' => 1,
-            'active_status' => 1
-        ]);
-
-        $_9mobile_data_product = Product::create([
-            'id' => '9c2887f1-1422-4c78-b676-b1c8640ad9f9',
-            'product_name' => '9MOBILE Data',
-            'network_id' => $_9mobile_network->id,
-            'slug' => '9mobile_data_product',
-            'product_categories_id' => $product_category_data->id,
-            'visibility' => 1,
-            'active_status' => 1
-        ]);
-
-        $_9mobile_airtime_product = Product::create([
-            'product_name' => '9MOBLE Airtime',
-            'network_id' => $_9mobile_network->id,
-            'slug' => '9mobile_airtime_product',
-            'product_categories_id' => $product_category_airtime->id,
-            'visibility' => 1,
-            'active_status' => 1
-        ]);
-        $cable_gotv_product = Product::create([
-            'product_name' => 'CABLE - GOTV',
-            'network_id' => NULL,
-            'slug' => 'gotv_product',
-            'product_categories_id' => $product_category_cable->id,
-            'visibility' => 1,
-            'active_status' => 1
-        ]);
-        $cable_startimes_product = Product::create([
-            'product_name' => 'CABLE - STAR TIMES',
-            'network_id' => NULL,
-            'slug' => 'startimes_product',
-            'product_categories_id' => $product_category_cable->id,
-            'visibility' => 1,
-            'active_status' => 1
-        ]);
-        $cable_dstv_product = Product::create([
-            'product_name' => 'CABLE - DSTV',
-            'network_id' => NULL,
-            'slug' => 'dstv_product',
-            'product_categories_id' => $product_category_cable->id,
-            'visibility' => 1,
-            'active_status' => 1
-        ]);
-       
-        $electricity_product = Product::create([
-            'product_name' => 'ELECTRICITY / BILLS',
-            'network_id' => NULL,
-            'slug' => 'bills_product',
-            'product_categories_id' => $product_category_bills->id,
-            'visibility' => 1,
-            'active_status' => 1
-        ]);
-
-        $result_checker_product = Product::create([
-            'product_name' => 'RESULT CHECKER',
-            'network_id' => NULL,
-            'slug' => 'result_checker_product',
-            'product_categories_id' => $product_category_result_checker->id,
-            'visibility' => 1,
-            'active_status' => 1
-        ]);
-
-        $epins_product = Product::create([
-            'product_name' => 'RESULT CHECKER',
-            'network_id' => NULL,
-            'slug' => 'e_pins_product',
-            'product_categories_id' => $product_category_epins->id,
-            'visibility' => 1,
-            'active_status' => 1
-        ]);
-
-        
-
-
-        // PRODUCT PLAN CATEGORIES - optional - for deeper classification
-        $product_plan_categories_sme = ProductPlanCategory::create([
-            'product_plan_category_name' => 'SME',
-            'automation_id' => $megasub->id
-        ]);
-        $product_plan_categories_gifting = ProductPlanCategory::create([
-            'product_plan_category_name' => 'GIFTING',
             'automation_id' => $ogdams->id
         ]);
-        $product_plan_categories_direct = ProductPlanCategory::create([
-            'product_plan_category_name' => 'DIRECT DATA',
-            'automation_id' => $megasub->id
-        ]);
-        $product_plan_categories_cg_data = ProductPlanCategory::create([
-            'product_plan_category_name' => 'CORPORATE GIFTING',
-            'automation_id' => $megasub->id
-            // 'product_id' => $mtn_data_product->id,
-        ]);
-        $product_plan_categories_sme2 = ProductPlanCategory::create([
-            'product_plan_category_name' => 'SME2',
+
+        $pr_plan_glo_sme_data = ProductPlanCategory::create([
+            'id' => '9c39f216-020d-4d37-842b-840a7ff82d54',
+            'product_plan_category_name' => 'GLO SME DATA',
+            'product_id' => $product_data->id,
+            'network_id' => $glo_network->id,
             'automation_id' => $ogdams->id
-
-            // 'product_id' => $mtn_data_product->id,
         ]);
 
-        $product_plan_categories_share_data = ProductPlanCategory::create([
-            'product_plan_category_name' => 'DATA SHARE',
-            'automation_id' => $megasub->id
-            // 'product_id' => $mtn_data_product->id,
+        $pr_plan_airtel_sme_data = ProductPlanCategory::create([
+            'id' => '9c39f216-02d9-4a46-b8de-eb48f668da88',
+            'product_plan_category_name' => 'AIRTEL SME DATA',
+            'product_id' => $product_data->id,
+            'network_id' => $airtel_network->id,
+            'automation_id' => $ogdams->id
         ]);
 
-        $product_plan_categories_share_data = ProductPlanCategory::create([
-            'product_plan_category_name' => 'AWOOF',
-            'automation_id' => $autopilot->id
-            // 'product_id' => $mtn_data_product->id,
+        $pr_plan_9mobile_sme_data = ProductPlanCategory::create([
+            'id' => '9c39f216-03e8-4417-bcc9-c098e77f2c51',
+            'product_plan_category_name' => '9MOBILE SME DATA',
+            'product_id' => $product_data->id,
+            'network_id' => $_9mobile_network->id,
+            'automation_id' => $ogdams->id
         ]);
+
+
+         // SME2
+         $pr_plan_mtn_sme2_data = ProductPlanCategory::create([
+            'id' => '9c39f216-0484-4070-a83c-906999d62c97',
+            'product_plan_category_name' => 'MTN SME2 DATA',
+            'product_id' => $product_data->id,
+            'network_id' => $mtn_network->id,
+            'automation_id' => $ogdams->id
+        ]);
+
+        $pr_plan_glo_sme2_data = ProductPlanCategory::create([
+            'id' => '9c39f216-0513-4050-994d-59a60e99c464',
+            'product_plan_category_name' => 'GLO SME2 DATA',
+            'product_id' => $product_data->id,
+            'network_id' => $glo_network->id,
+            'automation_id' => $ogdams->id
+        ]);
+
+        $pr_plan_airtel_sme2_data = ProductPlanCategory::create([
+            'id' => '9c39f216-05ab-4db8-8de8-fbe47374224a',
+            'product_plan_category_name' => 'AIRTEL SME2 DATA',
+            'product_id' => $product_data->id,
+            'network_id' => $airtel_network->id,
+            'automation_id' => $ogdams->id
+        ]);
+
+        $pr_plan_9mobile_sme2_data = ProductPlanCategory::create([
+            'id' => '9c39f216-063f-40ce-bba1-c0edb16e05a5',
+            'product_plan_category_name' => '9MOBILE SME2 DATA',
+            'product_id' => $product_data->id,
+            'network_id' => $_9mobile_network->id,
+            'automation_id' => $ogdams->id
+        ]);
+
+
+
+         // CG
+         $pr_plan_mtn_cg_data = ProductPlanCategory::create([
+            'id'=> '9c39f216-06d6-48fc-971e-d5778723497e',
+            'product_plan_category_name' => 'MTN CG DATA',
+            'product_id' => $product_data->id,
+            'network_id' => $mtn_network->id,
+            'automation_id' => $ogdams->id
+        ]);
+
+        $pr_plan_glo_cg_data = ProductPlanCategory::create([
+            'id'=> '9c39f216-076e-4697-b93e-785e05643fa5',
+            'product_plan_category_name' => 'GLO CG DATA',
+            'product_id' => $product_data->id,
+            'network_id' => $glo_network->id,
+            'automation_id' => $ogdams->id
+        ]);
+
+        $pr_plan_airtel_cg_data = ProductPlanCategory::create([
+            'id'=> '9c39f216-0805-4e5c-89b6-2c251f5821ab',
+            'product_plan_category_name' => 'AIRTEL CG DATA',
+            'product_id' => $product_data->id,
+            'network_id' => $airtel_network->id,
+            'automation_id' => $ogdams->id
+        ]);
+
+        $pr_plan_9mobile_cg_data = ProductPlanCategory::create([
+            'id'=> '9c39f216-089c-44fc-a535-cc6f6a56bf68',
+            'product_plan_category_name' => '9MOBILE CG DATA',
+            'product_id' => $product_data->id,
+            'network_id' => $_9mobile_network->id,
+            'automation_id' => $ogdams->id
+        ]);
+
+
+         // Gifting
+         $pr_plan_mtn_gifting_data = ProductPlanCategory::create([
+            'id'=> '9c39f216-095b-46de-8466-88158a31e3e2',
+            'product_plan_category_name' => 'MTN GIFTING DATA',
+            'product_id' => $product_data->id,
+            'network_id' => $mtn_network->id,
+            'automation_id' => $ogdams->id
+        ]);
+
+        $pr_plan_glo_gifting_data = ProductPlanCategory::create([
+            'id'=> '9c39f216-09f1-433d-ab74-f86737ea7f1e',
+            'product_plan_category_name' => 'GLO GIFTING DATA',
+            'product_id' => $product_data->id,
+            'network_id' => $glo_network->id,
+            'automation_id' => $ogdams->id
+        ]);
+
+        $pr_plan_airtel_gifting_data = ProductPlanCategory::create([
+            'id'=> '9c39f216-0a81-4113-abf1-65e18c728ddc',
+            'product_plan_category_name' => 'AIRTEL GIFTING DATA',
+            'product_id' => $product_data->id,
+            'network_id' => $airtel_network->id,
+            'automation_id' => $ogdams->id
+        ]);
+
+        $pr_plan_9mobile_gifting_data = ProductPlanCategory::create([
+            'id'=> '9c39f216-0b12-4c61-b72a-f5ff38b0a689',
+            'product_plan_category_name' => '9MOBILE GIFTING DATA',
+            'product_id' => $product_data->id,
+            'network_id' => $_9mobile_network->id,
+            'automation_id' => $ogdams->id
+        ]);
+
+
+        // share data
+        $pr_plan_mtn_share_data = ProductPlanCategory::create([
+            'id'=> '9c39f216-0bb9-472d-8775-6bc4379fec91',
+            'product_plan_category_name' => 'MTN SHARE DATA',
+            'product_id' => $product_data->id,
+            'network_id' => $mtn_network->id,
+            'automation_id' => $ogdams->id
+        ]);
+
+        $pr_plan_glo_share_data = ProductPlanCategory::create([
+            'id'=> '9c39f216-0c42-48fc-af5a-528e86d1de12',
+            'product_plan_category_name' => 'GLO SHARE DATA',
+            'product_id' => $product_data->id,
+            'network_id' => $glo_network->id,
+            'automation_id' => $ogdams->id
+        ]);
+
+        $pr_plan_airtel_share_data = ProductPlanCategory::create([
+            'id'=> '9c39f216-0ccf-4860-aab5-60b25eab9e3a',
+            'product_plan_category_name' => 'AIRTEL SHARE DATA',
+            'product_id' => $product_data->id,
+            'network_id' => $airtel_network->id,
+            'automation_id' => $ogdams->id
+        ]);
+
+        $pr_plan_9mobile_share_data = ProductPlanCategory::create([
+            'id'=> '9c39f216-0d65-4f57-a15f-db1b07c58c95',
+            'product_plan_category_name' => '9MOBILE SHARE DATA',
+            'product_id' => $product_data->id,
+            'network_id' => $_9mobile_network->id,
+            'automation_id' => $ogdams->id
+        ]);
+
+
+        // AWOOF data
+        $pr_plan_mtn_awoof_data = ProductPlanCategory::create([
+            'id'=> '9c39f216-0df6-48d9-8530-3e320243058f',
+            'product_plan_category_name' => 'MTN AWOOF DATA',
+            'product_id' => $product_data->id,
+            'network_id' => $mtn_network->id,
+            'automation_id' => $ogdams->id
+        ]);
+
+        $pr_plan_glo_awoof_data = ProductPlanCategory::create([
+            'id'=> '9c39f216-0e89-4455-8f37-c764c5f26ead',
+            'product_plan_category_name' => 'GLO AWOOF DATA',
+            'product_id' => $product_data->id,
+            'network_id' => $glo_network->id,
+            'automation_id' => $ogdams->id
+        ]);
+
+        $pr_plan_airtel_awoof_data = ProductPlanCategory::create([
+            'id'=> '9c39f216-0f19-4ba0-96ee-decb9ed99a82',
+            'product_plan_category_name' => 'AIRTEL AWOOF DATA',
+            'product_id' => $product_data->id,
+            'network_id' => $airtel_network->id,
+            'automation_id' => $ogdams->id
+        ]);
+
+        $pr_plan_9mobile_awoof_data = ProductPlanCategory::create([
+            'id'=> '9c39f216-0faf-4924-bee6-52a1149341ef',
+            'product_plan_category_name' => '9MOBILE AWOOF DATA',
+            'product_id' => $product_data->id,
+            'network_id' => $_9mobile_network->id,
+            'automation_id' => $ogdams->id
+        ]);
+
+
+
+        //OBSOLETE
+        // $product_plan_categories_sme = ProductPlanCategory::create([
+        //     'product_plan_category_name' => 'MTN CG DATA)',
+        //     'product_id' => $product_data->id,
+        //     'network_id' => $mtn_network->id,
+        //     'automation_id' => $megasub->id
+        // ]);
+
+        // $product_plan_categories_gifting = ProductPlanCategory::create([
+        //     'product_plan_category_name' => 'GIFTING',
+        //     'automation_id' => $ogdams->id
+        // ]);
+        // $product_plan_categories_direct = ProductPlanCategory::create([
+        //     'product_plan_category_name' => 'DIRECT DATA',
+        //     'automation_id' => $megasub->id
+        // ]);
+        // $product_plan_categories_cg_data = ProductPlanCategory::create([
+        //     'product_plan_category_name' => 'CORPORATE GIFTING',
+        //     'automation_id' => $megasub->id
+        //     // 'product_id' => $mtn_data_product->id,
+        // ]);
+        // $product_plan_categories_sme2 = ProductPlanCategory::create([
+        //     'product_plan_category_name' => 'SME2',
+        //     'automation_id' => $ogdams->id
+
+        //     // 'product_id' => $mtn_data_product->id,
+        // ]);
+
+        // $product_plan_categories_share_data = ProductPlanCategory::create([
+        //     'product_plan_category_name' => 'DATA SHARE',
+        //     'automation_id' => $megasub->id
+        //     // 'product_id' => $mtn_data_product->id,
+        // ]);
+
+        // $product_plan_categories_share_data = ProductPlanCategory::create([
+        //     'product_plan_category_name' => 'AWOOF',
+        //     'automation_id' => $autopilot->id
+        //     // 'product_id' => $mtn_data_product->id,
+        // ]);
 
 
         // $product_plan_categories_mtn_sme = ProductPlanCategory::create([
@@ -417,6 +505,139 @@ class DatabaseSeeder extends Seeder
         // THIS LOGIC NO LONGER HOLDS FOR NOW
         //PRODUCT PLAN AND PRICES - ADMIN LEVEL.... This needs to change and be created based on the automation
         //MTN Special Gifiting::::::::::::   
+
+
+            
+        //PRODUCTS should be eradicated and product categories should be product.
+        // $mtn_data_product = Product::create([
+        //     'id' => '9c2887f1-0fea-484a-ba7e-2fdce05241bf',
+        //     'product_name' => 'MTN Data',
+        //     'network_id' => $mtn_network->id,
+        //     'slug' => 'mtn_data_product',
+        //     'product_categories_id' => $product_category_data->id,
+        //     'visibility' => 1,
+        //     'active_status' => 1
+        // ]);
+
+        // $mtn_airtime_product = Product::create([
+        //     'product_name' => 'MTN Airtime',
+        //     'network_id' => $mtn_network->id,
+        //     'slug' => 'mtn_airtime_product',
+        //     'product_categories_id' => $product_category_airtime->id,
+        //     'visibility' => 1,
+        //     'active_status' => 1
+        // ]);
+
+        // $glo_data_product = Product::create([
+        //     'id' => '9c2887f1-1196-491c-8648-ba226a592790',
+        //     'product_name' => 'GLO Data',
+        //     'network_id' => $glo_network->id,
+        //     'slug' => 'glo_data_product',
+        //     'product_categories_id' => $product_category_data->id,
+        //     'visibility' => 1,
+        //     'active_status' => 1
+        // ]);
+
+        // $glo_airtime_product = Product::create([
+           
+        //     'product_name' => 'GLO Airtime',
+        //     'network_id' => $glo_network->id,
+        //     'slug' => 'glo_airtime_product',
+        //     'product_categories_id' => $product_category_airtime->id,
+        //     'visibility' => 1,
+        //     'active_status' => 1
+        // ]);
+
+        // $airtel_data_product = Product::create([
+        //     'id' => '9c2887f1-1309-4277-b6cf-0ba63316acfc',
+        //     'product_name' => 'AIRTEL Data',
+        //     'network_id' => $airtel_network->id,
+        //     'slug' => 'airtel_data_product',
+        //     'product_categories_id' => $product_category_data->id,
+        //     'visibility' => 1,
+        //     'active_status' => 1
+        // ]);
+
+        // $airtel_airtime_product = Product::create([
+        //     'product_name' => 'AIRTEL Airtime',
+        //     'network_id' => $airtel_network->id,
+        //     'slug' => 'airtel_airtime_product',
+        //     'product_categories_id' => $product_category_airtime->id,
+        //     'visibility' => 1,
+        //     'active_status' => 1
+        // ]);
+
+        // $_9mobile_data_product = Product::create([
+        //     'id' => '9c2887f1-1422-4c78-b676-b1c8640ad9f9',
+        //     'product_name' => '9MOBILE Data',
+        //     'network_id' => $_9mobile_network->id,
+        //     'slug' => '9mobile_data_product',
+        //     'product_categories_id' => $product_category_data->id,
+        //     'visibility' => 1,
+        //     'active_status' => 1
+        // ]);
+
+        // $_9mobile_airtime_product = Product::create([
+        //     'product_name' => '9MOBLE Airtime',
+        //     'network_id' => $_9mobile_network->id,
+        //     'slug' => '9mobile_airtime_product',
+        //     'product_categories_id' => $product_category_airtime->id,
+        //     'visibility' => 1,
+        //     'active_status' => 1
+        // ]);
+        // $cable_gotv_product = Product::create([
+        //     'product_name' => 'CABLE - GOTV',
+        //     'network_id' => NULL,
+        //     'slug' => 'gotv_product',
+        //     'product_categories_id' => $product_category_cable->id,
+        //     'visibility' => 1,
+        //     'active_status' => 1
+        // ]);
+        // $cable_startimes_product = Product::create([
+        //     'product_name' => 'CABLE - STAR TIMES',
+        //     'network_id' => NULL,
+        //     'slug' => 'startimes_product',
+        //     'product_categories_id' => $product_category_cable->id,
+        //     'visibility' => 1,
+        //     'active_status' => 1
+        // ]);
+        // $cable_dstv_product = Product::create([
+        //     'product_name' => 'CABLE - DSTV',
+        //     'network_id' => NULL,
+        //     'slug' => 'dstv_product',
+        //     'product_categories_id' => $product_category_cable->id,
+        //     'visibility' => 1,
+        //     'active_status' => 1
+        // ]);
+       
+        // $electricity_product = Product::create([
+        //     'product_name' => 'ELECTRICITY / BILLS',
+        //     'network_id' => NULL,
+        //     'slug' => 'bills_product',
+        //     'product_categories_id' => $product_category_bills->id,
+        //     'visibility' => 1,
+        //     'active_status' => 1
+        // ]);
+
+        // $result_checker_product = Product::create([
+        //     'product_name' => 'RESULT CHECKER',
+        //     'network_id' => NULL,
+        //     'slug' => 'result_checker_product',
+        //     'product_categories_id' => $product_category_result_checker->id,
+        //     'visibility' => 1,
+        //     'active_status' => 1
+        // ]);
+
+        // $epins_product = Product::create([
+        //     'product_name' => 'RESULT CHECKER',
+        //     'network_id' => NULL,
+        //     'slug' => 'e_pins_product',
+        //     'product_categories_id' => $product_category_epins->id,
+        //     'visibility' => 1,
+        //     'active_status' => 1
+        // ]);
+
+        
         
     }
 }

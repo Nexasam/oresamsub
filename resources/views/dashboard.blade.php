@@ -28,13 +28,14 @@
             <div class="box">
                 <div class="box-body">
                     <div class="flex space-x-4 rtl:space-x-reverse">
+                       
                         <div class="flex items-center justify-center ecommerce-icon px-0">
-                            <span class="rounded-sm p-4 bg-primary/10">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="fill-white svg1" height="24px"
+                            <span class="rounded-sm p-4 bg-danger/10">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="fill-white svg3" height="24px"
                                     viewBox="0 0 24 24" width="24px" fill="#000000">
                                     <path d="M0 0h24v24H0V0z" fill="none" />
                                     <path
-                                        d="M15.55 13c.75 0 1.41-.41 1.75-1.03l3.58-6.49c.37-.66-.11-1.48-.87-1.48H5.21l-.94-2H1v2h2l3.6 7.59-1.35 2.44C4.52 15.37 5.48 17 7 17h12v-2H7l1.1-2h7.45zM6.16 6h12.15l-2.76 5H8.53L6.16 6zM7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zm10 0c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z" />
+                                        d="M12 6c1.1 0 2 .9 2 2s-.9 2-2 2-2-.9-2-2 .9-2 2-2m0 10c2.7 0 5.8 1.29 6 2H6c.23-.72 3.31-2 6-2m0-12C9.79 4 8 5.79 8 8s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4zm0 10c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
                                 </svg>
                             </span>
                         </div>
@@ -43,7 +44,7 @@
                             <div class="text-gray-500 dark:text-white/70 mb-1 text-xs">
                                 <span
                                     class="text-gray-800 font-semibold text-xl leading-none align-bottom dark:text-white">
-                                    12,088
+                                    {{ number_format( count($users))  }}
                                 </span>
                             </div>
                             {{-- <div>
@@ -78,7 +79,7 @@
                             <div class="text-gray-500 dark:text-white/70 mb-1 text-xs">
                                 <span
                                     class="text-gray-800 font-semibold text-xl leading-none align-bottom dark:text-white">
-                                    10,500
+                                    {{ number_format( count($transactions))  }}
                                 </span>
                             </div>
                             {{-- <div>
@@ -96,21 +97,21 @@
                 <div class="box-body">
                     <div class="flex space-x-4 rtl:space-x-reverse">
                         <div class="flex items-center justify-center ecommerce-icon px-0">
-                            <span class="rounded-sm p-4 bg-danger/10">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="fill-white svg3" height="24px"
+                            <span class="rounded-sm p-4 bg-primary/10">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="fill-white svg1" height="24px"
                                     viewBox="0 0 24 24" width="24px" fill="#000000">
                                     <path d="M0 0h24v24H0V0z" fill="none" />
                                     <path
-                                        d="M12 6c1.1 0 2 .9 2 2s-.9 2-2 2-2-.9-2-2 .9-2 2-2m0 10c2.7 0 5.8 1.29 6 2H6c.23-.72 3.31-2 6-2m0-12C9.79 4 8 5.79 8 8s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4zm0 10c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
+                                        d="M15.55 13c.75 0 1.41-.41 1.75-1.03l3.58-6.49c.37-.66-.11-1.48-.87-1.48H5.21l-.94-2H1v2h2l3.6 7.59-1.35 2.44C4.52 15.37 5.48 17 7 17h12v-2H7l1.1-2h7.45zM6.16 6h12.15l-2.76 5H8.53L6.16 6zM7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zm10 0c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z" />
                                 </svg>
                             </span>
                         </div>
                         <div class="">
-                            <div class="mb-2">Virtual Wallets</div>
+                            <div class="mb-2">Product Plans</div>
                             <div class="text-gray-500 dark:text-white/70 mb-1 text-xs">
                                 <span
                                     class="text-gray-800 font-semibold text-xl leading-none align-bottom dark:text-white">
-                                    256,259
+                                    {{ number_format( count($product_plans))  }}
                                 </span>
                             </div>
                             {{-- <div>
@@ -175,11 +176,11 @@
                             </span>
                         </div>
                         <div class="">
-                            <div class="mb-2">Wallet Balance</div>
+                            <div class="mb-2">Main Wallet Balance</div>
                             <div class="text-gray-500 dark:text-white/70 mb-1 text-xs">
                                 <span
                                     class="text-gray-800 font-semibold text-xl leading-none align-bottom dark:text-white">
-                                    &#8358;21,520
+                                    &#8358; {{ number_format($user->main_wallet,2)  }}
                                 </span>
                             </div>
                             {{-- <div>
@@ -211,7 +212,7 @@
                             <div class="text-gray-500 dark:text-white/70 mb-1 text-xs">
                                 <span
                                     class="text-gray-800 font-semibold text-xl leading-none align-bottom dark:text-white">
-                                    45,280
+                                    {{ number_format($user->data_wallet)  }}MB
                                 </span>
                             </div>
                             {{-- <div>

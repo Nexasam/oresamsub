@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\UserDashboardController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DataController;
 use App\Http\Controllers\UsersController;
@@ -11,16 +12,18 @@ use App\Http\Controllers\WalletsController;
 use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\AutomationController;
 use App\Http\Controllers\ProductPlanController;
+use App\Http\Controllers\ResellerPlanController;
 use App\Http\Controllers\ProductCategoryController;
+use App\Http\Controllers\UserProductPlanController;
 use App\Http\Controllers\ProductPlanCategoryController;
 
 Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+// Route::get('/dashboard', function () {
+//     return view('dashboard');
+// })->middleware(['auth', 'verified'])->name('dashboard');
 
 
 
@@ -43,6 +46,9 @@ Route::get('/dashboard', function () {
 // // })->middleware(['auth', 'verified'])->name('admin.users');
 
 
+//this will be adjusted later
+Route::get('dashboard', [UserDashboardController::class, 'index'])->name('user.dashboard');
+
 Route::get('admin/wallets/webhook', [WalletsController::class, 'webhook'])->name('admin.wallet.crystalpay.webhook');
 
 Route::middleware(['auth','verified'])->get('admin/users', [UsersController::class, 'index'])->name('admin.users.index');
@@ -51,6 +57,10 @@ Route::middleware(['auth','verified'])->post('admin/users/store', [UsersControll
 Route::middleware(['auth','verified'])->get('admin/users/fetch_users', [UsersController::class, 'fetch_users'])->name('admin.users.fetch_users');
 
 Route::middleware(['auth','verified'])->get('admin/networks', [NetworkController::class, 'index'])->name('admin.networks.index');
+
+Route::middleware(['auth','verified'])->get('admin/reseller_plans', [ResellerPlanController::class, 'index'])->name('admin.reseller_plans.index');
+Route::middleware(['auth','verified'])->post('admin/reseller_plans/update_name', [ResellerPlanController::class, 'update_name'])->name('admin.reseller_plans.update_name');
+
 
 Route::middleware(['auth','verified'])->get('admin/automations/{slug}/view', [AutomationController::class, 'dashboard'])->name('admin.automation.dashboard_view');
 
@@ -72,6 +82,10 @@ Route::middleware(['auth','verified'])->get('admin/product_categories', [Product
 Route::middleware(['auth','verified'])->get('admin/settings', [SettingsController::class, 'index'])->name('admin.settings.index');
 
 Route::get('user/data/buy_data', [DataController::class, 'buy_data'])->name('user.data.buy_data');
+Route::get('user/data/store', [DataController::class, 'buy_data_action'])->name('user.data.buy_data_action');
+Route::get('user/data/fetch_product_plan_categories', [DataController::class, 'fetch_product_plan_categories'])->name('user.fetch_product_plan_categories'); //TODO: you can add this to a helper controller later
+Route::get('user/data/fetch_product_plans', [DataController::class, 'fetch_product_plans'])->name('user.fetch_product_plans'); //TODO: you can add this to a helper controller later
+
 Route::get('user/airtime/buy_airtime', [AirtimeController::class, 'buy_airtime'])->name('user.airtime.buy_airtime');
 
 //ADMIN ENDS HERE

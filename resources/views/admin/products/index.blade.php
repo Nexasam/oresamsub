@@ -27,29 +27,28 @@
           
               <div class="box">
                 <div class="box-header">
-                  <h5 class="box-title">Products</h5>
+                  <h5 class="box-title">Products list</h5>
                 </div>
 
                 <div class="box-body">
                   <nav class="flex space-x-2" aria-label="Tabs" role="tablist">
-                    <button type="button" class="hs-tab-active:bg-primary hs-tab-active:text-white py-3 px-4 inline-flex items-center gap-2 bg-transparent text-sm font-medium text-center text-gray-500 rounded-sm hover:text-primary  dark:text-white/70 dark:hover:text-white active" id="pills-with-brand-color-item-2" data-hs-tab="#pills-with-brand-color-2" aria-controls="pills-with-brand-color-2">
+                    {{-- <button type="button" class="hs-tab-active:bg-primary hs-tab-active:text-white py-3 px-4 inline-flex items-center gap-2 bg-transparent text-sm font-medium text-center text-gray-500 rounded-sm hover:text-primary  dark:text-white/70 dark:hover:text-white active" id="pills-with-brand-color-item-2" data-hs-tab="#pills-with-brand-color-2" aria-controls="pills-with-brand-color-2">
                       Create Product
-                    </button>
-                    <button type="button" class="hs-tab-active:bg-primary hs-tab-active:text-white py-3 px-4 inline-flex items-center gap-2 bg-transparent text-sm font-medium text-center text-gray-500 rounded-sm hover:text-primary  dark:text-white/70 dark:hover:text-white " id="pills-with-brand-color-item-1" data-hs-tab="#pills-with-brand-color-1" aria-controls="pills-with-brand-color-1">
+                    </button> --}}
+                    {{-- <button type="button" class="hs-tab-active:bg-primary hs-tab-active:text-white py-3 px-4 inline-flex items-center gap-2 bg-transparent text-sm font-medium text-center text-gray-500 rounded-sm hover:text-primary  dark:text-white/70 dark:hover:text-white " id="pills-with-brand-color-item-1" data-hs-tab="#pills-with-brand-color-1" aria-controls="pills-with-brand-color-1">
                       Products
-                    </button>
+                    </button> --}}
                   
                   </nav>
 
                   <div class="mt-3">
-                    <div id="pills-with-brand-color-1" class="hidden" role="tabpanel" aria-labelledby="pills-with-brand-color-item-1">
+                    <div id="pills-with-brand-color-2"  role="tabpanel" aria-labelledby="pills-with-brand-color-item-1">
                       <div class="overflow-auto">
                         <table  class="ti-custom-table ti-custom-table-head ti-striped-table ti-custom-table-hover ">
                             <thead>
                                 <tr>
                                     <th>ID</th>
                                     <th>Product Name</th>
-                                    <th>Category</th>
                                     <th>Activation Status</th>
                                     <th>Visibility</th>
                                     <th>Date Added</th>
@@ -63,7 +62,6 @@
                                 <tr>
                                   <td>{{ $count++ }}</td>
                                   <td>{{ $product->product_name }}</td>
-                                  <td>{{ $product->product_category->product_category_name ?? 'nil' }}</td>
                                   <td>{{ $product->active_status == 1 ? 'ACTIVE' : 'INACTIVE' }}</td>
                                   <td>{{ $product->visibility == 1 ? 'PUBLIC': 'PRIVATE' }}</td>
                                   <td>{{ $product->created_at }}</td>
@@ -74,7 +72,7 @@
                         </table>     
                       </div>                
                     </div>
-                    <div id="pills-with-brand-color-2"  role="tabpanel" aria-labelledby="pills-with-brand-color-item-2">
+                    <div id="pills-with-brand-color-2" class="hidden"  role="tabpanel" aria-labelledby="pills-with-brand-color-item-2">
                       <div class="overflow-auto">
                             <!-- Start::row-3 -->
                           <div class="grid grid-cols-12 gap-x-6">
@@ -117,7 +115,7 @@
                                                   <input type="text" required class="my-auto ti-form-input"  id="product_name" name="product_name" placeholder="Enter product name">
                                                 </div>
                                           
-                                                <div class="space-y-2">
+                                                {{-- <div class="space-y-2">
                                                     <label class="ti-form-label mb-0">Choose Product Category</label>
                                                     <select id="product_category_id" name="product_category_id" required class="my-auto ti-form-select">
                                                         <option selected>Select</option>
@@ -125,9 +123,9 @@
                                                              <option value="{{ $product_category->id }}">{{ $product_category->product_category_name }}</option>
                                                          @endforeach
                                                       </select>
-                                                </div>
+                                                </div> --}}
 
-                                                <div class="space-y-2">
+                                                {{-- <div class="space-y-2">
                                                   <label class="ti-form-label mb-0">Choose Network (Optional)</label>
                                                   <select id="network_id" name="network_id" required class="my-auto ti-form-select">
                                                       <option selected>Select</option>
@@ -135,7 +133,7 @@
                                                            <option value="{{ $network->id }}">{{ $network->network_name }}</option>
                                                        @endforeach
                                                     </select>
-                                              </div>
+                                              </div> --}}
 
                                                 <div class="space-y-2">
                                                   <label class="ti-form-label mb-0">Visibility</label>

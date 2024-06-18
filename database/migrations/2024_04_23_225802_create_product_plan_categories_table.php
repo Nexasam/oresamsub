@@ -13,9 +13,10 @@ return new class extends Migration
     {
         Schema::create('product_plan_categories', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->string('product_plan_category_name');
-            $table->string('automation_id');
-            // $table->foreignUuid('product_id')->constrained('products');
+            $table->string('product_plan_category_name')->unique();
+            $table->foreignUuid('automation_id')->constrained('automations');
+            $table->foreignUuid('product_id')->constrained('products');
+            $table->foreignUuid('network_id')->constrained('networks');
             $table->timestamps();
         });
     }

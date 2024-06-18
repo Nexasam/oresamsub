@@ -36,7 +36,7 @@ class ProductPlanController extends Controller
         //   }
 
           $data['product_plan_name'] = $request->product_plan_name;
-          $data['product_id'] = $request->product_id;
+          // $data['product_id'] = $request->product_id;
           $data['product_plan_category_id'] = $request->product_plan_category_id; 
           $data['automation_product_plan_id'] = $request->id; ////planId
           $data['automation_id'] = $request->automation_id; ///
@@ -52,7 +52,7 @@ class ProductPlanController extends Controller
           $data['user_level_6_selling_price'] = NULL;
           $data['visibility'] = 1;
           $data['active_status'] = 1;
-          $data['network_id'] = $request->network_id;
+          // $data['network_id'] = $request->network_id;
 
         //   return response()->json(['status'=>'-1', 'message'=>$request->all()  ]);
 
@@ -62,7 +62,7 @@ class ProductPlanController extends Controller
             'automation_id' => $request->automation_id,
           ],$data);
 
-          return response()->json(['status'=>'-1', 'message'=>'successfully saved' ]);
+          return response()->json(['status'=>'1', 'message'=>'successfully saved' ]);
 
     
         //   if($product_plan){

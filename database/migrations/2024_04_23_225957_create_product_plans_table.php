@@ -14,9 +14,9 @@ return new class extends Migration
         Schema::create('product_plans', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->string('product_plan_name');
-            $table->foreignUuid('product_id')->constrained('products');
-            $table->foreignUuid('network_id')->nullable();
-            $table->foreignUuid('product_plan_category_id')->nullable();
+            // $table->foreignUuid('product_id')->constrained('products');
+            // $table->foreignUuid('network_id')->nullable();
+            $table->foreignUuid('product_plan_category_id')->constrained('product_plan_categories'); //this carries the productid e.g data and the network e.g mtn if applicable
             $table->string('automation_product_plan_id');
             $table->foreignUuid('automation_id')->constrained('automations');
             $table->string('cost_price')->nullable();

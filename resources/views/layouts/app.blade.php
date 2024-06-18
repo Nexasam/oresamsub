@@ -11,6 +11,9 @@
     <!-- Favicon -->
     <link rel="shortcut icon" href="{{ asset( env('APP_ASSETS_BASE_URL').'img/brand-logos/favicon.ico') }}">
 
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+
+
     <!-- Main JS -->
     <script src="{{ asset(env('APP_ASSETS_BASE_URL').'js/main.js') }}"></script>
 
@@ -25,6 +28,10 @@
     <!-- Color Picker Css -->
     {{-- <link rel="stylesheet" href="../../assets/libs/@simonwep/pickr/themes/nano.min.css"> --}}
     <link rel="stylesheet" href="{{ asset(env('APP_ASSETS_BASE_URL').'libs/@simonwep/pickr/themes/nano.min.css') }}">
+
+    <link rel="stylesheet" href="{{ asset(env('APP_ASSETS_BASE_URL').'libs/sweetalert2/sweetalert2.min.css') }}">
+
+
 
 </head>
 
@@ -610,6 +617,215 @@
 
     </div>
 
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+
+    {{-- <script src="{{asset(env('APP_ASSETS_BASE_URL').'js/swetalert.js') }}"></script> --}}
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        function getProductPlans(network_id='', plan_category_id=''){
+                if(network_id != '' && plan_category_id == ''){
+                  data = {
+                    network_id : network_id
+                  };
+                  // alert('hhhhh')
+                }
+
+                if(network_id != '' && plan_category_id != ''){
+                  data = {
+                    network_id : network_id,
+                    plan_category_id : plan_category_id
+                  };
+                }
+
+                $.ajax({
+                          type: 'GET',
+                          url: "{{ route('user.fetch_product_plans') }}",
+                          data: data,
+                          dataType: 'json',
+                          success: function(response) {
+                              // console.log(response)
+                              // console.log(response.data)
+                              var result = JSON.stringify(response.data);
+                              var dataList = JSON.parse(result);
+                          
+                               $('#product_plan_id').html("");
+                               $('#product_plan_id').append('<option value="">Select Product Plan</option>');
+       
+                                // let jj = jsonn;
+                                for (const child in dataList) {
+                                 
+                                    const idd = dataList[child].product_plan_id;
+                                    const product_plan_name = dataList[child].product_plan_name;
+                                    const selling_price = dataList[child].selling_price;
+                                    option = "<option value="+idd+">"+product_plan_name+'- &#8358;'+selling_price+"</option>";
+                                    $('#product_plan_id').append(option);
+                                  
+                                }
+                              
+                            
+                          },
+                          error: function(xhr, status, error) {
+                              // Handle errors if needed
+                              console.error(xhr.responseText);
+                          }
+                  });
+        }
+
+        function reload(timeout = '3000'){
+          setTimeout(() => {
+            window.location.reload();
+          }, timeout);
+        }
+
+        function sweetAlertDisplay(message,title,status){
+          Swal.fire({
+                icon: status,
+                title: title,
+                text: message,
+                // footer: '<a href="">Why do I have this issue?</a>'
+                });
+        }
+
+
+        $(document).ready(function(){
+
+          $('.single_select').select2();
+          $('#product_plan_category_id').html('<option value="all">All categories selected</option>');
+
+          $('#product_plan_category_id').change(function(){
+            var network_id = $("#network_id").val();
+            var plan_category_id = $(this).val();
+
+            // alert(plan_category_id)
+
+            if(network_id == ''){
+              sweetAlertDisplay('Network is required','Network required','error');
+              return;
+            }
+
+            if(plan_category_id == '' || plan_category_id == 'all'){
+              sweetAlertDisplay('Product plan category is required','Plan category required','error');
+              return;
+            }
+            getProductPlans(network_id,plan_category_id);
+          })
+
+
+          $('#network_id').change(function(){
+            $('#product_plan_category_id').html('<option value="all">All categories selected</option>');
+            $("#product_plan_category_div").addClass('hidden');
+            $('#filter_by_plan_category').prop('checked',false)
+            var network_id = $(this).val();
+            // alert(network_id)
+            //here you have to display all plans that are tied to this network but only where tied to the automation tied to each product plan category
+            getProductPlans(network_id,'');
+          })
+
+          $('#filter_by_plan_category').change(function(e){
+            e.preventDefault();
+            if(this.checked){
+              $("#product_plan_category_div").removeClass('hidden');
+              //display product plans categories
+              const network_id = $('#network_id').val();
+
+              if(network_id == ''){
+                sweetAlertDisplay("Please select network",'Network required','error');
+                $(this).prop('checked', false); // Unchecks it
+                return;
+              }
+              const data = {
+                network_id : network_id
+              };
+
+                $.ajax({
+                    type: 'GET',
+                    url: "{{ route('user.fetch_product_plan_categories') }}",
+                    data: data,
+                    dataType: 'json',
+                    success: function(response) {
+                        // showDisplayButton(id);
+                        if(response.status == '1'){
+                          let dataResult = response?.data;
+                          $('#product_plan_category_id').html('<option value="all">Select category</option>');
+
+
+                          dataResult.forEach(element => {
+                              const idd = element.id;
+                              const category_name = element.product_plan_category_name;
+                              option = "<option value="+idd+">"+category_name+"</option>"
+                              $('#product_plan_category_id').append(option);
+                              // console.log(category_name);
+
+                          });
+                        }
+                        // console.log(response.data);
+                        //$('#notify_span'+id).text('successfully saved...');
+                        // showDisplayButton(id);
+                    },
+                    error: function(xhr, status, error) {
+                        // Handle errors if needed
+                        console.error(xhr.responseText);
+                    }
+                });
+            }else{
+              $('#product_plan_category_id').html('<option value="all">All categories selected</option>');
+              $("#product_plan_category_div").addClass('hidden');
+            }
+          })
+
+          $('#buy_data_btn').click(function(e){
+            e.preventDefault();
+           
+              //display product plans categories
+              const network_id = $('#network_id').val();
+              const product_plan_category_id = $('#product_plan_category_id').val();
+              const phone_number = $('#phone_number').val();
+              const wallet_category = $('#wallet_category').val();
+              const product_plan_id = $('#product_plan_id').val();
+              
+
+              const data = {
+                network_id : network_id,
+                product_plan_category_id : product_plan_category_id,
+                phone_number : phone_number,
+                wallet_category : wallet_category,
+                product_plan_id : product_plan_id
+              };
+
+              // console.log(data);
+              // return;
+
+                $.ajax({
+                    type: 'GET',
+                    url: "{{ route('user.data.buy_data_action') }}",
+                    data: data,
+                    dataType: 'json',
+                    success: function(response) {
+                        // console.log(response);
+                        // console.log(response.data);
+                        var result = JSON.stringify(response);
+                        var dataList = JSON.parse(result);
+                        if(dataList.status == 1){
+                           sweetAlertDisplay(dataList.message,'Success','success');
+                           reload(3000);
+                        }else{
+                          sweetAlertDisplay(dataList.message,'Error','error');
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        // Handle errors if needed
+                        console.error(xhr.responseText);
+                    }
+                });
+            
+          })
+
+        })
+
+    </script>
+
     <!-- Apex Charts JS -->
     {{-- <script src="../../assets/libs/apexcharts/apexcharts.min.js"></script> --}}
     <script src=" {{asset(env('APP_ASSETS_BASE_URL').'libs/apexcharts/apexcharts.min.js') }}"></script>
@@ -671,7 +887,19 @@
     
     <!-- Custom-Switcher JS -->
     {{-- <script src="../../assets/js/custom-switcher.js"></script> --}}
-    <script src=" {{ asset(env('APP_ASSETS_BASE_URL').'js/custom-switcher.js') }}"></script>
+    <script src="{{ asset(env('APP_ASSETS_BASE_URL').'js/custom-switcher.js') }}"></script>
+
+      <!-- Choices JS -->
+    <script src="../assets/libs/choices.js/public/assets/scripts/choices.min.js"></script>
+    <script src="../assets/js/choices.js"></script>
+
+  <!-- Tom Select JS -->
+    <script src="{{ asset(env('APP_ASSETS_BASE_URL').'libs/tom-select/js/tom-select.complete.min.js') }}"></script>
+    <script src="{{ asset(env('APP_ASSETS_BASE_URL').'js/tom-select.js') }}"></script>
+    {{-- <script src="../assets/libs/tom-select/js/tom-select.complete.min.js"></script> --}}
+    {{-- <script src="../assets/js/tom-select.js"></script> --}}
+
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
 
 </body>

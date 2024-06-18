@@ -92,7 +92,7 @@ class AutomationController extends Controller
         $product_plan_ids = ProductPlan::where('automation_id',$automation->id)->pluck('automation_product_plan_id')->toArray();
         
 
-        $products = Product::select('id','product_name','slug')->get();
+        // $products = Product::select('id','product_name','slug')->get();
         $product_plan_categories = ProductPlanCategory::select('id','product_plan_category_name')->get();
     
         $data['product_plan_ids'] = $product_plan_ids ;
@@ -100,7 +100,7 @@ class AutomationController extends Controller
         $data['ogdams_airtel_products'] = $ogdams_airtel_products ;
         $data['ogdams_glo_products'] = $ogdams_glo_products ;
         $data['ogdams__9mobile_products'] = $ogdams__9mobile_products ;
-        $data['products'] = $products;
+        // $data['products'] = $products;
         $data['product_plan_categories'] = $product_plan_categories ;
 
         $data['slug'] = $slug;

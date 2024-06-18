@@ -650,6 +650,9 @@
   {{-- //TEMPORAL...MOVE TO A SEPARATE JS FILE --}}
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
   <script>
+
+
+
     $(document).ready(function(){
         $('.display_span').show();
         $('.loading_span').hide();
@@ -658,14 +661,80 @@
       function showDisplayButton(id){
           $('#display_span'+id).show();
           $('#loading_span'+id).hide();
-          $('#ti-spinner'+id).hide();
+          $('#ti-spinner_'+id).hide();
       }
 
       function showLoadingButton(id=''){
           $('#display_span'+id).hide();
           $('#loading_span'+id).show();
-          $('#ti-spinner'+id).show();
+          $('#ti-spinner_'+id).show();
       }
+
+      function update_user_plan(){
+            alert('id')
+      }
+
+      //edit user plan
+      save_quick_edit('edit_class','prefix_id');
+      $('.reseller_inputs').css('background-color', 'lightGray');
+
+      function save_quick_edit(className,prefix_id = ''){
+         
+          $('.'+className).click(function(e){
+          e.preventDefault();
+        
+
+          if(! $(this).hasClass('updater')  ){
+                //means its currently editing....
+                let id = $(this).attr('id');
+                let newValue = $('#'+prefix_id+id).val();
+                showLoadingButton(id);
+                $('#'+prefix_id+id).removeAttr("disabled");
+                $('#'+prefix_id+id).css('background-color', 'white');
+                $('#'+prefix_id+id).focus();
+                $(this).addClass('updater');
+                return;
+          }else{
+                let id = $(this).attr('id');
+                
+                showDisplayButton(id);
+                let name = $('#'+prefix_id+id).val();
+                let _token = $('#_token').val();
+
+                const data = {
+                  id:id,
+                  name:name,
+                  _token:_token,
+                };
+
+                $.ajax({
+                    type: 'POST',
+                    url: "{{ route('admin.reseller_plans.update_name') }}",
+                    data: data,
+                    dataType: 'json',
+                    success: function(response) {
+                        // showDisplayButton(id);
+                        console.log(response);
+                        $('#notify_span'+id).text('successfully saved...');
+                        // showDisplayButton(id);
+                    },
+                    error: function(xhr, status, error) {
+                        // Handle errors if needed
+                        console.error(xhr.responseText);
+                    }
+                });
+
+                $('#'+prefix_id+id).attr('disabled','');
+                $('#'+prefix_id+id).css('background-color', 'lightGray');
+                $(this).removeClass('updater');
+          }          
+        });
+      }
+
+      
+
+
+      
 
       // alert('sss')
        $('.save_product_plan').click(function(e){
@@ -679,8 +748,8 @@
             let cost_price = $(`#cost_price_${id}`).val();
             let selling_price = $(`#selling_price_${id}`).val();
             let product_plan_name = $(`#product_plan_name_${id}`).val();
-            let product_id = $(`#product_id_${id}`).val();
-            let network_id = $(`#network_id_${id}`).val();
+            //let product_id = $(`#product_id_${id}`).val();
+            //let network_id = $(`#network_id_${id}`).val();
             let product_plan_category_id = $(`#product_plan_category_id_${id}`).val();
             let user_plan_1 = $('#user_plan_1').val();
             let user_plan_2 = $('#user_plan_2').val();
@@ -699,13 +768,13 @@
               cost_price:cost_price,
               selling_price:selling_price,
               product_plan_name:product_plan_name,
-              product_id:product_id,
+              // product_id:product_id,
               product_plan_category_id:product_plan_category_id,
               user_plan_1:user_plan_1,
               user_plan_2:user_plan_2,
               user_plan_3:user_plan_3,
               user_plan_4:user_plan_4,
-              network_id:network_id,
+              // network_id:network_id,
               _token: _token
             };
 

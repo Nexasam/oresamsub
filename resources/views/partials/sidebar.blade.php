@@ -31,7 +31,7 @@
 
                 <!-- Start::slide -->
                 <li class="slide  has-sub ">
-                    <a href="javascript:void(0);" class="side-menu__item">
+                    <a href="{{ route('user.dashboard') }}" class="side-menu__item">
                         <i class="ri-home-8-line side-menu__icon"></i>
                         <span class="side-menu__label">Dashboard</span>
                         {{-- <i class="ri ri-arrow-right-s-line side-menu__angle"></i> --}}
@@ -66,29 +66,18 @@
 
                   <!-- Start::slide: for users -->
                   <li class="slide  has-sub">
-                    <a href="#" class="side-menu__item">
+                    <a href="{{ route('admin.reseller_plans.index') }}" class="side-menu__item">
                         <i class="ri-home-8-line side-menu__icon"></i>
-                        <span class="side-menu__label">Resellers</span>
+                        <span class="side-menu__label">Resellers Plans</span>
                         <i class="ri ri-arrow-right-s-line side-menu__angle"></i>
                     </a>
                     <ul class="slide-menu child1">
-                        {{-- <li class="slide"><a href="#" class="side-menu__item">View Networks</a></li> --}}
+                        {{-- <li class="slide"><a href="#" class="side-menu__item"></a></li> --}}
                     </ul>
                 </li>
                 <!-- End::slide -->
 
-                  <!-- Start::slide: for users -->
-                  <li class="slide  has-sub">
-                    <a href="#" class="side-menu__item">
-                        <i class="ri-home-8-line side-menu__icon"></i>
-                        <span class="side-menu__label">Reseller Plans</span>
-                        <i class="ri ri-arrow-right-s-line side-menu__angle"></i>
-                    </a>
-                    <ul class="slide-menu child1">
-                        {{-- <li class="slide"><a href="#" class="side-menu__item">View Networks</a></li> --}}
-                    </ul>
-                </li>
-                <!-- End::slide -->
+             
 
                  <!-- Start::slide -->
                  <li class="slide  has-sub mt-10">
@@ -203,20 +192,7 @@
                 </li>
                 <!-- End::slide -->
 
-                <!-- Start::slide -->
-                <li class="slide  has-sub">
-                    <a href="{{ route('admin.product_categories.index')}}" class="side-menu__item">
-                        <i class="ri-home-8-line side-menu__icon"></i>
-                        <span class="side-menu__label">Product Categories</span>
-                        <i class="ri ri-arrow-right-s-line side-menu__angle"></i>
-                    </a>
-                    <ul class="slide-menu child1">
-                        {{-- <li class="slide"><a href="#" class="side-menu__item">View Networks</a></li> --}}
-                    </ul>
-                </li>
-                <!-- End::slide -->
-
-
+            
                 <!-- Start::slide -->
                 <li class="slide  has-sub">
                     <a href="{{ route('admin.product_plans.index')}}" class="side-menu__item">

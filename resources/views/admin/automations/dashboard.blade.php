@@ -79,7 +79,7 @@
                                             $count = 1;
                                         @endphp
                                         {{-- //TODO: move to enums --}}
-                                        @if ($slug == 'ogdams' || $slug == 'ogdams_v2' ))
+                                        @if ($slug == 'ogdams' || $slug == 'ogdams_v2' )
                                             @foreach ($ogdams_mtn_products as $key=>$mtn_products)
                                                 
                                                 <tr>
@@ -128,7 +128,7 @@
                                                         <label class="ti-form-label mb-0">Preferred Plan Name</label>
                                                         <input type="text" id="product_plan_name_{{  $mtn_products['planId'] }}"  name="product_plan_name_{{  $mtn_products['planId'] }}" value="{{ $mtn_products['name'] .' 30 days'. ''}}" class="my-auto ti-form-input">
                                                       </div>
-                                                      <div class="mb-2">
+                                                      {{-- <div class="mb-2">
                                                           <label class="ti-form-label mb-0">Product</label>
                                                           <select id="product_id_{{  $mtn_products['planId'] }}" name="product_id_{{  $mtn_products['planId'] }}"   class="my-auto ti-form-select">
                                                             <option value="">Select</option>
@@ -138,20 +138,22 @@
                                                                 @endif value="{{ $product->id }}">{{ $product->product_name }}</option>
                                                             @endforeach
                                                           </select>
-                                                      </div>
+                                                      </div> --}}
                                                       <div class="mb-2">
                                                         <label class="ti-form-label mb-0">Product Plan Category</label>
                                                         <select id="product_plan_category_id_{{  $mtn_products['planId'] }}" name="product_plan_category_id_{{  $mtn_products['planId'] }}"  class="my-auto ti-form-select">
                                                           <option value="">Select</option>
                                                           @foreach ($product_plan_categories as $product_plan_category)
                                                               <option
-                                                              @if (strpos($mtn_products['name'],"SME") && $product_plan_category->product_plan_category_name == 'SME')
+                                                              @if (strpos($mtn_products['name'],"SME") && $product_plan_category->id == '9c39f216-00a0-42ab-b195-558133f67a15')
                                                                   selected
-                                                              @elseif(strpos($mtn_products['name'],"CG") && $product_plan_category->product_plan_category_name == 'CORPORATE GIFTING')
+                                                              @elseif(strpos($mtn_products['name'],"CG") && $product_plan_category->id == '9c39f216-06d6-48fc-971e-d5778723497e')
                                                                   selected
-                                                              @elseif(strpos($mtn_products['name'],"GIFTING") && $product_plan_category->product_plan_category_name == 'GIFTING')
+                                                              @elseif(strpos($mtn_products['name'],"AWOOF") && $product_plan_category->id == '9c39f216-0df6-48d9-8530-3e320243058f')
+                                                                  selected
+                                                              @elseif(strpos($mtn_products['name'],"GIFTING") &&  $product_plan_category->id == '9c39f216-095b-46de-8466-88158a31e3e2')
                                                                   selected         
-                                                              @elseif(strpos($mtn_products['name'],"DATA_SHARE") && $product_plan_category->product_plan_category_name == 'DATA SHARE')
+                                                              @elseif(strpos($mtn_products['name'],"DATA_SHARE") && $product_plan_category->id == '9c39f216-0bb9-472d-8775-6bc4379fec91')
                                                                   selected        
                                                               @endif
                                                               value="{{ $product_plan_category->id }}">{{ $product_plan_category->product_plan_category_name }}</option>
@@ -250,7 +252,7 @@
                                             $count = 1;
                                         @endphp
                                         {{-- //TODO: move to enums --}}
-                                        @if ($slug == 'ogdams' || $slug == 'ogdams_v2' ))
+                                        @if ($slug == 'ogdams' || $slug == 'ogdams_v2' )
                                             @foreach ($ogdams_glo_products as $key=>$glo_products)
                                                 
                                                 <tr>
@@ -299,7 +301,7 @@
                                                         <label class="ti-form-label mb-0">Preferred Plan Name</label>
                                                         <input type="text" id="product_plan_name_{{  $glo_products['planId'] }}"  name="product_plan_name_{{  $glo_products['planId'] }}" value="{{ $glo_products['name'] .' 30 days'. ''}}" class="my-auto ti-form-input">
                                                       </div>
-                                                      <div class="mb-2">
+                                                      {{-- <div class="mb-2">
                                                           <label class="ti-form-label mb-0">Product</label>
                                                           <select id="product_id_{{  $glo_products['planId'] }}" name="product_id_{{  $glo_products['planId'] }}"   class="my-auto ti-form-select">
                                                             <option value="">Select</option>
@@ -309,23 +311,25 @@
                                                                 @endif value="{{ $product->id }}">{{ $product->product_name }}</option>
                                                             @endforeach
                                                           </select>
-                                                      </div>
+                                                      </div> --}}
                                                       <div class="mb-2">
                                                         <label class="ti-form-label mb-0">Product Plan Category</label>
                                                         <select id="product_plan_category_id_{{  $glo_products['planId'] }}" name="product_plan_category_id_{{  $glo_products['planId'] }}"  class="my-auto ti-form-select">
                                                           <option value="">Select</option>
                                                           @foreach ($product_plan_categories as $product_plan_category)
-                                                              <option
-                                                              @if (strpos($glo_products['name'],"SME") && $product_plan_category->product_plan_category_name == 'SME')
-                                                                  selected
-                                                              @elseif(strpos($glo_products['name'],"CG") && $product_plan_category->product_plan_category_name == 'CORPORATE GIFTING')
-                                                                  selected
-                                                              @elseif(strpos($glo_products['name'],"GIFTING") && $product_plan_category->product_plan_category_name == 'GIFTING')
-                                                                  selected         
-                                                              @elseif(strpos($glo_products['name'],"DATA_SHARE") && $product_plan_category->product_plan_category_name == 'DATA SHARE')
-                                                                  selected        
-                                                              @endif
-                                                              value="{{ $product_plan_category->id }}">{{ $product_plan_category->product_plan_category_name }}</option>
+                                                          <option
+                                                          @if (strpos($glo_products['name'],"SME") && $product_plan_category->id == '9c39f216-020d-4d37-842b-840a7ff82d54')
+                                                              selected
+                                                          @elseif(strpos($glo_products['name'],"AWOOF") && $product_plan_category->id == '9c39f216-0e89-4455-8f37-c764c5f26ead')
+                                                              selected
+                                                          @elseif(strpos($glo_products['name'],"CG") && $product_plan_category->id == '9c39f216-076e-4697-b93e-785e05643fa5')
+                                                              selected
+                                                          @elseif(strpos($glo_products['name'],"GIFTING") &&  $product_plan_category->id == '9c39f216-09f1-433d-ab74-f86737ea7f1e')
+                                                              selected         
+                                                          @elseif(strpos($glo_products['name'],"DATA_SHARE") && $product_plan_category->id == '9c39f216-0c42-48fc-af5a-528e86d1de12')
+                                                              selected        
+                                                          @endif
+                                                          value="{{ $product_plan_category->id }}">{{ $product_plan_category->product_plan_category_name }}</option>
                                                           @endforeach
                                                         </select>
                                                       </div>
@@ -401,7 +405,7 @@
                                             $count = 1;
                                         @endphp
                                         {{-- //TODO: move to enums --}}
-                                        @if ($slug == 'ogdams' || $slug == 'ogdams_v2' ))
+                                        @if ($slug == 'ogdams' || $slug == 'ogdams_v2' )
                                             @foreach ($ogdams_airtel_products as $key=>$airtel_products)
                                                 
                                                 <tr>
@@ -450,7 +454,7 @@
                                                         <label class="ti-form-label mb-0">Preferred Plan Name</label>
                                                         <input type="text" id="product_plan_name_{{  $airtel_products['planId'] }}"  name="product_plan_name_{{  $airtel_products['planId'] }}" value="{{ $airtel_products['name'] .' 30 days'. ''}}" class="my-auto ti-form-input">
                                                       </div>
-                                                      <div class="mb-2">
+                                                      {{-- <div class="mb-2">
                                                           <label class="ti-form-label mb-0">Product</label>
                                                           <select id="product_id_{{  $airtel_products['planId'] }}" name="product_id_{{  $airtel_products['planId'] }}"   class="my-auto ti-form-select">
                                                             <option value="">Select</option>
@@ -460,23 +464,25 @@
                                                                 @endif value="{{ $product->id }}">{{ $product->product_name }}</option>
                                                             @endforeach
                                                           </select>
-                                                      </div>
+                                                      </div> --}}
                                                       <div class="mb-2">
                                                         <label class="ti-form-label mb-0">Product Plan Category</label>
                                                         <select id="product_plan_category_id_{{  $airtel_products['planId'] }}" name="product_plan_category_id_{{  $airtel_products['planId'] }}"  class="my-auto ti-form-select">
                                                           <option value="">Select</option>
                                                           @foreach ($product_plan_categories as $product_plan_category)
-                                                              <option
-                                                              @if (strpos($airtel_products['name'],"SME") && $product_plan_category->product_plan_category_name == 'SME')
-                                                                  selected
-                                                              @elseif(strpos($airtel_products['name'],"CG") && $product_plan_category->product_plan_category_name == 'CORPORATE GIFTING')
-                                                                  selected
-                                                              @elseif(strpos($airtel_products['name'],"GIFTING") && $product_plan_category->product_plan_category_name == 'GIFTING')
-                                                                  selected         
-                                                              @elseif(strpos($airtel_products['name'],"DATA_SHARE") && $product_plan_category->product_plan_category_name == 'DATA SHARE')
-                                                                  selected        
-                                                              @endif
-                                                              value="{{ $product_plan_category->id }}">{{ $product_plan_category->product_plan_category_name }}</option>
+                                                          <option
+                                                          @if (strpos($airtel_products['name'],"SME") && $product_plan_category->id == '9c39f216-02d9-4a46-b8de-eb48f668da88')
+                                                              selected
+                                                          @elseif(strpos($airtel_products['name'],"AWOOF") && $product_plan_category->id == '9c39f216-0f19-4ba0-96ee-decb9ed99a82')
+                                                              selected
+                                                          @elseif(strpos($airtel_products['name'],"CG") && $product_plan_category->id == '9c39f216-0805-4e5c-89b6-2c251f5821ab')
+                                                              selected
+                                                          @elseif(strpos($airtel_products['name'],"GIFTING") &&  $product_plan_category->id == '9c39f216-0a81-4113-abf1-65e18c728ddc')
+                                                              selected         
+                                                          @elseif(strpos($airtel_products['name'],"DATA_SHARE") && $product_plan_category->id == '9c39f216-0ccf-4860-aab5-60b25eab9e3a')
+                                                              selected        
+                                                          @endif
+                                                          value="{{ $product_plan_category->id }}">{{ $product_plan_category->product_plan_category_name }}</option>
                                                           @endforeach
                                                         </select>
                                                       </div>
@@ -567,7 +573,7 @@
                                             $count = 1;
                                         @endphp
                                         {{-- //TODO: move to enums --}}
-                                        @if ($slug == 'ogdams' || $slug == 'ogdams_v2' ))
+                                        @if ($slug == 'ogdams' || $slug == 'ogdams_v2' )
                                             @foreach ($ogdams__9mobile_products as $key=>$_9mobile_products)
                                                 
                                                 <tr>
@@ -616,7 +622,7 @@
                                                         <label class="ti-form-label mb-0">Preferred Plan Name</label>
                                                         <input type="text" id="product_plan_name_{{  $_9mobile_products['planId'] }}"  name="product_plan_name_{{  $_9mobile_products['planId'] }}" value="{{ $_9mobile_products['name'] .' 30 days'. ''}}" class="my-auto ti-form-input">
                                                       </div>
-                                                      <div class="mb-2">
+                                                      {{-- <div class="mb-2">
                                                           <label class="ti-form-label mb-0">Product</label>
                                                           <select id="product_id_{{  $_9mobile_products['planId'] }}" name="product_id_{{  $_9mobile_products['planId'] }}"   class="my-auto ti-form-select">
                                                             <option value="">Select</option>
@@ -626,20 +632,22 @@
                                                                 @endif value="{{ $product->id }}">{{ $product->product_name }}</option>
                                                             @endforeach
                                                           </select>
-                                                      </div>
+                                                      </div> --}}
                                                       <div class="mb-2">
                                                         <label class="ti-form-label mb-0">Product Plan Category</label>
                                                         <select id="product_plan_category_id_{{  $_9mobile_products['planId'] }}" name="product_plan_category_id_{{  $_9mobile_products['planId'] }}"  class="my-auto ti-form-select">
                                                           <option value="">Select</option>
                                                           @foreach ($product_plan_categories as $product_plan_category)
                                                               <option
-                                                              @if (strpos($_9mobile_products['name'],"SME") && $product_plan_category->product_plan_category_name == 'SME')
+                                                              @if (strpos($_9mobile_products['name'],"SME") && $product_plan_category->id == '9c39f216-03e8-4417-bcc9-c098e77f2c51')
                                                                   selected
-                                                              @elseif(strpos($_9mobile_products['name'],"CG") && $product_plan_category->product_plan_category_name == 'CORPORATE GIFTING')
+                                                              @elseif(strpos($_9mobile_products['name'],"AWOOF") && $product_plan_category->id == '9c39f216-0faf-4924-bee6-52a1149341ef')
                                                                   selected
-                                                              @elseif(strpos($_9mobile_products['name'],"GIFTING") && $product_plan_category->product_plan_category_name == 'GIFTING')
+                                                              @elseif(strpos($_9mobile_products['name'],"CG") && $product_plan_category->id == '9c39f216-089c-44fc-a535-cc6f6a56bf68')
+                                                                  selected
+                                                              @elseif(strpos($_9mobile_products['name'],"GIFTING") &&  $product_plan_category->id == '9c39f216-0b12-4c61-b72a-f5ff38b0a689')
                                                                   selected         
-                                                              @elseif(strpos($_9mobile_products['name'],"DATA_SHARE") && $product_plan_category->product_plan_category_name == 'DATA SHARE')
+                                                              @elseif(strpos($_9mobile_products['name'],"DATA_SHARE") && $product_plan_category->id == '9c39f216-0d65-4f57-a15f-db1b07c58c95')
                                                                   selected        
                                                               @endif
                                                               value="{{ $product_plan_category->id }}">{{ $product_plan_category->product_plan_category_name }}</option>

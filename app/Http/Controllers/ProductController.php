@@ -12,11 +12,9 @@ use Illuminate\Support\Facades\Validator;
 class ProductController extends Controller
 {
     public function index(){
-        $product_categories = ProductCategory::where('active_status',1)->get();
-        $networks = Network::get();
-        $products = Product::with('product_category')->get();
-        $data['product_categories'] = $product_categories;
-        $data['networks'] = $networks;
+        $products = Product::where('active_status',1)->get();
+      
+        // $data['networks'] = $networks;
         $data['products'] = $products;
         // dd($data);
         return view('admin.products.index')->with($data);
