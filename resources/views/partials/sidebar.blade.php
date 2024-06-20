@@ -31,7 +31,7 @@
 
                 <!-- Start::slide -->
                 <li class="slide  has-sub ">
-                    <a href="{{ route('user.dashboard') }}" class="side-menu__item">
+                    <a href="{{ route('dashboard') }}" class="side-menu__item">
                         <i class="ri-home-8-line side-menu__icon"></i>
                         <span class="side-menu__label">Dashboard</span>
                         {{-- <i class="ri ri-arrow-right-s-line side-menu__angle"></i> --}}

@@ -18,10 +18,11 @@ use App\Http\Controllers\UserProductPlanController;
 use App\Http\Controllers\ProductPlanCategoryController;
 
 Route::get('/', function () {
-    return view('welcome');
+    // dd('e dey');
+    return view('landing.index');
 });
 
-// Route::get('/dashboard', function () {
+// Route::get('/', function () {
 //     return view('dashboard');
 // })->middleware(['auth', 'verified'])->name('dashboard');
 
@@ -47,7 +48,7 @@ Route::get('/', function () {
 
 
 //this will be adjusted later
-Route::get('dashboard', [UserDashboardController::class, 'index'])->name('user.dashboard');
+Route::get('/dashboard', [UserDashboardController::class, 'index'])->name('dashboard');
 
 Route::get('admin/wallets/webhook', [WalletsController::class, 'webhook'])->name('admin.wallet.crystalpay.webhook');
 
