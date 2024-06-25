@@ -670,7 +670,7 @@
                               // Handle errors if needed
                               console.error(xhr.responseText);
                           }
-                  });
+                 });
         }
 
         function reload(timeout = '3000'){
@@ -688,11 +688,53 @@
                 });
         }
 
+        function generateCrystalPayDynamicAcct(amount){
+          if(amount == ''){
+            sweetAlertDisplay('Please enter amount','Amount required','error')
+            return;
+          }
+          $.ajax({
+                          type: 'GET',
+                          url: "{{ route('user.crystalpay.generate_dynamic_account') }}",
+                          data: { amount: amount},
+                          dataType: 'json',
+                          success: function(response) {
+                              var result = JSON.stringify(response.data);
+                              var dataList = JSON.parse(result);
+                              console.log(dataList);
+                              const bank_name = dataList.bank_name;
+                              const account_number = dataList.account_number;
+                            
+                              // $('.crystal_pay_dynamic_account_details').html('');
+                              // $('.crystal_pay_dynamic_account_details').removeClass('hidden');
+                              $('.crystal_pay_dynamic_account_details').append(`<p>Bank Name:  ${bank_name} </p>`);
+                              $('.crystal_pay_dynamic_account_details').append(`<p>Account No:  ${account_number}</p>`);
+                              // $('.crystal_pay_dynamic_account_details').append(`<p>Expiration time:  120 seconds</p>`);
+
+                              // console.log(bank_name);
+                              // console.log(account_number);
+                              // console.log(response);
+                            
+                          },
+                          error: function(xhr, status, error) {
+                              // Handle errors if needed
+                              console.error(xhr.responseText);
+                          }
+                 });
+        }
+            
+
 
         $(document).ready(function(){
 
           $('.single_select').select2();
           $('#product_plan_category_id').html('<option value="all">All categories selected</option>');
+
+          $('#generate_crystalpay_dynamic_account').click(function(e){
+              e.preventDefault();
+              const amount = $('#amount').val();
+              generateCrystalPayDynamicAcct(amount);
+          })
 
           $('#product_plan_category_id').change(function(){
             var network_id = $("#network_id").val();

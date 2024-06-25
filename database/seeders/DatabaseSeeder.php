@@ -9,6 +9,7 @@ use App\Models\Network;
 use App\Models\Product;
 use App\Models\UserPlan;
 use App\Models\Automation;
+use App\Models\Permission;
 use App\Models\ProductPlan;
 use App\Models\ProductCategory;
 use App\Models\UserProductPlan;
@@ -121,9 +122,50 @@ class DatabaseSeeder extends Seeder
         $admin_role = Role::create([
             'role_name' => 'Admin',
         ]);
+        //assign all permissions to Admin:
+        $file_permissions = config('permissions');
+        // logger($file_permissions);
+        foreach($file_permissions as $key=>$permission){
+            if($file_permissions[$key]['slug'] != 'data_purchase'){
+                Permission::updateOrCreate(
+                [
+                    'role_id' => $admin_role->id,
+                    'permission_slug' => $file_permissions[$key]['slug'],
+                ],
+                [
+                    'permission_name' => $file_permissions[$key]['name'],
+                    'permission_slug' => $file_permissions[$key]['slug'],
+                    'permission_create' => $file_permissions[$key]['create'],
+                    'permission_read' => $file_permissions[$key]['read'],
+                    'permission_update' => $file_permissions[$key]['update'],
+                    'permission_delete' => $file_permissions[$key]['delete'],
+                ]);
+            }
+        }
+
         $user_role = Role::create([
             'role_name' => 'User',
         ]);
+        $user_permissions = ['data_purchase'];
+        foreach($file_permissions as $key=>$permission){
+
+            if( in_array($file_permissions[$key]['slug'],$user_permissions) ){
+                Permission::updateOrCreate(
+                    [
+                        'role_id' => $user_role->id,
+                        'permission_slug' => $file_permissions[$key]['slug'],
+                    ],
+                    [
+                        'permission_name' => $file_permissions[$key]['name'],
+                        'permission_slug' => $file_permissions[$key]['slug'],
+                        'permission_create' => $file_permissions[$key]['create'],
+                        'permission_read' => $file_permissions[$key]['read'],
+                        'permission_update' => $file_permissions[$key]['update'],
+                        'permission_delete' => $file_permissions[$key]['delete'],
+                ]);
+            }
+           
+        }
 
 
         //PERMISSION LATER...
@@ -234,7 +276,8 @@ class DatabaseSeeder extends Seeder
             'product_plan_category_name' => 'MTN SME DATA',
             'product_id' => $product_data->id,
             'network_id' => $mtn_network->id,
-            'automation_id' => $ogdams->id
+            'automation_id' => $ogdams->id,
+            'bulk_data_wallet_in_mb' => 1048576
         ]);
 
         $pr_plan_glo_sme_data = ProductPlanCategory::create([
@@ -242,7 +285,8 @@ class DatabaseSeeder extends Seeder
             'product_plan_category_name' => 'GLO SME DATA',
             'product_id' => $product_data->id,
             'network_id' => $glo_network->id,
-            'automation_id' => $ogdams->id
+            'automation_id' => $ogdams->id,
+            'bulk_data_wallet_in_mb' => 1048576
         ]);
 
         $pr_plan_airtel_sme_data = ProductPlanCategory::create([
@@ -250,7 +294,8 @@ class DatabaseSeeder extends Seeder
             'product_plan_category_name' => 'AIRTEL SME DATA',
             'product_id' => $product_data->id,
             'network_id' => $airtel_network->id,
-            'automation_id' => $ogdams->id
+            'automation_id' => $ogdams->id,
+            'bulk_data_wallet_in_mb' => 1048576
         ]);
 
         $pr_plan_9mobile_sme_data = ProductPlanCategory::create([
@@ -258,7 +303,8 @@ class DatabaseSeeder extends Seeder
             'product_plan_category_name' => '9MOBILE SME DATA',
             'product_id' => $product_data->id,
             'network_id' => $_9mobile_network->id,
-            'automation_id' => $ogdams->id
+            'automation_id' => $ogdams->id,
+            'bulk_data_wallet_in_mb' => 1048576
         ]);
 
 
@@ -268,7 +314,8 @@ class DatabaseSeeder extends Seeder
             'product_plan_category_name' => 'MTN SME2 DATA',
             'product_id' => $product_data->id,
             'network_id' => $mtn_network->id,
-            'automation_id' => $ogdams->id
+            'automation_id' => $ogdams->id,
+            'bulk_data_wallet_in_mb' => 1048576
         ]);
 
         $pr_plan_glo_sme2_data = ProductPlanCategory::create([
@@ -276,7 +323,8 @@ class DatabaseSeeder extends Seeder
             'product_plan_category_name' => 'GLO SME2 DATA',
             'product_id' => $product_data->id,
             'network_id' => $glo_network->id,
-            'automation_id' => $ogdams->id
+            'automation_id' => $ogdams->id,
+            'bulk_data_wallet_in_mb' => 1048576
         ]);
 
         $pr_plan_airtel_sme2_data = ProductPlanCategory::create([
@@ -284,7 +332,8 @@ class DatabaseSeeder extends Seeder
             'product_plan_category_name' => 'AIRTEL SME2 DATA',
             'product_id' => $product_data->id,
             'network_id' => $airtel_network->id,
-            'automation_id' => $ogdams->id
+            'automation_id' => $ogdams->id,
+            'bulk_data_wallet_in_mb' => 1048576
         ]);
 
         $pr_plan_9mobile_sme2_data = ProductPlanCategory::create([
@@ -292,7 +341,8 @@ class DatabaseSeeder extends Seeder
             'product_plan_category_name' => '9MOBILE SME2 DATA',
             'product_id' => $product_data->id,
             'network_id' => $_9mobile_network->id,
-            'automation_id' => $ogdams->id
+            'automation_id' => $ogdams->id,
+            'bulk_data_wallet_in_mb' => 1048576 
         ]);
 
 
@@ -303,7 +353,8 @@ class DatabaseSeeder extends Seeder
             'product_plan_category_name' => 'MTN CG DATA',
             'product_id' => $product_data->id,
             'network_id' => $mtn_network->id,
-            'automation_id' => $ogdams->id
+            'automation_id' => $ogdams->id,
+            'bulk_data_wallet_in_mb' => 1048576 
         ]);
 
         $pr_plan_glo_cg_data = ProductPlanCategory::create([
@@ -311,7 +362,8 @@ class DatabaseSeeder extends Seeder
             'product_plan_category_name' => 'GLO CG DATA',
             'product_id' => $product_data->id,
             'network_id' => $glo_network->id,
-            'automation_id' => $ogdams->id
+            'automation_id' => $ogdams->id,
+            'bulk_data_wallet_in_mb' => 1048576 
         ]);
 
         $pr_plan_airtel_cg_data = ProductPlanCategory::create([
@@ -319,7 +371,8 @@ class DatabaseSeeder extends Seeder
             'product_plan_category_name' => 'AIRTEL CG DATA',
             'product_id' => $product_data->id,
             'network_id' => $airtel_network->id,
-            'automation_id' => $ogdams->id
+            'automation_id' => $ogdams->id,
+            'bulk_data_wallet_in_mb' => 1048576 
         ]);
 
         $pr_plan_9mobile_cg_data = ProductPlanCategory::create([
@@ -327,7 +380,8 @@ class DatabaseSeeder extends Seeder
             'product_plan_category_name' => '9MOBILE CG DATA',
             'product_id' => $product_data->id,
             'network_id' => $_9mobile_network->id,
-            'automation_id' => $ogdams->id
+            'automation_id' => $ogdams->id,
+            'bulk_data_wallet_in_mb' => 1048576 
         ]);
 
 
@@ -337,7 +391,8 @@ class DatabaseSeeder extends Seeder
             'product_plan_category_name' => 'MTN GIFTING DATA',
             'product_id' => $product_data->id,
             'network_id' => $mtn_network->id,
-            'automation_id' => $ogdams->id
+            'automation_id' => $ogdams->id,
+            'bulk_data_wallet_in_mb' => 1048576 
         ]);
 
         $pr_plan_glo_gifting_data = ProductPlanCategory::create([
@@ -345,7 +400,8 @@ class DatabaseSeeder extends Seeder
             'product_plan_category_name' => 'GLO GIFTING DATA',
             'product_id' => $product_data->id,
             'network_id' => $glo_network->id,
-            'automation_id' => $ogdams->id
+            'automation_id' => $ogdams->id,
+            'bulk_data_wallet_in_mb' => 1048576 
         ]);
 
         $pr_plan_airtel_gifting_data = ProductPlanCategory::create([
@@ -353,7 +409,8 @@ class DatabaseSeeder extends Seeder
             'product_plan_category_name' => 'AIRTEL GIFTING DATA',
             'product_id' => $product_data->id,
             'network_id' => $airtel_network->id,
-            'automation_id' => $ogdams->id
+            'automation_id' => $ogdams->id,
+            'bulk_data_wallet_in_mb' => 1048576 
         ]);
 
         $pr_plan_9mobile_gifting_data = ProductPlanCategory::create([
@@ -361,7 +418,8 @@ class DatabaseSeeder extends Seeder
             'product_plan_category_name' => '9MOBILE GIFTING DATA',
             'product_id' => $product_data->id,
             'network_id' => $_9mobile_network->id,
-            'automation_id' => $ogdams->id
+            'automation_id' => $ogdams->id,
+            'bulk_data_wallet_in_mb' => 1048576 
         ]);
 
 
@@ -371,7 +429,8 @@ class DatabaseSeeder extends Seeder
             'product_plan_category_name' => 'MTN SHARE DATA',
             'product_id' => $product_data->id,
             'network_id' => $mtn_network->id,
-            'automation_id' => $ogdams->id
+            'automation_id' => $ogdams->id,
+            'bulk_data_wallet_in_mb' => 1048576 
         ]);
 
         $pr_plan_glo_share_data = ProductPlanCategory::create([
@@ -379,7 +438,8 @@ class DatabaseSeeder extends Seeder
             'product_plan_category_name' => 'GLO SHARE DATA',
             'product_id' => $product_data->id,
             'network_id' => $glo_network->id,
-            'automation_id' => $ogdams->id
+            'automation_id' => $ogdams->id,
+            'bulk_data_wallet_in_mb' => 1048576 
         ]);
 
         $pr_plan_airtel_share_data = ProductPlanCategory::create([
@@ -387,7 +447,8 @@ class DatabaseSeeder extends Seeder
             'product_plan_category_name' => 'AIRTEL SHARE DATA',
             'product_id' => $product_data->id,
             'network_id' => $airtel_network->id,
-            'automation_id' => $ogdams->id
+            'automation_id' => $ogdams->id,
+            'bulk_data_wallet_in_mb' => 1048576
         ]);
 
         $pr_plan_9mobile_share_data = ProductPlanCategory::create([
@@ -395,7 +456,8 @@ class DatabaseSeeder extends Seeder
             'product_plan_category_name' => '9MOBILE SHARE DATA',
             'product_id' => $product_data->id,
             'network_id' => $_9mobile_network->id,
-            'automation_id' => $ogdams->id
+            'automation_id' => $ogdams->id,
+            'bulk_data_wallet_in_mb' => 1048576
         ]);
 
 
@@ -405,7 +467,8 @@ class DatabaseSeeder extends Seeder
             'product_plan_category_name' => 'MTN AWOOF DATA',
             'product_id' => $product_data->id,
             'network_id' => $mtn_network->id,
-            'automation_id' => $ogdams->id
+            'automation_id' => $ogdams->id,
+            'bulk_data_wallet_in_mb' => 1048576
         ]);
 
         $pr_plan_glo_awoof_data = ProductPlanCategory::create([
@@ -413,7 +476,8 @@ class DatabaseSeeder extends Seeder
             'product_plan_category_name' => 'GLO AWOOF DATA',
             'product_id' => $product_data->id,
             'network_id' => $glo_network->id,
-            'automation_id' => $ogdams->id
+            'automation_id' => $ogdams->id,
+            'bulk_data_wallet_in_mb' => 1048576
         ]);
 
         $pr_plan_airtel_awoof_data = ProductPlanCategory::create([
@@ -421,7 +485,8 @@ class DatabaseSeeder extends Seeder
             'product_plan_category_name' => 'AIRTEL AWOOF DATA',
             'product_id' => $product_data->id,
             'network_id' => $airtel_network->id,
-            'automation_id' => $ogdams->id
+            'automation_id' => $ogdams->id,
+            'bulk_data_wallet_in_mb' => 1048576
         ]);
 
         $pr_plan_9mobile_awoof_data = ProductPlanCategory::create([
@@ -429,7 +494,8 @@ class DatabaseSeeder extends Seeder
             'product_plan_category_name' => '9MOBILE AWOOF DATA',
             'product_id' => $product_data->id,
             'network_id' => $_9mobile_network->id,
-            'automation_id' => $ogdams->id
+            'automation_id' => $ogdams->id,
+            'bulk_data_wallet_in_mb' => 1048576
         ]);
 
 

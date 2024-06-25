@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.app_two')
 @section('content')
 
       <!-- Start::main-content -->
@@ -7,14 +7,19 @@
         <!-- Page Header -->
         <div class="block justify-between page-header md:flex">
             <div>
-                <h3 class="text-gray-700 hover:text-gray-900 dark:text-white dark:hover:text-white text-2xl font-medium"> Products</h3>
+                <h3 class="text-gray-700 hover:text-gray-900 dark:text-white dark:hover:text-white text-2xl font-medium"> Roles and Permissions</h3>
             </div>
             <ol class="flex items-center whitespace-nowrap min-w-0">
-              
-                {{-- <li class="text-sm text-gray-500 hover:text-primary dark:text-white/70 " aria-current="page">
-                    Products
-                </li> --}}
-            </ol>
+                <li class="text-sm">
+                    <a class="flex items-center font-semibold text-primary hover:text-primary dark:text-primary truncate" href="javascript:void(0);">
+                    Roles
+                    <i class="ti ti-chevrons-right flex-shrink-0 mx-3 overflow-visible text-gray-300 dark:text-gray-300 rtl:rotate-180"></i>
+                    </a>
+                </li>
+                <li class="text-sm text-gray-500 hover:text-primary dark:text-white/70 " aria-current="page">
+                    Create role
+                </li>
+            </ol>   
         </div>
         <!-- Page Header Close -->
 
@@ -27,49 +32,48 @@
           
               <div class="box">
                 <div class="box-header">
-                  <h5 class="box-title">Products list</h5>
+                  <h5 class="box-title">Roles and Permissions</h5>
                 </div>
 
                 <div class="box-body">
-                  <nav class="flex space-x-2" aria-label="Tabs" role="tablist">
-                    {{-- <button type="button" class="hs-tab-active:bg-primary hs-tab-active:text-white py-3 px-4 inline-flex items-center gap-2 bg-transparent text-sm font-medium text-center text-gray-500 rounded-sm hover:text-primary  dark:text-white/70 dark:hover:text-white active" id="pills-with-brand-color-item-2" data-hs-tab="#pills-with-brand-color-2" aria-controls="pills-with-brand-color-2">
-                      Create Product
-                    </button> --}}
-                    {{-- <button type="button" class="hs-tab-active:bg-primary hs-tab-active:text-white py-3 px-4 inline-flex items-center gap-2 bg-transparent text-sm font-medium text-center text-gray-500 rounded-sm hover:text-primary  dark:text-white/70 dark:hover:text-white " id="pills-with-brand-color-item-1" data-hs-tab="#pills-with-brand-color-1" aria-controls="pills-with-brand-color-1">
-                      Products
-                    </button> --}}
+                  {{-- <nav class="flex space-x-2" aria-label="Tabs" role="tablist">
+                    <button type="button" class="hs-tab-active:bg-primary hs-tab-active:text-white py-3 px-4 inline-flex items-center gap-2 bg-transparent text-sm font-medium text-center text-gray-500 rounded-sm hover:text-primary  dark:text-white/70 dark:hover:text-white active" id="pills-with-brand-color-item-2" data-hs-tab="#pills-with-brand-color-2" aria-controls="pills-with-brand-color-2">
+                      Roles
+                    </button>
+                    <button type="button" class="hs-tab-active:bg-primary hs-tab-active:text-white py-3 px-4 inline-flex items-center gap-2 bg-transparent text-sm font-medium text-center text-gray-500 rounded-sm hover:text-primary  dark:text-white/70 dark:hover:text-white " id="pills-with-brand-color-item-1" data-hs-tab="#pills-with-brand-color-1" aria-controls="pills-with-brand-color-1">
+                      Create role
+                    </button>
                   
-                  </nav>
+                  </nav> --}}
 
                   <div class="mt-3">
-                    <div id="pills-with-brand-color-2"  role="tabpanel" aria-labelledby="pills-with-brand-color-item-1">
-                      <div class="overflow-auto">
+                    <div id="pills-with-brand-color-1"  role="tabpanel" aria-labelledby="pills-with-brand-color-item-1">
+                      <div class="overflow-auto" style="font-size: 10px;">
+                       
                         <table  class="ti-custom-table ti-custom-table-head ti-striped-table ti-custom-table-hover ">
-                            <thead>
-                                <tr>
-                                    <th>ID</th>
-                                    <th>Product Name</th>
-                                    <th>Activation Status</th>
-                                    <th>Visibility</th>
-                                    <th>Date Added</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                              @php
-                                  $count = 1;
-                              @endphp
-                              @foreach ($products as $product)
-                                <tr>
-                                  <td>{{ $count++ }}</td>
-                                  <td>{{ $product->product_name }}</td>
-                                  <td>{{ $product->active_status == 1 ? 'ACTIVE' : 'INACTIVE' }}</td>
-                                  <td>{{ $product->visibility == 1 ? 'PUBLIC': 'PRIVATE' }}</td>
-                                  <td>{{ $product->created_at }}</td>
-                                 </tr>   
-                              @endforeach
-                                
-                            </tbody>
-                        </table>     
+                          <thead>
+                              <tr>
+                                  <th>ID</th>
+                                  <th>Role name</th>
+                                  <th>Manage Permission</th>
+                                  <th>Date Added</th>
+                              </tr>
+                          </thead>
+                          <tbody>
+                            @php
+                                $count = 1;
+                            @endphp
+                            @foreach ($roles as $role)
+                              <tr>
+                                <td>{{ $count++ }}</td>
+                                <td>{{ $role->role_name }}</td>
+                                <td> <a href="{{ route('admin.roles.permissions',$role->id) }}" class="ti-btn ti-btn-primary w-full">Manage permissions</button> </td>
+                                <td>{{ $role->created_at }}</td>
+                              </tr>      
+                            @endforeach
+                              
+                          </tbody>
+                         </table>   
                       </div>                
                     </div>
                     <div id="pills-with-brand-color-2" class="hidden"  role="tabpanel" aria-labelledby="pills-with-brand-color-item-2">
@@ -107,59 +111,14 @@
                                     <div class="box-body">
                                       <form method="POST" action="{{ route('admin.products.store')}}">
                                         @csrf
-
+            
                                             <div class="grid w-full lg:w-1/2 lg:grid-cols-1 gap-6 space-y-4 lg:space-y-0">
                                             
                                                 <div class="space-y-2">
-                                                  <label class="ti-form-label mb-0">Product Name</label>
+                                                  <label class="ti-form-label mb-0">Role Name</label>
                                                   <input type="text" required class="my-auto ti-form-input"  id="product_name" name="product_name" placeholder="Enter product name">
                                                 </div>
                                         
-                                                <div class="space-y-2">
-                                                  <label class="ti-form-label mb-0">Visibility</label>
-                                                  <select id="visibility" name="visibility" required class="my-auto ti-form-select">
-                                                      <option selected>Select</option>
-                                                      <option value="1">YES</option>
-                                                      <option value="0">NO</option>
-                                                    </select>
-                                              </div>
-
-                                              <div class="space-y-2 ">
-                                                <label class="ti-form-label mb-0">Activation Status</label>
-                                                <ul class="flex flex-col sm:flex-row">
-                                                    <li
-                                                        class="ti-list-group gap-x-2.5 bg-white border text-gray-800 sm:-ms-px sm:mt-0 sm:first:rounded-se-none sm:first:rounded-ss-none sm:first:rounded-es-sm sm:last:rounded-es-none sm:last:rounded-ee-none sm:last:rounded-se-sm dark:bg-bgdark dark:border-white/10 dark:text-white">
-                                                        <div class="relative flex items-start w-full">
-                                                            <div class="flex items-center h-5">
-                                                                <input  id="hs-horizontal-list-group-item-radio-1"
-                                                                    name="active_status" value="1" type="radio"
-                                                                    class="ti-form-radio" checked>
-                                                            </div>
-                                                            <label for="hs-horizontal-list-group-item-radio-1"
-                                                                class="ms-3 block w-full text-sm text-gray-600 dark:text-white/70">
-                                                                YES
-                                                            </label>
-                                                        </div>
-                                                    </li>
-            
-                                                    <li
-                                                    class="ti-list-group gap-x-2.5 bg-white border text-gray-800 sm:-ms-px sm:mt-0 sm:first:rounded-se-none sm:first:rounded-ss-none sm:first:rounded-es-sm sm:last:rounded-es-none sm:last:rounded-ee-none sm:last:rounded-se-sm dark:bg-bgdark dark:border-white/10 dark:text-white">
-                                                    <div class="relative flex items-start w-full">
-                                                            <div class="flex items-center h-5">
-                                                                <input name="active_status" value="1" id="hs-horizontal-list-group-item-radio-2"
-                                                                     type="radio"
-                                                                    class="ti-form-radio">
-                                                            </div>
-                                                            <label for="hs-horizontal-list-group-item-radio-2"
-                                                                class="ms-3 block w-full text-sm text-gray-600 dark:text-white/70">
-                                                                NO
-                                                            </label>
-                                                        </div>
-                                                    </li>
-            
-                                                
-                                                </ul>
-                                               </div>
                                                 
                                                 <div class="space-y-2">
                                                     <button type="submit" class="ti-btn ti-btn-primary w-full">Create Product</button>
@@ -168,11 +127,12 @@
                                                 <br>
                                             </div>
                                             {{-- <div class="my-5">
-                                                <button type="submit" class="ti-btn ti-btn-primary w-full">Submit</button>
+                                                <button type=p"submit" class="ti-btn ti-btn-primary w-full">Submit</button>
                                             </div> --}}
-
+            
                                         </form>
                                       
+                   
                                     </div>
                                 </div>
                             </div>

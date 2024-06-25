@@ -50,11 +50,13 @@
                                 <thead class="bg-gray-50 dark:bg-black/20">
                                 <tr>
                                     <th>ID</th>
-                                    <th>Product Plan Category Name</th>
+                                    <th>Product plan category name</th>
                                     <th>Automation</th>
                                     <th>Network</th>
                                     <th>Product</th>
-                                    <th>Date Added</th>
+                                    <td>Bulk data wallet</td>
+                                    <td>MB measurement</td>
+                                    <th>Date added</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -64,9 +66,9 @@
                               @foreach ($product_plan_categories as $product_plan_category)
                                   
                                   <tr>
-                                  <td>{{ $count++ }}</td>
-                                  <td>{{ $product_plan_category->product_plan_category_name ?? 'nil' }}</td>
-                                  <td>
+                                  <td><small>{{ $count++ }}</small></td>
+                                  <td><small>{{ $product_plan_category->product_plan_category_name ?? 'nil' }}</small></td>
+                                  <td><small>
                                       <div class="mb-2">
                                           <input type="hidden" class="product_category_id" id="product_category_id_{{ $product_plan_category['id'] }}" value="{{  $product_plan_category['id'] }}">
                                           <select  class="my-auto ti-form-select update_automation_product_plan_category"  id="{{  $product_plan_category['id'] }}" name="automation_id_{{  $product_plan_category['id'] }}"  >
@@ -80,10 +82,15 @@
                                           <br>
                                           <span class="notify_span" id="notify_span{{  $product_plan_category['id'] }}""></span>
                                       </div>  
-                                  </td>
-                                  <td>{{ $product_plan_category->network->network_name ?? 'nil' }}</td>
-                                  <td>{{ $product_plan_category->product->product_name ?? 'nil' }}</td>
-                                  <td>{{ $product_plan_category->created_at }}</td>
+                                  </small></td>
+                                  <td><small>{{ $product_plan_category->network->network_name ?? 'nil' }}</small></td>
+                                  <td><small>{{ $product_plan_category->product->product_name ?? 'nil' }}</small></td>
+                                  <td><small>{{ number_format($product_plan_category->bulk_data_wallet_in_mb) }}MB
+                                    <br> {{ number_format( ceil($product_plan_category->bulk_data_wallet_in_mb / $product_plan_category->mb_data_measurement) ) }}GB
+                                    <br> {{ number_format( ceil($product_plan_category->bulk_data_wallet_in_mb / $product_plan_category->mb_data_measurement / $product_plan_category->mb_data_measurement)) }}TB
+                                  </small></td>
+                                  <td><small>{{ number_format($product_plan_category->mb_data_measurement) }}</small></td>
+                                  <td><small>{{ $product_plan_category->created_at }}</small></td>
                                  </tr>   
                               @endforeach
                                 

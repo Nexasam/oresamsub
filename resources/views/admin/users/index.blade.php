@@ -28,13 +28,13 @@
          
             <div class="col-span-12">
               @if (Session::has('success'))
-              <div class="bg-success/10 border border-success/10 alert text-success" role="alert">
+                <div class="bg-success/10 border border-success/10 alert text-success" role="alert">
                   {{ Session::get('success') }}
                 </div>
               @endif
 
               @if (Session::has('failure'))
-              <div class="bg-danger/10 border border-danger/10 alert text-danger" role="alert">
+                <div class="bg-danger/10 border border-danger/10 alert text-danger" role="alert">
                   {{ Session::get('failure') }}
                 </div>
               @endif
@@ -48,7 +48,7 @@
                   </ul>
                 </div>
               @endif
-          </div>
+            </div>
           <div class="col-span-12">
           
               <div class="box">

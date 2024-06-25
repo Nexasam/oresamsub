@@ -25,99 +25,146 @@
           
               <div class="box">
                 <div class="box-header">
-                  <h5 class="box-title">Settings</h5>
+                  <h5 class="box-title">Admin Settings</h5>
                 </div>
 
                 <div class="box-body">
                   <nav class="flex space-x-2" aria-label="Tabs" role="tablist">
                     <button type="button" class="hs-tab-active:bg-primary hs-tab-active:text-white py-3 px-4 inline-flex items-center gap-2 bg-transparent text-sm font-medium text-center text-gray-500 rounded-sm hover:text-primary  dark:text-white/70 dark:hover:text-white active" id="pills-with-brand-color-item-1" data-hs-tab="#pills-with-brand-color-1" aria-controls="pills-with-brand-color-1">
-                      Settings
+                      Referral Commissions
                     </button>
-                    <button type="button" class="hs-tab-active:bg-primary hs-tab-active:text-white py-3 px-4 inline-flex items-center gap-2 bg-transparent text-sm font-medium text-center text-gray-500 rounded-sm hover:text-primary  dark:text-white/70 dark:hover:text-white" id="pills-with-brand-color-item-2" data-hs-tab="#pills-with-brand-color-2" aria-controls="pills-with-brand-color-2">
-                      Product Plan Categories
-                    </button>
-                    {{-- <button type="button" class="hs-tab-active:bg-primary hs-tab-active:text-white py-3 px-4 inline-flex items-center gap-2 bg-transparent text-sm font-medium text-center text-gray-500 rounded-sm hover:text-primary  dark:text-white/70 dark:hover:text-white" id="pills-with-brand-color-item-3" data-hs-tab="#pills-with-brand-color-3" aria-controls="pills-with-brand-color-3">
-                      Tab 3
+                    
+                    {{-- <button type="button" class="hs-tab-active:bg-primary hs-tab-active:text-white py-3 px-4 inline-flex items-center gap-2 bg-transparent text-sm font-medium text-center text-gray-500 rounded-sm hover:text-primary  dark:text-white/70 dark:hover:text-white" id="pills-with-brand-color-item-2" data-hs-tab="#pills-with-brand-color-2" aria-controls="pills-with-brand-color-2">
+                      Bulk data settings (e.g h)
                     </button> --}}
+                    <button type="button" class="hs-tab-active:bg-primary hs-tab-active:text-white py-3 px-4 inline-flex items-center gap-2 bg-transparent text-sm font-medium text-center text-gray-500 rounded-sm hover:text-primary  dark:text-white/70 dark:hover:text-white" id="pills-with-brand-color-item-2" data-hs-tab="#pills-with-brand-color-2" aria-controls="pills-with-brand-color-2">
+                      Landing pages
+                    </button>
+                    <button type="button" class="hs-tab-active:bg-primary hs-tab-active:text-white py-3 px-4 inline-flex items-center gap-2 bg-transparent text-sm font-medium text-center text-gray-500 rounded-sm hover:text-primary  dark:text-white/70 dark:hover:text-white" id="pills-with-brand-color-item-3" data-hs-tab="#pills-with-brand-color-3" aria-controls="pills-with-brand-color-3">
+                      Site logo
+                    </button>
                   </nav>
 
                   <div class="mt-3">
                     <div id="pills-with-brand-color-1" role="tabpanel" aria-labelledby="pills-with-brand-color-item-1">
                       <div class="overflow-auto">
-                        <table  class="ti-custom-table ti-custom-table-head ti-striped-table ti-custom-table-hover ">
-                            <thead>
-                                <tr>
-                                    <th>ID</th>
-                                    <th>Product Plan Name</th>
-                                    <th>Date Added</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                  <td>1</td>
-                                  <td>MTN</td>
-                                  <td>2024-05-02</td>
-                                </tr>
-                                <tr>
-                                  <td>2</td>
-                                  <td>GLO</td>
-                                  <td>2024-05-02</td>
-                                </tr>
-                                <tr>
-                                  <td>3</td>
-                                  <td>AIRTEL</td>
-                                  <td>2024-05-02</td>
-                                </tr>
-                                <tr>
-                                  <td>4</td>
-                                  <td>9MOBILE</td>
-                                  <td>2024-05-02</td>
-                                </tr>
+
+                            <form>
+                                <div class="grid w-full lg:w-1/2 lg:grid-cols-1 gap-6 space-y-4 lg:space-y-0">
+
+                                    <div class="space-y-2 mt-5">
+                                      <label class="ti-form-label mb-0">Manage commission feature </label>
+                                      <select required class="my-auto ti-form-select">
+                                          <option value="">Select</option>
+                                          <option value="activate_product_commission_flat_rate">Activate flat rate</option>
+                                          <option value="activate_product_commission_percentage_rate">Activate percentage rate</option>
+                                          <option value="deactivate_product_commission_both_rate">Deactivate both</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="space-y-2">
+                                      <label class="ti-form-label mb-0">Set commission flat rate <br>
+                                        <small>This will take effect if commission flat rate is activated</small>
+                                      </label>
+                                      <input type="number" required class="my-auto ti-form-input" min="50" placeholder="commission flat rate">
+                                     </div>
+
+                                     <div class="space-y-2">
+                                      <label class="ti-form-label mb-0">Set commission percentage rate <br>
+                                        <small>This will take effect if commission percentage rate is activated</small>
+                                      </label>
+                                      <input type="number" required class="my-auto ti-form-input" max="100" placeholder="commission percentage rate">
+                                    </div>
+
+
+                                    <div class="space-y-2">
+                                      <label class="ti-form-label mb-0">Manage first crediting feature
+                                          <br>
+                                          <small>This determines how the upline is being awarded first crediting commission</small>
+                                      </label>
+                                      <select required class="my-auto ti-form-select">
+                                          <option value="">Select</option>
+                                          <option value="activate_first_crediting_flat_rate">Activate flat rate</option>
+                                          <option value="activate_first_crediting_percentage_rate">Activate percentage rate</option>
+                                          <option value="deactivate_first_crediting_both_rate">Deactivate both</option>
+                           
+                                        </select>
+                                    </div>
+
+                                    <div class="space-y-2">
+                                      <label class="ti-form-label mb-0">Set first crediting flat rate <br>
+                                        <small>This will take effect if first crediting flat rate is activated</small>
+                                      </label>
+                                      <input type="number" required class="my-auto ti-form-input" min="50" placeholder="first crediting flat rate">
+                                     </div>
+
+                                     <div class="space-y-2">
+                                      <label class="ti-form-label mb-0">Set first crediting percentage rate <br>
+                                        <small>This will take effect if first crediting percentage rate is activated</small>
+                                      </label>
+                                      <input type="number" required class="my-auto ti-form-input" max="100" placeholder="first crediting percentage rate">
+                                    </div>
                                 
-                            </tbody>
-                        </table>     
+
+                                    <div class="space-y-2">
+                                        <label class="ti-form-label mb-0">Set cap for first crediting commission <br>
+                                          <small>This means an upline cannot get more than this value if first crediting commission is percentage-based</small>
+                                        </label>
+                                        <input type="number" required class="my-auto ti-form-input" min="50" placeholder="cap for first crediting">
+                                    </div>
+                                    <div class="space-y-2">
+                                        <button type="submit" class="ti-btn ti-btn-primary w-full">Update Referral commission settings</button>
+                                    </div>
+                                  
+                                    <br>
+                                </div>
+                            </form>
+                        
                       </div>                
                     </div>
                     <div id="pills-with-brand-color-2" class="hidden" role="tabpanel" aria-labelledby="pills-with-brand-color-item-2">
                       <div class="overflow-auto">
-                        <table  class="ti-custom-table ti-custom-table-head ti-striped-table ti-custom-table-hover ">
-                            <thead>
-                                <tr>
-                                    <th>ID</th>
-                                    <th>Product Plan Category Name</th>
-                                    <th>Date Added</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                  <td>1</td>
-                                  <td>MTN</td>
-                                  <td>2024-05-02</td>
-                                </tr>
-                                <tr>
-                                  <td>2</td>
-                                  <td>GLO</td>
-                                  <td>2024-05-02</td>
-                                </tr>
-                                <tr>
-                                  <td>3</td>
-                                  <td>AIRTEL</td>
-                                  <td>2024-05-02</td>
-                                </tr>
-                                <tr>
-                                  <td>4</td>
-                                  <td>9MOBILE</td>
-                                  <td>2024-05-02</td>
-                                </tr>
-                                
-                            </tbody>
-                        </table>     
+                        <form>
+                          <div class="grid w-full lg:w-1/2 lg:grid-cols-1 gap-6 space-y-4 lg:space-y-0">
+
+                              <div class="space-y-2 mt-5">
+                                <label class="ti-form-label mb-0">About Us </label>
+                                <textarea required class="my-auto ti-form-input"></textarea>
+                              </div>
+
+                              <div class="space-y-2 mt-5">
+                                <label class="ti-form-label mb-0">Contact number </label>
+                                <textarea required class="my-auto ti-form-input"></textarea>
+                              </div>
+
+                              <div class="space-y-2">
+                                  <button type="submit" class="ti-btn ti-btn-primary w-full">Update landing page settings</button>
+                              </div>
+                            
+                              <br>
+                          </div>
+                      </form>
                       </div>  
                     </div>
                     <div id="pills-with-brand-color-3" class="hidden" role="tabpanel" aria-labelledby="pills-with-brand-color-item-3">
-                      <p class="text-gray-500 dark:text-white/70 p-5 border rounded-sm dark:border-white/10 border-gray-200">
-                        Unbelievable healthy snack success stories. 12 facts about safe food handling tips that will impress your friends. Restaurant weeks by the numbers. Will mexican food ever rule the world? The 10 best thai restaurant youtube videos. How restaurant weeks can make you sick. The complete beginner's guide to cooking healthy food. Unbelievable food stamp success stories. How whole foods markets are making the world a better place. 16 things that won't happen in dish reviews.
-                      </p>
+                      <div class="overflow-auto">
+                        <form>
+                          <div class="grid w-full lg:w-1/2 lg:grid-cols-1 gap-6 space-y-4 lg:space-y-0">
+
+                              <div class="space-y-2 mt-5">
+                                <label class="ti-form-label mb-0">Update site logo </label>
+                                <input type="file" required class="my-auto ti-form-input" max="100" placeholder="commission percentage rate">
+                              </div>
+
+                              
+                              <div class="space-y-2">
+                                  <button type="submit" class="ti-btn ti-btn-primary w-full">Update site logo</button>
+                              </div>
+                            
+                              <br>
+                          </div>
+                      </form>
+                      </div>  
                     </div>
                   </div>
                 </div>
