@@ -24,10 +24,11 @@ class UserFactory extends Factory
      */
     public function definition(): array
     {
+        $extension = ['0812','0803','0807','0803'];
         return [
             'first_name' => fake()->name(),
             'last_name' => fake()->name(),
-            'phone_number' => fake()->name(),
+            'phone_number' => $extension[rand(0,3)].rand(11111111,99999999),
             'role' => 'User',
             'user_plan_id' => UserPlan::inRandomOrder()->first()->id,
             'email' => fake()->unique()->safeEmail(),

@@ -214,7 +214,7 @@ class DatabaseSeeder extends Seeder
             'role' => $user_role,
             'user_plan_id' => $user_plan_diamond->id,
             'email' => 'emmanuel@gmail.com',
-            'phone_number' => '08198092889',
+            'phone_number' => '08198092771',
             'password' => Hash::make('password'),
         ]); 
         User::factory()->create([
