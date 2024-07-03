@@ -5,20 +5,24 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title> {{env('APP_NAME')}} - Enjoy data at the best rate </title>
-    <meta name="description" content="A Tailwind CSS admin template is a pre-designed web page for an admin dashboard. Optimizing it for SEO includes using meta descriptions and ensuring it's responsive and fast-loading.">
-    <meta name="keywords" content="analytics dashboard,jobs dashboard,crm dashboard examples,personal dashboard,sales dashboard sample,best crm dashboard,crypto dashboard template,sales analytics dashboard,stocks dashboard,hrm dashboard,ecommerce admin panel template,sales admin dashboard,admin panel for ecommerce website,website template ecommerce,template dashboard,course dashboard,template ecommerce website">
+    <meta name="description" content="This is an amazing data website for your special data needs">
 
     <!-- Favicon -->
-    <link rel="shortcut icon" href="../assets/img/brand-logos/favicon.ico">
+    {{-- <link rel="shortcut icon" href="../assets/img/brand-logos/favicon.ico"> --}}
+    <link rel="shortcut icon" href="{{ asset(env('APP_ASSETS_BASE_URL').'img/brand-logos/favicon.ico') }}">
 
     <!-- Style Css -->
-    <link rel="stylesheet" href="../assets/css/style.css">
+    {{-- <link rel="stylesheet" href="../assets/css/style.css"> --}}
+    <link rel="stylesheet" href="{{ asset(env('APP_ASSETS_BASE_URL').'css/style.css') }}">
 
     <!-- Simplebar Css -->
-    <link rel="stylesheet" href="../assets/libs/simplebar/simplebar.min.css">
+    {{-- <link rel="stylesheet" href="../assets/libs/simplebar/simplebar.min.css"> --}}
+    <link rel="stylesheet" href="{{ asset(env('APP_ASSETS_BASE_URL').'libs/simplebar/simplebar.min.css') }}">
 
     <!-- Color Picker Css -->
-    <link rel="stylesheet" href="../assets/libs/@simonwep/pickr/themes/nano.min.css">
+    {{-- <link rel="stylesheet" href="../assets/libs/@simonwep/pickr/themes/nano.min.css"> --}}
+    <link rel="stylesheet" href="{{ asset(env('APP_ASSETS_BASE_URL').'libs/@simonwep/pickr/themes/nano.min.css') }}">
+
 
 </head>
 
@@ -26,24 +30,22 @@
     <div class="grid grid-cols-12 gap-6 w-full h-full">
         <div class="lg:col-span-6 col-span-12 hidden lg:block relative">
             <div class="cover relative w-full h-full z-[1]">
-                <img src="../assets/img/authentication/auth3.jpg" alt="logo" class="object-cover mx-auto h-full">
+                <img src="{{ asset(env('APP_ASSETS_BASE_URL').'img/authentication/auth.jpg') }}" alt="logo" class="object-cover mx-auto h-full">
             </div>
         </div>
         <div class="lg:col-span-6 col-span-12">
             <div class="authentication-page w-full">
                 <!-- ========== MAIN CONTENT ========== -->
                     <main id="content"  class="w-full max-w-md mx-auto p-6">
-                        <a href="#" class="header-logo lg:hidden">        
-                            <img src="{{ asset(env('APP_ASSETS_BASE_URL').'img/logos/logo.png') }}" alt="logo" class="mx-auto block dark:hidden">
-                            <img src="{{ asset(env('APP_ASSETS_BASE_URL').'img/logos/logo.png') }}" alt="logo" class="mx-auto hidden dark:block">
-                            {{-- <img src="../assets/img/brand-logos/desktop-logo.png" alt="logo" class="mx-auto block dark:hidden">
-                            <img src="../assets/img/brand-logos/desktop-dark.png" alt="logo" class="mx-auto hidden dark:block"> --}}
-                        </a>
+                        {{-- <a href="#" class="header-logo lg:hidden">
+                        <img src="../assets/img/brand-logos/desktop-logo.png" alt="logo" class="mx-auto block dark:hidden">
+                        <img src="../assets/img/brand-logos/desktop-dark.png" alt="logo" class="mx-auto hidden dark:block">
+                        </a> --}}
                         <div class="mt-7">
                             <div class="p-4 sm:p-7">
                                 <a href="#" class="header-logo">
                                     <img src="{{ asset(env('APP_ASSETS_BASE_URL').'img/logos/logo.png') }}" alt="logo"
-                                    class="w-20 h-20 mx-auto block dark:hidden" alt="logo" class="">
+                                    class="w-20 h-20 mx-auto block dark:hidden" >
                                     {{-- <img src="../../assets/img/logos/{{  $logo }}" alt="logo"
                                     class="w-20 h-20 mx-auto hidden dark:block" alt="logo" class=""> --}}
                                     {{-- <img src="../assets/img/brand-logos/desktop-dark.png" alt="logo" class="mx-auto hidden dark:block"> --}}
@@ -191,13 +193,17 @@
     </div>
 
     <!-- popperjs -->
-    <script src="../assets/libs/@popperjs/core/umd/popper.min.js"></script>
+    {{-- <script src="../assets/libs/@popperjs/core/umd/popper.min.js"></script> --}}
+    <script src="{{ asset(env('APP_ASSETS_BASE_URL').'libs/@popperjs/core/umd/popper.min.js') }}"></script>
+
 
     <!-- Custom-Switcher JS -->
-    <script src="../assets/js/custom-switcher.js"></script>
+    {{-- <script src="../assets/js/custom-switcher.js"></script> --}}
+    <script src="{{ asset(env('APP_ASSETS_BASE_URL').'js/custom-switcher.js') }}"></script>
 
     <!-- Preline JS -->
-    <script src="../assets/libs/preline/preline.js"></script>
+    {{-- <script src="../assets/libs/preline/preline.js"></script> --}}
+    <script src="{{ asset(env('APP_ASSETS_BASE_URL').'libs/preline/preline.js') }}"></script>
 
 
 </body>
