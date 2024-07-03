@@ -184,14 +184,14 @@
                                     class="text-gray-800 font-semibold text-xl leading-none align-bottom dark:text-white">
                                     &#8358; {{ number_format($user->main_wallet,2)  }}
                                 </span>
-                                <div> 
-                                    <button type="button"  data-hs-overlay="#hs-basic-modal" aria-label="button" type="button" class="hs-dropdown-toggle ti-btn flex-shrink-0 h-[0.070rem] w-[0.070rem] ti-btn-primary text-sm">
+                                {{-- <div>  --}}
+                                    {{-- <button type="button"  data-hs-overlay="#hs-basic-modal" aria-label="button" type="button" class="hs-dropdown-toggle ti-btn flex-shrink-0 h-[0.070rem] w-[0.070rem] ti-btn-primary text-sm"> --}}
                                         {{-- <svg class="w-3.5 h-3.5" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
                                           <path d="M5.071 1.243a.5.5 0 0 1 .858.514L3.383 6h9.234L10.07 1.757a.5.5 0 1 1 .858-.514L13.783 6H15.5a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-.5.5H15v5a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V9H.5a.5.5 0 0 1-.5-.5v-2A.5.5 0 0 1 .5 6h1.717L5.07 1.243zM3.5 10.5a.5.5 0 1 0-1 0v3a.5.5 0 0 0 1 0v-3zm2.5 0a.5.5 0 1 0-1 0v3a.5.5 0 0 0 1 0v-3zm2.5 0a.5.5 0 1 0-1 0v3a.5.5 0 0 0 1 0v-3zm2.5 0a.5.5 0 1 0-1 0v3a.5.5 0 0 0 1 0v-3zm2.5 0a.5.5 0 1 0-1 0v3a.5.5 0 0 0 1 0v-3z"/>
                                         </svg> --}}
-                                        <span style="font-size: 10px">FUND</span>
-                                      </button>
-                                </div>
+                                    {{-- <span style="font-size: 10px">FUND</span>
+                                    </button> --}}
+                                {{-- </div> --}}
 
                                 <div id="hs-basic-modal" class="hs-overlay ti-modal hidden">
                                     <div class="ti-modal-box">
@@ -266,11 +266,11 @@
                             </span>
                         </div>
                         <div class="">
-                            <div class="mb-2">Bulk Data Balance</div>
+                            <div class="mb-2">Bulk Wallets Sum</div>
                             <div class="text-gray-500 dark:text-white/70 mb-1 text-xs">
                                 <span
                                     class="text-gray-800 font-semibold text-xl leading-none align-bottom dark:text-white">
-                                    {{ number_format($user->data_wallet)  }}MB
+                                    {{ number_format($bulk_data_wallet_sum)  }}MB
                                 </span>
                             </div>
                             {{-- <div>
@@ -287,8 +287,20 @@
             <div class="box">
                 <div class="box-header">
                     <div class="sm:flex">
-                        <h5 class="box-title my-auto">Total Transactions</h5>
-                        <nav class="sm:flex sm:space-x-2 space-y-2 sm:space-y-0 rtl:space-x-reverse ms-auto"
+                        <h5 class="box-title my-auto">Recent Transactions</h5>
+                        <div class="hs-dropdown ti-dropdown block ms-auto my-auto">
+                            <button aria-label="button" id="hs-dropdown-custom-icon-trigger3" type="button"
+                                class="hs-dropdown-toggle ti-dropdown-toggle rounded-sm p-2 bg-white !border border-gray-200 text-gray-500 hover:bg-gray-100  focus:ring-gray-200 dark:bg-bodybg dark:hover:bg-black/30 dark:border-white/10 dark:hover:border-white/20 dark:focus:ring-white/10 dark:focus:ring-offset-white/10">
+                                <i class="text-sm leading-none ti ti-dots-vertical"></i> </button>
+                            <div class="hs-dropdown-menu ti-dropdown-menu"
+                                aria-labelledby="hs-dropdown-custom-icon-trigger3">
+                                <a class="ti-dropdown-item" href="javascript:void(0)">Filter by date</a>
+                                <a class="ti-dropdown-item" href="javascript:void(0)">Filter by phone number</a>
+                                {{-- <a class="ti-dropdown-item" href="javascript:void(0)">Something else
+                                    here</a> --}}
+                            </div>
+                        </div>
+                        {{-- <nav class="sm:flex sm:space-x-2 space-y-2 sm:space-y-0 rtl:space-x-reverse ms-auto"
                             aria-label="Tabs" role="tablist">
                             <button type="button"
                                 class=" hs-tab-active:text-info hs-tab-active:bg-info/20 dark:hs-tab-active:bg-info/20 dark:hs-tab-active:text-info py-2 px-3 inline-flex items-center w-full justify-center gap-2 leading-none font-medium text-center text-gray-500 rounded-sm hover:text-gray-700 dark:bg-bodybg dark:text-white/70 dark:hover:text-gray-300 active"
@@ -308,271 +320,57 @@
                                 role="tab">
                                 Cancelled
                             </button>
-                        </nav>
+                        </nav> --}}
                     </div>
                 </div>
                 <div class="box-body p-0">
                     <div id="taskactive" class="" role="tabpanel" aria-labelledby="active-item">
                         <div class="overflow-auto">
-                            <table class="ti-custom-table ti-custom-table-head">
-                                <tbody>
-                                    <tr>
-                                        <td class="min-w-[200px]">
-                                            <div class="flex items-center space-x-2 rtl:space-x-reverse">
-                                                <div class="leading-none">
-                                                    <div class="relative inline-block">
-                                                        <img class="avatar avatar-xs rounded-full"
-                                                            src="../assets/img/users/1.jpg"
-                                                            alt="Image Description">
-                                                        <span
-                                                            class="absolute bottom-0 end-0 block h-1.5 w-1.5 rounded-full ring-2 ring-white bg-green-400"></span>
-                                                    </div>
-                                                </div>
-                                                <div class="items-center">
-                                                    <span
-                                                        class="text-xs text-gray-500 dark:text-white/70">Name</span>
-                                                    <p class="text-sm mb-0 text-gray-800 dark:text-white">
-                                                        Amanda Nanes</p>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <div class="items-center">
-                                                <span
-                                                    class="text-xs text-gray-500 dark:text-white/70">Price</span>
-                                                <p
-                                                    class="text-sm mb-0 font-semibold text-gray-800 dark:text-white">
-                                                    $229.99</p>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <div class="items-center">
-                                                <span
-                                                    class="text-xs text-gray-500 dark:text-white/70">Delivery
-                                                    Date</span>
-                                                <p class="text-sm mb-0 text-gray-800 dark:text-white">24 May
-                                                    2022</p>
-                                            </div>
-                                        </td>
-                                        <td class="min-w-[100px]">
-                                            <img class="avatar avatar-xs rounded-sm"
-                                                src="../assets/img/ecommerce/products/1.png"
-                                                alt="Image Description">
-                                        </td>
-                                        <td class="rtl:rotate-180">
-                                            <a aria-label="anchor" href="javascript:void(0);">
-                                                <span class="orders-arrow"><i
-                                                        class="ri-arrow-right-s-line text-lg"></i></span>
-                                            </a>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <div class="flex items-center space-x-2 rtl:space-x-reverse">
-                                                <div class="leading-none">
-                                                    <div class="relative inline-block">
-                                                        <img class="avatar avatar-xs rounded-full"
-                                                            src="../assets/img/users/10.jpg"
-                                                            alt="Image Description">
-                                                        <span
-                                                            class="absolute bottom-0 end-0 block h-1.5 w-1.5 rounded-full ring-2 ring-white bg-green-400"></span>
-                                                    </div>
-                                                </div>
-                                                <div class="items-center">
-                                                    <span
-                                                        class="text-xs text-gray-500 dark:text-white/70">Name</span>
-                                                    <p class="text-sm mb-0 text-gray-800 dark:text-white">
-                                                        Peter Parkour</p>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <div class="items-center">
-                                                <span
-                                                    class="text-xs text-gray-500 dark:text-white/70">Price</span>
-                                                <p
-                                                    class="text-sm mb-0 font-semibold text-gray-800 dark:text-white">
-                                                    $135.29</p>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <div class="items-center">
-                                                <span
-                                                    class="text-xs text-gray-500 dark:text-white/70">Delivery
-                                                    Date</span>
-                                                <p class="text-sm mb-0 text-gray-800 dark:text-white">18 May
-                                                    2022</p>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <img class="avatar avatar-xs rounded-sm"
-                                                src="../assets/img/ecommerce/products/2.png"
-                                                alt="Image Description">
-                                        </td>
-                                        <td class="rtl:rotate-180">
-                                            <a aria-label="anchor"  href="javascript:void(0);">
-                                                <span class="orders-arrow"><i
-                                                        class="ri-arrow-right-s-line text-lg"></i></span>
-                                            </a>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <div class="flex items-center space-x-2 rtl:space-x-reverse">
-                                                <div class="leading-none">
-                                                    <div class="relative inline-block">
-                                                        <img class="avatar avatar-xs rounded-full"
-                                                            src="../assets/img/users/12.jpg"
-                                                            alt="Image Description">
-                                                        <span
-                                                            class="absolute bottom-0 end-0 block h-1.5 w-1.5 rounded-full ring-2 ring-white bg-green-400"></span>
-                                                    </div>
-                                                </div>
-                                                <div class="items-center">
-                                                    <span
-                                                        class="text-xs text-gray-500 dark:text-white/70">Name</span>
-                                                    <p class="text-sm mb-0 text-gray-800 dark:text-white">
-                                                        Jackie Chen</p>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <div class="items-center">
-                                                <span
-                                                    class="text-xs text-gray-500 dark:text-white/70">Price</span>
-                                                <p
-                                                    class="text-sm mb-0 font-semibold text-gray-800 dark:text-white">
-                                                    $1,299.99</p>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <div class="items-center">
-                                                <span
-                                                    class="text-xs text-gray-500 dark:text-white/70">Delivery
-                                                    Date</span>
-                                                <p class="text-sm mb-0 text-gray-800 dark:text-white">29 May
-                                                    2022</p>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <img class="avatar avatar-xs rounded-sm"
-                                                src="../assets/img/ecommerce/products/3.png"
-                                                alt="Image Description">
-                                        </td>
-                                        <td class="rtl:rotate-180">
-                                            <a aria-label="anchor" href="javascript:void(0);">
-                                                <span class="orders-arrow"><i
-                                                        class="ri-arrow-right-s-line text-lg"></i></span>
-                                            </a>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <div class="flex items-center space-x-2 rtl:space-x-reverse">
-                                                <div class="leading-none">
-                                                    <div class="relative inline-block">
-                                                        <img class="avatar avatar-xs rounded-full"
-                                                            src="../assets/img/users/5.jpg"
-                                                            alt="Image Description">
-                                                        <span
-                                                            class="absolute bottom-0 end-0 block h-1.5 w-1.5 rounded-full ring-2 ring-white bg-green-400"></span>
-                                                    </div>
-                                                </div>
-                                                <div class="items-center">
-                                                    <span
-                                                        class="text-xs text-gray-500 dark:text-white/70">Name</span>
-                                                    <p class="text-sm mb-0 text-gray-800 dark:text-white">
-                                                        Ryan Gercia</p>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <div class="items-center">
-                                                <span
-                                                    class="text-xs text-gray-500 dark:text-white/70">Price</span>
-                                                <p
-                                                    class="text-sm mb-0 font-semibold text-gray-800 dark:text-white">
-                                                    $249.29</p>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <div class="items-center">
-                                                <span
-                                                    class="text-xs text-gray-500 dark:text-white/70">Delivery
-                                                    Date</span>
-                                                <p class="text-sm mb-0 text-gray-800 dark:text-white">05 Jun
-                                                    2022</p>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <img class="avatar avatar-xs rounded-sm"
-                                                src="../assets/img/ecommerce/products/4.png"
-                                                alt="Image Description">
-                                        </td>
-                                        <td class="rtl:rotate-180">
-                                            <a aria-label="anchor" href="javascript:void(0);">
-                                                <span class="orders-arrow"><i
-                                                        class="ri-arrow-right-s-line text-lg"></i></span>
-                                            </a>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <div class="flex items-center space-x-2 rtl:space-x-reverse">
-                                                <div class="leading-none">
-                                                    <div class="relative inline-block">
-                                                        <img class="avatar avatar-xs rounded-full"
-                                                            src="../assets/img/users/14.jpg"
-                                                            alt="Image Description">
-                                                        <span
-                                                            class="absolute bottom-0 end-0 block h-1.5 w-1.5 rounded-full ring-2 ring-white bg-green-400"></span>
-                                                    </div>
-                                                </div>
-                                                <div class="items-center">
-                                                    <span
-                                                        class="text-xs text-gray-500 dark:text-white/70">Name</span>
-                                                    <p class="text-sm mb-0 text-gray-800 dark:text-white">
-                                                        Hugh Jackma</p>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <div class="items-center">
-                                                <span
-                                                    class="text-xs text-gray-500 dark:text-white/70">Price</span>
-                                                <p
-                                                    class="text-sm mb-0 font-semibold text-gray-800 dark:text-white">
-                                                    $499.99</p>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <div class="items-center">
-                                                <span
-                                                    class="text-xs text-gray-500 dark:text-white/70">Delivery
-                                                    Date</span>
-                                                <p class="text-sm mb-0 text-gray-800 dark:text-white">15 May
-                                                    2022</p>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <img class="avatar avatar-xs rounded-sm"
-                                                src="../assets/img/ecommerce/products/5.png"
-                                                alt="Image Description">
-                                        </td>
-                                        <td class="rtl:rotate-180">
-                                            <a aria-label="anchor" href="javascript:void(0);">
-                                                <span class="orders-arrow"><i
-                                                        class="ri-arrow-right-s-line text-lg"></i></span>
-                                            </a>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
+                            <table  class="ti-custom-table ti-custom-table-head">    
+                                <thead class="bg-gray-50 dark:bg-black/20">
+                                <tr>
+                                    <th>ID</th>
+                                    <th>User Details</th>
+                                    <th>Wallet Category</th>
+                                    <th>Phone Number</th>
+                                    <th>Amount(&#8358;)</th>
+                                    <th>Balance Before(&#8358;)</th>
+                                    <th>Balance After(&#8358;)</th>
+                                    <th>Date Added</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                              @php
+                                  $count = 1;
+                              @endphp
+                              @if (count($transactions) > 0)
+                                   @foreach ($transactions as $transaction)
+                                        <tr>
+                                        <td>{{ $count++ }}</td>
+                                        <td>{{ $transaction->user->first_name }} <br> {{ $transaction->user->last_name }} <br>  {{ $transaction->user->phone_number }}</td>
+                                        <td>{{ $transaction->wallet_category == 'main_wallet' ?  'MAIN' : 'DATA_WALLET' }}</td>
+                                        <td>{{ $transaction->phone_number ?? 'nil' }}</td>
+                                        <td>{{ number_format($transaction->amount,2) }}</td>
+                                        <td>{{ number_format($transaction->balance_before,2) }}</td>
+                                        <td>{{  number_format($transaction->balance_after,2) }}</td>
+                                        <td>{{ $transaction->created_at }}</td>
+                                        </tr>   
+                                    @endforeach
+                              @else
+                                  <tr>
+                                    <td align="center" colspan="8">No transactions found</td>
+                                  </tr>
+                              @endif
+                          
+                                
+                            </tbody>
+                          </table> 
                         </div>
                     </div>
                     <div id="completed" class="hidden" role="tabpanel" aria-labelledby="completed-item">
                         <div class="overflow-auto">
-                            <table class="ti-custom-table ti-custom-table-head">
+                        
+                            {{-- <table class="ti-custom-table ti-custom-table-head">
                                 <tbody>
                                     <tr>
                                         <td class="min-w-[200px]">
@@ -815,7 +613,7 @@
                                         </td>
                                     </tr>
                                 </tbody>
-                            </table>
+                            </table> --}}
                         </div>
                     </div>
                     <div id="cancelled" class="hidden" role="tabpanel" aria-labelledby="cancelled-item">
@@ -1069,10 +867,10 @@
                 </div>
             </div>
         </div>
-        <div class="col-span-12 xxl:col-span-4">
+        <div class="col-span-12 xxl:col-span-8">
             <div class="box">
                 <div class="box-header flex">
-                    <h5 class="box-title my-auto">User Product Plans</h5>
+                    <h5 class="box-title my-auto">Available Bulk Data Plans &nbsp;&nbsp;  <small> <a class="hs-tab-active:bg-primary hs-tab-active:text-white py-1 px-2 inline-flex items-center gap-1 bg-transparent text-sm font-medium text-center text-gray-500 rounded-sm hover:text-primary  dark:text-white/70 dark:hover:text-white active" id="pills-with-brand-color-item-2" data-hs-tab="#pills-with-brand-color-2" aria-controls="pills-with-brand-color-2" href="{{ route('user.data.buy_bulk_data') }}">Buy bulk plans</a> </small> </h5>
                     <div class="hs-dropdown ti-dropdown block ms-auto my-auto">
                         <button aria-label="button" id="hs-dropdown-custom-icon-trigger3" type="button"
                             class="hs-dropdown-toggle ti-dropdown-toggle rounded-sm p-2 bg-white !border border-gray-200 text-gray-500 hover:bg-gray-100  focus:ring-gray-200 dark:bg-bodybg dark:hover:bg-black/30 dark:border-white/10 dark:hover:border-white/20 dark:focus:ring-white/10 dark:focus:ring-offset-white/10">
@@ -1088,7 +886,7 @@
                 </div>
                 <div class="box-body p-0 selling-table">
                     <div class="overflow-auto">
-                        <table class="ti-custom-table ti-custom-table-head">
+                        {{-- <table class="ti-custom-table ti-custom-table-head">
                             <thead>
                                 <tr>
                                     <th scope="col">Product</th>
@@ -1096,21 +894,41 @@
                                     <th scope="col">TotalSales</th>
                                 </tr>
                             </thead>
-                            <tbody>
-                                <tr>
-                                    <td class="leading-none">
-                                        <img src="../assets/img/ecommerce/products/13.png"
-                                            class=" me-2 avatar avatar-sm p-2 rounded-full bg-gray-100 dark:bg-bodybg"
-                                            alt="Image Description">Ethnic School bag for children (24L)
-                                    </td>
-                                    <td class="text-sm"><span
-                                            class="text-success">In
-                                            Stock</span></td>
-                                    <td>
-                                        <span class="text-sm font-semibold">5,093</span>
-                                    </td>
-                                </tr>
-                                <tr>
+                            <tbody> --}}
+                        <table class="ti-custom-table ti-custom-table-head">    
+                                    <thead>
+                                    <tr>
+                                        <th><small>ID</small></th>
+                                        <th><small>Plan name</small></th>
+                                        <th><small>Category name</small></th>
+                                        <th><small>Data value</small></th>
+                                        <th><small>Unit(MB)</small></th>
+                                        <th><small>Selling price (&#8358;)</small></th>
+                                        {{-- <th>Action</th> --}}
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                  @php
+                                  $count = 1;
+                              @endphp
+                              @foreach ($bulk_data_plans as $bulk_data_plan)                 
+                                  <tr>
+                                  <td><small>{{ $count++ }}</small></td>
+                                  <td><small>{{ $bulk_data_plan->bulk_data_plan_name }}</small></td>
+                                  <td><small>{{ $bulk_data_plan->product_plan_category->product_plan_category_name ?? 'nil' }}</small></td>
+                                  <td>
+                                    <small>{{ number_format($bulk_data_plan->data_value_tb)}}TB</small> <br>
+                                    <small>{{ number_format($bulk_data_plan->data_value_gb) }}GB</small> <br>
+                                    <small>{{ number_format($bulk_data_plan->data_value_mb) }}MB</small>
+                                  </td>
+                                  <td><small>{{ $bulk_data_plan->mb_data_measurement ?? 'nil' }}</small></td>
+                                  <td><small>{{ number_format($bulk_data_plan->$user_selling_variable) ?? 'nil' }}</small></td>
+                                 </tr>   
+                              @endforeach
+                              </tbody>
+                              </table>     
+                            {{-- {{ $bulk_data_plans->links() }}  --}}
+                                {{-- <tr>
                                     <td class="leading-none">
                                         <img src="../assets/img/ecommerce/products/14.png"
                                             class=" me-2 avatar avatar-sm p-2 rounded-full bg-gray-100 dark:bg-bodybg"
@@ -1161,9 +979,8 @@
                                     <td>
                                         <span class="text-sm font-semibold">10,234</span>
                                     </td>
-                                </tr>
-                            </tbody>
-                        </table>
+                                </tr> --}}
+                          
                     </div>
                 </div>
             </div>

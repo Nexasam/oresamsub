@@ -20,6 +20,10 @@ class ProductPlanCategory extends Model
         return $this->belongsTo(Network::class,'network_id','id');
     }
 
+    public function automation(){
+        return $this->belongsTo(Automation::class,'automation_id','id');
+    }
+
     
     
 

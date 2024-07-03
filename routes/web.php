@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\LandingPagesSetting;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DataController;
 use App\Http\Controllers\RoleController;
@@ -13,7 +14,9 @@ use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\AutomationController;
 use App\Http\Controllers\CrystalPayController;
 use App\Http\Controllers\ProductPlanController;
+use App\Http\Controllers\BulkDataPlanController;
 use App\Http\Controllers\ResellerPlanController;
+use App\Http\Controllers\UserSettingsController;
 use App\Http\Controllers\AdminSettingsController;
 use App\Http\Controllers\UserDashboardController;
 use App\Http\Controllers\ProductCategoryController;
@@ -22,10 +25,15 @@ use App\Http\Controllers\ProductPlanCategoryController;
 
 Route::get('/', function () {
     // dd('e dey');
-    return view('landing.index');
+    $landing_data = LandingPagesSetting::get();
+    foreach($landing_data as $landing_component){
+        $data[$landing_component->field_name] = $landing_component->field_details;
+    }
+    // dd($data);
+    return view('landing.index')->with($data);
 });
 
-// Route::get('/', function () {
+// Route::get('/dashbooard', function () {
 //     return view('dashboard');
 // })->middleware(['auth', 'verified'])->name('dashboard');
 
@@ -51,7 +59,7 @@ Route::get('/', function () {
 
 
 //this will be adjusted later
-Route::get('/dashboard', [UserDashboardController::class, 'index'])->name('dashboard');
+Route::middleware(['auth','verified'])->get('/dashboard', [UserDashboardController::class, 'index'])->name('dashboard');
 
 Route::post('admin/wallets/crystal_pay_webhook', [WalletsController::class, 'webhook'])->name('admin.wallet.crystalpay.webhook');
 
@@ -77,7 +85,11 @@ Route::middleware(['auth','verified'])->get('admin/products', [ProductController
 Route::middleware(['auth','verified'])->post('admin/products/store', [ProductController::class, 'store'])->name('admin.products.store');
 
 Route::middleware(['auth','verified'])->get('admin/product_plan_categories', [ProductPlanCategoryController::class, 'index'])->name('admin.product_plan_categories.index');
+Route::middleware(['auth','verified'])->post('admin/product_plan_categories/store', [ProductPlanCategoryController::class, 'store'])->name('admin.product_plan_categories.store');
 Route::middleware(['auth','verified'])->get('admin/product_plan_categories/update_automation', [ProductPlanCategoryController::class, 'updateAutomation'])->name('admin.product_plan_categories.update_automation');
+
+Route::middleware(['auth','verified'])->get('admin/bulk_data_plans/{product_plan_category_id}', [BulkDataPlanController::class, 'index'])->name('admin.bulk_data_plans.index');
+Route::middleware(['auth','verified'])->post('admin/bulk_data_plans/store', [BulkDataPlanController::class, 'store'])->name('admin.bulk_data_plans.store');
 
 
 Route::middleware(['auth','verified'])->get('admin/product_plans', [ProductPlanController::class, 'index'])->name('admin.product_plans.index');
@@ -88,6 +100,28 @@ Route::middleware(['auth','verified'])->post('admin/product_plans/store', [Produ
 Route::middleware(['auth','verified'])->get('admin/product_categories', [ProductCategoryController::class, 'index'])->name('admin.product_categories.index');
 
 Route::middleware(['auth','verified'])->get('admin/settings', [AdminSettingsController::class, 'index'])->name('admin.settings.index');
+Route::middleware(['auth','verified'])->post('admin/update_site_logo', [AdminSettingsController::class, 'manage_site_logo'])->name('admin.settings.manage_site_logo');
+Route::middleware(['auth','verified'])->post('admin/referral_settings', [AdminSettingsController::class, 'manage_referral_settings'])->name('admin.settings.referral_settings');
+Route::middleware(['auth','verified'])->post('admin/landing_page_settings', [AdminSettingsController::class, 'manage_landing_page_settings'])->name('admin.settings.manage_landing_page_settings');
+
+
+
+
+Route::middleware(['auth','verified'])->get('user/settings', [UserSettingsController::class, 'index'])->name('user.settings.index');
+Route::middleware(['auth','verified'])->post('user/settings/update_default_wallet', [UserSettingsController::class, 'update_default_wallet'])->name('user.settings.update_default_wallet');
+Route::middleware(['auth','verified'])->post('user/settings/update_profile', [UserSettingsController::class, 'update_profile'])->name('user.settings.update_profile');
+Route::middleware(['auth','verified'])->post('user/settings/update_password', [UserSettingsController::class, 'update_password'])->name('user.settings.update_password');
+Route::middleware(['auth','verified'])->post('user/settings/update_2fa', [UserSettingsController::class, 'update_2fa'])->name('user.settings.update_2fa');
+
+
+
+Route::middleware(['auth','verified'])->get('user/data/buy_bulk_data/bulk_data_wallet/{data_wallet_id}', [DataController::class, 'buy_bulk_data'])->name('user.data.buy_bulk_data.bulk_data_wallet');
+Route::middleware(['auth','verified'])->get('user/data/buy_bulk_data', [DataController::class, 'buy_bulk_data'])->name('user.data.buy_bulk_data');
+// Route::middleware(['auth','verified'])->post('user/data/buy_data_action', [DataController::class, 'buy_data_action'])->name('user.data.buy_data_action');
+Route::middleware(['auth','verified'])->post('user/data/buy_bulk_data_action', [DataController::class, 'buy_bulk_data_action'])->name('user.data.buy_bulk_data_action');
+Route::middleware(['auth','verified'])->post('user/data/fetch_bulk_data_plans', [DataController::class, 'fetch_bulk_data_plans'])->name('user.data.fetch_bulk_data_plans');
+Route::middleware(['auth','verified'])->get('user/data/fetch_bulk_data_plan_details', [DataController::class, 'fetch_bulk_data_plan_details'])->name('user.data.fetch_bulk_data_plan_details');
+
 
 Route::middleware(['auth','verified'])->get('user/data/buy_data', [DataController::class, 'buy_data'])->name('user.data.buy_data');
 Route::middleware(['auth','verified'])->get('user/data/store', [DataController::class, 'buy_data_action'])->name('user.data.buy_data_action');

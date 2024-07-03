@@ -623,7 +623,51 @@
     {{-- <script src="{{asset(env('APP_ASSETS_BASE_URL').'js/swetalert.js') }}"></script> --}}
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script>
+          {{-- <script type="text/javascript">
+            $(function () {
+                  var table = $('#users_table').DataTable({
+                      processing: true,
+                      serverSide: true,
+                      ajax:  {{ route('admin.users.fetch_users')}}",
+                      columns: [
+                          // {data: 'DT_RowIndex', name: 'DT_RowIndex'},
+                          {data: 'first_name', name: 'first_name'},
+                          {data: 'last_name', name: 'last_name'},
+                          {data: 'email', name: 'email'},
+                          {data: 'phone_number', name: 'phone_number'},
+                          {data: 'created_at', name: 'created_at'},
+                          {data: 'action', name: 'action'},
+                      ]
+                  });
+                });
+          </script> --}}
+
+
+<script>
+
+          // function getUsers(){
+          //   var table = $('#users_table').DataTable({
+          //             processing: true,
+          //             serverSide: true,
+          //             ajax:  {{ route('admin.users.fetch_users')}}",
+          //             columns: [
+          //                 // {data: 'DT_RowIndex', name: 'DT_RowIndex'},
+          //                 {data: 'first_name', name: 'first_name'},
+          //                 {data: 'last_name', name: 'last_name'},
+          //                 {data: 'email', name: 'email'},
+          //                 {data: 'phone_number', name: 'phone_number'},
+          //                 {data: 'created_at', name: 'created_at'},
+          //                 {data: 'action', name: 'action'},
+          //             ]
+          //     });
+          // }
+          
+          // getUsers();
+
+        function numberWithCommas(x) {
+          return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        }
+
         function getProductPlans(network_id='', plan_category_id=''){
                 if(network_id != '' && plan_category_id == ''){
                   data = {
@@ -687,6 +731,44 @@
                 // footer: '<a href="">Why do I have this issue?</a>'
                 });
         }
+
+        function sweetAlertConfirmation(){
+              const swalWithBootstrapButtons = Swal.mixin({
+              customClass: {
+                confirmButton: 'ti-btn bg-secondary text-white hover:bg-secondary focus:ring-secondary dark:focus:ring-offset-secondary',
+                cancelButton: 'ti-btn bg-danger text-white hover:bg-danger focus:ring-danger dark:focus:ring-offset-danger'
+              },
+              buttonsStyling: false
+            })
+
+            swalWithBootstrapButtons.fire({
+              title: 'Are you sure?',
+              text: "You won't be able to revert this!",
+              icon: 'warning',
+              showCancelButton: true,
+              confirmButtonText: 'Yes, proceed',
+              cancelButtonText: 'No, cancel!',
+              reverseButtons: true
+            }).then((result) => {
+              if (result.isConfirmed) {
+                swalWithBootstrapButtons.fire(
+                  'Deleted!',
+                  'Your file has been deleted.',
+                  'success'
+                )
+              } else if (
+                /* Read more about handling dismissals below */
+                result.dismiss === Swal.DismissReason.cancel
+              ) {
+                swalWithBootstrapButtons.fire(
+                  'Cancelled',
+                  'Your imaginary file is safe :)',
+                  'error'
+                )
+              }
+            })
+        }
+
 
         function generateCrystalPayDynamicAcct(amount){
           if(amount == ''){
@@ -753,7 +835,162 @@
             }
             getProductPlans(network_id,plan_category_id);
           })
+          
+         
+          $('#buy_bulk_data_btn').click(function(e){
+            e.preventDefault();
+           
+              //display product plans categories
+              const bulk_data_plan_id = $('#bulk_data_plan_id').val();
+              const bulk_data_wallet_id = $('#bulk_data_wallet_id').val();
+              const _token = $('#_token').val();
+            
+              const data = {
+                bulk_data_plan_id : bulk_data_plan_id,
+                bulk_data_wallet_id : bulk_data_wallet_id,
+                _token : _token,
+              };
 
+              if (confirm("Are you sure you want to complete this purchase?") == true) {
+                  // alert('logic happens here')
+                  $.ajax({
+                    type: 'POST',
+                    url: "{{ route('user.data.buy_bulk_data_action') }}",
+                    data: data,
+                    dataType: 'json',
+                    success: function(response) {
+                        // console.log(response);
+                        // console.log(response.data);
+                        var result = JSON.stringify(response);
+                        var dataList = JSON.parse(result);
+                        if(dataList.status == 1){
+                           sweetAlertDisplay(dataList.message,'Success','success');
+                           reload(3000);
+                        }else{
+                          sweetAlertDisplay(dataList.message,'Error','error');
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        // Handle errors if needed
+                        console.error(xhr.responseText);
+                    }
+                });
+              } else {
+                return;
+              }
+
+            
+             
+            
+          })
+
+          $('#bulk_data_plan_id').change(function(e){
+            e.preventDefault();
+            const bulk_data_plan_id = $(this).val();
+            // alert(bulk_data_plan_id);
+
+            if(bulk_data_plan_id == ''){
+              sweetAlertDisplay("Please select a plan",'Plan required','error');
+            }
+        
+            const data = {
+                bulk_data_plan_id : bulk_data_plan_id,
+            };  
+            
+            $.ajax({
+                  type: 'GET',
+                  url: "{{ route('user.data.fetch_bulk_data_plan_details') }}",
+                  data: data,
+                  dataType: 'json',
+                  success: function(response) {
+                      console.log(response);
+                      
+                      if(response.status == '1'){
+                          var bulk_data_plan_name = numberWithCommas(response.data.bulk_data_plan_name);
+                          var selling_price = numberWithCommas(response.data.selling_price);
+                          var data_value_mb = numberWithCommas(response.data.data_value_mb);
+                          var data_value_gb = numberWithCommas(response.data.data_value_gb);
+                          var data_value_tb = numberWithCommas(response.data.data_value_tb);
+                          var selling_price = numberWithCommas(response.data.selling_price);
+                          var mb_data_measurement = numberWithCommas(response.data.mb_data_measurement);
+                          
+                          var data_content = '<p>Bulk data plan: '+ bulk_data_plan_name+'</p>';
+                          data_content += '<p>Measurement per MB: '+ mb_data_measurement+'</p>';
+                          data_content += '<p>Data value in TB: '+ data_value_tb+'</p>';
+                          data_content += '<p>Data value in GB: '+ data_value_gb+'</p>';
+                          data_content += '<p>Data value in MB: '+ data_value_mb+'</p>';
+                          data_content += '<p>Price: &#8358;'+ selling_price+'</p>';
+                          $('#bulk_data_plan_details').removeClass('hidden');
+                          $('#bulk_data_plan_details').html(data_content);
+                      }else{
+                          $('#bulk_data_plan_details').removeClass('hidden');
+                          $('#bulk_data_plan_details').html('');
+                          console.log(response);
+                      } 
+                    
+                  },
+                  error: function(xhr, status, error) {
+                      // Handle errors if needed
+                      // console.error(xhr.responseText);
+                      $('#bulk_data_plan_details').html('');
+                      console.log('Something went wrong')
+                  }
+              });
+
+            })
+
+          $('#bulk_data_wallet_id').change(function(e){
+              e.preventDefault();
+              $('#bulk_data_plan_id').html('<option value="">Select a plan</option>');
+              // $('#bulk_data_plan_details').addClass('hidden');
+              $('#bulk_data_plan_details').html('');
+            //  alert('testing')
+              
+              const bulk_data_wallet_id = $(this).val();
+              const _token = $('#_token').val();
+             
+              const data = {
+                bulk_data_wallet_id : bulk_data_wallet_id,
+                _token : _token
+              };
+              console.log(_token,bulk_data_wallet_id);
+
+              $.ajax({
+                  type: 'POST',
+                  url: "{{ route('user.data.fetch_bulk_data_plans') }}",
+                  data: data,
+                  dataType: 'json',
+                  success: function(response) {
+                      console.log(response);
+                     
+                      if(response.status == '1'){
+                        let dataResult = response?.data;
+                        $('#bulk_data_plan_id').html('<option value="">Select a plan</option>');
+
+                        dataResult.forEach(element => {
+                            const idd = element.id;
+                            const data_value_mb = element.data_value_mb;
+                            const data_value_gb = element.data_value_gb;
+                            const data_value_tb = element.data_value_tb;
+                            const bulk_data_plan_name = element.bulk_data_plan_name;
+                            // console.log(element)
+                             option = "<option value="+idd+">"+bulk_data_plan_name+"</option>"
+                            $('#bulk_data_plan_id').append(option);
+                          // console.log(category_name);
+                        });
+
+                      }else{
+                        
+                        console.log(response);
+                      }
+                    
+                  },
+                  error: function(xhr, status, error) {
+                      // Handle errors if needed
+                      console.error(xhr.responseText);
+                  }
+              });
+          });
 
           $('#network_id').change(function(){
             $('#product_plan_category_id').html('<option value="all">All categories selected</option>');

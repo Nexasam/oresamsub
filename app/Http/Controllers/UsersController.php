@@ -2,30 +2,41 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Role;
 use App\Models\User;
+use App\Models\UserPlan;
 use Illuminate\Http\Request;
 use Yajra\DataTables\DataTables;
+use App\Models\ProductPlanCategory;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Auth\Events\Registered;
 use App\Http\Requests\StoreUserRequest;
 use Illuminate\Support\Facades\Session;
 use App\Http\Requests\UpdateUserRequest;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rules\Password;
+
 
 class UsersController extends Controller
 {
+
+    
+
     /**
      * Display a listing of the resource.
      */
     public function index(Request $request)
     {
-        return view('admin.users.index');
+        
+        $users = User::paginate(50);
+        return view('admin.users.index')->with(['users' => $users]);
     }
-
-
-
 
     public function fetch_users(){
         $data = User::limit(4000)->get();
+        // return $data;
         return DataTables::of($data)
             ->addIndexColumn()
             ->addColumn('first_name',function($data){
@@ -120,14 +131,15 @@ class UsersController extends Controller
      */
     public function store(Request $request)
     {
+      //for ADMIN
       $validator = Validator::make($request->all(), [
         'first_name' => 'required|max:255',
         'last_name' => 'required|max:255',
+        'other_names' => 'nullable|max:255',
         'phone_number' => 'required',
         'email' => 'required|unique:users,email',
         'password' => 'required',
         'confirm_password' => 'required',
-        'gender' => 'required',
       ]);
       
 
@@ -135,21 +147,25 @@ class UsersController extends Controller
         return redirect()->back()->withErrors($validator)->withInput();
       }
 
+      $role_details = Role::where('role_name','User')->first();
+      $default_reseller_plan = UserPlan::where('is_default',1)->first();
       $data['first_name'] = $request->first_name;
       $data['last_name'] = $request->last_name;
+      $data['other_names'] = $request->other_names;
       $data['phone_number'] = $request->phone_number;
       $data['email'] = $request->email;
-      $data['first_name'] = $request->first_name;
+      $data['role'] = $role_details->id;
+      $data['user_plan_id'] = $default_reseller_plan->id;
       $data['password'] = Hash::make($request->password);
       $data['confirm_password'] = Hash::make($request->confirm_password);
-      $data['gender'] = $request->gender;
+      // $data['gender'] = $request->gender;
 
       $create_user = User::create($data);
 
       if($create_user){
-        Session::flash('success','User successfully created');
+        Session::flash('success','Account successfully created');
       }else{
-        Session::flash('failure','Error occurred while creating user');
+        Session::flash('failure','Error occurred while creating account');
       }
 
       return redirect()->route('admin.users.index');
@@ -187,4 +203,5 @@ class UsersController extends Controller
     {
         //
     }
+
 }

@@ -7,7 +7,7 @@
             <img src="../assets/img/brand-logos/toggle-logo.png" alt="logo" class="main-logo toggle-logo">
             <img src="../assets/img/brand-logos/desktop-dark.png" alt="logo" class="main-logo desktop-dark">
             <img src="../assets/img/brand-logos/toggle-dark.png" alt="logo" class="main-logo toggle-dark"> --}}
-            <img src="{{ asset( env('APP_ASSETS_BASE_URL').'img/logos/Crystalpay.png') }}" alt="logo"
+            <img src="{{ asset( env('APP_ASSETS_BASE_URL').'img/logos/logo.png') }}" alt="logo"
             class="w-14 h-16 mx-auto block dark:hidden" >
           
 
@@ -88,6 +88,7 @@
                     </a>
                     <ul class="slide-menu child1">
                         <li class="slide"><a href="{{ route('user.data.buy_data') }}" class="side-menu__item">Buy Data</a></li>
+                        <li class="slide"><a href="{{ route('user.data.buy_bulk_data') }}" class="side-menu__item">Buy Bulk Data</a></li>
                       
                     </ul>
                 </li>
@@ -227,7 +228,7 @@
 
                  <!-- Start::slide: for users -->
                  <li class="slide  has-sub">
-                    <a href="#" class="side-menu__item">
+                    <a href="{{ route('user.settings.index') }}" class="side-menu__item">
                         <i class="ri-home-8-line side-menu__icon"></i>
                         <span class="side-menu__label">User Settings</span>
                         <i class="ri ri-arrow-right-s-line side-menu__angle"></i>

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Exception;
 use App\Models\Network;
 use Illuminate\Http\Request;
 
@@ -14,4 +15,5 @@ class NetworkController extends Controller
         ]);
     }
 
+   
 }

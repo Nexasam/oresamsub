@@ -52,11 +52,13 @@
                                     <th>ID</th>
                                     <th>Product plan category name</th>
                                     <th>Automation</th>
+                                    <th></th>
                                     <th>Network</th>
                                     <th>Product</th>
-                                    <td>Bulk data wallet</td>
+                                    {{-- <td>Bulk data wallet</td> --}}
                                     <td>MB measurement</td>
                                     <th>Date added</th>
+                                    <th>Bulk data plans</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -68,7 +70,7 @@
                                   <tr>
                                   <td><small>{{ $count++ }}</small></td>
                                   <td><small>{{ $product_plan_category->product_plan_category_name ?? 'nil' }}</small></td>
-                                  <td><small>
+                                  <td colspan="2"><small>
                                       <div class="mb-2">
                                           <input type="hidden" class="product_category_id" id="product_category_id_{{ $product_plan_category['id'] }}" value="{{  $product_plan_category['id'] }}">
                                           <select  class="my-auto ti-form-select update_automation_product_plan_category"  id="{{  $product_plan_category['id'] }}" name="automation_id_{{  $product_plan_category['id'] }}"  >
@@ -76,21 +78,33 @@
                                             @foreach ($automations as $automation)
                                                 <option @if ( $product_plan_category->automation_id == $automation->id )
                                                     selected
-                                                @endif value="{{ $automation->id }}">{{ $automation->automation_name }}</option>
+                                                @endif value="{{ $automation->id }}"><small>{{ $automation->automation_name }}</small></option>
                                             @endforeach
                                           </select>
+                                        
                                           <br>
-                                          <span class="notify_span" id="notify_span{{  $product_plan_category['id'] }}""></span>
+                                          <small class="notify_span" id="notify_span{{  $product_plan_category['id'] }}""></small>
                                       </div>  
                                   </small></td>
                                   <td><small>{{ $product_plan_category->network->network_name ?? 'nil' }}</small></td>
                                   <td><small>{{ $product_plan_category->product->product_name ?? 'nil' }}</small></td>
-                                  <td><small>{{ number_format($product_plan_category->bulk_data_wallet_in_mb) }}MB
+                                  {{-- <td><small>{{ number_format($product_plan_category->bulk_data_wallet_in_mb) }}MB
                                     <br> {{ number_format( ceil($product_plan_category->bulk_data_wallet_in_mb / $product_plan_category->mb_data_measurement) ) }}GB
                                     <br> {{ number_format( ceil($product_plan_category->bulk_data_wallet_in_mb / $product_plan_category->mb_data_measurement / $product_plan_category->mb_data_measurement)) }}TB
-                                  </small></td>
+                                  </small></td> --}}
                                   <td><small>{{ number_format($product_plan_category->mb_data_measurement) }}</small></td>
                                   <td><small>{{ $product_plan_category->created_at }}</small></td>
+                                  <td>
+                                    @if ($product_plan_category->product != NULL )
+                                        <a href="{{ route('admin.bulk_data_plans.index',$product_plan_category->id) }}" class="hs-dropdown-toggle ti-btn ti-btn-primary">
+                                        Manage Bulk Plans</a>
+
+                                    @else
+                                          <i>Not applicable</i>
+
+                                    @endif
+
+                                  </td>
                                  </tr>   
                               @endforeach
                                 
@@ -131,97 +145,51 @@
                                 <div class="box">
                                     
                                     <div class="box-body">
-                                      <form method="POST" action="{{ route('admin.products.store')}}">
+                                      <form method="POST" action="{{ route('admin.product_plan_categories.store')}}">
                                         @csrf
 
                                             <div class="grid w-full lg:w-1/2 lg:grid-cols-1 gap-6 space-y-4 lg:space-y-0">
                                             
                                                 <div class="space-y-2">
                                                   <label class="ti-form-label mb-0">Product Plan Category Name</label>
-                                                  <input type="text" required class="my-auto ti-form-input"  id="product_name" name="product_name" placeholder="Enter product plan category name">
+                                                  <input type="text" required class="my-auto ti-form-input"  id="product_plan_category_name" name="product_plan_category_name" placeholder="Enter product plan category name">
                                                 </div>
                                           
                                                 <div class="space-y-2">
                                                     <label class="ti-form-label mb-0">Choose Product</label>
-                                                    <select id="product_category_id" name="product_category_id"  class="my-auto ti-form-select">
-                                                        <option selected>Select</option>
-                                                        <option>Nil</option>
-                                                         @foreach ($product_plan_categories as $product_category)
-                                                             <option value="{{ $product_category->id }}">{{ $product_category->product_plan_category_name }}</option>
+                                                    <select id="product_id" required name="product_id"  class="my-auto ti-form-select">
+                                                        <option value="">select</option>
+                                                         @foreach ($products as $product)
+                                                             <option value="{{ $product->id }}">{{ $product->product_name }}</option>
                                                          @endforeach
                                                       </select>
                                                 </div>
 
                                                 <div class="space-y-2">
                                                   <label class="ti-form-label mb-0">Choose Network (Optional)</label>
-                                                  <select id="product_category_id" name="product_category_id"  class="my-auto ti-form-select">
-                                                      <option selected>Select</option>
-                                                      <option>Nil</option>
-                                                       @foreach ($product_plan_categories as $product_category)
-                                                           <option value="{{ $product_category->id }}">{{ $product_category->product_plan_category_name }}</option>
+                                                  <select id="network_id" name="network_id"  class="my-auto ti-form-select">
+                                                      <option value="">Select</option>
+                                                      <option value="">Nil</option>
+                                                       @foreach ($networks as $network)
+                                                           <option value="{{ $network->id }}">{{ $network->network_name }}</option>
                                                        @endforeach
                                                     </select>
                                               </div>
 
                                               <div class="space-y-2">
                                                 <label class="ti-form-label mb-0">Choose Automation</label>
-                                                <select id="product_category_id" name="product_category_id"  class="my-auto ti-form-select">
-                                                    <option selected>Select</option>
-                                                    <option>Nil</option>
-                                                     @foreach ($product_plan_categories as $product_category)
-                                                         <option value="{{ $product_category->id }}">{{ $product_category->product_plan_category_name }}</option>
+                                                <select required id="automation_id" name="automation_id"  class="my-auto ti-form-select">
+                                                    <option value="">Select</option>
+                                                     @foreach ($automations as $automation)
+                                                         <option value="{{ $automation->id }}">{{ $automation->automation_name }}</option>
                                                      @endforeach
                                                   </select>
                                             </div>
 
-                                                <div class="space-y-2">
-                                                  <label class="ti-form-label mb-0">Visibility</label>
-                                                  <select id="visibility" name="visibility" required class="my-auto ti-form-select">
-                                                      <option selected>Select</option>
-                                                      <option value="1">YES</option>
-                                                      <option value="0">NO</option>
-                                                    </select>
-                                              </div>
-
-                                              <div class="space-y-2 ">
-                                                <label class="ti-form-label mb-0">Activation Status</label>
-                                                <ul class="flex flex-col sm:flex-row">
-                                                    <li
-                                                        class="ti-list-group gap-x-2.5 bg-white border text-gray-800 sm:-ms-px sm:mt-0 sm:first:rounded-se-none sm:first:rounded-ss-none sm:first:rounded-es-sm sm:last:rounded-es-none sm:last:rounded-ee-none sm:last:rounded-se-sm dark:bg-bgdark dark:border-white/10 dark:text-white">
-                                                        <div class="relative flex items-start w-full">
-                                                            <div class="flex items-center h-5">
-                                                                <input  id="hs-horizontal-list-group-item-radio-1"
-                                                                    name="active_status" value="1" type="radio"
-                                                                    class="ti-form-radio" checked>
-                                                            </div>
-                                                            <label for="hs-horizontal-list-group-item-radio-1"
-                                                                class="ms-3 block w-full text-sm text-gray-600 dark:text-white/70">
-                                                                YES
-                                                            </label>
-                                                        </div>
-                                                    </li>
-            
-                                                    <li
-                                                    class="ti-list-group gap-x-2.5 bg-white border text-gray-800 sm:-ms-px sm:mt-0 sm:first:rounded-se-none sm:first:rounded-ss-none sm:first:rounded-es-sm sm:last:rounded-es-none sm:last:rounded-ee-none sm:last:rounded-se-sm dark:bg-bgdark dark:border-white/10 dark:text-white">
-                                                    <div class="relative flex items-start w-full">
-                                                            <div class="flex items-center h-5">
-                                                                <input name="active_status" value="1" id="hs-horizontal-list-group-item-radio-2"
-                                                                     type="radio"
-                                                                    class="ti-form-radio">
-                                                            </div>
-                                                            <label for="hs-horizontal-list-group-item-radio-2"
-                                                                class="ms-3 block w-full text-sm text-gray-600 dark:text-white/70">
-                                                                NO
-                                                            </label>
-                                                        </div>
-                                                    </li>
-            
-                                                
-                                                </ul>
-                                               </div>
+                                     
                                                 
                                                 <div class="space-y-2">
-                                                    <button type="submit" class="ti-btn ti-btn-primary w-full">Create Product</button>
+                                                    <button type="submit" class="ti-btn ti-btn-primary w-full">Create Product Plan Category</button>
                                                 </div>
                                               
                                                 <br>

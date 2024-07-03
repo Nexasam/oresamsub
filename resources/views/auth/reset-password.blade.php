@@ -1,39 +1,141 @@
-<x-guest-layout>
-    <form method="POST" action="{{ route('password.store') }}">
-        @csrf
+<!DOCTYPE html>
+<html lang="en" dir="ltr" class="h-full">
 
-        <!-- Password Reset Token -->
-        <input type="hidden" name="token" value="{{ $request->route('token') }}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> Web App - CrystalData </title>
+    <meta name="description" content="A Tailwind CSS admin template is a pre-designed web page for an admin dashboard. Optimizing it for SEO includes using meta descriptions and ensuring it's responsive and fast-loading.">
+    <meta name="keywords" content="analytics dashboard,jobs dashboard,crm dashboard examples,personal dashboard,sales dashboard sample,best crm dashboard,crypto dashboard template,sales analytics dashboard,stocks dashboard,hrm dashboard,ecommerce admin panel template,sales admin dashboard,admin panel for ecommerce website,website template ecommerce,template dashboard,course dashboard,template ecommerce website">
 
-        <!-- Email Address -->
-        <div>
-            <x-input-label for="email" :value="__('Email')" />
-            <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email', $request->email)" required autofocus autocomplete="username" />
-            <x-input-error :messages="$errors->get('email')" class="mt-2" />
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="../assets/img/brand-logos/favicon.ico">
+
+    <!-- Style Css -->
+    <link rel="stylesheet" href="../assets/css/style.css">
+
+    <!-- Simplebar Css -->
+    <link rel="stylesheet" href="../assets/libs/simplebar/simplebar.min.css">
+
+    <!-- Color Picker Css -->
+    <link rel="stylesheet" href="../assets/libs/@simonwep/pickr/themes/nano.min.css">
+
+</head>
+
+<body class="error-page flex h-full !py-0 bg-white dark:bg-bgdark">
+    <div class="grid grid-cols-12 gap-6 w-full h-full">
+        <div class="lg:col-span-6 col-span-12 hidden lg:block relative">
+            <div class="cover relative w-full h-full z-[1]">
+                <img src="../assets/img/authentication/auth.jpg" alt="logo" class="object-cover mx-auto h-full">
+            </div>
         </div>
+        <div class="lg:col-span-6 col-span-12">
+            <div class="authentication-page w-full">
+                <!-- ========== MAIN CONTENT ========== -->
+                <main id="content" class="w-full max-w-md mx-auto p-6">
+                    {{-- <a href="#" class="header-logo lg:hidden">
+                        <img src="../assets/img/brand-logos/desktop-logo.png" alt="logo" class="mx-auto block dark:hidden">
+                        <img src="../assets/img/brand-logos/desktop-dark.png" alt="logo" class="mx-auto hidden dark:block">
+                    </a> --}}
+                    <div class="mt-7">
+                        <div class="p-4 sm:p-7">
+                            <a href="#" class="header-logo">
+                                <img src="{{ asset(env('APP_ASSETS_BASE_URL').'img/logos/logo.png') }}" alt="logo"
+                                class="w-20 h-20 mx-auto block dark:hidden" alt="logo" class="">
+                                {{-- <img src="../../assets/img/logos/{{  $logo }}" alt="logo"
+                                class="w-20 h-20 mx-auto hidden dark:block" alt="logo" class=""> --}}
+                                {{-- <img src="../assets/img/brand-logos/desktop-dark.png" alt="logo" class="mx-auto hidden dark:block"> --}}
+                            </a>
+                             <br>
+                            <hr>
+                            <br>
 
-        <!-- Password -->
-        <div class="mt-4">
-            <x-input-label for="password" :value="__('Password')" />
-            <x-text-input id="password" class="block mt-1 w-full" type="password" name="password" required autocomplete="new-password" />
-            <x-input-error :messages="$errors->get('password')" class="mt-2" />
+                            <div class="text-center">
+                                @if (session('status') == 'verification-link-sent')
+                                <div class="mb-4 font-medium text-sm text-green-600 dark:text-green-400">
+                                    {{ __('A new verification link has been sent to the email address you provided during registration.') }}
+                                </div>
+                                @endif
+                                <h1 class="block text-2xl font-bold text-gray-800 dark:text-white">Complete Password Reset</h1>
+                                {{-- <p class="mt-3 text-sm text-gray-600 dark:text-white/70">
+                                    Forgot your password? No problem. Just let us know your email address and we will email you a password reset link that will allow you to choose a new one.
+                                </p> --}}
+                            </div>
+
+                            <div class="mt-5">
+                                {{-- <button type="button"
+                                    class="w-full py-2 px-3 inline-flex justify-center items-center gap-2 rounded-sm border font-medium bg-white text-gray-700 shadow-sm align-middle hover:bg-gray-50 focus:outline-none focus:ring-0 focus:ring-offset-0 focus:ring-offset-white focus:ring-primary transition-all text-sm dark:bg-bgdark dark:hover:bg-black/20 dark:border-white/10 dark:text-white/70 dark:hover:text-white dark:focus:ring-offset-white/10">
+                                    <img src="../assets/img/authentication/social/1.png" class="w-4 h-4"
+                                        alt="google-img">
+                                    Sign in with Google
+                                </button>
+
+                                <div
+                                    class="py-3 flex items-center text-xs text-gray-400 uppercase before:flex-[1_1_0%] before:border-t before:border-gray-200 before:me-6 after:flex-[1_1_0%] after:border-t after:border-gray-200 after:ms-6 dark:text-white/70 dark:before:border-white/10 dark:after:border-white/10">
+                                    Or
+                                </div> --}}
+                                <x-auth-session-status class="mb-4" :status="session('status')" />
+                                <!-- Form -->
+                                <form method="POST" action="{{ route('password.store') }}">
+                                    @csrf
+
+                                    <input type="hidden" name="token" value="{{ $request->route('token') }}">
+
+                                    <div>
+                                        <div class="grid gap-y-4">
+                                            <div>
+                                                <label for="email" class="block text-sm mb-2 dark:text-white">Email address</label>
+                                                <div class="relative">
+                                                    <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email', $request->email)" required autofocus autocomplete="username" />
+                                                    <x-input-error :messages="$errors->get('email')" class="mt-2" />
+                                                </div>
+                                            </div>
+
+                                            <div>
+                                                <label for="password" class="block text-sm mb-2 dark:text-white">Password</label>
+                                                <div class="relative">
+                                                    <x-text-input id="password" class="block mt-1 w-full" type="password" name="password" required autocomplete="new-password" />
+                                                    <x-input-error :messages="$errors->get('password')" class="mt-2" />
+                                                </div>
+                                            </div>
+
+                                            <div>
+                                                <label for="password_confirmation" class="block text-sm mb-2 dark:text-white">Confirm password</label>
+                                                <div class="relative">
+                                                    <x-text-input id="password_confirmation" class="block mt-1 w-full"
+                                                    type="password"
+                                                    name="password_confirmation" required autocomplete="new-password" />
+                                                    <x-input-error :messages="$errors->get('password_confirmation')" class="mt-2" />
+                                                </div>
+                                            </div>
+                                            <!-- End Checkbox -->
+                                            <x-primary-button class="ms-3">
+                                                {{ __('Reset Password') }}
+                                            </x-primary-button>
+                                        </div>
+                                    </div>
+                                </form>
+
+                                <!-- End Form -->
+                            </div>
+                        </div>
+                    </div>
+                </main>
+                <!-- ========== END MAIN CONTENT ========== -->
+            </div>
         </div>
+    </div>
 
-        <!-- Confirm Password -->
-        <div class="mt-4">
-            <x-input-label for="password_confirmation" :value="__('Confirm Password')" />
+    <!-- popperjs -->
+    <script src="../assets/libs/@popperjs/core/umd/popper.min.js"></script>
 
-            <x-text-input id="password_confirmation" class="block mt-1 w-full"
-                                type="password"
-                                name="password_confirmation" required autocomplete="new-password" />
+    <!-- Custom-Switcher JS -->
+    <script src="../assets/js/custom-switcher.js"></script>
 
-            <x-input-error :messages="$errors->get('password_confirmation')" class="mt-2" />
-        </div>
+    <!-- Preline JS -->
+    <script src="../assets/libs/preline/preline.js"></script>
 
-        <div class="flex items-center justify-end mt-4">
-            <x-primary-button>
-                {{ __('Reset Password') }}
-            </x-primary-button>
-        </div>
-    </form>
-</x-guest-layout>
+
+</body>
+
+</html>

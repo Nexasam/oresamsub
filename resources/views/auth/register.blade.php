@@ -33,16 +33,18 @@
             <div class="authentication-page w-full">
                 <!-- ========== MAIN CONTENT ========== -->
                     <main id="content"  class="w-full max-w-md mx-auto p-6">
-                        <a href="#" class="header-logo lg:hidden">
-                            <img src="../assets/img/brand-logos/desktop-logo.png" alt="logo" class="mx-auto block dark:hidden">
-                            <img src="../assets/img/brand-logos/desktop-dark.png" alt="logo" class="mx-auto hidden dark:block">
+                        <a href="#" class="header-logo lg:hidden">        
+                            <img src="{{ asset(env('APP_ASSETS_BASE_URL').'img/logos/logo.png') }}" alt="logo" class="mx-auto block dark:hidden">
+                            <img src="{{ asset(env('APP_ASSETS_BASE_URL').'img/logos/logo.png') }}" alt="logo" class="mx-auto hidden dark:block">
+                            {{-- <img src="../assets/img/brand-logos/desktop-logo.png" alt="logo" class="mx-auto block dark:hidden">
+                            <img src="../assets/img/brand-logos/desktop-dark.png" alt="logo" class="mx-auto hidden dark:block"> --}}
                         </a>
                         <div class="mt-7">
                             <div class="p-4 sm:p-7">
                                 <a href="#" class="header-logo">
-                                    <img src="../../assets/img/logos/Crystalpay.png" alt="logo"
+                                    <img src="{{ asset(env('APP_ASSETS_BASE_URL').'img/logos/logo.png') }}" alt="logo"
                                     class="w-20 h-20 mx-auto block dark:hidden" alt="logo" class="">
-                                    {{-- <img src="../../assets/img/logos/Crystalpay.png" alt="logo"
+                                    {{-- <img src="../../assets/img/logos/{{  $logo }}" alt="logo"
                                     class="w-20 h-20 mx-auto hidden dark:block" alt="logo" class=""> --}}
                                     {{-- <img src="../assets/img/brand-logos/desktop-dark.png" alt="logo" class="mx-auto hidden dark:block"> --}}
                                 </a>
@@ -95,6 +97,16 @@
                                             </div>
                                             <!-- End Form Group -->
 
+                                             <!-- Form Group -->
+                                             <div>
+                                                <label for="last_name" class="block text-sm mb-2 dark:text-white">Other Names</label>
+                                                <div class="relative">
+                                                    <x-text-input id="other_names" class="block mt-1 w-full" type="text" name="other_names" :value="old('other_names')" required autofocus autocomplete="other_names" />
+                                                    <x-input-error :messages="$errors->get('other_names')" class="mt-2" />
+                                                </div>
+                                            </div>
+                                            <!-- End Form Group -->
+
 
 
                                             <!-- Form Group -->
@@ -113,6 +125,16 @@
                                                 <div class="relative">
                                                     <x-text-input id="phone_number" class="block mt-1 w-full" type="text" name="phone_number" :value="old('phone_number')" required autofocus autocomplete="phone_number" />
                                                     <x-input-error :messages="$errors->get('phone_number')" class="mt-2" />
+                                                </div>
+                                            </div>
+                                            <!-- End Form Group -->
+
+                                             <!-- Form Group -->
+                                             <div>
+                                                <label for="upline_referral_phone_number" class="block text-sm mb-2 dark:text-white">Referral phone number (optional)</label>
+                                                <div class="relative">
+                                                    <x-text-input id="upline_referral_phone_number" class="block mt-1 w-full" type="text" name="upline_referral_phone_number" :value="old('upline_referral_phone_number')" required autofocus autocomplete="upline_referral_phone_number" />
+                                                    <x-input-error :messages="$errors->get('upline_referral_phone_number')" class="mt-2" />
                                                 </div>
                                             </div>
                                             <!-- End Form Group -->

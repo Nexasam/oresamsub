@@ -14,9 +14,9 @@
 
         <div class="responsive-logo">
           <a class="responsive-logo-dark" href="index.html" aria-label="Brand"><img
-              src="{{ asset(env('APP_ASSETS_BASE_URL').'img/brand-logos/desktop-logo.png') }}" alt="logo" class="mx-auto"></a>
+              src="{{ asset(env('APP_ASSETS_BASE_URL').'img/logos/logo.png') }}" height="50" width="60" alt="logo" class="mx-auto"></a>
           <a class="responsive-logo-light" href="index.html" aria-label="Brand"><img
-              src="{{ asset(env('APP_ASSETS_BASE_URL').'img/brand-logos/desktop-dark.png') }}" alt="logo" class="mx-auto"></a>
+              src="{{ asset(env('APP_ASSETS_BASE_URL').'img/logos/logo.png') }}" height="50" width="60"  alt="logo" class="mx-auto"></a>
         </div>
 
         <div class="header-right">
@@ -183,14 +183,14 @@
                 <button id="dropdown-profile" type="button"
                   class="hs-dropdown-toggle ti-dropdown-toggle gap-2 p-0 flex-shrink-0 h-8 w-8 rounded-full shadow-none focus:ring-gray-400 text-xs dark:focus:ring-white/10">
                   <img class="inline-block rounded-full ring-2 ring-white dark:ring-white/10"
-                    src="{{ asset(env('APP_ASSETS_BASE_URL').'img/users/1.jpg ') }}" alt="Image Description">
+                    src="{{ asset(env('APP_ASSETS_BASE_URL').'img/users/default_profile.jpg ') }}" alt="Image Description">
                 </button>
 
                 <div class="hs-dropdown-menu ti-dropdown-menu border-0 w-[20rem]" aria-labelledby="dropdown-profile">
                   <div class="ti-dropdown-header !bg-primary flex">
                     <div class="me-3">
                       <img class="avatar shadow-none rounded-full !ring-transparent"
-                        src="{{ asset(env('APP_ASSETS_BASE_URL').'img/users/1.jpg') }}"  alt="profile-img">
+                        src="{{ asset(env('APP_ASSETS_BASE_URL').'img/users/default_profile.jpg') }}"  alt="profile-img">
                     </div>
                     <div>
                       <p class="ti-dropdown-header-title !text-white">Json Taylor</p>

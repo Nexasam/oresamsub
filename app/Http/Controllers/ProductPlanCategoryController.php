@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Network;
 use App\Models\Product;
 use App\Models\Automation;
 use Illuminate\Http\Request;
@@ -12,44 +13,51 @@ use Illuminate\Support\Facades\Validator;
 class ProductPlanCategoryController extends Controller
 {
     public function index(){
-        $product_plan_categories = ProductPlanCategory::get();
+        $product_plan_categories = ProductPlanCategory::with(['product' => function($query){
+            $query->where('slug','data');
+        }])->latest()->get();
+
 
         $automations = Automation::select('id','automation_name')->get();
+        $networks = Network::select('id','network_name')->get();
+        $products = Product::select('id','product_name')->get();
         
         $data['automations'] = $automations;
+        $data['products'] = $products;
+        $data['networks'] = $networks;
         $data['product_plan_categories'] = $product_plan_categories;
        
         return view('admin.product_plan_categories.index')->with($data);
     }
 
     public function store(Request $request){
-        // dd($request->all());
- 
        
-        $validator = Validator::make($request->all(), [
-            'product_plan_category_name' => 'required|max:255|unique:products,product_name',
-            'product_id' => 'required|exists:product_categories,id',
+       
+         $validator = Validator::make($request->all(), [
+            'product_plan_category_name' => 'required|max:255|unique:product_plan_categories,product_plan_category_name',
+            'product_id' => 'required|exists:products,id',
+            'network_id' => 'nullable|exists:networks,id',
+            'automation_id' => 'required|exists:automations,id',
           ]);
+
+
           
     
           if ($validator->stopOnFirstFailure()->fails()) {
             return redirect()->back()->withErrors($validator)->withInput();
           }
-    
-          $data['product_name'] = $request->product_name;
-          $data['product_categories_id'] = $request->product_category_id;
-          $data['visibility'] = $request->visibility;
-          $data['active_status'] = $request->active_status;
+
+          $data = $validator->validated();
          
-          $create_product = Product::create($data);
+          $create_product_plan_categories = ProductPlanCategory::create($data);
     
-          if($create_product){
-            Session::flash('success','Product successfully created');
+          if($create_product_plan_categories){
+            Session::flash('success','Product plan categories successfully created');
           }else{
-            Session::flash('failure','Error occurred while creating product');
+            Session::flash('failure','Error occurred while creating product plan category');
           }
     
-          return redirect()->route('admin.products.index');
+          return redirect()->back();
     }
 
     public function updateAutomation(Request $request){

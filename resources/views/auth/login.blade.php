@@ -47,9 +47,9 @@
                     <div class="mt-7">
                         <div class="p-4 sm:p-7">
                             <a href="#" class="header-logo">
-                                <img src="{{ asset(env('APP_ASSETS_BASE_URL').'img/logos/Crystalpay.png') }}" alt="logo"
+                                <img src="{{ asset(env('APP_ASSETS_BASE_URL').'img/logos/logo.png') }}" alt="logo"
                                 class="w-20 h-20 mx-auto block dark:hidden" >
-                                {{-- <img src="../../assets/img/logos/Crystalpay.png" alt="logo"
+                                {{-- <img src="../../assets/img/logos/{{  $logo }}" alt="logo"
                                 class="w-20 h-20 mx-auto hidden dark:block" alt="logo" class=""> --}}
                                 {{-- <img src="../assets/img/brand-logos/desktop-dark.png" alt="logo" class="mx-auto hidden dark:block"> --}}
                             </a>
@@ -102,7 +102,7 @@
                                                     <label for="password"
                                                         class="block text-sm mb-2 dark:text-white">Password</label>
                                                     <a class="text-sm text-primary decoration-2 hover:underline font-medium"
-                                                        href="#">Forgot password?</a>
+                                                        href="{{  route('password.email') }}">Forgot password?</a>
                                                 </div>
                                                 <div class="relative">
                                                         {{-- <input type="password" id="password" name="password"

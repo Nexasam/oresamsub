@@ -12,7 +12,11 @@ use App\Models\Transaction;
 use Illuminate\Http\Request;
 use App\Models\ProductCategory;
 use Illuminate\Validation\Rule;
+use App\Models\UserBulkDataWallet;
+use Illuminate\Support\Facades\DB;
 use App\Models\ProductPlanCategory;
+use App\Models\BulkDataProductPlans;
+use App\Models\UserBulkDataPurchase;
 use Illuminate\Support\Facades\Validator;
 
 class DataController extends Controller
@@ -30,6 +34,7 @@ class DataController extends Controller
      */
     public function buy_data()
     {
+
         $networks = Network::all();
         $product = Product::where('slug','data')->first(); //TODO: have enums that gets the id later
         $data['networks'] = $networks;
@@ -47,6 +52,21 @@ class DataController extends Controller
 
         // dd($data);
         return view('user.data.buy_data')->with($data);
+    }
+
+     /**
+     * Show the form for creating a new resource.
+     */
+    public function buy_bulk_data()
+    {
+        $bulk_data_wallets = UserBulkDataWallet::with('product_plan_category')->where('user_id',auth()->id())->get();
+        $user_bulk_data_purchases = UserBulkDataPurchase::with('product_plan_category')->where('user_id',auth()->id())->latest()->paginate(50);
+        
+        $data['bulk_data_wallets'] = $bulk_data_wallets;
+        $data['user_bulk_data_purchases'] = $user_bulk_data_purchases;
+
+        // dd($data);
+        return view('user.bulk_data.buy_bulk_data')->with($data);
     }
 
     /**
@@ -168,6 +188,127 @@ class DataController extends Controller
 
     }
 
+        /**
+     * Store a newly created resource in storage.
+     */
+    public function buy_bulk_data_action(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'bulk_data_plan_id' => 'required|exists:bulk_data_product_plans,id',
+            'bulk_data_wallet_id' => 'required|exists:user_bulk_data_wallets,id',
+        ]);
+        
+        if ($validator->stopOnFirstFailure()->fails()) {
+            return response()->json(['status'=>'-1', 'message'=>$validator->errors()->first(),'data' => $request->all() ]);
+        }
+
+
+
+        $success = 0;
+        $failure = 0;
+        $status = 0;
+        $message = 'Pending';
+        $display_results = [];
+
+        $user_bulk_data_wallet = UserBulkDataWallet::where('id',$request->bulk_data_wallet_id)->first();
+        if(! $user_bulk_data_wallet){
+            return response()->json(['status'=>'-1', 'message'=>'Wallet not found' ]);
+        }
+
+        $bulk_data_plan = BulkDataProductPlans::where('id',$request->bulk_data_plan_id)->first();
+        if(! $bulk_data_plan){
+            return response()->json(['status'=>'-1', 'message'=>'bulk data product not found' ]);
+        }
+
+
+        $user_details = auth()->user();
+        if(! $user_details){
+            //end session and redirect to login
+            redirect(url('/login'));
+            return response()->json(['status'=>'-1', 'message'=>'please logout and login again' ]);
+        }
+
+
+        $user_plan_id = auth()->user()->user_plan_id;
+
+        $main_wallet = auth()->user()->main_wallet;
+
+       
+        $user_level = UserPlan::select('plan_level')->where('id',$user_plan_id)->first();
+
+        $plan_level = $user_level->plan_level;
+
+        $user_plan_selling_price = 'user_level_'.$plan_level.'_selling_price';
+
+      
+        $price = $bulk_data_plan->$user_plan_selling_price;
+
+
+        $wallet_before = $main_wallet;
+
+
+        ////validate wallet
+        if($price > $wallet_before){
+            return response()->json(['status'=>'-1', 'message'=>'Insufficient wallet balance' ]);
+        }
+
+        DB::beginTransaction();
+
+        try{
+    //now, lets do actual txn
+            $wallet_after = $wallet_before - abs($price);
+
+            $data_in_mb = $bulk_data_plan->data_value_mb;
+
+            $former_data_wallet_balance = $user_bulk_data_wallet->bulk_wallet_balance_mb; 
+
+            $former_alltime_data_wallet_balance = $user_bulk_data_wallet->alltime_bulk_wallet_balance_mb; 
+            $new_data_wallet_balance =  $former_data_wallet_balance + $data_in_mb;
+            $new_alltime_data_wallet_balance =  $former_alltime_data_wallet_balance + $data_in_mb;
+
+        
+            //update user wallet 
+            $dataaa['bulk_data_wallet_id'] = $user_bulk_data_wallet->id;
+            $dataaa['bulk_data_plan_name'] = $bulk_data_plan->bulk_data_plan_name;
+            $dataaa['user_id'] = $user_details->id;
+            $dataaa['main_wallet_before'] = $wallet_before;
+            $dataaa['main_wallet_after'] = $wallet_after;
+            $dataaa['wallet_data_balance_before'] = $former_data_wallet_balance;
+            $dataaa['wallet_data_balance_after'] = $new_data_wallet_balance;
+            $dataaa['bulk_data_product_plan_id'] = $bulk_data_plan->id;
+            $dataaa['plan_category_id'] = $bulk_data_plan->product_plan_category_id;
+            $dataaa['data_value_mb'] = $bulk_data_plan->data_value_mb;
+            $dataaa['data_value_gb'] = $bulk_data_plan->data_value_gb;
+            $dataaa['data_value_tb'] = $bulk_data_plan->data_value_tb;
+            $dataaa['amount_spent'] = $price;
+            $dataaa['mb_data_measurement'] =$bulk_data_plan->mb_data_measurement;
+            // return response()->json(['status'=>'-1', 'message'=>json_encode($dataaa)]);
+
+            $create = UserBulkDataPurchase::create($dataaa);
+
+            $user = User::where('id',$user_details->id)->update([
+                'main_wallet' => $wallet_after
+            ]);
+
+            $bulk_wallet_update = UserBulkDataWallet::where('id',$user_bulk_data_wallet->id)
+            ->update([
+                'bulk_wallet_balance_mb' => $new_data_wallet_balance,
+                'alltime_bulk_wallet_balance_mb' => $new_alltime_data_wallet_balance,
+            ]);
+
+            DB::commit();
+            return response()->json(['status'=>1, 'message'=>'Bulk data  was successfully processed', 'data' => $dataaa  ]);
+        
+        }catch(\Exception $exception){
+            logger($exception->getMessage().' on line '.$exception->getLine());
+            DB::rollBack();
+            return response()->json(['status'=>-1, 'message'=>$exception->getMessage() .' on line '.$exception->getLine(), 'data' => $dataaa  ]);
+
+        }
+
+     
+    }
+
 
     //TODO: move to a separate class
     public function validateUserWallet($user_id,$wallet_before,$phone_numbers_count,$amount){
@@ -176,6 +317,34 @@ class DataController extends Controller
     }
 
 
+     /**
+     * Get all the products plans categories.
+     */
+    public function fetch_bulk_data_plans(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'bulk_data_wallet_id' => 'required',
+        ]);
+          
+
+        if ($validator->stopOnFirstFailure()->fails()) {
+            return response()->json(['status'=>'-1', 'message'=>'Bulk data wallet should be selected','data' => $request->all() ]);
+        }
+
+        $bulk_data_wallet_id = $request->bulk_data_wallet_id;
+        $bulk_wallet_details = UserBulkDataWallet::where('id',$bulk_data_wallet_id)->first();
+        if($bulk_wallet_details == NULL){
+            return response()->json(['status'=>'-1', 'message'=>'Bulk data wallet could not be found','data' => [] ]);
+        }
+        $product_plans_category_id = $bulk_wallet_details->product_plan_category_id;
+        $bulk_data_plans_for_this_wallet = BulkDataProductPlans::where('product_plan_category_id',$product_plans_category_id)->get();
+        if( count($bulk_data_plans_for_this_wallet) <= 0){
+            return response()->json(['status'=>'-1', 'message'=>'No bulk data plan found for this wallet at the moment','data' => [] ]);
+        }
+        
+        return response()->json(['status'=>'1', 'message'=>'Product plans for this wallet fetched','data' => $bulk_data_plans_for_this_wallet ]);
+
+    }
 
     /**
      * Get all the products plans categories.
@@ -231,7 +400,7 @@ class DataController extends Controller
 
         foreach($product_plan_categories as $key=>$product_plan_category){
             //get the automation id
-            //get the product_category_id
+            //get the product_category_id 
             $product_plans = ProductPlan::where('product_plan_category_id',$product_plan_category->id)
             ->where('automation_id',$product_plan_category->automation_id)
             ->get();
@@ -259,6 +428,29 @@ class DataController extends Controller
         // return response()->json(['status'=>'1','user_level'=>$user_plan_id ,'message'=>'Product plans fetched','counter' =>count($product_planss),'data' => $product_planss ]);
 
     }
+
+    
+     /**
+     * Get bul the products plans.
+     */
+    public function fetch_bulk_data_plan_details(Request $request)
+    {
+        $bulk_data_plan_id = $request->bulk_data_plan_id ?? '';
+        $bulk_data_product_plan = BulkDataProductPlans::where('id',$bulk_data_plan_id)->first();
+        
+       //TODO: 
+        $user_details = auth()->user();
+        $user_plan_id = $user_details->user_plan_id;
+        $user_level = UserPlan::select('plan_level')->where('id',$user_plan_id)->first();
+        $plan_level = $user_level->plan_level;
+        $user_selling_price = "user_level_".$plan_level."_selling_price";
+        $bulk_data_product_plan->selling_price = $bulk_data_product_plan->$user_selling_price;
+           
+        return response()->json(['status'=>'1','user_level'=>$plan_level ,'message'=>'Bulk data plans fetched','data' => $bulk_data_product_plan ]);
+        // return response()->json(['status'=>'1','user_level'=>$user_plan_id ,'message'=>'Product plans fetched','counter' =>count($product_planss),'data' => $product_planss ]);
+
+    }
+
 
 
     /**

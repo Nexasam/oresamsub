@@ -82,7 +82,7 @@
                               @endforeach
                                 
                             </tbody>
-                        </table>     
+                              </table>     
                       </div>                
                     </div>
                     <div id="pills-with-brand-color-2"  role="tabpanel" aria-labelledby="pills-with-brand-color-item-2">

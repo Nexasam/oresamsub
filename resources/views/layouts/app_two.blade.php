@@ -9,6 +9,10 @@
     <meta name="description" content="A Tailwind CSS admin template is a pre-designed web page for an admin dashboard. Optimizing it for SEO includes using meta descriptions and ensuring it's responsive and fast-loading.">
     <meta name="keywords" content="analytics dashboard,jobs dashboard,crm dashboard examples,personal dashboard,sales dashboard sample,best crm dashboard,crypto dashboard template,sales analytics dashboard,stocks dashboard,hrm dashboard,ecommerce admin panel template,sales admin dashboard,admin panel for ecommerce website,website template ecommerce,template dashboard,course dashboard,template ecommerce website">
 
+    <!-- Quil Css -->    
+    <link id="style" rel="stylesheet" href="{{ asset(env('APP_ASSETS_BASE_URL').'libs/quill/quill.snow.css') }}">
+
+    
     <!-- Favicon -->
     {{-- <link rel="shortcut icon" href="../../assets/img/brand-logos/favicon.ico"> --}}
     <link rel="shortcut icon" href="{{ asset(env('APP_ASSETS_BASE_URL').'img/brand-logos/favicon.ico') }}">
@@ -674,6 +678,35 @@
             alert('id')
       }
 
+      function numberWithCommas(x) {
+        return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+      }
+
+      function displayDataMeasurements(data_measurement,data_value_tb){
+         const compute_gb_value = parseFloat(data_value_tb) * parseFloat(data_measurement); 
+         const compute_mb_value = parseInt(parseFloat(data_value_tb) * parseFloat(data_measurement) * parseFloat(data_measurement)); 
+        //  var display_result = "Data in MB: "+ compute_mb_value+"&nbsp;&nbsp;";
+        //      display_result += "Data in MB: "+ compute_gb_value;
+         $('#display_data_measurements').removeClass('hidden');
+         $('#display_data_in_tb').text(numberWithCommas(data_value_tb) + ' TB');
+         $('#display_data_in_gb').text(numberWithCommas(compute_gb_value) + ' GB');
+         $('#display_data_in_mb').text(numberWithCommas(compute_mb_value) + ' MB');
+      }
+
+      //get other data messaurements
+      $('#mb_data_measurement').keyup(function(){
+          const data_measurement = $(this).val();
+          const data_value_tb = $('#data_value_tb').val();
+          displayDataMeasurements(data_measurement,data_value_tb);
+      })
+
+      $('#data_value_tb').keyup(function(){
+          const data_value_tb = $(this).val();
+          const data_measurement = $('#data_measurement').val();
+          displayDataMeasurements(data_measurement,data_value_tb);
+      })
+      
+
       //edit user plan
       save_quick_edit('edit_class','prefix_id');
       $('.reseller_inputs').css('background-color', 'lightGray');
@@ -911,8 +944,9 @@
   {{-- <script src="../../../assets/js/datatable.js"></script> --}}
   <script src=" {{asset(env('APP_ASSETS_BASE_URL').'js/datatable.js') }}"></script>
 
-
-
+  <script src="{{asset(env('APP_ASSETS_BASE_URL').'libs/quill/quill.min.js')}}"></script>
+  <script src="{{asset(env('APP_ASSETS_BASE_URL').'js/quill.js')}}"></script>
+ 
   
 
 </body>

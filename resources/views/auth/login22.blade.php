@@ -27,8 +27,8 @@
     <!-- ========== MAIN CONTENT ========== -->
     <main id="content"  class="w-full max-w-md mx-auto">
         <a href="#" class="header-logo">
-            <img src="../../assets/img/logos/Crystalpay.png" alt="logo" class="mx-auto w-28 h-28 block dark:hidden">
-            <img src="../../assets/img/logos/Crystalpay.png" alt="logo" class="mx-auto hidden dark:block">
+            <img src="../../assets/img/logos/{{  $logo }}" alt="logo" class="mx-auto w-28 h-28 block dark:hidden">
+            <img src="../../assets/img/logos/{{  $logo }}" alt="logo" class="mx-auto hidden dark:block">
         </a>
         <div class="mt-7 bg-white rounded-sm shadow-sm dark:bg-bgdark">
             <div class="p-4 sm:p-7">

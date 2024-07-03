@@ -16,9 +16,11 @@ return new class extends Migration
             $table->string('first_name');
             $table->string('last_name');
             $table->string('other_names')->nullable();
-            $table->string('phone_number')->nullable();
+            $table->string('upline_id')->nullable();
+            $table->string('phone_number')->nullable()->unique();
+            $table->string('default_wallet_setting')->default('main_wallet')->comment('main_wallet / bulk_data_wallet');
+            $table->string('user_2fa_setting')->default('OFF')->comment('ON / OFF');
             $table->string('main_wallet')->default(0)->nullable();
-            $table->string('data_wallet')->default(0)->nullable();
             $table->string('role');
             $table->string('user_plan_id')->nullable();
             $table->string('email')->unique();

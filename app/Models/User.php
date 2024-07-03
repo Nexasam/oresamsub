@@ -2,22 +2,24 @@
 
 namespace App\Models;
 
+use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
+
 class User extends Authenticatable implements MustVerifyEmail
 {
-    use HasFactory, Notifiable, HasUuids;
+    use HasFactory, Notifiable, HasApiTokens, HasUuids;
 
     /**
      * The attributes that are mass assignable.
      *
      * @var array<int, string>
      */
-    protected $guarded = ['id'];
+    protected $guarded = [];
 
     /**
      * The attributes that should be hidden for serialization.
@@ -28,6 +30,8 @@ class User extends Authenticatable implements MustVerifyEmail
         'password',
         'remember_token',
     ];
+
+    protected $primaryKey='id';
 
     /**
      * Get the attributes that should be cast.
@@ -45,4 +49,10 @@ class User extends Authenticatable implements MustVerifyEmail
     public function user_plan(){
         return $this->belongsTo(UserPlan::class,'user_plan_id','id');
     }
+
+    public function role(){
+        return $this->belongsTo(Role::class,'role_id','id');
+    }
+
+    
 }
