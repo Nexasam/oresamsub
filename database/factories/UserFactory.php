@@ -2,10 +2,11 @@
 
 namespace Database\Factories;
 
+use App\Models\Role;
 use App\Models\UserPlan;
-use Illuminate\Database\Eloquent\Factories\Factory;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\User>
@@ -28,8 +29,8 @@ class UserFactory extends Factory
         return [
             'first_name' => fake()->name(),
             'last_name' => fake()->name(),
-            'phone_number' => $extension[rand(0,3)].rand(11111111,99999999),
-            'role' => 'User',
+            'phone_number' => $extension[rand(0,3)].rand(1111111,9999999),
+            'role_id' => Role::where('role_name','User')->first()->id,
             'user_plan_id' => UserPlan::inRandomOrder()->first()->id,
             'email' => fake()->unique()->safeEmail(),
             'email_verified_at' => now(),

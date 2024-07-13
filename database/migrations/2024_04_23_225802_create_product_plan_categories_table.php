@@ -16,7 +16,8 @@ return new class extends Migration
             $table->string('product_plan_category_name')->unique();
             $table->foreignUuid('automation_id')->constrained('automations');
             $table->foreignUuid('product_id')->constrained('products');
-            $table->foreignUuid('network_id')->constrained('networks');
+            // $table->foreignUuid('network_id')->constrained('networks');
+            $table->string('network_id')->nullable();
             $table->timestamps();
         });
     }

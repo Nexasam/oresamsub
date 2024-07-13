@@ -1,7 +1,10 @@
 <?php
 
+use App\Http\Middleware\RoleAssess;
 use App\Http\Middleware\AdminSettings;
 use Illuminate\Foundation\Application;
+use App\Http\Middleware\RoleUserAccess;
+use App\Http\Middleware\RoleAdminAccess;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 
@@ -13,7 +16,9 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
-        // $middleware->append(AdminSettings::class);
+        // $middleware->append(RoleAssess::class);
+        $middleware->alias(['admin' => RoleAdminAccess::class, 'user' => RoleUserAccess::class, ]);
+        // $middleware->alias(['user' => RoleUserAccess::class]);
         $middleware->statefulApi();
     })
     ->withExceptions(function (Exceptions $exceptions) {

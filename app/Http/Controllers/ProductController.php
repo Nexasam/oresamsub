@@ -6,12 +6,15 @@ use App\Models\Network;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use App\Models\ProductCategory;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
 
 class ProductController extends Controller
 {
     public function index(){
+        // Gate::authorize('viewAny', Product::class);
+      
         $products = Product::where('active_status',1)->get();
       
         // $data['networks'] = $networks;
@@ -22,6 +25,7 @@ class ProductController extends Controller
 
     public function store(Request $request){
         // dd($request->all());
+        // Gate::authorize('create', Product::class);
  
         $validator = Validator::make($request->all(), [
             'product_name' => 'required|max:255|unique:products,product_name',

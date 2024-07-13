@@ -9,7 +9,7 @@
 
     <!-- Favicon -->
     {{-- <link rel="shortcut icon" href="../assets/img/brand-logos/favicon.ico"> --}}
-    <link rel="shortcut icon" href="{{ asset(env('APP_ASSETS_BASE_URL').'img/brand-logos/favicon.ico') }}">
+    {{-- <link rel="shortcut icon" href="{{ asset(env('APP_ASSETS_BASE_URL').'img/brand-logos/favicon.ico') }}"> --}}
 
     <!-- Style Css -->
     {{-- <link rel="stylesheet" href="../assets/css/style.css"> --}}
@@ -30,7 +30,7 @@
     <div class="grid grid-cols-12 gap-6 w-full h-full">
         <div class="lg:col-span-6 col-span-12 hidden lg:block relative">
             <div class="cover relative w-full h-full z-[1]">
-                <img src="{{ asset(env('APP_ASSETS_BASE_URL').'img/authentication/auth.jpg') }}" alt="logo" class="object-cover mx-auto h-full">
+                <img src="{{ asset(env('APP_ASSETS_BASE_URL').'img/authentication/auth3.jpg') }}" alt="logo" class="object-cover mx-auto h-full">
             </div>
         </div>
         <div class="lg:col-span-6 col-span-12">

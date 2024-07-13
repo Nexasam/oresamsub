@@ -9,6 +9,5 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 class UserPlan extends Model
 {
     use HasFactory, HasUuids;
-
     protected $guarded = [];
 }

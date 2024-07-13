@@ -33,7 +33,7 @@
                 <li class="slide  has-sub ">
                     <a href="{{ route('dashboard') }}" class="side-menu__item">
                         <i class="ri-home-8-line side-menu__icon"></i>
-                        <span class="side-menu__label">Dashboard</span>
+                        <span class="side-menu__label">Dashboard </span>
                         {{-- <i class="ri ri-arrow-right-s-line side-menu__angle"></i> --}}
                     </a>
                     <ul class="slide-menu child1">
@@ -48,9 +48,12 @@
                  <li class="slide__category"><span class="category-name">Modules</span></li>
                  <!-- End::slide__category -->
 
+
+
+                @if (strtolower(auth()->user()->role->role_name) == 'admin')
+                    
                
-                <!-- Start::slide -->
-                   <li class="slide  has-sub mt-10">
+                {{-- <li class="slide  has-sub mt-10">
                     <a href="javascript:void(0);" class="side-menu__item">
                         <i class="ti ti-3d-rotate side-menu__icon"></i>
                         <span class="side-menu__label">Users Management</span>
@@ -58,14 +61,26 @@
                     </a>
                     <ul class="slide-menu child1">
                         <li class="slide"><a href="{{ route('admin.users.index') }}"  class="side-menu__item">Users</a></li>
-                        <li class="slide"><a href="{{ route('admin.users.create') }}" class="side-menu__item">Create User</a></li>
-                        
+                        <li class="slide"><a href="{{ route('admin.users.create') }}" class="side-menu__item">Create User</a></li>           
                     </ul>
-                    </li>
+                </li> --}}
+             
+
+                  <!-- Start::slide -->
+                  <li class="slide  has-sub">
+                    <a href="{{ route('admin.users.index') }}" class="side-menu__item">
+                        <i class="ri-home-8-line side-menu__icon"></i>
+                        <span class="side-menu__label">Users Management</span>
+                        <i class="ri ri-arrow-right-s-line side-menu__angle"></i>
+                    </a>
+                    <ul class="slide-menu child1">
+                        {{-- <li class="slide"><a href="#" class="side-menu__item">View Networks</a></li> --}}
+                    </ul>
+                </li>
                 <!-- End::slide -->
 
-                  <!-- Start::slide: for users -->
-                  <li class="slide  has-sub">
+                 <!-- Start::slide: for users -->
+                 <li class="slide  has-sub">
                     <a href="{{ route('admin.reseller_plans.index') }}" class="side-menu__item">
                         <i class="ri-home-8-line side-menu__icon"></i>
                         <span class="side-menu__label">Resellers Plans</span>
@@ -74,11 +89,122 @@
                     <ul class="slide-menu child1">
                         {{-- <li class="slide"><a href="#" class="side-menu__item"></a></li> --}}
                     </ul>
+                  </li>
+                <!-- End::slide -->
+
+                  <!-- Start::slide -->
+                  <li class="slide  has-sub">
+                    <a href="{{ route('admin.networks.index')}}" class="side-menu__item">
+                        <i class="ri-home-8-line side-menu__icon"></i>
+                        <span class="side-menu__label">Networks</span>
+                        <i class="ri ri-arrow-right-s-line side-menu__angle"></i>
+                    </a>
+                    <ul class="slide-menu child1">
+                        {{-- <li class="slide"><a href="#" class="side-menu__item">View Networks</a></li> --}}
+                    </ul>
                 </li>
                 <!-- End::slide -->
 
+                <!-- Start::slide -->
+                <li class="slide  has-sub">
+                    <a href="{{ route('admin.products.index')}}" class="side-menu__item">
+                        <i class="ri-home-8-line side-menu__icon"></i>
+                        <span class="side-menu__label">Products</span>
+                        <i class="ri ri-arrow-right-s-line side-menu__angle"></i>
+                    </a>
+                    <ul class="slide-menu child1">
+                        {{-- <li class="slide"><a href="#" class="side-menu__item">View Networks</a></li> --}}
+                    </ul>
+                </li>
+                <!-- End::slide -->
+       
+                <!-- Start::slide -->
+                <li class="slide  has-sub">
+                    <a href="{{ route('admin.product_plan_categories.index')}}" class="side-menu__item">
+                        <i class="ri-home-8-line side-menu__icon"></i>
+                        <span class="side-menu__label">Plan Categories</span>
+                        <i class="ri ri-arrow-right-s-line side-menu__angle"></i>
+                    </a>
+                    <ul class="slide-menu child1">
+                        {{-- <li class="slide"><a href="#" class="side-menu__item">View Networks</a></li> --}}
+                    </ul>
+                </li>
+                <!-- End::slide -->
+
+                  <!-- Start::slide -->
+                  <li class="slide  has-sub">
+                    <a href="{{ route('admin.product_plans.index')}}" class="side-menu__item">
+                        <i class="ri-home-8-line side-menu__icon"></i>
+                        <span class="side-menu__label">Plans & Prices</span>
+                        <i class="ri ri-arrow-right-s-line side-menu__angle"></i>
+                    </a>
+                    <ul class="slide-menu child1">
+                        {{-- <li class="slide"><a href="#" class="side-menu__item">View Networks</a></li> --}}
+                    </ul>
+                </li>
+                <!-- End::slide -->
+
+               
+
+               
+
+
+
+                <!-- Start::slide -->
+                <li class="slide  has-sub mt-10">
+                    <a href="javascript:void(0);" class="side-menu__item">
+                        <i class="ti ti-3d-rotate side-menu__icon"></i>
+                        <span class="side-menu__label">Automation Settings</span>
+                        <i class="ri ri-arrow-right-s-line side-menu__angle"></i>
+                    </a>
+                    <ul class="slide-menu child1">
+                        <li class="slide"><a href="{{ route('admin.automation.dashboard_view','ogdams') }}"  class="side-menu__item">Ogdams</a></li>      
+                        <li class="slide"><a href="{{ route('admin.automation.dashboard_view','ogdams_v2') }}"  class="side-menu__item">Ogdams V2</a></li>      
+                        <li class="slide"><a href="{{ route('admin.automation.dashboard_view','megasubplug') }}"  class="side-menu__item">MegasubPlug</a></li>      
+                        <li class="slide"><a href="{{ route('admin.automation.dashboard_view','smeplug') }}"  class="side-menu__item">SMEPlug</a></li>      
+
+                        {{-- @foreach (App\Models\Automation::get() as $automation)
+                         <li class="slide"><a href="{{ route('admin.automation.dashboard_view',$automation->slug) }}"  class="side-menu__item">{{ $automation->automation_name }}</a></li>      
+                        @endforeach --}}
+                        {{-- <li class="slide"><a href="#" class="side-menu__item">OgDams</a></li>
+                        <li class="slide"><a href="#" class="side-menu__item">Autopilot</a></li>
+                        <li class="slide"><a href="#" class="side-menu__item">CloudsimHost</a></li>
+                         --}}
+                    </ul>
+                    </li>
+                <!-- End::slide -->
+
+
+                <!-- Start::slide -->
+                {{-- <li class="slide  has-sub">
+                    <a href="{{ route('admin.roles.index')}}" class="side-menu__item">
+                        <i class="ri-home-8-line side-menu__icon"></i>
+                        <span class="side-menu__label">Authorization</span>
+                        <i class="ri ri-arrow-right-s-line side-menu__angle"></i>
+                    </a>
+                  
+                </li> --}}
+                <!-- End::slide -->
+
+
+                <!-- Start::slide -->
+                <li class="slide  has-sub">
+                    <a href="{{ route('admin.settings.index')}}" class="side-menu__item">
+                        <i class="ri-home-8-line side-menu__icon"></i>
+                        <span class="side-menu__label">Settings</span>
+                        <i class="ri ri-arrow-right-s-line side-menu__angle"></i>
+                    </a>
+                    <ul class="slide-menu child1">
+                        {{-- <li class="slide"><a href="#" class="side-menu__item">View Networks</a></li> --}}
+                    </ul>
+                </li>
+                <!-- End::slide -->
              
 
+
+                @else
+
+                {{-- ///USER PAGES HERE --}}
                  <!-- Start::slide -->
                  <li class="slide  has-sub mt-10">
                     <a href="javascript:void(0);" class="side-menu__item">
@@ -91,10 +217,10 @@
                         <li class="slide"><a href="{{ route('user.data.buy_bulk_data') }}" class="side-menu__item">Buy Bulk Data</a></li>
                       
                     </ul>
-                </li>
-                <!-- End::slide -->
+                  </li>
+                  <!-- End::slide -->
 
-                 <!-- Start::slide -->
+                    <!-- Start::slide -->
                  <li class="slide  has-sub">
                     <a href="javascript:void(0);" class="side-menu__item">
                         <i class="ti ti-chart-pie-4 side-menu__icon"></i>
@@ -167,64 +293,6 @@
                 </li>
                 <!-- End::slide -->
 
-                <!-- Start::slide -->
-                <li class="slide  has-sub">
-                    <a href="{{ route('admin.networks.index')}}" class="side-menu__item">
-                        <i class="ri-home-8-line side-menu__icon"></i>
-                        <span class="side-menu__label">Networks</span>
-                        <i class="ri ri-arrow-right-s-line side-menu__angle"></i>
-                    </a>
-                    <ul class="slide-menu child1">
-                        {{-- <li class="slide"><a href="#" class="side-menu__item">View Networks</a></li> --}}
-                    </ul>
-                </li>
-                <!-- End::slide -->
-
-                <!-- Start::slide -->
-                <li class="slide  has-sub">
-                    <a href="{{ route('admin.products.index')}}" class="side-menu__item">
-                        <i class="ri-home-8-line side-menu__icon"></i>
-                        <span class="side-menu__label">Products</span>
-                        <i class="ri ri-arrow-right-s-line side-menu__angle"></i>
-                    </a>
-                    <ul class="slide-menu child1">
-                        {{-- <li class="slide"><a href="#" class="side-menu__item">View Networks</a></li> --}}
-                    </ul>
-                </li>
-                <!-- End::slide -->
-
-            
-                <!-- Start::slide -->
-                <li class="slide  has-sub">
-                    <a href="{{ route('admin.product_plans.index')}}" class="side-menu__item">
-                        <i class="ri-home-8-line side-menu__icon"></i>
-                        <span class="side-menu__label">Plans & Prices</span>
-                        <i class="ri ri-arrow-right-s-line side-menu__angle"></i>
-                    </a>
-                    <ul class="slide-menu child1">
-                        {{-- <li class="slide"><a href="#" class="side-menu__item">View Networks</a></li> --}}
-                    </ul>
-                </li>
-                <!-- End::slide -->
-       
-                <!-- Start::slide -->
-                <li class="slide  has-sub">
-                    <a href="{{ route('admin.product_plan_categories.index')}}" class="side-menu__item">
-                        <i class="ri-home-8-line side-menu__icon"></i>
-                        <span class="side-menu__label">Plan Categories</span>
-                        <i class="ri ri-arrow-right-s-line side-menu__angle"></i>
-                    </a>
-                    <ul class="slide-menu child1">
-                        {{-- <li class="slide"><a href="#" class="side-menu__item">View Networks</a></li> --}}
-                    </ul>
-                </li>
-                <!-- End::slide -->
-
-               
-
-               
-
-
 
                  <!-- Start::slide: for users -->
                  <li class="slide  has-sub">
@@ -238,54 +306,20 @@
                     </ul>
                 </li>
                 <!-- End::slide -->
-
-                <!-- Start::slide -->
-                <li class="slide  has-sub mt-10">
-                    <a href="javascript:void(0);" class="side-menu__item">
-                        <i class="ti ti-3d-rotate side-menu__icon"></i>
-                        <span class="side-menu__label">Automation Settings</span>
-                        <i class="ri ri-arrow-right-s-line side-menu__angle"></i>
-                    </a>
-                    <ul class="slide-menu child1">
-                        @foreach (App\Models\Automation::get() as $automation)
-                         <li class="slide"><a href="{{ route('admin.automation.dashboard_view',$automation->slug) }}"  class="side-menu__item">{{ $automation->automation_name }}</a></li>      
-                        @endforeach
-                        {{-- <li class="slide"><a href="#" class="side-menu__item">OgDams</a></li>
-                        <li class="slide"><a href="#" class="side-menu__item">Autopilot</a></li>
-                        <li class="slide"><a href="#" class="side-menu__item">CloudsimHost</a></li>
-                         --}}
-                    </ul>
-                    </li>
-                <!-- End::slide -->
+                
 
 
-                <!-- Start::slide -->
-                <li class="slide  has-sub">
-                    <a href="{{ route('admin.roles.index')}}" class="side-menu__item">
-                        <i class="ri-home-8-line side-menu__icon"></i>
-                        <span class="side-menu__label">Authorization</span>
-                        <i class="ri ri-arrow-right-s-line side-menu__angle"></i>
-                    </a>
-                    <ul class="slide-menu child1">
-                        {{-- <li class="slide"><a href="#" class="side-menu__item">View Networks</a></li> --}}
-                    </ul>
-                </li>
-                <!-- End::slide -->
+                    
+                @endif
 
-
-                <!-- Start::slide -->
-                <li class="slide  has-sub">
-                    <a href="{{ route('admin.settings.index')}}" class="side-menu__item">
-                        <i class="ri-home-8-line side-menu__icon"></i>
-                        <span class="side-menu__label">Settings</span>
-                        <i class="ri ri-arrow-right-s-line side-menu__angle"></i>
-                    </a>
-                    <ul class="slide-menu child1">
-                        {{-- <li class="slide"><a href="#" class="side-menu__item">View Networks</a></li> --}}
-                    </ul>
-                </li>
-                <!-- End::slide -->
+                
+               
+                 
              
+
+                
+               
+              
 
                 <!-- Start::slide -->
                 <li class="slide">

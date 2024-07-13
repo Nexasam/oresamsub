@@ -10,7 +10,7 @@
 
     <!-- Favicon -->
     {{-- <link rel="shortcut icon" href="../assets/img/brand-logos/favicon.ico"> --}}
-    <link rel="shortcut icon" href="{{ asset(env('APP_ASSETS_BASE_URL').'img/brand-logos/favicon.ico') }}">
+    {{-- <link rel="shortcut icon" href="{{ asset(env('APP_ASSETS_BASE_URL').'img/brand-logos/favicon.ico') }}"> --}}
 
     <!-- Style Css -->
     {{-- <link rel="stylesheet" href="../assets/css/style.css"> --}}

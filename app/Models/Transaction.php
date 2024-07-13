@@ -10,10 +10,14 @@ class Transaction extends Model
 {
     use HasFactory, HasUuids;
 
-    protected $guarded = ['id'];
+    protected $guarded = [];
 
     public function user(){
         return $this->belongsTo(User::class,'user_id','id');
+    }
+
+    public function product_plan(){
+        return $this->belongsTo(ProductPlan::class,'product_plan_id','id');
     }
 
 }

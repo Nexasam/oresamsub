@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title> Web App - CrystalData </title>
+    <title> Web App - ABCData </title>
 
     <meta name="description" content="A Tailwind CSS admin template is a pre-designed web page for an admin dashboard. Optimizing it for SEO includes using meta descriptions and ensuring it's responsive and fast-loading.">
     <meta name="keywords" content="analytics dashboard,jobs dashboard,crm dashboard examples,personal dashboard,sales dashboard sample,best crm dashboard,crypto dashboard template,sales analytics dashboard,stocks dashboard,hrm dashboard,ecommerce admin panel template,sales admin dashboard,admin panel for ecommerce website,website template ecommerce,template dashboard,course dashboard,template ecommerce website">
@@ -15,7 +15,7 @@
     
     <!-- Favicon -->
     {{-- <link rel="shortcut icon" href="../../assets/img/brand-logos/favicon.ico"> --}}
-    <link rel="shortcut icon" href="{{ asset(env('APP_ASSETS_BASE_URL').'img/brand-logos/favicon.ico') }}">
+    {{-- <link rel="shortcut icon" href="{{ asset(env('APP_ASSETS_BASE_URL').'img/brand-logos/favicon.ico') }}"> --}}
 
     <!-- Main JS -->
     {{-- <script src="../../../assets/js/main.js"></script> --}}
@@ -636,8 +636,10 @@
 
     <footer class="mt-auto py-3 border-t dark:border-white/10 bg-white dark:bg-bgdark">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <p class="text-center">Copyright © <span id="year"></span> <a href="javascript:void(0)" class="text-primary">CrystalPay</a>. All rights reserved </p>
-        </div>
+            {{-- <p class="text-center">Copyright © <span id="year"></span> <a href="javascript:void(0)" class="text-primary">CrystalPay</a>. All rights reserved </p> --}}
+            <p class="text-center">Copyright © <span id="year"></span> <a href="javascript:void(0)" class="text-primary">Developed with ❤️ by Subutility</a> All rights reserved </p>
+
+          </div>
     </footer>
 
 
@@ -763,12 +765,7 @@
           }          
         });
       }
-
       
-
-
-      
-
       // alert('sss')
        $('.save_product_plan').click(function(e){
 
@@ -811,7 +808,8 @@
               _token: _token
             };
 
-            // alert(automation_id);
+            console.log(data);
+            // return;
 
             $.ajax({
                 type: 'POST',

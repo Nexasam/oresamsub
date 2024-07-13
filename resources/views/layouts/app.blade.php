@@ -4,12 +4,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf_token" content="{{ csrf_token() }}">
     <title> Data App </title>
     <meta name="description" content="A Tailwind CSS admin template is a pre-designed web page for an admin dashboard. Optimizing it for SEO includes using meta descriptions and ensuring it's responsive and fast-loading.">
     <meta name="keywords" content="analytics dashboard,jobs dashboard,crm dashboard examples,personal dashboard,sales dashboard sample,best crm dashboard,crypto dashboard template,sales analytics dashboard,stocks dashboard,hrm dashboard,ecommerce admin panel template,sales admin dashboard,admin panel for ecommerce website,website template ecommerce,template dashboard,course dashboard,template ecommerce website">
 
     <!-- Favicon -->
-    <link rel="shortcut icon" href="{{ asset( env('APP_ASSETS_BASE_URL').'img/brand-logos/favicon.ico') }}">
+    {{-- <link rel="shortcut icon" href="{{ asset( env('APP_ASSETS_BASE_URL').'img/brand-logos/favicon.ico') }}"> --}}
 
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 
@@ -29,8 +30,16 @@
     {{-- <link rel="stylesheet" href="../../assets/libs/@simonwep/pickr/themes/nano.min.css"> --}}
     <link rel="stylesheet" href="{{ asset(env('APP_ASSETS_BASE_URL').'libs/@simonwep/pickr/themes/nano.min.css') }}">
 
-    <link rel="stylesheet" href="{{ asset(env('APP_ASSETS_BASE_URL').'libs/sweetalert2/sweetalert2.min.css') }}">
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.0.8/css/dataTables.dataTables.min.css">
 
+
+    <link rel="stylesheet" href="">
+{{-- 
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&display=swap" rel="stylesheet"> --}}
+
+    {{-- <link href="https://cdn.jsdelivr.net/npm/flowbite@2.4.1/dist/flowbite.min.css" rel="stylesheet" /> --}}
 
 
 </head>
@@ -461,6 +470,7 @@
 
         <div class="content">
 
+             <input value="{{  env('APP_URL') }}" type="hidden" class="root_url">
             <!-- Start::main-content main content stays here -->
             @yield('content')
             <!-- Start::main-content -->
@@ -610,8 +620,9 @@
 
         <footer class="mt-auto py-3 border-t dark:border-white/10 bg-white dark:bg-bgdark">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <p class="text-center">Copyright © <span id="year"></span> <a href="javascript:void(0)" class="text-primary">DataApp</a>    All rights reserved </p>
-            </div>
+                {{-- <p class="text-center">Copyright © <span id="year"></span> <a href="javascript:void(0)" class="text-primary">DataApp</a>    All rights reserved </p> --}}
+                <p class="text-center">Copyright © <span id="year"></span> <a href="javascript:void(0)" class="text-primary">Developed with ❤️ by Subutility</a> All rights reserved </p>
+              </div>
         </footer>
 
 
@@ -619,50 +630,17 @@
 
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://cdn.datatables.net/2.0.8/js/dataTables.min.js"></script>
+    <script src="{{asset(env('APP_ASSETS_BASE_URL').'js/admin_datatables/datatables.js') }}"></script>
+
+
 
     {{-- <script src="{{asset(env('APP_ASSETS_BASE_URL').'js/swetalert.js') }}"></script> --}}
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-          {{-- <script type="text/javascript">
-            $(function () {
-                  var table = $('#users_table').DataTable({
-                      processing: true,
-                      serverSide: true,
-                      ajax:  {{ route('admin.users.fetch_users')}}",
-                      columns: [
-                          // {data: 'DT_RowIndex', name: 'DT_RowIndex'},
-                          {data: 'first_name', name: 'first_name'},
-                          {data: 'last_name', name: 'last_name'},
-                          {data: 'email', name: 'email'},
-                          {data: 'phone_number', name: 'phone_number'},
-                          {data: 'created_at', name: 'created_at'},
-                          {data: 'action', name: 'action'},
-                      ]
-                  });
-                });
-          </script> --}}
-
+     
 
 <script>
-
-          // function getUsers(){
-          //   var table = $('#users_table').DataTable({
-          //             processing: true,
-          //             serverSide: true,
-          //             ajax:  {{ route('admin.users.fetch_users')}}",
-          //             columns: [
-          //                 // {data: 'DT_RowIndex', name: 'DT_RowIndex'},
-          //                 {data: 'first_name', name: 'first_name'},
-          //                 {data: 'last_name', name: 'last_name'},
-          //                 {data: 'email', name: 'email'},
-          //                 {data: 'phone_number', name: 'phone_number'},
-          //                 {data: 'created_at', name: 'created_at'},
-          //                 {data: 'action', name: 'action'},
-          //             ]
-          //     });
-          // }
-          
-          // getUsers();
 
         function numberWithCommas(x) {
           return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
@@ -775,6 +753,7 @@
             sweetAlertDisplay('Please enter amount','Amount required','error')
             return;
           }
+
           $.ajax({
                           type: 'GET',
                           url: "{{ route('user.crystalpay.generate_dynamic_account') }}",
@@ -786,17 +765,11 @@
                               console.log(dataList);
                               const bank_name = dataList.bank_name;
                               const account_number = dataList.account_number;
-                            
-                              // $('.crystal_pay_dynamic_account_details').html('');
-                              // $('.crystal_pay_dynamic_account_details').removeClass('hidden');
+    
                               $('.crystal_pay_dynamic_account_details').append(`<p>Bank Name:  ${bank_name} </p>`);
-                              $('.crystal_pay_dynamic_account_details').append(`<p>Account No:  ${account_number}</p>`);
-                              // $('.crystal_pay_dynamic_account_details').append(`<p>Expiration time:  120 seconds</p>`);
-
-                              // console.log(bank_name);
-                              // console.log(account_number);
-                              // console.log(response);
-                            
+                              $('.crystal_pay_dynamic_account_details').append(`<p>Account No:  ${account_number}</p>`);          
+                              $('.crystal_pay_dynamic_account_details').append(`<p><strong>NOTE:</strong> Please ensure that the exact amount of ${amount} is paid into the generated account. </p>`);          
+                              $('.crystal_pay_dynamic_account_details').append(`Please complete transaction in 5 minutes else the account will be invalid.</p>`);          
                           },
                           error: function(xhr, status, error) {
                               // Handle errors if needed
@@ -804,19 +777,52 @@
                           }
                  });
         }
-            
+          
+        
+        function testingFunction(idd){
+          alert(idd)
+      
+        }
 
 
         $(document).ready(function(){
 
+          // alert('sss');
+    
           $('.single_select').select2();
           $('#product_plan_category_id').html('<option value="all">All categories selected</option>');
 
+          // $('.edit_cat').click( (e) => {
+          //   e.preventDefault();
+          //   var catid = $(this).attr('id');
+          //   // let newValue = $('#'+catid).text();
+          //   console.log(catid)
+          // });
+
+          
           $('#generate_crystalpay_dynamic_account').click(function(e){
               e.preventDefault();
               const amount = $('#amount').val();
+              if(amount == ''){
+                sweetAlertDisplay('Please enter amount','Amount required','error')
+                return;
+              }
+              $(this).text('Generating dynamic acount...');
+              $(this).prop('disabled',true);
+              // return;
               generateCrystalPayDynamicAcct(amount);
           })
+
+          $('#wallet_category').change(function(e){
+              e.preventDefault();
+              const wallet_type = $(this).val();
+              // if(wallet_type == 'main_wallet'){
+              //   alert('na main wallet o')
+              // }else{
+              //   alert('na data wallet oooo')
+              // }
+          });
+
 
           $('#product_plan_category_id').change(function(){
             var network_id = $("#network_id").val();
@@ -1054,6 +1060,45 @@
             }
           })
 
+
+          $('#product_plan_id').change(function(e){
+            const wallet_category = $('#wallet_category').val();
+            const product_plan_id = $('#product_plan_id').val();
+            var url = "{{ route('user.data.get_single_bulk_data_wallet', ":product_plan_id") }}";
+            url = url.replace(':product_plan_id', product_plan_id);
+
+            if(wallet_category == ''){
+              sweetAlertDisplay('Wallet category cannot be empty','Wallet selection required','error');        
+            }
+
+            if(wallet_category == 'data_wallet'){
+              //then display the wallet for the selected product plan's category
+              $.ajax({
+                    type: 'GET',
+                    url: url,
+                    data: data,
+                    dataType: 'json',
+                    success: function(response) {
+                        // console.log(response);
+                        if(response.status == 1){
+                            const display = 'Your wallet balance for '+ response.data.product_plan_category.product_plan_category_name + ' is '+ response.wallet;
+                            $('.display_wallet_details').text(display);
+                            return;
+                        }else{
+                            const display = 'Your wallet balance for is 0 MB... Buy bulk data wallet';
+                            $('.display_wallet_details').text(display);
+                        }
+
+                    },
+                    error: function(xhr, status, error) {
+                        // Handle errors if needed
+                        console.error(xhr.responseText);
+                    }
+                });
+            }
+
+          })
+
           $('#buy_data_btn').click(function(e){
             e.preventDefault();
            
@@ -1179,6 +1224,8 @@
     {{-- <script src="../assets/js/tom-select.js"></script> --}}
 
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+    {{-- <script src="https://cdn.jsdelivr.net/npm/flowbite@2.4.1/dist/flowbite.min.js"></script> --}}
 
 
 </body>

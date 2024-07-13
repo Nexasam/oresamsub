@@ -101,7 +101,8 @@ Background Image
 
 -------------------*/
 /* Start FontFamily Styles */
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=fallback");
+/* @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=fallback"); */
+@import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400..700&display=swap');
 /* End Tailwind Styles Styles */
 /* Start Tailwind Styles */
 @import url("../iconfonts/RemixIcons/fonts/remixicon.css");

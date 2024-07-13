@@ -15,12 +15,15 @@ use App\Http\Controllers\Controller;
 
 class UserDashboardController extends Controller
 {
+
+ 
   public function index(){
-    $user_details = User::with('user_plan')->where('id',auth()->id())->first();
+    $user_details = User::with(['user_plan','role'])->where('id',auth()->id())->first();
+    // return $user_details->role->role_name;
     $user_id = $user_details->id;
     $user_plan_level = $user_details->user_plan->plan_level;
     $data['user'] = $user_details;
-    $data['transactions'] = Transaction::select('id')->where('user_id',$user_id)->get();
+    $data['transactions'] = Transaction::with(['user','product_plan'])->where('user_id',$user_id)->get();
     $data['users'] = User::select('id')->get();
     $data['product_plans'] = ProductPlan::select('id')->get();
     $data['product_plan_categories'] = ProductPlanCategory::select('id')->get();

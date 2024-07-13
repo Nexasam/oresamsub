@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('permissions', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->foreignUuid('role_id')->constrained('roles');
-            $table->string('permission_slug')->unique();
+            $table->string('permission_slug');
             $table->string('permission_name')->nullable();
             $table->string('permission_create')->nullable();
             $table->string('permission_read')->nullable();

@@ -1,4 +1,4 @@
-@extends('layouts.app_two')
+@extends('layouts.app')
 @section('content')
 
       <!-- Start::main-content -->
@@ -21,7 +21,29 @@
         <!-- Start::row-1 -->
         <div class="grid grid-cols-12 gap-1">
 
-          
+          <div class="col-span-12">
+            @if (Session::has('success'))
+            <div class="bg-success/10 border border-success/10 alert text-success" role="alert">
+              Great! {{ Session::get('success') }}
+              </div>
+            @endif
+
+            @if (Session::has('failure'))
+              <div class="bg-danger/10 border border-danger/10 alert text-danger" role="alert">
+               Ops! {{ Session::get('failure') }}
+              </div>
+            @endif
+            
+            @if ($errors->any())
+              <div class="bg-danger/10 border border-danger/10 alert text-danger" role="alert">
+                <ul>
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+              </div>
+            @endif
+          </div>
          
           <div class="col-span-12">
           
@@ -33,36 +55,33 @@
                 <div class="box-body">
                   <nav class="flex space-x-2" aria-label="Tabs" role="tablist">
                     <button type="button" class="hs-tab-active:bg-primary hs-tab-active:text-white py-3 px-4 inline-flex items-center gap-2 bg-transparent text-sm font-medium text-center text-gray-500 rounded-sm hover:text-primary  dark:text-white/70 dark:hover:text-white active" id="pills-with-brand-color-item-2" data-hs-tab="#pills-with-brand-color-2" aria-controls="pills-with-brand-color-2">
-                      Create Product Plan Categories
+                      View Product Plan Categories
                     </button>
                     <button type="button" class="hs-tab-active:bg-primary hs-tab-active:text-white py-3 px-4 inline-flex items-center gap-2 bg-transparent text-sm font-medium text-center text-gray-500 rounded-sm hover:text-primary  dark:text-white/70 dark:hover:text-white " id="pills-with-brand-color-item-1" data-hs-tab="#pills-with-brand-color-1" aria-controls="pills-with-brand-color-1">
-                      View Product Plan Categories
+                      Create Product Plan Category
                     </button>
                   
                   </nav>
 
                   <div class="mt-3">
-                    <div id="pills-with-brand-color-1" class="hidden" role="tabpanel" aria-labelledby="pills-with-brand-color-item-1">
+                    <div id="pills-with-brand-color-2" class="" role="tabpanel" aria-labelledby="pills-with-brand-color-item-2">
                       <div class="overflow-auto">
                         {{-- <table  class="ti-custom-table ti-custom-table-head ti-striped-table ti-custom-table-hover ">
                             <thead> --}}
-                              <table class="ti-custom-table ti-custom-table-head">    
+                              <table id="plan_categories_table" class="ti-custom-table ti-custom-table-head">    
                                 <thead class="bg-gray-50 dark:bg-black/20">
                                 <tr>
                                     <th>ID</th>
-                                    <th>Product plan category name</th>
-                                    <th>Automation</th>
-                                    <th></th>
-                                    <th>Network</th>
+                                    <th>Category name</th>
                                     <th>Product</th>
-                                    {{-- <td>Bulk data wallet</td> --}}
-                                    <td>MB measurement</td>
+                                    <th>Automation</th>
+                                    <th>Network</th>
                                     <th>Date added</th>
                                     <th>Bulk data plans</th>
                                 </tr>
-                            </thead>
+                               </thead>
                             <tbody>
-                              @php
+                              {{-- @php
                                   $count = 1;
                               @endphp
                               @foreach ($product_plan_categories as $product_plan_category)
@@ -88,11 +107,6 @@
                                   </small></td>
                                   <td><small>{{ $product_plan_category->network->network_name ?? 'nil' }}</small></td>
                                   <td><small>{{ $product_plan_category->product->product_name ?? 'nil' }}</small></td>
-                                  {{-- <td><small>{{ number_format($product_plan_category->bulk_data_wallet_in_mb) }}MB
-                                    <br> {{ number_format( ceil($product_plan_category->bulk_data_wallet_in_mb / $product_plan_category->mb_data_measurement) ) }}GB
-                                    <br> {{ number_format( ceil($product_plan_category->bulk_data_wallet_in_mb / $product_plan_category->mb_data_measurement / $product_plan_category->mb_data_measurement)) }}TB
-                                  </small></td> --}}
-                                  <td><small>{{ number_format($product_plan_category->mb_data_measurement) }}</small></td>
                                   <td><small>{{ $product_plan_category->created_at }}</small></td>
                                   <td>
                                     @if ($product_plan_category->product != NULL )
@@ -106,40 +120,18 @@
 
                                   </td>
                                  </tr>   
-                              @endforeach
+                              @endforeach --}}
                                 
                             </tbody>
                         </table>     
                       </div>                
                     </div>
-                    <div id="pills-with-brand-color-2"  role="tabpanel" aria-labelledby="pills-with-brand-color-item-2">
+                    <div id="pills-with-brand-color-1" class="hidden"  role="tabpanel" aria-labelledby="pills-with-brand-color-item-1">
                       <div class="overflow-auto">
                             <!-- Start::row-3 -->
                           <div class="grid grid-cols-12 gap-x-6">
                               
-                            <div class="col-span-12">
-                              @if (Session::has('success'))
-                              <div class="bg-success/10 border border-success/10 alert text-success" role="alert">
-                                Great! {{ Session::get('success') }}
-                                </div>
-                              @endif
-              
-                              @if (Session::has('failure'))
-                                <div class="bg-danger/10 border border-danger/10 alert text-danger" role="alert">
-                                 Ops! {{ Session::get('failure') }}
-                                </div>
-                              @endif
-                              
-                              @if ($errors->any())
-                                <div class="bg-danger/10 border border-danger/10 alert text-danger" role="alert">
-                                  <ul>
-                                      @foreach ($errors->all() as $error)
-                                          <li>{{ $error }}</li>
-                                      @endforeach
-                                  </ul>
-                                </div>
-                              @endif
-                            </div>
+                        
 
                             <div class="col-span-12">
                                 <div class="box">
@@ -169,7 +161,7 @@
                                                   <label class="ti-form-label mb-0">Choose Network (Optional)</label>
                                                   <select id="network_id" name="network_id"  class="my-auto ti-form-select">
                                                       <option value="">Select</option>
-                                                      <option value="">Nil</option>
+                                                      {{-- <option value="">Nil</option> --}}
                                                        @foreach ($networks as $network)
                                                            <option value="{{ $network->id }}">{{ $network->network_name }}</option>
                                                        @endforeach

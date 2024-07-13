@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Yajra\DataTables\DataTables;
 use App\Models\ProductPlanCategory;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Auth\Events\Registered;
@@ -29,18 +30,50 @@ class UsersController extends Controller
      */
     public function index(Request $request)
     {
-        
+      //  Gate::authorize('viewAny', User::class);
+
         $users = User::paginate(50);
         return view('admin.users.index')->with(['users' => $users]);
     }
 
-    public function fetch_users(){
-        $data = User::limit(4000)->get();
+    public function fetch_users(Request $request){
+        // Gate::authorize('viewAny', User::class);
+        $phone = $request->phone ?? '';
+        // $date_from = $request->date_from ?? date('Y-m-d');
+        // $date_to= $request->date_to ?? date('Y-m-d');
+
+        $date_from = $request->date_from ?? '';
+        $date_to= $request->date_to ?? '';
+
+
+        $email = $request->email ?? '';
+        $limit = $request->limit ?? 500;
+
+
+        // $date_from = date('Y-m-d',strtotime($date_from));
+        // $date_to = date('Y-m-d',strtotime($date_to));
+        
+        $data = User::when( !empty($phone) , function ($query) use ($phone){
+          $query->where('phone_number',$phone);
+        })
+        ->when( !empty($email) , function ($query) use ($email){
+          $query->where('email',$email);
+        })
+        ->when( !empty($date_from) && !empty($date_to) , function ($query) use ($date_from,$date_to){
+          $query->where('created_at','>=',$date_from)->where('created_at','<=',$date_to);
+         })
+         ->limit($limit)
+        ->get();
+        
         // return $data;
+
         return DataTables::of($data)
             ->addIndexColumn()
+            ->addColumn('DT_RowIndex',function($data){
+              return $data->id;
+            })
             ->addColumn('first_name',function($data){
-                return $data->first_name;
+              return $data->first_name;
             })
             ->addColumn('last_name',function($data){
                 return $data->last_name;
@@ -53,9 +86,11 @@ class UsersController extends Controller
              }) 
             ->addColumn('action', function($data){
                 // $actionBtn = ' ';
+                // <a href="javascript:void(0)" class="delete btn btn-danger btn-sm">Delete</a>
                 $actionBtn = '<a href="#" type="button" class="hs-dropdown-toggle ti-btn ti-btn-primary" data-hs-overlay="#hs-vertically-centered-scrollable-modal'.$data->email.'">
-                Edit
-              </a><a href="javascript:void(0)" class="delete btn btn-danger btn-sm">Delete</a>';
+                View Details
+              </a>';
+              return $actionBtn;
               return ' 
               <button href="#" type="button" class="hs-dropdown-toggle ti-btn ti-btn-primary" data-hs-overlay="#hs-vertically-centered-scrollable-modal'.$data->email.'">
               Edit
@@ -111,7 +146,7 @@ class UsersController extends Controller
                     </div>
                   </div>
                 </div>
-              </div>';
+              </div>';  
             
             })
             ->make(true);
@@ -122,6 +157,8 @@ class UsersController extends Controller
      */
     public function create()
     {
+      // Gate::authorize('create', User::class);
+
       // dd('testing');
        return view('admin.users.create'); 
     }
@@ -131,12 +168,14 @@ class UsersController extends Controller
      */
     public function store(Request $request)
     {
+      // Gate::authorize('create', User::class);
+
       //for ADMIN
       $validator = Validator::make($request->all(), [
         'first_name' => 'required|max:255',
         'last_name' => 'required|max:255',
         'other_names' => 'nullable|max:255',
-        'phone_number' => 'required',
+        'phone_number' => 'required|digits:11',
         'email' => 'required|unique:users,email',
         'password' => 'required',
         'confirm_password' => 'required',
@@ -154,10 +193,10 @@ class UsersController extends Controller
       $data['other_names'] = $request->other_names;
       $data['phone_number'] = $request->phone_number;
       $data['email'] = $request->email;
-      $data['role'] = $role_details->id;
+      $data['role_id'] = $role_details->id;
       $data['user_plan_id'] = $default_reseller_plan->id;
       $data['password'] = Hash::make($request->password);
-      $data['confirm_password'] = Hash::make($request->confirm_password);
+      // $data['confirm_password'] = Hash::make($request->confirm_password);
       // $data['gender'] = $request->gender;
 
       $create_user = User::create($data);
@@ -177,7 +216,8 @@ class UsersController extends Controller
      */
     public function show(User $user)
     {
-        //
+      //  Gate::authorize('view', User::class);
+        
     }
 
     /**
@@ -185,7 +225,8 @@ class UsersController extends Controller
      */
     public function edit(User $user)
     {
-        //
+      //  Gate::authorize('update', User::class);
+        
     }
 
     /**

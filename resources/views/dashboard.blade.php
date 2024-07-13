@@ -24,6 +24,39 @@
 
     <!-- Start::row-1 -->
     <div class="grid grid-cols-12 gap-x-5">
+        <div class="xxl:col-span-6 col-span-12">
+            <div class="box">
+              <div class="box-header flex justify-between">
+                <div class="box-title my-auto">
+                  Fund Wallet
+                </div>
+                <a aria-label="anchor" class="hs-collapse-toggle inline-flex items-center gap-x-2" href="javascript:void(0);"
+                  id="hs-show-hide-collapse" data-hs-collapse="#collapseExample">
+                  <i class="hs-collapse-open:rotate-180 ri-arrow-up-s-line text-lg"></i>
+                </a>
+              </div>
+              <div class="hs-collapse w-full overflow-hidden transition-[height] duration-300" id="collapseExample"
+                aria-labelledby="hs-show-hide-collapse">
+                <div class="box-body">
+                  <h6 class="text-base font-semibold">Current wallet balance: &#8358; {{ number_format($user->main_wallet,2) }}</h6>
+                  <p class="text-[0.813rem] mb-0">Generate a dynamic account below to fund your wallet</p>
+                 <label for="amount">Enter amount to fund:</label><br>
+                  <input type="number" id="amount" name="amount" value=""><br>
+                  <button type="button" class="ti-btn ti-btn-primary"  id="generate_crystalpay_dynamic_account" name="generate_crystalpay_dynamic_account">Generate</button>
+                  <div class="crystal_pay_dynamic_account_details">
+
+                  </div>
+                  {{-- <p class="countdown">100</p> --}}
+                </div>
+                <div class="box-footer">
+                  {{-- <button type="button" class="ti-btn ti-btn-primary">Read More</button> --}}
+                </div>
+              </div>
+            </div>
+        </div>
+    </div>
+    <div class="grid grid-cols-12 gap-x-5">
+        
         <div class="col-span-12 xxxl:col-span-2 md:col-span-4">
             <div class="box">
                 <div class="box-body">
@@ -154,6 +187,9 @@
                 </div>
             </div>
         </div>
+
+       
+
         <div class="col-span-12 xxxl:col-span-2 md:col-span-4">
             <div class="box">
                 <div class="box-body">
@@ -184,14 +220,14 @@
                                     class="text-gray-800 font-semibold text-xl leading-none align-bottom dark:text-white">
                                     &#8358; {{ number_format($user->main_wallet,2)  }}
                                 </span>
-                                {{-- <div>  --}}
-                                    {{-- <button type="button"  data-hs-overlay="#hs-basic-modal" aria-label="button" type="button" class="hs-dropdown-toggle ti-btn flex-shrink-0 h-[0.070rem] w-[0.070rem] ti-btn-primary text-sm"> --}}
-                                        {{-- <svg class="w-3.5 h-3.5" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                                <div> 
+                                    {{-- data-hs-overlay="#hs-basic-modal" --}}
+                                    <a href="#" type="button"   aria-label="button" type="button" class="hs-dropdown-toggle ti-btn flex-shrink-0 h-[0.070rem] w-[0.070rem] ti-btn-primary text-sm"> 
+                                        <svg class="w-3.5 h-3.5" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
                                           <path d="M5.071 1.243a.5.5 0 0 1 .858.514L3.383 6h9.234L10.07 1.757a.5.5 0 1 1 .858-.514L13.783 6H15.5a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-.5.5H15v5a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V9H.5a.5.5 0 0 1-.5-.5v-2A.5.5 0 0 1 .5 6h1.717L5.07 1.243zM3.5 10.5a.5.5 0 1 0-1 0v3a.5.5 0 0 0 1 0v-3zm2.5 0a.5.5 0 1 0-1 0v3a.5.5 0 0 0 1 0v-3zm2.5 0a.5.5 0 1 0-1 0v3a.5.5 0 0 0 1 0v-3zm2.5 0a.5.5 0 1 0-1 0v3a.5.5 0 0 0 1 0v-3zm2.5 0a.5.5 0 1 0-1 0v3a.5.5 0 0 0 1 0v-3z"/>
-                                        </svg> --}}
-                                    {{-- <span style="font-size: 10px">FUND</span>
-                                    </button> --}}
-                                {{-- </div> --}}
+                                        </svg><span style="font-size: 10px">Fund Wallet</span>
+                                    </a>
+                                </div>
 
                                 <div id="hs-basic-modal" class="hs-overlay ti-modal hidden">
                                     <div class="ti-modal-box">
@@ -333,9 +369,10 @@
                                     <th>User Details</th>
                                     <th>Wallet Category</th>
                                     <th>Phone Number</th>
-                                    <th>Amount(&#8358;)</th>
-                                    <th>Balance Before(&#8358;)</th>
-                                    <th>Balance After(&#8358;)</th>
+                                    <th>Amount</th>
+                                    <th>Balance Before()</th>
+                                    <th>Data size</th>
+                                    <th>Balance After</th>
                                     <th>Date Added</th>
                                 </tr>
                             </thead>
@@ -347,12 +384,13 @@
                                    @foreach ($transactions as $transaction)
                                         <tr>
                                         <td>{{ $count++ }}</td>
-                                        <td>{{ $transaction->user->first_name }} <br> {{ $transaction->user->last_name }} <br>  {{ $transaction->user->phone_number }}</td>
+                                        <td>{{ $transaction->user->first_name  ?? 'nil'}} <br> {{ $transaction->user->last_name ?? 'nil' }} <br>  {{ $transaction->user->phone_number ?? 'nil'}}</td>
                                         <td>{{ $transaction->wallet_category == 'main_wallet' ?  'MAIN' : 'DATA_WALLET' }}</td>
                                         <td>{{ $transaction->phone_number ?? 'nil' }}</td>
-                                        <td>{{ number_format($transaction->amount,2) }}</td>
-                                        <td>{{ number_format($transaction->balance_before,2) }}</td>
-                                        <td>{{  number_format($transaction->balance_after,2) }}</td>
+                                        <td>&#8358;{{ number_format($transaction->amount,2) }}</td>
+                                        <td>{{ $transaction->wallet_category == 'main_wallet' ? '₦'.number_format($transaction->balance_before,2) : number_format($transaction->balance_before).'MB' }}</td>
+                                        <td>{{ number_format($transaction->product_plan->data_size_in_mb) .'MB' }}</td>
+                                        <td>{{ $transaction->wallet_category == 'main_wallet' ? '₦'.number_format($transaction->balance_after,2) : number_format($transaction->balance_after).'MB' }}</td>
                                         <td>{{ $transaction->created_at }}</td>
                                         </tr>   
                                     @endforeach

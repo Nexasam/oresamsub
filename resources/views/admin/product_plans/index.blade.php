@@ -150,18 +150,22 @@
                                     <thead>
                                         <tr>
                                             <th>ID</th>
-                                            <th>API Details</th>
-                                            <th>Product Category</th>
-                                            <th>Product Plan Category</th>
+                                            <th>Plan name</th>
+                                            <th>Plan Category</th>
+                                            <th>Automation</th>
+                                            {{-- <th>Plan Category</th> --}}
                                             <th>Cost Price</th>
                                             <th>Default Selling Price</th>
+
+                                            <th>Data Size (MB)</th>
+
                                             <th>User Level 1 Selling Price</th>
                                             <th>User Level 2 Selling Price</th>
                                             <th>User Level 3 Selling Price</th>
-                                            <th>API Plan ID.*</th>
-                                            <th>Data Size (MB)</th>
-                                            {{-- <th>Visibility</th>
-                                            <th>Validity (Days)</th> --}}
+                                            <th>User Level 4 Selling Price</th>
+                                            <th>Active status</th>
+                                            <th>Visibility</th>
+                                            <th>Validity (Days)</th>
                                             <th>Date Added</th>
                                         </tr>
                                     </thead>
@@ -173,11 +177,16 @@
                                         <tr>
                                           <td>{{ $count++ }}</td>
                                           <td>{{ $product_plan->product_plan_name }}</td>
-                                          <td>{{ $product_plan->product->product_name ?? 'nil' }}</td>
-                                          <td>{{ $product_plan->product_plan_category->product_plan_category_name ?? 'nil' }}</td>
+                                          <td>{{ $product_plan->product_plan_category->product_plan_category_name }}</td>
+                                          <td>{{ $product_plan->automation->automation_name }}</td>
+                                     
                                           <td>{{  number_format($product_plan->cost_price,2) ?? 'nil' }}</td>
-                                          <td>{{ number_format($product_plan->profit,2) }}</td>
+                                          <td>{{ number_format($product_plan->default_selling_price,2) }}</td>
                                           <td>{{ $product_plan->data_size_in_mb ?? 'nil'}}</td>
+                                          <td>{{ $product_plan->user_level_1_selling_price ?? 'nil'}}</td>
+                                          <td>{{ $product_plan->user_level_2_selling_price ?? 'nil'}}</td>
+                                          <td>{{ $product_plan->user_level_3_selling_price ?? 'nil'}}</td>
+                                          <td>{{ $product_plan->user_level_4_selling_price ?? 'nil'}}</td>
                                           <td>{{ $product_plan->active_status == 1 ? 'ACTIVE' : 'INACTIVE' }}</td>
                                           <td>{{ $product_plan->visibility == 1 ? 'PUBLIC': 'PRIVATE' }}</td>
                                           <td>{{ $product_plan->validity_in_days ?? 'nil' }}</td>

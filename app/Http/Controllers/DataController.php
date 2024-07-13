@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Exception;
 use App\Models\User;
 use App\Models\Network;
 use App\Models\Product;
@@ -49,10 +50,12 @@ class DataController extends Controller
         ->where('user_id',$user_id)
         ->get();
         $data['data_transactions'] = $data_transactions;
+        $data['user_details'] = $user_details;
 
         // dd($data);
         return view('user.data.buy_data')->with($data);
     }
+
 
      /**
      * Show the form for creating a new resource.
@@ -94,6 +97,7 @@ class DataController extends Controller
 
         $plan_details = ProductPlan::where('id',$request->product_plan_id)->first();
         $automation_id = $plan_details->automation_id;
+        $data_value_mb = $plan_details->data_size_in_mb ?? 0;
 
         $user_plan_id = auth()->user()->user_plan_id;
         $user_level = UserPlan::select('plan_level')->where('id',$user_plan_id)->first();
@@ -112,78 +116,160 @@ class DataController extends Controller
         $phone_numbers_array = explode(',',$phone_numbers);
         $phone_numbers_count = count($phone_numbers_array);
 
-        ////validate wallet
-        $wallet_before = $request->wallet_category == 'main_wallet' ? $user_details->main_wallet : $user_details->data_wallet;
-        $total_amount = $phone_numbers_count * $amount;
-        if($total_amount > $wallet_before){
-            return response()->json(['status'=>'-1', 'message'=>'Insufficient wallet balance' ]);
-        }
-        //validate user wallet
+        DB::beginTransaction();
+        try{
 
-        //validate the user wallet
-        // $wallet_after = $wallet_before - $total_amount;
+              ////validate wallet
+                        if($request->wallet_category == 'main_wallet'){
+                            $wallet_before = $user_details->main_wallet;
+                            $total_amount = $phone_numbers_count * $amount;
+                            if($total_amount > $wallet_before){
+                                return response()->json(['status'=>'-1', 'message'=>'Insufficient wallet balance' ]);
+                            }
+                    
+                            //calling the actual vending via the automation:
+                            $automation_details = Automation::where('id',$automation_id)->first();
+                    
+                            //TODO: candidate for separation
+                            for($i = 0; $i < count($phone_numbers_array); $i++ ){
+                            
+                                //vend data
+                                //HERE the endpoint of the automation service is called
+                                //simulate success
+                                $success++;
+                                $message = 'Successfully processed via main wallet';
+                                $status = 1;
+                                $display_results[$i] = array(
+                                    'message' => $message,
+                                    'status' => $status
+                                );
+                                $wallet_before = User::where('id',$user_id)->first()->main_wallet;
+                                $wallet_after = $wallet_before - $amount;
+                    
+                    
+                                //this should not run though because it has already been checked
+                                if($wallet_after <= 0){
+                                    $status = -1;
+                                    $message = 'Failed due to insufficient balance';
+                                    $failure++;
+                                    $display_results[$i] = array(
+                                        'message' => $message,
+                                        'status' => $status
+                                    );
+                                }
+                        
+                                $description = 'Purchase of data';
+                                $creationData['transaction_category'] = 'data';
+                                $creationData['user_id'] = $user_id;
+                                $creationData['wallet_category'] = $request->wallet_category;
+                                $creationData['product_plan_id'] = $request->product_plan_id;
+                                $creationData['phone_number'] = $phone_numbers_array[$i];
+                                $creationData['amount'] = $amount;
+                                $creationData['status'] = $status;
+                                $creationData['balance_before'] = $wallet_before;
+                                $creationData['balance_after'] = $wallet_after;
+                                $creationData['description'] = $description;
+                                $creationData['user_screen_message'] = $message;
+                                $creationData['admin_screen_message'] = $message;
+                                Transaction::create($creationData);
+                    
+                                User::where('id',$user_id)->update([
+                                    'main_wallet' => $wallet_after
+                                ]);
+                    
+                            }
 
-        //calling the actual vending via the automation:
-        $automation_details = Automation::where('id',$automation_id)->first();
+                            DB::commit();
+                    
+                            return response()->json(['status'=>1, 'message'=>'Transaction was successfully processed', 'data' => $display_results  ]);
+                    
+                        } 
 
-        //TODO: candidate for separation
-        for($i = 0; $i < count($phone_numbers_array); $i++ ){
-         
-            //vend data
-            //HERE the endpoint of the automation service is called
-            //simulate success
-            $success++;
-            $message = 'Successfully processed';
-            $status = 1;
-            $display_results[$i] = array(
-                'message' => $message,
-                'status' => $status
-            );
-            $wallet_before = User::where('id',$user_id)->first()->main_wallet;
-            $wallet_after = $wallet_before - $amount;
+                        if($request->wallet_category == 'data_wallet'){
+                            $get_bulk_data_wallet_details = UserBulkDataWallet::where('user_id',$user_id)->where('product_plan_category_id',$request->product_plan_category_id)->first();
+                            
+                            if(! $get_bulk_data_wallet_details ){
+                                $bulk_wallet_balance_before = 0;
+                            }
+                            $bulk_wallet_balance_before = $get_bulk_data_wallet_details->bulk_wallet_balance_mb;
 
-
-            //this should not run though because it has already been checked
-            if($wallet_after <= 0){
-                $status = -1;
-                $message = 'Failed due to insufficient balance';
-                $failure++;
-                $display_results[$i] = array(
-                    'message' => $message,
-                    'status' => $status
-                );
-            }
+                            $total_value_to_buy_in_mb = $phone_numbers_count * $data_value_mb;
+                            if($total_value_to_buy_in_mb > $bulk_wallet_balance_before){
+                                return response()->json(['status'=>'-1', 'message'=>'Insufficient data in wallet balance' ]);
+                            }
+                    
+                            //calling the actual vending via the automation:
+                            $automation_details = Automation::where('id',$automation_id)->first();
+                    
+                            //TODO: candidate for separation
+                            for($i = 0; $i < count($phone_numbers_array); $i++ ){
+                            
+                                //vend data
+                                //HERE the endpoint of the automation service is called
+                                //simulate success
+                                $success++;
+                                $message = 'Successfully processed via bulk data wallet';
+                                $status = 1;
+                                $display_results[$i] = array(
+                                    'message' => $message,
+                                    'status' => $status
+                                );
+                                $get_bulk_data_wallet_details = UserBulkDataWallet::where('user_id',$user_id)->where('product_plan_category_id',$request->product_plan_category_id)->first();
+                                $bulk_wallet_balance_before = $get_bulk_data_wallet_details->bulk_wallet_balance_mb;
+                               
+                                $bulk_wallet_balance_after = $bulk_wallet_balance_before - $data_value_mb;
+                    
+                    
+                                //this should not run though because it has already been checked
+                                if($bulk_wallet_balance_after <= 0){
+                                    $status = -1;
+                                    $message = 'Failed due to insufficient balance via bulk data wallet';
+                                    $failure++;
+                                    $display_results[$i] = array(
+                                        'message' => $message,
+                                        'status' => $status
+                                    );
+                                }
+                        
+                                $description = 'Purchase of data via data wallet';
+                                $creationData['transaction_category'] = 'data';
+                                $creationData['user_id'] = $user_id;
+                                $creationData['wallet_category'] = $request->wallet_category;
+                                $creationData['product_plan_id'] = $request->product_plan_id;
+                                $creationData['phone_number'] = $phone_numbers_array[$i];
+                                $creationData['amount'] = $amount;
+                                $creationData['status'] = $status;
+                                $creationData['balance_before'] = $bulk_wallet_balance_before;
+                                $creationData['balance_after'] = $bulk_wallet_balance_after;
+                                $creationData['description'] = $description;
+                                $creationData['user_screen_message'] = $message;
+                                $creationData['admin_screen_message'] = $message;
+                                Transaction::create($creationData);
+                    
+                                UserBulkDataWallet::where('user_id',$user_id)
+                                                    ->where('product_plan_category_id',$request->product_plan_category_id)
+                                                    ->update([
+                                                        'bulk_wallet_balance_mb' => $bulk_wallet_balance_after
+                                                    ]);
+                    
+                            }
     
-            $description = 'Purchase of data';
-            $creationData['transaction_category'] = 'data';
-            $creationData['user_id'] = $user_id;
-            $creationData['wallet_category'] = $request->wallet_category;
-            $creationData['product_plan_id'] = $request->product_plan_id;
-            $creationData['phone_number'] = $phone_numbers_array[$i];
-            $creationData['amount'] = $amount;
-            $creationData['status'] = $status;
-            $creationData['balance_before'] = $wallet_before;
-            $creationData['balance_after'] = $wallet_after;
-            $creationData['description'] = $description;
-            $creationData['user_screen_message'] = $message;
-            $creationData['admin_screen_message'] = $message;
-            Transaction::create($creationData);
+                            DB::commit();
+                            return response()->json(['status'=>1, 'message'=>'Transaction was successfully processed', 'data' => $display_results  ]);
+                    
 
-            User::where('id',$user_id)->update([
-                'main_wallet' => $wallet_after
-            ]);
 
+                        }
+
+
+        }catch(Exception $exception){
+            logger($exception->getMessage().' on line: '. $exception->getLine());
+            DB::rollBack();
+            return response()->json(['status'=>'-1', 'message'=>'Something went wrong... Please try again']);
         }
 
-        // if($success > 0 && $success >= $phone_numbers_count){
-        //     //no error
-        // }else if($success > 0 && $success < $phone_numbers_count){
-        //     //some errors and some success
-        // }else{
-        //     // everything failed
-        // }
-        return response()->json(['status'=>1, 'message'=>'Transaction was successfully processed', 'data' => $display_results  ]);
-
+      
+       
         
 
     }
@@ -201,8 +287,6 @@ class DataController extends Controller
         if ($validator->stopOnFirstFailure()->fails()) {
             return response()->json(['status'=>'-1', 'message'=>$validator->errors()->first(),'data' => $request->all() ]);
         }
-
-
 
         $success = 0;
         $failure = 0;
@@ -307,6 +391,23 @@ class DataController extends Controller
         }
 
      
+    }
+
+
+    public function get_single_bulk_data_wallet($plan_id){
+        $plan_details = ProductPlan::where('id',$plan_id)->first();
+        $plan_category_id = $plan_details->product_plan_category_id;
+        $user_id = auth()->id();
+        $get_user_wallet_details = UserBulkDataWallet::with('product_plan_category')->where('user_id',$user_id)
+                                   ->where('product_plan_category_id',$plan_category_id)
+                                   ->first();
+        if(! $get_user_wallet_details){
+            return response()->json(['status'=>-1,'message' => 'single bulk wallet could not be fetched' ,'data' => [], 'wallet' => 0  ]);
+
+        }
+
+        return response()->json(['status'=>1,'message' => 'single bulk wallet successfullly fetched' ,'data' => $get_user_wallet_details, 'wallet' => number_format($get_user_wallet_details->bulk_wallet_balance_mb) .' MB'  ]);
+
     }
 
 

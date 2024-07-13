@@ -673,7 +673,8 @@
             </div>
         </div> --}}
         <div class="footer-bottom text-center">
-            <p class="mb-0" style="color: white">Copyright Crystalpay 2024. All rights Reserved</p>
+            {{-- <p class="mb-0" style="color: white">Copyright Crystalpay 2024. All rights Reserved</p> --}}
+            <p class="mb-0" style="color: white">Developed with ❤️ by Subutility 	&#169; {{ date('Y') }} . All rights Reserved</p>
         </div>
     </footer>
 

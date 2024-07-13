@@ -18,8 +18,8 @@ class ProductPlan extends Model
     **/
     public function product()
     {
-        // return $this->belongsTo(Product::class, 'product_id', 'id');
-        return $this->belongsTo(Product::class, 'product_id', 'id')->where('active_status',1);
+        return $this->belongsTo(Product::class, 'product_id', 'id');
+        // return $this->belongsTo(Product::class, 'product_id', 'id')->where('active_status',1);
     }
 
      /**
@@ -28,6 +28,15 @@ class ProductPlan extends Model
     public function product_plan_category()
     {
         return $this->belongsTo(ProductPlanCategory::class, 'product_plan_category_id', 'id');
+        // return $this->belongsTo(ProductPlanCategory::class, 'product_plan_category_id', 'id')->where('active_status',1);
+    }
+
+
+
+
+    public function automation()
+    {
+        return $this->belongsTo(Automation::class, 'automation_id', 'id');
         // return $this->belongsTo(ProductPlanCategory::class, 'product_plan_category_id', 'id')->where('active_status',1);
     }
 

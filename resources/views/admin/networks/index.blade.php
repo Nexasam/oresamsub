@@ -37,7 +37,7 @@
                                 <th>SN</th>
                                 <th>Network Name</th>
                                 <th>Date Added</th>
-                                <th>Actions</th>
+                                {{-- <th>Actions</th> --}}
                             </tr>
                         </thead>
                         <tbody>
@@ -46,17 +46,13 @@
                                 <td>{{ $loop->index + 1 }}</td>
                                 <td>{{ $network->network_name }}</td>
                                 <td>{{ $network->created_at }}</td>
-                                <td>
+                                {{-- <td>
                                   <div class=" flex items-center justify-start">
-                                          {{-- <div class="icons-list-item mr-2">
-                                            <i class="ti ti-trash-x text-lg text-red-500"></i> |
-                                            </div> --}}
-
                                           <div class="icons-list-item">
                                             <i class="ti ti-edit text-lg text-blue-500"></i>                   
                                           </div>
                                   </div>  
-                                </td>
+                                </td> --}}
                               </tr>     
                             @endforeach                
                         </tbody>

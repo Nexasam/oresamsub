@@ -80,6 +80,12 @@ class DatabaseSeeder extends Seeder
             "slug" =>'cloudsimhost',
         ]);
 
+        $smeplug = Automation::create([
+            "id" => "9c2887ea-7c78-4085-99bb-03565b066we5",
+            "automation_name" => 'SMEPLUG',
+            "slug" =>'smeplug',
+        ]);
+
 
         //NETWORKS
         $mtn_network = Network::create([
@@ -193,7 +199,7 @@ class DatabaseSeeder extends Seeder
             'first_name' => 'Samuel',
             'last_name' => 'Adebunmi',
             'main_wallet' => 20000,
-            'role' => $admin_role,
+            'role_id' => $admin_role,
             'user_plan_id' => $user_plan_diamond->id,
             'email' => 'adebsholey4real@gmail.com',
             'phone_number' => '08168509044',
@@ -202,7 +208,7 @@ class DatabaseSeeder extends Seeder
         User::factory()->create([
             'first_name' => 'Oreofe',
             'last_name' => 'Adebunmi',
-            'role' => $user_role,
+            'role_id' => $user_role,
             'user_plan_id' => $user_plan_basic->id,
             'email' => 'oreofe@gmail.com',
             'phone_number' => '08198092334',
@@ -211,7 +217,7 @@ class DatabaseSeeder extends Seeder
         User::factory()->create([
             'first_name' => 'Emmanuel',
             'last_name' => 'Adebunmi',
-            'role' => $user_role,
+            'role_id' => $user_role,
             'user_plan_id' => $user_plan_diamond->id,
             'email' => 'emmanuel@gmail.com',
             'phone_number' => '08198092771',
@@ -220,7 +226,7 @@ class DatabaseSeeder extends Seeder
         User::factory()->create([
             'first_name' => 'Tolubobo',
             'last_name' => 'Adebunmi',
-            'role' => $user_role,
+            'role_id' => $user_role,
             'user_plan_id' => $user_plan_gold->id,
             'email' => 'tolubobo@gmail.com',
             'phone_number' => '08198092889',
@@ -229,7 +235,7 @@ class DatabaseSeeder extends Seeder
         User::factory()->create([
             'first_name' => 'Paul',
             'last_name' => 'Dennis',
-            'role' => $user_role,
+            'role_id' => $user_role,
             'user_plan_id' => $user_plan_gold->id,
             'email' => 'pauldennis@gmail.com',
             'phone_number' => '08087675566',

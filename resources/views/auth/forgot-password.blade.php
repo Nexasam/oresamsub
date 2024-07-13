@@ -4,13 +4,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title> Web App - CrystalData </title>
+    <title> Web App - ABCData </title>
     <meta name="description" content="A Tailwind CSS admin template is a pre-designed web page for an admin dashboard. Optimizing it for SEO includes using meta descriptions and ensuring it's responsive and fast-loading.">
     <meta name="keywords" content="analytics dashboard,jobs dashboard,crm dashboard examples,personal dashboard,sales dashboard sample,best crm dashboard,crypto dashboard template,sales analytics dashboard,stocks dashboard,hrm dashboard,ecommerce admin panel template,sales admin dashboard,admin panel for ecommerce website,website template ecommerce,template dashboard,course dashboard,template ecommerce website">
 
      <!-- Favicon -->
     {{-- <link rel="shortcut icon" href="../assets/img/brand-logos/favicon.ico"> --}}
-    <link rel="shortcut icon" href="{{ asset(env('APP_ASSETS_BASE_URL').'img/brand-logos/favicon.ico') }}">
+    {{-- <link rel="shortcut icon" href="{{ asset(env('APP_ASSETS_BASE_URL').'img/brand-logos/favicon.ico') }}"> --}}
 
     <!-- Style Css -->
     {{-- <link rel="stylesheet" href="../assets/css/style.css"> --}}
@@ -30,7 +30,7 @@
     <div class="grid grid-cols-12 gap-6 w-full h-full">
         <div class="lg:col-span-6 col-span-12 hidden lg:block relative">
             <div class="cover relative w-full h-full z-[1]">
-                <img src="{{ asset(env('APP_ASSETS_BASE_URL').'img/authentication/auth.jpg') }}" alt="logo" class="object-cover mx-auto h-full">
+                <img src="{{ asset(env('APP_ASSETS_BASE_URL').'img/authentication/auth3.jpg') }}" alt="logo" class="object-cover mx-auto h-full">
             </div>
         </div>
         <div class="lg:col-span-6 col-span-12">

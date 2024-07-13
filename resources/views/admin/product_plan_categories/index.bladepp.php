@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.app_two')
 @section('content')
 
       <!-- Start::main-content -->
@@ -7,19 +7,14 @@
         <!-- Page Header -->
         <div class="block justify-between page-header md:flex">
             <div>
-                <h3 class="text-gray-700 hover:text-gray-900 dark:text-white dark:hover:text-white text-2xl font-medium"> Data Transactions</h3>
+                <h3 class="text-gray-700 hover:text-gray-900 dark:text-white dark:hover:text-white text-2xl font-medium"> Products Plan Categories</h3>
             </div>
             <ol class="flex items-center whitespace-nowrap min-w-0">
-                <li class="text-sm">
-                    <a class="flex items-center font-semibold text-primary hover:text-primary dark:text-primary truncate" href="javascript:void(0);">
-                    Data
-                    <i class="ti ti-chevrons-right flex-shrink-0 mx-3 overflow-visible text-gray-300 dark:text-gray-300 rtl:rotate-180"></i>
-                    </a>
-                </li>
-                <li class="text-sm text-gray-500 hover:text-primary dark:text-white/70 " aria-current="page">
-                    Buy Data
-                </li>
-            </ol>   
+              
+                {{-- <li class="text-sm text-gray-500 hover:text-primary dark:text-white/70 " aria-current="page">
+                    Products
+                </li> --}}
+            </ol>
         </div>
         <!-- Page Header Close -->
 
@@ -32,57 +27,89 @@
           
               <div class="box">
                 <div class="box-header">
-                  <h5 class="box-title">Data Transactions</h5>
+                  <h5 class="box-title">Product Plan Categories</h5>
                 </div>
 
                 <div class="box-body">
                   <nav class="flex space-x-2" aria-label="Tabs" role="tablist">
                     <button type="button" class="hs-tab-active:bg-primary hs-tab-active:text-white py-3 px-4 inline-flex items-center gap-2 bg-transparent text-sm font-medium text-center text-gray-500 rounded-sm hover:text-primary  dark:text-white/70 dark:hover:text-white active" id="pills-with-brand-color-item-2" data-hs-tab="#pills-with-brand-color-2" aria-controls="pills-with-brand-color-2">
-                      Buy Data
+                      Create Product Plan Categories
                     </button>
                     <button type="button" class="hs-tab-active:bg-primary hs-tab-active:text-white py-3 px-4 inline-flex items-center gap-2 bg-transparent text-sm font-medium text-center text-gray-500 rounded-sm hover:text-primary  dark:text-white/70 dark:hover:text-white " id="pills-with-brand-color-item-1" data-hs-tab="#pills-with-brand-color-1" aria-controls="pills-with-brand-color-1">
-                      View Data Transactions
+                      View Product Plan Categories
                     </button>
                   
                   </nav>
 
                   <div class="mt-3">
                     <div id="pills-with-brand-color-1" class="hidden" role="tabpanel" aria-labelledby="pills-with-brand-color-item-1">
-                      <div class="overflow-auto" style="font-size: 10px;">
+                      <div class="overflow-auto">
                         {{-- <table  class="ti-custom-table ti-custom-table-head ti-striped-table ti-custom-table-hover ">
                             <thead> --}}
-                              <table  class="ti-custom-table ti-custom-table-head">    
+                              <table class="ti-custom-table ti-custom-table-head">    
                                 <thead class="bg-gray-50 dark:bg-black/20">
                                 <tr>
                                     <th>ID</th>
-                                    <th>User Details</th>
-                                    <th>Wallet Category</th>
-                                    <th>Phone Number</th>
-                                    <th>Amount(&#8358;)</th>
-                                    <th>Balance Before(&#8358;)</th>
-                                    <th>Balance After(&#8358;)</th>
-                                    <th>Date Added</th>
+                                    <th>Category name</th>
+                                    <th>Automation</th>
+                                    <th></th>
+                                    <th>Network</th>
+                                    <th>Product</th>
+                                    {{-- <td>Bulk data wallet</td> --}}
+                                    {{-- <td>MB measurement</td> --}}
+                                    <th>Date added</th>
+                                    <th>Bulk data plans</th>
                                 </tr>
                             </thead>
                             <tbody>
                               @php
                                   $count = 1;
                               @endphp
-                              @foreach ($data_transactions as $transaction)
+                              @foreach ($product_plan_categories as $product_plan_category)
+                                  
                                   <tr>
-                                  <td>{{ $count++ }}</td>
-                                  <td>{{ $transaction->user->first_name }} <br> {{ $transaction->user->last_name }} <br>  {{ $transaction->user->phone_number }}</td>
-                                  <td>{{ $transaction->wallet_category == 'main_wallet' ?  'MAIN' : 'DATA_WALLET' }}</td>
-                                  <td>{{ $transaction->phone_number ?? 'nil' }}</td>
-                                  <td>{{ number_format($transaction->amount,2) }}</td>
-                                  <td>{{ number_format($transaction->balance_before,2) }}</td>
-                                  <td>{{  number_format($transaction->balance_after,2) }}</td>
-                                  <td>{{ $transaction->created_at }}</td>
+                                  <td><small>{{ $count++ }}</small></td>
+                                  <td><small>{{ $product_plan_category->product_plan_category_name ?? 'nil' }}</small></td>
+                                  <td colspan="2"><small>
+                                      <div class="mb-2">
+                                          <input type="hidden" class="product_category_id" id="product_category_id_{{ $product_plan_category['id'] }}" value="{{  $product_plan_category['id'] }}">
+                                          <select  class="my-auto ti-form-select update_automation_product_plan_category"  id="{{  $product_plan_category['id'] }}" name="automation_id_{{  $product_plan_category['id'] }}"  >
+                                            <option value="">Select</option>
+                                            @foreach ($automations as $automation)
+                                                <option @if ( $product_plan_category->automation_id == $automation->id )
+                                                    selected
+                                                @endif value="{{ $automation->id }}"><small>{{ $automation->automation_name }}</small></option>
+                                            @endforeach
+                                          </select>
+                                        
+                                          <br>
+                                          <small class="notify_span" id="notify_span{{  $product_plan_category['id'] }}""></small>
+                                      </div>  
+                                  </small></td>
+                                  <td><small>{{ $product_plan_category->network->network_name ?? 'nil' }}</small></td>
+                                  <td><small>{{ $product_plan_category->product->product_name ?? 'nil' }}</small></td>
+                                  {{-- <td><small>{{ number_format($product_plan_category->bulk_data_wallet_in_mb) }}MB
+                                    <br> {{ number_format( ceil($product_plan_category->bulk_data_wallet_in_mb / $product_plan_category->mb_data_measurement) ) }}GB
+                                    <br> {{ number_format( ceil($product_plan_category->bulk_data_wallet_in_mb / $product_plan_category->mb_data_measurement / $product_plan_category->mb_data_measurement)) }}TB
+                                  </small></td> --}}
+                                  {{-- <td><small>{{ number_format($product_plan_category->mb_data_measurement) }}</small></td> --}}
+                                  <td><small>{{ $product_plan_category->created_at }}</small></td>
+                                  <td>
+                                    @if ($product_plan_category->product != NULL )
+                                        <a href="{{ route('admin.bulk_data_plans.index',$product_plan_category->id) }}" class="hs-dropdown-toggle ti-btn ti-btn-primary">
+                                        Manage Bulk Plans</a>
+
+                                    @else
+                                          <i>Not applicable</i>
+
+                                    @endif
+
+                                  </td>
                                  </tr>   
                               @endforeach
                                 
                             </tbody>
-                              </table>     
+                        </table>     
                       </div>                
                     </div>
                     <div id="pills-with-brand-color-2"  role="tabpanel" aria-labelledby="pills-with-brand-color-item-2">
@@ -118,76 +145,61 @@
                                 <div class="box">
                                     
                                     <div class="box-body">
-                                        <form>
-                                            <input type="hidden" id="_token" name="_token" value="{{ csrf_token() }}" />
-                                     
+                                      <form method="POST" action="{{ route('admin.product_plan_categories.store')}}">
+                                        @csrf
+
                                             <div class="grid w-full lg:w-1/2 lg:grid-cols-1 gap-6 space-y-4 lg:space-y-0">
+                                            
+                                                <div class="space-y-2">
+                                                  <label class="ti-form-label mb-0">Product Plan Category Name</label>
+                                                  <input type="text" required class="my-auto ti-form-input"  id="product_plan_category_name" name="product_plan_category_name" placeholder="Enter product plan category name">
+                                                </div>
+                                          
+                                                <div class="space-y-2">
+                                                    <label class="ti-form-label mb-0">Choose Product</label>
+                                                    <select id="product_id" required name="product_id"  class="my-auto ti-form-select">
+                                                        <option value="">select</option>
+                                                         @foreach ($products as $product)
+                                                             <option value="{{ $product->id }}">{{ $product->product_name }}</option>
+                                                         @endforeach
+                                                      </select>
+                                                </div>
+
+                                                <div class="space-y-2">
+                                                  <label class="ti-form-label mb-0">Choose Network (Optional)</label>
+                                                  <select id="network_id" name="network_id"  class="my-auto ti-form-select">
+                                                      <option value="">Select</option>
+                                                      {{-- <option value="">Nil</option> --}}
+                                                       @foreach ($networks as $network)
+                                                           <option value="{{ $network->id }}">{{ $network->network_name }}</option>
+                                                       @endforeach
+                                                    </select>
+                                              </div>
+
+                                              <div class="space-y-2">
+                                                <label class="ti-form-label mb-0">Choose Automation</label>
+                                                <select required id="automation_id" name="automation_id"  class="my-auto ti-form-select">
+                                                    <option value="">Select</option>
+                                                     @foreach ($automations as $automation)
+                                                         <option value="{{ $automation->id }}">{{ $automation->automation_name }}</option>
+                                                     @endforeach
+                                                  </select>
+                                            </div>
+
+                                     
                                                 
                                                 <div class="space-y-2">
-                                                    <label class="ti-form-label mb-0">Choose Wallet</label>
-                                                    <select required id="wallet_category" name="wallet_category" class="my-auto ti-form-select">
-                                                        <option value="">Select</option>
-                                                         <option value="main_wallet">Main Wallet - &#8358;{{  number($user_details->main_wallet) }}</option>                                        
-                                                         <option value="data_wallet">Data Wallet</option>                                        
-                                                     
-                                                    </select>
-                                                </div>
-                                                <div class="space-y-2">
-                                                    <label class="ti-form-label mb-0">Network</label>
-                                                    {{-- single_select --}}
-                                                    <select required id="network_id" name="network_id" class="my-auto ti-form-select">
-                                                        <option value="">Select</option>
-                                                        @foreach ($networks as $network)
-                                                         <option value="{{  $network->id }}">{{ $network->network_name }}</option>                                        
-                                                        @endforeach
-                                                      </select>
-                                                </div>
-                                                <div class="space-y-2">
-                                                    {{-- <div class="grid sm:grid-cols-2 gap-2"> --}}
-                                                        <label class="p-3 flex w-full bg-white border border-gray-200 rounded-sm text-sm focus:border-primary focus:ring-primary dark:bg-bgdark dark:border-white/10 dark:text-white/70">
-                                                          <input type="checkbox" class="ti-form-checkbox mt-0.5 pointer-events-none" id="filter_by_plan_category">
-                                                          <span class="text-sm text-gray-500 ms-2 dark:text-white/70">Filter by plan categories</span>
-                                                        </label>
-                                                </div>
-                    
-                                                {{-- single_select --}}
-                                                <div id="product_plan_category_div" class="space-y-2 hidden">
-                                                    <label class="ti-form-label mb-0">Product Plan Category</label>
-                                                    <select data-trigger required name="product_plan_category_id" id="product_plan_category_id" class="my-auto ti-form-select">
-                                                        <option value="all">Select</option>
-                    
-                                                      </select>
-                                                </div>
-                    
-                                                <div class="space-y-2">
-                                                    <label class="ti-form-label mb-0">Product Plans List</label>
-                                                    <select required name="product_plan_id" id="product_plan_id" class="my-auto ti-form-select">
-                                                        <option value="all">Select</option>
-                    
-                                                      </select>
-                                                      <div class="display_wallet_details">
-                                                        
-                                                      </div>
+                                                    <button type="submit" class="ti-btn ti-btn-primary w-full">Create Product Plan Category</button>
                                                 </div>
                                               
-                                                <div class="space-y-2">
-                                                    <label class="ti-form-label mb-0">Phone Number(s) to recharge</label>
-                                                    <textarea id="phone_number" name="phone_number" class="my-auto ti-form-input"
-                                                        placeholder="e.g 08168509044, 09011988807"></textarea>
-                                                </div>
-                    
-                                                <div class="space-y-2">
-                                                    <button type="submit" id="buy_data_btn" class="ti-btn ti-btn-primary w-full">Buy Data</button>
-                                                </div>
-                                               
                                                 <br>
                                             </div>
                                             {{-- <div class="my-5">
                                                 <button type="submit" class="ti-btn ti-btn-primary w-full">Submit</button>
                                             </div> --}}
-                    
+
                                         </form>
-                                       
+                                      
                                     </div>
                                 </div>
                             </div>

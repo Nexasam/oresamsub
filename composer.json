@@ -10,7 +10,7 @@
         "laravel/framework": "^11.0",
         "laravel/sanctum": "^4.0",
         "laravel/tinker": "^2.9",
-        "yajra/laravel-datatables-oracle": "^11.1"
+        "yajra/laravel-datatables-oracle": "11"
     },
     "require-dev": {
         "barryvdh/laravel-debugbar": "^3.13",

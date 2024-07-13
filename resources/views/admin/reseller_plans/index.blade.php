@@ -48,7 +48,7 @@
                                 <td>{{ $user_plan->user_plan_name  }}  </td>
                                 <td> 
                                  
-                                  <input type="text" class="reseller_inputs" disabled id="prefix_id{{ $user_plan->id }}"  value="{{ $user_plan->updated_user_plan_name ?? NULL }}  "> <br>
+                                  <input type="text" class="reseller_inputs" disabled id="prefix_id{{ $user_plan->id }}"  value="{{ $user_plan->updated_user_plan_name ?? NULL }}  "> 
                                   <input type="hidden" id="_token" name="_token" value="{{ csrf_token() }}" />
                                   
                                   <button class="w-1/4 ti-btn ti-btn-primary  edit_class" type="button"  id="{{ $user_plan->id }}"> 
