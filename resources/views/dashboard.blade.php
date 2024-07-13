@@ -218,7 +218,7 @@
                             <div class="text-gray-500 dark:text-white/70 mb-1 text-xs flex items-center justify-between  space-x-3">
                                 <span
                                     class="text-gray-800 font-semibold text-xl leading-none align-bottom dark:text-white">
-                                    &#8358; {{ number_format($user->main_wallet,2)  }}
+                                    &#8358; {{ number_format($user->main_wallet,2) ?? 0  }}
                                 </span>
                                 <div> 
                                     {{-- data-hs-overlay="#hs-basic-modal" --}}
