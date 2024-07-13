@@ -127,7 +127,7 @@
                                                     <label class="ti-form-label mb-0">Choose Wallet</label>
                                                     <select required id="wallet_category" name="wallet_category" class="my-auto ti-form-select">
                                                         <option value="">Select</option>
-                                                         <option value="main_wallet">Main Wallet - &#8358;{{  number($user_details->main_wallet) }}</option>                                        
+                                                         <option value="main_wallet">Main Wallet - &#8358;{{  number_format($user_details->main_wallet) }}</option>                                        
                                                          <option value="data_wallet">Data Wallet</option>                                        
                                                      
                                                     </select>
