@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf_token" content="{{ csrf_token() }}">
-    <title> Data App </title>
+    <title> Data App - ABCData </title>
     <meta name="description" content="A Tailwind CSS admin template is a pre-designed web page for an admin dashboard. Optimizing it for SEO includes using meta descriptions and ensuring it's responsive and fast-loading.">
     <meta name="keywords" content="analytics dashboard,jobs dashboard,crm dashboard examples,personal dashboard,sales dashboard sample,best crm dashboard,crypto dashboard template,sales analytics dashboard,stocks dashboard,hrm dashboard,ecommerce admin panel template,sales admin dashboard,admin panel for ecommerce website,website template ecommerce,template dashboard,course dashboard,template ecommerce website">
 
@@ -912,11 +912,12 @@
                       console.log(response);
                       
                       if(response.status == '1'){
-                          var bulk_data_plan_name = numberWithCommas(response.data.bulk_data_plan_name);
+                          var bulk_data_plan_name = response.data.bulk_data_plan_name;
                           var selling_price = numberWithCommas(response.data.selling_price);
                           var data_value_mb = numberWithCommas(response.data.data_value_mb);
                           var data_value_gb = numberWithCommas(response.data.data_value_gb);
-                          var data_value_tb = numberWithCommas(response.data.data_value_tb);
+                          // var data_value_tb = numberWithCommas(response.data.data_value_tb);
+                          var data_value_tb = response.data.data_value_tb;
                           var selling_price = numberWithCommas(response.data.selling_price);
                           var mb_data_measurement = numberWithCommas(response.data.mb_data_measurement);
                           

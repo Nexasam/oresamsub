@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use Exception;
 use App\Models\Product;
 use App\Models\UserPlan;
 use App\Models\Automation;
 use App\Models\ProductPlan;
 use Illuminate\Http\Request;
 use App\Models\ProductPlanCategory;
+use Illuminate\Support\Facades\Session;
 
 class AutomationController extends Controller
 {
@@ -32,17 +34,107 @@ class AutomationController extends Controller
         }
 
        
+        try{
 
-        if($slug == 'ogdams' || $slug == 'ogdams_v2'){
-            //call plans api 
-            $selection = 'selected';
-            $ogdams_live_key = 'sk_live_8bd499ea-66f6-4650-8c7f-09a59e7c03a5';
-
-
-            ///TODO: MOVE TO SERVICE
-                $curl = curl_init();        
+            if($slug == 'ogdams' || $slug == 'ogdams_v2'){
+                //call plans api 
+                $selection = 'selected';
+                // sk_live_8bd499ea-66f6-4650-8c7f-09a59e7c03a5
+                // $ogdams_secret_key = 'sk_live_8bd499ea-66f6-4650-8c7f-09a59e7c03a5';
+                $ogdams_secret_key = $automation->api_secret_key;
+                // dd($ogdams_secret_key);
+    
+    
+                ///TODO: MOVE TO SERVICE
+                    // $curl = curl_init();        
+                    // curl_setopt_array($curl, array(
+                    // CURLOPT_URL => 'https://simhosting.ogdams.ng/api/v2/get/data/plans',
+                    // CURLOPT_RETURNTRANSFER => true,
+                    // CURLOPT_ENCODING => '',
+                    // CURLOPT_MAXREDIRS => 10,
+                    // CURLOPT_TIMEOUT => 0,
+                    // CURLOPT_FOLLOWLOCATION => true,
+                    // CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                    // CURLOPT_CUSTOMREQUEST => 'GET',
+                    // CURLOPT_HTTPHEADER => array(
+                    //     'Accept: application/json',
+                    //     'Authorization: Bearer '.$ogdams_secret_key
+                    // ),
+                    // ));
+                    
+                    
+                    $curl = curl_init();
+                    curl_setopt_array($curl, array(
+                    CURLOPT_URL => 'https://simhosting.ogdams.ng/api/v2/get/data/plans',
+                    CURLOPT_RETURNTRANSFER => true,
+                    CURLOPT_ENCODING => '',
+                    CURLOPT_MAXREDIRS => 10,
+                    CURLOPT_TIMEOUT => 0,
+                    CURLOPT_FOLLOWLOCATION => true,
+                    CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                    CURLOPT_CUSTOMREQUEST => 'GET',
+                    CURLOPT_HTTPHEADER => array(
+                        'Accept: application/json',
+                        'Authorization: Bearer '.$ogdams_secret_key
+                    ),
+                    ));
+    
+                    $response = curl_exec($curl);
+    
+                    curl_close($curl);
+                    // echo $response;
+                    // dd($response);
+    
+                    $response_array = json_decode($response,true);
+                    
+                    curl_close($curl);
+    
+                    $ogdams_mtn_products = $response_array['data'][1] ?? [];
+                    $ogdams_airtel_products = $response_array['data'][2] ?? [];
+                    $ogdams_glo_products = $response_array['data'][3] ?? [];
+                    $ogdams__9mobile_products = $response_array['data'][4] ?? [];   
+                    
+                    $products_count = count($ogdams_mtn_products) + count($ogdams_airtel_products) + count($ogdams_glo_products) + count($ogdams__9mobile_products) ;
+    
+                    if($automation == NULL || $automation->api_secret_key == NULL){
+                        Session::flash('failure','Please ensure your automation api keys are set');
+                        return redirect()->route('admin.settings.index');
+                        // return back()->with('status' , 'Please check your settings and ensure keys are set');
+                    }
+            
+            
+                    // $products = Product::select('id','product_name','slug')->get();
+                    $product_plan_categories = ProductPlanCategory::select('id','product_plan_category_name')->get();
+                
+                    $data['product_plan_ids'] = $product_plan_ids ;
+                    $data['ogdams_mtn_products'] = $ogdams_mtn_products ;
+                    $data['ogdams_airtel_products'] = $ogdams_airtel_products ;
+                    $data['ogdams_glo_products'] = $ogdams_glo_products ;
+                    $data['ogdams__9mobile_products'] = $ogdams__9mobile_products ;
+                    // $data['products'] = $products;
+                    $data['product_plan_categories'] = $product_plan_categories ;
+            
+                    $data['slug'] = $slug;
+                    $data['automation'] = $automation;
+                    $data['user_plans'] = $user_plans;
+                    // $data['automation_products'] = $_9mobile_products;
+                    // $data['automation_products'] = $automation_products ?? [];
+                    // dd($data);
+            
+                    return view('admin.automations.dashboard')->with($data);
+            }
+    
+            if($slug == 'smeplug'){
+                //call plans api 
+                $selection = 'selected';
+                //call plans api 
+                //4c5edd5fe849f1d170e299ca288d5361c9255d92f7b79fa139eb0e2f4f88eb7e
+                $secret_key = $automation->api_secret_key; 
+    
+                $curl = curl_init();
+    
                 curl_setopt_array($curl, array(
-                CURLOPT_URL => 'https://simhosting.ogdams.ng/api/v2/get/data/plans',
+                CURLOPT_URL => 'https://smeplug.ng/api/v1/data/plans',
                 CURLOPT_RETURNTRANSFER => true,
                 CURLOPT_ENCODING => '',
                 CURLOPT_MAXREDIRS => 10,
@@ -51,183 +143,133 @@ class AutomationController extends Controller
                 CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
                 CURLOPT_CUSTOMREQUEST => 'GET',
                 CURLOPT_HTTPHEADER => array(
-                    'Accept: application/json',
-                    'Authorization: Bearer '.$ogdams_live_key
+                'Authorization: Bearer '.$secret_key,
+                'Cookie: CUBESESSID=kuohi1jd76rqo3i9r4oopum7s7'
                 ),
                 ));
+    
                 $response = curl_exec($curl);
-
                 $response_array = json_decode($response,true);
-                
+    
                 curl_close($curl);
-
-                $ogdams_mtn_products = $response_array['data'][1] ?? [];
-
-                // $ogdams_mtn_products =  collect($ogdams_mtn_products)
-                // ->where('active', 1)
-                // ->tap(function($collection){
-                //     return $collection;
-                // })
-                // ->where('member', 1)
-                // ->tap(function($collection){
-                //     return var_dump($collection->pluck('name'));
-                // });
-
-                $ogdams_airtel_products = $response_array['data'][2] ?? [];
-                $ogdams_glo_products = $response_array['data'][3] ?? [];
-                $ogdams__9mobile_products = $response_array['data'][4] ?? [];   
+    
+                // echo $response_array;
+                // dd($response);
+    
+    
+                ///TODO: MOVE TO SERVICE
+            
+                    $smeplug_mtn_products = $response_array['data'][$sme_network_mtn] ?? [];
+                    $smeplug_airtel_products = $response_array['data'][$sme_network_airtel] ?? [];
+                    $smeplug_glo_products = $response_array['data'][$sme_network_glo] ?? [];
+                    $smeplug__9mobile_products = $response_array['data'][$sme_network_9mobile] ?? [];   
+                    
+                    $products_count = count($smeplug_mtn_products) + count($smeplug_airtel_products) + count($smeplug_glo_products) + count($smeplug__9mobile_products) ;
+    
+                    if($automation == NULL || $automation->api_secret_key == NULL){
+                        Session::flash('failure','Please ensure your automation api keys are set');
+                        return redirect()->route('admin.settings.index');
+                        // return back()->with('status' , 'Please check your settings and ensure keys are set');
+                    }
+            
+            
+            
+                    // $products = Product::select('id','product_name','slug')->get();
+                    $product_plan_categories = ProductPlanCategory::select('id','product_plan_category_name')->get();
                 
-                $products_count = count($ogdams_mtn_products) + count($ogdams_airtel_products) + count($ogdams_glo_products) + count($ogdams__9mobile_products) ;
-
-                if($automation == NULL){
-                    return back();
+                    $data['product_plan_ids'] = $product_plan_ids;
+                    $data['smeplug_mtn_products'] = $smeplug_mtn_products;
+                    $data['smeplug_airtel_products'] = $smeplug_airtel_products;
+                    $data['smeplug_glo_products'] = $smeplug_glo_products;
+                    $data['smeplug__9mobile_products'] = $smeplug__9mobile_products;
+                    // $data['products'] = $products;
+                    $data['product_plan_categories'] = $product_plan_categories;
+            
+                    $data['slug'] = $slug;
+                    $data['automation'] = $automation;
+                    $data['user_plans'] = $user_plans;
+                    // $data['automation_products'] = $_9mobile_products;
+                    // $data['automation_products'] = $automation_products ?? [];
+                    // dd($data);
+            
+                    return view('admin.automations.smeplug_dashboard')->with($data);
+            }
+    
+            if($slug == 'megasubplug'){
+    
+                
+                //call plans api 
+                //password: inchristalone@NEW2024,  author: 102325246266435f47e344b
+                $selection = 'selected';
+                $api_key = '';
+                $data = [
+                        "Password" => $automation->api_password,
+                        "Authorization" => $automation->api_public_key,
+                ];
+                $encoded_data = json_encode($data);
+                // dd($encoded_data);
+    
+                if($automation == NULL || $automation->api_public_key == NULL || $automation->api_password == NULL){
+                    Session::flash('failure','Please ensure your automation api keys are set');
+                    return redirect()->route('admin.settings.index');
+                    // return back()->with('status' , 'Please check your settings and ensure keys are set');
                 }
         
-        
-                // $products = Product::select('id','product_name','slug')->get();
+    
+                $curl = curl_init();
+                curl_setopt_array($curl, array(
+                CURLOPT_URL => 'https://megasubplug.com/API/?action=product_prices',
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_ENCODING => '',
+                CURLOPT_MAXREDIRS => 10,
+                CURLOPT_TIMEOUT => 0,
+                CURLOPT_FOLLOWLOCATION => true,
+                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                CURLOPT_CUSTOMREQUEST => 'GET',
+                CURLOPT_HTTPHEADER => array(
+                    'Password: '.$automation->api_password,
+                    'Authorization: '.$automation->api_public_key,
+                    'Cookie: PHPSESSID=67up5cp8mc52aqqu08dkoetd04'
+                ),
+                ));
+    
+                $response = curl_exec($curl);
+    
+                curl_close($curl);
+                // echo $response;
+                // dd($response);
+    
                 $product_plan_categories = ProductPlanCategory::select('id','product_plan_category_name')->get();
-            
-                $data['product_plan_ids'] = $product_plan_ids ;
-                $data['ogdams_mtn_products'] = $ogdams_mtn_products ;
-                $data['ogdams_airtel_products'] = $ogdams_airtel_products ;
-                $data['ogdams_glo_products'] = $ogdams_glo_products ;
-                $data['ogdams__9mobile_products'] = $ogdams__9mobile_products ;
-                // $data['products'] = $products;
-                $data['product_plan_categories'] = $product_plan_categories ;
-        
+                $data['product_plan_ids'] = $product_plan_ids;
+                $data['product_plan_categories'] = $product_plan_categories; 
                 $data['slug'] = $slug;
                 $data['automation'] = $automation;
                 $data['user_plans'] = $user_plans;
-                // $data['automation_products'] = $_9mobile_products;
-                // $data['automation_products'] = $automation_products ?? [];
-                // dd($data);
-        
-                return view('admin.automations.dashboard')->with($data);
-        }
-
-        if($slug == 'smeplug'){
-            //call plans api 
-            $selection = 'selected';
-            //call plans api 
-            //username: esubcustomercare@gmail.com
-            //pass: inchristalone@2612DEVELOPMENT
-            //pbkey: 8a30dba11ba967631d0d99625a7aed20255e1edd5eca851dea52975c5ff9bf45
-            $secret_key = '4c5edd5fe849f1d170e299ca288d5361c9255d92f7b79fa139eb0e2f4f88eb7e'; 
-
-            $curl = curl_init();
-
-            curl_setopt_array($curl, array(
-            CURLOPT_URL => 'https://smeplug.ng/api/v1/data/plans',
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_ENCODING => '',
-            CURLOPT_MAXREDIRS => 10,
-            CURLOPT_TIMEOUT => 0,
-            CURLOPT_FOLLOWLOCATION => true,
-            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-            CURLOPT_CUSTOMREQUEST => 'GET',
-            CURLOPT_HTTPHEADER => array(
-            'Authorization: Bearer '.$secret_key,
-            'Cookie: CUBESESSID=kuohi1jd76rqo3i9r4oopum7s7'
-            ),
-            ));
-
-            $response = curl_exec($curl);
-            $response_array = json_decode($response,true);
-
-            curl_close($curl);
-
-            // echo $response_array;
-            // dd($response_array['data'][$sme_network_9mobile]);
-
-
-            ///TODO: MOVE TO SERVICE
-        
-                $smeplug_mtn_products = $response_array['data'][$sme_network_mtn] ?? [];
-                $smeplug_airtel_products = $response_array['data'][$sme_network_airtel] ?? [];
-                $smeplug_glo_products = $response_array['data'][$sme_network_glo] ?? [];
-                $smeplug__9mobile_products = $response_array['data'][$sme_network_9mobile] ?? [];   
-                
-                $products_count = count($smeplug_mtn_products) + count($smeplug_airtel_products) + count($smeplug_glo_products) + count($smeplug__9mobile_products) ;
-
-                if($automation == NULL){
-                    return back();
-                }
-        
-        
-                // $products = Product::select('id','product_name','slug')->get();
-                $product_plan_categories = ProductPlanCategory::select('id','product_plan_category_name')->get();
+                $data['data_plans'] = json_decode($response,true)['Detail'];
+                // dd(json_decode($response,true)['Detail'][0]['id']);
+    
+                return view('admin.automations.megasubplug_dashboard')->with($data);
+    
+            }
+    
+            if($slug == 'cloudsimhost'){
+                $selection = 'selected';
+                //call plans api 
+            }
+    
+            if($selection == ''){
+                return back();
+            }
             
-                $data['product_plan_ids'] = $product_plan_ids ;
-                $data['smeplug_mtn_products'] = $smeplug_mtn_products ;
-                $data['smeplug_airtel_products'] = $smeplug_airtel_products ;
-                $data['smeplug_glo_products'] = $smeplug_glo_products ;
-                $data['smeplug__9mobile_products'] = $smeplug__9mobile_products ;
-                // $data['products'] = $products;
-                $data['product_plan_categories'] = $product_plan_categories ;
+        }catch(Exception $exception){
+            $errormessage = $exception->getMessage();
+            $errorline = $exception->getLine();
+            logger("Error occured in fetching plans: $errormessage on $errorline");
+            Session::flash('failure','Please ensure your automation api keys are set');
+            return redirect()->route('admin.settings.index');
+        }
+
         
-                $data['slug'] = $slug;
-                $data['automation'] = $automation;
-                $data['user_plans'] = $user_plans;
-                // $data['automation_products'] = $_9mobile_products;
-                // $data['automation_products'] = $automation_products ?? [];
-                // dd($data);
-        
-                return view('admin.automations.smeplug_dashboard')->with($data);
-        }
-
-        if($slug == 'megasubplug'){
-            //call plans api 
-            $selection = 'selected';
-            $api_key = '';
-            $data = [
-                    "Password" => "inchristalone@NEW2024",
-                    "Authorization" => "102325246266435f47e344b"
-            ];
-            $encoded_data = json_encode($data);
-
-            $curl = curl_init();
-            curl_setopt_array($curl, array(
-            CURLOPT_URL => 'https://megasubplug.com/API/?action=product_prices',
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_ENCODING => '',
-            CURLOPT_MAXREDIRS => 10,
-            CURLOPT_TIMEOUT => 0,
-            CURLOPT_FOLLOWLOCATION => true,
-            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-            CURLOPT_CUSTOMREQUEST => 'GET',
-            CURLOPT_HTTPHEADER => array(
-                'Password: inchristalone@NEW2024',
-                'Authorization: 102325246266435f47e344b',
-                'Cookie: PHPSESSID=67up5cp8mc52aqqu08dkoetd04'
-            ),
-            ));
-
-            $response = curl_exec($curl);
-
-            curl_close($curl);
-            // echo $response;
-
-            $product_plan_categories = ProductPlanCategory::select('id','product_plan_category_name')->get();
-            $data['product_plan_ids'] = $product_plan_ids;
-            $data['product_plan_categories'] = $product_plan_categories; 
-            $data['slug'] = $slug;
-            $data['automation'] = $automation;
-            $data['user_plans'] = $user_plans;
-            $data['data_plans'] = json_decode($response,true)['Detail'];
-            // dd(json_decode($response,true)['Detail'][0]['id']);
-
-            return view('admin.automations.megasubplug_dashboard')->with($data);
-
-        }
-
-        if($slug == 'cloudsimhost'){
-            $selection = 'selected';
-            //call plans api 
-        }
-
-        if($selection == ''){
-            return back();
-        }
 
        
     }

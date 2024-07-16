@@ -67,6 +67,12 @@
                     <button type="button" class="hs-tab-active:bg-primary hs-tab-active:text-white py-3 px-4 inline-flex items-center gap-2 bg-transparent text-sm font-medium text-center text-gray-500 rounded-sm hover:text-primary  dark:text-white/70 dark:hover:text-white" id="pills-with-brand-color-item-3" data-hs-tab="#pills-with-brand-color-3" aria-controls="pills-with-brand-color-3">
                       Site logo
                     </button>
+                    <button type="button" class="hs-tab-active:bg-primary hs-tab-active:text-white py-3 px-4 inline-flex items-center gap-2 bg-transparent text-sm font-medium text-center text-gray-500 rounded-sm hover:text-primary  dark:text-white/70 dark:hover:text-white" id="pills-with-brand-color-item-4" data-hs-tab="#pills-with-brand-color-4" aria-controls="pills-with-brand-color-4">
+                      Automation settings
+                    </button>
+                    <button type="button" class="hs-tab-active:bg-primary hs-tab-active:text-white py-3 px-4 inline-flex items-center gap-2 bg-transparent text-sm font-medium text-center text-gray-500 rounded-sm hover:text-primary  dark:text-white/70 dark:hover:text-white" id="pills-with-brand-color-item-5" data-hs-tab="#pills-with-brand-color-5" aria-controls="pills-with-brand-color-5">
+                      Security
+                    </button>
                   </nav>
 
                   <div class="mt-3">
@@ -409,6 +415,74 @@
                               <br>
                           </div>
                       </form>
+                      </div>  
+                    </div>
+                    <div id="pills-with-brand-color-4" class="hidden" role="tabpanel" aria-labelledby="pills-with-brand-color-item-4">
+                      <div class="overflow-auto">
+                        <form enctype="multipart/form-data" method="POST" action="{{ route('admin.settings.manage_automations_keys')  }}">
+                          @csrf
+                          <div class="grid w-full lg:w-1/2 lg:grid-cols-1 gap-2 space-y-4 lg:space-y-0">
+                              <p>SME PLUG AUTOMATION</p>
+                              <div class="">
+                                <label class="ti-form-label mb-0">Secret key: </label>
+                                <input type="text"  required class="my-auto ti-form-input" name="smeplug_api_secret_key" value="{{ $smeplug->api_secret_key  ?? '' }}"  placeholder="">
+                              </div> 
+                              <br>
+                              <hr>
+                              <p>OGDAMS AUTOMATION</p>
+                              <div class="space-y-2 mt-5">
+                                <label class="ti-form-label mb-0">Secret key: </label>
+                                <input type="text" required class="my-auto ti-form-input"  value="{{ $ogdams->api_secret_key  ?? '' }}"  name="ogdams_api_secret_key"  placeholder="">
+                              </div>
+                              <br>
+                              <hr>
+                              <p>MEGASUBPLUG AUTOMATION</p>
+                              <div class="space-y-2 mt-5">
+                                <label class="ti-form-label mb-0">Api Password: </label>
+                                <input type="text" required class="my-auto ti-form-input" name="megasub_api_password" value="{{ $megasubplug->api_password  ?? '' }}"  placeholder="">
+                              </div>
+                              <div class="space-y-2 mt-5">
+                                <label class="ti-form-label mb-0">Public key: </label>
+                                <input type="text" required class="my-auto ti-form-input" name="megasub_api_public_key" value="{{ $megasubplug->api_public_key  ?? '' }}"   placeholder="">
+                              </div>
+                              <br>
+                              <hr>      
+                              <div class="space-y-2">
+                                  <button type="submit" class="ti-btn ti-btn-primary w-full">Update keys</button>
+                              </div>
+                            
+                              <br>
+                          </div>
+                        </form>
+                        
+                      </div>  
+                    </div>
+                    <div id="pills-with-brand-color-5" class="hidden" role="tabpanel" aria-labelledby="pills-with-brand-color-item-5">
+                      <div class="overflow-auto">
+                        <form  method="POST" action="{{ route('admin.settings.manage_global_user_2fa')  }}">
+                          @csrf
+                          <div class="grid w-full lg:w-1/2 lg:grid-cols-1 gap-2 space-y-4 lg:space-y-0">
+                              <p>Manage 2FA for all users</p>
+                              <div class="space-y-2 mt-5">
+                                <label class="ti-form-label mb-0">  Currently turned: <strong>{{  $admin_2fa_setting->global_user_2fa_setting == NULL ? 'OFF' : $admin_2fa_setting->global_user_2fa_setting  }}</strong> </label>
+                                <select id="global_user_2fa_setting" name="global_user_2fa_setting" required class="my-auto ti-form-select">
+                                    <option value="">Select</option>
+                                    <option @if ($admin_2fa_setting->global_user_2fa_setting == NULL) selected @endif value="OFF">OFF</option>
+                                    <option @if ($admin_2fa_setting->global_user_2fa_setting == 'ON') selected @endif value="ON">ON</option>
+                                    <option @if ($admin_2fa_setting->global_user_2fa_setting == 'OFF') selected @endif value="OFF">OFF</option>
+                                  </select>
+                              </div>
+
+                              <br>
+                              <hr>     
+                              <div class="space-y-2">
+                                  <button type="submit" class="ti-btn ti-btn-primary w-full">Globally Update 2fa</button>
+                              </div>
+                            
+                              <br>
+                          </div>
+                        </form>
+                        
                       </div>  
                     </div>
                   </div>

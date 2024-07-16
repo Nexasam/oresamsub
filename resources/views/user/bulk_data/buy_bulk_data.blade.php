@@ -121,7 +121,7 @@
                                   <td>{{ number_format($user_bulk_data_purchase->wallet_data_balance_after) }}</td>
                                   <td>{{ number_format($user_bulk_data_purchase->data_value_mb) }}</td>
                                   <td>{{ number_format($user_bulk_data_purchase->data_value_gb) }}</td>
-                                  <td>{{ number_format($user_bulk_data_purchase->data_value_tb) }}</td>
+                                  <td>{{ $user_bulk_data_purchase->data_value_tb }}</td>
                                   <td>{{ number_format($user_bulk_data_purchase->mb_data_measurement) }}</td>
                                   <td>{{ $user_bulk_data_purchase->created_at }}</td>
                                  

@@ -62,7 +62,7 @@ class RegisteredUserController extends Controller
         $data['phone_number'] = $request->phone_number;
         $data['upline_id'] = $upline_id;
         $data['email'] = $request->email;
-        $data['role'] = $role_details->id;
+        $data['role_id'] = $role_details->id;
         $data['user_plan_id'] = $default_reseller_plan->id;
         $data['password'] = Hash::make($request->password);
         // $data['confirm_password'] = Hash::make($request->confirm_password);

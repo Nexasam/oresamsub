@@ -57,7 +57,7 @@
     </div> --}}
     <div class="grid grid-cols-12 gap-x-5">
         
-        <div class="col-span-12 xxxl:col-span-2 md:col-span-3">
+        <div class="col-span-12 xxxl:col-span-2 md:col-span-4">
             <div class="box">
                 <div class="box-body">
                     <div class="flex space-x-4 rtl:space-x-reverse">
@@ -73,11 +73,12 @@
                             </span>
                         </div>
                         <div class="">
-                            <div class="mb-2">Plan</div>
+                            <div class="mb-2">Total Users</div>
                             <div class="text-gray-500 dark:text-white/70 mb-1 text-xs">
                                 <span
                                     class="text-gray-800 font-semibold text-xl leading-none align-bottom dark:text-white">
-                                    {{ $user->user_plan->updated_user_plan_name ?? $user->user_plan->user_plan_name  }}
+                                    {{-- {{ number_format( count($users))  }} --}}
+                                    {{ number_format( count($users ?? 0))  }}
                                 </span>
                             </div>
                             {{-- <div>
@@ -89,7 +90,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-span-12 xxxl:col-span-2 md:col-span-3">
+        <div class="col-span-12 xxxl:col-span-2 md:col-span-4">
             <div class="box">
                 <div class="box-body">
                     <div class="flex space-x-4 rtl:space-x-reverse">
@@ -125,8 +126,72 @@
                 </div>
             </div>
         </div>
-      
-        <div class="col-span-12 xxxl:col-span-2 md:col-span-3">
+        <div class="col-span-12 xxxl:col-span-2 md:col-span-4">
+            <div class="box">
+                <div class="box-body">
+                    <div class="flex space-x-4 rtl:space-x-reverse">
+                        <div class="flex items-center justify-center ecommerce-icon px-0">
+                            <span class="rounded-sm p-4 bg-primary/10">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="fill-white svg1" height="24px"
+                                    viewBox="0 0 24 24" width="24px" fill="#000000">
+                                    <path d="M0 0h24v24H0V0z" fill="none" />
+                                    <path
+                                        d="M15.55 13c.75 0 1.41-.41 1.75-1.03l3.58-6.49c.37-.66-.11-1.48-.87-1.48H5.21l-.94-2H1v2h2l3.6 7.59-1.35 2.44C4.52 15.37 5.48 17 7 17h12v-2H7l1.1-2h7.45zM6.16 6h12.15l-2.76 5H8.53L6.16 6zM7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zm10 0c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z" />
+                                </svg>
+                            </span>
+                        </div>
+                        <div class="">
+                            <div class="mb-2">Product Plans</div>
+                            <div class="text-gray-500 dark:text-white/70 mb-1 text-xs">
+                                <span
+                                    class="text-gray-800 font-semibold text-xl leading-none align-bottom dark:text-white">
+                                    {{ number_format( count($product_plans))  }}
+                                </span>
+                            </div>
+                            {{-- <div>
+                                <span class="text-xs mb-0">Increased by <span
+                                        class="text-success">+2.5%</span></span>
+                            </div> --}}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-span-12 xxxl:col-span-2 md:col-span-4">
+            <div class="box">
+                <div class="box-body">
+                    <div class="flex space-x-4 rtl:space-x-reverse">
+                        <div class="flex items-center justify-center ecommerce-icon px-0">
+                            <span class="rounded-sm p-4 bg-warning/10">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="fill-white svg4" height="24px"
+                                    viewBox="0 0 24 24" width="24px" fill="#000000">
+                                    <path d="M0 0h24v24H0V0z" fill="none" />
+                                    <path
+                                        d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm.31-8.86c-1.77-.45-2.34-.94-2.34-1.67 0-.84.79-1.43 2.1-1.43 1.38 0 1.9.66 1.94 1.64h1.71c-.05-1.34-.87-2.57-2.49-2.97V5H10.9v1.69c-1.51.32-2.72 1.3-2.72 2.81 0 1.79 1.49 2.69 3.66 3.21 1.95.46 2.34 1.15 2.34 1.87 0 .53-.39 1.39-2.1 1.39-1.6 0-2.23-.72-2.32-1.64H8.04c.1 1.7 1.36 2.66 2.86 2.97V19h2.34v-1.67c1.52-.29 2.72-1.16 2.73-2.77-.01-2.2-1.9-2.96-3.66-3.42z" />
+                                </svg>
+                            </span>
+                        </div>
+                        <div class="">
+                            <div class="mb-2">Total User Main Balances</div>
+                            <div class="text-gray-500 dark:text-white/70 mb-1 text-xs">
+                                <span
+                                    class="text-gray-800 font-semibold text-xl leading-none align-bottom dark:text-white">
+                                    &#8358;{{  number_format($main_wallet_balances,2) ?? 0  }}
+                                </span>
+                            </div>
+                            {{-- <div>
+                                <span class="text-xs mb-0">Increased by <span
+                                        class="text-success">+2.58%</span></span>
+                            </div> --}}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+       
+
+        <div class="col-span-12 xxxl:col-span-2 md:col-span-4">
             <div class="box">
                 <div class="box-body">
                     <div class="flex space-x-4 rtl:space-x-reverse">
@@ -149,12 +214,12 @@
                         </div>
                         <div class="">
                             <div class="mb-2 ">
-                               Main Wallet Balance
+                               Product Plan Categories
                             </div>
                             <div class="text-gray-500 dark:text-white/70 mb-1 text-xs flex items-center justify-between  space-x-3">
                                 <span
                                     class="text-gray-800 font-semibold text-xl leading-none align-bottom dark:text-white">
-                                    &#8358; {{ number_format($user->main_wallet,2) ?? 0  }}
+                                    {{ number_format(count($product_plan_categories))  ?? 0  }}
                                 </span>
                                 <div> 
                                     {{-- data-hs-overlay="#hs-basic-modal" --}}
@@ -213,49 +278,47 @@
                                   </div>
 
                             </div>
-                            <div>
-                                <span class="text-xs mb-0"> <span
-                                        class="text-danger"></span>
+                            {{-- <div>
+                                <span class="text-xs mb-0">Decreased by <span
+                                        class="text-danger">-14.9%</span>
                                 </span>
-                            </div>
+                            </div> --}}
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="col-span-12 xxxl:col-span-2 md:col-span-3">
+        <div class="col-span-12 xxxl:col-span-2 md:col-span-4">
             <div class="box">
                 <div class="box-body">
                     <div class="flex space-x-4 rtl:space-x-reverse">
                         <div class="flex items-center justify-center ecommerce-icon px-0">
-                            <span class="rounded-sm p-4 bg-warning/10">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="fill-white svg4" height="24px"
+                            <span class="rounded-sm p-4 bg-success/10">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="fill-white svg6" height="24px"
                                     viewBox="0 0 24 24" width="24px" fill="#000000">
                                     <path d="M0 0h24v24H0V0z" fill="none" />
                                     <path
-                                        d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm.31-8.86c-1.77-.45-2.34-.94-2.34-1.67 0-.84.79-1.43 2.1-1.43 1.38 0 1.9.66 1.94 1.64h1.71c-.05-1.34-.87-2.57-2.49-2.97V5H10.9v1.69c-1.51.32-2.72 1.3-2.72 2.81 0 1.79 1.49 2.69 3.66 3.21 1.95.46 2.34 1.15 2.34 1.87 0 .53-.39 1.39-2.1 1.39-1.6 0-2.23-.72-2.32-1.64H8.04c.1 1.7 1.36 2.66 2.86 2.97V19h2.34v-1.67c1.52-.29 2.72-1.16 2.73-2.77-.01-2.2-1.9-2.96-3.66-3.42z" />
+                                        d="M16.5 3c-1.74 0-3.41.81-4.5 2.09C10.91 3.81 9.24 3 7.5 3 4.42 3 2 5.42 2 8.5c0 3.78 3.4 6.86 8.55 11.54L12 21.35l1.45-1.32C18.6 15.36 22 12.28 22 8.5 22 5.42 19.58 3 16.5 3zm-4.4 15.55l-.1.1-.1-.1C7.14 14.24 4 11.39 4 8.5 4 6.5 5.5 5 7.5 5c1.54 0 3.04.99 3.57 2.36h1.87C13.46 5.99 14.96 5 16.5 5c2 0 3.5 1.5 3.5 3.5 0 2.89-3.14 5.74-7.9 10.05z" />
                                 </svg>
                             </span>
                         </div>
                         <div class="">
-                            <div class="mb-2">Total Bulk Wallets ({{ number_format($bulk_data_wallet_count)  }})</div>
+                            <div class="mb-2">Total Bulk Data Balances</div>
                             <div class="text-gray-500 dark:text-white/70 mb-1 text-xs">
                                 <span
                                     class="text-gray-800 font-semibold text-xl leading-none align-bottom dark:text-white">
-                                    {{ number_format($bulk_data_wallet_sum)  }} MB
+                                    {{ number_format($bulk_data_wallet_sum)  }}MB
                                 </span>
-                               
                             </div>
-                            <div>
-                                {{-- <span class="text-xs mb-0">Total Sum: <span class="
-                                        text-success">{{  number_format($bulk_data_wallet_sum) }} MB</span></span> --}}
-                            </div>
+                            {{-- <div>
+                                <span class="text-xs mb-0">Increased by <span class="
+                                        text-success">+1.31%</span></span>
+                            </div> --}}
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-
       
         <div class="col-span-12 xxl:col-span-12">
             <div class="box">
@@ -308,10 +371,9 @@
                                     <th>Wallet Category</th>
                                     <th>Phone Number</th>
                                     <th>Amount</th>
-                                    <th>Balance Before</th>
+                                    <th>Balance Before()</th>
                                     <th>Data size</th>
                                     <th>Balance After</th>
-                                    <th>Status</th>
                                     <th>Date Added</th>
                                 </tr>
                             </thead>
@@ -321,25 +383,6 @@
                               @endphp
                               @if (count($transactions) > 0)
                                    @foreach ($transactions as $transaction)
-                                        @php
-                                        if($transaction->status == 1){
-                                            $status_display = '<span class="badge bg-success text-white">Success</span>';
-                                        }
-                                        elseif($transaction->status == -1){
-                                            $status_display = '<span class="badge bg-danger text-white">Failed</span>';
-                                        }
-                                        elseif($transaction->status == 0){
-                                            $status_display = '<span class="badge bg-warning text-white">Pending</span>';
-                                        }
-                                        elseif($transaction->status == 2){
-                                            $status_display = '<span class="badge bg-primary text-white">Refunded</span>';
-                                        }
-                                        elseif($transaction->status == 3){
-                                            $status_display = '<span class="badge bg-gray text-white">Processing</span>';
-                                        }else{
-                                            $status_display = '<span class="badge bg-gray text-white">Unknown</span>';
-                                        }
-                                    @endphp
                                         <tr>
                                         <td>{{ $count++ }}</td>
                                         <td>{{ $transaction->user->first_name  ?? 'nil'}} <br> {{ $transaction->user->last_name ?? 'nil' }} <br>  {{ $transaction->user->phone_number ?? 'nil'}}</td>
@@ -349,9 +392,6 @@
                                         <td>{{ $transaction->wallet_category == 'main_wallet' ? '₦'.number_format($transaction->balance_before,2) : number_format($transaction->balance_before).'MB' }}</td>
                                         <td>{{ number_format($transaction->product_plan->data_size_in_mb) .'MB' }}</td>
                                         <td>{{ $transaction->wallet_category == 'main_wallet' ? '₦'.number_format($transaction->balance_after,2) : number_format($transaction->balance_after).'MB' }}</td>
-                                        <td>  @php
-                                            echo $status_display;
-                                        @endphp  </td>
                                         <td>{{ $transaction->created_at }}</td>
                                         </tr>   
                                     @endforeach

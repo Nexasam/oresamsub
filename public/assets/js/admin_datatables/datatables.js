@@ -80,8 +80,8 @@ $(document).ready(function(){
                 // ajax:  "{{ route('admin.users.fetch_users',"+data+") }}",
                 columns: [
                     {data: 'DT_RowIndex', name: 'DT_RowIndex'},
-                    {data: 'first_name', name: 'first_name'},
-                    {data: 'last_name', name: 'last_name'},
+                    {data: 'full_name', name: 'full_name'},
+                    {data: 'main_wallet', name: 'main_wallet'},
                     {data: 'email', name: 'email'},
                     {data: 'phone_number', name: 'phone_number'},
                     {data: 'created_at', name: 'created_at'},

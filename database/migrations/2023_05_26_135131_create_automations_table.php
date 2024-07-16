@@ -15,6 +15,9 @@ return new class extends Migration
             $table->uuid('id')->primary();
             $table->string('automation_name');
             $table->string('slug');
+            $table->string('api_secret_key')->default(NULL)->nullable();
+            $table->string('api_public_key')->default(NULL)->nullable();
+            $table->string('api_password')->default(NULL)->nullable();
             $table->string('activation_status')->default('1')->comment('1- Activated / 0 - Deactivated');
             $table->timestamps();
         });

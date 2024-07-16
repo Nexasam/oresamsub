@@ -81,7 +81,7 @@
                               <td><small>{{ $bulk_data_plan->bulk_data_plan_name }}</small></td>
                               <td><small>{{ $bulk_data_plan->product_plan_category->product_plan_category_name ?? 'nil' }}</small></td>
                               <td>
-                                <small>{{ number_format($bulk_data_plan->data_value_tb)}}TB</small>
+                                <small>{{ $bulk_data_plan->data_value_tb  }}TB</small>
                                 <small>{{ number_format($bulk_data_plan->data_value_gb) }}GB</small>
                                 <small>{{ number_format($bulk_data_plan->data_value_mb) }}MB</small>
                               </td>
@@ -92,7 +92,7 @@
                               <td><small>{{ number_format($bulk_data_plan->user_level_2_selling_price) ?? 'nil' }}</small></td>
                               <td><small>{{ number_format($bulk_data_plan->user_level_3_selling_price) ?? 'nil' }}</small></td>
                               <td><small>{{ number_format($bulk_data_plan->user_level_4_selling_price) ?? 'nil' }}</small></td>
-                              <td><small>{{ $bulk_data_plan->Visibility == 1 ? 'VISIBLE' : 'HIDDEN' }}</small></td>
+                              <td><small>{{ $bulk_data_plan->visibility == 1 ? 'VISIBLE' : 'HIDDEN' }}</small></td>
                               <td><small>{{ $bulk_data_plan->created_at }}</small></td>
                               {{-- <td>
                                 <a href="#" class="hs-dropdown-toggle ti-btn ti-btn-primary" data-toggle="modal" data-target="#hs-vertically-centered-scrollable-modal{{ $user->email }}">

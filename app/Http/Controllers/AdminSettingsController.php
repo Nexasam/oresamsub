@@ -2,27 +2,41 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\AdminGeneralSetting;
-use App\Models\LandingPagesSetting;
+use App\Models\Admin2faSetting;
+use App\Models\Automation;
 use Illuminate\Http\Request;
 use App\Models\ReferralSetting;
+use App\Models\AdminGeneralSetting;
+use App\Models\LandingPagesSetting;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
 
 class AdminSettingsController extends Controller
 {
     public function index(){
-        //landingpages
+    //landingpages
         $landing_page_settings = LandingPagesSetting::get();
         foreach($landing_page_settings as $landing_page_setting){
             $data[$landing_page_setting->field_name] = $landing_page_setting->field_details;
         }
 
+        $admin_2fa_setting = Admin2faSetting::first();
+
+
         $referral_setting = ReferralSetting::first();
         if(! $referral_setting){
             $referral_setting = ReferralSetting::create();
         } 
+
+        $ogdams = Automation::where('slug','ogdams')->first();
+        $smeplug = Automation::where('slug','smeplug')->first();
+        $megasubplug = Automation::where('slug','megasubplug')->first();
         $data['referral_setting'] = $referral_setting;
+        $data['admin_2fa_setting'] = $admin_2fa_setting;
+        $data['ogdams'] = $ogdams;
+        $data['smeplug'] = $smeplug;
+        $data['megasubplug'] = $megasubplug;
+        // dd($data);
 
        
         // dd($data);
@@ -86,6 +100,74 @@ class AdminSettingsController extends Controller
       }
     }
 
+    public function manage_global_user_2fa(Request $request){
+      $validator = Validator::make($request->all(), [
+        'global_user_2fa_setting' => 'required|max:255',
+      ]);
+
+      if ($validator->stopOnFirstFailure()->fails()) {
+        return redirect()->back()->withErrors($validator)->withInput();
+      }
+      
+     
+        $admin_2fa_setting = Admin2faSetting::first();
+        if($admin_2fa_setting == NULL){
+          //insert
+          Admin2faSetting::create([
+            'global_user_2fa_setting' => $request->global_user_2fa_setting
+          ]);
+        }else{
+          //update
+          $admin_2fa_setting->update([
+            'global_user_2fa_setting' => $request->global_user_2fa_setting
+          ]);
+        }
+        Session::flash('success','2fa successfully updated for all users');
+        return redirect()->back();
+      
+    }
+
+    public function manage_automations_keys(Request $request){
+      // dd($request->all());
+      $validator = Validator::make($request->all(), [
+        'smeplug_api_secret_key' => 'required',
+        'ogdams_api_secret_key' => 'required',
+        'megasub_api_password' => 'required',
+        'megasub_api_public_key' => 'required'
+        
+      ]);
+
+      if ($validator->stopOnFirstFailure()->fails()) {
+        return redirect()->back()->withErrors($validator)->withInput();
+      }
+      
+      $automations = Automation::all();
+      foreach($automations as $automation){
+        if($automation->slug == 'ogdams' || $automation->slug == 'ogdams_v2') {
+            Automation::where('slug','ogdams')->update([
+              'api_secret_key' => $request->ogdams_api_secret_key
+            ]);
+        }
+
+        if($automation->slug == 'smeplug') {
+          Automation::where('slug','smeplug')->update([
+            'api_secret_key' => $request->smeplug_api_secret_key
+          ]);
+        }
+
+        if($automation->slug == 'megasubplug') {
+          Automation::where('slug','megasubplug')->update([
+            'api_public_key' => $request->megasub_api_public_key,
+            'api_password' => $request->megasub_api_password
+          ]);
+        }
+      }
+
+      Session::flash('success','Automation keys were successfully updated');
+      return redirect()->back();
+   
+    }
+    
 
     public function manage_landing_page_settings(Request $request){
         $landing_pages_arr = config('landing_pages');

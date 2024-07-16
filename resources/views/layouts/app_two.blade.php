@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title> Web App - ABCData </title>
+    <title> Data App - ABCData - ABCData </title>
 
     <meta name="description" content="A Tailwind CSS admin template is a pre-designed web page for an admin dashboard. Optimizing it for SEO includes using meta descriptions and ensuring it's responsive and fast-loading.">
     <meta name="keywords" content="analytics dashboard,jobs dashboard,crm dashboard examples,personal dashboard,sales dashboard sample,best crm dashboard,crypto dashboard template,sales analytics dashboard,stocks dashboard,hrm dashboard,ecommerce admin panel template,sales admin dashboard,admin panel for ecommerce website,website template ecommerce,template dashboard,course dashboard,template ecommerce website">
@@ -636,7 +636,7 @@
 
     <footer class="mt-auto py-3 border-t dark:border-white/10 bg-white dark:bg-bgdark">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            {{-- <p class="text-center">Copyright © <span id="year"></span> <a href="javascript:void(0)" class="text-primary">CrystalPay</a>. All rights reserved </p> --}}
+            {{-- <p class="text-center">Copyright © <span id="year"></span> <a href="javascript:void(0)" class="text-primary">ABCData</a>. All rights reserved </p> --}}
             <p class="text-center">Copyright © <span id="year"></span> <a href="javascript:void(0)" class="text-primary">Developed with ❤️ by Subutility</a> All rights reserved </p>
 
           </div>
@@ -769,9 +769,13 @@
       // alert('sss')
        $('.save_product_plan').click(function(e){
 
+
             e.preventDefault();
 
             let id = $(this).attr('id');
+            // alert(id)
+            // return
+
             let validity_in_day = $(`#validity_in_day_${id}`).val();
             let automation_id = $('#automation_id').val();
             let data_size_in_mb = $(`#data_size_in_mb_${id}`).val();
@@ -781,11 +785,12 @@
             //let product_id = $(`#product_id_${id}`).val();
             //let network_id = $(`#network_id_${id}`).val();
             let product_plan_category_id = $(`#product_plan_category_id_${id}`).val();
-            let user_plan_1 = $('#user_plan_1').val();
-            let user_plan_2 = $('#user_plan_2').val();
-            let user_plan_3 = $('#user_plan_3').val();
-            let user_plan_4 = $('#user_plan_4').val();
+            let user_plan_1 = $(`#user_plan_${id}_1`).val();
+            let user_plan_2 = $(`#user_plan_${id}_2`).val();
+            let user_plan_3 = $(`#user_plan_${id}_3`).val();
+            let user_plan_4 = $(`#user_plan_${id}_4`).val();
             let _token = $('#_token').val();
+            
 
             showLoadingButton(id);
            
@@ -819,6 +824,7 @@
                 success: function(response) {
                     // showDisplayButton(id);
                     // console.log(response);
+                    // $('#notify_span'+id).text(response.message);
                     $('#notify_span'+id).text('successfully saved...');
                     showDisplayButton(id);
                 },

@@ -135,7 +135,7 @@
                                              <div>
                                                 <label for="upline_referral_phone_number" class="block text-sm mb-2 dark:text-white">Referral phone number (optional)</label>
                                                 <div class="relative">
-                                                    <x-text-input id="upline_referral_phone_number" class="block mt-1 w-full" type="text" name="upline_referral_phone_number" :value="old('upline_referral_phone_number')" required autofocus autocomplete="upline_referral_phone_number" />
+                                                    <x-text-input id="upline_referral_phone_number" class="block mt-1 w-full" type="text" name="upline_referral_phone_number" :value="old('upline_referral_phone_number')"  autofocus autocomplete="upline_referral_phone_number" />
                                                     <x-input-error :messages="$errors->get('upline_referral_phone_number')" class="mt-2" />
                                                 </div>
                                             </div>

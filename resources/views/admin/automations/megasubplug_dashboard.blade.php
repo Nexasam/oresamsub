@@ -141,12 +141,9 @@
                                                                   $countt = 1;
                                                               @endphp
                                                               @foreach ($user_plans as $user_plan)
-
-                                                                    
-                                                                  
                                                                   <div class="mb-3">
                                                                       <label class="ti-form-label mb-0">SP for {{ $user_plan->updated_user_plan_name ?? $user_plan->user_plan_name }}</label>
-                                                                      <input type="text" id="user_plan_{{  $user_plan->plan_level }}"  id="user_plan_{{  $user_plan->plan_level }}" value="{{ $data_plans[$i]['price'] + floor(200 / $user_plan->plan_level )}}" class="my-auto ti-form-input">
+                                                                      <input type="text" id="user_plan_{{  $data_plans[$i]['id'] }}_{{  $user_plan->plan_level }}"  name="user_plan_{{  $user_plan->plan_level }}" value="{{ $data_plans[$i]['price'] + floor(200 / $user_plan->plan_level )}}" class="my-auto ti-form-input">
                                                                   </div>             
                                                               @endforeach
                                                         </div>

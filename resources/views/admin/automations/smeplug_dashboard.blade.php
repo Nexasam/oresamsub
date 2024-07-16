@@ -120,7 +120,7 @@
                                                             
                                                             <div class="mb-3">
                                                                 <label class="ti-form-label mb-0">SP for {{ $user_plan->updated_user_plan_name ?? $user_plan->user_plan_name }}</label>
-                                                                <input type="text" id="user_plan_{{  $user_plan->plan_level }}"  id="user_plan_{{  $user_plan->plan_level }}" value="{{ $mtn_products['price'] + 200}}" class="my-auto ti-form-input">
+                                                                <input type="text" id="user_plan_{{  $mtn_products['id'] }}_{{  $user_plan->plan_level }}"  name="user_plan_{{  $user_plan->plan_level }}" value="{{ $mtn_products['price']  + floor(200 / $user_plan->plan_level )  }}" class="my-auto ti-form-input">
                                                             </div>             
                                                         @endforeach
                                                     </td>
@@ -295,7 +295,7 @@
                                                             
                                                             <div class="mb-3">
                                                                 <label class="ti-form-label mb-0">SP for {{ $user_plan->updated_user_plan_name ?? $user_plan->user_plan_name }}</label>
-                                                                <input type="text" id="user_plan_{{  $user_plan->plan_level }}"  id="user_plan_{{  $user_plan->plan_level }}" value="{{ $glo_products['price'] + 200}}" class="my-auto ti-form-input">
+                                                                <input type="text" id="user_plan_{{  $glo_products['id'] }}_{{  $user_plan->plan_level }}"  name="user_plan_{{  $user_plan->plan_level }}" value="{{ $glo_products['price'] + floor(200 / $user_plan->plan_level )}}" class="my-auto ti-form-input">
                                                             </div>             
                                                         @endforeach
                                                     </td>
@@ -450,7 +450,7 @@
                                                             
                                                             <div class="mb-3">
                                                                 <label class="ti-form-label mb-0">SP for {{ $user_plan->updated_user_plan_name ?? $user_plan->user_plan_name }}</label>
-                                                                <input type="text" id="user_plan_{{  $user_plan->plan_level }}"  id="user_plan_{{  $user_plan->plan_level }}" value="{{ $airtel_products['price'] + 200}}" class="my-auto ti-form-input">
+                                                                <input type="text" id="user_plan_{{  $airtel_products['id'] }}_{{  $user_plan->plan_level }}"  name="user_plan_{{  $user_plan->plan_level }}" value="{{ $airtel_products['price'] + floor(200 / $user_plan->plan_level ) }}" class="my-auto ti-form-input">
                                                             </div>             
                                                         @endforeach
                                                     </td>
@@ -620,7 +620,7 @@
                                                             
                                                             <div class="mb-3">
                                                                 <label class="ti-form-label mb-0">SP for {{ $user_plan->updated_user_plan_name ?? $user_plan->user_plan_name }}</label>
-                                                                <input type="text" id="user_plan_{{  $user_plan->plan_level }}"  id="user_plan_{{  $user_plan->plan_level }}" value="{{ $_9mobile_products['price'] + 200}}" class="my-auto ti-form-input">
+                                                                <input type="text" id="user_plan_{{  $_9mobile_products['id'] }}_{{  $user_plan->plan_level }}"  name="user_plan_{{  $user_plan->plan_level }}" value="{{ $_9mobile_products['price'] + floor(200 / $user_plan->plan_level )}}" class="my-auto ti-form-input">
                                                             </div>             
                                                         @endforeach
                                                     </td>

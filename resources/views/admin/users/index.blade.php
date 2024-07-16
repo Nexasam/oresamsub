@@ -159,8 +159,10 @@
                                 <thead class="bg-gray-50 dark:bg-black/20">
                                 <tr>
                                     <th>SN</th>
-                                    <th>First Name</th>
-                                    <th>Last Name</th>
+                                    <th>Fullname Name</th>
+                                    <th>Main wallet(&#8358;)</th>
+
+                                    {{-- <th>Last Name</th> --}}
                                     <th>Email Address</th>
                                     <th>Phone</th>
                                     <th>Date Added</th>

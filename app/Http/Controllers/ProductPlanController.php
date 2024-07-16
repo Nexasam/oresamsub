@@ -64,7 +64,7 @@ class ProductPlanController extends Controller
             'automation_id' => $request->automation_id,
           ],$data);
 
-          return response()->json(['status'=>'1', 'message'=>'successfully saved' ]);
+          return response()->json(['status'=>'1', 'message'=>'successfully saved'. 'plan_id:'.$request->id.' auto_id: '.$request->automation_id. 'data:'.json_encode($data),  ]);
 
     
         //   if($product_plan){
