@@ -363,7 +363,7 @@
                           
                                 
                             </tbody>
-                          </table> 
+                            </table> 
                         </div>
                     </div>
                     <div id="completed" class="hidden" role="tabpanel" aria-labelledby="completed-item">
