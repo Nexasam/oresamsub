@@ -21,6 +21,9 @@ class AdminSettingsController extends Controller
         }
 
         $admin_2fa_setting = Admin2faSetting::first();
+        if(!$admin_2fa_setting){
+          $admin_2fa_setting = Admin2faSetting::create();
+        }
 
 
         $referral_setting = ReferralSetting::first();
