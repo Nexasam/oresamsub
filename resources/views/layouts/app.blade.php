@@ -849,11 +849,13 @@
               //display product plans categories
               const bulk_data_plan_id = $('#bulk_data_plan_id').val();
               const bulk_data_wallet_id = $('#bulk_data_wallet_id').val();
+              const pin = $('#pin').val();
               const _token = $('#_token').val();
             
               const data = {
                 bulk_data_plan_id : bulk_data_plan_id,
                 bulk_data_wallet_id : bulk_data_wallet_id,
+                pin : pin,
                 _token : _token,
               };
 
@@ -1102,6 +1104,9 @@
 
           $('#buy_data_btn').click(function(e){
             e.preventDefault();
+              $(this).html('Processing...Please wait');
+              $(this).prop('disabled',true);
+
            
               //display product plans categories
               const network_id = $('#network_id').val();
@@ -1109,6 +1114,7 @@
               const phone_number = $('#phone_number').val();
               const wallet_category = $('#wallet_category').val();
               const product_plan_id = $('#product_plan_id').val();
+              const pin = $('#pin').val();
               
 
               const data = {
@@ -1116,13 +1122,18 @@
                 product_plan_category_id : product_plan_category_id,
                 phone_number : phone_number,
                 wallet_category : wallet_category,
-                product_plan_id : product_plan_id
+                product_plan_id : product_plan_id,
+                pin : pin
               };
 
               // console.log(data);
               // return;
 
-                $.ajax({
+              if (confirm("Are you sure you want to complete this data purchase?") == true) {
+                  // alert('logic happens here')
+                
+
+                  $.ajax({
                     type: 'GET',
                     url: "{{ route('user.data.buy_data_action') }}",
                     data: data,
@@ -1132,18 +1143,30 @@
                         // console.log(response.data);
                         var result = JSON.stringify(response);
                         var dataList = JSON.parse(result);
-                        if(dataList.status == 1){
+                        if( parseInt(dataList.status) == 1){
                            sweetAlertDisplay(dataList.message,'Success','success');
                            reload(3000);
-                        }else{
+                        }
+                        else if(dataList.status == 2){
+                           //@least 1 tranaction had an issue
+                           sweetAlertDisplay(dataList.message,'Info','warning');
+                           reload(6000);
+                        }
+                        else{
                           sweetAlertDisplay(dataList.message,'Error','error');
+                          $(this).prop('disabled',false);
                         }
                     },
                     error: function(xhr, status, error) {
                         // Handle errors if needed
                         console.error(xhr.responseText);
                     }
-                });
+                  });
+              } else {
+                return;
+              }
+
+              
             
           })
 

@@ -19,6 +19,8 @@ use App\Models\ProductPlanCategory;
 use App\Models\BulkDataProductPlans;
 use App\Models\UserBulkDataPurchase;
 use Illuminate\Support\Facades\Validator;
+use App\Services\Automation\MegaSubPlugAutomation\VendData;
+use App\Services\Automation\MegaSubPlugAutomation\MegaSubVendData;
 
 class DataController extends Controller
 {
@@ -48,6 +50,7 @@ class DataController extends Controller
         //data txns list
         $data_transactions = Transaction::with('user')->where('transaction_category','data')
         ->where('user_id',$user_id)
+        ->latest()
         ->get();
         $data['data_transactions'] = $data_transactions;
         $data['user_details'] = $user_details;
@@ -82,6 +85,7 @@ class DataController extends Controller
             'phone_number' => 'required',
             'product_plan_category_id' => 'required',
             'product_plan_id' => 'required',
+            'pin' => ['required','digits:4'],
             'wallet_category'=>['required',Rule::in(['main_wallet','data_wallet'])],
         ]);
         
@@ -110,6 +114,13 @@ class DataController extends Controller
             redirect(url('/login'));
             return response()->json(['status'=>'-1', 'message'=>'please logout and login again' ]);
         }
+
+
+        if($user_details->pin != $request->pin){
+            //end session and redirect to login
+            return response()->json(['status'=>'-1', 'message'=>'Incorrect PIN' ]);
+        }
+
         $user_id = $user_details->id;
         $phone_numbers = $request->phone_number;
         $phone_numbers = trim($phone_numbers);
@@ -134,26 +145,54 @@ class DataController extends Controller
                             for($i = 0; $i < count($phone_numbers_array); $i++ ){
                             
                                 //vend data
-                                //HERE the endpoint of the automation service is called
+                                //HERE the endpoint of the automation service is called:
+                                
+                                //this is for megasubplug
+                                
+                                if($automation_details->slug == 'megasubplug'){
+                                    $sell_data = (new MegaSubVendData($phone_numbers_array[$i],$request->product_plan_id))->buyData();
+                                }else{
+                                    //this will be like this until other automations are processed
+                                    $sell_data['status'] = 1;
+                                    $sell_data['user_message'] = 'Data was successfully processed.';
+                                    $sell_data['admin_message'] = 'Data was successfully processed.';
+                                }
+                                // logger(json_encode($sell_data_megasub));
+                                // dd($sell_data_megasub);
+
+                                if($sell_data['status'] == 1){
+                                    $success++;
+                                    $status = 1;
+                                    $wallet_before = User::where('id',$user_id)->first()->main_wallet;
+                                    $wallet_after = $wallet_before - $amount;
+                                }else{
+                                    //it might be processing or it failed
+                                    $status = -1;
+                                    $failure++;
+                                    $wallet_before = User::where('id',$user_id)->first()->main_wallet;
+                                    $wallet_after = $wallet_before;
+                                }
                                 //simulate success
-                                $success++;
-                                $message = 'Successfully processed via main wallet';
-                                $status = 1;
+
+                                $user_message = $sell_data['user_message'];
+                                $admin_message = $sell_data['admin_message'];
                                 $display_results[$i] = array(
-                                    'message' => $message,
+                                    'message' => $user_message,
+                                    'admin_message' => $admin_message,
                                     'status' => $status
                                 );
-                                $wallet_before = User::where('id',$user_id)->first()->main_wallet;
-                                $wallet_after = $wallet_before - $amount;
+                               
                     
                     
                                 //this should not run though because it has already been checked
                                 if($wallet_after <= 0){
                                     $status = -1;
-                                    $message = 'Failed due to insufficient balance';
+                                    $user_message = 'Failed due to insufficient balance';
+                                    $admin_message = 'Failed due to insufficient balance';
                                     $failure++;
                                     $display_results[$i] = array(
-                                        'message' => $message,
+                                        'message' => $user_message,
+                                        'admin_message' => $admin_message,
                                         'status' => $status
                                     );
                                 }
@@ -169,8 +208,8 @@ class DataController extends Controller
                                 $creationData['balance_before'] = $wallet_before;
                                 $creationData['balance_after'] = $wallet_after;
                                 $creationData['description'] = $description;
-                                $creationData['user_screen_message'] = $message;
-                                $creationData['admin_screen_message'] = $message;
+                                $creationData['user_screen_message'] = $user_message;
+                                $creationData['admin_screen_message'] = $admin_message;
                                 Transaction::create($creationData);
                     
                                 User::where('id',$user_id)->update([
@@ -181,6 +220,9 @@ class DataController extends Controller
 
                             DB::commit();
                     
+                            if($failure > 0){
+                              return response()->json(['status'=>2, 'message'=>" $failure issue(s) found. Check transaction history", 'data' => $display_results  ]);   
+                            }
                             return response()->json(['status'=>1, 'message'=>'Transaction was successfully processed', 'data' => $display_results  ]);
                     
                         } 
@@ -265,7 +307,7 @@ class DataController extends Controller
         }catch(Exception $exception){
             logger($exception->getMessage().' on line: '. $exception->getLine());
             DB::rollBack();
-            return response()->json(['status'=>'-1', 'message'=>'Something went wrong... Please try again']);
+            return response()->json(['status'=>'-1', 'message'=>'Something went wrong... Please try again', 'data'=>[]]);
         }
 
       
@@ -282,6 +324,7 @@ class DataController extends Controller
         $validator = Validator::make($request->all(), [
             'bulk_data_plan_id' => 'required|exists:bulk_data_product_plans,id',
             'bulk_data_wallet_id' => 'required|exists:user_bulk_data_wallets,id',
+            'pin' => 'required|digits:4',
         ]);
         
         if ($validator->stopOnFirstFailure()->fails()) {
@@ -299,6 +342,7 @@ class DataController extends Controller
             return response()->json(['status'=>'-1', 'message'=>'Wallet not found' ]);
         }
 
+
         $bulk_data_plan = BulkDataProductPlans::where('id',$request->bulk_data_plan_id)->first();
         if(! $bulk_data_plan){
             return response()->json(['status'=>'-1', 'message'=>'bulk data product not found' ]);
@@ -312,6 +356,10 @@ class DataController extends Controller
             return response()->json(['status'=>'-1', 'message'=>'please logout and login again' ]);
         }
 
+        
+        if( $user_details->pin != $request->pin){
+            return response()->json(['status'=>'-1', 'message'=>'Incorrect PIN entered' ]);
+        }
 
         $user_plan_id = auth()->user()->user_plan_id;
 

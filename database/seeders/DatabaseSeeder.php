@@ -198,6 +198,7 @@ class DatabaseSeeder extends Seeder
         User::factory()->create([
             'first_name' => 'Samuel',
             'last_name' => 'Adebunmi',
+            'pin' => rand(1111,9999),
             'main_wallet' => 20000,
             'role_id' => $admin_role,
             'user_plan_id' => $user_plan_diamond->id,
@@ -208,6 +209,7 @@ class DatabaseSeeder extends Seeder
         User::factory()->create([
             'first_name' => 'Oreofe',
             'last_name' => 'Adebunmi',
+            'pin' => rand(1111,9999),
             'role_id' => $user_role,
             'user_plan_id' => $user_plan_basic->id,
             'email' => 'oreofe@gmail.com',
@@ -217,6 +219,7 @@ class DatabaseSeeder extends Seeder
         User::factory()->create([
             'first_name' => 'Emmanuel',
             'last_name' => 'Adebunmi',
+            'pin' => rand(1111,9999),
             'role_id' => $user_role,
             'user_plan_id' => $user_plan_diamond->id,
             'email' => 'emmanuel@gmail.com',
@@ -226,6 +229,7 @@ class DatabaseSeeder extends Seeder
         User::factory()->create([
             'first_name' => 'Tolubobo',
             'last_name' => 'Adebunmi',
+            'pin' => rand(1111,9999),
             'role_id' => $user_role,
             'user_plan_id' => $user_plan_gold->id,
             'email' => 'tolubobo@gmail.com',
@@ -235,6 +239,7 @@ class DatabaseSeeder extends Seeder
         User::factory()->create([
             'first_name' => 'Paul',
             'last_name' => 'Dennis',
+            'pin' => rand(1111,9999),
             'role_id' => $user_role,
             'user_plan_id' => $user_plan_gold->id,
             'email' => 'pauldennis@gmail.com',

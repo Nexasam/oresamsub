@@ -123,11 +123,11 @@
                               <label class="ti-form-label mb-0">Other names</label>
                               <input type="text" id="other_names" name="other_names" value="{{ $user->other_names }}" class="my-auto ti-form-input" placeholder="Other names">
                             </div>
-                            {{-- <div class="space-y-2">
-                                <label class="ti-form-label mb-0">Phone Number</label>
-                                <input type="number" id="phone_number" name="phone_number" value="{{ $user->phone_number }}" class="my-auto ti-form-input"
-                                    placeholder="+91 123-456-789">
-                            </div> --}}
+                            <div class="space-y-2">
+                                <label class="ti-form-label mb-0">PIN</label>
+                                <input type="password" id="pin" name="pin" value="" class="my-auto ti-form-input"
+                                    placeholder="Enter pin to confirm update">
+                            </div>
                             {{-- <div class="space-y-2">
                                 <label class="ti-form-label mb-0">Email Address</label>
                                 <input type="email" id="email" value="{{ $user->email }}" name="email" class="my-auto ti-form-input"
@@ -212,13 +212,51 @@
                                 <input type="password" id="confirm_new_password" name="confirm_new_password" class="my-auto ti-form-input" placeholder="confirm new password">                            
                               </div>
 
+                              <div class="space-y-2 mt-5">
+                                <label class="ti-form-label mb-0">PIN</label>
+                                <input type="password" id="pin" name="pin" class="my-auto ti-form-input" placeholder="confirm action with your PIN">                            
+                              </div>
+
+
                               <div class="space-y-2">
                                   <button type="submit" class="ti-btn ti-btn-primary w-full">Update password</button>
                               </div>
                             
                               <br>
                           </div>
-                      </form>
+                        </form>
+                        <hr>
+                        <form method="POST" action="{{ route('user.settings.update_pin')  }}">
+                          @csrf
+                          <div class="grid w-full lg:w-1/2 lg:grid-cols-1 gap-6 space-y-4 lg:space-y-0">
+                              {{-- <div class="space-y-2 mt-5">
+                                <label class="ti-form-label mb-0"> Current password</label>
+                                <input type="password" id="current_password" name="current_password" class="my-auto ti-form-input" placeholder="enter current password">                            
+                              </div> --}}
+
+                              <div class="space-y-2 mt-5">
+                                <label class="ti-form-label mb-0"> Current PIN</label>
+                                <input type="password" id="current_pin" name="current_pin" class="my-auto ti-form-input" placeholder="enter current pin">                            
+                              </div>
+
+                              <div class="space-y-2 mt-5">
+                                <label class="ti-form-label mb-0"> New PIN</label>
+                                <input type="password" id="new_pin" name="new_pin" class="my-auto ti-form-input" placeholder="confirm new pin">                            
+                              </div>
+
+                              <div class="space-y-2 mt-5">
+                                <label class="ti-form-label mb-0">Confirm New PIN</label>
+                                <input type="password" id="confirm_new_pin" name="confirm_new_pin" class="my-auto ti-form-input" placeholder="confirm new pin">                            
+                              </div>
+
+
+                              <div class="space-y-2">
+                                  <button type="submit" class="ti-btn ti-btn-primary w-full">Update PIN</button>
+                              </div>
+                            
+                              <br>
+                          </div>
+                        </form>
                         <hr>
                         <div class="overflow-auto">
                             <form method="POST" action="{{ route('user.settings.update_2fa')  }}">

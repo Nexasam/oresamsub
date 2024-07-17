@@ -63,6 +63,7 @@ class UserSettingsController extends Controller
       $validator = Validator::make($request->all(), [
         'new_password' => 'required',
         'confirm_new_password' => 'required',
+        'pin' => ['required','digits:4']
       ]);
 
       if ($validator->stopOnFirstFailure()->fails()) {
@@ -82,6 +83,12 @@ class UserSettingsController extends Controller
       //   Session::flash('failure','Your current password is not correct');
       //   return redirect()->back();
       // }
+
+      if($user_details->pin != $request->pin){
+        Session::flash('failure','Wrong PIN entered');
+        return redirect()->back();
+      }
+
 
       if($request->new_password != $request->confirm_new_password){
         Session::flash('failure','Password confirmation is wrong');
@@ -126,7 +133,43 @@ class UserSettingsController extends Controller
         'first_name' => 'required|max:255',
         'last_name' => 'required|max:255',
         'other_names' => 'nullable|max:255',
-        // 'phone_number' => 'required',
+        'pin' => ['required','digits:4']
+      ]);
+      
+
+      if ($validator->stopOnFirstFailure()->fails()) {
+        return redirect()->back()->withErrors($validator)->withInput();
+      }
+
+      
+
+      $user_details = User::where('id',auth()->id())->first();
+
+      if(! $user_details){
+        //user is not loggedin
+        redirect()->route('login');
+      }
+
+      if($user_details->pin != $request->pin){
+        Session::flash('failure','Wrong PIN entered');
+        return redirect()->back();
+      }
+     
+      $dataa = $validator->validated();
+
+      $user_details->update($dataa);
+
+      Session::flash('success','Profile was successfully updated');
+      return redirect()->back();
+
+    }
+
+    public function update_pin(Request $request){
+    
+      $validator = Validator::make($request->all(), [
+        'current_pin' => 'required|digits:4',
+        'new_pin' => 'required|digits:4',
+        'confirm_new_pin' => 'required|digits:4',
       ]);
       
 
@@ -140,12 +183,23 @@ class UserSettingsController extends Controller
         //user is not loggedin
         redirect()->route('login');
       }
+
+      if($user_details->pin != $request->current_pin){
+        Session::flash('failure','Wrong PIN entered');
+        return redirect()->back();
+      }
+
+      if($request->new_pin != $request->confirm_new_pin){
+        Session::flash('failure','Please ensure New PIN and Confirm New PIN are the same');
+        return redirect()->back();
+      }
      
-      $dataa = $validator->validated();
+      $dataa['pin'] = $request->new_pin;
+      
 
       $user_details->update($dataa);
 
-      Session::flash('success','Profile was successfully updated');
+      Session::flash('success','A new PIN has been successfully set');
       return redirect()->back();
 
     }

@@ -202,6 +202,11 @@
                                                 </div>
                     
                                                 <div class="space-y-2">
+                                                  <label class="ti-form-label mb-0">PIN:</label>
+                                                  <input type="password" class="my-auto ti-form-input" id="pin" name="pin" value="" placeholder="Enter your pin to secure transaction">
+                                                </div>
+
+                                                <div class="space-y-2">
                                                     <button type="submit" id="buy_data_btn" class="ti-btn ti-btn-primary w-full">Buy Data</button>
                                                 </div>
                                                

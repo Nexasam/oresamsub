@@ -122,6 +122,7 @@ Route::middleware(['auth','verified','user'])->get('user/settings', [UserSetting
 Route::middleware(['auth','verified','user'])->post('user/settings/update_default_wallet', [UserSettingsController::class, 'update_default_wallet'])->name('user.settings.update_default_wallet');
 Route::middleware(['auth','verified','user'])->post('user/settings/update_profile', [UserSettingsController::class, 'update_profile'])->name('user.settings.update_profile');
 Route::middleware(['auth','verified','user'])->post('user/settings/update_password', [UserSettingsController::class, 'update_password'])->name('user.settings.update_password');
+Route::middleware(['auth','verified','user'])->post('user/settings/update_pin', [UserSettingsController::class, 'update_pin'])->name('user.settings.update_pin');
 Route::middleware(['auth','verified','user'])->post('user/settings/update_2fa', [UserSettingsController::class, 'update_2fa'])->name('user.settings.update_2fa');
 
 

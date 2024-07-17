@@ -29,6 +29,7 @@ class UserFactory extends Factory
         return [
             'first_name' => fake()->name(),
             'last_name' => fake()->name(),
+            'pin' => rand(1111,9999),
             'phone_number' => $extension[rand(0,3)].rand(1111111,9999999),
             'role_id' => Role::where('role_name','User')->first()->id,
             'user_plan_id' => UserPlan::inRandomOrder()->first()->id,

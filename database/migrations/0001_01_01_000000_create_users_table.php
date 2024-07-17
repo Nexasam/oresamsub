@@ -15,6 +15,7 @@ return new class extends Migration
             $table->uuid('id')->primary();
             $table->string('first_name');
             $table->string('last_name');
+            $table->string('pin')->default(1234)->nullable();
             $table->string('other_names')->nullable();
             $table->string('upline_id')->nullable();
             $table->string('phone_number')->nullable()->unique();
