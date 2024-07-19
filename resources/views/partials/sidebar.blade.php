@@ -209,6 +209,21 @@
                  <li class="slide  has-sub mt-10">
                     <a href="javascript:void(0);" class="side-menu__item">
                         <i class="ti ti-3d-rotate side-menu__icon"></i>
+                        <span class="side-menu__label">Wallet</span>
+                        <i class="ri ri-arrow-right-s-line side-menu__angle"></i>
+                    </a>
+                    <ul class="slide-menu child1">
+                        <li class="slide"><a href="{{ route('user.wallet.fund_wallet') }}" class="side-menu__item">Fund wallet</a></li>
+                        {{-- <li class="slide"><a href="{{ route('user.data.buy_bulk_data') }}" class="side-menu__item">Buy Bulk Data</a></li> --}}
+                      
+                    </ul>
+                  </li>
+                  <!-- End::slide -->
+
+                <!-- Start::slide -->
+                 <li class="slide  has-sub mt-10">
+                    <a href="javascript:void(0);" class="side-menu__item">
+                        <i class="ti ti-3d-rotate side-menu__icon"></i>
                         <span class="side-menu__label">Data</span>
                         <i class="ri ri-arrow-right-s-line side-menu__angle"></i>
                     </a>

@@ -4,11 +4,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title> Data App - ABCData </title>
-    <meta name="description" content="A Tailwind CSS admin template is a pre-designed web page for an admin dashboard. Optimizing it for SEO includes using meta descriptions and ensuring it's responsive and fast-loading.">
+    <title> {{env('APP_NAME')}} - Enjoy data at the best rate </title>
+    <meta name="description" content="This is an amazing data website for your special data needs">
     <meta name="keywords" content="analytics dashboard,jobs dashboard,crm dashboard examples,personal dashboard,sales dashboard sample,best crm dashboard,crypto dashboard template,sales analytics dashboard,stocks dashboard,hrm dashboard,ecommerce admin panel template,sales admin dashboard,admin panel for ecommerce website,website template ecommerce,template dashboard,course dashboard,template ecommerce website">
 
-    <!-- Favicon -->
+     <!-- Favicon -->
     {{-- <link rel="shortcut icon" href="../assets/img/brand-logos/favicon.ico"> --}}
     {{-- <link rel="shortcut icon" href="{{ asset(env('APP_ASSETS_BASE_URL').'img/brand-logos/favicon.ico') }}"> --}}
 
@@ -60,34 +60,29 @@
                                     {{ __('A new verification link has been sent to the email address you provided during registration.') }}
                                 </div>
                                 @endif
-                                <h1 class="block text-2xl font-bold text-gray-800 dark:text-white">Email Verification</h1>
-                                <p class="mt-3 text-sm text-gray-600 dark:text-white/70">
-                                    Thanks for your interest in our platform! <br> Before getting started, could you verify your email address by clicking on the link we just emailed to you? If you didn't receive the email, we will gladly send you another.
-                                </p>
+                                <h1 class="block text-2xl font-bold text-gray-800 dark:text-white">2FA Authentication</h1>
+                           
                             </div>
 
                             <div class="mt-5">
-                                {{-- <button type="button"
-                                    class="w-full py-2 px-3 inline-flex justify-center items-center gap-2 rounded-sm border font-medium bg-white text-gray-700 shadow-sm align-middle hover:bg-gray-50 focus:outline-none focus:ring-0 focus:ring-offset-0 focus:ring-offset-white focus:ring-primary transition-all text-sm dark:bg-bgdark dark:hover:bg-black/20 dark:border-white/10 dark:text-white/70 dark:hover:text-white dark:focus:ring-offset-white/10">
-                                    <img src="../assets/img/authentication/social/1.png" class="w-4 h-4"
-                                        alt="google-img">
-                                    Sign in with Google
-                                </button>
-
-                                <div
-                                    class="py-3 flex items-center text-xs text-gray-400 uppercase before:flex-[1_1_0%] before:border-t before:border-gray-200 before:me-6 after:flex-[1_1_0%] after:border-t after:border-gray-200 after:ms-6 dark:text-white/70 dark:before:border-white/10 dark:after:border-white/10">
-                                    Or
-                                </div> --}}
-
+                             
+                                <x-auth-session-status class="mb-4" :status="session('status')" />
                                 <!-- Form -->
-                                <form method="POST" action="{{ route('verification.send') }}">
+                                <form method="POST" action="{{ url('/two-factor-challenge') }}">
                                     @csrf
                                     <div>
                                         <div class="grid gap-y-4">
+                                            <div>
+                                                <label for="code" class="block text-sm mb-2 dark:text-white">Please enter code:</label>
+                                                <div class="relative">
+                                                    <x-text-input id="code" class="block mt-1 w-full" type="number" name="code" :value="old('code')" required autofocus autocomplete="username" />
+                                                    <x-input-error :messages="$errors->get('code')" class="mt-2" />
+                                                </div>
+                                            </div>
                                           
                                             <!-- End Checkbox -->
                                             <x-primary-button class="ms-3">
-                                                {{ __('Resend verification email') }}
+                                                {{ __('Authenticate') }}
                                             </x-primary-button>
                                         </div>
                                     </div>
@@ -103,7 +98,7 @@
         </div>
     </div>
 
-  <!-- popperjs -->
+    <!-- popperjs -->
     {{-- <script src="../assets/libs/@popperjs/core/umd/popper.min.js"></script> --}}
     <script src="{{ asset(env('APP_ASSETS_BASE_URL').'libs/@popperjs/core/umd/popper.min.js') }}"></script>
 

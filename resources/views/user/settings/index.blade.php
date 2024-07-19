@@ -259,7 +259,37 @@
                         </form>
                         <hr>
                         <div class="overflow-auto">
-                            <form method="POST" action="{{ route('user.settings.update_2fa')  }}">
+                          
+                          <br>
+                          <form method="POST" action="{{ url('/user/two-factor-authentication') }}">
+                                @csrf
+                    
+                                @if(auth()->user()->two_factor_secret)
+                                    <h3>2Factor authentication setup</h3>
+                                    <p>Two factor authentication is enabled.</p>
+                                    <div class="pt-5 pb-5">
+                                        {!!  auth()->user()->twoFactorQrCodeSvg() !!}
+                                    </div>
+                                    <h3><strong>Please save recovery codes below:</strong></h3>
+                                    <ul>
+                                        @foreach(auth()->user()->recoveryCodes() as $code)
+                                            <p>{{ $code }}</p>
+                                        @endforeach
+                                    </ul>
+                                    @method('DELETE')
+                                    <div class="space-y-2">
+                                      <button type="submit" class="ti-btn ti-btn-danger w-1/2">Disable 2fa</button>
+                                    </div>
+                                @else
+                                    Two factor authentication is not enabled.
+                                    <div class="space-y-2">
+                                      <button type="submit" class="ti-btn ti-btn-primary w-1/2">Enable 2fa</button>
+                                    </div>
+                                @endif
+                          </form>
+
+
+                            {{-- <form method="POST" action="{{ url('user/two-factor-authentication')  }}">
                               @csrf
                               <div class="grid w-full lg:w-1/2 lg:grid-cols-1 gap-6 space-y-4 lg:space-y-0">
                                   <div class="space-y-2 mt-5">
@@ -282,7 +312,7 @@
                                 
                                   <br>
                               </div>
-                          </form>
+                          </form> --}}
                         </div>  
                       </div>  
                     </div>

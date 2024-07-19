@@ -787,6 +787,17 @@
 
         $(document).ready(function(){
 
+          //reset
+          // $('#buy_data_btn').click
+          $('#cancel_disabling').click(function(e){
+            e.preventDefault();
+            $('#buy_data_btn').html('Buy Data');
+            $('#buy_data_btn').prop('disabled',false);
+            $(this).addClass('hidden');
+          })
+
+          //reset ends
+
           // alert('sss');
     
           $('.single_select').select2();
@@ -1106,6 +1117,7 @@
             e.preventDefault();
               $(this).html('Processing...Please wait');
               $(this).prop('disabled',true);
+              $('#cancel_disabling').removeClass('hidden')
 
            
               //display product plans categories
@@ -1125,6 +1137,8 @@
                 product_plan_id : product_plan_id,
                 pin : pin
               };
+
+              
 
               // console.log(data);
               // return;

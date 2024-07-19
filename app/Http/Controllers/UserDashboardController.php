@@ -19,6 +19,7 @@ class UserDashboardController extends Controller
  
   public function index(){
     $user_details = User::with(['user_plan','role'])->where('id',auth()->id())->first();
+
     // return $user_details->role->role_name;
     $user_id = $user_details->id;
     $user_plan_level = $user_details->user_plan->plan_level;

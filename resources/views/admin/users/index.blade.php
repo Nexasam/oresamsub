@@ -190,7 +190,12 @@
                                   <form method="POST" action="{{ route('admin.users.store')}}">
                                     @csrf
                                     <div class="grid lg:grid-cols-2 gap-6 space-y-4 lg:space-y-0">
-                                        <div class="space-y-2">
+                                      <div class="space-y-2">
+                                            <label class="ti-form-label mb-0">Username</label>
+                                            <input type="text" id="username" name="username" required class="my-auto ti-form-input" placeholder="Username">
+                                      </div>
+                                     
+                                       <div class="space-y-2">
                                             <label class="ti-form-label mb-0">First name</label>
                                             <input type="text" id="first_name" name="first_name" class="my-auto ti-form-input" placeholder="Firstname">
                                         </div>
@@ -198,6 +203,10 @@
                                             <label class="ti-form-label mb-0">Last name</label>
                                             <input type="text" id="last_name" name="last_name" class="my-auto ti-form-input" placeholder="Last name">
                                         </div>
+                                        <div class="space-y-2">
+                                          <label class="ti-form-label mb-0">PIN</label>
+                                          <input type="number" id="pin" name="pin" class="my-auto ti-form-input" placeholder="PIN">
+                                        </div> 
                                         <div class="space-y-2">
                                           <label class="ti-form-label mb-0">Other names</label>
                                           <input type="text" id="other_names" name="other_names" class="my-auto ti-form-input" placeholder="Other names">
@@ -218,7 +227,7 @@
                                         </div>
                                         <div class="space-y-2">
                                             <label class="ti-form-label mb-0">Confirm Password</label>
-                                            <input type="password" id="confirm_password" name="confirm_password" class="ti-form-input" placeholder="confirm password">
+                                            <input type="password" id="password_confirmation" name="password_confirmation" class="ti-form-input" placeholder="confirm password">
                                         </div>
                                     
                                         {{-- <div class="space-y-2 ">

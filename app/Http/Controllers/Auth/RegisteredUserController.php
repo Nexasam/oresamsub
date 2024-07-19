@@ -35,6 +35,7 @@ class RegisteredUserController extends Controller
         // dd($request->all());
         
         $request->validate([
+            'username' => ['required', 'string', 'unique:users,username'],
             'first_name' => ['required', 'string', 'max:255'],
             'last_name' => ['required', 'string', 'max:255'],
             'pin' => ['required', 'numeric', 'digits:4'],
@@ -62,6 +63,7 @@ class RegisteredUserController extends Controller
         $data['other_names'] = $request->other_names;
         $data['pin'] = $request->pin;
         $data['phone_number'] = $request->phone_number;
+        $data['username'] = $request->username;
         $data['upline_id'] = $upline_id;
         $data['email'] = $request->email;
         $data['role_id'] = $role_details->id;

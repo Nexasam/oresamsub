@@ -99,7 +99,17 @@
                                             </div>
                                             <!-- End Form Group -->
 
-                                            
+                                             <!-- Form Group -->
+                                             <div>
+                                                <label for="username" class="block text-sm mb-2 dark:text-white">Username</label>
+                                                <div class="relative">
+                                                    <x-text-input id="username" class="block mt-1 w-full" type="text" name="username" :value="old('username')" required autofocus autocomplete="username" />
+                                                    <x-input-error :messages="$errors->get('username')" class="mt-2" />
+                                                </div>
+                                            </div>
+                                            <!-- End Form Group -->
+
+
                                             <!-- End Form Group -->
 
                                              <!-- Form Group -->

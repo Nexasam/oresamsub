@@ -371,7 +371,13 @@
                               <label class="ti-form-label mb-0">Facebook link</label>
                               <input value="{{ $facebook_link }}" type="text"  name="facebook_link" class="my-auto ti-form-input" placeholder="">
                               </div>
+
                               <div class="space-y-2">
+                                <label class="ti-form-label mb-0">Support Whatsapp number</label>
+                                <input value="{{ $support_whatsapp_number }}" type="text"  name="support_whatsapp_number" class="my-auto ti-form-input" placeholder="">
+                              </div>
+                              
+                                <div class="space-y-2">
                               <label class="ti-form-label mb-0">Instagram link</label>
                               <input value="{{ $instagram_link }}" type="text"  name="instagram_link" class="my-auto ti-form-input" placeholder="">
                               </div>
@@ -464,23 +470,49 @@
                           <div class="grid w-full lg:w-1/2 lg:grid-cols-1 gap-2 space-y-4 lg:space-y-0">
                               <p>Manage 2FA for all users</p>
                               <div class="space-y-2 mt-5">
-                                <label class="ti-form-label mb-0">  Currently turned: <strong>{{  $admin_2fa_setting->global_user_2fa_setting == NULL ? 'OFF' : $admin_2fa_setting->global_user_2fa_setting  }}</strong> </label>
+                                <label class="ti-form-label mb-0">  Visibility status: <strong>{{  $admin_2fa_setting->global_user_2fa_setting == NULL ? 'OFF' : $admin_2fa_setting->global_user_2fa_setting  }}</strong> </label>
                                 <select id="global_user_2fa_setting" name="global_user_2fa_setting" required class="my-auto ti-form-select">
                                     <option value="">Select</option>
                                     <option @if ($admin_2fa_setting->global_user_2fa_setting == NULL) selected @endif value="OFF">OFF</option>
                                     <option @if ($admin_2fa_setting->global_user_2fa_setting == 'ON') selected @endif value="ON">ON</option>
                                     <option @if ($admin_2fa_setting->global_user_2fa_setting == 'OFF') selected @endif value="OFF">OFF</option>
                                   </select>
-                              </div>
-
-                              <br>
-                              <hr>     
+                                </div>     
                               <div class="space-y-2">
-                                  <button type="submit" class="ti-btn ti-btn-primary w-full">Globally Update 2fa</button>
+                                  <button type="submit" class="ti-btn ti-btn-primary w-full">Globally Hide/Show 2fa</button>
                               </div>
                             
                               <br>
                           </div>
+                        </form>
+
+                        <hr>
+
+                        <form method="POST" action="{{ url('/user/two-factor-authentication') }}">
+                          @csrf
+              
+                          @if(auth()->user()->two_factor_secret)
+                              <h2 class="mt-2"> <strong>2Factor authentication setup</strong></h2>
+                              <p>Two factor authentication is enabled.</p>
+                              <div class="pt-5 pb-5">
+                                  {!!  auth()->user()->twoFactorQrCodeSvg() !!}
+                              </div>
+                              <h3><strong>Please save recovery codes below:</strong></h3>
+                              <ul>
+                                  @foreach(auth()->user()->recoveryCodes() as $code)
+                                      <p>{{ $code }}</p>
+                                  @endforeach
+                              </ul>
+                              @method('DELETE')
+                              <div class="space-y-2">
+                                <button type="submit" class="ti-btn ti-btn-danger w-1/2">Disable 2fa</button>
+                              </div>
+                          @else
+                              <div class="space-y-2">
+                                <span class="text-red-600 mt-4 block">Two factor authentication is not enabled.</span>
+                                <button type="submit" class="ti-btn ti-btn-primary w-1/2">Enable 2fa</button>
+                              </div>
+                          @endif
                         </form>
                         
                       </div>  

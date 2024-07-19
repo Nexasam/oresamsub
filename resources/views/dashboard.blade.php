@@ -8,17 +8,7 @@
         <div>
             <h3 class="text-gray-700 hover:text-gray-900 dark:text-white dark:hover:text-white text-2xl font-medium"> Dashboard  <small style=" font-size: 14px;">Welcome <strong>{{ $user->first_name. ' '. $user->last_name }}</strong></small> </h3>
         </div>
-        <ol class="flex items-center whitespace-nowrap min-w-0">
-            <li class="text-sm">
-              <a class="flex items-center font-semibold text-primary hover:text-primary dark:text-primary truncate" href="javascript:void(0);">
-                Home
-                <i class="ti ti-chevrons-right flex-shrink-0 mx-3 overflow-visible text-gray-300 dark:text-gray-300 rtl:rotate-180"></i>
-              </a>
-            </li>
-            <li class="text-sm text-gray-500 hover:text-primary dark:text-white/70 " aria-current="page">
-              Dashboard
-            </li>
-        </ol>
+       
     </div>
     <!-- Page Header Close -->
 
@@ -55,8 +45,10 @@
             </div>
         </div>
     </div> --}}
-    <div class="grid grid-cols-12 gap-x-5">
+    <div class="grid grid-cols-12 gap-x-3">
         
+     
+
         <div class="col-span-12 xxxl:col-span-2 md:col-span-3">
             <div class="box">
                 <div class="box-body">
@@ -126,7 +118,7 @@
             </div>
         </div>
       
-        <div class="col-span-12 xxxl:col-span-2 md:col-span-3">
+        <div class="col-span-12 xxxl:col-span-3 md:col-span-3">
             <div class="box">
                 <div class="box-body">
                     <div class="flex space-x-4 rtl:space-x-reverse">
@@ -988,12 +980,12 @@
             <div class="box">
                 <div class="box-header">
                     <div class="flex justify-between">
-                        <h5 class="box-title my-auto">Customer Reviews</h5>
-                        <div class=" block ms-auto my-auto">
+                        <h5 class="box-title my-auto">Hot sales</h5>
+                        {{-- <div class=" block ms-auto my-auto">
                             <button type="button"
                                 class="ti-btn m-0 rounded-sm p-1 px-3 !border border-gray-200 text-gray-400 hover:text-gray-500 hover:bg-gray-200 hover:border-gray-200 focus:ring-gray-200 dark:text-white/70 dark:hover:text-white dark:hover:bg-bodybg dark:border-white/10 dark:hover:border-white/20 dark:focus:ring-white/10 dark:focus:ring-offset-white/10">
                                 View All</button>
-                        </div>
+                        </div> --}}
                     </div>
                 </div>
                 <div class="box-body">
@@ -1009,8 +1001,8 @@
                                     <i class="ri-star-fill text-gray-200 dark:text-white/10"></i>
                                 </span>
                             </div>
-                            <a href="javascript:void(0);" class="tx-gray-500 dark:text-white/70">1,739
-                                Reviews</a>
+                            <a href="javascript:void(0);" class="tx-gray-500 dark:text-white/70">5
+                                Products</a>
                         </div>
                         <div class="min-w-fit">
                             <span class="text-sm">(4.3 out of 5)</span>
@@ -1018,7 +1010,7 @@
                     </div>
                     <div class="mt-4">
                         <div class="flex items-center justify-between mb-1 text-sm">
-                            <p class="mb-0">5 Star</p>
+                            <p class="mb-0">Plan 1</p>
                             <span>65%</span>
                         </div>
                         <div class="ti-main-progress h-2 bg-gray-200 dark:bg-bodybg">
@@ -1027,6 +1019,32 @@
                         </div>
                     </div>
                     <div class="mt-4">
+                        <div class="flex items-center justify-between mb-1 text-sm">
+                            <p class="mb-0">Plan 2</p>
+                            <span>75%</span>
+                        </div>
+                        <div class="ti-main-progress h-2 bg-gray-200 dark:bg-bodybg">
+                            <div class="ti-main-progress-bar bg-primary text-xs text-white text-center" role="progressbar" style="width: 65%" aria-valuenow="65" aria-valuemin="0"
+                                aria-valuemax="100"></div>
+                        </div>
+                    </div>
+                    <div class="mt-4">
+                        <div class="flex items-center justify-between mb-1 text-sm">
+                            <p class="mb-0">Plan 3</p>
+                            <span>85%</span>
+                        </div>
+                        <div class="ti-main-progress h-2 bg-gray-200 dark:bg-bodybg">
+                            <div class="ti-main-progress-bar bg-primary text-xs text-white text-center" role="progressbar" style="width: 65%" aria-valuenow="65" aria-valuemin="0"
+                                aria-valuemax="100"></div>
+                        </div>
+                    </div>
+                    <div class=" block ms-auto my-auto mt-4">
+                            <button type="button"
+                                class="ti-btn m-0 rounded-sm p-1 px-3 !border border-gray-200 text-gray-400 hover:text-gray-500 hover:bg-gray-200 hover:border-gray-200 focus:ring-gray-200 dark:text-white/70 dark:hover:text-white dark:hover:bg-bodybg dark:border-white/10 dark:hover:border-white/20 dark:focus:ring-white/10 dark:focus:ring-offset-white/10">
+                                Buy</button>
+                    </div>
+                    
+                    {{-- <div class="mt-4">
                         <div class="flex items-center justify-between mb-1 text-sm">
                             <p class="mb-0">4 Star</p>
                             <span>70%</span>
@@ -1065,7 +1083,7 @@
                             <div class="ti-main-progress-bar bg-primary text-xs text-white text-center" role="progressbar" style="width: 15%" aria-valuenow="15" aria-valuemin="0"
                                 aria-valuemax="100"></div>
                         </div>
-                    </div>
+                    </div> --}}
                 </div>
             </div>
         </div>

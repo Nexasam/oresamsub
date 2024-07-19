@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Admin2faSetting;
+use App\Models\User;
 use App\Models\Automation;
 use Illuminate\Http\Request;
+use App\Models\Admin2faSetting;
 use App\Models\ReferralSetting;
 use App\Models\AdminGeneralSetting;
 use App\Models\LandingPagesSetting;
@@ -16,6 +17,8 @@ class AdminSettingsController extends Controller
     public function index(){
     //landingpages
         $landing_page_settings = LandingPagesSetting::get();
+        // $landing_page_settings = config('landing_pages');
+        // dd($landing_page_settings);
         foreach($landing_page_settings as $landing_page_setting){
             $data[$landing_page_setting->field_name] = $landing_page_setting->field_details;
         }
@@ -31,6 +34,14 @@ class AdminSettingsController extends Controller
             $referral_setting = ReferralSetting::create();
         } 
 
+        $user_details = User::where('id',auth()->id())->first();
+
+        if(! $user_details){
+          //user is not loggedin
+          redirect()->route('login');
+        }
+
+        $data['user'] = $user_details;
         $ogdams = Automation::where('slug','ogdams')->first();
         $smeplug = Automation::where('slug','smeplug')->first();
         $megasubplug = Automation::where('slug','megasubplug')->first();

@@ -53,8 +53,8 @@ class UsersController extends Controller
         return view('admin.users.manage_users')->with(['user' => $user]);
     }
 
-            /**
-     * Display a listing of the resource.
+    /**
+     * Display a listing of the resource. by ADMIN
      */
     public function fund_user_wallet(Request $request)
     {
@@ -131,7 +131,7 @@ class UsersController extends Controller
               return $data->id;
             })
             ->addColumn('full_name',function($data){
-              return $data->first_name.' '.$data->last_name;
+              return $data->first_name.' '.$data->last_name.'('.$data->username.')';
             })
             ->addColumn('main_wallet',function($data){
               return number_format($data->main_wallet,2);
@@ -232,13 +232,20 @@ class UsersController extends Controller
 
       //for ADMIN
       $validator = Validator::make($request->all(), [
+        'username' => ['required', 'string', 'unique:users,username'],
+        'pin' => 'required|max:255',
         'first_name' => 'required|max:255',
         'last_name' => 'required|max:255',
         'other_names' => 'nullable|max:255',
         'phone_number' => 'required|digits:11',
         'email' => 'required|unique:users,email',
-        'password' => 'required',
-        'confirm_password' => 'required',
+        'password' => ['required', 'confirmed', Password::min(8)
+        ->letters()
+        ->mixedCase()
+        ->numbers()
+        ->symbols()
+        ->uncompromised()::defaults()],
+        // 'confirm_password' => 'required',
       ]);
       
 
@@ -250,6 +257,7 @@ class UsersController extends Controller
       $default_reseller_plan = UserPlan::where('is_default',1)->first();
       $data['first_name'] = $request->first_name;
       $data['last_name'] = $request->last_name;
+      $data['username'] = $request->username;
       $data['other_names'] = $request->other_names;
       $data['phone_number'] = $request->phone_number;
       $data['email'] = $request->email;

@@ -21,6 +21,7 @@ use App\Http\Controllers\ResellerPlanController;
 use App\Http\Controllers\UserSettingsController;
 use App\Http\Controllers\AdminSettingsController;
 use App\Http\Controllers\UserDashboardController;
+use App\Http\Controllers\UserTwoFactorController;
 use App\Http\Controllers\ProductCategoryController;
 use App\Http\Controllers\UserProductPlanController;
 use App\Http\Controllers\ProductPlanCategoryController;
@@ -59,6 +60,11 @@ Route::get('/access_denied', function () {
 // //     return view('users');
 // // })->middleware(['auth', 'verified'])->name('admin.users');
 
+
+// Route::middleware(['auth', 'twofactor'])->group(function () {
+//     Route::get('verify/resend', [UserTwoFactorController::class, 'resend'])->name('verify.resend');
+//     Route::resource('verify', UserTwoFactorController::class)->only(['index', 'store']);
+// });
 
 //this will be adjusted later
 Route::middleware(['auth','verified'])->get('/dashboard', [UserDashboardController::class, 'index'])->name('dashboard');
@@ -135,6 +141,7 @@ Route::middleware(['auth','verified','user'])->post('user/data/fetch_bulk_data_p
 Route::middleware(['auth','verified','user'])->get('user/data/fetch_bulk_data_plan_details', [DataController::class, 'fetch_bulk_data_plan_details'])->name('user.data.fetch_bulk_data_plan_details');
 
 
+
 Route::middleware(['auth','verified','user'])->get('user/data/buy_data', [DataController::class, 'buy_data'])->name('user.data.buy_data');
 Route::middleware(['auth','verified','user'])->get('user/data/get_single_bulk_data_wallet/{plan_id}', [DataController::class, 'get_single_bulk_data_wallet'])->name('user.data.get_single_bulk_data_wallet');
 Route::middleware(['auth','verified','user'])->get('user/data/store', [DataController::class, 'buy_data_action'])->name('user.data.buy_data_action');
@@ -142,6 +149,10 @@ Route::middleware(['auth','verified','user'])->get('user/data/fetch_product_plan
 Route::middleware(['auth','verified','user'])->get('user/data/fetch_product_plans', [DataController::class, 'fetch_product_plans'])->name('user.fetch_product_plans'); //TODO: you can add this to a helper controller later
 
 Route::middleware(['auth','verified','user'])->get('user/generate_dynamic_account', [CrystalPayController::class, 'generate_dynamic_account'])->name('user.crystalpay.generate_dynamic_account');
+Route::middleware(['auth','verified','user'])->post('user/generate_virtual_account', [CrystalPayController::class, 'generate_virtual_account'])->name('user.crystalpay.generate_virtual_account');
+
+
+Route::middleware(['auth','verified','user'])->get('user/wallet/fund_wallet', [WalletsController::class, 'fund_wallet'])->name('user.wallet.fund_wallet');
 
 
 Route::middleware(['auth','verified','user'])->get('user/airtime/buy_airtime', [AirtimeController::class, 'buy_airtime'])->name('user.airtime.buy_airtime');

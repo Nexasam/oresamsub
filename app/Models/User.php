@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Notifications\Notifiable;
+use Laravel\Fortify\TwoFactorAuthenticatable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -12,7 +13,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class User extends Authenticatable implements MustVerifyEmail
 {
-    use HasFactory, Notifiable, HasApiTokens, HasUuids;
+    use HasFactory, Notifiable, TwoFactorAuthenticatable, HasApiTokens, HasUuids;
 
     /**
      * The attributes that are mass assignable.
@@ -46,6 +47,14 @@ class User extends Authenticatable implements MustVerifyEmail
         ];
     }
 
+    // public function generateTwoFactorCode(): void
+    // {
+    //     $this->timestamps = false;  // Prevent updating the 'updated_at' column
+    //     $this->two_factor_code = rand(100000, 999999);  // Generate a random code
+    //     $this->two_factor_expires_at = now()->addMinutes(10);  // Set expiration time
+    //     $this->save();
+    // }
+
     public function user_plan(){
         return $this->belongsTo(UserPlan::class,'user_plan_id','id');
     }
@@ -53,6 +62,10 @@ class User extends Authenticatable implements MustVerifyEmail
     public function role(){
         return $this->belongsTo(Role::class,'role_id','id');
     }
+
+   
+
+    
 
     // public function getRoleDetailsAttribute(){
     //     return $this->role()->first();

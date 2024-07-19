@@ -196,6 +196,7 @@ class DatabaseSeeder extends Seeder
         
         //USERS
         User::factory()->create([
+            'username' => 'samuel'.rand(11,99),
             'first_name' => 'Samuel',
             'last_name' => 'Adebunmi',
             'pin' => rand(1111,9999),
@@ -207,6 +208,7 @@ class DatabaseSeeder extends Seeder
             'password' => Hash::make('password'),
         ]); 
         User::factory()->create([
+            'username' => 'oreofe'.rand(11,99),
             'first_name' => 'Oreofe',
             'last_name' => 'Adebunmi',
             'pin' => rand(1111,9999),
@@ -217,6 +219,7 @@ class DatabaseSeeder extends Seeder
             'password' => Hash::make('password'),
         ]); 
         User::factory()->create([
+            'username' => 'emmanuel'.rand(11,99),
             'first_name' => 'Emmanuel',
             'last_name' => 'Adebunmi',
             'pin' => rand(1111,9999),
@@ -227,6 +230,7 @@ class DatabaseSeeder extends Seeder
             'password' => Hash::make('password'),
         ]); 
         User::factory()->create([
+            'username' => 'tolubobo'.rand(11,99),
             'first_name' => 'Tolubobo',
             'last_name' => 'Adebunmi',
             'pin' => rand(1111,9999),
@@ -237,6 +241,7 @@ class DatabaseSeeder extends Seeder
             'password' => Hash::make('password'),
         ]); 
         User::factory()->create([
+            'username' => 'paul'.rand(11,99),
             'first_name' => 'Paul',
             'last_name' => 'Dennis',
             'pin' => rand(1111,9999),

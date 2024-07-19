@@ -23,12 +23,12 @@
           <div class="responsive-headernav">
             <div class="header-nav-right">
             
-              <div class="header-search">
+              {{-- <div class="header-search">
                 <button aria-label="button" type="button" data-hs-overlay="#search-modal"
                   class="inline-flex flex-shrink-0 justify-center items-center gap-2 h-[2.375rem] w-[2.375rem] rounded-full font-medium bg-gray-100 hover:bg-gray-200 text-gray-500 align-middle focus:outline-none focus:ring-0 focus:ring-gray-400 focus:ring-offset-0 focus:ring-offset-white transition-all text-xs dark:bg-bgdark dark:hover:bg-black/20 dark:text-white/70 dark:hover:text-white dark:focus:ring-white/10 dark:focus:ring-offset-white/10">
                   <i class="ri-search-2-line header-icon"></i>
                 </button>
-              </div>
+              </div> --}}
               <div class="header-theme-mode hidden sm:block">
                 <a aria-label="anchor" class="hs-dark-mode-active:hidden flex hs-dark-mode group flex-shrink-0 justify-center items-center gap-2 h-[2.375rem] w-[2.375rem] rounded-full font-medium bg-gray-100 hover:bg-gray-200 text-gray-500 align-middle focus:outline-none focus:ring-0 focus:ring-gray-400 focus:ring-offset-0 focus:ring-offset-white transition-all text-xs dark:bg-bgdark dark:hover:bg-black/20 dark:text-white/70 dark:hover:text-white dark:focus:ring-white/10 dark:focus:ring-offset-white/10"
                   href="javascript:;" data-hs-theme-click-value="dark">
@@ -193,12 +193,12 @@
                         src="{{ asset(env('APP_ASSETS_BASE_URL').'img/users/default_profile.jpg') }}"  alt="profile-img">
                     </div>
                     <div>
-                      <p class="ti-dropdown-header-title !text-white">Json Taylor</p>
-                      <p class="ti-dropdown-header-content !text-white/50">Web Designer</p>
+                      <p class="ti-dropdown-header-title !text-white">{{  auth()->user()->username  }}</p>
+                      <p class="ti-dropdown-header-content !text-white/50">{{  auth()->user()->first_name.' '.auth()->user()->last_name  }}</p>
                     </div>
                   </div>
                   <div class="mt-2 ti-dropdown-divider">
-                    <a href="profile.html" class="ti-dropdown-item">
+                    <a href="#" class="ti-dropdown-item">
                       <i class="ti ti-user-circle text-lg"></i>
                       Profile
                     </a>
@@ -210,14 +210,26 @@
                       <i class="ti ti-clipboard-check text-lg"></i>
                       Task Manager
                     </a>
-                    <a href="profile-settings.html" class="ti-dropdown-item">
-                      <i class="ti ti-adjustments-horizontal text-lg"></i>
-                      Settings
-                    </a> --}}
-                    <a href="index3.html" class="ti-dropdown-item">
+                    --}}
+                    @if ( auth()->user()->role->role_name == 'User' )
+                      <a href="{{ route('user.settings.index') }}" class="ti-dropdown-item">
+                        <i class="ti ti-adjustments-horizontal text-lg"></i>
+                        Settings
+                      </a>                        
+                    @else
+                      <a href="{{ route('admin.settings.index') }}" class="ti-dropdown-item">
+                        <i class="ti ti-adjustments-horizontal text-lg"></i>
+                        Settings
+                      </a>
+                    @endif
+
+                    @if (auth()->user()->role->role_name == 'User')
+                    <a href="#" class="ti-dropdown-item">
                       <i class="ti ti-wallet text-lg"></i>
-                      Bal: $7,12,950
-                    </a>
+                      Main Wallet: &#8358;{{ number_format(auth()->user()->main_wallet ?? 0) }}
+                    </a>                        
+                    @endif
+
                     {{-- <a href="signin.html" class="ti-dropdown-item">
                       <i class="ti ti-logout  text-lg"></i>
                       Log Out
@@ -237,13 +249,13 @@
                   </div>
                 </div>
               </div>
-              <div class="switcher-icon">
+              {{-- <div class="switcher-icon">
                 <button aria-label="button" type="button"
                   class="hs-dropdown-toggle inline-flex flex-shrink-0 justify-center items-center gap-2 h-[2.375rem] w-[2.375rem] rounded-full font-medium bg-gray-100 hover:bg-gray-200 text-gray-500 align-middle focus:outline-none focus-visible:outline-none focus:ring-0 focus:ring-gray-400 focus:ring-offset-0 focus:ring-offset-white transition-all text-xs dark:bg-bgdark dark:hover:bg-black/20 dark:text-white/70 dark:hover:text-white dark:focus:ring-white/10 dark:focus:ring-offset-white/10"
                   data-hs-overlay="#hs-overlay-switcher">
                   <i class="ri-settings-5-line header-icon animate-spin"></i>
                 </button>
-              </div>
+              </div> --}}
             </div>
           </div>
         </div>

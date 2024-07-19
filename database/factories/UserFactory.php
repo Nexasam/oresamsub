@@ -27,6 +27,7 @@ class UserFactory extends Factory
     {
         $extension = ['0812','0803','0807','0803'];
         return [
+            'username' => fake()->unique()->name(),
             'first_name' => fake()->name(),
             'last_name' => fake()->name(),
             'pin' => rand(1111,9999),
