@@ -251,7 +251,7 @@ class DatabaseSeeder extends Seeder
             'phone_number' => '08087675566',
             'password' => Hash::make('password'),
         ]); 
-        User::factory(400)->create();
+        User::factory(300)->create();
 
 
         //PRODUCT CATEGORIES change to===> PRODUCTS

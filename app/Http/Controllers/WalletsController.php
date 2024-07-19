@@ -8,8 +8,8 @@ use Illuminate\Http\Request;
 class WalletsController extends Controller
 {
     public function webhook(Request $request){
-        // dd('correct');
-        logger($request->all());
+        logger('correct');
+        // logger($request->all());
     }
 
     public function fund_wallet(Request $request){

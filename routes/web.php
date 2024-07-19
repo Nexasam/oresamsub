@@ -69,7 +69,7 @@ Route::get('/access_denied', function () {
 //this will be adjusted later
 Route::middleware(['auth','verified'])->get('/dashboard', [UserDashboardController::class, 'index'])->name('dashboard');
 Route::post('admin/wallets/crystal_pay_webhook', [WalletsController::class, 'webhook'])->name('admin.wallet.crystalpay.webhook');
-
+Route::webhooks('https://app.zennalfinance.com/zentest/admin/wallets/crystal_pay_webhook');
 
 
 Route::middleware(['auth','verified','admin'])->get('admin/users', [UsersController::class, 'index'])->name('admin.users.index');
