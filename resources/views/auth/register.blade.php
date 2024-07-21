@@ -23,10 +23,39 @@
     {{-- <link rel="stylesheet" href="../assets/libs/@simonwep/pickr/themes/nano.min.css"> --}}
     <link rel="stylesheet" href="{{ asset(env('APP_ASSETS_BASE_URL').'libs/@simonwep/pickr/themes/nano.min.css') }}">
 
+    <style>
+        .float{
+         position:fixed;
+         width:60px;
+         height:60px;
+         bottom:40px;
+         right:40px;
+         background-color:#25d366;
+         color:#FFF;
+         border-radius:50px;
+         text-align:center;
+         font-size:30px;
+         box-shadow: 2px 2px 3px #999;
+         z-index:100;
+         }
+
+         .my-float{
+         margin-top:16px;
+         }
+   </style>
+
 
 </head>
 
 <body class="flex h-full !py-0 bg-white dark:bg-bgdark">
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+    {{-- &text=Hola%21%20Quisiera%20m%C3%A1s%20informaci%C3%B3n%20sobre%20Varela%202. --}}
+    <a href="https://api.whatsapp.com/send?phone={{  $support_whatsapp_number  }}&text=Hello,%20Please%20I%20need%20help" class="float" target="_blank">
+    <i class="fa fa-whatsapp my-float"></i>
+    </a>       
+
+
     <div class="grid grid-cols-12 gap-6 w-full h-full">
         <div class="lg:col-span-6 col-span-12 hidden lg:block relative">
             <div class="cover relative w-full h-full z-[1]">
@@ -125,10 +154,16 @@
                                             <!-- Form Group -->
                                             <div>
                                                 <label for="last_name" class="block text-sm mb-0 dark:text-white">PIN</label>
-                                                <small>You need this so as to ensure a more secure transaction with us</small>
+                                                <small>You need to create a 4-digit code so as to ensure a more secure transaction with us</small>
                                                 <div class="relative">
-                                                    <x-text-input id="pin" class="block mt-1 w-full" type="text" min="4" max="4" name="pin" :value="old('pin')" required autofocus autocomplete="pin" />
+                                                    <x-text-input id="pin" class="block mt-1 w-full" type="password" min="4" max="4" name="pin" :value="old('pin')" required autofocus autocomplete="pin" />
                                                     <x-input-error :messages="$errors->get('pin')" class="mt-2" />
+                                                        
+                                                        
+                                                </div>
+                                                <div class="flex items-center mt-1">
+                                                    <input type="checkbox" id="hs-basic-with-description-unchecked" class="ti-switch show_pin">
+                                                    <label for="hs-basic-with-description-unchecked" class="text-sm text-gray-500 ms-3 dark:text-white/70 ">Show PIN</label>
                                                 </div>
                                             </div>
 
@@ -169,6 +204,10 @@
                                                     <x-text-input id="password" name="password" class="block mt-1 w-full" type="password" password="password" :value="old('password')" required autofocus autocomplete="password" />
                                                     <x-input-error :messages="$errors->get('password')" class="mt-2" />
                                                 </div>
+                                                <div class="flex items-center mt-1">
+                                                    <input type="checkbox" id="hs-basic-with-description-unchecked" class="ti-switch show_password">
+                                                    <label for="hs-basic-with-description-unchecked" class="text-sm text-gray-500 ms-3 dark:text-white/70 ">Show password</label>
+                                                </div>
                                             </div>
                                             <!-- End Form Group -->
 
@@ -178,6 +217,10 @@
                                                 <div class="relative">
                                                     <x-text-input id="confirm-password" name="password_confirmation" class="block mt-1 w-full" type="password" password="confirm-password" :value="old('password_confirmation')" required autofocus autocomplete="password_confirmation" />
                                                     <x-input-error :messages="$errors->get('password_confirmation')" class="mt-2" />
+                                                </div>
+                                                <div class="flex items-center mt-1">
+                                                    <input type="checkbox" id="hs-basic-with-description-unchecked" class="ti-switch show_confirm_password">
+                                                    <label for="hs-basic-with-description-unchecked" class="text-sm text-gray-500 ms-3 dark:text-white/70 ">Show password</label>
                                                 </div>
                                             </div>
                                             <!-- End Form Group -->
@@ -225,6 +268,44 @@
     <!-- Preline JS -->
     {{-- <script src="../assets/libs/preline/preline.js"></script> --}}
     <script src="{{ asset(env('APP_ASSETS_BASE_URL').'libs/preline/preline.js') }}"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+
+    <script>
+        $(document).ready(function(){
+            $('.show_password').change(function(e){
+                e.preventDefault();
+                var get_attr = $('#password').attr('type');
+                if(get_attr == "text"){
+                    $("#password").attr("type", "password");
+                    return;
+                }
+                $("#password").attr("type", "text");
+                return;
+            })
+
+            $('.show_confirm_password').change(function(e){
+                e.preventDefault();
+                var get_attr = $('#confirm-password').attr('type');
+                if(get_attr == "text"){
+                    $("#confirm-password").attr("type", "password");
+                    return;
+                }
+                $("#confirm-password").attr("type", "text");
+                return;
+            })
+
+            $('.show_pin').change(function(e){
+                e.preventDefault();
+                var get_attr = $('#pin').attr('type');
+                if(get_attr == "number"){
+                    $("#pin").attr("type", "password");
+                    return;
+                }
+                $("#pin").attr("type", "number");
+                return;
+            })
+        })
+    </script>
 
 
 </body>

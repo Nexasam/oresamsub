@@ -204,6 +204,10 @@
                                                 <div class="space-y-2">
                                                   <label class="ti-form-label mb-0">PIN:</label>
                                                   <input type="password" class="my-auto ti-form-input" id="pin" name="pin" value="" placeholder="Enter your pin to secure transaction">
+                                                  <div class="flex items-center">
+                                                    <input type="checkbox" id="hs-basic-with-description-unchecked" class="ti-switch show_pin1">
+                                                    <label for="hs-basic-with-description-unchecked" class="text-sm text-gray-500 ms-3 dark:text-white/70 ">Show PIN</label>
+                                                  </div>  
                                                 </div>
 
                                                 <div class="space-y-2">

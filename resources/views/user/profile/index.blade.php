@@ -8,17 +8,17 @@
              <!-- Page Header -->
         <div class="block justify-between page-header md:flex">
             <div>
-                <h3 class="text-gray-700 hover:text-gray-900 dark:text-white dark:hover:text-white text-2xl font-medium"> Profile Settings for <strong>{{ $user->first_name.' '.$user->last_name }}</strong></h3>
+                <h3 class="text-gray-700 hover:text-gray-900 dark:text-white dark:hover:text-white text-2xl font-medium"><strong>{{ $user->first_name.' '.$user->last_name }}</strong></h3>
             </div>
             <ol class="flex items-center whitespace-nowrap min-w-0">
-                <li class="text-sm">
+                {{-- <li class="text-sm">
                   <a class="flex items-center font-semibold text-primary hover:text-primary dark:text-primary truncate" href="{{ route('admin.users.index') }}">
                     Users
                     <i class="ti ti-chevrons-right flex-shrink-0 mx-3 overflow-visible text-gray-300 dark:text-gray-300 rtl:rotate-180"></i>
                   </a>
-                </li>
+                </li> --}}
                 <li class="text-sm text-gray-500 hover:text-primary dark:text-white/70 " aria-current="page">
-                    Profile Settings
+                    Profile Information
                 </li>
             </ol>
         </div>
@@ -51,14 +51,14 @@
               <div class="box-body pt-0">
                 <nav class="flex flex-col space-y-2" aria-label="Tabs" role="tablist" data-hs-tabs-vertical="true">
                   <button type="button" class="hs-tab-active:bg-primary hs-tab-active:border-primary hs-tab-active:text-white dark:hs-tab-active:bg-primary dark:hs-tab-active:border-primary dark:hs-tab-active:text-white -me-px py-3 px-3 inline-flex items-center gap-2 bg-gray-50 text-sm font-medium text-center border text-gray-500 rounded-sm hover:text-gray-700 dark:bg-bodybg dark:border-white/10 dark:text-white/70 active" id="profile-settings-item-1" data-hs-tab="#profile-settings-1" aria-controls="profile-settings-1" role="tab">
-                    <i class="ri ri-shield-user-line"></i> Personal Settings
+                    <i class="ri ri-shield-user-line"></i> Personal Information
                   </button>
-                  <button type="button" class="hs-tab-active:bg-primary hs-tab-active:border-primary hs-tab-active:text-white dark:hs-tab-active:bg-primary dark:hs-tab-active:border-primary dark:hs-tab-active:text-white -me-px py-3 px-3 inline-flex items-center gap-2 bg-gray-50 text-sm font-medium text-center border text-gray-500 rounded-sm hover:text-gray-700 dark:bg-bodybg dark:border-white/10 dark:text-white/70 dark:hover:text-gray-300" id="profile-settings-item-2" data-hs-tab="#profile-settings-2" aria-controls="profile-settings-2" role="tab">
+                  {{-- <button type="button" class="hs-tab-active:bg-primary hs-tab-active:border-primary hs-tab-active:text-white dark:hs-tab-active:bg-primary dark:hs-tab-active:border-primary dark:hs-tab-active:text-white -me-px py-3 px-3 inline-flex items-center gap-2 bg-gray-50 text-sm font-medium text-center border text-gray-500 rounded-sm hover:text-gray-700 dark:bg-bodybg dark:border-white/10 dark:text-white/70 dark:hover:text-gray-300" id="profile-settings-item-2" data-hs-tab="#profile-settings-2" aria-controls="profile-settings-2" role="tab">
                     <i class="ri ri-global-line"></i> Fund Wallet
-                  </button>
-                  <button type="button" class="hs-tab-active:bg-primary hs-tab-active:border-primary hs-tab-active:text-white dark:hs-tab-active:bg-primary dark:hs-tab-active:border-primary dark:hs-tab-active:text-white -me-px py-3 px-3 inline-flex items-center gap-2 bg-gray-50 text-sm font-medium text-center border text-gray-500 rounded-sm hover:text-gray-700 dark:bg-bodybg dark:border-white/10 dark:text-white/70 dark:hover:text-gray-300" id="profile-settings-item-3" data-hs-tab="#profile-settings-3" aria-controls="profile-settings-3" role="tab">
-                    <i class="ri ri-global-line"></i> Reset 2FA
-                  </button>
+                  </button> --}}
+                  {{-- <button type="button" class="hs-tab-active:bg-primary hs-tab-active:border-primary hs-tab-active:text-white dark:hs-tab-active:bg-primary dark:hs-tab-active:border-primary dark:hs-tab-active:text-white -me-px py-3 px-3 inline-flex items-center gap-2 bg-gray-50 text-sm font-medium text-center border text-gray-500 rounded-sm hover:text-gray-700 dark:bg-bodybg dark:border-white/10 dark:text-white/70 dark:hover:text-gray-300" id="profile-settings-item-2" data-hs-tab="#profile-settings-2" aria-controls="profile-settings-2" role="tab">
+                    <i class="ri ri-global-line"></i> General Settings
+                  </button> --}}
                   {{-- <button type="button" class="hs-tab-active:bg-primary hs-tab-active:border-primary hs-tab-active:text-white dark:hs-tab-active:bg-primary dark:hs-tab-active:border-primary dark:hs-tab-active:text-white -me-px py-3 px-3 inline-flex items-center gap-2 bg-gray-50 text-sm font-medium text-center border text-gray-500 rounded-sm hover:text-gray-700 dark:bg-bodybg dark:border-white/10 dark:text-white/70 dark:hover:text-gray-300" id="profile-settings-item-3" data-hs-tab="#profile-settings-3" aria-controls="profile-settings-3" role="tab">
                     <i class="ri ri-lock-line"></i> Password Settings
                   </button>
@@ -78,31 +78,39 @@
                 <div id="profile-settings-1" role="tabpanel" aria-labelledby="profile-settings-item-1">
                   <div class="box border-0 shadow-none mb-0">
                     <div class="box-header">
-                      <h5 class="box-title leading-none flex"><i class="ri ri-shield-user-line me-2"></i> Personal Settings</h5>
+                      <h5 class="box-title leading-none flex"><i class="ri ri-shield-user-line me-2"></i> View Details</h5>
                     </div>
                     <div class="box-body">
                       <div>
                         <div class="grid lg:grid-cols-2 gap-6">
                             <div class="space-y-2">
+                                <label class="ti-form-label mb-0">User Name</label>
+                                <input readonly type="text" class="my-auto ti-form-input" id="username" name="username" value="{{ $user->username }}" placeholder="Username">
+                            </div>
+                            <div class="space-y-2">
                                 <label class="ti-form-label mb-0">First Name</label>
-                                <input type="text" class="my-auto ti-form-input" id="first_name" name="first_name" value="{{ $user->first_name }}" placeholder="Firstname">
+                                <input readonly type="text" class="my-auto ti-form-input" id="first_name" name="first_name" value="{{ $user->first_name }}" placeholder="Firstname">
                             </div>
                             <div class="space-y-2">
                                 <label class="ti-form-label mb-0">Last Name</label>
-                                <input type="text" class="my-auto ti-form-input" id="last_name" name="last_name" value="{{ $user->last_name }}" placeholder="Lastname">
+                                <input readonly type="text" class="my-auto ti-form-input" id="last_name" name="last_name" value="{{ $user->last_name }}" placeholder="Lastname">
+                            </div>
+                            <div class="space-y-2">
+                                <label class="ti-form-label mb-0">Other Names</label>
+                                <input readonly type="text" class="my-auto ti-form-input" id="other_name" name="other_name" value="{{ $user->other_name }}" placeholder="Other names">
                             </div>
                             <div class="space-y-2">
                                 <label class="ti-form-label mb-0">Phone Number</label>
-                                <input type="number" class="my-auto ti-form-input" id="phone_number" name="phone_number" value="{{ $user->phone_number }}" placeholder="Phone">
+                                <input readonly type="number" class="my-auto ti-form-input" id="phone_number" name="phone_number" value="{{ $user->phone_number }}" placeholder="Phone">
                             </div>
                             <div class="space-y-2">
                                 <label class="ti-form-label mb-0">Email Address</label>
-                                <input type="email" class="my-auto ti-form-input" id="email_address" name="email_address" value="{{ $user->email }}" placeholder="Email">
+                                <input readonly type="email" class="my-auto ti-form-input" id="email_address" name="email_address" value="{{ $user->email }}" placeholder="Email">
                             </div>
                            
                             {{-- <div class="space-y-2">
                                 <label class="ti-form-label mb-0">Date Of Birth</label>
-                                <input type="text" class="ti-form-input flatpickr-input date" placeholder="Choose date" readonly>
+                                <input readonly type="text" class="ti-form-input flatpickr-input date" placeholder="Choose date" readonly>
                             </div> --}}
                             {{-- <div class="space-y-2">
                                 <label class="ti-form-label mb-0">Gender</label>
@@ -197,26 +205,6 @@
     
                             <div class="my-5">
                                 <button type="submit" class="ti-btn ti-btn-primary w-full">Fund</button>
-                            </div>
-                      </form>
-                     
-                 
-                    </div>
-                  </div>
-                </div>
-                <div id="profile-settings-3" class="hidden" role="tabpanel" aria-labelledby="profile-settings-item-3">
-                  <div class="box border-0 shadow-none mb-0">
-                    <div class="box-header">
-                      <h5 class="box-title leading-none flex"><i class="ri ri-global-line me-2"></i> Wallet Balance : &#8358;{{ number_format($user->main_wallet,2) }}</h5>
-                    </div>
-                    <div class="box-body">
-                      <h5 class="text-base font-semibold">Reset 2FA</h5>
-                      <form method="POST" action="{{ route('admin.users.fund_user_wallet')  }}">
-                           @csrf    
-                            <div class="my-2">
-                              <input type="hidden" class="my-auto ti-form-input" value="{{ $user->id }}" name="user_id" id="user_id" placeholder="">
-                            
-                              <button type="submit" class="ti-btn ti-btn-primary w-full">Reset 2FA</button>
                             </div>
                       </form>
                      

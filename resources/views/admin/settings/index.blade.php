@@ -1,4 +1,4 @@
-@extends('layouts.app_two')
+@extends('layouts.app')
 @section('content')
 
       <!-- Start::main-content -->
@@ -373,7 +373,7 @@
                               </div>
 
                               <div class="space-y-2">
-                                <label class="ti-form-label mb-0">Support Whatsapp number</label>
+                                <label class="ti-form-label mb-0">Support Whatsapp number (format: e.g 2348133494364)</label>
                                 <input value="{{ $support_whatsapp_number }}" type="text"  name="support_whatsapp_number" class="my-auto ti-form-input" placeholder="">
                               </div>
                               
@@ -498,19 +498,24 @@
                                   {!!  auth()->user()->twoFactorQrCodeSvg() !!}
                               </div>
                               <h3><strong>Please save recovery codes below:</strong></h3>
-                              <ul>
-                                  @foreach(auth()->user()->recoveryCodes() as $code)
-                                      <p>{{ $code }}</p>
-                                  @endforeach
-                              </ul>
+                              <textarea name="myInput" id="myInput" cols="35" rows="16">
+                                @foreach(auth()->user()->recoveryCodes() as $code)
+                                {{ $code }}
+                                @endforeach
+                              </textarea>
+                              <br>
+                              <a class="ti-btn ti-btn-info w-1/4" href="#" onclick="copyToClipboard()"><span id="copyText">Copy Codes</span></a>
+                              <br>
+                              <br>
+                              <br>
                               @method('DELETE')
                               <div class="space-y-2">
-                                <button type="submit" class="ti-btn ti-btn-danger w-1/2">Disable 2fa</button>
+                                <button type="submit" class="ti-btn ti-btn-danger w-1/2">Disable Two Factor Authentication</button>
                               </div>
                           @else
                               <div class="space-y-2">
-                                <span class="text-red-600 mt-4 block">Two factor authentication is not enabled.</span>
-                                <button type="submit" class="ti-btn ti-btn-primary w-1/2">Enable 2fa</button>
+                                <span class="text-red-600 mt-4 block">Two factor authentication not enabled.</span>
+                                <button type="submit" class="ti-btn ti-btn-primary w-1/2">Enable Two Factor Authentication</button>
                               </div>
                           @endif
                         </form>

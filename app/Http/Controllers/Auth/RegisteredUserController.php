@@ -8,6 +8,7 @@ use App\Models\UserPlan;
 use Illuminate\View\View;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rules;
+use App\Models\LandingPagesSetting;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -22,7 +23,12 @@ class RegisteredUserController extends Controller
      */
     public function create(): View
     {
-        return view('auth.register');
+        // dd('sss');
+        $landing_data = LandingPagesSetting::get();
+        foreach($landing_data as $landing_component){
+            $data[$landing_component->field_name] = $landing_component->field_details;
+        }
+        return view('auth.register')->with($data);
     }
 
     /**

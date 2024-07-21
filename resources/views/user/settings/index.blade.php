@@ -1,4 +1,4 @@
-@extends('layouts.app_two')
+@extends('layouts.app')
 @section('content')
 
       <!-- Start::main-content -->
@@ -57,10 +57,9 @@
                     <button type="button" class="hs-tab-active:bg-primary hs-tab-active:text-white py-3 px-4 inline-flex items-center gap-2 bg-transparent text-sm font-medium text-center text-gray-500 rounded-sm hover:text-primary  dark:text-white/70 dark:hover:text-white active" id="pills-with-brand-color-item-1" data-hs-tab="#pills-with-brand-color-1" aria-controls="pills-with-brand-color-1">
                       Wallet Setting
                     </button>
-                  
-                    <button type="button" class="hs-tab-active:bg-primary hs-tab-active:text-white py-3 px-4 inline-flex items-center gap-2 bg-transparent text-sm font-medium text-center text-gray-500 rounded-sm hover:text-primary  dark:text-white/70 dark:hover:text-white" id="pills-with-brand-color-item-2" data-hs-tab="#pills-with-brand-color-2" aria-controls="pills-with-brand-color-2">
+                    {{-- <button type="button" class="hs-tab-active:bg-primary hs-tab-active:text-white py-3 px-4 inline-flex items-center gap-2 bg-transparent text-sm font-medium text-center text-gray-500 rounded-sm hover:text-primary  dark:text-white/70 dark:hover:text-white" id="pills-with-brand-color-item-2" data-hs-tab="#pills-with-brand-color-2" aria-controls="pills-with-brand-color-2">
                       Profile
-                    </button>
+                    </button> --}}
                     <button type="button" class="hs-tab-active:bg-primary hs-tab-active:text-white py-3 px-4 inline-flex items-center gap-2 bg-transparent text-sm font-medium text-center text-gray-500 rounded-sm hover:text-primary  dark:text-white/70 dark:hover:text-white" id="pills-with-brand-color-item-3" data-hs-tab="#pills-with-brand-color-3" aria-controls="pills-with-brand-color-3">
                       Security/2fa Authentication
                     </button>
@@ -127,6 +126,10 @@
                                 <label class="ti-form-label mb-0">PIN</label>
                                 <input type="password" id="pin" name="pin" value="" class="my-auto ti-form-input"
                                     placeholder="Enter pin to confirm update">
+                                <div class="flex items-center">
+                                  <input type="checkbox" id="hs-basic-with-description-unchecked" class="ti-switch show_pin1">
+                                  <label for="hs-basic-with-description-unchecked" class="text-sm text-gray-500 ms-3 dark:text-white/70 ">Show PIN</label>
+                                </div> 
                             </div>
                             {{-- <div class="space-y-2">
                                 <label class="ti-form-label mb-0">Email Address</label>
@@ -197,24 +200,42 @@
                         <form method="POST" action="{{ route('user.settings.update_password')  }}">
                           @csrf
                           <div class="grid w-full lg:w-1/2 lg:grid-cols-1 gap-6 space-y-4 lg:space-y-0">
-                              {{-- <div class="space-y-2 mt-5">
+                              <div class="space-y-2 mt-5">
                                 <label class="ti-form-label mb-0"> Current password</label>
-                                <input type="password" id="current_password" name="current_password" class="my-auto ti-form-input" placeholder="enter current password">                            
-                              </div> --}}
+                                <input type="password" id="current_password" name="current_password" class="my-auto ti-form-input" placeholder="enter current password">    
+                                <div class="flex items-center">
+                                  <input type="checkbox" id="hs-basic-with-description-unchecked" class="ti-switch show_password_current">
+                                  <label for="hs-basic-with-description-unchecked" class="text-sm text-gray-500 ms-3 dark:text-white/70 ">Show password</label>
+                                </div>                        
+                              </div>
 
                               <div class="space-y-2 mt-5">
                                 <label class="ti-form-label mb-0"> New password</label>
                                 <input type="password" id="new_password" name="new_password" class="my-auto ti-form-input" placeholder="enter new password">                            
+                                <div class="flex items-center">
+                                  <input type="checkbox" id="hs-basic-with-description-unchecked" class="ti-switch show_password">
+                                  <label for="hs-basic-with-description-unchecked" class="text-sm text-gray-500 ms-3 dark:text-white/70 ">Show password</label>
+                                </div>
                               </div>
+
 
                               <div class="space-y-2 mt-5">
                                 <label class="ti-form-label mb-0"> Confirm new password</label>
-                                <input type="password" id="confirm_new_password" name="confirm_new_password" class="my-auto ti-form-input" placeholder="confirm new password">                            
+                                <input type="password" id="confirm_new_password" name="confirm_new_password" class="my-auto ti-form-input" placeholder="confirm new password"> 
+                                <div class="flex items-center">
+                                  <input type="checkbox" id="hs-basic-with-description-unchecked" class="ti-switch show_password2">
+                                  <label for="hs-basic-with-description-unchecked" class="text-sm text-gray-500 ms-3 dark:text-white/70 ">Show confirm password</label>
+                                </div>                           
                               </div>
+                             
 
                               <div class="space-y-2 mt-5">
                                 <label class="ti-form-label mb-0">PIN</label>
-                                <input type="password" id="pin" name="pin" class="my-auto ti-form-input" placeholder="confirm action with your PIN">                            
+                                <input type="password" id="pin5" name="pin5" class="my-auto ti-form-input" placeholder="confirm action with your PIN"> 
+                                <div class="flex items-center">
+                                  <input type="checkbox" id="hs-basic-with-description-unchecked" class="ti-switch show_pin5">
+                                  <label for="hs-basic-with-description-unchecked" class="text-sm text-gray-500 ms-3 dark:text-white/70 ">Show PIN</label>
+                                </div>                                
                               </div>
 
 
@@ -236,17 +257,29 @@
 
                               <div class="space-y-2 mt-5">
                                 <label class="ti-form-label mb-0"> Current PIN</label>
-                                <input type="password" id="current_pin" name="current_pin" class="my-auto ti-form-input" placeholder="enter current pin">                            
+                                <input type="password" id="current_pin" name="current_pin" class="my-auto ti-form-input" placeholder="enter current pin">   
+                                <div class="flex items-center">
+                                  <input type="checkbox" id="hs-basic-with-description-unchecked" class="ti-switch show_pin2">
+                                  <label for="hs-basic-with-description-unchecked" class="text-sm text-gray-500 ms-3 dark:text-white/70 ">Show PIN</label>
+                                </div>                          
                               </div>
 
                               <div class="space-y-2 mt-5">
                                 <label class="ti-form-label mb-0"> New PIN</label>
-                                <input type="password" id="new_pin" name="new_pin" class="my-auto ti-form-input" placeholder="confirm new pin">                            
+                                <input type="password" id="new_pin" name="new_pin" class="my-auto ti-form-input" placeholder="confirm new pin"> 
+                                <div class="flex items-center">
+                                  <input type="checkbox" id="hs-basic-with-description-unchecked" class="ti-switch show_pin3">
+                                  <label for="hs-basic-with-description-unchecked" class="text-sm text-gray-500 ms-3 dark:text-white/70 ">Show PIN</label>
+                                </div>                            
                               </div>
 
                               <div class="space-y-2 mt-5">
                                 <label class="ti-form-label mb-0">Confirm New PIN</label>
-                                <input type="password" id="confirm_new_pin" name="confirm_new_pin" class="my-auto ti-form-input" placeholder="confirm new pin">                            
+                                <input type="password" id="confirm_new_pin" name="confirm_new_pin" class="my-auto ti-form-input" placeholder="confirm new pin"> 
+                                <div class="flex items-center">
+                                  <input type="checkbox" id="hs-basic-with-description-unchecked" class="ti-switch show_pin4">
+                                  <label for="hs-basic-with-description-unchecked" class="text-sm text-gray-500 ms-3 dark:text-white/70 ">Show PIN</label>
+                                </div>                            
                               </div>
 
 
@@ -271,19 +304,24 @@
                                         {!!  auth()->user()->twoFactorQrCodeSvg() !!}
                                     </div>
                                     <h3><strong>Please save recovery codes below:</strong></h3>
-                                    <ul>
-                                        @foreach(auth()->user()->recoveryCodes() as $code)
-                                            <p>{{ $code }}</p>
-                                        @endforeach
-                                    </ul>
+                                    <textarea name="myInput" id="myInput" cols="35" rows="16">
+                                      @foreach(auth()->user()->recoveryCodes() as $code)
+                                      {{ $code }}
+                                      @endforeach
+                                    </textarea>
+                                    <br>
+                                    <a class="ti-btn ti-btn-info w-1/4" href="#" onclick="copyToClipboard()"><span id="copyText">Copy Codes</span></a>
+                                    <br>
+                                    <br>
+                                    <br>
                                     @method('DELETE')
                                     <div class="space-y-2">
-                                      <button type="submit" class="ti-btn ti-btn-danger w-1/2">Disable 2fa</button>
+                                      <button type="submit" class="ti-btn ti-btn-danger w-1/2">Disable Two Factor Authentication</button>
                                     </div>
                                 @else
                                     Two factor authentication is not enabled.
                                     <div class="space-y-2">
-                                      <button type="submit" class="ti-btn ti-btn-primary w-1/2">Enable 2fa</button>
+                                      <button type="submit" class="ti-btn ti-btn-primary w-1/2">Enable Two Factor Authentication</button>
                                     </div>
                                 @endif
                           </form>

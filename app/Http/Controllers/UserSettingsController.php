@@ -63,7 +63,8 @@ class UserSettingsController extends Controller
       $validator = Validator::make($request->all(), [
         'new_password' => 'required',
         'confirm_new_password' => 'required',
-        'pin' => ['required','digits:4']
+        'current_password' => 'required',
+        'pin5' => ['required','digits:4']
       ]);
 
       if ($validator->stopOnFirstFailure()->fails()) {
@@ -78,13 +79,14 @@ class UserSettingsController extends Controller
       }
 
       // $hashed_current_password = Hash::make($request->current_password);
-      // $db_user_password = $user_details->password;
-      // if(! Hash::check($hashed_current_password,$db_user_password)){
-      //   Session::flash('failure','Your current password is not correct');
-      //   return redirect()->back();
-      // }
+      $db_user_password = $user_details->password;
+      if(! Hash::check($request->current_password,$db_user_password)){
+        // dd('wrong current pass');
+        Session::flash('failure','Your current password is not correct');
+        return redirect()->back();
+      }
 
-      if($user_details->pin != $request->pin){
+      if($user_details->pin != $request->pin5){
         Session::flash('failure','Wrong PIN entered');
         return redirect()->back();
       }
@@ -96,6 +98,7 @@ class UserSettingsController extends Controller
       }
      
       $dataa['password'] = Hash::make($request->new_password);
+     
       $user_details->update($dataa);
           
       Session::flash('success','Password was successfully updated');

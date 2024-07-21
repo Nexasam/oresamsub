@@ -55,13 +55,8 @@
                             <br>
 
                             <div class="text-center">
-                                @if (session('status') == 'verification-link-sent')
-                                <div class="mb-4 font-medium text-sm text-green-600 dark:text-green-400">
-                                    {{ __('A new verification link has been sent to the email address you provided during registration.') }}
-                                </div>
-                                @endif
-                                <h1 class="block text-2xl font-bold text-gray-800 dark:text-white">2FA Authentication</h1>
-                           
+                                <h1 class="block text-2xl font-bold text-gray-800 dark:text-white">Two-Factor Authentication</h1>
+                                <small>Access your chosen authenticator app (Google Authenticator, Authy or any other) and input the 6-digit code provided to complete the login flow.</small>
                             </div>
 
                             <div class="mt-5">

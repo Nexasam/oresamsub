@@ -38,8 +38,18 @@ class UsersController extends Controller
         return view('admin.users.index')->with(['users' => $users]);
     }
 
-        /**
-     * Display a listing of the resource.
+
+    public function manage_profile(Request $request){
+      $user = auth()->user();
+      if(!$user){
+        Session::flash('failure','User not found');
+        return redirect()->back();
+      }
+      return view('user.profile.index')->with(['user' => $user]);
+    }
+
+    /**
+     * Display a listing of the resource. for admin
      */
     public function manage_user(Request $request,$id)
     {

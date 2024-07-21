@@ -29,7 +29,8 @@
                   <i class="ri-search-2-line header-icon"></i>
                 </button>
               </div> --}}
-              <div class="header-theme-mode hidden sm:block">
+              {{-- <div class="header-theme-mode hidden lg:block"> --}}
+              <div class="header-theme-mode block">
                 <a aria-label="anchor" class="hs-dark-mode-active:hidden flex hs-dark-mode group flex-shrink-0 justify-center items-center gap-2 h-[2.375rem] w-[2.375rem] rounded-full font-medium bg-gray-100 hover:bg-gray-200 text-gray-500 align-middle focus:outline-none focus:ring-0 focus:ring-gray-400 focus:ring-offset-0 focus:ring-offset-white transition-all text-xs dark:bg-bgdark dark:hover:bg-black/20 dark:text-white/70 dark:hover:text-white dark:focus:ring-white/10 dark:focus:ring-offset-white/10"
                   href="javascript:;" data-hs-theme-click-value="dark">
                   <i class="ri-moon-line header-icon"></i>
@@ -198,7 +199,7 @@
                     </div>
                   </div>
                   <div class="mt-2 ti-dropdown-divider">
-                    <a href="#" class="ti-dropdown-item">
+                    <a href="{{ route('user.manage_profile.index') }}" class="ti-dropdown-item">
                       <i class="ti ti-user-circle text-lg"></i>
                       Profile
                     </a>

@@ -26,10 +26,39 @@
     {{-- <link rel="stylesheet" href="../assets/libs/@simonwep/pickr/themes/nano.min.css"> --}}
      <link rel="stylesheet"  href="{{ asset(env('APP_ASSETS_BASE_URL').'libs/@simonwep/pickr/themes/nano.min.css') }}">
 
+     <style>
+        .float{
+         position:fixed;
+         width:60px;
+         height:60px;
+         bottom:40px;
+         right:40px;
+         background-color:#25d366;
+         color:#FFF;
+         border-radius:50px;
+         text-align:center;
+         font-size:30px;
+         box-shadow: 2px 2px 3px #999;
+         z-index:100;
+         }
+
+         .my-float{
+         margin-top:16px;
+         }
+   </style>
 
 </head>
 
 <body class="error-page flex h-full !py-0 bg-white dark:bg-bgdark">
+
+    
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+    {{-- &text=Hola%21%20Quisiera%20m%C3%A1s%20informaci%C3%B3n%20sobre%20Varela%202. --}}
+    <a href="https://api.whatsapp.com/send?phone={{  $support_whatsapp_number  }}&text=Hello,%20Please%20I%20need%20help" class="float" target="_blank">
+    <i class="fa fa-whatsapp my-float"></i>
+    </a>      
+
+
     <div class="grid grid-cols-12 gap-6 w-full h-full">
         <div class="lg:col-span-6 col-span-12 hidden lg:block relative">
             <div class="cover relative w-full h-full z-[1]">
@@ -119,6 +148,12 @@
                                             </div>
                                             <!-- End Form Group -->
 
+                                            <div class="flex items-center">
+                                                <input type="checkbox" id="hs-basic-with-description-unchecked" class="ti-switch show_password">
+                                                <label for="hs-basic-with-description-unchecked" class="text-sm text-gray-500 ms-3 dark:text-white/70 ">Show password</label>
+                                            </div>
+                                            <hr>
+
                                             <!-- Checkbox -->
                                             <div class="flex items-center">
                                                 <div class="flex">
@@ -160,6 +195,25 @@
     <!-- Preline JS -->
     {{-- <script src="../assets/libs/preline/preline.js"></script> --}}
     <script src="{{ asset(env('APP_ASSETS_BASE_URL').'libs/preline/preline.js') }}"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+
+    <script>
+        $(document).ready(function(){
+            $('.show_password').change(function(e){
+                e.preventDefault();
+                var get_attr = $('#password').attr('type');
+                if(get_attr == "text"){
+                    $("#password").attr("type", "password");
+                    return;
+                }
+                $("#password").attr("type", "text");
+                return;
+                // $('.password').get(0).type='text';
+                // $(".password").attr("width","text");
+                // console.log(e)
+            })
+        })
+    </script>
 
 
 

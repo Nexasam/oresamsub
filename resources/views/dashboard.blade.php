@@ -6,7 +6,7 @@
     <!-- Page Header -->
     <div class="block justify-between page-header md:flex">
         <div>
-            <h3 class="text-gray-700 hover:text-gray-900 dark:text-white dark:hover:text-white text-2xl font-medium"> Dashboard  <small style=" font-size: 14px;">Welcome <strong>{{ $user->first_name. ' '. $user->last_name }}</strong></small> </h3>
+            <h3 class="text-gray-700 hover:text-gray-900 dark:text-white dark:hover:text-white text-2xl font-medium"> <small style=" font-size: 14px;">Welcome <strong>{{ $user->first_name. ' '. $user->last_name }}</strong></small> </h3>
         </div>
        
     </div>
@@ -47,7 +47,35 @@
     </div> --}}
     <div class="grid grid-cols-12 gap-x-3">
         
-     
+
+        {{-- <div class="col-span-12 xxxl:col-span-2 md:col-span-3">
+            <div class="box">
+                <div class="box-body">
+                    <div class="flex space-x-4 rtl:space-x-reverse">
+                       
+                        <div class="flex items-center justify-center ecommerce-icon px-0">
+                            <span class="rounded-sm p-4 bg-danger/10">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="fill-white svg3" height="24px"
+                                    viewBox="0 0 24 24" width="24px" fill="#000000">
+                                    <path d="M0 0h24v24H0V0z" fill="none" />
+                                    <path
+                                        d="M12 6c1.1 0 2 .9 2 2s-.9 2-2 2-2-.9-2-2 .9-2 2-2m0 10c2.7 0 5.8 1.29 6 2H6c.23-.72 3.31-2 6-2m0-12C9.79 4 8 5.79 8 8s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4zm0 10c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
+                                </svg>
+                            </span>
+                        </div>
+                        <div class="">
+                            <div class="mb-2">Referral Code</div>
+                            <div class="text-gray-500 dark:text-white/70 mb-1 text-xs">
+                                <span
+                                    class="text-gray-800 font-semibold text-xl leading-none align-bottom dark:text-white">
+                                    {{ $user->user_plan->updated_user_plan_name ?? $user->user_plan->user_plan_name  }}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div> --}}
 
         <div class="col-span-12 xxxl:col-span-2 md:col-span-3">
             <div class="box">
