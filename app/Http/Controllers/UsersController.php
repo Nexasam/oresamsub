@@ -243,7 +243,7 @@ class UsersController extends Controller
       //for ADMIN
       $validator = Validator::make($request->all(), [
         'username' => ['required', 'string', 'unique:users,username'],
-        'pin' => 'required|max:4',
+        'pin' => 'required|max:255',
         'first_name' => 'required|max:255',
         'last_name' => 'required|max:255',
         'other_names' => 'nullable|max:255',

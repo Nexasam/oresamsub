@@ -85,7 +85,7 @@ class DataController extends Controller
             'phone_number' => 'required',
             'product_plan_category_id' => 'required',
             'product_plan_id' => 'required',
-            'pin' => ['required','max:4'],
+            'pin' => ['required','max:255'],
             'wallet_category'=>['required',Rule::in(['main_wallet','data_wallet'])],
         ]);
         
@@ -324,7 +324,7 @@ class DataController extends Controller
         $validator = Validator::make($request->all(), [
             'bulk_data_plan_id' => 'required|exists:bulk_data_product_plans,id',
             'bulk_data_wallet_id' => 'required|exists:user_bulk_data_wallets,id',
-            'pin' => 'required|max:4',
+            'pin' => 'required|max:255',
         ]);
         
         if ($validator->stopOnFirstFailure()->fails()) {

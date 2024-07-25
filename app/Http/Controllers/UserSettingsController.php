@@ -136,7 +136,7 @@ class UserSettingsController extends Controller
         'first_name' => 'required|max:255',
         'last_name' => 'required|max:255',
         'other_names' => 'nullable|max:255',
-        'pin' => ['required','digits:4']
+        'pin' => ['required','max:255']
       ]);
       
 
