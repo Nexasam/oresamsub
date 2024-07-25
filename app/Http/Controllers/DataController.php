@@ -496,12 +496,13 @@ class DataController extends Controller
     }
 
     /**
-     * Get all the products plans categories.
+     * Get all the products plans categories.: this works for all product: NEEDS REVAMP
      */
     public function fetch_product_plan_categories(Request $request)
     {
         $validator = Validator::make($request->all(), [
             'network_id' => 'required',
+            'product_slug' => 'required'
         ]);
           
         if ($validator->stopOnFirstFailure()->fails()) {
@@ -509,7 +510,8 @@ class DataController extends Controller
         }
 
         $network = $request->network_id;
-        $product_plans_categories = ProductPlanCategory::where('network_id',$network)->get();
+        $product_id = Product::where('slug',$request->product_slug)->first()->id;
+        $product_plans_categories = ProductPlanCategory::where('network_id',$network)->where('product_id',$product_id)->get();
         
         return response()->json(['status'=>'1', 'message'=>'Product plans categories fetched','data' => $product_plans_categories ]);
 
@@ -522,13 +524,18 @@ class DataController extends Controller
     {
         $network_id = $request->network_id ?? '';
         $plan_category_id = $request->plan_category_id ?? '';
-
+        $product_slug = $request->product_slug ?? ''; //this is required
+        
+        $product_id = Product::where('slug',$product_slug)->first()->id;
+         
 
 
         if($plan_category_id == ''){
-            $product_plan_categories = ProductPlanCategory::select('id','automation_id')->where('network_id',$network_id)->get();
+            
+            $product_plan_categories = ProductPlanCategory::select('id','automation_id')->where('product_id',$product_id)->where('network_id',$network_id)->get();
         }else{
             $product_plan_categories = ProductPlanCategory::select('id','automation_id')
+            ->where('product_id',$product_id)
             ->where('network_id',$network_id)
             ->where('id',$plan_category_id)
             ->get();

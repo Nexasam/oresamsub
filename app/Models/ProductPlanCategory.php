@@ -12,6 +12,18 @@ class ProductPlanCategory extends Model
 
     protected $guarded = [];
 
+     /**
+     * Get the attributes that should be cast.
+     *
+     * @return array<string, string>
+     */
+    protected function casts(): array
+    {
+        return [
+            'is_hot_sales' => 'boolean',
+        ];
+    }
+
     public function product(){
         return $this->belongsTo(Product::class,'product_id','id');
     }

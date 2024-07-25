@@ -77,6 +77,7 @@
                                     <th>Automation</th>
                                     <th>Network</th>
                                     <th>Date added</th>
+                                    <th>Hot sales</th>
                                     <th>Bulk data plans</th>
                                 </tr>
                                </thead>

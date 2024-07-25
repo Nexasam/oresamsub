@@ -23,7 +23,7 @@ use App\Services\Automation\MegaSubPlugAutomation\VendData;
 use App\Services\Automation\MegaSubPlugAutomation\MegaSubVendData;
 use App\Services\Automation\MegaSubPlugAutomation\MegaSubVendAirtime;
 
-class AirtimeController extends Controller
+class CableSubscriptionController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -36,35 +36,35 @@ class AirtimeController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function buy_airtime()
+    public function buy_cable_subscription()
     {
 
-        $networks = Network::all();
-        $product = Product::where('slug','airtime')->first(); //TODO: have enums that gets the id later
-        $data['networks'] = $networks;
+       
+        $product = Product::where('slug','cable_subscription')->first(); //TODO: have enums that gets the id later
         $data['product'] = $product;
+        
 
         $user_details = auth()->user();
         $user_id = $user_details->id;
         // dd($user_id);
 
         //data txns list
-        $airtime_transactions = Transaction::with('user')->where('transaction_category','airtime')
+        $cable_transactions = Transaction::with('user')->where('transaction_category','cable_subscription')
         ->where('user_id',$user_id)
         ->latest()
         ->get();
-        $data['airtime_transactions'] = $airtime_transactions;
+        $data['cable_transactions'] = $cable_transactions;
         $data['user_details'] = $user_details;
 
         // dd($data);
-        return view('user.airtime.buy_airtime')->with($data);
+        return view('user.cabletv.buy_cable_tv')->with($data);
     }
 
 
     /**
      * Store a newly created resource in storage.
      */
-    public function buy_airtime_action(Request $request)
+    public function buy_cable_subscription_action(Request $request)
     {
         $validator = Validator::make($request->all(), [
             'network_id' => 'required',
@@ -135,17 +135,17 @@ class AirtimeController extends Controller
                                 //this is for megasubplug: vend for Airtime
                                 
                                 if($automation_details->slug == 'megasubplug'){
-                                    $buy_airtime = (new MegaSubVendAirtime($phone_numbers_array[$i],$request->product_plan_id,$amount))->buyAirtime();
+                                    $buy_cable_subscription = (new MegaSubVendAirtime($phone_numbers_array[$i],$request->product_plan_id,$amount))->buyAirtime();
                                 }else{
                                     //this will be like this until other automations are processed
-                                    $buy_airtime['status'] = 1;
-                                    $buy_airtime['user_message'] = 'Airtime was successfully processed.';
-                                    $buy_airtime['admin_message'] = 'Airtime was successfully processed.';
+                                    $buy_cable_subscription['status'] = 1;
+                                    $buy_cable_subscription['user_message'] = 'Airtime was successfully processed.';
+                                    $buy_cable_subscription['admin_message'] = 'Airtime was successfully processed.';
                                 }
-                                // logger(json_encode($buy_airtime_megasub));
-                                // dd($buy_airtime_megasub);
+                                // logger(json_encode($buy_cable_subscription_megasub));
+                                // dd($buy_cable_subscription_megasub);
 
-                                if($buy_airtime['status'] == 1){
+                                if($buy_cable_subscription['status'] == 1){
                                     $success++;
                                     $status = 1;
                                     $wallet_before = User::where('id',$user_id)->first()->main_wallet;
@@ -159,8 +159,8 @@ class AirtimeController extends Controller
                                 }
                                 //simulate success
 
-                                $user_message = $buy_airtime['user_message'];
-                                $admin_message = $buy_airtime['admin_message'];
+                                $user_message = $buy_cable_subscription['user_message'];
+                                $admin_message = $buy_cable_subscription['admin_message'];
                                 $display_results[$i] = array(
                                     'message' => $user_message,
                                     'admin_message' => $admin_message,
@@ -229,13 +229,6 @@ class AirtimeController extends Controller
     }
 
 
-
-    //TODO: move to a separate class
-    public function validateUserWallet($user_id,$wallet_before,$phone_numbers_count,$amount){    
-        return true;
-    }
-
-
     /**
      * Get all the products plans categories.
      */
@@ -250,7 +243,7 @@ class AirtimeController extends Controller
         }
 
         $network = $request->network_id;
-        $product_id = Product::where('slug','airtime')->first()->id;
+        $product_id = Product::where('slug','cable_subscription')->first()->id;
         $product_plans_categories = ProductPlanCategory::whereIn('product_id',$product_id)->where('network_id',$network)->get();
         
         return response()->json(['status'=>'1', 'message'=>'Product plans categories fetched','data' => $product_plans_categories ]);
@@ -264,7 +257,7 @@ class AirtimeController extends Controller
     {
         $network_id = $request->network_id ?? '';
         $plan_category_id = $request->plan_category_id ?? '';
-        $product_id = Product::where('slug','airtime')->first()->id;
+        $product_id = Product::where('slug','cable_subscription')->first()->id;
 
 
 

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CableSubscriptionController;
 use App\Http\Middleware\RoleAssess;
 use App\Models\LandingPagesSetting;
 use Illuminate\Support\Facades\Route;
@@ -96,6 +97,7 @@ Route::middleware(['auth','verified','admin'])->get('admin/automations/{slug}/vi
 Route::middleware(['auth','verified','admin'])->get('admin/products', [ProductController::class, 'index'])->name('admin.products.index');
 Route::middleware(['auth','verified','admin'])->post('admin/products/store', [ProductController::class, 'store'])->name('admin.products.store');
 
+Route::middleware(['auth','verified','admin'])->get('admin/toggle_hot_sales', [ProductPlanCategoryController::class, 'toggle_hot_sales'])->name('admin.product_plan_categories.toggle_hot_sales');
 Route::middleware(['auth','verified','admin'])->get('admin/product_plan_categories', [ProductPlanCategoryController::class, 'index'])->name('admin.product_plan_categories.index');
 Route::middleware(['auth','verified','admin'])->get('admin/product_plan_categories/view/{id}', [ProductPlanCategoryController::class, 'view_details'])->name('admin.product_plan_categories.view_details');
 Route::middleware(['auth','verified','admin'])->post('admin/product_plan_categories/update', [ProductPlanCategoryController::class, 'update_details'])->name('admin.product_plan_categories.update_details');
@@ -140,7 +142,14 @@ Route::middleware(['auth','verified','user'])->post('user/data/buy_bulk_data_act
 Route::middleware(['auth','verified','user'])->post('user/data/fetch_bulk_data_plans', [DataController::class, 'fetch_bulk_data_plans'])->name('user.data.fetch_bulk_data_plans');
 Route::middleware(['auth','verified','user'])->get('user/data/fetch_bulk_data_plan_details', [DataController::class, 'fetch_bulk_data_plan_details'])->name('user.data.fetch_bulk_data_plan_details');
 
+Route::middleware(['auth','verified','user'])->get('user/airtime/buy_airtime', [AirtimeController::class, 'buy_airtime'])->name('user.airtime.buy_airtime');
+Route::middleware(['auth','verified','user'])->get('user/airtime/store', [AirtimeController::class, 'buy_airtime_action'])->name('user.airtime.buy_airtime_action');
+// Route::middleware(['auth','verified','user'])->get('user/airtime/fetch_product_plans', [DataController::class, 'fetch_product_plans'])->name('user.airtime.fetch_product_plans'); //TODO: you can add this to a helper controller later
 
+//CABLE TV: user.cabletv.buy_cable_subscription
+Route::middleware(['auth','verified','user'])->get('user/cable_subscription/buy_cable_subscription', [CableSubscriptionController::class, 'buy_cable_subscription'])->name('user.cable_subscription.buy_cable_subscription');
+Route::middleware(['auth','verified','user'])->get('user/cable_subscription/store', [CableSubscriptionController::class, 'buy_cable_subscription_action'])->name('user.cable_subscription.buy_cable_subscription_action');
+//electricity: user.cabletv.buy_cable_subscription
 
 Route::middleware(['auth','verified','user'])->get('user/data/buy_data', [DataController::class, 'buy_data'])->name('user.data.buy_data');
 Route::middleware(['auth','verified','user'])->get('user/data/get_single_bulk_data_wallet/{plan_id}', [DataController::class, 'get_single_bulk_data_wallet'])->name('user.data.get_single_bulk_data_wallet');

@@ -145,7 +145,8 @@
                                     <div class="box-body">
                                         <form>
                                             <input type="hidden" id="_token" name="_token" value="{{ csrf_token() }}" />
-                                     
+                                            <input type="hidden" id="product_slug" name="product_slug" value="data" />
+                                            
                                             <div class="grid w-full lg:w-1/2 lg:grid-cols-1 gap-6 space-y-4 lg:space-y-0">
                                                 
                                                 <div class="space-y-2">

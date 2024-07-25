@@ -302,14 +302,54 @@ class DatabaseSeeder extends Seeder
 
 
 
-        // PRODUCT PLAN CATEGORIES - compulsory*** - for deeper classification
+       // PRODUCT PLAN CATEGORIES - compulsory*** - for deeper classification
+       //just create 1 airtime plan each
+       $pr_plan_mtn_airtime = ProductPlanCategory::create([
+        'id' => 'e2d7b231-7c9f-44dd-9b05-7c27ed29e16e',
+        'product_plan_category_name' => 'MTN AIRTIME',
+        'product_id' => $product_airtime->id,
+        'network_id' => $mtn_network->id,
+        'automation_id' => $megasub->id,
+        'is_hot_sales' => 0,
+        // 'bulk_data_wallet_in_mb' => 1048576
+      ]);
+      $pr_plan_glo_airtime = ProductPlanCategory::create([
+        'id' => 'fb1064bd-0d51-4eb1-b78f-fa74fab4b89f',
+        'product_plan_category_name' => 'GLO AIRTIME',
+        'product_id' => $product_airtime->id,
+        'network_id' => $glo_network->id,
+        'automation_id' => $megasub->id,
+        'is_hot_sales' => 0,
+        // 'bulk_data_wallet_in_mb' => 1048576
+      ]);
+      $pr_plan_airtel_airtime = ProductPlanCategory::create([
+        'id' => '93d019fc-d9a0-4bcd-957c-8a11a9e5e133',
+        'product_plan_category_name' => 'AIRTEL AIRTIME',
+        'product_id' => $product_airtime->id,
+        'network_id' => $airtel_network->id,
+        'automation_id' => $megasub->id,
+        'is_hot_sales' => 0,
+        // 'bulk_data_wallet_in_mb' => 1048576
+      ]);
+      $pr_plan_9mobile_airtime = ProductPlanCategory::create([
+        'id' => '7559521a-272e-4b27-9330-c1442154626f',
+        'product_plan_category_name' => '9MOBILE AIRTIME',
+        'product_id' => $product_airtime->id,
+        'network_id' => $_9mobile_network->id,
+        'automation_id' => $megasub->id,
+        'is_hot_sales' => 0,
+        // 'bulk_data_wallet_in_mb' => 1048576
+      ]);
+       
+
         // SME
         $pr_plan_mtn_sme_data = ProductPlanCategory::create([
             'id' => '9c39f216-00a0-42ab-b195-558133f67a15',
             'product_plan_category_name' => 'MTN SME DATA',
             'product_id' => $product_data->id,
             'network_id' => $mtn_network->id,
-            'automation_id' => $ogdams->id,
+            'automation_id' => $megasub->id,
+            'is_hot_sales' => 0,
             // 'bulk_data_wallet_in_mb' => 1048576
         ]);
 
@@ -318,7 +358,8 @@ class DatabaseSeeder extends Seeder
             'product_plan_category_name' => 'GLO SME DATA',
             'product_id' => $product_data->id,
             'network_id' => $glo_network->id,
-            'automation_id' => $ogdams->id,
+            'automation_id' => $megasub->id,
+            'is_hot_sales' => 0,
             // 'bulk_data_wallet_in_mb' => 1048576
         ]);
 
@@ -327,7 +368,8 @@ class DatabaseSeeder extends Seeder
             'product_plan_category_name' => 'AIRTEL SME DATA',
             'product_id' => $product_data->id,
             'network_id' => $airtel_network->id,
-            'automation_id' => $ogdams->id,
+            'automation_id' => $megasub->id,
+            'is_hot_sales' => 0,
             // 'bulk_data_wallet_in_mb' => 1048576
         ]);
 
@@ -336,7 +378,8 @@ class DatabaseSeeder extends Seeder
             'product_plan_category_name' => '9MOBILE SME DATA',
             'product_id' => $product_data->id,
             'network_id' => $_9mobile_network->id,
-            'automation_id' => $ogdams->id,
+            'automation_id' => $megasub->id,
+            'is_hot_sales' => 0,
             // 'bulk_data_wallet_in_mb' => 1048576
         ]);
 
@@ -347,7 +390,8 @@ class DatabaseSeeder extends Seeder
             'product_plan_category_name' => 'MTN SME2 DATA',
             'product_id' => $product_data->id,
             'network_id' => $mtn_network->id,
-            'automation_id' => $ogdams->id,
+            'automation_id' => $megasub->id,
+            'is_hot_sales' => 0,
             // 'bulk_data_wallet_in_mb' => 1048576
         ]);
 
@@ -356,7 +400,8 @@ class DatabaseSeeder extends Seeder
             'product_plan_category_name' => 'GLO SME2 DATA',
             'product_id' => $product_data->id,
             'network_id' => $glo_network->id,
-            'automation_id' => $ogdams->id,
+            'automation_id' => $megasub->id,
+            'is_hot_sales' => 0,
             // 'bulk_data_wallet_in_mb' => 1048576
         ]);
 
@@ -365,7 +410,8 @@ class DatabaseSeeder extends Seeder
             'product_plan_category_name' => 'AIRTEL SME2 DATA',
             'product_id' => $product_data->id,
             'network_id' => $airtel_network->id,
-            'automation_id' => $ogdams->id,
+            'automation_id' => $megasub->id,
+            'is_hot_sales' => 0,
             // 'bulk_data_wallet_in_mb' => 1048576
         ]);
 
@@ -374,7 +420,8 @@ class DatabaseSeeder extends Seeder
             'product_plan_category_name' => '9MOBILE SME2 DATA',
             'product_id' => $product_data->id,
             'network_id' => $_9mobile_network->id,
-            'automation_id' => $ogdams->id,
+            'automation_id' => $megasub->id,
+            'is_hot_sales' => 0,
             // 'bulk_data_wallet_in_mb' => 1048576 
         ]);
 
@@ -386,7 +433,8 @@ class DatabaseSeeder extends Seeder
             'product_plan_category_name' => 'MTN CG DATA',
             'product_id' => $product_data->id,
             'network_id' => $mtn_network->id,
-            'automation_id' => $ogdams->id,
+            'automation_id' => $megasub->id,
+            'is_hot_sales' => 0,
             // 'bulk_data_wallet_in_mb' => 1048576 
         ]);
 
@@ -395,7 +443,8 @@ class DatabaseSeeder extends Seeder
             'product_plan_category_name' => 'GLO CG DATA',
             'product_id' => $product_data->id,
             'network_id' => $glo_network->id,
-            'automation_id' => $ogdams->id,
+            'automation_id' => $megasub->id,
+            'is_hot_sales' => 0,
             // 'bulk_data_wallet_in_mb' => 1048576 
         ]);
 
@@ -404,7 +453,8 @@ class DatabaseSeeder extends Seeder
             'product_plan_category_name' => 'AIRTEL CG DATA',
             'product_id' => $product_data->id,
             'network_id' => $airtel_network->id,
-            'automation_id' => $ogdams->id,
+            'automation_id' => $megasub->id,
+            'is_hot_sales' => 0,
             // 'bulk_data_wallet_in_mb' => 1048576 
         ]);
 
@@ -413,7 +463,8 @@ class DatabaseSeeder extends Seeder
             'product_plan_category_name' => '9MOBILE CG DATA',
             'product_id' => $product_data->id,
             'network_id' => $_9mobile_network->id,
-            'automation_id' => $ogdams->id,
+            'automation_id' => $megasub->id,
+            'is_hot_sales' => 0,
             // 'bulk_data_wallet_in_mb' => 1048576 
         ]);
 
@@ -424,7 +475,8 @@ class DatabaseSeeder extends Seeder
             'product_plan_category_name' => 'MTN GIFTING DATA',
             'product_id' => $product_data->id,
             'network_id' => $mtn_network->id,
-            'automation_id' => $ogdams->id,
+            'automation_id' => $megasub->id,
+            'is_hot_sales' => 0,
             // 'bulk_data_wallet_in_mb' => 1048576 
         ]);
 
@@ -433,7 +485,8 @@ class DatabaseSeeder extends Seeder
             'product_plan_category_name' => 'GLO GIFTING DATA',
             'product_id' => $product_data->id,
             'network_id' => $glo_network->id,
-            'automation_id' => $ogdams->id,
+            'automation_id' => $megasub->id,
+            'is_hot_sales' => 0,
             // 'bulk_data_wallet_in_mb' => 1048576 
         ]);
 
@@ -442,7 +495,8 @@ class DatabaseSeeder extends Seeder
             'product_plan_category_name' => 'AIRTEL GIFTING DATA',
             'product_id' => $product_data->id,
             'network_id' => $airtel_network->id,
-            'automation_id' => $ogdams->id,
+            'automation_id' => $megasub->id,
+            'is_hot_sales' => 0,
             // 'bulk_data_wallet_in_mb' => 1048576 
         ]);
 
@@ -451,7 +505,8 @@ class DatabaseSeeder extends Seeder
             'product_plan_category_name' => '9MOBILE GIFTING DATA',
             'product_id' => $product_data->id,
             'network_id' => $_9mobile_network->id,
-            'automation_id' => $ogdams->id,
+            'automation_id' => $megasub->id,
+            'is_hot_sales' => 0,
             // 'bulk_data_wallet_in_mb' => 1048576 
         ]);
 
@@ -462,7 +517,8 @@ class DatabaseSeeder extends Seeder
             'product_plan_category_name' => 'MTN SHARE DATA',
             'product_id' => $product_data->id,
             'network_id' => $mtn_network->id,
-            'automation_id' => $ogdams->id,
+            'automation_id' => $megasub->id,
+            'is_hot_sales' => 0,
             // 'bulk_data_wallet_in_mb' => 1048576 
         ]);
 
@@ -471,7 +527,8 @@ class DatabaseSeeder extends Seeder
             'product_plan_category_name' => 'GLO SHARE DATA',
             'product_id' => $product_data->id,
             'network_id' => $glo_network->id,
-            'automation_id' => $ogdams->id,
+            'automation_id' => $megasub->id,
+            'is_hot_sales' => 0,
             // 'bulk_data_wallet_in_mb' => 1048576 
         ]);
 
@@ -480,7 +537,8 @@ class DatabaseSeeder extends Seeder
             'product_plan_category_name' => 'AIRTEL SHARE DATA',
             'product_id' => $product_data->id,
             'network_id' => $airtel_network->id,
-            'automation_id' => $ogdams->id,
+            'automation_id' => $megasub->id,
+            'is_hot_sales' => 0,
             // 'bulk_data_wallet_in_mb' => 1048576
         ]);
 
@@ -489,7 +547,8 @@ class DatabaseSeeder extends Seeder
             'product_plan_category_name' => '9MOBILE SHARE DATA',
             'product_id' => $product_data->id,
             'network_id' => $_9mobile_network->id,
-            'automation_id' => $ogdams->id,
+            'automation_id' => $megasub->id,
+            'is_hot_sales' => 0,
             // 'bulk_data_wallet_in_mb' => 1048576
         ]);
 
@@ -500,7 +559,8 @@ class DatabaseSeeder extends Seeder
             'product_plan_category_name' => 'MTN AWOOF DATA',
             'product_id' => $product_data->id,
             'network_id' => $mtn_network->id,
-            'automation_id' => $ogdams->id,
+            'automation_id' => $megasub->id,
+            'is_hot_sales' => 0,
             // 'bulk_data_wallet_in_mb' => 1048576
         ]);
 
@@ -509,7 +569,8 @@ class DatabaseSeeder extends Seeder
             'product_plan_category_name' => 'GLO AWOOF DATA',
             'product_id' => $product_data->id,
             'network_id' => $glo_network->id,
-            'automation_id' => $ogdams->id,
+            'automation_id' => $megasub->id,
+            'is_hot_sales' => 0,
             // 'bulk_data_wallet_in_mb' => 1048576
         ]);
 
@@ -518,7 +579,8 @@ class DatabaseSeeder extends Seeder
             'product_plan_category_name' => 'AIRTEL AWOOF DATA',
             'product_id' => $product_data->id,
             'network_id' => $airtel_network->id,
-            'automation_id' => $ogdams->id,
+            'automation_id' => $megasub->id,
+            'is_hot_sales' => 0,
             // 'bulk_data_wallet_in_mb' => 1048576
         ]);
 
@@ -527,7 +589,45 @@ class DatabaseSeeder extends Seeder
             'product_plan_category_name' => '9MOBILE AWOOF DATA',
             'product_id' => $product_data->id,
             'network_id' => $_9mobile_network->id,
-            'automation_id' => $ogdams->id,
+            'automation_id' => $megasub->id,
+            'is_hot_sales' => 0,
+            // 'bulk_data_wallet_in_mb' => 1048576
+        ]);
+
+        $pr_gotv = ProductPlanCategory::create([
+            'id'=> '9ade7334-bfae-4fe1-9bc1-cd78fef6fac8',
+            'product_plan_category_name' => 'GOTV',
+            'product_id' => $product_cable->id,
+            'automation_id' => $megasub->id,
+            'is_hot_sales' => 0,
+            // 'bulk_data_wallet_in_mb' => 1048576
+        ]);
+
+
+        $pr_startimes = ProductPlanCategory::create([
+            'id'=> 'b3176d9f-6f12-45e0-9640-71c509271825',
+            'product_plan_category_name' => 'STARTIMES',
+            'product_id' => $product_cable->id,
+            'automation_id' => $megasub->id,
+            'is_hot_sales' => 0,
+            // 'bulk_data_wallet_in_mb' => 1048576
+        ]);
+
+        $pr_dstv = ProductPlanCategory::create([
+            'id'=> 'a798c9a4-cd1b-4bd1-b26c-8932119d00a5',
+            'product_plan_category_name' => 'DSTV',
+            'product_id' => $product_cable->id,
+            'automation_id' => $megasub->id,
+            'is_hot_sales' => 0,
+            // 'bulk_data_wallet_in_mb' => 1048576
+        ]);
+
+        $pr_bills_prepaid = ProductPlanCategory::create([
+            'id'=> '12c6a955-8ce2-452e-ae09-40266fd6c531',
+            'product_plan_category_name' => 'PREPAID',
+            'product_id' => $product_bills->id,
+            'automation_id' => $megasub->id,
+            'is_hot_sales' => 0,
             // 'bulk_data_wallet_in_mb' => 1048576
         ]);
 

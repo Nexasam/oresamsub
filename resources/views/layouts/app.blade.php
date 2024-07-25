@@ -61,7 +61,19 @@
           .my-float{
           margin-top:16px;
           }
+
+          td {
+          word-wrap: break-word;
+          }
+
+          .modal-style {
+            box-shadow: 0 5px 15px rgb(0 0 0 / 50%);
+            border: 1px solid rgba(0, 0, 0, .2)
+        }
+          
     </style>
+
+
 
 </head>
 
@@ -490,6 +502,8 @@
     </div>
     <!-- Loader -->
 
+    
+
     <div class="page">
 
         <!-- Start::Header -->
@@ -673,24 +687,34 @@
 
 <script>
 
+$('#hs-basic-modal').trigger('click');
+
         function numberWithCommas(x) {
           return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
         }
 
-        function getProductPlans(network_id='', plan_category_id=''){
-                if(network_id != '' && plan_category_id == ''){
-                  data = {
-                    network_id : network_id
+        function getProductPlans(network_id='', plan_category_id='', product_slug=''){
+               
+                if(network_id != '' && product_slug != '' && plan_category_id == ''){
+                  var data = {
+                    network_id : network_id,
+                    product_slug : product_slug
                   };
+               
                   // alert('hhhhh')
                 }
 
-                if(network_id != '' && plan_category_id != ''){
-                  data = {
+                if(network_id != '' && plan_category_id != '' && product_slug != ''){
+                  var data = {
                     network_id : network_id,
-                    plan_category_id : plan_category_id
+                    plan_category_id : plan_category_id,
+                    product_slug : product_slug
                   };
+                 
+
                 }
+
+                
 
                 $.ajax({
                           type: 'GET',
@@ -698,7 +722,7 @@
                           data: data,
                           dataType: 'json',
                           success: function(response) {
-                              // console.log(response)
+                              console.log(response)
                               // console.log(response.data)
                               var result = JSON.stringify(response.data);
                               var dataList = JSON.parse(result);
@@ -712,7 +736,11 @@
                                     const idd = dataList[child].product_plan_id;
                                     const product_plan_name = dataList[child].product_plan_name;
                                     const selling_price = dataList[child].selling_price;
-                                    option = "<option value="+idd+">"+product_plan_name+'- &#8358;'+selling_price+"</option>";
+                                    if(product_slug == 'data'){
+                                      option = "<option value="+idd+">"+product_plan_name+'- &#8358;'+selling_price+"</option>";
+                                    }else{
+                                      option = "<option value="+idd+">"+product_plan_name+"</option>";
+                                    }
                                     $('#product_plan_id').append(option);
                                   
                                 }
@@ -810,10 +838,7 @@
         }
           
         
-        function testingFunction(idd){
-          alert(idd)
-      
-        }
+       
 
         function togglePassword(className,id,showValue){
           $('.'+className).change(function(e){
@@ -827,6 +852,50 @@
                 $('#'+id).attr("type", showValue);
                 return;
           })
+        }
+
+        function toggleHotSales(planCategoryId,token,checkedd){
+                  // alert(planCategoryId)
+                  // var check = $('#hs-basic-with-description-checked'+planCategoryId).checked;
+                  // if(checkedd != ''){
+                  //   alert('checked')
+                  //   // $('#hs-basic-with-description-checked'+planCategoryId).checked;
+                  //   $('#hs-basic-with-description-checked'+planCategoryId).prop( 'checked', false )
+                  // }else{
+                  //   $('#hs-basic-with-description-checked'+planCategoryId).prop( 'checked', true )
+                  //   alert('unchecked')
+                  // }
+
+                  const data = {
+                    planCategoryId : planCategoryId,
+                    token : token
+                  };
+                  console.log(data);
+
+                   $.ajax({
+                    type: 'GET',
+                    url: "{{ route('admin.product_plan_categories.toggle_hot_sales') }}",
+                    data: data,
+                    dataType: 'json',
+                    success: function(response) {
+                        $('#hot_sales_notification'+planCategoryId).removeClass('hidden');
+                        $('#hot_sales_notification'+planCategoryId).html(response.message);
+                        console.log(response);
+                        // console.log(response.data);
+                        // var result = JSON.stringify(response);
+                        // var dataList = JSON.parse(result);
+                        // if(dataList.status == 1){
+                        //    sweetAlertDisplay(dataList.message,'Success','success');
+                        //    reload(3000);
+                        // }else{
+                        //   sweetAlertDisplay(dataList.message,'Error','error');
+                        // }
+                    },
+                    error: function(xhr, status, error) {
+                        // Handle errors if needed
+                        console.error(xhr.responseText);
+                    }
+                });
         }
 
         function copyToClipboard() {
@@ -857,8 +926,13 @@
 
         $(document).ready(function(){
 
-          
+          // $("[data-toggle='modal']").click(function () {
+             $("#popup").fadeIn();
+          // });
 
+          $("[data-close]").click(function () {
+              $(this).parents(".modal").fadeOut();
+          });
         
 
           //reset
@@ -908,6 +982,7 @@
 
           $('#product_plan_category_id').change(function(){
             var network_id = $("#network_id").val();
+            var product_slug = $("#product_slug").val();
             var plan_category_id = $(this).val();
 
             // alert(plan_category_id)
@@ -921,7 +996,7 @@
               sweetAlertDisplay('Product plan category is required','Plan category required','error');
               return;
             }
-            getProductPlans(network_id,plan_category_id);
+            getProductPlans(network_id,plan_category_id,product_slug);
           })
           
          
@@ -1088,17 +1163,22 @@
             $("#product_plan_category_div").addClass('hidden');
             $('#filter_by_plan_category').prop('checked',false)
             var network_id = $(this).val();
+            var product_slug = $('#product_slug').val();
+           
             // alert(network_id)
             //here you have to display all plans that are tied to this network but only where tied to the automation tied to each product plan category
-            getProductPlans(network_id,'');
+            getProductPlans(network_id,'',product_slug);
           })
 
           $('#filter_by_plan_category').change(function(e){
             e.preventDefault();
+        
+            
             if(this.checked){
               $("#product_plan_category_div").removeClass('hidden');
               //display product plans categories
               const network_id = $('#network_id').val();
+              const product_slug = $('#product_slug').val();
 
               if(network_id == ''){
                 sweetAlertDisplay("Please select network",'Network required','error');
@@ -1106,7 +1186,8 @@
                 return;
               }
               const data = {
-                network_id : network_id
+                network_id : network_id,
+                product_slug : product_slug
               };
 
                 $.ajax({
@@ -1115,6 +1196,7 @@
                     data: data,
                     dataType: 'json',
                     success: function(response) {
+                         console.log('testing',response)
                         // showDisplayButton(id);
                         if(response.status == '1'){
                           let dataResult = response?.data;
@@ -1221,6 +1303,79 @@
                   $.ajax({
                     type: 'GET',
                     url: "{{ route('user.data.buy_data_action') }}",
+                    data: data,
+                    dataType: 'json',
+                    success: function(response) {
+                        // console.log(response);
+                        // console.log(response.data);
+                        var result = JSON.stringify(response);
+                        var dataList = JSON.parse(result);
+                        if( parseInt(dataList.status) == 1){
+                           sweetAlertDisplay(dataList.message,'Success','success');
+                           reload(3000);
+                        }
+                        else if(dataList.status == 2){
+                           //@least 1 tranaction had an issue
+                           sweetAlertDisplay(dataList.message,'Info','warning');
+                           reload(6000);
+                        }
+                        else{
+                          sweetAlertDisplay(dataList.message,'Error','error');
+                          $(this).prop('disabled',false);
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        // Handle errors if needed
+                        console.error(xhr.responseText);
+                    }
+                  });
+              } else {
+                return;
+              }
+
+              
+            
+          })
+
+          $('#buy_airtime_btn').click(function(e){
+            e.preventDefault();
+              $(this).html('Processing...Please wait');
+              $(this).prop('disabled',true);
+              $('#cancel_disabling').removeClass('hidden')
+
+           
+              //display product plans categories
+              const network_id = $('#network_id').val();
+              const product_plan_category_id = $('#product_plan_category_id').val();
+              const phone_number = $('#phone_number').val();
+              const wallet_category = $('#wallet_category').val();
+              const product_plan_id = $('#product_plan_id').val();
+              const pin = $('#pin').val();
+              const amount = $('#amount').val();
+              
+
+              const data = {
+                network_id : network_id,
+                product_plan_category_id : product_plan_category_id,
+                phone_number : phone_number,
+                wallet_category : wallet_category,
+                product_plan_id : product_plan_id,
+                pin : pin,
+                amount : amount
+              };
+
+              
+
+              // console.log(data);
+              // return;
+
+              if (confirm("Are you sure you want to complete this airtime purchase?") == true) {
+                  // alert('logic happens here')
+                
+
+                  $.ajax({
+                    type: 'GET',
+                    url: "{{ route('user.airtime.buy_airtime_action') }}",
                     data: data,
                     dataType: 'json',
                     success: function(response) {

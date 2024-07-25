@@ -36,6 +36,7 @@ $(document).ready(function(){
                     {data: 'automation_id', name: 'automation_id'},
                     {data: 'network_id', name: 'network_id'},
                     {data: 'created_at', name: 'created_at'},
+                    {data: 'is_hot_sales', name: 'is_hot_sales'},
                     {data: 'action', name: 'action'},
                   ]
         });

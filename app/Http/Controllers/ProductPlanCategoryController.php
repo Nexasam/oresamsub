@@ -7,6 +7,7 @@ use App\Models\Product;
 use App\Models\UserPlan;
 use App\Models\Automation;
 use Illuminate\Http\Request;
+use League\CommonMark\Renderer\Inline\TextRenderer;
 use Yajra\DataTables\DataTables;
 use App\Models\ProductPlanCategory;
 use App\Models\BulkDataProductPlans;
@@ -131,11 +132,32 @@ class ProductPlanCategoryController extends Controller
           return response()->json(['status'=>'-1', 'message'=>'successfully updated' ]);
     }
 
+    public function toggle_hot_sales(Request $request){
+      
+      $validator = Validator::make($request->all(), [
+        'planCategoryId' => 'required|max:255|exists:product_plan_categories,id',
+        'token' => 'required',
+      ]);
+      
+
+      if ($validator->stopOnFirstFailure()->fails()) {
+        return redirect()->back()->withErrors($validator)->withInput();
+      }
+
+      $detail = ProductPlanCategory::where('id',$request->planCategoryId)->first();
+      $update = $detail->is_hot_sales ? 0 : 1;
+      $detail->update([
+        'is_hot_sales' => $update
+      ]);
+      return response()->json(['status'=>'1', 'message'=>'success' ]);
+     
+    }
 
     public function admin_fetch_product_plan_categories(Request $request){
-        $data = ProductPlanCategory::with(['product' => function($query){
-            $query->where('slug','data');
-      },'automation','network'])->latest()->get();
+          // => function($query){
+          //   $query->where('slug','data');
+        // }
+        $data = ProductPlanCategory::with(['product','automation','network'])->latest()->get();
 
       //  return $data;
         return DataTables::of($data)
@@ -179,6 +201,21 @@ class ProductPlanCategoryController extends Controller
         ->addColumn('created_at',function($data){
           return $data->created_at;
          }) 
+        ->addColumn('is_hot_sales',function($data){
+          // onchange="toggleHotSales('.$data->id.')"
+          $escapedUrl = htmlspecialchars(json_encode($data->id));
+          $token = htmlspecialchars(json_encode(csrf_token()));
+          $checked = $data->is_hot_sales == 1 ? 'checked':'';
+          $actual_value = $data->is_hot_sales;
+          $checkedd = htmlspecialchars(json_encode($actual_value));
+          $toggle_btn = '<div class="flex items-center">';
+          $toggle_btn .=  '<input onchange="toggleHotSales('.$escapedUrl.','.$token.','.$checkedd.')" type="checkbox" id="hs-basic-with-description-checked'.$data->id.'" class="ti-switch" '.$checked.'>';
+          $toggle_btn .=  '<label for="hs-basic-with-description-checked" class="text-sm text-gray-500 ms-3 dark:text-white/70 "></label>';
+          $toggle_btn .=  ' <span class="badge rounded-sm bg-success/10 text-success hidden" id="hot_sales_notification'.$data->id.'"></span>  </div>';
+          
+          return $toggle_btn;
+          // return $data->is_hot_sales ? 'YES' : 'NO';
+         }) 
         ->addColumn('action', function($data){
             // $actionBtn = ' ';
             $route = route('admin.bulk_data_plans.index',$data->id);
@@ -194,6 +231,7 @@ class ProductPlanCategoryController extends Controller
             return $action;
           
         })
+        ->escapeColumns([])
         ->make(true);
 
     }

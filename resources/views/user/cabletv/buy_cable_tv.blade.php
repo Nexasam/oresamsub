@@ -7,17 +7,17 @@
         <!-- Page Header -->
         <div class="block justify-between page-header md:flex">
             <div>
-                <h3 class="text-gray-700 hover:text-gray-900 dark:text-white dark:hover:text-white text-2xl font-medium"> Airtime Transactions</h3>
+                <h3 class="text-gray-700 hover:text-gray-900 dark:text-white dark:hover:text-white text-2xl font-medium"> Cable TV Transactions</h3>
             </div>
             <ol class="flex items-center whitespace-nowrap min-w-0">
                 <li class="text-sm">
                     <a class="flex items-center font-semibold text-primary hover:text-primary dark:text-primary truncate" href="javascript:void(0);">
-                    Airtime
+                    Cable TV
                     <i class="ti ti-chevrons-right flex-shrink-0 mx-3 overflow-visible text-gray-300 dark:text-gray-300 rtl:rotate-180"></i>
                     </a>
                 </li>
                 <li class="text-sm text-gray-500 hover:text-primary dark:text-white/70 " aria-current="page">
-                    Buy Airtime
+                    Buy Cable TV
                 </li>
             </ol>   
         </div>
@@ -32,16 +32,16 @@
           
               <div class="box">
                 <div class="box-header">
-                  <h5 class="box-title">Airtime Transactions</h5>
+                  <h5 class="box-title">Cable TV Transactions</h5>
                 </div>
 
                 <div class="box-body">
                   <nav class="flex space-x-2" aria-label="Tabs" role="tablist">
                     <button type="button" class="hs-tab-active:bg-primary hs-tab-active:text-white py-3 px-4 inline-flex items-center gap-2 bg-transparent text-sm font-medium text-center text-gray-500 rounded-sm hover:text-primary  dark:text-white/70 dark:hover:text-white active" id="pills-with-brand-color-item-2" data-hs-tab="#pills-with-brand-color-2" aria-controls="pills-with-brand-color-2">
-                      Buy Airtime
+                      Buy Cable TV
                     </button>
                     <button type="button" class="hs-tab-active:bg-primary hs-tab-active:text-white py-3 px-4 inline-flex items-center gap-2 bg-transparent text-sm font-medium text-center text-gray-500 rounded-sm hover:text-primary  dark:text-white/70 dark:hover:text-white " id="pills-with-brand-color-item-1" data-hs-tab="#pills-with-brand-color-1" aria-controls="pills-with-brand-color-1">
-                      View Airtime Transactions
+                      View Cable TV Transactions
                     </button>
                   
                   </nav>
@@ -71,7 +71,7 @@
                               @php
                                   $count = 1;
                               @endphp
-                              @foreach ($airtime_transactions as $transaction)
+                              @foreach ($cable_transactions as $transaction)
                               @php
                                   if($transaction->status == 1){
                                     $status_display = '<span class="badge bg-success text-white">Success</span>';
@@ -149,21 +149,12 @@
                                         <br>
                                         <form>
                                             <input type="hidden" id="_token" name="_token" value="{{ csrf_token() }}" />
-                                            <input type="hidden" id="product_slug" name="product_slug" value="airtime" />
+                                            <input type="hidden" id="product_slug" name="product_slug" value="cable_subscription" />
                                      
                                             <div class="grid w-full lg:w-1/2 lg:grid-cols-1 gap-6 space-y-4 lg:space-y-0">
                                                 <input type="hidden" value="main_wallet" class="ti-form-checkbox mt-0.5 pointer-events-none" name="wallet_category" id="wallet_category">
                                              
-                                                <div class="space-y-2">
-                                                    <label class="ti-form-label mb-0">Network</label>
-                                                    {{-- single_select --}}
-                                                    <select required id="network_id" name="network_id" class="my-auto ti-form-select">
-                                                        <option value="">Select</option>
-                                                        @foreach ($networks as $network)
-                                                         <option value="{{  $network->id }}">{{ $network->network_name }}</option>                                        
-                                                        @endforeach
-                                                      </select>
-                                                </div>
+                                                
                                                 <div class="space-y-2">
                                                     {{-- <div class="grid sm:grid-cols-2 gap-2"> --}}
                                                         <label class="p-3 flex w-full bg-white border border-gray-200 rounded-sm text-sm focus:border-primary focus:ring-primary dark:bg-bgdark dark:border-white/10 dark:text-white/70">
@@ -183,27 +174,19 @@
                     
                                                 <div class="space-y-2">
                                                     <label class="ti-form-label mb-0">Product Plans List</label>
-                                                    <select required name="product_plan_id" id="product_plan_id" class="my-auto ti-form-select">
+                                                    <select required name="cable_tv_product_plan_id" id="cable_tv_product_plan_id" class="my-auto ti-form-select">
                                                         <option value="all">Select</option>
                     
                                                       </select>
-                                                      <div class="display_wallet_details">
-                                                        
-                                                      </div>
                                                 </div>
                                               
                                                 <div class="space-y-2">
-                                                    <label class="ti-form-label mb-0">Phone Number(s) to recharge</label>
+                                                    <label class="ti-form-label mb-0">Smart Card number / IUC number*</label>
                                                     <textarea id="phone_number" name="phone_number" class="my-auto ti-form-input"
                                                         placeholder="e.g 08168509044, 09011988807"></textarea>
                                                 </div>
                     
-                                                <div class="space-y-2">
-                                                    <label class="ti-form-label mb-0">Amount:</label>
-                                                    <input type="number" class="my-auto ti-form-input" id="amount" name="amount" value="" placeholder="Enter amount to recharge">
-                                                   
-                                                </div>
-
+                                        
                                                 <div class="space-y-2">
                                                   <label class="ti-form-label mb-0">PIN:</label>
                                                   <input type="password" class="my-auto ti-form-input" id="pin" name="pin" value="" placeholder="Enter your pin to secure transaction">
@@ -214,7 +197,7 @@
                                                 </div>
 
                                                 <div class="space-y-2">
-                                                    <button type="submit" id="buy_airtime_btn" class="ti-btn ti-btn-primary w-full">Buy Airtime</button><br>
+                                                    <button type="submit" id="buy_Cable TV_btn" class="ti-btn ti-btn-primary w-full">Buy Cable TV</button><br>
                                                     <a href="#" id="cancel_disabling" class="hidden">Activate button</a>
                                                 </div>
                                                

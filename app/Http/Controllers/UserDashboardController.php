@@ -19,6 +19,8 @@ class UserDashboardController extends Controller
 
  
   public function index(){
+    $hot_sales = ProductPlanCategory::where('is_hot_sales',1)->limit(8)->get();
+
     if(! session()->has('whatsapp_support_number')){
       $whatsapp_support = LandingPagesSetting::where('field_name','support_whatsapp_number')->first();
       if($whatsapp_support){
@@ -35,6 +37,7 @@ class UserDashboardController extends Controller
     // return $user_details->role->role_name;
     $user_id = $user_details->id;
     $user_plan_level = $user_details->user_plan->plan_level;
+    $data['hot_sales'] = $hot_sales;
     $data['user'] = $user_details;
     $data['users'] = User::select('id')->get();
     $data['product_plans'] = ProductPlan::select('id')->get();
