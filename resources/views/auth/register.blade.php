@@ -156,7 +156,7 @@
                                                 <label for="last_name" class="block text-sm mb-0 dark:text-white">PIN</label>
                                                 <small>You need to create a 4-digit code so as to ensure a more secure transaction with us</small>
                                                 <div class="relative">
-                                                    <x-text-input id="pin" class="block mt-1 w-full" type="password" min="4" max="4" name="pin" :value="old('pin')" required autofocus autocomplete="pin" />
+                                                    <x-text-input id="pin" class="block mt-1 w-full" type="password" name="pin" :value="old('pin')" required autofocus autocomplete="pin" />
                                                     <x-input-error :messages="$errors->get('pin')" class="mt-2" />
                                                         
                                                         
