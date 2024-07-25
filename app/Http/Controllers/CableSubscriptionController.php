@@ -71,7 +71,7 @@ class CableSubscriptionController extends Controller
             'phone_number' => 'required',
             'product_plan_category_id' => 'required',
             'product_plan_id' => 'required',
-            'pin' => ['required','digits:4'],
+            'pin' => ['required','max:4'],
             'amount' => 'required|numeric|gt:0',
             // 'wallet_category'=>['required',Rule::in(['main_wallet'])],
         ]);

@@ -76,7 +76,7 @@ class CrystalPayController extends Controller
     //static/permanent acct.
     public function generate_virtual_account(Request $request){
         $validator = Validator::make($request->all(), [
-            'pin' => 'required|max:255|exists:users,pin',
+            'pin' => 'required|max:4|exists:users,pin',
             'bvn' => 'required|max:255',
           ]);
           
