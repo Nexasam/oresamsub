@@ -20,8 +20,7 @@ use App\Models\BulkDataProductPlans;
 use App\Models\UserBulkDataPurchase;
 use Illuminate\Support\Facades\Validator;
 use App\Services\Automation\MegaSubPlugAutomation\VendData;
-use App\Services\Automation\MegaSubPlugAutomation\MegaSubVendData;
-use App\Services\Automation\MegaSubPlugAutomation\MegaSubVendAirtime;
+use App\Services\Automation\MegaSubPlugAutomation\MegaSubCableTV;
 
 class CableSubscriptionController extends Controller
 {
@@ -42,6 +41,9 @@ class CableSubscriptionController extends Controller
        
         $product = Product::where('slug','cable_subscription')->first(); //TODO: have enums that gets the id later
         $data['product'] = $product;
+
+        $product_plan_categories = ProductPlanCategory::where('product_id',$product->id)->get(); //TODO: have enums that gets the id later
+        $data['product_plan_categories'] = $product_plan_categories;
         
 
         $user_details = auth()->user();
@@ -67,15 +69,17 @@ class CableSubscriptionController extends Controller
     public function buy_cable_subscription_action(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'network_id' => 'required',
-            'phone_number' => 'required',
-            'product_plan_category_id' => 'required',
-            'product_plan_id' => 'required',
+            'smart_card_number' => 'required',
+            'validation_customer_name' => 'required',
+            'cable_product_plan_category_id' => 'required',
+            'cable_product_plan_id' => 'required',
+            'wallet_category' => 'required',
+            'no_of_slots' => 'required',
             'pin' => ['required','digits:4'],
-            'amount' => 'required|numeric|gt:0',
-            // 'wallet_category'=>['required',Rule::in(['main_wallet'])],
         ]);
         
+        // return response()->json(['status'=>'-1', 'message'=>$validator->errors()->first(),'data' => $request->all() ]);
+
         if ($validator->stopOnFirstFailure()->fails()) {
             return response()->json(['status'=>'-1', 'message'=>$validator->errors()->first(),'data' => $request->all() ]);
         }
@@ -85,16 +89,29 @@ class CableSubscriptionController extends Controller
         $status = 0;
         $message = 'Pending';
         $display_results = [];
+        $no_of_slots = $request->no_of_slots; //to be adjusted later
 
-        $plan_details = ProductPlan::where('id',$request->product_plan_id)->first();
+        $plan_details = ProductPlan::where('id',$request->cable_product_plan_id)->first();
+        if(! $plan_details){
+            //end session and redirect to login
+            redirect(url('/login'));
+            return response()->json(['status'=>'-1', 'message'=>'plan details not found' ]);
+        }
         $automation_id = $plan_details->automation_id;
         // $data_value_mb = $plan_details->data_size_in_mb ?? 0;
+
+        $plan_category_details = ProductPlanCategory::where('id',$request->cable_product_plan_category_id)->first();
+        if(! $plan_category_details){
+            //end session and redirect to login
+            redirect(url('/login'));
+            return response()->json(['status'=>'-1', 'message'=>'plan category details not found' ]);
+        }
 
         $user_plan_id = auth()->user()->user_plan_id;
         $user_level = UserPlan::select('plan_level')->where('id',$user_plan_id)->first();
         $plan_level = $user_level->plan_level;
         $user_plan_selling_price = 'user_level_'.$plan_level.'_selling_price';
-        $amount = abs($request->amount);
+        $amount = abs($plan_details->$user_plan_selling_price);
         $user_details = auth()->user();
         if(! $user_details){
             //end session and redirect to login
@@ -109,10 +126,8 @@ class CableSubscriptionController extends Controller
         }
 
         $user_id = $user_details->id;
-        $phone_numbers = $request->phone_number;
-        $phone_numbers = trim($phone_numbers);
-        $phone_numbers_array = explode(',',$phone_numbers);
-        $phone_numbers_count = count($phone_numbers_array);
+        $smart_card_number = $request->smart_card_number;
+     
 
         DB::beginTransaction();
         try{
@@ -120,7 +135,7 @@ class CableSubscriptionController extends Controller
               ////validate wallet
                         if($request->wallet_category == 'main_wallet'){
                             $wallet_before = $user_details->main_wallet;
-                            $total_amount = $phone_numbers_count * $amount;
+                            $total_amount =  $no_of_slots * $amount;
                             if($total_amount > $wallet_before){
                                 return response()->json(['status'=>'-1', 'message'=>'Insufficient wallet balance' ]);
                             }
@@ -128,19 +143,24 @@ class CableSubscriptionController extends Controller
                             //calling the actual vending via the automation:
                             $automation_details = Automation::where('id',$automation_id)->first();            
                             //TODO: candidate for separation
-                            for($i = 0; $i < count($phone_numbers_array); $i++ ){
-                            
+                       
+                             //TODO: candidate for separation
+                             for($i = 1; $i <= $no_of_slots; $i++ ){
                                 //vend data
                                 //HERE the endpoint of the automation service is called:
                                 //this is for megasubplug: vend for Airtime
                                 
                                 if($automation_details->slug == 'megasubplug'){
-                                    $buy_cable_subscription = (new MegaSubVendAirtime($phone_numbers_array[$i],$request->product_plan_id,$amount))->buyAirtime();
+                                    $duplication_check = 1;
+                                    // $smart_card_number,$plan_id,$amount,$validation_customer_name,$no_of_slots,$product_plan_category_name
+                                    // return response()->json(['status'=>'-1', 'message'=>$smart_card_number ]);
+
+                                    $buy_cable_subscription = (new MegaSubCableTV($smart_card_number,$request->cable_product_plan_id,$total_amount,$request->validation_customer_name,1,$plan_category_details->product_plan_category_name))->buyCable();
                                 }else{
                                     //this will be like this until other automations are processed
                                     $buy_cable_subscription['status'] = 1;
-                                    $buy_cable_subscription['user_message'] = 'Airtime was successfully processed.';
-                                    $buy_cable_subscription['admin_message'] = 'Airtime was successfully processed.';
+                                    $buy_cable_subscription['user_message'] = 'Cable subscription was successfully processed.';
+                                    $buy_cable_subscription['admin_message'] = 'Cable subscription was successfully processed.';
                                 }
                                 // logger(json_encode($buy_cable_subscription_megasub));
                                 // dd($buy_cable_subscription_megasub);
@@ -182,12 +202,14 @@ class CableSubscriptionController extends Controller
                                     );
                                 }
                         
-                                $description = 'Purchase of airtime';
-                                $creationData['transaction_category'] = 'airtime';
+                                $description = 'Purchase of cable subscription';
+                                $creationData['transaction_category'] = 'cable_subscription';
                                 $creationData['user_id'] = $user_id;
                                 $creationData['wallet_category'] = $request->wallet_category;
-                                $creationData['product_plan_id'] = $request->product_plan_id;
-                                $creationData['phone_number'] = $phone_numbers_array[$i];
+                                $creationData['product_plan_id'] = $request->cable_product_plan_id;
+                                $creationData['phone_number'] =  NULL;
+                                $creationData['smart_card_number'] = $request->smart_card_number;
+                                $creationData['cable_tv_slots'] = 1;
                                 $creationData['amount'] = $amount;
                                 $creationData['status'] = $status;
                                 $creationData['balance_before'] = $wallet_before;
@@ -251,69 +273,69 @@ class CableSubscriptionController extends Controller
     }
 
      /**
-     * Get all the products plans.
+     * Get all the products plans. NOT IN USE FOR NOW
      */
-    public function fetch_product_plans(Request $request)
-    {
-        $network_id = $request->network_id ?? '';
-        $plan_category_id = $request->plan_category_id ?? '';
-        $product_id = Product::where('slug','cable_subscription')->first()->id;
+    // public function fetch_product_plans(Request $request)
+    // {
+    //     $network_id = $request->network_id ?? '';
+    //     $plan_category_id = $request->plan_category_id ?? '';
+    //     $product_id = Product::where('slug','cable_subscription')->first()->id;
 
 
 
-        if($plan_category_id == ''){
-            $product_plan_categories = ProductPlanCategory::select('id','automation_id')->where('product_id',$product_id)->where('network_id',$network_id)->get();
-        }else{
-            $product_plan_categories = ProductPlanCategory::select('id','automation_id')
-            ->where('product_id',$product_id)
-            ->where('network_id',$network_id)
-            ->where('id',$plan_category_id)
-            ->get();
-        }
+    //     if($plan_category_id == ''){
+    //         $product_plan_categories = ProductPlanCategory::select('id','automation_id')->where('product_id',$product_id)->where('network_id',$network_id)->get();
+    //     }else{
+    //         $product_plan_categories = ProductPlanCategory::select('id','automation_id')
+    //         ->where('product_id',$product_id)
+    //         ->where('network_id',$network_id)
+    //         ->where('id',$plan_category_id)
+    //         ->get();
+    //     }
 
 
        
-        $product_planss = [];
-        $counter =0;
+    //     $product_planss = [];
+    //     $counter =0;
 
-       //TODO: 
-        $user_details = auth()->user();
-        $user_plan_id = $user_details->user_plan_id;
-        $user_id = $user_details->id;
-        $user_level = UserPlan::select('plan_level')->where('id',$user_plan_id)->first();
-        $plan_level = $user_level->plan_level;
+    //    //TODO: 
+    //     $user_details = auth()->user();
+    //     $user_plan_id = $user_details->user_plan_id;
+    //     $user_id = $user_details->id;
+    //     $user_level = UserPlan::select('plan_level')->where('id',$user_plan_id)->first();
+    //     $plan_level = $user_level->plan_level;
 
 
-        foreach($product_plan_categories as $key=>$product_plan_category){
-            //get the automation id
-            //get the product_category_id 
-            $product_plans = ProductPlan::where('product_plan_category_id',$product_plan_category->id)
-            ->where('automation_id',$product_plan_category->automation_id)
-            ->get();
-            if(count($product_plans) > 0){
-                foreach($product_plans as $product_plan){
+    //     foreach($product_plan_categories as $key=>$product_plan_category){
+    //         //get the automation id
+    //         //get the product_category_id 
+    //         $product_plans = ProductPlan::where('product_plan_category_id',$product_plan_category->id)
+    //         ->where('automation_id',$product_plan_category->automation_id)
+    //         ->get();
+    //         if(count($product_plans) > 0){
+    //             foreach($product_plans as $product_plan){
 
-                    $user_level_selling = "user_level_".$plan_level."_selling_price";
-                    // $user_level_selling = "{user_level_$user_level_selling_price}";
-                    $selling_price = $product_plan->$user_level_selling;
-                    if($product_plan){
-                        $counter++;
-                        $product_planss[$counter]['product_plan_id'] = $product_plan->id;
-                        $product_planss[$counter]['selling_price'] = $selling_price;
-                        $product_planss[$counter]['product_plan_name'] = $product_plan->product_plan_name;
-                        $product_planss[$counter]['data_size_in_mb'] = $product_plan->data_size_in_mb;
-                        $product_planss[$counter]['validity_in_days'] = $product_plan->validity_in_days;    
-                        $product_planss[$counter]['automation_id'] = $product_plan->automation_id;    
-                    }
-                }
-            }    
-        }
+    //                 $user_level_selling = "user_level_".$plan_level."_selling_price";
+    //                 // $user_level_selling = "{user_level_$user_level_selling_price}";
+    //                 $selling_price = $product_plan->$user_level_selling;
+    //                 if($product_plan){
+    //                     $counter++;
+    //                     $product_planss[$counter]['product_plan_id'] = $product_plan->id;
+    //                     $product_planss[$counter]['selling_price'] = $selling_price;
+    //                     $product_planss[$counter]['product_plan_name'] = $product_plan->product_plan_name;
+    //                     $product_planss[$counter]['data_size_in_mb'] = $product_plan->data_size_in_mb;
+    //                     $product_planss[$counter]['validity_in_days'] = $product_plan->validity_in_days;    
+    //                     $product_planss[$counter]['automation_id'] = $product_plan->automation_id;    
+    //                 }
+    //             }
+    //         }    
+    //     }
         
            
-        return response()->json(['status'=>'1','user_level'=>$plan_level ,'message'=>'Product plans fetched','counter' =>count($product_planss),'data' => $product_planss ]);
-        // return response()->json(['status'=>'1','user_level'=>$user_plan_id ,'message'=>'Product plans fetched','counter' =>count($product_planss),'data' => $product_planss ]);
+    //     return response()->json(['status'=>'1','user_level'=>$plan_level ,'message'=>'Product plans fetched','counter' =>count($product_planss),'data' => $product_planss ]);
+    //     // return response()->json(['status'=>'1','user_level'=>$user_plan_id ,'message'=>'Product plans fetched','counter' =>count($product_planss),'data' => $product_planss ]);
 
-    }
+    // }
 
     
 

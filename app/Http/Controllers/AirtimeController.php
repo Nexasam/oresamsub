@@ -258,69 +258,69 @@ class AirtimeController extends Controller
     }
 
      /**
-     * Get all the products plans.
+     * Get all the products plans. currently not in use
      */
-    public function fetch_product_plans(Request $request)
-    {
-        $network_id = $request->network_id ?? '';
-        $plan_category_id = $request->plan_category_id ?? '';
-        $product_id = Product::where('slug','airtime')->first()->id;
+    // public function fetch_product_plans(Request $request)
+    // {
+    //     $network_id = $request->network_id ?? '';
+    //     $plan_category_id = $request->plan_category_id ?? '';
+    //     $product_id = Product::where('slug','airtime')->first()->id;
 
 
 
-        if($plan_category_id == ''){
-            $product_plan_categories = ProductPlanCategory::select('id','automation_id')->where('product_id',$product_id)->where('network_id',$network_id)->get();
-        }else{
-            $product_plan_categories = ProductPlanCategory::select('id','automation_id')
-            ->where('product_id',$product_id)
-            ->where('network_id',$network_id)
-            ->where('id',$plan_category_id)
-            ->get();
-        }
+    //     if($plan_category_id == ''){
+    //         $product_plan_categories = ProductPlanCategory::select('id','automation_id')->where('product_id',$product_id)->where('network_id',$network_id)->get();
+    //     }else{
+    //         $product_plan_categories = ProductPlanCategory::select('id','automation_id')
+    //         ->where('product_id',$product_id)
+    //         ->where('network_id',$network_id)
+    //         ->where('id',$plan_category_id)
+    //         ->get();
+    //     }
 
 
        
-        $product_planss = [];
-        $counter =0;
+    //     $product_planss = [];
+    //     $counter =0;
 
-       //TODO: 
-        $user_details = auth()->user();
-        $user_plan_id = $user_details->user_plan_id;
-        $user_id = $user_details->id;
-        $user_level = UserPlan::select('plan_level')->where('id',$user_plan_id)->first();
-        $plan_level = $user_level->plan_level;
+    //    //TODO: 
+    //     $user_details = auth()->user();
+    //     $user_plan_id = $user_details->user_plan_id;
+    //     $user_id = $user_details->id;
+    //     $user_level = UserPlan::select('plan_level')->where('id',$user_plan_id)->first();
+    //     $plan_level = $user_level->plan_level;
 
 
-        foreach($product_plan_categories as $key=>$product_plan_category){
-            //get the automation id
-            //get the product_category_id 
-            $product_plans = ProductPlan::where('product_plan_category_id',$product_plan_category->id)
-            ->where('automation_id',$product_plan_category->automation_id)
-            ->get();
-            if(count($product_plans) > 0){
-                foreach($product_plans as $product_plan){
+    //     foreach($product_plan_categories as $key=>$product_plan_category){
+    //         //get the automation id
+    //         //get the product_category_id 
+    //         $product_plans = ProductPlan::where('product_plan_category_id',$product_plan_category->id)
+    //         ->where('automation_id',$product_plan_category->automation_id)
+    //         ->get();
+    //         if(count($product_plans) > 0){
+    //             foreach($product_plans as $product_plan){
 
-                    $user_level_selling = "user_level_".$plan_level."_selling_price";
-                    // $user_level_selling = "{user_level_$user_level_selling_price}";
-                    $selling_price = $product_plan->$user_level_selling;
-                    if($product_plan){
-                        $counter++;
-                        $product_planss[$counter]['product_plan_id'] = $product_plan->id;
-                        $product_planss[$counter]['selling_price'] = $selling_price;
-                        $product_planss[$counter]['product_plan_name'] = $product_plan->product_plan_name;
-                        $product_planss[$counter]['data_size_in_mb'] = $product_plan->data_size_in_mb;
-                        $product_planss[$counter]['validity_in_days'] = $product_plan->validity_in_days;    
-                        $product_planss[$counter]['automation_id'] = $product_plan->automation_id;    
-                    }
-                }
-            }    
-        }
+    //                 $user_level_selling = "user_level_".$plan_level."_selling_price";
+    //                 // $user_level_selling = "{user_level_$user_level_selling_price}";
+    //                 $selling_price = $product_plan->$user_level_selling;
+    //                 if($product_plan){
+    //                     $counter++;
+    //                     $product_planss[$counter]['product_plan_id'] = $product_plan->id;
+    //                     $product_planss[$counter]['selling_price'] = $selling_price;
+    //                     $product_planss[$counter]['product_plan_name'] = $product_plan->product_plan_name;
+    //                     $product_planss[$counter]['data_size_in_mb'] = $product_plan->data_size_in_mb;
+    //                     $product_planss[$counter]['validity_in_days'] = $product_plan->validity_in_days;    
+    //                     $product_planss[$counter]['automation_id'] = $product_plan->automation_id;    
+    //                 }
+    //             }
+    //         }    
+    //     }
         
            
-        return response()->json(['status'=>'1','user_level'=>$plan_level ,'message'=>'Product plans fetched','counter' =>count($product_planss),'data' => $product_planss ]);
-        // return response()->json(['status'=>'1','user_level'=>$user_plan_id ,'message'=>'Product plans fetched','counter' =>count($product_planss),'data' => $product_planss ]);
+    //     return response()->json(['status'=>'1','user_level'=>$plan_level ,'message'=>'Product plans fetched','counter' =>count($product_planss),'data' => $product_planss ]);
+    //     // return response()->json(['status'=>'1','user_level'=>$user_plan_id ,'message'=>'Product plans fetched','counter' =>count($product_planss),'data' => $product_planss ]);
 
-    }
+    // }
 
     
 

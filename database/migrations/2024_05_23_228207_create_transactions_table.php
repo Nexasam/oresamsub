@@ -19,7 +19,10 @@ return new class extends Migration
             $table->string('status')->default(0)->nullable()->comment('status of transaction: 1:success, 0:pending(default), -1:failed, 2:refunded, 3:processing');
             $table->string('wallet_category')->comment('data_wallet/main_wallet');
             $table->string('phone_number')->comment('phone number that benefits')->nullable();
-            $table->string('amount')->comment('amount data was bought');
+            $table->string('smart_card_number')->comment('iuc number that benefits that benefits')->nullable();
+            $table->string('metre_number')->comment('metre number that benefits')->nullable();
+            $table->string('cable_tv_slots')->comment('no of slots bought')->nullable();
+            $table->string('amount')->comment('amount that was bought');
             $table->string('balance_before');
             $table->string('balance_after');
             $table->string('description');

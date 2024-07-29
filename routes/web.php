@@ -144,7 +144,7 @@ Route::middleware(['auth','verified','user'])->get('user/data/fetch_bulk_data_pl
 
 Route::middleware(['auth','verified','user'])->get('user/airtime/buy_airtime', [AirtimeController::class, 'buy_airtime'])->name('user.airtime.buy_airtime');
 Route::middleware(['auth','verified','user'])->get('user/airtime/store', [AirtimeController::class, 'buy_airtime_action'])->name('user.airtime.buy_airtime_action');
-// Route::middleware(['auth','verified','user'])->get('user/airtime/fetch_product_plans', [DataController::class, 'fetch_product_plans'])->name('user.airtime.fetch_product_plans'); //TODO: you can add this to a helper controller later
+
 
 //CABLE TV: user.cabletv.buy_cable_subscription
 Route::middleware(['auth','verified','user'])->get('user/cable_subscription/buy_cable_subscription', [CableSubscriptionController::class, 'buy_cable_subscription'])->name('user.cable_subscription.buy_cable_subscription');

@@ -155,26 +155,29 @@
                                                 <input type="hidden" value="main_wallet" class="ti-form-checkbox mt-0.5 pointer-events-none" name="wallet_category" id="wallet_category">
                                              
                                                 
-                                                <div class="space-y-2">
-                                                    {{-- <div class="grid sm:grid-cols-2 gap-2"> --}}
+                                                {{-- <div class="space-y-2">
+                                                  
                                                         <label class="p-3 flex w-full bg-white border border-gray-200 rounded-sm text-sm focus:border-primary focus:ring-primary dark:bg-bgdark dark:border-white/10 dark:text-white/70">
                                                           <input type="checkbox" class="ti-form-checkbox mt-0.5 pointer-events-none" id="filter_by_plan_category">
                                                           <span class="text-sm text-gray-500 ms-2 dark:text-white/70">Filter by plan categories</span>
                                                         </label>
-                                                </div>
+                                                </div> --}}
                     
                                                 {{-- single_select --}}
-                                                <div id="product_plan_category_div" class="space-y-2 hidden">
+                                                <div  class="space-y-2">
                                                     <label class="ti-form-label mb-0">Product Plan Category</label>
-                                                    <select data-trigger required name="product_plan_category_id" id="product_plan_category_id" class="my-auto ti-form-select">
-                                                        <option value="all">Select</option>
+                                                    <select data-trigger required name="cable_product_plan_category_id" id="cable_product_plan_category_id" class="my-auto ti-form-select">
+                                                        <option value="">Select</option>
+                                                        @foreach ($product_plan_categories as $product_plan_category)
+                                                            <option value="{{ $product_plan_category->id }}">{{ $product_plan_category->product_plan_category_name }}</option>
+                                                        @endforeach
                     
                                                       </select>
                                                 </div>
                     
                                                 <div class="space-y-2">
                                                     <label class="ti-form-label mb-0">Product Plans List</label>
-                                                    <select required name="cable_tv_product_plan_id" id="cable_tv_product_plan_id" class="my-auto ti-form-select">
+                                                    <select required name="cable_product_plan_id" id="cable_product_plan_id" class="my-auto ti-form-select">
                                                         <option value="all">Select</option>
                     
                                                       </select>
@@ -182,9 +185,21 @@
                                               
                                                 <div class="space-y-2">
                                                     <label class="ti-form-label mb-0">Smart Card number / IUC number*</label>
-                                                    <textarea id="phone_number" name="phone_number" class="my-auto ti-form-input"
-                                                        placeholder="e.g 08168509044, 09011988807"></textarea>
+                                                    <input type="text" id="smart_card_number" name="smart_card_number" class="my-auto ti-form-input" placeholder="e.g 02724993783" />
                                                 </div>
+
+                                                <div class="space-y-2">
+                                                  <label class="ti-form-label mb-0">Name on the account you want to purchase for*</label>
+                                                  <input type="text" id="validation_customer_name" name="validation_customer_name" class="my-auto ti-form-input" placeholder="e.g Kunle Adebisi" />
+                                               </div>
+
+                                               
+                                               <div class="space-y-2">
+                                                <label class="ti-form-label mb-0">No of Slots*
+                                                  <small>This means you can buy multiple slots of the selected plan e.g Star Times 1 week with 3 slots means you have subscribed for 3 weeks</small>
+                                                </label>
+                                                <input type="number" id="no_of_slots" name="no_of_slots" value="1" class="my-auto ti-form-input" placeholder="e.g 5" /></textarea>
+                                            </div>
                     
                                         
                                                 <div class="space-y-2">
@@ -197,7 +212,7 @@
                                                 </div>
 
                                                 <div class="space-y-2">
-                                                    <button type="submit" id="buy_Cable TV_btn" class="ti-btn ti-btn-primary w-full">Buy Cable TV</button><br>
+                                                    <button type="submit" id="buy_cable_btn" class="ti-btn ti-btn-primary w-full">Buy Cable TV</button><br>
                                                     <a href="#" id="cancel_disabling" class="hidden">Activate button</a>
                                                 </div>
                                                
@@ -237,52 +252,6 @@
         <!-- End::row-1 -->
 
 
-        <!-- Start::row-3 -->
-        {{-- <div class="grid grid-cols-12 gap-6">
-          <div class="col-span-12">
-            <div class="box">
-              <div class="box-header">
-                <h5 class="box-title">Reactivity DataTable</h5>
-              </div>
-              <div class="box-body space-y-3">
-                <div class="reactivity-data">
-                  <button type="button" class="ti-btn ti-btn-primary" id="reactivity-add">Add New Row</button>
-                  <button type="button" class="ti-btn ti-btn-primary" id="reactivity-delete">Remove Row</button>
-                  <button type="button" class="ti-btn ti-btn-primary" id="clear">Empty the table</button>
-                  <button type="button" class="ti-btn ti-btn-primary" id="reset">Reset</button>
-                </div>
-                <div class="overflow-hidden table-bordered">
-                  <div id="reactivity-table" class="ti-custom-table ti-striped-table ti-custom-table-hover"></div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div> --}}
-        <!-- End::row-3 -->
-
-        <!-- Start::row-3 -->
-        {{-- <div class="grid grid-cols-12 gap-6">
-          <div class="col-span-12">
-            <div class="box">
-              <div class="box-header">
-                <h5 class="box-title">Download DataTable</h5>
-              </div>
-              <div class="box-body space-y-3">
-                <div class="download-data">
-                    <button type="button" class="ti-btn ti-btn-primary" id="download-csv">Download CSV</button>
-                    <button type="button" class="ti-btn ti-btn-primary" id="download-json">Download JSON</button>
-                    <button type="button" class="ti-btn ti-btn-primary" id="download-xlsx">Download XLSX</button>
-                    <button type="button" class="ti-btn ti-btn-primary" id="download-pdf">Download PDF</button>
-                    <button type="button" class="ti-btn ti-btn-primary" id="download-html">Download HTML</button>
-                </div>
-                <div class="overflow-hidden table-bordered">
-                  <div id="download-table" class="ti-custom-table ti-striped-table ti-custom-table-hover"></div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div> --}}
-        <!-- End::row-3 -->
 
       </div>
       <!-- Start::main-content -->

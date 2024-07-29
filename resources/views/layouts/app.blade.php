@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf_token" content="{{ csrf_token() }}">
     <title> Data App - ABCData </title>
-    <meta name="description" content="A Tailwind CSS admin template is a pre-designed web page for an admin dashboard. Optimizing it for SEO includes using meta descriptions and ensuring it's responsive and fast-loading.">
+    <meta name="description" content="We are a data website selling data related products at affordable prices with quality">
     <meta name="keywords" content="analytics dashboard,jobs dashboard,crm dashboard examples,personal dashboard,sales dashboard sample,best crm dashboard,crypto dashboard template,sales analytics dashboard,stocks dashboard,hrm dashboard,ecommerce admin panel template,sales admin dashboard,admin panel for ecommerce website,website template ecommerce,template dashboard,course dashboard,template ecommerce website">
 
     <!-- Favicon -->
@@ -709,9 +709,7 @@ $('#hs-basic-modal').trigger('click');
                     network_id : network_id,
                     plan_category_id : plan_category_id,
                     product_slug : product_slug
-                  };
-                 
-
+                  };        
                 }
 
                 
@@ -753,6 +751,49 @@ $('#hs-basic-modal').trigger('click');
                           }
                  });
         }
+
+        function getCableProductPlans(plan_category_id='', product_slug=''){
+               
+              var data = {
+                plan_category_id : plan_category_id,
+                product_slug : product_slug
+              };
+               
+
+               $.ajax({
+                         type: 'GET',
+                         url: "{{ route('user.fetch_product_plans') }}",
+                         data: data,
+                         dataType: 'json',
+                         success: function(response) {
+                             console.log(response)
+                             // console.log(response.data)
+                             var result = JSON.stringify(response.data);
+                             var dataList = JSON.parse(result);
+                         
+                              $('#cable_product_plan_id').html("");
+                              $('#cable_product_plan_id').append('<option value="">Select Product Plan</option>');
+      
+                               // let jj = jsonn;
+                               for (const child in dataList) {
+                                
+                                   const idd = dataList[child].product_plan_id;
+                                   const product_plan_name = dataList[child].product_plan_name;
+                                   const selling_price = dataList[child].selling_price;
+                                   option = "<option value="+idd+">"+product_plan_name+'- &#8358;'+selling_price+"</option>";
+                                   
+                                   $('#cable_product_plan_id').append(option);
+                                 
+                               }
+                             
+                           
+                         },
+                         error: function(xhr, status, error) {
+                             // Handle errors if needed
+                             console.error(xhr.responseText);
+                         }
+                });
+       }
 
         function reload(timeout = '3000'){
           setTimeout(() => {
@@ -942,6 +983,14 @@ $('#hs-basic-modal').trigger('click');
             $('#buy_data_btn').html('Buy Data');
             $('#buy_data_btn').prop('disabled',false);
             $(this).addClass('hidden');
+
+            $('#buy_airtime_btn').html('Buy Airtime');
+            $('#buy_airtime_btn').prop('disabled',false);
+            $(this).addClass('hidden');
+
+            $('#buy_cable_btn').html('Buy Cable TV');
+            $('#buy_cable_btn').prop('disabled',false);
+            $(this).addClass('hidden');
           })
 
           //reset ends
@@ -997,6 +1046,17 @@ $('#hs-basic-modal').trigger('click');
               return;
             }
             getProductPlans(network_id,plan_category_id,product_slug);
+          })
+
+          $('#cable_product_plan_category_id').change(function(){
+            var product_slug = $("#product_slug").val();
+            var plan_category_id = $(this).val();
+
+            if(plan_category_id == '' || plan_category_id == 'all'){
+              sweetAlertDisplay('Product plan category is required','Plan category required','error');
+              return;
+            }
+            getCableProductPlans(plan_category_id,product_slug);
           })
           
          
@@ -1264,6 +1324,79 @@ $('#hs-basic-modal').trigger('click');
                 });
             }
 
+          })
+
+          $('#buy_cable_btn').click(function(e){
+            e.preventDefault();
+              $(this).html('Processing...Please wait');
+              $(this).prop('disabled',true);
+              $('#cancel_disabling').removeClass('hidden')
+
+           
+              //display product plans categories
+              const cable_product_plan_category_id = $('#cable_product_plan_category_id').val();
+              const smart_card_number = $('#smart_card_number').val();
+              const validation_customer_name = $('#validation_customer_name').val();
+              const wallet_category = $('#wallet_category').val();
+              const cable_product_plan_id = $('#cable_product_plan_id').val();
+              const pin = $('#pin').val();
+              const no_of_slots = $('#no_of_slots').val();
+              
+              
+
+              const data = {
+                cable_product_plan_category_id : cable_product_plan_category_id,
+                smart_card_number : smart_card_number,
+                validation_customer_name : validation_customer_name,
+                wallet_category : wallet_category,
+                cable_product_plan_id : cable_product_plan_id,
+                pin : pin,
+                no_of_slots : no_of_slots,
+              };
+
+
+              // console.log(data);
+              // return;
+
+              if (confirm("Are you sure you want to complete this cable subscription purchase?") == true) {
+                  // alert('logic happens here')
+                
+
+                  $.ajax({
+                    type: 'GET',
+                    url: "{{ route('user.cable_subscription.buy_cable_subscription_action') }}",
+                    data: data,
+                    dataType: 'json',
+                    success: function(response) {
+                        console.log(response);
+                        // console.log(response.data);
+                        var result = JSON.stringify(response);
+                        var dataList = JSON.parse(result);
+                        if( parseInt(dataList.status) == 1){
+                           sweetAlertDisplay(dataList.message,'Success','success');
+                           reload(3000);
+                        }
+                        else if(dataList.status == 2){
+                           //@least 1 tranaction had an issue
+                           sweetAlertDisplay(dataList.message,'Info','warning');
+                           reload(100000000);
+                        }
+                        else{
+                          sweetAlertDisplay(dataList.message,'Error','error');
+                          $(this).prop('disabled',false);
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        // Handle errors if needed
+                        console.error(xhr.responseText);
+                    }
+                  });
+              } else {
+                return;
+              }
+
+              
+            
           })
 
           $('#buy_data_btn').click(function(e){

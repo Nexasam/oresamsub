@@ -1096,9 +1096,9 @@
          <div class="z-10 fixed inset-0 w-full h-screen hidden modal overflow-auto" id="popup">
             <div class="modal-backdrop fixed w-full inset-0 bg-slate-500 opacity-40 z-30" data-close></div>
             <div class="min-h-screen flex items-center justify-center relative pointer-events-none py-8 px-4 z-50">
-                <div class="max-w-sm bg-white w-full pointer-events-auto modal-style rounded-md">
+                <div class="max-w-sm bg-white dark:bg-bgdark  w-full pointer-events-auto modal-style rounded-md">
                     <div class="p-4 flex items-center justify-between space-x-2 border-b border-gray-lighter">
-                        <h5 class="mb-0">
+                        <h5 class="mb-0 dark:text-bgdark text-md">
                             <strong>Enjoy these products at discounted prices</strong>
                         </h5>
                         <a href="javascript:void(0);" class="block" data-close>
@@ -1123,7 +1123,8 @@
                                 @endphp
                         @foreach ($hot_sales as $hot_sale)
                                     <tr>
-                                        <td class="font-small">{{ $hot_sale->product_plan_category_name  }} </td>
+                                        {{-- text-[#17171d] --}}
+                                        <td class="font-small "> <h4 class=" dark:text-bgdark">{{ $hot_sale->product_plan_category_name  }}</h4>  </td>
                                         <td>
                                              <a href="{{ route('user.data.buy_data') }}" class="text-primary hover:text-primary" href="javascript:void(0);">Buy</a>
                                         </td>
@@ -1133,11 +1134,11 @@
                             </tbody>
                         </table>
                     </div>
-                        {{-- <a type="button"
-                        class="hs-dropdown-toggle ti-btn ti-border font-medium bg-white text-gray-700 shadow-sm align-middle hover:bg-gray-50 focus:ring-offset-white focus:ring-primary dark:bg-bgdark dark:hover:bg-black/20 dark:border-white/10 dark:text-white/70 dark:hover:text-white dark:focus:ring-offset-white/10"
-                        data-hs-overlay="#hs-basic-modal" class="block" data-close>
-                        Close
-                        </a> --}}
+                    <a type="button"
+                    class="hs-dropdown-toggle ti-btn ti-border font-medium bg-white px-5 ml-2 text-gray-700 shadow-sm align-middle hover:bg-gray-50 focus:ring-offset-white focus:ring-primary dark:bg-bgdark dark:hover:bg-black/20 dark:border-white/10 dark:text-white/70 dark:hover:text-white dark:focus:ring-offset-white/10"
+                    data-hs-overlay="#hs-basic-modal" class="block" data-close>
+                    Close
+                    </a>
                 </div>
             </div>
         </div> 

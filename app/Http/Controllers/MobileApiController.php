@@ -93,7 +93,7 @@ class MobileApiController extends Controller
    
      public function mobile_login(Request $request)
      {
-           $request->validate([
+        $request->validate([
              'email' => 'required|email',
              'password' => 'required',
              'device_name' => 'required',
