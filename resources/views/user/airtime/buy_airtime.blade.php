@@ -154,6 +154,7 @@
                                             <div class="grid w-full lg:w-1/2 lg:grid-cols-1 gap-6 space-y-4 lg:space-y-0">
                                                 <input type="hidden" value="main_wallet" class="ti-form-checkbox mt-0.5 pointer-events-none" name="wallet_category" id="wallet_category">
                                              
+                                               
                                                 <div class="space-y-2">
                                                     <label class="ti-form-label mb-0">Network</label>
                                                     {{-- single_select --}}
@@ -164,22 +165,37 @@
                                                         @endforeach
                                                       </select>
                                                 </div>
+
                                                 <div class="space-y-2">
-                                                    {{-- <div class="grid sm:grid-cols-2 gap-2"> --}}
+                                                  <label class="ti-form-label mb-0">Amount:</label>
+                                                  <input type="number" class="my-auto ti-form-input" id="amount" name="amount" value="" placeholder="Enter amount to recharge"> 
+                                                  <div class="display_actual_amount">
+                                                        
+                                                  </div>
+                                                </div>
+                                                
+
+                                                
+{{-- 
+                                                <div class="space-y-2">
+                                                   
                                                         <label class="p-3 flex w-full bg-white border border-gray-200 rounded-sm text-sm focus:border-primary focus:ring-primary dark:bg-bgdark dark:border-white/10 dark:text-white/70">
                                                           <input type="checkbox" class="ti-form-checkbox mt-0.5 pointer-events-none" id="filter_by_plan_category">
                                                           <span class="text-sm text-gray-500 ms-2 dark:text-white/70">Filter by plan categories</span>
                                                         </label>
-                                                </div>
+                                                </div> --}}
                     
                                                 {{-- single_select --}}
-                                                <div id="product_plan_category_div" class="space-y-2 hidden">
+                                                {{-- <div id="product_plan_category_div" class="space-y-2 hidden">
                                                     <label class="ti-form-label mb-0">Product Plan Category</label>
                                                     <select data-trigger required name="product_plan_category_id" id="product_plan_category_id" class="my-auto ti-form-select">
-                                                        <option value="all">Select</option>
-                    
+                                                        <option value="">Select</option>
+                                                        @foreach ($product_plan_categories as $plan_category)
+                                                         <option value="{{ $plan_category->id }}">{{ $plan_category->product_plan_category_name }}</option>
+                                                            
+                                                        @endforeach
                                                       </select>
-                                                </div>
+                                                </div> --}}
                     
                                                 <div class="space-y-2">
                                                     <label class="ti-form-label mb-0">Product Plans List</label>
@@ -198,11 +214,7 @@
                                                         placeholder="e.g 08168509044, 09011988807"></textarea>
                                                 </div>
                     
-                                                <div class="space-y-2">
-                                                    <label class="ti-form-label mb-0">Amount:</label>
-                                                    <input type="number" class="my-auto ti-form-input" id="amount" name="amount" value="" placeholder="Enter amount to recharge">
-                                                   
-                                                </div>
+                                               
 
                                                 <div class="space-y-2">
                                                   <label class="ti-form-label mb-0">PIN:</label>

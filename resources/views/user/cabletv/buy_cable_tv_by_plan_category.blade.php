@@ -7,7 +7,7 @@
         <!-- Page Header -->
         <div class="block justify-between page-header md:flex">
             <div>
-                <h3 class="text-gray-700 hover:text-gray-900 dark:text-white dark:hover:text-white text-2xl font-medium"> Cable TV Transactions</h3>
+                <h3 class="text-gray-700 hover:text-gray-900 dark:text-white dark:hover:text-white text-2xl font-medium"> Buy Cable TV : <strong>{{ $plan_category->product_plan_category_name }}</strong> </h3>
             </div>
             <ol class="flex items-center whitespace-nowrap min-w-0">
                 <li class="text-sm">
@@ -32,7 +32,7 @@
           
               <div class="box">
                 <div class="box-header">
-                  <h5 class="box-title">Cable TV Transactions</h5>
+                  <h5 class="box-title"><strong>{{ $plan_category->product_plan_category_name }}</strong></h5>
                 </div>
 
                 <div class="box-body">
@@ -150,6 +150,7 @@
                                         <form>
                                             <input type="hidden" id="_token" name="_token" value="{{ csrf_token() }}" />
                                             <input type="hidden" id="product_slug" name="product_slug" value="cable_subscription" />
+                                            <input type="hidden" id="cable_product_plan_category_id" name="cable_product_plan_category_id" value="{{ $plan_category->id }}" />
                                      
                                             <div class="grid w-full lg:w-1/2 lg:grid-cols-1 gap-6 space-y-4 lg:space-y-0">
                                                 <input type="hidden" value="main_wallet" class="ti-form-checkbox mt-0.5 pointer-events-none" name="wallet_category" id="wallet_category">
@@ -163,61 +164,54 @@
                                                         </label>
                                                 </div> --}}
                     
-                                                {{-- single_select --}}
-                                                <div  class="space-y-2">
-                                                    <label class="ti-form-label mb-0">Product Plan Category</label>
-                                                    <select data-trigger required name="cable_product_plan_category_id" id="cable_product_plan_category_id" class="my-auto ti-form-select">
+                                                <div class="space-y-2">
+                                                    <label class="ti-form-label mb-0">Product Plans List</label>
+                                                    <select required name="cable_product_plan_id" id="cable_product_plan_id" class="my-auto ti-form-select">
                                                         <option value="">Select</option>
-                                                        @foreach ($product_plan_categories as $product_plan_category)
-                                                            <option value="{{ $product_plan_category->id }}">{{ $product_plan_category->product_plan_category_name }}</option>
+                                                        @foreach ($product_plans as $product_plan)
+                                                            <option value="{{ $product_plan['product_plan_id'] }}">{{ $product_plan['product_plan_name'] }} - &#8358; {{ $product_plan['selling_price'] }}</option>
                                                         @endforeach
                     
                                                       </select>
                                                 </div>
-                    
-                                                <div class="space-y-2">
-                                                    <label class="ti-form-label mb-0">Product Plans List</label>
-                                                    <select required name="cable_product_plan_id" id="cable_product_plan_id" class="my-auto ti-form-select">
-                                                        <option value="all">Select</option>
-                    
-                                                      </select>
-                                                </div>
                                               
-                                                <div class="space-y-2">
-                                                    <label class="ti-form-label mb-0">Smart Card number / IUC number*</label>
-                                                    <input type="text" onkeyup="validateNameOnSmartCard('cable')" id="smart_card_number" name="smart_card_number" class="my-auto ti-form-input" placeholder="e.g 02724993783" />
-                                                    <div id="validated_name_on_smart_card"></div>
-                                           
-                                                 </div>
+                                              
 
-                                                  <div class="space-y-2">  
-                                                      <input type="text" id="validation_customer_name" name="validation_customer_name" class="opacity-70 pointer-events-none ti-form-input" disabled readonly placeholder="validated name on the card" />
-                                                  </div>
-  
-                                                  <div class="space-y-2">
-                                                    <label class="ti-form-label mb-0">No of Slots*
-                                                      <small>This means you can buy multiple slots of the selected plan e.g Star Times 1 week with 3 slots means you have subscribed for 3 weeks</small>
-                                                    </label>
-                                                    <input type="number" id="no_of_slots" name="no_of_slots" value="1" readonly class="my-auto ti-form-input" placeholder="e.g 5" /></textarea>
-                                                  </div>
+                                                <div class="space-y-2">
+                                                  <label class="ti-form-label mb-0">Smart Card number / IUC number*</label>
+                                                  <input type="text" onkeyup="validateNameOnSmartCard('cable')" id="smart_card_number" name="smart_card_number" class="my-auto ti-form-input" placeholder="e.g 02724993783" />
+                                                  <div id="validated_name_on_smart_card"></div>
+                                         
+                                               </div>
+
+                                                <div class="space-y-2">  
+                                                    <input type="text" id="validation_customer_name" name="validation_customer_name" class="opacity-70 pointer-events-none ti-form-input" disabled readonly placeholder="validated name on the card" />
+                                                </div>
+ 
+                                               <div class="space-y-2">
+                                                <label class="ti-form-label mb-0">No of Slots*
+                                                  <small>This means you can buy multiple slots of the selected plan e.g Star Times 1 week with 3 slots means you have subscribed for 3 weeks</small>
+                                                </label>
+                                                <input type="number" id="no_of_slots" name="no_of_slots" value="1" readonly class="my-auto ti-form-input" placeholder="e.g 5" /></textarea>
+                                            </div>
                     
                                         
-                                                  <div class="space-y-2">
-                                                    <label class="ti-form-label mb-0">PIN:</label>
-                                                    <input type="password" class="my-auto ti-form-input" id="pin" name="pin" value="" placeholder="Enter your pin to secure transaction">
-                                                    <div class="flex items-center">
-                                                      <input type="checkbox" id="hs-basic-with-description-unchecked" class="ti-switch show_pin1">
-                                                      <label for="hs-basic-with-description-unchecked" class="text-sm text-gray-500 ms-3 dark:text-white/70 ">Show PIN</label>
-                                                    </div>  
-                                                  </div>
+                                                <div class="space-y-2">
+                                                  <label class="ti-form-label mb-0">PIN:</label>
+                                                  <input type="password" class="my-auto ti-form-input" id="pin" name="pin" value="" placeholder="Enter your pin to secure transaction">
+                                                  <div class="flex items-center">
+                                                    <input type="checkbox" id="hs-basic-with-description-unchecked" class="ti-switch show_pin1">
+                                                    <label for="hs-basic-with-description-unchecked" class="text-sm text-gray-500 ms-3 dark:text-white/70 ">Show PIN</label>
+                                                  </div>  
+                                                </div>
 
-                                                  <div class="space-y-2">
-                                                      <button type="submit" id="buy_cable_btn" class="ti-btn ti-btn-primary w-full">Buy Cable TV</button><br>
-                                                      <a href="#" id="cancel_disabling" class="hidden">Activate button</a>
-                                                  </div>
-                                                
-                                                  <br>
-                                              </div>
+                                                <div class="space-y-2">
+                                                    <button type="submit" id="buy_cable_btn" class="ti-btn ti-btn-primary w-full">Buy Cable TV</button><br>
+                                                    <a href="#" id="cancel_disabling" class="hidden">Activate button</a>
+                                                </div>
+                                               
+                                                <br>
+                                            </div>
                                             {{-- <div class="my-5">
                                                 <button type="submit" class="ti-btn ti-btn-primary w-full">Submit</button>
                                             </div> --}}

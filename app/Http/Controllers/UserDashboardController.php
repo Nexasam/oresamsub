@@ -19,7 +19,47 @@ class UserDashboardController extends Controller
 
  
   public function index(){
-    $hot_sales = ProductPlanCategory::where('is_hot_sales',1)->limit(8)->get();
+    $hot_sales = ProductPlanCategory::with('product')->where('is_hot_sales',1)->get();
+    $new_hot_sales_array = [];
+    foreach($hot_sales as $key=>$hot_sale){
+      $new_hot_sales_array[$key]['product_slug'] = $hot_sale->product->slug;
+      switch($hot_sale->product->slug){
+        //
+        case 'utility_bills':
+          $route_name = 'user.electricity.buy_electricity_subscription_by_plan_category';
+          break;
+
+        case 'data':
+          $route_name = 'user.data.buy_data_by_plan_category';
+          break;
+
+        case 'airtime':
+          $route_name = 'user.airtime.buy_airtime_by_plan_category';
+          break;
+
+        case 'cable_subscription':
+          $route_name = 'user.cable_subscription.buy_cable_subscription_by_plan_category';
+          break;
+
+        case 'e_pins':
+          $route_name = 'user.data.buy_data_by_plan_category';
+          break;
+
+        case 'result_checker':
+          $route_name = 'user.data.buy_data_by_plan_category';
+          break;
+
+        default:
+          $route_name = 'user.data.buy_data_by_plan_category';
+          break;
+
+      }
+      $new_hot_sales_array[$key]['id'] = $hot_sale->id;
+      $new_hot_sales_array[$key]['plan_category_name'] = $hot_sale->product_plan_category_name;
+      $new_hot_sales_array[$key]['route_name'] = $route_name;
+      $new_hot_sales_array[$key]['slug'] = $hot_sale->product->slug;
+
+    }
 
     if(! session()->has('whatsapp_support_number')){
       $whatsapp_support = LandingPagesSetting::where('field_name','support_whatsapp_number')->first();
@@ -37,7 +77,8 @@ class UserDashboardController extends Controller
     // return $user_details->role->role_name;
     $user_id = $user_details->id;
     $user_plan_level = $user_details->user_plan->plan_level;
-    $data['hot_sales'] = $hot_sales;
+    $data['hot_sales'] = $new_hot_sales_array;
+    // dd($data);
     $data['user'] = $user_details;
     $data['users'] = User::select('id')->get();
     $data['product_plans'] = ProductPlan::select('id')->get();

@@ -6,17 +6,16 @@ use App\Models\Automation;
 use App\Models\ProductPlan;
 use Illuminate\Support\Facades\Http;
 
-class MegaSubCableTV{
+class MegaSubElectricity{
 
-    private $smart_card_number;
+    private $metre_number;
 
-    private $cable_plan_api_id;
+    private $electricity_plan_api_id;
 
 
     private $amount;
 
-
-    private $data_api_id;
+    private $phone_number;
 
 
     private $automation_slug = 'megasubplug';
@@ -25,7 +24,7 @@ class MegaSubCableTV{
 
     private $plan_id = '';
 
-    private $validation_customer_name = '';
+    private $extra_info = '';
     private $no_of_slots = '';
 
     private $product_plan_category_name = '';
@@ -34,10 +33,11 @@ class MegaSubCableTV{
     private $api_key = '';
     private $api_password = '';
 
-    public function __construct($smart_card_number = null,$plan_id = null,$amount= null,$validation_customer_name = null,$no_of_slots = null,$product_plan_category_name = null){
-        $this->smart_card_number = $smart_card_number;
-        $this->validation_customer_name = $validation_customer_name;
+    public function __construct($metre_number,$plan_id = null,$amount = null,$extra_info = null,$no_of_slots = null,$product_plan_category_name = null,$phone_number = null){
+        $this->metre_number = $metre_number; //metreno
+        $this->extra_info = $extra_info;
         $this->plan_id = $plan_id;
+        $this->phone_number = $phone_number;
         $this->no_of_slots = $no_of_slots;
         $this->product_plan_category_name = $product_plan_category_name;
         $this->amount = $amount;
@@ -46,28 +46,26 @@ class MegaSubCableTV{
         $this->api_password = Automation::where('slug','megasubplug')->first()->api_password;
       
     }
+
+
     
 
     protected function getProviderApiID($product_plan_category_name){
         //TODO: optimize this later... very important
         $product_plan_category_name = strtolower($product_plan_category_name);
-        if($product_plan_category_name == 'gotv'){
-            return 9;
+        if($product_plan_category_name == 'prepaid'){
+            return 23;
         }
 
-        if($product_plan_category_name == 'dstv'){
-            return 10;
+        if($product_plan_category_name == 'postpaid'){
+            return 31;
         }
-
-        if($product_plan_category_name == 'startimes'){
-            return 11;
-        }
-
 
         return -1;
     }
 
-    public function validateSmartCardNumber(){
+
+    public function validateMetreNumber(){
         $plan_details = ProductPlan::with('product_plan_category')->where('id',$this->plan_id)->first();
       
         if(! $plan_details){
@@ -78,19 +76,14 @@ class MegaSubCableTV{
             ];
         }
 
-        $this->cable_plan_api_id = $this->getProviderApiID($plan_details->product_plan_category->product_plan_category_name);
-        $smart_card_number = $this->smart_card_number;
+        $automation_product_plan_id = $plan_details->automation_product_plan_id;
+        $metre_number = $this->metre_number;
 
-        // return [
-        //     'status' => 1,
-        //     'address' => $smart_card_number,
-        //     'name' =>  $this->cable_plan_api_id,
-        // ];
         
         $curl = curl_init();
 
         curl_setopt_array($curl, array(
-        CURLOPT_URL => 'https://megasubplug.com/API/?action=validate_cable&smart_card_number='.$smart_card_number.'&cable_plan_api_id='.$this->cable_plan_api_id.'',
+        CURLOPT_URL => 'https://megasubplug.com/API/?action=validate_metre&metre_number='.$metre_number.'&electricity_plan_api_id='.$automation_product_plan_id.'',
         CURLOPT_RETURNTRANSFER => true,
         CURLOPT_ENCODING => '',
         CURLOPT_MAXREDIRS => 10,
@@ -113,25 +106,27 @@ class MegaSubCableTV{
 
         $response_decode = json_decode($response,true);
 
-        if(isset($response_decode['Status']) && $response_decode['Status'] == 'Success' && isset($response_decode['Detail']['customer_name']) 
-        &&  $response_decode['Detail']['customer_name'] != ''  ){
+        if(isset($response_decode['Status']) && $response_decode['Status'] == 'Success' && isset($response_decode['Detail']['customer']['status']) 
+        &&  $response_decode['Detail']['customer']['status'] == 200  ){
            //successful transaction
            return [
                'status' => 1,
-               'address' => isset($response_decode['Detail']['customer_address']) ? $response_decode['Detail']['customer_address']  :  'Address not found',
-               'name' => isset($response_decode['Detail']['customer_name']) ? $response_decode['Detail']['customer_name']  :  'Name not found',
+               'address' => isset($response_decode['Detail']['customer']['customerName']) ? $response_decode['Detail']['customer']['customerAddress']  :  'Address not found',
+               'name' => isset($response_decode['Detail']['customer']['customerName']) ? $response_decode['Detail']['customer']['customerName']  :  'Name not found',
            ];
        }else{
             
             return [
                 'status' => 1,
-                'address' =>  'Address not found1',
-                'name' => 'Name not found1',
+                'address' =>  'Address not found',
+                'name' => 'Name not found',
            ];
        }
 
     }
-    public function buyCable(){
+
+
+    public function buyElectricity(){
         
         $plan_details = ProductPlan::with('product_plan_category')->where('id',$this->plan_id)->first();
       
@@ -143,15 +138,24 @@ class MegaSubCableTV{
             ];
         }
 
-        $this->cable_plan_api_id = $plan_details->automation_product_plan_id;
+        $this->electricity_plan_api_id = $plan_details->automation_product_plan_id;
 
-        $smart_card_number = $this->smart_card_number;
-        $validation_customer_name = urlencode($this->validation_customer_name);
-        $cable_plan_api_id = $this->cable_plan_api_id;
-        // $duplication_check = $this->duplication_check;
+        $metre_number = $this->metre_number;
+        $extra_info = urlencode($this->extra_info);
+        $electricity_plan_api_id = $this->electricity_plan_api_id;
+        $phone_number = $this->phone_number;
+        $amount = $this->amount;
+
+        // return [
+        //     'extra_info' => $this->extra_info,
+        //     'metre_number' => $this->metre_number,
+        //     'electricity_plan_api_id' => $electricity_plan_api_id,
+        //     'phone_number' => $this->phone_number,
+        // ];
+       
         $curl = curl_init();
         curl_setopt_array($curl, array(
-        CURLOPT_URL => "https://megasubplug.com/API/?action=buy_cable&smart_card_number=$smart_card_number&validation_customer_name=$validation_customer_name&cable_plan_api_id=$cable_plan_api_id&duplication_check=0",
+        CURLOPT_URL => "https://megasubplug.com/API/?action=buy_electricity&metre_number=$metre_number&phone_number=$phone_number&amount=$amount&validation_extra_info=$extra_info&electricity_plan_api_id=$electricity_plan_api_id&duplication_check=1",
         CURLOPT_RETURNTRANSFER => true,
         CURLOPT_ENCODING => '',
         CURLOPT_MAXREDIRS => 10,
@@ -159,7 +163,7 @@ class MegaSubCableTV{
         CURLOPT_FOLLOWLOCATION => true,
         CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
         CURLOPT_CUSTOMREQUEST => 'POST',
-        CURLOPT_POSTFIELDS => array('action' => 'buy_cable','smart_card_number' => $smart_card_number,'validation_customer_name' => $validation_customer_name,'cable_plan_api_id' => $cable_plan_api_id,'duplication_check' => '0'),
+        CURLOPT_POSTFIELDS => array('action' => 'buy_electricity','metre_number' => $metre_number,'phone_number' => $phone_number,'amount' => $amount,'validation_extra_info' => $extra_info,'electricity_plan_api_id' => $electricity_plan_api_id,'duplication_check' => '1'),
         CURLOPT_HTTPHEADER => array(
             'Authorization: Bearer 102325246266435f47e344b',
             'Password: inchristalone@NEW2024',
@@ -168,6 +172,8 @@ class MegaSubCableTV{
         ));
 
         $response = curl_exec($curl);
+
+        logger($response);
 
         curl_close($curl);
     

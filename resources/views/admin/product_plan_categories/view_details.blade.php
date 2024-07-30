@@ -141,6 +141,14 @@
                                                 </select>
                                           </div>
 
+
+
+                                        <div class="space-y-2">
+                                          <label class="ti-form-label mb-0">Purchase Discount Value (Percent)</label>
+                                          <input type="number" class="my-auto ti-form-input" value="{{ $product_plan_category->discount_value }}" id="discount_value" name="discount_value" value="" placeholder="Enter purchase discount_value for this plan category">
+                                        
+                                        </div>
+
                                    
                                               
                                               <div class="space-y-2">

@@ -44,6 +44,10 @@ class AirtimeController extends Controller
         $data['networks'] = $networks;
         $data['product'] = $product;
 
+
+        $product_plan_categories = ProductPlanCategory::where('product_id',$product->id)->get(); //TODO: have enums that gets the id later
+        $data['product_plan_categories'] = $product_plan_categories;
+
         $user_details = auth()->user();
         $user_id = $user_details->id;
         // dd($user_id);
@@ -56,9 +60,142 @@ class AirtimeController extends Controller
         $data['airtime_transactions'] = $airtime_transactions;
         $data['user_details'] = $user_details;
 
+
+
         // dd($data);
         return view('user.airtime.buy_airtime')->with($data);
     }
+
+
+        /**
+     * Show the form for creating a new resource.
+     */
+    public function buy_airtime_by_plan_category($id)
+    {
+
+        $plan_category = ProductPlanCategory::with('product','network','automation')->where('id',$id)->first();
+        
+        $product_plans = ProductPlan::where('automation_id',$plan_category->automation->id)->where('product_plan_category_id',$id)->get();
+        
+        $amount = 50; //minimum set
+
+        $user_details = auth()->user();
+        $user_id = $user_details->id;
+        $user_plan_id = $user_details->user_plan_id;
+
+        $product_planss = [];
+        $counter =0;
+
+        $user_level = UserPlan::select('plan_level')->where('id',$user_plan_id)->first();
+        $plan_level = $user_level->plan_level;
+       
+        foreach($product_plans as $product_plan){
+
+            $user_level_selling = "user_level_".$plan_level."_selling_price";
+            // $user_level_selling = "{user_level_$user_level_selling_price}";
+            $selling_price = $product_plan->$user_level_selling;
+      
+            $is_purchase_discount_percentage = $plan_category->is_purchase_discount_percentage ? 'percent':'flat';
+
+            if($is_purchase_discount_percentage == 'percent'){
+                $purchase_discount = $plan_category->discount_value; 
+                $actual_discount_value = ceil(($purchase_discount/100) * $amount);  
+                }else{
+                    $actual_discount_value = $plan_category->discount_value;  
+                }
+                $purchase_discount = $plan_category->discount_value; 
+                $discounted_selling_price = $amount - abs($actual_discount_value);
+                $selling_price = 0; //this is from the system, not applicable for airtime
+        
+           
+            if($product_plan){
+                $counter++;
+                $product_planss[$counter]['product_plan_id'] = $product_plan->id;
+                $product_planss[$counter]['amount'] = $amount;
+                $product_planss[$counter]['selling_price'] = $discounted_selling_price;
+                $product_planss[$counter]['product_plan_name'] = $product_plan->product_plan_name;
+                $product_planss[$counter]['data_size_in_mb'] = $product_plan->data_size_in_mb;
+                $product_planss[$counter]['validity_in_days'] = $product_plan->validity_in_days;    
+                $product_planss[$counter]['automation_id'] = $product_plan->automation_id;    
+            }
+        }
+
+      
+        //data txns list
+        $airtime_transactions = Transaction::with('user')->where('transaction_category','airtime')
+        ->where('user_id',$user_id)
+        ->latest()
+        ->get();
+        $data['airtime_transactions'] = $airtime_transactions;
+        $data['user_details'] = $user_details;
+        $data['amount'] = $amount;
+        $data['plan_category'] = $plan_category;
+        $data['product_plans'] = $product_planss;
+        
+        // dd($data);
+        return view('user.airtime.buy_airtime_by_plan_category')->with($data);
+    }
+
+
+    public function fetch_single_airtime_plan(Request $request){
+        
+        $plan_category = ProductPlanCategory::with('product','network','automation')->where('id',$request->plan_category_id)->first();
+        
+        $product_plans = ProductPlan::where('automation_id',$plan_category->automation->id)->where('product_plan_category_id',$request->plan_category_id)->get();
+        
+        $amount = $request->amount; //minimum set
+
+        $user_details = auth()->user();
+        $user_id = $user_details->id;
+        $user_plan_id = $user_details->user_plan_id;
+
+        $product_planss = [];
+        $counter =0;
+
+        $user_level = UserPlan::select('plan_level')->where('id',$user_plan_id)->first();
+        $plan_level = $user_level->plan_level;
+       
+        foreach($product_plans as $product_plan){
+
+            $user_level_selling = "user_level_".$plan_level."_selling_price";
+            // $user_level_selling = "{user_level_$user_level_selling_price}";
+            $selling_price = $product_plan->$user_level_selling;
+      
+            $is_purchase_discount_percentage = $plan_category->is_purchase_discount_percentage ? 'percent':'flat';
+
+            if($is_purchase_discount_percentage == 'percent'){
+                $purchase_discount = $plan_category->discount_value; 
+                $actual_discount_value = ceil(($purchase_discount/100) * $amount);  
+            }else{
+                $actual_discount_value = $plan_category->discount_value;  
+            }
+            $purchase_discount = $plan_category->discount_value; 
+            $discounted_selling_price = $amount - abs($actual_discount_value);
+            $selling_price = 0; //this is from the system, not applicable for airtime
+        
+           
+            if($product_plan){
+                $counter++;
+                $product_planss[$counter]['product_plan_id'] = $product_plan->id;
+                $product_planss[$counter]['amount'] = $amount;
+                $product_planss[$counter]['selling_price'] = $discounted_selling_price;
+                $product_planss[$counter]['product_plan_name'] = $product_plan->product_plan_name;
+                $product_planss[$counter]['data_size_in_mb'] = $product_plan->data_size_in_mb;
+                $product_planss[$counter]['validity_in_days'] = $product_plan->validity_in_days;    
+                $product_planss[$counter]['automation_id'] = $product_plan->automation_id;    
+            }
+        }
+
+      
+        //data txns list
+     
+        // $data['product_plans'] = $product_planss;
+        
+        return response()->json(['status'=>'1','user_level'=>$plan_level ,'message'=>'Product plans fetched','counter' =>count($product_planss),'data' => $product_planss ]);
+       
+    }
+
+    
 
 
     /**
@@ -69,7 +206,7 @@ class AirtimeController extends Controller
         $validator = Validator::make($request->all(), [
             'network_id' => 'required',
             'phone_number' => 'required',
-            'product_plan_category_id' => 'required',
+            'product_plan_category_id' => 'nullable',
             'product_plan_id' => 'required',
             'pin' => ['required','digits:4'],
             'amount' => 'required|numeric|gt:0',
@@ -86,16 +223,31 @@ class AirtimeController extends Controller
         $message = 'Pending';
         $display_results = [];
 
-        $plan_details = ProductPlan::where('id',$request->product_plan_id)->first();
+
+        
+        $plan_details = ProductPlan::with('product_plan_category')->where('id',$request->product_plan_id)->first();
         $automation_id = $plan_details->automation_id;
         // $data_value_mb = $plan_details->data_size_in_mb ?? 0;
+        $product_plan_category = $plan_details->product_plan_category;
+        $amount = $request->amount;
 
-        $user_plan_id = auth()->user()->user_plan_id;
-        $user_level = UserPlan::select('plan_level')->where('id',$user_plan_id)->first();
-        $plan_level = $user_level->plan_level;
-        $user_plan_selling_price = 'user_level_'.$plan_level.'_selling_price';
-        $amount = abs($request->amount);
+        $is_purchase_discount_percentage = $product_plan_category->is_purchase_discount_percentage ? 'percent':'flat';
+
+        if($is_purchase_discount_percentage == 'percent'){
+            $purchase_discount = $product_plan_category->discount_value; 
+            $actual_discount_value = ceil(($purchase_discount/100) * $amount);  
+          }else{
+              $actual_discount_value = $product_plan_category->discount_value;  
+          }
+          $purchase_discount = $product_plan_category->discount_value; 
+          $discounted_selling_price = $amount - abs($actual_discount_value);
+          $selling_price = 0; //this is from the system, not applicable for airtime
+
+         $amount = $discounted_selling_price;//actual amount to deduct
+
+
         $user_details = auth()->user();
+
         if(! $user_details){
             //end session and redirect to login
             redirect(url('/login'));

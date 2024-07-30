@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\CableSubscriptionController;
+use App\Http\Controllers\ElectricitySubscriptionController;
 use App\Http\Middleware\RoleAssess;
 use App\Models\LandingPagesSetting;
 use Illuminate\Support\Facades\Route;
@@ -144,14 +145,27 @@ Route::middleware(['auth','verified','user'])->get('user/data/fetch_bulk_data_pl
 
 Route::middleware(['auth','verified','user'])->get('user/airtime/buy_airtime', [AirtimeController::class, 'buy_airtime'])->name('user.airtime.buy_airtime');
 Route::middleware(['auth','verified','user'])->get('user/airtime/store', [AirtimeController::class, 'buy_airtime_action'])->name('user.airtime.buy_airtime_action');
+Route::middleware(['auth','verified','user'])->get('user/airtime/buy_airtime_by_plan_category/{id}', [AirtimeController::class, 'buy_airtime_by_plan_category'])->name('user.airtime.buy_airtime_by_plan_category');
+Route::middleware(['auth','verified','user'])->get('user/airtime/fetch_single_airtime_plan', [AirtimeController::class, 'fetch_single_airtime_plan'])->name('user.airtime.fetch_single_airtime_plan');
 
 
 //CABLE TV: user.cabletv.buy_cable_subscription
 Route::middleware(['auth','verified','user'])->get('user/cable_subscription/buy_cable_subscription', [CableSubscriptionController::class, 'buy_cable_subscription'])->name('user.cable_subscription.buy_cable_subscription');
 Route::middleware(['auth','verified','user'])->get('user/cable_subscription/store', [CableSubscriptionController::class, 'buy_cable_subscription_action'])->name('user.cable_subscription.buy_cable_subscription_action');
-//electricity: user.cabletv.buy_cable_subscription
+Route::middleware(['auth','verified','user'])->get('user/cable_subscription/buy_cable_subscription_by_plan_category/{id}', [CableSubscriptionController::class, 'buy_cable_subscription_by_plan_category'])->name('user.cable_subscription.buy_cable_subscription_by_plan_category');
+Route::middleware(['auth','verified','user'])->get('user/cable_subscription/validate_smart_card_number', [CableSubscriptionController::class, 'validate_smart_card_number'])->name('user.cable_subscription.validate_smart_card_number');
+
+
+//ELECTRICITY: electricity
+Route::middleware(['auth','verified','user'])->get('user/electricity/buy_electricity', [ElectricitySubscriptionController::class, 'buy_electricity_subscription'])->name('user.electricity.buy_electricity_subscription');
+Route::middleware(['auth','verified','user'])->get('user/electricity/store', [ElectricitySubscriptionController::class, 'buy_electricity_subscription_action'])->name('user.electricity.buy_electricity_subscription_action');
+Route::middleware(['auth','verified','user'])->get('user/electricity/buy_electricity_subscription_by_plan_category/{id}', [ElectricitySubscriptionController::class, 'buy_electricity_subscription_by_plan_category'])->name('user.electricity.buy_electricity_subscription_by_plan_category');
+Route::middleware(['auth','verified','user'])->get('user/electricity/validate_metre_number', [ElectricitySubscriptionController::class, 'validate_metre_number'])->name('user.electricity.validate_metre_number');
+
+//ELECTRICITY
 
 Route::middleware(['auth','verified','user'])->get('user/data/buy_data', [DataController::class, 'buy_data'])->name('user.data.buy_data');
+Route::middleware(['auth','verified','user'])->get('user/data/buy_data_by_plan_category/{id}', [DataController::class, 'buy_data_by_plan_category'])->name('user.data.buy_data_by_plan_category');
 Route::middleware(['auth','verified','user'])->get('user/data/get_single_bulk_data_wallet/{plan_id}', [DataController::class, 'get_single_bulk_data_wallet'])->name('user.data.get_single_bulk_data_wallet');
 Route::middleware(['auth','verified','user'])->get('user/data/store', [DataController::class, 'buy_data_action'])->name('user.data.buy_data_action');
 Route::middleware(['auth','verified','user'])->get('user/data/fetch_product_plan_categories', [DataController::class, 'fetch_product_plan_categories'])->name('user.fetch_product_plan_categories'); //TODO: you can add this to a helper controller later

@@ -59,6 +59,53 @@ class DataController extends Controller
         return view('user.data.buy_data')->with($data);
     }
 
+    public function buy_data_by_plan_category($id){
+        
+        $plan_category = ProductPlanCategory::with('product','network','automation')->where('id',$id)->first();
+        
+        $product_plans = ProductPlan::where('automation_id',$plan_category->automation->id)->where('product_plan_category_id',$id)->get();
+        
+        $user_details = auth()->user();
+        $user_id = $user_details->id;
+        $user_plan_id = $user_details->user_plan_id;
+       
+        $product_planss = [];
+        $counter = 0;
+
+        $user_level = UserPlan::select('plan_level')->where('id',$user_plan_id)->first();
+        $plan_level = $user_level->plan_level;
+        foreach($product_plans as $product_plan){
+
+            $user_level_selling = "user_level_".$plan_level."_selling_price";
+            // $user_level_selling = "{user_level_$user_level_selling_price}";
+            $selling_price = $product_plan->$user_level_selling;
+            if($product_plan){
+                $counter++;
+                $product_planss[$counter]['product_plan_id'] = $product_plan->id;
+                $product_planss[$counter]['selling_price'] = $selling_price;
+                $product_planss[$counter]['product_plan_name'] = $product_plan->product_plan_name;
+                $product_planss[$counter]['data_size_in_mb'] = $product_plan->data_size_in_mb;
+                $product_planss[$counter]['validity_in_days'] = $product_plan->validity_in_days;    
+                $product_planss[$counter]['automation_id'] = $product_plan->automation_id;    
+            }
+        }
+
+        // dd($user_id);
+
+        //data txns list
+        $data_transactions = Transaction::with('user')->where('transaction_category','data')
+        ->where('user_id',$user_id)
+        ->latest()
+        ->get();
+        $data['data_transactions'] = $data_transactions;
+        $data['user_details'] = $user_details;
+        $data['plan_category'] = $plan_category;
+        $data['product_plans'] = $product_planss;
+        
+        // dd($data);
+        return view('user.data.buy_data_by_plan_category')->with($data);
+    }
+
 
      /**
      * Show the form for creating a new resource.
@@ -518,18 +565,19 @@ class DataController extends Controller
     }
 
      /**
-     * Get all the products plans.
+     * Get all the products plans. TODO: THIS must be moved to a service, airtime is using this function, other products are doing too
      */
     public function fetch_product_plans(Request $request)
     {
         $network_id = $request->network_id ?? '';
+        $amount = $request->amount ?? '';
         $plan_category_id = $request->plan_category_id ?? '';
         $product_slug = $request->product_slug ?? ''; //this is required
         
         $product_id = Product::where('slug',$product_slug)->first()->id;
          
         if($plan_category_id == ''){
-            $product_plan_categories = ProductPlanCategory::select('id','automation_id')->where('product_id',$product_id)->where('network_id',$network_id)->get();
+            $product_plan_categories = ProductPlanCategory::select('id','automation_id','is_purchase_discount_percentage','discount_value')->where('product_id',$product_id)->where('network_id',$network_id)->get();
         }else{
             $product_plan_categories = ProductPlanCategory::when(!empty($network_id), function($query) use ($network_id) {
                 $query->where('network_id',$network_id);
@@ -551,23 +599,50 @@ class DataController extends Controller
         $user_level = UserPlan::select('plan_level')->where('id',$user_plan_id)->first();
         $plan_level = $user_level->plan_level;
 
-
+        
         foreach($product_plan_categories as $key=>$product_plan_category){
             //get the automation id
             //get the product_category_id 
-            $product_plans = ProductPlan::where('product_plan_category_id',$product_plan_category->id)
-            ->where('automation_id',$product_plan_category->automation_id)
-            ->get();
+
+            if($product_slug == 'airtime'){
+                $product_plans = ProductPlan::where('product_plan_category_id',$product_plan_category->id)
+                ->where('automation_id',$product_plan_category->automation_id)
+                ->limit(1)
+                ->get();
+            }else{
+                $product_plans = ProductPlan::where('product_plan_category_id',$product_plan_category->id)
+                ->where('automation_id',$product_plan_category->automation_id)
+                ->get();
+            }
+
             if(count($product_plans) > 0){
                 foreach($product_plans as $product_plan){
 
                     $user_level_selling = "user_level_".$plan_level."_selling_price";
                     // $user_level_selling = "{user_level_$user_level_selling_price}";
                     $selling_price = $product_plan->$user_level_selling;
+                    
+                    if($product_slug == 'airtime' && $amount != ''){
+                        $is_purchase_discount_percentage = $product_plan_category->is_purchase_discount_percentage ? 'percent':'flat';
+
+                        if($is_purchase_discount_percentage == 'percent'){
+                            $purchase_discount = $product_plan_category->discount_value; 
+                            $actual_discount_value = ceil(($purchase_discount/100) * $amount);  
+                          }else{
+                              $actual_discount_value = $product_plan_category->discount_value;  
+                          }
+                          $purchase_discount = $product_plan_category->discount_value; 
+                          $discounted_selling_price = $amount - abs($actual_discount_value);
+                          $selling_price = 0; //this is from the system, not applicable for airtime
+                    }else{
+                        $discounted_selling_price = $selling_price - 5;
+                    }
+                   
                     if($product_plan){
                         $counter++;
                         $product_planss[$counter]['product_plan_id'] = $product_plan->id;
-                        $product_planss[$counter]['selling_price'] = $selling_price;
+                        $product_planss[$counter]['amount'] = $amount;
+                        $product_planss[$counter]['selling_price'] = $discounted_selling_price;
                         $product_planss[$counter]['product_plan_name'] = $product_plan->product_plan_name;
                         $product_planss[$counter]['data_size_in_mb'] = $product_plan->data_size_in_mb;
                         $product_planss[$counter]['validity_in_days'] = $product_plan->validity_in_days;    

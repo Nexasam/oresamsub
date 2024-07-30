@@ -36,6 +36,10 @@ class ProductPlanCategory extends Model
         return $this->belongsTo(Automation::class,'automation_id','id');
     }
 
+    public function product_plans(){
+        return $this->hasMany(ProductPlan::class,'product_plan_category_id','id');
+    }
+
     
     
 

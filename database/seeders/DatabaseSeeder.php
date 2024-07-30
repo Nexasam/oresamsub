@@ -303,37 +303,61 @@ class DatabaseSeeder extends Seeder
 
 
        // PRODUCT PLAN CATEGORIES - compulsory*** - for deeper classification
-       //just create 1 airtime plan each
-       $pr_plan_mtn_airtime = ProductPlanCategory::create([
+       $pr_plan_mtn_airtime_momo = ProductPlanCategory::create([
         'id' => 'e2d7b231-7c9f-44dd-9b05-7c27ed29e16e',
-        'product_plan_category_name' => 'MTN AIRTIME',
+        'product_plan_category_name' => 'MTN AIRTIME (MOMO)',
         'product_id' => $product_airtime->id,
         'network_id' => $mtn_network->id,
         'automation_id' => $megasub->id,
         'is_hot_sales' => 0,
         // 'bulk_data_wallet_in_mb' => 1048576
       ]);
+
+      $pr_plan_mtn_airtime_vtu = ProductPlanCategory::create([
+        'id' => '0ed2d8b7-8c2e-4442-85c7-840f801552f0',
+        'product_plan_category_name' => 'MTN VTU (Virtual Top Up)',
+        'product_id' => $product_airtime->id,
+        'network_id' => $mtn_network->id,
+        'automation_id' => $megasub->id,
+        'is_hot_sales' => 0,
+        // 'bulk_data_wallet_in_mb' => 1048576
+      ]);
+
+      $pr_plan_mtn_airtime_share_n_sell = ProductPlanCategory::create([
+        'id' => '1fb2806c-6dd5-49d3-badb-481d70e372a1',
+        'product_plan_category_name' => 'MTN AIRTIME (SHARE N SELL)',
+        'product_id' => $product_airtime->id,
+        'network_id' => $mtn_network->id,
+        'automation_id' => $megasub->id,
+        'is_hot_sales' => 0,
+        // 'bulk_data_wallet_in_mb' => 1048576
+      ]);
+
+
       $pr_plan_glo_airtime = ProductPlanCategory::create([
         'id' => 'fb1064bd-0d51-4eb1-b78f-fa74fab4b89f',
-        'product_plan_category_name' => 'GLO AIRTIME',
+        'product_plan_category_name' => 'GLO VTU (Virtual Top Up)',
         'product_id' => $product_airtime->id,
         'network_id' => $glo_network->id,
         'automation_id' => $megasub->id,
         'is_hot_sales' => 0,
         // 'bulk_data_wallet_in_mb' => 1048576
       ]);
+      
+
       $pr_plan_airtel_airtime = ProductPlanCategory::create([
         'id' => '93d019fc-d9a0-4bcd-957c-8a11a9e5e133',
-        'product_plan_category_name' => 'AIRTEL AIRTIME',
+        'product_plan_category_name' => 'AIRTEL VTU (Virtual Top Up)',
         'product_id' => $product_airtime->id,
         'network_id' => $airtel_network->id,
         'automation_id' => $megasub->id,
         'is_hot_sales' => 0,
         // 'bulk_data_wallet_in_mb' => 1048576
       ]);
+
       $pr_plan_9mobile_airtime = ProductPlanCategory::create([
         'id' => '7559521a-272e-4b27-9330-c1442154626f',
-        'product_plan_category_name' => '9MOBILE AIRTIME',
+        'product_plan_category_name' => '9MOBILE VTU (Virtual Top Up)',
         'product_id' => $product_airtime->id,
         'network_id' => $_9mobile_network->id,
         'automation_id' => $megasub->id,

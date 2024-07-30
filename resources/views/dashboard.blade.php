@@ -1027,9 +1027,9 @@
                                 @endphp
                         @foreach ($hot_sales as $hot_sale)
                                     <tr>
-                                        <td class="font-small">{{ $hot_sale->product_plan_category_name  }} </td>
+                                        <td class="font-small">{{ $hot_sale['plan_category_name']  }} </td>
                                         <td>
-                                             <a href="{{ route('user.data.buy_data') }}" class="text-primary hover:text-primary" href="javascript:void(0);">Buy</a>
+                                             <a href="{{ route($hot_sale['route_name'],$hot_sale['id']) }}" class="text-primary hover:text-primary" href="javascript:void(0);">Buy</a>
                                         </td>
                                     </tr>
                             {{-- <p>{{ $hot_sale->product_plan_category_name  }}  :  <a href="{{ route('user.data.buy_data') }}">explore</a> </p> --}}
@@ -1124,9 +1124,9 @@
                         @foreach ($hot_sales as $hot_sale)
                                     <tr>
                                         {{-- text-[#17171d] --}}
-                                        <td class="font-small "> <h4 class=" dark:text-bgdark">{{ $hot_sale->product_plan_category_name  }}</h4>  </td>
+                                        <td class="font-small "> <h4 class=" dark:text-bgdark">{{ $hot_sale['plan_category_name']  }}</h4>  </td>
                                         <td>
-                                             <a href="{{ route('user.data.buy_data') }}" class="text-primary hover:text-primary" href="javascript:void(0);">Buy</a>
+                                             <a href="{{ route($hot_sale['route_name'],$hot_sale['id']) }}" class="text-primary hover:text-primary" href="javascript:void(0);">Buy</a>
                                         </td>
                                     </tr>
                             {{-- <p>{{ $hot_sale->product_plan_category_name  }}  :  <a href="{{ route('user.data.buy_data') }}">explore</a> </p> --}}

@@ -34,6 +34,7 @@ $(document).ready(function(){
                     {data: 'product_plan_category_name', name: 'product_plan_category_name'},
                     {data: 'product_id', name: 'product_id'},
                     {data: 'automation_id', name: 'automation_id'},
+                    {data: 'discount_value', name: 'discount_value'},
                     {data: 'network_id', name: 'network_id'},
                     {data: 'created_at', name: 'created_at'},
                     {data: 'is_hot_sales', name: 'is_hot_sales'},

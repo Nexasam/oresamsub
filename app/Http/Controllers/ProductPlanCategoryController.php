@@ -59,6 +59,7 @@ class ProductPlanCategoryController extends Controller
         'product_id' => 'required|exists:products,id',
         'network_id' => 'nullable|exists:networks,id',
         'automation_id' => 'required|exists:automations,id',
+        'discount_value' => 'required'
       ]);
 
       if ($validator->stopOnFirstFailure()->fails()) {
@@ -68,6 +69,12 @@ class ProductPlanCategoryController extends Controller
       $data = $validator->validated();
      
       // dd($data);
+      if($request->discount_value > 100){
+        Session::flash('failure','Discount value cannot be greater than 100 percent');
+       
+        return redirect()->back();
+        
+      }
 
       $create_product_plan_categories = ProductPlanCategory::where('id',$request->id)->update($data);
 
@@ -195,7 +202,10 @@ class ProductPlanCategoryController extends Controller
           
           // return $automation_display;
       }) 
-        ->addColumn('network_id',function($data){
+      ->addColumn('discount_value',function($data){
+        return $data->discount_value ?? 'nil';
+       })  
+      ->addColumn('network_id',function($data){
             return $data->network->network_name ?? 'nil';
         }) 
         ->addColumn('created_at',function($data){
