@@ -1809,8 +1809,8 @@ $('#hs-basic-modal').trigger('click');
 
               
 
-              console.log(data);
-              return;
+              // console.log(data);
+              // return;
 
               if (confirm("Are you sure you want to complete this airtime purchase?") == true) {
                   // alert('logic happens here')
