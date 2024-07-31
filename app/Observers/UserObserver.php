@@ -14,7 +14,7 @@ class UserObserver implements ShouldHandleEventsAfterCommit
      */
     public function created(User $user): void
     {
-        //check atleast one bulk data wallet of the user:
+        //check atleast one bulk data wallet of the user: MODIFY THIS
         // $check_existence = UserBulkDataWallet::where('user_id',$user->id)->first();
         // if(! $check_existence){
             // Create bulk wallet accounts based on product plan categories

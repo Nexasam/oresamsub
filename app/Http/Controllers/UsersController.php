@@ -56,11 +56,15 @@ class UsersController extends Controller
       //  Gate::authorize('viewAny', User::class);
 
         $user = User::where('id',$id)->first();
+        $user_plans = UserPlan::get();
         if(!$user){
           Session::flash('failure','User not found');
           return redirect()->back();
         }
-        return view('admin.users.manage_users')->with(['user' => $user]);
+
+          $upline = User::where('id',$user->upline_id)->first();
+       
+        return view('admin.users.manage_users')->with(['user' => $user, 'user_plans' => $user_plans, 'upline' => $upline]);
     }
 
     /**
@@ -93,6 +97,16 @@ class UsersController extends Controller
           'main_wallet' => $new_main_wallet
       ]);
 
+      $walletLog['user_id'] = $user_id;
+      $walletLog['transaction_category'] = 'ADMIN_WALLET_CREDITING';
+      $walletLog['balance_before'] = $former_balance;
+      $walletLog['balance_after'] = $new_main_wallet;
+      $walletLog['transaction_id'] = NULL;
+      $walletLog['action_by'] = auth()->user()->id;
+      $walletLog['description'] = 'Wallet Crediting by Admin';
+      $this->log_wallet_transactions($walletLog);
+
+
       if($update_user_wallet){
         Session::flash('success','Wallet was successfully funded for '. $full_name);
       }else{
@@ -101,6 +115,43 @@ class UsersController extends Controller
 
       return redirect()->route('admin.users.index');
     }
+
+     /**
+     * Display a listing of the resource. by ADMIN
+     */
+    public function reset_2fa(Request $request)
+    {
+      //  Gate::authorize('viewAny', User::class);
+
+      $validator = Validator::make($request->all(), [
+        'user_id' => 'required|exists:users,id',
+      ]);
+      
+
+      if ($validator->stopOnFirstFailure()->fails()) {
+        return redirect()->back()->withErrors($validator)->withInput();
+      }
+
+      $user_id = $request->user_id;
+      $get_user = User::select('first_name','last_name','id','main_wallet')->where('id',$user_id)->first();
+      $full_name = $get_user->first_name .' '. $get_user->last_name;
+      
+
+      $update_user_2fa = User::where('id',$user_id)->update([
+          'two_factor_secret' => NULL,
+          'two_factor_recovery_codes' => NULL,
+      ]);
+
+      if($update_user_2fa){
+        Session::flash('success', '2FA was successfully reset for '. $full_name);
+      }else{
+        Session::flash('failure','Error occurred while reseting 2fa');
+      }
+
+      return redirect()->route('admin.users.index');
+    }
+
+    
 
     
 

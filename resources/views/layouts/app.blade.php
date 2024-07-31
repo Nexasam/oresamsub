@@ -1807,8 +1807,6 @@ $('#hs-basic-modal').trigger('click');
                 amount : amount
               };
 
-              
-
               // console.log(data);
               // return;
 

@@ -237,7 +237,7 @@ class ProductPlanCategoryController extends Controller
             }
             $escapedUrl = htmlspecialchars(json_encode($data->id));
             // $action .= '<a href="#" data-modal-target="default-modal'.$data->id.'" data-modal-toggle="default-modal'.$data->id.'"  onclick="testingFunction('.$escapedUrl.')"  class="ti-btn ti-btn-success">Edit</a>';
-            $action .= '<a href="'.$view_route.'" class="hs-dropdown-toggle ti-btn ti-btn-success">Edit</a>';
+            $action .= '<a href="'.$view_route.'" class="hs-dropdown-toggle ti-btn ti-btn-success">Details</a>';
             return $action;
           
         })

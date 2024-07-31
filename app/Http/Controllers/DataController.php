@@ -18,6 +18,7 @@ use Illuminate\Support\Facades\DB;
 use App\Models\ProductPlanCategory;
 use App\Models\BulkDataProductPlans;
 use App\Models\UserBulkDataPurchase;
+use App\Traits\WalletTransactionLogs;
 use Illuminate\Support\Facades\Validator;
 use App\Services\Automation\MegaSubPlugAutomation\VendData;
 use App\Services\Automation\MegaSubPlugAutomation\MegaSubVendData;
@@ -257,7 +258,17 @@ class DataController extends Controller
                                 $creationData['description'] = $description;
                                 $creationData['user_screen_message'] = $user_message;
                                 $creationData['admin_screen_message'] = $admin_message;
-                                Transaction::create($creationData);
+                                $transaction = Transaction::create($creationData);
+
+
+                                $walletLog['user_id'] = $user_id;
+                                $walletLog['transaction_category'] = 'DATA_FROM_MAIN_WALLET';
+                                $walletLog['balance_before'] = $wallet_before;
+                                $walletLog['balance_after'] = $wallet_after;
+                                $walletLog['transaction_id'] = $transaction->id;
+                                $walletLog['action_by'] = auth()->user()->id;           
+                                $walletLog['description'] = 'Data Purchase from main wallet';
+                                $this->log_wallet_transactions($walletLog);
                     
                                 User::where('id',$user_id)->update([
                                     'main_wallet' => $wallet_after
@@ -333,7 +344,17 @@ class DataController extends Controller
                                 $creationData['description'] = $description;
                                 $creationData['user_screen_message'] = $message;
                                 $creationData['admin_screen_message'] = $message;
-                                Transaction::create($creationData);
+                                $transaction = Transaction::create($creationData);
+
+                                $walletLog['user_id'] = $user_id;
+                                $walletLog['transaction_category'] = 'DATA_FROM_DATA_WALLET';
+                                $walletLog['balance_before'] = $bulk_wallet_balance_before;
+                                $walletLog['balance_after'] = $bulk_wallet_balance_after;
+                                $walletLog['transaction_id'] = $transaction->id;
+                                $walletLog['action_by'] = auth()->user()->id;
+                                $walletLog['description'] = 'Data Purchase from data wallet';
+                                $this->log_wallet_transactions($walletLog);
+
                     
                                 UserBulkDataWallet::where('user_id',$user_id)
                                                     ->where('product_plan_category_id',$request->product_plan_category_id)
@@ -465,6 +486,8 @@ class DataController extends Controller
 
             $create = UserBulkDataPurchase::create($dataaa);
 
+          
+
             $user = User::where('id',$user_details->id)->update([
                 'main_wallet' => $wallet_after
             ]);
@@ -475,10 +498,19 @@ class DataController extends Controller
                 'alltime_bulk_wallet_balance_mb' => $new_alltime_data_wallet_balance,
             ]);
 
+            $walletLog['user_id'] = $user_details->id;
+            $walletLog['transaction_category'] = 'BULK_DATA_PURCHASE';
+            $walletLog['balance_before'] = $wallet_before;
+            $walletLog['balance_after'] = $wallet_after;
+            $walletLog['transaction_id'] = $create->id;
+            $walletLog['action_by'] = auth()->user()->id;
+            $walletLog['description'] = 'BULK DATA Purchase from main wallet with transaction_id';
+            $this->log_wallet_transactions($walletLog);
+
             DB::commit();
-            return response()->json(['status'=>1, 'message'=>'Bulk data  was successfully processed', 'data' => $dataaa  ]);
+            return response()->json(['status'=>1, 'message'=>'Bulk data was successfully processed', 'data' => $dataaa  ]);
         
-        }catch(\Exception $exception){
+        }catch(Exception $exception){
             logger($exception->getMessage().' on line '.$exception->getLine());
             DB::rollBack();
             return response()->json(['status'=>-1, 'message'=>$exception->getMessage() .' on line '.$exception->getLine(), 'data' => $dataaa  ]);

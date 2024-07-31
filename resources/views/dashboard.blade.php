@@ -1004,7 +1004,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-span-12 xxl:col-span-3">
+        <div class="col-span-12 xxl:col-span-4">
             <div class="box">
                 <div class="box-header">
                     <div class="flex justify-between">

@@ -139,15 +139,59 @@
                                                     value="{{ $automation->id }}">{{ $automation->automation_name }}</option>
                                                    @endforeach
                                                 </select>
-                                          </div>
+                                             </div>
 
+                                             <div class="space-y-2">
+                                              <label class="ti-form-label mb-0">Referral Commission Feature</label>
+                                              <select required id="referral_commission_feature" name="referral_commission_feature"  class="my-auto ti-form-select">
+                                                  <option value="">Select</option>
+                                                    
+                                                  <option  
+                                                  @if ($product_plan_category->referral_commission_feature == 1)
+                                                  selected
+                                                  @endif 
+                                                  value="{{ $product_plan_category->referral_commission_feature  }}">ON</option>
 
+                                                  <option  
+                                                  @if ($product_plan_category->referral_commission_feature == 0)
+                                                  selected
+                                                  @endif 
+                                                  value="{{ $product_plan_category->referral_commission_feature  }}">OFF</option>
+                                                  
+                                                </select>
+                                             </div>
 
-                                        <div class="space-y-2">
-                                          <label class="ti-form-label mb-0">Purchase Discount Value (Percent)</label>
-                                          <input type="number" class="my-auto ti-form-input" value="{{ $product_plan_category->discount_value }}" id="discount_value" name="discount_value" value="" placeholder="Enter purchase discount_value for this plan category">
-                                        
-                                        </div>
+                                             <div class="space-y-2">
+                                              <label class="ti-form-label mb-0">Commission Type</label>
+                                              <select required id="referral_commission_method" name="referral_commission_method"  class="my-auto ti-form-select">
+                                                <option value="">Select</option>
+                                                  
+                                                <option  
+                                                @if ($product_plan_category->referral_commission_method == 'percent')
+                                                selected
+                                                @endif 
+                                                value="{{ $product_plan_category->referral_commission_method  }}">PERCENTAGE</option>
+
+                                                <option  
+                                                @if ($product_plan_category->referral_commission_method == 'flat')
+                                                selected
+                                                @endif 
+                                                value="{{ $product_plan_category->referral_commission_method  }}">FLAT</option>
+                                                
+                                              </select>
+                                            
+                                            </div>
+
+                                            <div class="space-y-2">
+                                              <label class="ti-form-label mb-0">Referral Commission Value</label>
+                                              <input type="number" class="my-auto ti-form-input" value="{{ $product_plan_category->referral_commission_value }}" id="referral_commission_value" name="referral_commission_value" >
+                                            </div>
+
+                                            <div class="space-y-2">
+                                              <label class="ti-form-label mb-0">Purchase Discount Value (Percent)</label>
+                                              <input type="number" class="my-auto ti-form-input" value="{{ $product_plan_category->discount_value }}" id="discount_value" name="discount_value"  placeholder="Enter purchase discount_value for this plan category">
+                                            
+                                            </div>
 
                                    
                                               

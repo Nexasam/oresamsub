@@ -78,6 +78,7 @@ Route::middleware(['auth','verified','admin'])->get('admin/users', [UsersControl
 Route::middleware(['auth','verified','admin'])->get('admin/users/create', [UsersController::class, 'create'])->name('admin.users.create');
 Route::middleware(['auth','verified','admin'])->get('admin/users/{id}/manage_user', [UsersController::class, 'manage_user'])->name('admin.users.manage_user');
 Route::middleware(['auth','verified','admin'])->post('admin/users/fund_user_wallet', [UsersController::class, 'fund_user_wallet'])->name('admin.users.fund_user_wallet');
+Route::middleware(['auth','verified','admin'])->post('admin/users/reset_2fa', [UsersController::class, 'reset_2fa'])->name('admin.users.reset_2fa');
 Route::middleware(['auth','verified','admin'])->post('admin/users/store', [UsersController::class, 'store'])->name('admin.users.store');
 Route::middleware(['auth','verified','admin'])->get('admin/users/fetch_users', [UsersController::class, 'fetch_users'])->name('admin.users.fetch_users');
 

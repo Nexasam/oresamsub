@@ -296,7 +296,16 @@ class ElectricitySubscriptionController extends Controller
                                 $creationData['description'] = $description;
                                 $creationData['user_screen_message'] = $user_message;
                                 $creationData['admin_screen_message'] = $admin_message;
-                                Transaction::create($creationData);
+                                $transaction = Transaction::create($creationData);
+
+                                $walletLog['user_id'] = $user_id;
+                                $walletLog['transaction_category'] = 'BILLS';
+                                $walletLog['balance_before'] = $wallet_before;
+                                $walletLog['balance_after'] = $wallet_after;
+                                $walletLog['transaction_id'] = $transaction->id;
+                                $walletLog['action_by'] = auth()->user()->id;
+                                $walletLog['description'] = 'UTILITY BILLS Purchase from main wallet with transaction_id';
+                                $this->log_wallet_transactions($walletLog);
                     
                                 User::where('id',$user_id)->update([
                                     'main_wallet' => $wallet_after

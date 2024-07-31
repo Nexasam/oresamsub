@@ -82,31 +82,7 @@
                             <form method="POST" action="{{ route('admin.settings.referral_settings')  }}">
                                @csrf
                                 <div class="grid w-full lg:w-1/2 lg:grid-cols-1 gap-6 space-y-4 lg:space-y-0">
-                                    <div class="space-y-2 mt-5">
-                                      <label class="ti-form-label mb-0">  Manage commission feature </label>
-                                      <select id="product_commission_feature" name="product_commission_feature" required class="my-auto ti-form-select">
-                                          <option value="">Select</option>
-                                          <option @if ($referral_setting->product_commission_feature == 1) selected @endif value="1">Activate flat rate</option>
-                                          <option @if ($referral_setting->product_commission_feature == 2) selected @endif value="2">Activate percentage rate</option>
-                                          <option @if ($referral_setting->product_commission_feature == 3) selected @endif value="3">Deactivate both</option>
-                                        </select>
-                                    </div>
-
-                                    <div class="space-y-2">
-                                      <label class="ti-form-label mb-0">Set commission flat rate <br>
-                                        <small>This will take effect if commission flat rate is activated</small>
-                                      </label>
-                                      <input value="{{ $referral_setting->set_product_commission_flat_rate }}" name="set_product_commission_flat_rate" type="number" required class="my-auto ti-form-input" min="0" id="set_product_commission_flat_rate"  placeholder="commission flat rate">
-                                     </div>
-
-                                     <div class="space-y-2">
-                                      <label class="ti-form-label mb-0">Set commission percentage rate <br>
-                                        <small>This will take effect if commission percentage rate is activated</small>
-                                      </label>
-                                      <input value="{{ $referral_setting->set_product_commission_percentage_rate }}" name="set_product_commission_percentage_rate" type="number" required class="my-auto ti-form-input" max="100" placeholder="commission percentage rate">
-                                    </div>
-
-
+                                    
                                     <div class="space-y-2">
                                       <label class="ti-form-label mb-0">Manage first crediting feature
                                           <br>

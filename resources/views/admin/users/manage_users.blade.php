@@ -84,6 +84,10 @@
                       <div>
                         <div class="grid lg:grid-cols-2 gap-6">
                             <div class="space-y-2">
+                                <label class="ti-form-label mb-0">User Name</label>
+                                <input type="text" class="my-auto ti-form-input" id="username" name="username" value="{{ $user->username }}" placeholder="Username">
+                            </div>
+                            <div class="space-y-2">
                                 <label class="ti-form-label mb-0">First Name</label>
                                 <input type="text" class="my-auto ti-form-input" id="first_name" name="first_name" value="{{ $user->first_name }}" placeholder="Firstname">
                             </div>
@@ -92,12 +96,42 @@
                                 <input type="text" class="my-auto ti-form-input" id="last_name" name="last_name" value="{{ $user->last_name }}" placeholder="Lastname">
                             </div>
                             <div class="space-y-2">
+                              <label class="ti-form-label mb-0">Other Names</label>
+                              <input type="text" class="my-auto ti-form-input" id="other_names" name="other_names" value="{{ $user->other_names }}" placeholder="Othernames">
+                          </div>
+                            <div class="space-y-2">
                                 <label class="ti-form-label mb-0">Phone Number</label>
                                 <input type="number" class="my-auto ti-form-input" id="phone_number" name="phone_number" value="{{ $user->phone_number }}" placeholder="Phone">
                             </div>
                             <div class="space-y-2">
                                 <label class="ti-form-label mb-0">Email Address</label>
                                 <input type="email" class="my-auto ti-form-input" id="email_address" name="email_address" value="{{ $user->email }}" placeholder="Email">
+                            </div>
+                            <div class="space-y-2">
+                              <label class="ti-form-label mb-0">PIN</label>
+                              <input type="number" class="my-auto ti-form-input" id="pin" name="pin" value="{{ $user->pin }}" placeholder="PIN">
+                            </div>
+                            <div class="space-y-2">
+                              <label class="ti-form-label mb-0">Upline: @if ($upline != NULL){{ $upline->email_address .' '.$upline->phone_number }}@endif</label>
+                             
+                              <input type="text" class="my-auto ti-form-input" id="upline_id" name="upline_id" value="@if ($upline != NULL){{ $upline->first_name .' '.$upline->last_name }}@endif" placeholder="Upline">
+                           </div>
+                      
+                           <div class="space-y-2">
+                            <label class="ti-form-label mb-0">User Plan</label>
+                            <select required id="user_plan_id" name="user_plan_id"  class="my-auto ti-form-select">
+                              <option value="">Select</option>
+                                
+                              @foreach ($user_plans as $user_plan)
+                                  <option  
+                                  @if ($user_plan->id == $user->user_plan_id)
+                                  selected
+                                  @endif 
+                                  value="{{ $user_plan->id  }}">{{ $user_plan->user_plan_name ?? $user_plan->default_user_plan_name  }}</option>
+                              @endforeach
+                
+                            </select>
+                          
                             </div>
                            
                             {{-- <div class="space-y-2">
@@ -211,7 +245,8 @@
                     </div>
                     <div class="box-body">
                       <h5 class="text-base font-semibold">Reset 2FA</h5>
-                      <form method="POST" action="{{ route('admin.users.fund_user_wallet')  }}">
+                      <p>Currently: {{   $user->two_factor_secret == NULL && $user->two_factor_recovery_codes == NULL ? 'OFF' : 'ON' }}</p>
+                      <form method="POST" action="{{ route('admin.users.reset_2fa')  }}">
                            @csrf    
                             <div class="my-2">
                               <input type="hidden" class="my-auto ti-form-input" value="{{ $user->id }}" name="user_id" id="user_id" placeholder="">

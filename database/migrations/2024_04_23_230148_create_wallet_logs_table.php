@@ -14,6 +14,8 @@ return new class extends Migration
         Schema::create('wallet_logs', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->foreignUuid('user_id')->constrained(table: 'users');
+            $table->string('transaction_id')->nullable();
+            $table->string('action_by');
             $table->string('transaction_category')->nullable()->comment('Options: wallet_crediting, withdrawal etc');
             $table->string('balance_before');
             $table->string('balance_after');

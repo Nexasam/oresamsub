@@ -13,9 +13,6 @@ return new class extends Migration
     {
         Schema::create('referral_settings', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->string('product_commission_feature')->default(3)->comment('1- activate flat rate, 2 - activate percentage rate, 3 -deactivate both');
-            $table->string('set_product_commission_flat_rate')->default(50);
-            $table->string('set_product_commission_percentage_rate')->default(5);
             $table->string('first_downline_crediting_feature')->default(3)->comment('1- award upline by flat rate, 2- award upline by percentage rate, 3 - dont award ');
             $table->string('set_first_downline_crediting_flat_rate')->default(50);
             $table->string('set_first_downline_crediting_percentage_rate')->default(5);

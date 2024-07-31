@@ -60,9 +60,6 @@ class AdminSettingsController extends Controller
     public function manage_referral_settings(Request $request){
         //TODO: validation later
         $validator = Validator::make($request->all(), [
-            'product_commission_feature' => 'required',
-            'set_product_commission_flat_rate' => 'required',
-            'set_product_commission_percentage_rate' => 'required',
             'first_downline_crediting_feature' => 'required',
             'set_first_downline_crediting_flat_rate' => 'required',
             'set_first_downline_crediting_percentage_rate' => 'required',

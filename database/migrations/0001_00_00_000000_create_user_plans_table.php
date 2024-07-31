@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('updated_user_plan_name')->unique()->nullable();
             $table->string('plan_level')->comment('user plan level');
             $table->string('is_default');
+            $table->string('visibility')->default(1);
             $table->timestamps();
         });
     }
