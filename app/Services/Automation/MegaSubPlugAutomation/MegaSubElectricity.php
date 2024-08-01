@@ -66,7 +66,9 @@ class MegaSubElectricity{
 
 
     public function validateMetreNumber(){
-        $plan_details = ProductPlan::with('product_plan_category')->where('id',$this->plan_id)->first();
+        $plan_details = ProductPlan::with('product_plan_category')
+        ->where('visibility',1)
+        ->where('id',$this->plan_id)->first();
       
         if(! $plan_details){
             return [
@@ -128,7 +130,9 @@ class MegaSubElectricity{
 
     public function buyElectricity(){
         
-        $plan_details = ProductPlan::with('product_plan_category')->where('id',$this->plan_id)->first();
+        $plan_details = ProductPlan::with('product_plan_category')
+        ->where('visibility',1)
+        ->where('id',$this->plan_id)->first();
       
         if(! $plan_details){
             return [

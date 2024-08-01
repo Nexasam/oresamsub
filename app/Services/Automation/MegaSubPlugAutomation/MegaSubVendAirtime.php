@@ -60,7 +60,9 @@ class MegaSubVendAirtime{
     }
     public function buyAirtime(){
         
-        $plan_details = ProductPlan::with('product_plan_category.network')->where('id',$this->plan_id)->first();
+        $plan_details = ProductPlan::with('product_plan_category.network')
+        ->where('visibility',1)
+        ->where('id',$this->plan_id)->first();
       
         //debugging/testing
         // return [

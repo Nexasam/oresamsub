@@ -68,7 +68,9 @@ class MegaSubCableTV{
     }
 
     public function validateSmartCardNumber(){
-        $plan_details = ProductPlan::with('product_plan_category')->where('id',$this->plan_id)->first();
+        $plan_details = ProductPlan::with('product_plan_category')
+        ->where('visibility',1)
+        ->where('id',$this->plan_id)->first();
       
         if(! $plan_details){
             return [
@@ -133,7 +135,9 @@ class MegaSubCableTV{
     }
     public function buyCable(){
         
-        $plan_details = ProductPlan::with('product_plan_category')->where('id',$this->plan_id)->first();
+        $plan_details = ProductPlan::with('product_plan_category')
+        ->where('visibility',1)
+        ->where('id',$this->plan_id)->first();
       
         if(! $plan_details){
             return [

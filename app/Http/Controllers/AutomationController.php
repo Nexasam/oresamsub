@@ -18,7 +18,8 @@ class AutomationController extends Controller
         // dd($user_plans);
 
         $automation = Automation::where('slug',$slug)->first();
-        $product_plan_ids = ProductPlan::where('automation_id',$automation->id)->pluck('automation_product_plan_id')->toArray();                
+        $product_plan_ids = ProductPlan::where('automation_id',$automation->id)
+        ->pluck('automation_product_plan_id')->toArray();                
 
         $sme_network_mtn = 1;
         $sme_network_airtel = 2;

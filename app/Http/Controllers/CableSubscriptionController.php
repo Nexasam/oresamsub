@@ -64,7 +64,10 @@ class CableSubscriptionController extends Controller
 
     public function validate_smart_card_number(Request $request){
          //call the automation involved
-         $plan_details = ProductPlan::with('product_plan_category','automation')->where('id',$request->plan_id)->first();
+         $plan_details = ProductPlan::with('product_plan_category','automation')
+         ->where('visibility',1)
+         ->where('id',$request->plan_id)
+         ->first();
       
          if(! $plan_details){
              return [
@@ -91,7 +94,9 @@ class CableSubscriptionController extends Controller
 
         $plan_category = ProductPlanCategory::with('product','network','automation')->where('id',$id)->first();
         
-        $product_plans = ProductPlan::where('automation_id',$plan_category->automation->id)->where('product_plan_category_id',$id)->get();
+        $product_plans = ProductPlan::where('automation_id',$plan_category->automation->id)
+        ->where('visibility',1)
+        ->where('product_plan_category_id',$id)->get();
         
       
         $user_details = auth()->user();
@@ -165,7 +170,7 @@ class CableSubscriptionController extends Controller
         $display_results = [];
         $no_of_slots = $request->no_of_slots; //to be adjusted later
 
-        $plan_details = ProductPlan::where('id',$request->cable_product_plan_id)->first();
+        $plan_details = ProductPlan::where('id',$request->cable_product_plan_id)->where('visibility',1)->first();
         if(! $plan_details){
             //end session and redirect to login
             redirect(url('/login'));
@@ -351,7 +356,9 @@ class CableSubscriptionController extends Controller
 
         $network = $request->network_id;
         $product_id = Product::where('slug','cable_subscription')->first()->id;
-        $product_plans_categories = ProductPlanCategory::whereIn('product_id',$product_id)->where('network_id',$network)->get();
+        $product_plans_categories = ProductPlanCategory::whereIn('product_id',$product_id)
+        ->where('visibility',1)
+        ->where('network_id',$network)->get();
         
         return response()->json(['status'=>'1', 'message'=>'Product plans categories fetched','data' => $product_plans_categories ]);
 

@@ -10,6 +10,8 @@ class ProductPlan extends Model
 {
     use HasFactory, HasUuids;
 
+    //TODO: revamp productplan with global scope for visibility in all its instance in the code
+
     protected $guarded = ['id'];
 
     

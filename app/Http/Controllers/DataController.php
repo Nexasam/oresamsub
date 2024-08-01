@@ -64,7 +64,9 @@ class DataController extends Controller
         
         $plan_category = ProductPlanCategory::with('product','network','automation')->where('id',$id)->first();
         
-        $product_plans = ProductPlan::where('automation_id',$plan_category->automation->id)->where('product_plan_category_id',$id)->get();
+        $product_plans = ProductPlan::where('automation_id',$plan_category->automation->id)
+        ->where('visibility',1)
+        ->where('product_plan_category_id',$id)->get();
         
         $user_details = auth()->user();
         $user_id = $user_details->id;
@@ -147,7 +149,7 @@ class DataController extends Controller
         $message = 'Pending';
         $display_results = [];
 
-        $plan_details = ProductPlan::where('id',$request->product_plan_id)->first();
+        $plan_details = ProductPlan::where('id',$request->product_plan_id)->where('visibility',1)->first();
         $automation_id = $plan_details->automation_id;
         $data_value_mb = $plan_details->data_size_in_mb ?? 0;
 
@@ -522,7 +524,7 @@ class DataController extends Controller
 
 
     public function get_single_bulk_data_wallet($plan_id){
-        $plan_details = ProductPlan::where('id',$plan_id)->first();
+        $plan_details = ProductPlan::where('id',$plan_id)->where('visibility',1)->first();
         $plan_category_id = $plan_details->product_plan_category_id;
         $user_id = auth()->id();
         $get_user_wallet_details = UserBulkDataWallet::with('product_plan_category')->where('user_id',$user_id)
@@ -590,7 +592,9 @@ class DataController extends Controller
 
         $network = $request->network_id;
         $product_id = Product::where('slug',$request->product_slug)->first()->id;
-        $product_plans_categories = ProductPlanCategory::where('network_id',$network)->where('product_id',$product_id)->get();
+        $product_plans_categories = ProductPlanCategory::where('network_id',$network)
+        ->where('visibility',1)
+        ->where('product_id',$product_id)->get();
         
         return response()->json(['status'=>'1', 'message'=>'Product plans categories fetched','data' => $product_plans_categories ]);
 
@@ -639,10 +643,12 @@ class DataController extends Controller
             if($product_slug == 'airtime'){
                 $product_plans = ProductPlan::where('product_plan_category_id',$product_plan_category->id)
                 ->where('automation_id',$product_plan_category->automation_id)
+                ->where('visibility',1)
                 ->limit(1)
                 ->get();
             }else{
                 $product_plans = ProductPlan::where('product_plan_category_id',$product_plan_category->id)
+                ->where('visibility',1)
                 ->where('automation_id',$product_plan_category->automation_id)
                 ->get();
             }

@@ -75,7 +75,9 @@ class AirtimeController extends Controller
 
         $plan_category = ProductPlanCategory::with('product','network','automation')->where('id',$id)->first();
         
-        $product_plans = ProductPlan::where('automation_id',$plan_category->automation->id)->where('product_plan_category_id',$id)->get();
+        $product_plans = ProductPlan::where('automation_id',$plan_category->automation->id)
+        ->where('visibility',1)
+        ->where('product_plan_category_id',$id)->get();
         
         $amount = 50; //minimum set
 
@@ -141,7 +143,9 @@ class AirtimeController extends Controller
         
         $plan_category = ProductPlanCategory::with('product','network','automation')->where('id',$request->plan_category_id)->first();
         
-        $product_plans = ProductPlan::where('automation_id',$plan_category->automation->id)->where('product_plan_category_id',$request->plan_category_id)->get();
+        $product_plans = ProductPlan::where('automation_id',$plan_category->automation->id)
+        ->where('visibility',1)
+        ->where('product_plan_category_id',$request->plan_category_id)->get();
         
         $amount = $request->amount; //minimum set
 
@@ -225,7 +229,9 @@ class AirtimeController extends Controller
 
 
         
-        $plan_details = ProductPlan::with('product_plan_category')->where('id',$request->product_plan_id)->first();
+        $plan_details = ProductPlan::with('product_plan_category')
+        ->where('visibility',1)
+        ->where('id',$request->product_plan_id)->first();
         $automation_id = $plan_details->automation_id;
         // $data_value_mb = $plan_details->data_size_in_mb ?? 0;
         $product_plan_category = $plan_details->product_plan_category;
@@ -413,7 +419,7 @@ class AirtimeController extends Controller
 
         $network = $request->network_id;
         $product_id = Product::where('slug','airtime')->first()->id;
-        $product_plans_categories = ProductPlanCategory::whereIn('product_id',$product_id)->where('network_id',$network)->get();
+        $product_plans_categories = ProductPlanCategory::whereIn('product_id',$product_id)->where('visibility',1)->where('network_id',$network)->get();
         
         return response()->json(['status'=>'1', 'message'=>'Product plans categories fetched','data' => $product_plans_categories ]);
 

@@ -11,7 +11,9 @@ class ProductPlanController extends Controller
 {
     public function index(){
         // dd('na here');
-        $product_plans = ProductPlan::with(['product','product_plan_category','automation'])->get();
+        $product_plans = ProductPlan::with(['product','product_plan_category','automation'])
+        ->where('visibility',1)
+        ->get();
         $product_plan_categories = ProductPlanCategory::get();
         $data['product_plans'] = $product_plans;
         $data['product_plan_categories'] = $product_plan_categories;
