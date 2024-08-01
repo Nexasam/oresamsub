@@ -16,7 +16,6 @@ use App\Models\BulkDataProductPlans;
 
 class UserDashboardController extends Controller
 {
-
  
   public function index(){
     $hot_sales = ProductPlanCategory::with('product')->where('is_hot_sales',1)->get();
@@ -91,14 +90,14 @@ class UserDashboardController extends Controller
       $data['bulk_data_wallet_sum'] = UserBulkDataWallet::select('bulk_wallet_balance_mb')->where('user_id',$user_id)->sum('bulk_wallet_balance_mb');
       $data['bulk_data_wallet_count'] = UserBulkDataWallet::select('bulk_wallet_balance_mb')->where('user_id',$user_id)->count();
       $data['alltime_bulk_wallet_balance_mb'] = UserBulkDataWallet::select('alltime_bulk_wallet_balance_mb')->where('user_id',$user_id)->sum('alltime_bulk_wallet_balance_mb');
-      $data['transactions'] = Transaction::with(['user','product_plan'])->where('user_id',$user_id)->get();
+      $data['transactions'] = Transaction::with(['user','product_plan'])->where('user_id',$user_id)->latest()->get();
      
       return view('dashboard')->with($data);
     }else{
       $data['main_wallet_balances'] = User::select('main_wallet')->sum('main_wallet');
       $data['bulk_data_wallet_sum'] = UserBulkDataWallet::select('bulk_wallet_balance_mb')->sum('bulk_wallet_balance_mb');
       $data['alltime_bulk_wallet_balance_mb'] = UserBulkDataWallet::select('alltime_bulk_wallet_balance_mb')->sum('alltime_bulk_wallet_balance_mb');
-      $data['transactions'] = Transaction::with(['user','product_plan'])->get();
+      $data['transactions'] = Transaction::with(['user','product_plan'])->latest()->get();
       return view('admin_dashboard')->with($data);
     }
   }

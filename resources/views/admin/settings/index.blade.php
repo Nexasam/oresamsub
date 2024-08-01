@@ -414,18 +414,18 @@
                               <p>OGDAMS AUTOMATION</p>
                               <div class="space-y-2 mt-5">
                                 <label class="ti-form-label mb-0">Secret key: </label>
-                                <input type="text" required class="my-auto ti-form-input"  value="{{ $ogdams->api_secret_key  ?? '' }}"  name="ogdams_api_secret_key"  placeholder="">
+                                <input type="text" required class="my-auto ti-form-input"  value="{{ $ogdams->api_secret_key != NULL  ? substr($ogdams->api_secret_key,0,2).str_repeat('X',8).substr($ogdams->api_secret_key,-2)  : '' }}"  name="ogdams_api_secret_key"  placeholder="">
                               </div>
                               <br>
                               <hr>
                               <p>MEGASUBPLUG AUTOMATION</p>
                               <div class="space-y-2 mt-5">
                                 <label class="ti-form-label mb-0">Api Password: </label>
-                                <input type="text" required class="my-auto ti-form-input" name="megasub_api_password" value="{{ $megasubplug->api_password  ?? '' }}"  placeholder="">
+                                <input type="text" required class="my-auto ti-form-input" name="megasub_api_password" value="{{ $megasubplug->api_password != NULL  ? substr($megasubplug->api_password,0,2).str_repeat('X',5).substr($megasubplug->api_password,-3)  : '' }}"  placeholder="">
                               </div>
                               <div class="space-y-2 mt-5">
                                 <label class="ti-form-label mb-0">Public key: </label>
-                                <input type="text" required class="my-auto ti-form-input" name="megasub_api_public_key" value="{{ $megasubplug->api_public_key  ?? '' }}"   placeholder="">
+                                <input type="text" required class="my-auto ti-form-input" name="megasub_api_public_key" value="{{ $megasubplug->api_public_key != NULL  ? substr($megasubplug->api_public_key,0,2).str_repeat('X',12).substr($megasubplug->api_public_key,-3)  : '' }}" placeholder="">
                               </div>
                               <br>
                               <hr>      

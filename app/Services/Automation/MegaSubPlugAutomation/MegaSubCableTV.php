@@ -161,8 +161,8 @@ class MegaSubCableTV{
         CURLOPT_CUSTOMREQUEST => 'POST',
         CURLOPT_POSTFIELDS => array('action' => 'buy_cable','smart_card_number' => $smart_card_number,'validation_customer_name' => $validation_customer_name,'cable_plan_api_id' => $cable_plan_api_id,'duplication_check' => '0'),
         CURLOPT_HTTPHEADER => array(
-            'Authorization: Bearer 102325246266435f47e344b',
-            'Password: inchristalone@NEW2024',
+            'Authorization: '.$this->api_key,
+            'Password: '.$this->api_password,
             'Cookie: PHPSESSID=49f8lqv734slho0cegjgk3rlsk'
         ),
         ));

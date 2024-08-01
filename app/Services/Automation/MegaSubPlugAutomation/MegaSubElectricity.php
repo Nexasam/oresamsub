@@ -165,9 +165,9 @@ class MegaSubElectricity{
         CURLOPT_CUSTOMREQUEST => 'POST',
         CURLOPT_POSTFIELDS => array('action' => 'buy_electricity','metre_number' => $metre_number,'phone_number' => $phone_number,'amount' => $amount,'validation_extra_info' => $extra_info,'electricity_plan_api_id' => $electricity_plan_api_id,'duplication_check' => '1'),
         CURLOPT_HTTPHEADER => array(
-            'Authorization: Bearer 102325246266435f47e344b',
-            'Password: inchristalone@NEW2024',
-            'Cookie: PHPSESSID=49f8lqv734slho0cegjgk3rlsk'
+            'Authorization: '.$this->api_key,
+            'Password: '.$this->api_password,
+            // 'Cookie: PHPSESSID=49f8lqv734slho0cegjgk3rlsk'
         ),
         ));
 

@@ -288,6 +288,7 @@ class AirtimeController extends Controller
                                 
                                 if($automation_details->slug == 'megasubplug'){
                                     $buy_airtime = (new MegaSubVendAirtime($phone_numbers_array[$i],$request->product_plan_id,$amount))->buyAirtime();
+                                    // logger($buy_airtime);
                                 }else{
                                     //this will be like this until other automations are processed
                                     $buy_airtime['status'] = 1;

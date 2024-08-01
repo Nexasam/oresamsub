@@ -49,6 +49,8 @@ class DatabaseSeeder extends Seeder
             "id" => "9c2887ea-55b5-4f19-904e-e490a10682ea",
             "automation_name" => 'MEGASUBPLUB',
             "slug" =>'megasubplug',
+            "api_public_key" =>'102325246266435f47e344b',
+            "api_password" =>'Akwaowo0000@',
         ]);
 
         //ogdams

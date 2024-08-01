@@ -113,7 +113,7 @@ class MegaSubVendData{
           CURLOPT_HTTPHEADER => array(
             'Authorization: Bearer '.$this->api_key,
             'Password: '.$this->api_password,
-            'Cookie: PHPSESSID=h2vh7clslap9nukf5kt5qagh0d'
+            // 'Cookie: PHPSESSID=h2vh7clslap9nukf5kt5qagh0d'
           ),
         ));
         

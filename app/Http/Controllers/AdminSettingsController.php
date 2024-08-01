@@ -45,6 +45,7 @@ class AdminSettingsController extends Controller
         $ogdams = Automation::where('slug','ogdams')->first();
         $smeplug = Automation::where('slug','smeplug')->first();
         $megasubplug = Automation::where('slug','megasubplug')->first();
+        
         $data['referral_setting'] = $referral_setting;
         $data['admin_2fa_setting'] = $admin_2fa_setting;
         $data['ogdams'] = $ogdams;

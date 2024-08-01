@@ -1783,10 +1783,15 @@ $('#hs-basic-modal').trigger('click');
               const product_plan_id = $('#product_plan_id').val();
               const pin = $('#pin').val();
 
-              if($('#amount_for_airtime_category').val() != ''){
+              if($('#amount_for_airtime_category').val() == ''){
                 var amount = $('#amount_for_airtime_category').val();
+                console.log('this is running')
+
+                if(amount == undefined){
+                 var amount = $('#amount').val();
+                }
               }else{
-                var amount = $('#amount_for_airtime_category').val();
+                var amount = $('#amount').val();
               }
 
               if( parseInt(amount) < 50){
@@ -1820,7 +1825,7 @@ $('#hs-basic-modal').trigger('click');
                     data: data,
                     dataType: 'json',
                     success: function(response) {
-                        // console.log(response);
+                        console.log(response);
                         // console.log(response.data);
                         var result = JSON.stringify(response);
                         var dataList = JSON.parse(result);
@@ -1831,7 +1836,7 @@ $('#hs-basic-modal').trigger('click');
                         else if(dataList.status == 2){
                            //@least 1 tranaction had an issue
                            sweetAlertDisplay(dataList.message,'Info','warning');
-                           reload(6000);
+                           reload(60000000);
                         }
                         else{
                           sweetAlertDisplay(dataList.message,'Error','error');

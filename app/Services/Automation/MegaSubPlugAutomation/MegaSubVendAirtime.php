@@ -139,11 +139,12 @@ class MegaSubVendAirtime{
         CURLOPT_POSTFIELDS => array('action' => 'buy_airtime','amount'=> $this->amount,'mobile_number' => $this->mobile_number,'network_api_id' => $this->network_api_id,'airtime_api_id' => $this->airtime_api_id,'validatephonenetwork' => $this->validatephonenetwork,'duplication_check' => $this->duplication_check),
         // CURLOPT_POSTFIELDS => array('action' => 'buy_airtime','mobile_number' => '08168509044','amount' => '98','network_api_id' => '5','airtime_api_id' => '48','validatephonenetwork' => '1'),
         CURLOPT_HTTPHEADER => array(
-            'Authorization: 102325246266435f47e344b',
-            'Password: inchristalone@NEW2024'
+            'Authorization: '.$this->api_key,
+            'Password: '.$this->api_password
         ),
         ));
         $response = curl_exec($curl);
+        // logger($response);
         curl_close($curl);
        
         $response_decode = json_decode($response,true);
