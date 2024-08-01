@@ -2,13 +2,16 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Models\User;
 use Illuminate\Http\Request;
 use Laravel\Fortify\Fortify;
 use Laravel\Fortify\Features;
 use Illuminate\Pipeline\Pipeline;
+use Illuminate\Support\Facades\DB;
 use App\Models\LandingPagesSetting;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Session;
 use Laravel\Fortify\Contracts\LoginResponse;
 use Laravel\Fortify\Http\Requests\LoginRequest;
 use Laravel\Fortify\Actions\AttemptToAuthenticate;
@@ -41,6 +44,19 @@ class AuthenticatedSessionController extends Controller
      */
     public function store(LoginRequest $request)
     {
+        // dd($request->all());
+        $user_check = User::where('email',$request->email)->first();
+        if(!$user_check){
+            Session::flash('failure','Sorry you are already logged in on another device');
+            return redirect()->route('login');
+        }
+
+        $check_login = DB::table('sessions')->where('user_id',$user_check->id)->first();
+        if($check_login){
+            //a login exists somewhere
+            Session::flash('failure','Sorry you are already logged in on another device');
+            return redirect()->route('login');
+        }
         return $this->loginPipeline($request)->then(function ($request) {
             return app(LoginResponse::class);
         });
@@ -54,6 +70,7 @@ class AuthenticatedSessionController extends Controller
      */
     protected function loginPipeline(LoginRequest $request)
     {
+
         if (Fortify::$authenticateThroughCallback) {
             return (new Pipeline(app()))->send($request)->through(array_filter(
                 call_user_func(Fortify::$authenticateThroughCallback, $request)

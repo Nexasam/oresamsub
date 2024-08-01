@@ -86,7 +86,7 @@
                             <hr>
                             <br>
 
-                            <div class="text-center">
+                            <div class="text-center mb-4">
                                 <h1 class="block text-2xl font-bold text-gray-800 dark:text-white">Sign in</h1>
                                 <p class="mt-3 text-sm text-gray-600 dark:text-white/70">
                                     Don't have an account yet?
@@ -95,20 +95,22 @@
                                     </a>
                                 </p>
                             </div>
+                          
+
+                            @if (Session::has('success'))
+                            <div class="bg-success/10 border border-success/10 alert text-success" role="alert">
+                                Success {{-- {{ Session::get('success') }} --}}
+                            </div>
+                            @endif
+
+                            @if (Session::has('failure'))
+                            <div class="bg-danger/10 border border-danger/10 alert text-danger" role="alert">
+                            {{ Session::get('failure') }}
+                            </div>
+                            @endif
+
 
                             <div class="mt-5">
-                                {{-- <button type="button"
-                                    class="w-full py-2 px-3 inline-flex justify-center items-center gap-2 rounded-sm border font-medium bg-white text-gray-700 shadow-sm align-middle hover:bg-gray-50 focus:outline-none focus:ring-0 focus:ring-offset-0 focus:ring-offset-white focus:ring-primary transition-all text-sm dark:bg-bgdark dark:hover:bg-black/20 dark:border-white/10 dark:text-white/70 dark:hover:text-white dark:focus:ring-offset-white/10">
-                                    <img src="../assets/img/authentication/social/1.png" class="w-4 h-4"
-                                        alt="google-img">
-                                    Sign in with Google
-                                </button>
-
-                                <div
-                                    class="py-3 flex items-center text-xs text-gray-400 uppercase before:flex-[1_1_0%] before:border-t before:border-gray-200 before:me-6 after:flex-[1_1_0%] after:border-t after:border-gray-200 after:ms-6 dark:text-white/70 dark:before:border-white/10 dark:after:border-white/10">
-                                    Or
-                                </div> --}}
-
                                 <!-- Form -->
                                 <form method="POST" action="{{ route('login') }}">
                                     @csrf

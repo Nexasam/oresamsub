@@ -339,19 +339,28 @@
 
                 <!-- Start::slide -->
                 <li class="slide">
-                    {{-- <a href="widgets.html" class="side-menu__item">
-                        <i class="ri-apps-2-line side-menu__icon"></i>
-                        <span class="side-menu__label">Logout</span>
-                    </a> --}}
-                    <form method="POST" action="{{ route('logout') }}">
+                
+                    {{-- <form method="POST" action="{{ route('logout') }}">
                         @csrf
-                        <a href="route('logout')" class="side-menu__item"
+                        <a type="button" href="" class="side-menu__item"
                                 onclick="event.preventDefault();
                                             this.closest('form').submit();">
                              <i class="ri-apps-2-line side-menu__icon"></i>
                              <span class="side-menu__label">Logout</span>
                         </a>
-                       {{-- </div> --}}
+                      
+                    </form> --}}
+
+                    <form method="POST" action="{{ route('logout') }}">
+                        @csrf
+                       <div class="flex items-center">
+                        <i class="ti ti-logout text-white mr-3"></i>
+                        <a type="button" href="" onclick="event.preventDefault();
+                                            this.closest('form').submit();">
+                            
+                             <span class="side-menu__label text-white">Logout</span>
+                        </a>
+                       </div>
                     </form>
                 </li>
                 <!-- End::slide -->
