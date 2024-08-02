@@ -355,13 +355,13 @@
                         <div class="overflow-auto">
                             
 
-                            <table  class="ti-custom-table ti-custom-table-head">    
+                            <table  id="admin_transactions_table" class="ti-custom-table ti-custom-table-head">    
                                 <thead class="bg-gray-50 dark:bg-black/20">
                                 <tr>
                                     <th>ID</th>
-                                    <th>User Details</th>
-                                    <th>Wallet Category</th>
-                                    <th>Phone Number</th>
+                                    <th>User</th>
+                                    <th>Wallet</th>
+                                    <th>Phone</th>
                                     <th>Amount</th>
                                     <th>Balance Before</th>
                                     <th>Data size</th>
@@ -370,54 +370,10 @@
                                     <th>Date Added</th>
                                 </tr>
                             </thead>
+                           
                             <tbody>
-                              @php
-                                  $count = 1;
-                              @endphp
-                              @if (count($transactions) > 0)
-                                   @foreach ($transactions as $transaction)
-                                        @php
-                                        if($transaction->status == 1){
-                                            $status_display = '<span class="badge bg-success text-white">Success</span>';
-                                        }
-                                        elseif($transaction->status == -1){
-                                            $status_display = '<span class="badge bg-danger text-white">Failed</span>';
-                                        }
-                                        elseif($transaction->status == 0){
-                                            $status_display = '<span class="badge bg-warning text-white">Pending</span>';
-                                        }
-                                        elseif($transaction->status == 2){
-                                            $status_display = '<span class="badge bg-primary text-white">Refunded</span>';
-                                        }
-                                        elseif($transaction->status == 3){
-                                            $status_display = '<span class="badge bg-gray text-white">Processing</span>';
-                                        }else{
-                                            $status_display = '<span class="badge bg-gray text-white">Unknown</span>';
-                                        }
-                                    @endphp
-                                        <tr>
-                                        <td>{{ $count++ }}</td>
-                                        <td>{{ $transaction->user->first_name  ?? 'nil'}} <br> {{ $transaction->user->last_name ?? 'nil' }} <br>  {{ $transaction->user->phone_number ?? 'nil'}}</td>
-                                        <td>{{ $transaction->wallet_category == 'main_wallet' ?  'MAIN' : 'DATA_WALLET' }}</td>
-                                        <td>{{ $transaction->phone_number ?? 'nil' }}</td>
-                                        <td>&#8358;{{ number_format($transaction->amount,2) }}</td>
-                                        <td>{{ $transaction->wallet_category == 'main_wallet' ? '₦'.number_format($transaction->balance_before,2) : number_format($transaction->balance_before).'MB' }}</td>
-                                        <td>{{ number_format($transaction->product_plan->data_size_in_mb) .'MB' }}</td>
-                                        <td>{{ $transaction->wallet_category == 'main_wallet' ? '₦'.number_format($transaction->balance_after,2) : number_format($transaction->balance_after).'MB' }}</td>
-                                        <td>  @php
-                                            echo $status_display;
-                                        @endphp  </td>
-                                        <td>{{ $transaction->created_at }}</td>
-                                        </tr>   
-                                    @endforeach
-                              @else
-                                  <tr>
-                                    <td align="center" colspan="8">No transactions found</td>
-                                  </tr>
-                              @endif
-                          
-                                
-                            </tbody>
+
+                           </tbody>
                             </table> 
 
                         </div>

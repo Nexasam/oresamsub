@@ -199,10 +199,20 @@
                     </div>
                   </div>
                   <div class="mt-2 ti-dropdown-divider">
-                    <a href="{{ route('user.manage_profile.index') }}" class="ti-dropdown-item">
-                      <i class="ti ti-user-circle text-lg"></i>
-                      Profile
-                    </a>
+
+                    @if ( auth()->user()->role->role_name == 'User' )
+                      <a href="{{ route('user.manage_profile.index') }}" class="ti-dropdown-item">
+                        <i class="ti ti-user-circle text-lg"></i>
+                        Profile
+                      </a>                     
+                    @else
+                      <a href="{{ route('admin.manage_profile.index') }}" class="ti-dropdown-item">
+                        <i class="ti ti-user-circle text-lg"></i>
+                        Profile
+                      </a>
+                    @endif
+                    
+                   
                     {{-- <a href="mail-inbox.html" class="ti-dropdown-item">
                       <i class="ti ti-inbox text-lg"></i>
                       Inbox

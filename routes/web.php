@@ -1,7 +1,5 @@
 <?php
 
-use App\Http\Controllers\CableSubscriptionController;
-use App\Http\Controllers\ElectricitySubscriptionController;
 use App\Http\Middleware\RoleAssess;
 use App\Models\LandingPagesSetting;
 use Illuminate\Support\Facades\Route;
@@ -18,6 +16,7 @@ use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\AutomationController;
 use App\Http\Controllers\CrystalPayController;
 use App\Http\Controllers\ProductPlanController;
+use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\BulkDataPlanController;
 use App\Http\Controllers\ResellerPlanController;
 use App\Http\Controllers\UserSettingsController;
@@ -26,7 +25,9 @@ use App\Http\Controllers\UserDashboardController;
 use App\Http\Controllers\UserTwoFactorController;
 use App\Http\Controllers\ProductCategoryController;
 use App\Http\Controllers\UserProductPlanController;
+use App\Http\Controllers\CableSubscriptionController;
 use App\Http\Controllers\ProductPlanCategoryController;
+use App\Http\Controllers\ElectricitySubscriptionController;
 
 Route::get('/', function () {
     // dd('e dey');
@@ -110,6 +111,9 @@ Route::middleware(['auth','verified','admin'])->get('admin/product_plan_categori
 Route::middleware(['auth','verified','admin'])->get('admin/bulk_data_plans/{product_plan_category_id}', [BulkDataPlanController::class, 'index'])->name('admin.bulk_data_plans.index');
 Route::middleware(['auth','verified','admin'])->post('admin/bulk_data_plans/store', [BulkDataPlanController::class, 'store'])->name('admin.bulk_data_plans.store');
 
+Route::middleware(['auth','verified','admin'])->get('admin/transactions/admin_fetch_transactions', [TransactionController::class, 'admin_fetch_transactions'])->name('admin.transactions.admin_fetch_transactions');
+Route::middleware(['auth','verified','user'])->get('user/transactions/user_fetch_transactions', [TransactionController::class, 'user_fetch_transactions'])->name('user.transactions.user_fetch_transactions');
+
 
 Route::middleware(['auth','verified','admin'])->get('admin/product_plans', [ProductPlanController::class, 'index'])->name('admin.product_plans.index');
 Route::middleware(['auth','verified','admin'])->post('admin/product_plans/store', [ProductPlanController::class, 'store'])->name('admin.product_plans.store');
@@ -125,6 +129,7 @@ Route::middleware(['auth','verified','admin'])->post('admin/manage_global_user_2
 Route::middleware(['auth','verified','admin'])->post('admin/referral_settings', [AdminSettingsController::class, 'manage_referral_settings'])->name('admin.settings.referral_settings');
 Route::middleware(['auth','verified','admin'])->post('admin/landing_page_settings', [AdminSettingsController::class, 'manage_landing_page_settings'])->name('admin.settings.manage_landing_page_settings');
 
+Route::middleware(['auth','verified','admin'])->get('admin/profile/index', [UsersController::class, 'admin_manage_profile'])->name('admin.manage_profile.index');
 
 
 Route::middleware(['auth','verified','user'])->get('user/profile/index', [UsersController::class, 'manage_profile'])->name('user.manage_profile.index');

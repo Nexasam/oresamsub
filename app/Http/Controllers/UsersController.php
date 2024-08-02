@@ -35,7 +35,12 @@ class UsersController extends Controller
         $users = User::with(['role' => function($query){
           $query->where('role_name','User');
         }])->limit(2000)->latest()->get();
-        return view('admin.users.index')->with(['users' => $users]);
+        $user_plans = UserPlan::all();
+        $roles = Role::all();
+        $data['user_plans'] = $user_plans;
+        $data['roles'] = $roles;
+        $data['users'] = $users;
+        return view('admin.users.index')->with($data);
     }
 
 
@@ -47,6 +52,19 @@ class UsersController extends Controller
       }
       return view('user.profile.index')->with(['user' => $user]);
     }
+
+    public function admin_manage_profile(Request $request){
+      $user = auth()->user();
+      if(!$user){
+        Session::flash('failure','User not found');
+        return redirect()->back();
+      }
+      return view('user.profile.index')->with(['user' => $user]);
+    }
+
+    
+
+    
 
     /**
      * Display a listing of the resource. for admin
@@ -278,9 +296,9 @@ class UsersController extends Controller
      */
     public function create()
     {
-      // Gate::authorize('create', User::class);
 
-      // dd('testing');
+      
+  
        return view('admin.users.create'); 
     }
 
@@ -300,6 +318,8 @@ class UsersController extends Controller
         'other_names' => 'nullable|max:255',
         'phone_number' => 'required|digits:11',
         'email' => 'required|unique:users,email',
+        // 'role_id' => 'required|unique:roles,id',
+        'user_plan_id' => 'required|exists:user_plans,id',
         'password' => ['required', 'confirmed', Password::min(8)
         ->letters()
         ->mixedCase()
@@ -323,7 +343,7 @@ class UsersController extends Controller
       $data['phone_number'] = $request->phone_number;
       $data['email'] = $request->email;
       $data['role_id'] = $role_details->id;
-      $data['user_plan_id'] = $default_reseller_plan->id;
+      $data['user_plan_id'] = $request->user_plan_id;
       $data['password'] = Hash::make($request->password);
       // $data['confirm_password'] = Hash::make($request->confirm_password);
       // $data['gender'] = $request->gender;

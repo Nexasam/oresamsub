@@ -11,6 +11,7 @@ use App\Models\UserPlan;
 use App\Models\Automation;
 use App\Models\Permission;
 use App\Models\ProductPlan;
+use App\Models\Transaction;
 use App\Models\ProductCategory;
 use App\Models\ReferralSetting;
 use App\Models\UserProductPlan;
@@ -209,11 +210,11 @@ class DatabaseSeeder extends Seeder
             'phone_number' => '08168509044',
             'password' => Hash::make('password'),
         ]); 
-        User::factory()->create([
+       $user_ore =  User::factory()->create([
             'username' => 'oreofe'.rand(11,99),
             'first_name' => 'Oreofe',
             'last_name' => 'Adebunmi',
-            'pin' => rand(1111,9999),
+            'pin' => 1234,
             'role_id' => $user_role,
             'user_plan_id' => $user_plan_basic->id,
             'email' => 'oreofe@gmail.com',
@@ -677,6 +678,120 @@ class DatabaseSeeder extends Seeder
             }
              
         }
+
+
+
+        //transactions seeding
+        // $table->uuid('id')->primary();
+        // $table->foreignUuid('user_id')->constrained(table: 'users');
+        // $table->string('product_plan_id')->constrained(table: 'product_plans');
+        // $table->string('transaction_category')->nullable()->comment('Options: data, airtime, bills, cable subscription etc');
+        // $table->string('status')->default(0)->nullable()->comment('status of transaction: 1:success, 0:pending(default), -1:failed, 2:refunded, 3:processing');
+        // $table->string('wallet_category')->comment('data_wallet/main_wallet');
+        // $table->string('phone_number')->comment('phone number that benefits')->nullable();
+        // $table->string('smart_card_number')->comment('iuc number that benefits that benefits')->nullable();
+        // $table->string('metre_number')->comment('metre number that benefits')->nullable();
+        // $table->string('cable_tv_slots')->comment('no of slots bought')->nullable();
+        // $table->string('amount')->comment('amount that was bought');
+        // $table->string('balance_before');
+        // $table->string('balance_after');
+        // $table->string('description');
+        // $table->longText('user_screen_message')->nullable();
+        // $table->longText('admin_screen_message')->nullable();
+        // $table->timestamps();
+
+        //data, main wallet
+        for($i = 1; $i <= 1000; $i++){
+            Transaction::create([
+                'user_id' => $user_ore->id,
+                'product_plan_id' => '9c83dc1a-8262-4f54-8c40-41029830fe5a',
+                'transaction_category' => 'data',
+                'status' => 1,
+                'wallet_category' => 'main_wallet',
+                'phone_number' => '08168509044',
+                'amount' => '00',
+                'balance_before' => '10000',
+                'balance_after' => '9000000',
+                'description' => 'Data Purchase - TEST',
+                'user_screen_message' => 'successfully processed',
+                'admin_screen_message' => 'successfully processed',
+            ]);
+        }
+
+        //data, data wallet
+        for($i = 1; $i <= 1000; $i++){
+            Transaction::create([
+                'user_id' => $user_ore->id,
+                'product_plan_id' => '9c83dc1a-8262-4f54-8c40-41029830fe5a',
+                'transaction_category' => 'data',
+                'status' => 1,
+                'wallet_category' => 'data_wallet',
+                'phone_number' => '08168509044',
+                'amount' => '1000',
+                'balance_before' => '10000',
+                'balance_after' => '9000000',
+                'description' => 'Data Purchase - TEST',
+                'user_screen_message' => 'successfully processed',
+                'admin_screen_message' => 'successfully processed',
+            ]);
+        }
+
+        //airtime
+        for($i = 1; $i <= 1000; $i++){
+            Transaction::create([
+                'user_id' => $user_ore->id,
+                'product_plan_id' => '0ed2d8b7-8c2e-4442-85c7-840f801552f0',
+                'transaction_category' => 'airtime',
+                'status' => 1,
+                'wallet_category' => 'main_wallet',
+                'phone_number' => '08168509044',
+                'amount' => '1000',
+                'balance_before' => '10000',
+                'balance_after' => '9000000',
+                'description' => 'Airtime Purchase - TEST',
+                'user_screen_message' => 'successfully processed',
+                'admin_screen_message' => 'successfully processed',
+            ]);
+        }
+
+        //prepaid, electricity
+        for($i = 1; $i <= 1000; $i++){
+            Transaction::create([
+                'user_id' => $user_ore->id,
+                'product_plan_id' => '12c6a955-8ce2-452e-ae09-40266fd6c531',
+                'transaction_category' => 'utility_bills',
+                'status' => 1,
+                'wallet_category' => 'main_wallet',
+                'phone_number' => '08168509044',
+                'metre_number' => '123456789',
+                'amount' => '1000',
+                'balance_before' => '10000',
+                'balance_after' => '9000000',
+                'description' => 'Utility Purchase - TEST',
+                'user_screen_message' => 'successfully processed',
+                'admin_screen_message' => 'successfully processed',
+            ]);
+        }
+
+        //cable
+        for($i = 1; $i <= 1000; $i++){
+            Transaction::create([
+                'user_id' => $user_ore->id,
+                'product_plan_id' => 'b3176d9f-6f12-45e0-9640-71c509271825',
+                'transaction_category' => 'cable_subscription',
+                'status' => 1,
+                'wallet_category' => 'main_wallet',
+                'phone_number' => '08168509044',
+                'smart_card_number' => '123456789',
+                'amount' => '1000',
+                'balance_before' => '10000',
+                'balance_after' => '9000000',
+                'description' => 'Cable Purchase - TEST',
+                'user_screen_message' => 'successfully processed',
+                'admin_screen_message' => 'successfully processed',
+            ]);
+        }
+        
 
 
 

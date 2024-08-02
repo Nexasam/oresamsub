@@ -2,6 +2,8 @@ $(document).ready(function(){
     const root_url = $('.root_url').val();
     getUsers();        
     getPlanCategories();
+    userGetTransactions();
+    adminGetTransactions();
 
     
     // $('#filter_user_table').click(function(e){
@@ -43,7 +45,71 @@ $(document).ready(function(){
         });
     }
 
-  
+    admin_transactions_table
+
+    function userGetTransactions(date_from ='', date_to =''){
+      const data = {
+        date_from : date_from,
+        date_to : date_to,
+      };
+      console.log(data);
+      // return;
+      $('#user_transactions_table').DataTable({
+                autoWidth: false,
+                processing: true,
+                searching: true,
+                bInfo: false,
+                bLengthChange: true,
+                pageLength: 10,
+                ajax: root_url + 'user/transactions/user_fetch_transactions?date_from='+date_from+'&&date_to='+date_to,
+                // ajax:  "{{ route('admin.users.fetch_users',"+data+") }}",
+                columns: [
+                    {data: 'DT_RowIndex', name: 'DT_RowIndex'},
+                    {data: 'user_id', name: 'user_id'},
+                    {data: 'wallet_category', name: 'wallet_category'},
+                    {data: 'phone_number', name: 'phone_number'},
+                    {data: 'amount', name: 'amount'},
+                    {data: 'balance_before', name: 'balance_before'},
+                    {data: 'data_size', name: 'data_size'},
+                    {data: 'balance_after', name: 'balance_after'},
+                    {data: 'status', name: 'status'},
+                    {data: 'created_at', name: 'created_at'},
+                    // {data: 'action', name: 'action'},
+                  ]
+        });
+    }
+
+    function adminGetTransactions(date_from ='', date_to =''){
+      const data = {
+        date_from : date_from,
+        date_to : date_to,
+      };
+      console.log(data);
+      // return;
+      $('#admin_transactions_table').DataTable({
+                autoWidth: false,
+                processing: true,
+                searching: true,
+                bInfo: false,
+                bLengthChange: true,
+                pageLength: 10,
+                ajax: root_url + 'admin/transactions/admin_fetch_transactions?date_from='+date_from+'&&date_to='+date_to,
+                // ajax:  "{{ route('admin.users.fetch_users',"+data+") }}",
+                columns: [
+                    {data: 'DT_RowIndex', name: 'DT_RowIndex'},
+                    {data: 'user_id', name: 'user_id'},
+                    {data: 'wallet_category', name: 'wallet_category'},
+                    {data: 'phone_number', name: 'phone_number'},
+                    {data: 'amount', name: 'amount'},
+                    {data: 'balance_before', name: 'balance_before'},
+                    {data: 'data_size', name: 'data_size'},
+                    {data: 'balance_after', name: 'balance_after'},
+                    {data: 'status', name: 'status'},
+                    {data: 'created_at', name: 'created_at'},
+                    // {data: 'action', name: 'action'},
+                  ]
+        });
+    }
 
     ///////users
     $('#filter_user_table').click(function(e){
@@ -57,10 +123,12 @@ $(document).ready(function(){
         $("#userss_table").DataTable().destroy();
         getUsers(date_from,date_to,phone,email,'');
     })
+    
     $('#reload_user_tbl').click(function(){
       $("#userss_table").DataTable().destroy();
       getUsers();
     })
+
     function getUsers(date_from ='', date_to ='', phone = '', email = '', limit = ''){
       const data = {
         date_from : date_from,

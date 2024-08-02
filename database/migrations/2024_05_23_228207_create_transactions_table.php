@@ -21,7 +21,8 @@ return new class extends Migration
             $table->string('phone_number')->comment('phone number that benefits')->nullable();
             $table->string('smart_card_number')->comment('iuc number that benefits that benefits')->nullable();
             $table->string('metre_number')->comment('metre number that benefits')->nullable();
-            $table->string('cable_tv_slots')->comment('no of slots bought')->nullable();
+            $table->string('cable_tv_slots')->default('1')->comment('no of slots bought')->nullable();
+            $table->string('utility_slots')->default('1')->comment('no of slots bought')->nullable();
             $table->string('amount')->comment('amount that was bought');
             $table->string('balance_before');
             $table->string('balance_after');

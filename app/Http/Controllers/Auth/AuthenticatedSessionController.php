@@ -45,18 +45,18 @@ class AuthenticatedSessionController extends Controller
     public function store(LoginRequest $request)
     {
         // dd($request->all());
-        $user_check = User::where('email',$request->email)->first();
-        if(!$user_check){
-            Session::flash('failure','Sorry you are already logged in on another device');
-            return redirect()->route('login');
-        }
+        // $user_check = User::where('email',$request->email)->first();
+        // if(!$user_check){
+        //     Session::flash('failure','Sorry you are already logged in on another device');
+        //     return redirect()->route('login');
+        // }
 
-        $check_login = DB::table('sessions')->where('user_id',$user_check->id)->first();
-        if($check_login){
-            //a login exists somewhere
-            Session::flash('failure','Sorry you are already logged in on another device');
-            return redirect()->route('login');
-        }
+        // $check_login = DB::table('sessions')->where('user_id',$user_check->id)->first();
+        // if($check_login){
+        //     //a login exists somewhere
+        //     Session::flash('failure','Sorry you are already logged in on another device');
+        //     return redirect()->route('login');
+        // }
         return $this->loginPipeline($request)->then(function ($request) {
             return app(LoginResponse::class);
         });
@@ -100,7 +100,7 @@ class AuthenticatedSessionController extends Controller
     public function destroy(Request $request)
     {
         // dd($request->all());
-        DB::table('sessions')->where('user_id',auth()->user()->id)->delete();
+        // DB::table('sessions')->where('user_id',auth()->user()->id)->delete();
 
         Auth::guard('web')->logout();
 

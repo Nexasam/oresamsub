@@ -8,7 +8,7 @@
         <div>
             <h3 class="text-gray-700 hover:text-gray-900 dark:text-white dark:hover:text-white text-2xl font-medium"> <small style=" font-size: 14px;">Welcome <strong>{{ $user->first_name. ' '. $user->last_name }}</strong></small> </h3>
         </div>
-       
+        
     </div>
     <!-- Page Header Close -->
 
@@ -45,10 +45,9 @@
             </div>
         </div>
     </div> --}}
-    <div class="grid grid-cols-12 gap-x-3">
+    <div class="grid grid-cols-12 gap-x-5">
         
-
-        {{-- <div class="col-span-12 xxxl:col-span-2 md:col-span-3">
+        <div class="col-span-12 xxxl:col-span-2 md:col-span-4">
             <div class="box">
                 <div class="box-body">
                     <div class="flex space-x-4 rtl:space-x-reverse">
@@ -64,40 +63,12 @@
                             </span>
                         </div>
                         <div class="">
-                            <div class="mb-2">Referral Code</div>
+                            <div class="mb-2">Total Users</div>
                             <div class="text-gray-500 dark:text-white/70 mb-1 text-xs">
                                 <span
                                     class="text-gray-800 font-semibold text-xl leading-none align-bottom dark:text-white">
-                                    {{ $user->user_plan->updated_user_plan_name ?? $user->user_plan->user_plan_name  }}
-                                </span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div> --}}
-
-        <div class="col-span-12 xxxl:col-span-2 md:col-span-3">
-            <div class="box">
-                <div class="box-body">
-                    <div class="flex space-x-4 rtl:space-x-reverse">
-                       
-                        <div class="flex items-center justify-center ecommerce-icon px-0">
-                            <span class="rounded-sm p-4 bg-danger/10">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="fill-white svg3" height="24px"
-                                    viewBox="0 0 24 24" width="24px" fill="#000000">
-                                    <path d="M0 0h24v24H0V0z" fill="none" />
-                                    <path
-                                        d="M12 6c1.1 0 2 .9 2 2s-.9 2-2 2-2-.9-2-2 .9-2 2-2m0 10c2.7 0 5.8 1.29 6 2H6c.23-.72 3.31-2 6-2m0-12C9.79 4 8 5.79 8 8s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4zm0 10c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
-                                </svg>
-                            </span>
-                        </div>
-                        <div class="">
-                            <div class="mb-2">Plan</div>
-                            <div class="text-gray-500 dark:text-white/70 mb-1 text-xs">
-                                <span
-                                    class="text-gray-800 font-semibold text-xl leading-none align-bottom dark:text-white">
-                                    {{ $user->user_plan->updated_user_plan_name ?? $user->user_plan->user_plan_name  }}
+                                    {{-- {{ number_format( count($users))  }} --}}
+                                    {{ number_format( count($users ?? 0))  }}
                                 </span>
                             </div>
                             {{-- <div>
@@ -109,7 +80,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-span-12 xxxl:col-span-2 md:col-span-3">
+        <div class="col-span-12 xxxl:col-span-2 md:col-span-4">
             <div class="box">
                 <div class="box-body">
                     <div class="flex space-x-4 rtl:space-x-reverse">
@@ -145,8 +116,72 @@
                 </div>
             </div>
         </div>
-      
-        <div class="col-span-12 xxxl:col-span-3 md:col-span-3">
+        <div class="col-span-12 xxxl:col-span-2 md:col-span-4">
+            <div class="box">
+                <div class="box-body">
+                    <div class="flex space-x-4 rtl:space-x-reverse">
+                        <div class="flex items-center justify-center ecommerce-icon px-0">
+                            <span class="rounded-sm p-4 bg-primary/10">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="fill-white svg1" height="24px"
+                                    viewBox="0 0 24 24" width="24px" fill="#000000">
+                                    <path d="M0 0h24v24H0V0z" fill="none" />
+                                    <path
+                                        d="M15.55 13c.75 0 1.41-.41 1.75-1.03l3.58-6.49c.37-.66-.11-1.48-.87-1.48H5.21l-.94-2H1v2h2l3.6 7.59-1.35 2.44C4.52 15.37 5.48 17 7 17h12v-2H7l1.1-2h7.45zM6.16 6h12.15l-2.76 5H8.53L6.16 6zM7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zm10 0c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z" />
+                                </svg>
+                            </span>
+                        </div>
+                        <div class="">
+                            <div class="mb-2">Product Plans</div>
+                            <div class="text-gray-500 dark:text-white/70 mb-1 text-xs">
+                                <span
+                                    class="text-gray-800 font-semibold text-xl leading-none align-bottom dark:text-white">
+                                    {{ number_format( count($product_plans))  }}
+                                </span>
+                            </div>
+                            {{-- <div>
+                                <span class="text-xs mb-0">Increased by <span
+                                        class="text-success">+2.5%</span></span>
+                            </div> --}}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-span-12 xxxl:col-span-2 md:col-span-4">
+            <div class="box">
+                <div class="box-body">
+                    <div class="flex space-x-4 rtl:space-x-reverse">
+                        <div class="flex items-center justify-center ecommerce-icon px-0">
+                            <span class="rounded-sm p-4 bg-warning/10">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="fill-white svg4" height="24px"
+                                    viewBox="0 0 24 24" width="24px" fill="#000000">
+                                    <path d="M0 0h24v24H0V0z" fill="none" />
+                                    <path
+                                        d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm.31-8.86c-1.77-.45-2.34-.94-2.34-1.67 0-.84.79-1.43 2.1-1.43 1.38 0 1.9.66 1.94 1.64h1.71c-.05-1.34-.87-2.57-2.49-2.97V5H10.9v1.69c-1.51.32-2.72 1.3-2.72 2.81 0 1.79 1.49 2.69 3.66 3.21 1.95.46 2.34 1.15 2.34 1.87 0 .53-.39 1.39-2.1 1.39-1.6 0-2.23-.72-2.32-1.64H8.04c.1 1.7 1.36 2.66 2.86 2.97V19h2.34v-1.67c1.52-.29 2.72-1.16 2.73-2.77-.01-2.2-1.9-2.96-3.66-3.42z" />
+                                </svg>
+                            </span>
+                        </div>
+                        <div class="">
+                            <div class="mb-2">Total User Main Balances</div>
+                            <div class="text-gray-500 dark:text-white/70 mb-1 text-xs">
+                                <span
+                                    class="text-gray-800 font-semibold text-xl leading-none align-bottom dark:text-white">
+                                    &#8358;{{  number_format($main_wallet_balances,2) ?? 0  }}
+                                </span>
+                            </div>
+                            {{-- <div>
+                                <span class="text-xs mb-0">Increased by <span
+                                        class="text-success">+2.58%</span></span>
+                            </div> --}}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+       
+
+        <div class="col-span-12 xxxl:col-span-2 md:col-span-4">
             <div class="box">
                 <div class="box-body">
                     <div class="flex space-x-4 rtl:space-x-reverse">
@@ -169,12 +204,12 @@
                         </div>
                         <div class="">
                             <div class="mb-2 ">
-                               Main Wallet Balance
+                               Product Plan Categories
                             </div>
                             <div class="text-gray-500 dark:text-white/70 mb-1 text-xs flex items-center justify-between  space-x-3">
                                 <span
                                     class="text-gray-800 font-semibold text-xl leading-none align-bottom dark:text-white">
-                                    &#8358; {{ number_format($user->main_wallet,2) ?? 0  }}
+                                    {{ number_format(count($product_plan_categories))  ?? 0  }}
                                 </span>
                                 <div> 
                                     {{-- data-hs-overlay="#hs-basic-modal" --}}
@@ -185,7 +220,7 @@
                                     </a> --}}
                                 </div>
 
-                                <div id="hs-basic-modalqqq" class="hs-overlay ti-modal hidden">
+                                <div id="hs-basic-modal" class="hs-overlay ti-modal hidden">
                                     <div class="ti-modal-box">
                                       <div class="ti-modal-content">
                                         <div class="ti-modal-header">
@@ -193,7 +228,7 @@
                                             Fund Wallet
                                           </h3>
                                           <button type="button" class="hs-dropdown-toggle ti-modal-clode-btn"
-                                            data-hs-overlay="#hs-basic-modalqqq">
+                                            data-hs-overlay="#hs-basic-modal">
                                             <span class="sr-only">Close</span>
                                             <svg class="w-3.5 h-3.5" width="8" height="8" viewBox="0 0 8 8" fill="none"
                                               xmlns="http://www.w3.org/2000/svg">
@@ -233,49 +268,47 @@
                                   </div>
 
                             </div>
-                            <div>
-                                <span class="text-xs mb-0"> <span
-                                        class="text-danger"></span>
+                            {{-- <div>
+                                <span class="text-xs mb-0">Decreased by <span
+                                        class="text-danger">-14.9%</span>
                                 </span>
-                            </div>
+                            </div> --}}
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="col-span-12 xxxl:col-span-2 md:col-span-3">
+        <div class="col-span-12 xxxl:col-span-2 md:col-span-4">
             <div class="box">
                 <div class="box-body">
                     <div class="flex space-x-4 rtl:space-x-reverse">
                         <div class="flex items-center justify-center ecommerce-icon px-0">
-                            <span class="rounded-sm p-4 bg-warning/10">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="fill-white svg4" height="24px"
+                            <span class="rounded-sm p-4 bg-success/10">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="fill-white svg6" height="24px"
                                     viewBox="0 0 24 24" width="24px" fill="#000000">
                                     <path d="M0 0h24v24H0V0z" fill="none" />
                                     <path
-                                        d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm.31-8.86c-1.77-.45-2.34-.94-2.34-1.67 0-.84.79-1.43 2.1-1.43 1.38 0 1.9.66 1.94 1.64h1.71c-.05-1.34-.87-2.57-2.49-2.97V5H10.9v1.69c-1.51.32-2.72 1.3-2.72 2.81 0 1.79 1.49 2.69 3.66 3.21 1.95.46 2.34 1.15 2.34 1.87 0 .53-.39 1.39-2.1 1.39-1.6 0-2.23-.72-2.32-1.64H8.04c.1 1.7 1.36 2.66 2.86 2.97V19h2.34v-1.67c1.52-.29 2.72-1.16 2.73-2.77-.01-2.2-1.9-2.96-3.66-3.42z" />
+                                        d="M16.5 3c-1.74 0-3.41.81-4.5 2.09C10.91 3.81 9.24 3 7.5 3 4.42 3 2 5.42 2 8.5c0 3.78 3.4 6.86 8.55 11.54L12 21.35l1.45-1.32C18.6 15.36 22 12.28 22 8.5 22 5.42 19.58 3 16.5 3zm-4.4 15.55l-.1.1-.1-.1C7.14 14.24 4 11.39 4 8.5 4 6.5 5.5 5 7.5 5c1.54 0 3.04.99 3.57 2.36h1.87C13.46 5.99 14.96 5 16.5 5c2 0 3.5 1.5 3.5 3.5 0 2.89-3.14 5.74-7.9 10.05z" />
                                 </svg>
                             </span>
                         </div>
                         <div class="">
-                            <div class="mb-2">Total Bulk Wallets ({{ number_format($bulk_data_wallet_count)  }})</div>
+                            <div class="mb-2">Total Bulk Data Balances</div>
                             <div class="text-gray-500 dark:text-white/70 mb-1 text-xs">
                                 <span
                                     class="text-gray-800 font-semibold text-xl leading-none align-bottom dark:text-white">
-                                    {{ number_format($bulk_data_wallet_sum)  }} MB
+                                    {{ number_format($bulk_data_wallet_sum)  }}MB
                                 </span>
-                               
                             </div>
-                            <div>
-                                {{-- <span class="text-xs mb-0">Total Sum: <span class="
-                                        text-success">{{  number_format($bulk_data_wallet_sum) }} MB</span></span> --}}
-                            </div>
+                            {{-- <div>
+                                <span class="text-xs mb-0">Increased by <span class="
+                                        text-success">+1.31%</span></span>
+                            </div> --}}
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-
       
         <div class="col-span-12 xxl:col-span-12">
             <div class="box">
@@ -317,16 +350,18 @@
                         </nav> --}}
                     </div>
                 </div>
-                <div class="box-body px-6">
+                <div class="box-body p-0">
                     <div id="taskactive" class="" role="tabpanel" aria-labelledby="active-item">
                         <div class="overflow-auto">
-                            <table  id="user_transactions_table" class="ti-custom-table ti-custom-table-head">    
+                            
+
+                            <table  class="ti-custom-table ti-custom-table-head">    
                                 <thead class="bg-gray-50 dark:bg-black/20">
                                 <tr>
                                     <th>ID</th>
-                                    <th>User</th>
-                                    <th>Wallet</th>
-                                    <th>Phone</th>
+                                    <th>User Details</th>
+                                    <th>Wallet Category</th>
+                                    <th>Phone Number</th>
                                     <th>Amount</th>
                                     <th>Balance Before</th>
                                     <th>Data size</th>
@@ -335,11 +370,56 @@
                                     <th>Date Added</th>
                                 </tr>
                             </thead>
-                           
                             <tbody>
-
-                           </tbody>
+                              @php
+                                  $count = 1;
+                              @endphp
+                              @if (count($transactions) > 0)
+                                   @foreach ($transactions as $transaction)
+                                        @php
+                                        if($transaction->status == 1){
+                                            $status_display = '<span class="badge bg-success text-white">Success</span>';
+                                        }
+                                        elseif($transaction->status == -1){
+                                            $status_display = '<span class="badge bg-danger text-white">Failed</span>';
+                                        }
+                                        elseif($transaction->status == 0){
+                                            $status_display = '<span class="badge bg-warning text-white">Pending</span>';
+                                        }
+                                        elseif($transaction->status == 2){
+                                            $status_display = '<span class="badge bg-primary text-white">Refunded</span>';
+                                        }
+                                        elseif($transaction->status == 3){
+                                            $status_display = '<span class="badge bg-gray text-white">Processing</span>';
+                                        }else{
+                                            $status_display = '<span class="badge bg-gray text-white">Unknown</span>';
+                                        }
+                                    @endphp
+                                        <tr>
+                                        <td>{{ $count++ }}</td>
+                                        <td>{{ $transaction->user->first_name  ?? 'nil'}} <br> {{ $transaction->user->last_name ?? 'nil' }} <br>  {{ $transaction->user->phone_number ?? 'nil'}}</td>
+                                        <td>{{ $transaction->wallet_category == 'main_wallet' ?  'MAIN' : 'DATA_WALLET' }}</td>
+                                        <td>{{ $transaction->phone_number ?? 'nil' }}</td>
+                                        <td>&#8358;{{ number_format($transaction->amount,2) }}</td>
+                                        <td>{{ $transaction->wallet_category == 'main_wallet' ? '₦'.number_format($transaction->balance_before,2) : number_format($transaction->balance_before).'MB' }}</td>
+                                        <td>{{ number_format($transaction->product_plan->data_size_in_mb ?? 0) .'MB' }}</td>
+                                        <td>{{ $transaction->wallet_category == 'main_wallet' ? '₦'.number_format($transaction->balance_after,2) : number_format($transaction->balance_after).'MB' }}</td>
+                                        <td>  @php
+                                            echo $status_display;
+                                        @endphp  </td>
+                                        <td>{{ $transaction->created_at }}</td>
+                                        </tr>   
+                                    @endforeach
+                              @else
+                                  <tr>
+                                    <td align="center" colspan="8">No transactions found</td>
+                                  </tr>
+                              @endif
+                          
+                                
+                            </tbody>
                             </table> 
+
                         </div>
                     </div>
                     <div id="completed" class="hidden" role="tabpanel" aria-labelledby="completed-item">
@@ -842,259 +922,12 @@
                 </div>
             </div>
         </div>
-        <div class="col-span-12 xxl:col-span-8">
-            <div class="box">
-                <div class="box-header flex">
-                    <h5 class="box-title my-auto">Available Bulk Data Plans &nbsp;&nbsp;  <small> <a class="hs-tab-active:bg-primary hs-tab-active:text-white py-1 px-2 inline-flex items-center gap-1 bg-transparent text-sm font-medium text-center text-gray-500 rounded-sm hover:text-primary  dark:text-white/70 dark:hover:text-white active" id="pills-with-brand-color-item-2" data-hs-tab="#pills-with-brand-color-2" aria-controls="pills-with-brand-color-2" href="{{ route('user.data.buy_bulk_data') }}">Buy bulk plans</a> </small> </h5>
-                    <div class="hs-dropdown ti-dropdown block ms-auto my-auto">
-                        <button aria-label="button" id="hs-dropdown-custom-icon-trigger3" type="button"
-                            class="hs-dropdown-toggle ti-dropdown-toggle rounded-sm p-2 bg-white !border border-gray-200 text-gray-500 hover:bg-gray-100  focus:ring-gray-200 dark:bg-bodybg dark:hover:bg-black/30 dark:border-white/10 dark:hover:border-white/20 dark:focus:ring-white/10 dark:focus:ring-offset-white/10">
-                            <i class="text-sm leading-none ti ti-dots-vertical"></i> </button>
-                        <div class="hs-dropdown-menu ti-dropdown-menu"
-                            aria-labelledby="hs-dropdown-custom-icon-trigger3">
-                            <a class="ti-dropdown-item" href="javascript:void(0)">Action</a>
-                            <a class="ti-dropdown-item" href="javascript:void(0)">Another Action</a>
-                            <a class="ti-dropdown-item" href="javascript:void(0)">Something else
-                                here</a>
-                        </div>
-                    </div>
-                </div>
-                <div class="box-body p-0 selling-table">
-                    <div class="overflow-auto">
-                        {{-- <table class="ti-custom-table ti-custom-table-head">
-                            <thead>
-                                <tr>
-                                    <th scope="col">Product</th>
-                                    <th scope="col">Stock</th>
-                                    <th scope="col">TotalSales</th>
-                                </tr>
-                            </thead>
-                            <tbody> --}}
-                        <table class="ti-custom-table ti-custom-table-head">    
-                                    <thead>
-                                    <tr>
-                                        <th><small>ID</small></th>
-                                        <th><small>Plan name</small></th>
-                                        <th><small>Category name</small></th>
-                                        <th><small>Data value</small></th>
-                                        <th><small>Unit(MB)</small></th>
-                                        <th><small>Selling price (&#8358;)</small></th>
-                                        {{-- <th>Action</th> --}}
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                  @php
-                                  $count = 1;
-                              @endphp
-                              @foreach ($bulk_data_plans as $bulk_data_plan)                 
-                                  <tr>
-                                  <td><small>{{ $count++ }}</small></td>
-                                  <td><small>{{ $bulk_data_plan->bulk_data_plan_name }}</small></td>
-                                  <td><small>{{ $bulk_data_plan->product_plan_category->product_plan_category_name ?? 'nil' }}</small></td>
-                                  <td>
-                                    <small>{{ $bulk_data_plan->data_value_tb }}TB</small> <br>
-                                    <small>{{ number_format($bulk_data_plan->data_value_gb) }}GB</small> <br>
-                                    <small>{{ number_format($bulk_data_plan->data_value_mb) }}MB</small>
-                                  </td>
-                                  <td><small>{{ $bulk_data_plan->mb_data_measurement ?? 'nil' }}</small></td>
-                                  <td><small>{{ number_format($bulk_data_plan->$user_selling_variable) ?? 'nil' }}</small></td>
-                                 </tr>   
-                              @endforeach
-                              </tbody>
-                              </table>     
-                            {{-- {{ $bulk_data_plans->links() }}  --}}
-                                {{-- <tr>
-                                    <td class="leading-none">
-                                        <img src="../assets/img/ecommerce/products/14.png"
-                                            class=" me-2 avatar avatar-sm p-2 rounded-full bg-gray-100 dark:bg-bodybg"
-                                            alt="Image Description">Leather jacket for men (S,M,L,XL)
-                                    </td>
-                                    <td class="text-sm"><span
-                                            class="text-success">In
-                                            Stock</span></td>
-                                    <td>
-                                        <span class="text-sm font-semibold">6,890</span>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="leading-none">
-                                        <img src="../assets/img/ecommerce/products/15.png"
-                                            class=" me-2 avatar avatar-sm p-2 rounded-full bg-gray-100 dark:bg-bodybg"
-                                            alt="Image Description">Childrens Teddy toy of high quality
-                                    </td>
-                                    <td class="text-sm"><span
-                                            class="text-danger">Out
-                                            Of Stock</span></td>
-                                    <td>
-                                        <span class="text-sm font-semibold">5,423</span>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="leading-none">
-                                        <img src="../assets/img/ecommerce/products/16.png"
-                                            class=" me-2 avatar avatar-sm p-2 rounded-full bg-gray-100 dark:bg-bodybg"
-                                            alt="Image Description">Orange smart watch dial (24mm)
-                                    </td>
-                                    <td class="text-sm"><span
-                                            class="text-danger">Out
-                                            Of Stock</span></td>
-                                    <td>
-                                        <span class="text-sm font-semibold">10,234</span>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="leading-none">
-                                        <img src="../assets/img/ecommerce/products/18.png"
-                                            class=" me-2 avatar avatar-sm p-2 rounded-full bg-gray-100 dark:bg-bodybg"
-                                            alt="Image Description">Pink Womens Regular Hand Bag
-                                    </td>
-                                    <td class="text-sm"><span
-                                            class="text-success">In
-                                            Stock</span></td>
-                                    <td>
-                                        <span class="text-sm font-semibold">10,234</span>
-                                    </td>
-                                </tr> --}}
-                          
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-span-12 xxl:col-span-4">
-            <div class="box">
-                <div class="box-header">
-                    <div class="flex justify-between">
-                        <h5 class="box-title my-auto">Hot sales ({{count($hot_sales)}})</h5>      
-                    </div>
-                    <div class="flex items-center">
-                        <p>Enjoy at discounted prices</p>
-                    </div>
-                </div>
-                <div class="box-body">
-                   
-                    <div class="flex items-center">
-                        @if (count($hot_sales) > 0)
-                            
-                        <table class="ti-custom-table ti-custom-table-head">
-                           
-                            <tbody>
-                                @php
-                                    $count = 0;
-                                @endphp
-                        @foreach ($hot_sales as $hot_sale)
-                                    <tr>
-                                        <td class="font-small">{{ $hot_sale['plan_category_name']  }} </td>
-                                        <td>
-                                             <a href="{{ route($hot_sale['route_name'],$hot_sale['id']) }}" class="text-primary hover:text-primary" href="javascript:void(0);">Buy</a>
-                                        </td>
-                                    </tr>
-                            {{-- <p>{{ $hot_sale->product_plan_category_name  }}  :  <a href="{{ route('user.data.buy_data') }}">explore</a> </p> --}}
-                        @endforeach
-                            </tbody>
-                        </table>
-
-                        @else
-                          <p>No hot sales at the moment.</p>
-
-                        @endif
-                        
-                    </div>
-                    {{-- <div class="mt-4">
-                        <div class="flex items-center justify-between mb-1 text-sm">
-                            <p class="mb-0">Plan 1</p>
-                            <span>65%</span>
-                        </div>
-                        <div class="ti-main-progress h-2 bg-gray-200 dark:bg-bodybg">
-                            <div class="ti-main-progress-bar bg-primary text-xs text-white text-center" role="progressbar" style="width: 65%" aria-valuenow="65" aria-valuemin="0"
-                                aria-valuemax="100"></div>
-                        </div>
-                    </div>
-                    <div class="mt-4">
-                        <div class="flex items-center justify-between mb-1 text-sm">
-                            <p class="mb-0">Plan 2</p>
-                            <span>75%</span>
-                        </div>
-                        <div class="ti-main-progress h-2 bg-gray-200 dark:bg-bodybg">
-                            <div class="ti-main-progress-bar bg-primary text-xs text-white text-center" role="progressbar" style="width: 65%" aria-valuenow="65" aria-valuemin="0"
-                                aria-valuemax="100"></div>
-                        </div>
-                    </div>
-                    <div class="mt-4">
-                        <div class="flex items-center justify-between mb-1 text-sm">
-                            <p class="mb-0">Plan 3</p>
-                            <span>85%</span>
-                        </div>
-                        <div class="ti-main-progress h-2 bg-gray-200 dark:bg-bodybg">
-                            <div class="ti-main-progress-bar bg-primary text-xs text-white text-center" role="progressbar" style="width: 65%" aria-valuenow="65" aria-valuemin="0"
-                                aria-valuemax="100"></div>
-                        </div>
-                    </div>
-                    <div class=" block ms-auto my-auto mt-4">
-                            <button type="button"
-                                class="ti-btn m-0 rounded-sm p-1 px-3 !border border-gray-200 text-gray-400 hover:text-gray-500 hover:bg-gray-200 hover:border-gray-200 focus:ring-gray-200 dark:text-white/70 dark:hover:text-white dark:hover:bg-bodybg dark:border-white/10 dark:hover:border-white/20 dark:focus:ring-white/10 dark:focus:ring-offset-white/10">
-                                Buy</button>
-                    </div> --}}
-                    
-                   
-                </div>
-            </div>
-        </div>
+     
+       
     </div>
     <!-- End::row-1 -->
 
-    <div class="box-body">
-         @if (count($hot_sales) > 0)
-            <div class="z-10 fixed inset-0 w-full h-screen hidden modal overflow-auto" id="popup">
-                <div class="modal-backdrop fixed w-full inset-0 bg-slate-500 opacity-40 z-30" data-close></div>
-                <div class="min-h-screen flex items-center justify-center relative pointer-events-none py-8 px-4 z-50">
-                    <div class="max-w-sm bg-white dark:bg-bgdark  w-full pointer-events-auto modal-style rounded-md">
-                        <div class="p-4 flex items-center justify-between space-x-2 border-b border-gray-lighter">
-                            <h5 class="mb-0 dark:text-bgdark text-md">
-                                <strong>Enjoy these products at discounted prices</strong>
-                            </h5>
-                            <a href="javascript:void(0);" class="block" data-close>
-                                <svg class="stroke-current w-5 h-5 text-gray-light" viewBox="0 0 24 24" stroke-width="4"
-                                    stroke="#6c7893" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                                    <path d="M0 0h24v24H0z" stroke="none" />
-                                    <path d="M18 6 6 18M6 6l12 12" />
-                                </svg>
-                            </a>
-                        </div>
-                        <div class="p-4">
-                            <table class="ti-custom-table ti-custom-table-head">
-                                {{-- <thead>
-                                <tr>
-                                    <th scope="col">Product</th>
-                                    <th scope="col" class="!text-end">Action</th>
-                                </tr>
-                                </thead> --}}
-                                <tbody>
-                                    @php
-                                        $count = 0;
-                                    @endphp
-                            @foreach ($hot_sales as $hot_sale)
-                                        <tr>
-                                            {{-- text-[#17171d] --}}
-                                            <td class="font-small "> <h4 class=" dark:text-bgdark">{{ $hot_sale['plan_category_name']  }}</h4>  </td>
-                                            <td>
-                                                <a href="{{ route($hot_sale['route_name'],$hot_sale['id']) }}" class="text-primary hover:text-primary" href="javascript:void(0);">Buy</a>
-                                            </td>
-                                        </tr>
-                                {{-- <p>{{ $hot_sale->product_plan_category_name  }}  :  <a href="{{ route('user.data.buy_data') }}">explore</a> </p> --}}
-                            @endforeach
-                                </tbody>
-                            </table>
-                        </div>
-                        <a type="button"
-                        class="hs-dropdown-toggle ti-btn ti-border font-medium bg-white px-5 ml-2 text-gray-700 shadow-sm align-middle hover:bg-gray-50 focus:ring-offset-white focus:ring-primary dark:bg-bgdark dark:hover:bg-black/20 dark:border-white/10 dark:text-white/70 dark:hover:text-white dark:focus:ring-offset-white/10"
-                        data-hs-overlay="#hs-basic-modal" class="block" data-close>
-                        Close
-                        </a>
-                    </div>
-                </div>
-            </div> 
-         @endif
-  
+
 
 </div>
 @endsection

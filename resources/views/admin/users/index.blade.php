@@ -216,6 +216,40 @@
                                             <input type="number" id="phone_number" name="phone_number" class="my-auto ti-form-input"
                                                 placeholder="+91 123-456-789">
                                         </div>
+
+                                        
+
+                                        <div class="space-y-2">
+                                          <label class="ti-form-label mb-0">User Plan</label>
+                                          <select required id="user_plan_id" name="user_plan_id"  class="my-auto ti-form-select">
+                                            <option value="">Select</option>
+                                              
+                                            @foreach ($user_plans as $user_plan)
+                                                <option 
+                                                value="{{ $user_plan->id  }}">{{ $user_plan->user_plan_name ?? $user_plan->default_user_plan_name  }}</option>
+                                            @endforeach
+                              
+                                          </select>
+                                        
+                                          </div>
+
+                                          {{-- <div class="space-y-2">
+                                            <label class="ti-form-label mb-0">Role</label>
+                                            <select required id="role_id" name="role_id"  class="my-auto ti-form-select">
+                                              <option value="">Select</option>
+                                                
+                                              @foreach ($roles as $role)
+                                                  <option 
+                                                  value="{{ $role->id  }}">{{  $role->role_name  }}</option>
+                                              @endforeach
+                                
+                                            </select>
+                                          
+                                            </div>
+                                          --}}
+
+
+
                                         <div class="space-y-2">
                                             <label class="ti-form-label mb-0">Email Address</label>
                                             <input type="email" id="email" name="email" class="my-auto ti-form-input"
