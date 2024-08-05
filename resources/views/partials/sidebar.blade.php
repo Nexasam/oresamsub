@@ -69,7 +69,7 @@
                   <!-- Start::slide -->
                   <li class="slide  has-sub">
                     <a href="{{ route('admin.users.index') }}" class="side-menu__item">
-                        <i class="ri-home-8-line side-menu__icon"></i>
+                        <i class="ti ti-users side-menu__icon"></i>
                         <span class="side-menu__label">Users Management</span>
                         <i class="ri ri-arrow-right-s-line side-menu__angle"></i>
                     </a>
@@ -82,7 +82,7 @@
                  <!-- Start::slide: for users -->
                  <li class="slide  has-sub">
                     <a href="{{ route('admin.reseller_plans.index') }}" class="side-menu__item">
-                        <i class="ri-home-8-line side-menu__icon"></i>
+                        <i class="ti ti-medal side-menu__icon"></i>
                         <span class="side-menu__label">Resellers Plans</span>
                         <i class="ri ri-arrow-right-s-line side-menu__angle"></i>
                     </a>
@@ -95,7 +95,7 @@
                   <!-- Start::slide -->
                   <li class="slide  has-sub">
                     <a href="{{ route('admin.networks.index')}}" class="side-menu__item">
-                        <i class="ri-home-8-line side-menu__icon"></i>
+                        <i class="ti ti-wifi side-menu__icon"></i>
                         <span class="side-menu__label">Networks</span>
                         <i class="ri ri-arrow-right-s-line side-menu__angle"></i>
                     </a>
@@ -108,7 +108,7 @@
                 <!-- Start::slide -->
                 <li class="slide  has-sub">
                     <a href="{{ route('admin.products.index')}}" class="side-menu__item">
-                        <i class="ri-home-8-line side-menu__icon"></i>
+                        <i class="ti ti-devices side-menu__icon"></i>
                         <span class="side-menu__label">Products</span>
                         <i class="ri ri-arrow-right-s-line side-menu__angle"></i>
                     </a>
@@ -121,7 +121,7 @@
                 <!-- Start::slide -->
                 <li class="slide  has-sub">
                     <a href="{{ route('admin.product_plan_categories.index')}}" class="side-menu__item">
-                        <i class="ri-home-8-line side-menu__icon"></i>
+                        <i class="ti ti-device-speaker side-menu__icon"></i>
                         <span class="side-menu__label">Plan Categories</span>
                         <i class="ri ri-arrow-right-s-line side-menu__angle"></i>
                     </a>
@@ -134,7 +134,7 @@
                   <!-- Start::slide -->
                   <li class="slide  has-sub">
                     <a href="{{ route('admin.product_plans.index')}}" class="side-menu__item">
-                        <i class="ri-home-8-line side-menu__icon"></i>
+                        <i class="ti ti-artboard side-menu__icon"></i>
                         <span class="side-menu__label">Plans & Prices</span>
                         <i class="ri ri-arrow-right-s-line side-menu__angle"></i>
                     </a>
@@ -153,7 +153,7 @@
                 <!-- Start::slide -->
                 <li class="slide  has-sub mt-10">
                     <a href="javascript:void(0);" class="side-menu__item">
-                        <i class="ti ti-3d-rotate side-menu__icon"></i>
+                        <i class="ti ti-engine side-menu__icon"></i>
                         <span class="side-menu__label">Automation Settings</span>
                         <i class="ri ri-arrow-right-s-line side-menu__angle"></i>
                     </a>
@@ -190,7 +190,7 @@
                 <!-- Start::slide -->
                 <li class="slide  has-sub">
                     <a href="{{ route('admin.settings.index')}}" class="side-menu__item">
-                        <i class="ri-home-8-line side-menu__icon"></i>
+                        <i class="ti ti-settings side-menu__icon"></i>
                         <span class="side-menu__label">Settings</span>
                         <i class="ri ri-arrow-right-s-line side-menu__angle"></i>
                     </a>
@@ -208,7 +208,7 @@
                  <!-- Start::slide -->
                  <li class="slide  has-sub mt-10">
                     <a href="javascript:void(0);" class="side-menu__item">
-                        <i class="ti ti-3d-rotate side-menu__icon"></i>
+                        <i class="ti ti-report-money side-menu__icon"></i>
                         <span class="side-menu__label">Wallet</span>
                         <i class="ri ri-arrow-right-s-line side-menu__angle"></i>
                     </a>
@@ -223,7 +223,7 @@
                 <!-- Start::slide -->
                  <li class="slide  has-sub mt-10">
                     <a href="javascript:void(0);" class="side-menu__item">
-                        <i class="ti ti-3d-rotate side-menu__icon"></i>
+                        <i class="ti ti-device-mobile side-menu__icon"></i>
                         <span class="side-menu__label">Data</span>
                         <i class="ri ri-arrow-right-s-line side-menu__angle"></i>
                     </a>
@@ -238,7 +238,7 @@
                     <!-- Start::slide -->
                  <li class="slide  has-sub">
                     <a href="javascript:void(0);" class="side-menu__item">
-                        <i class="ti ti-chart-pie-4 side-menu__icon"></i>
+                        <i class="ti ti-phone-call side-menu__icon"></i>
                         <span class="side-menu__label">Airtime</span>
                         <i class="ri ri-arrow-right-s-line side-menu__angle"></i>
                     </a>
@@ -252,7 +252,7 @@
                  <!-- Start::slide -->
                  <li class="slide  has-sub">
                     <a href="javascript:void(0);" class="side-menu__item">
-                        <i class="ri-home-8-line side-menu__icon"></i>
+                        <i class="ti ti-device-tv side-menu__icon"></i>
                         <span class="side-menu__label">Cable Subscription</span>
                         <i class="ri ri-arrow-right-s-line side-menu__angle"></i>
                     </a>
@@ -267,7 +267,7 @@
                    <!-- Start::slide -->
                    <li class="slide  has-sub">
                     <a href="javascript:void(0);" class="side-menu__item">
-                        <i class="ri-home-8-line side-menu__icon"></i>
+                        <i class="ti ti-recharging side-menu__icon"></i>
                         <span class="side-menu__label">Electricity Subscription</span>
                         <i class="ri ri-arrow-right-s-line side-menu__angle"></i>
                     </a>
@@ -313,7 +313,7 @@
                  <!-- Start::slide: for users -->
                  <li class="slide  has-sub">
                     <a href="{{ route('user.settings.index') }}" class="side-menu__item">
-                        <i class="ri-home-8-line side-menu__icon"></i>
+                        <i class="ti ti-settings side-menu__icon"></i>
                         <span class="side-menu__label">User Settings</span>
                         <i class="ri ri-arrow-right-s-line side-menu__angle"></i>
                     </a>
