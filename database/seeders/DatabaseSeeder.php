@@ -701,7 +701,7 @@ class DatabaseSeeder extends Seeder
         // $table->timestamps();
 
         //data, main wallet
-        for($i = 1; $i <= 1000; $i++){
+        for($i = 1; $i <= 100; $i++){
             Transaction::create([
                 'user_id' => $user_ore->id,
                 'product_plan_id' => '9c83dc1a-8262-4f54-8c40-41029830fe5a',
@@ -719,7 +719,7 @@ class DatabaseSeeder extends Seeder
         }
 
         //data, data wallet
-        for($i = 1; $i <= 1000; $i++){
+        for($i = 1; $i <= 100; $i++){
             Transaction::create([
                 'user_id' => $user_ore->id,
                 'product_plan_id' => '9c83dc1a-8262-4f54-8c40-41029830fe5a',
@@ -737,7 +737,7 @@ class DatabaseSeeder extends Seeder
         }
 
         //airtime
-        for($i = 1; $i <= 1000; $i++){
+        for($i = 1; $i <= 100; $i++){
             Transaction::create([
                 'user_id' => $user_ore->id,
                 'product_plan_id' => '0ed2d8b7-8c2e-4442-85c7-840f801552f0',
@@ -755,7 +755,7 @@ class DatabaseSeeder extends Seeder
         }
 
         //prepaid, electricity
-        for($i = 1; $i <= 1000; $i++){
+        for($i = 1; $i <= 100; $i++){
             Transaction::create([
                 'user_id' => $user_ore->id,
                 'product_plan_id' => '12c6a955-8ce2-452e-ae09-40266fd6c531',
@@ -774,7 +774,7 @@ class DatabaseSeeder extends Seeder
         }
 
         //cable
-        for($i = 1; $i <= 1000; $i++){
+        for($i = 1; $i <= 100; $i++){
             Transaction::create([
                 'user_id' => $user_ore->id,
                 'product_plan_id' => 'b3176d9f-6f12-45e0-9640-71c509271825',
