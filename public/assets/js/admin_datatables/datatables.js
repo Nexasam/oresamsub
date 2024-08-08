@@ -89,8 +89,8 @@ $(document).ready(function(){
       const phone_recharged = $('#phone_recharged').val();
 
       if(date_from > date_to){
-        alert('Date from must be less than Date to')
-        return
+        alert('Date from must be less than Date to');
+        return;
       }
    
       $("#user_transactions_table").DataTable().destroy();
