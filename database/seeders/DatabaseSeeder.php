@@ -740,7 +740,7 @@ class DatabaseSeeder extends Seeder
         for($i = 1; $i <= 100; $i++){
             Transaction::create([
                 'user_id' => $user_ore->id,
-                'product_plan_id' => '0ed2d8b7-8c2e-4442-85c7-840f801552f0',
+                'product_plan_id' => '9ca4dde6-8cd7-4cb7-80da-608887b2de8d',
                 'transaction_category' => 'airtime',
                 'status' => 1,
                 'wallet_category' => 'main_wallet',

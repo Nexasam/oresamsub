@@ -45,12 +45,12 @@ $(document).ready(function(){
         });
     }
 
-    admin_transactions_table
-
-    function userGetTransactions(date_from ='', date_to =''){
+    function userGetTransactions(date_from ='', date_to ='', product_plan_category_filter = '', phone_recharged = ''){
       const data = {
         date_from : date_from,
         date_to : date_to,
+        product_plan_category_filter : product_plan_category_filter,
+        phone_recharged : phone_recharged
       };
       console.log(data);
       // return;
@@ -61,23 +61,41 @@ $(document).ready(function(){
                 bInfo: false,
                 bLengthChange: true,
                 pageLength: 10,
-                ajax: root_url + 'user/transactions/user_fetch_transactions?date_from='+date_from+'&&date_to='+date_to,
+                ajax: root_url + 'user/transactions/user_fetch_transactions?date_from='+date_from+'&&date_to='+date_to+'&&product_plan_category_filter='+product_plan_category_filter+'&&phone_recharged='+phone_recharged,
                 // ajax:  "{{ route('admin.users.fetch_users',"+data+") }}",
                 columns: [
                     {data: 'DT_RowIndex', name: 'DT_RowIndex'},
                     {data: 'user_id', name: 'user_id'},
                     {data: 'wallet_category', name: 'wallet_category'},
+                    {data: 'plan_details', name: 'plan_details'},
+                    {data: 'transaction_category', name: 'transaction_category'},
+                    {data: 'response', name: 'response'},
                     {data: 'phone_number', name: 'phone_number'},
                     {data: 'amount', name: 'amount'},
                     {data: 'balance_before', name: 'balance_before'},
-                    {data: 'data_size', name: 'data_size'},
+                    // {data: 'data_size', name: 'data_size'},
                     {data: 'balance_after', name: 'balance_after'},
                     {data: 'status', name: 'status'},
                     {data: 'created_at', name: 'created_at'},
-                    // {data: 'action', name: 'action'},
+                    {data: 'action', name: 'action'},
                   ]
         });
     }
+
+    $('#filter_user_txn_table').click(function(e){
+      const product_plan_category_filter = $('#product_plan_category_filter').val();
+      const date_from = $('#date_from_filter').val();
+      const date_to = $('#date_to_filter').val();
+      const phone_recharged = $('#phone_recharged').val();
+
+      if(date_from > date_to){
+        alert('Date from must be less than Date to')
+        return
+      }
+   
+      $("#user_transactions_table").DataTable().destroy();
+      userGetTransactions(date_from,date_to,product_plan_category_filter,phone_recharged);
+    })
 
     function adminGetTransactions(date_from ='', date_to =''){
       const data = {

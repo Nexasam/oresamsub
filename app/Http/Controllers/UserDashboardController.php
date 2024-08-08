@@ -81,7 +81,7 @@ class UserDashboardController extends Controller
     $data['user'] = $user_details;
     $data['users'] = User::select('id')->get();
     $data['product_plans'] = ProductPlan::select('id')->get();
-    $data['product_plan_categories'] = ProductPlanCategory::select('id')->get();
+    $data['product_plan_categories'] = ProductPlanCategory::select('id','product_plan_category_name')->get();
     $data['bulk_data_plans'] = BulkDataProductPlans::all();
  
     $data['user_selling_variable'] = 'user_level_'.$user_plan_level.'_selling_price';
@@ -98,6 +98,7 @@ class UserDashboardController extends Controller
       $data['bulk_data_wallet_sum'] = UserBulkDataWallet::select('bulk_wallet_balance_mb')->sum('bulk_wallet_balance_mb');
       $data['alltime_bulk_wallet_balance_mb'] = UserBulkDataWallet::select('alltime_bulk_wallet_balance_mb')->sum('alltime_bulk_wallet_balance_mb');
       $data['transactions'] = Transaction::with(['user','product_plan'])->latest()->get();
+      
       return view('admin_dashboard')->with($data);
     }
   }

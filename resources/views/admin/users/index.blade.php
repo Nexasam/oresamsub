@@ -65,10 +65,7 @@
 
                   <div class="mt-3">
                     <div id="pills-with-brand-color-1"   role="tabpanel" aria-labelledby="pills-with-brand-color-item-1">
-                      <div class="overflow-auto">
-                        {{-- <table  class="ti-custom-table ti-custom-table-head ti-striped-table ti-custom-table-hover ">
-                            <thead> --}}
-                              
+                      <div class="overflow-auto">         
                               <div class="box-body">
                                 <div class="box-header">
                                   <div class="flex">
@@ -132,7 +129,7 @@
                                                     data-hs-overlawerwry="#hs-slide-down-animation-modal">
                                                     Closeoooo
                                                   </button> --}}
-                                                  <a id="filter_user_table" class="ti-btn ti-btn-primary" data-hs-overlay="#hs-slide-down-animation-modal"
+                                                  <a id="filter_user_txn_table" class="ti-btn ti-btn-primary" data-hs-overlay="#hs-slide-down-animation-modal"
                                                     href="javascript:void(0);">
                                                     Save changes
                                                   </a>
@@ -149,8 +146,7 @@
                                       
                                     
                                    
-                                    </div>
-                                  
+                                    </div>                       
                                   </div> 
                                 </div>
 

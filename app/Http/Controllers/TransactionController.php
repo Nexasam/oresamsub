@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ProductPlan;
 use App\Models\Transaction;
 use Illuminate\Http\Request;
 use Yajra\DataTables\Facades\DataTables;
@@ -14,11 +15,37 @@ class TransactionController extends Controller
 
   public function user_fetch_transactions(Request $request){
 
-        // => function($query){
-        //   $query->where('slug','data');
-        // }
-        //   $data = Transaction::with(['product','automation','network'])->latest()->get();
-      $data = Transaction::with(['user','product_plan'])->latest()->limit(4000)->get();
+        // $date_from = $request->date_from ?? '';
+        // $date_to= $request->date_to ?? '';
+
+         $date_from = $request->date_from ?? date('Y-m-d');
+        $date_to= $request->date_to ?? date('Y-m-d');
+
+        $product_plan_category_filter = $request->product_plan_category_filter ?? '';
+        
+        $phone = $request->phone_recharged ?? '';
+        
+
+        $limit = $request->limit ?? 500;
+
+        // ->when( !empty($email) , function ($query) use ($email){
+        //     $query->where('email',$email);
+        //   })
+
+        // $product_plan_ids = ProductPlan::where('product_plan_category_id',$product_plan_category_filter)->pluck('id');
+        // return $product_plan_ids;
+        
+        $data = Transaction::when(!empty($date_from) && !empty($date_to) , function ($query) use ($date_from,$date_to){
+            $date_to = date('Y-m-d', strtotime('+1 day', strtotime($date_to)));
+            $query->where('created_at','>=',$date_from)->where('created_at','<=',$date_to);
+        })->when(!empty($product_plan_category_filter) , function ($query) use ($product_plan_category_filter){
+            $product_plan_ids = ProductPlan::where('product_plan_category_id',$product_plan_category_filter)->pluck('id');
+            $query->whereIn('product_plan_id',$product_plan_ids);
+        })->when(!empty($phone) , function ($query) use ($phone){
+          $query->where('phone_number',$phone);
+        })
+
+        ->with(['user','product_plan'])->latest()->limit(4000)->get();
 
         //  return $data;
       return DataTables::of($data)
@@ -30,12 +57,41 @@ class TransactionController extends Controller
             $first_name = $data->user->first_name  ?? 'nil';
             $last_name = $data->user->last_name  ?? 'nil';
             $phone_number = $data->user->phone_number  ?? 'nil';
-            $user_details =  $first_name.'<br>'.$last_name.'<br>'.$phone_number.'<br>';
+            $user_details =  $first_name.'<br>'.$last_name.'<br>'.$phone_number.'<br>';     
             return $user_details;
         })
         ->addColumn('wallet_category',function($data){
             $wallet_category = $data->wallet_category == 'main_wallet' ?  'MAIN' : 'DATA_WALLET';
             return $wallet_category;
+        })
+        ->addColumn('plan_details',function($data){
+            if($data->product_plan != NULL){
+               
+                $dataa =  $data->product_plan->product_plan_name.'<br>';
+                $dataa .=  $data->product_plan->product_plan_category->product_plan_category_name.'<br>';
+                if($data->transaction_category == 'cable_subscription'){
+                    $dataa .=  'Smart Card No: '.$data->smart_card_number.'p<br>';
+                }
+                if($data->transaction_category == 'utility_bills'){
+                    $dataa .=  'Metre No: '.$data->metre_number.'o<br>';
+                }
+                if($data->transaction_category == 'data'){
+                    $dataa .= number_format($data->product_plan->data_size_in_mb ?? '0') .' MB';
+                }
+
+            }else{
+                $dataa = 'NIL';
+            }
+            return $dataa;
+        })
+     
+        ->addColumn('transaction_category',function($data){
+            $transaction_category = $data->transaction_category;
+            return $transaction_category;
+        })
+        ->addColumn('response',function($data){
+            $user_screen_message = $data->user_screen_message;
+            return $user_screen_message;
         })
         ->addColumn('phone_number',function($data){
             return $data->phone_number;
@@ -77,10 +133,22 @@ class TransactionController extends Controller
         ->addColumn('created_at',function($data){
             return $data->created_at;
         }) 
+        ->addColumn('action',function($data){
+            $route = '#';
+            // $route = route('transaction_details',$data->id);
+            $actionBtn = '<a href="'.$route.'" type="button" class="hs-dropdown-toggle ti-btn ti-btn-primary" data-hs-overlay="#hs-vertically-centered-scrollable-modal'.$data->email.'">
+            Details
+            </a>';
+            return $actionBtn;
+        })
+        
         ->escapeColumns([])
         ->make(true);
 
+
+       
   }
+
 
   public function admin_fetch_transactions(Request $request){
 
