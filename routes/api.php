@@ -17,7 +17,7 @@ Route::get('/user', function (Request $request) {
 Route::post('/login', [MobileApiController::class, 'mobile_login'])->name('api.mobile_login');
 Route::post('/register', [MobileApiController::class, 'mobile_signup'])->name('api.mobile_signup');
 Route::middleware('auth:sanctum')->get('/mobile_networks', [MobileApiController::class, 'mobile_networks'])->name('api.mobile_networks');
-Route::middleware('auth:sanctum')->get('/mobile_product_plan_categories', [MobileApiController::class, 'mobile_product_plan_category'])->name('api.mobile_networks');
+Route::middleware('auth:sanctum')->get('/mobile_product_plan_categories', [MobileApiController::class, 'mobile_product_plan_category'])->name('api.mobile_product_plan_categories');
 Route::middleware('auth:sanctum')->get('/mobile_products', [MobileApiController::class, 'mobile_products'])->name('api.mobile_products');
 Route::middleware('auth:sanctum')->get('/mobile_bulk_data_plans', [MobileApiController::class, 'mobile_bulk_data_plans'])->name('api.mobile_bulk_data_plans');
 Route::middleware('auth:sanctum')->get('/mobile_transactions', [MobileApiController::class, 'mobile_transactions'])->name('api.mobile_transactions');
