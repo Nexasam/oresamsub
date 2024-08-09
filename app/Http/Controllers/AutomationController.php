@@ -41,9 +41,9 @@ class AutomationController extends Controller
                 //call plans api 
                 $selection = 'selected';
                 // sk_live_8bd499ea-66f6-4650-8c7f-09a59e7c03a5
-                // $ogdams_secret_key = 'sk_live_8bd499ea-66f6-4650-8c7f-09a59e7c03a5';
-                $ogdams_secret_key = $automation->api_secret_key;
-                // dd($ogdams_secret_key);
+                // $ogdams_public_key = 'sk_live_8bd499ea-66f6-4650-8c7f-09a59e7c03a5';
+                $ogdams_public_key = $automation->api_public_key;
+                // dd($ogdams_public_key);
     
     
                 ///TODO: MOVE TO SERVICE
@@ -59,7 +59,7 @@ class AutomationController extends Controller
                     // CURLOPT_CUSTOMREQUEST => 'GET',
                     // CURLOPT_HTTPHEADER => array(
                     //     'Accept: application/json',
-                    //     'Authorization: Bearer '.$ogdams_secret_key
+                    //     'Authorization: Bearer '.$ogdams_public_key
                     // ),
                     // ));
                     
@@ -76,7 +76,7 @@ class AutomationController extends Controller
                     CURLOPT_CUSTOMREQUEST => 'GET',
                     CURLOPT_HTTPHEADER => array(
                         'Accept: application/json',
-                        'Authorization: Bearer '.$ogdams_secret_key
+                        'Authorization: Bearer '.$ogdams_public_key
                     ),
                     ));
     
@@ -97,7 +97,7 @@ class AutomationController extends Controller
                     
                     $products_count = count($ogdams_mtn_products) + count($ogdams_airtel_products) + count($ogdams_glo_products) + count($ogdams__9mobile_products) ;
     
-                    if($automation == NULL || $automation->api_secret_key == NULL){
+                    if($automation == NULL || $automation->api_public_key == NULL){
                         Session::flash('failure','Please ensure your automation api keys are set');
                         return redirect()->route('admin.settings.index');
                         // return back()->with('status' , 'Please check your settings and ensure keys are set');

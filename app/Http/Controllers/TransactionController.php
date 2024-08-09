@@ -90,8 +90,8 @@ class TransactionController extends Controller
             return $transaction_category;
         })
         ->addColumn('response',function($data){
-            $user_screen_message = $data->user_screen_message;
-            return $user_screen_message;
+            return  '<span style="white-space: normal;word-wrap: break-word;word-break: normal;width:auto">'.$data->user_screen_message.'</span>';
+            // return $user_screen_message;
         })
         ->addColumn('phone_number',function($data){
             return $data->phone_number;

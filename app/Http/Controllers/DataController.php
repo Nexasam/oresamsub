@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\Automation\OgdamsAutomation\OgdamsVendData;
 use Exception;
 use App\Models\User;
 use App\Models\Network;
@@ -201,7 +202,11 @@ class DataController extends Controller
                                 
                                 if($automation_details->slug == 'megasubplug'){
                                     $sell_data = (new MegaSubVendData($phone_numbers_array[$i],$request->product_plan_id))->buyData();
-                                }else{
+                                }
+                                if($automation_details->slug == 'ogdams' || $automation_details->slug == 'ogdamsv2'){
+                                    $sell_data = (new OgdamsVendData($phone_numbers_array[$i],$request->product_plan_id))->buyData();
+                                }
+                                else{
                                     //this will be like this until other automations are processed
                                     $sell_data['status'] = 1;
                                     $sell_data['user_message'] = 'Data was successfully processed.';

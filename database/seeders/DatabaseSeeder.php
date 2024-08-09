@@ -59,6 +59,7 @@ class DatabaseSeeder extends Seeder
             "id" => "9c2887ea-59c7-471a-9407-1ff44b61a349",
             "automation_name" => 'OGDAMS',
             "slug" =>'ogdams',
+            "api_public_key" => 'sk_live_b73e769b-1ec0-47ea-9593-58c0d8b2cf9e'
         ]);
 
          //ogdams - 2
@@ -66,6 +67,7 @@ class DatabaseSeeder extends Seeder
             "id" => "9c2887ea-59c7-471a-9407-1ff44b61akj1",
             "automation_name" => 'OGDAMS v2',
             "slug" =>'ogdams_v2',
+            "api_public_key" => 'sk_live_b73e769b-1ec0-47ea-9593-58c0d8b2cf9e'
         ]);
 
 

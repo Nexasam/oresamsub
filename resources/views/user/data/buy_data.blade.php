@@ -53,17 +53,21 @@
                             <thead> --}}
                               <table  id="user_transactions_table" class="ti-custom-table ti-custom-table-head">    
                                 <thead class="bg-gray-50 dark:bg-black/20">
-                                <tr>
+                                  <tr>
                                     <th>ID</th>
                                     <th>User</th>
                                     <th>Wallet</th>
+                                    <th>Product Details</th>
+                                    <th>Txn Category</th>
+                                    <th>Response</th>
                                     <th>Phone</th>
                                     <th>Amount</th>
                                     <th>Balance Before</th>
-                                    <th>Data size</th>
+                                    {{-- <th>Data size</th> --}}
                                     <th>Balance After</th>
                                     <th>Status</th>
                                     <th>Date Added</th>
+                                    <th>Action</th>
                                 </tr>
                             </thead>
                            
