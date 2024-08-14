@@ -363,6 +363,11 @@
                               <input value="{{ $twitter_link }}" type="text"  name="twitter_link" class="my-auto ti-form-input" placeholder="">
                               </div>
                              
+                              <div class="space-y-2">
+                                <label class="ti-form-label mb-0">Physical Address</label>
+                                <input value="{{ $physical_address }}" type="text"  name="physical_address" class="my-auto ti-form-input" placeholder="">
+                              </div>
+                              
 
                               {{-- <div class="space-y-2 mt-5">
                                 <label class="ti-form-label mb-0">About Us </label>

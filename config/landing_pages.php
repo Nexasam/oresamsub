@@ -51,5 +51,6 @@ return [
     'facebook_link' => ['field_name','field_details','https://facebook.com'],  
     'instagram_link' => ['field_name','field_details','https://instagram.com'],  
     'twitter_link' => ['field_name','field_details','https://twitter.com'],  
-    'support_whatsapp_number' => ['field_name','field_details','08133494364'],  
+    'support_whatsapp_number' => ['field_name','field_details','08133494364'], 
+    'physical_address' => ['field_name','field_details','No 4 Akingbade street, off admiralty, Ibadan, Oyo State'] 
 ];

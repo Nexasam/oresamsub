@@ -30,6 +30,7 @@ return new class extends Migration
             $table->string('user_level_5_selling_price')->nullable();
             $table->string('user_level_6_selling_price')->nullable();
             $table->string('visibility')->default(1)->comment(' 0- hidden, 1- visible');
+            $table->string('public_visibility')->default(1)->comment(' 0- hidden, 1- visible');
             $table->string('active_status')->default(1)->comment(' 0 - inactive, 1- active');
             $table->timestamps();
         });

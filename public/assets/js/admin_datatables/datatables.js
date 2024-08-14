@@ -1,19 +1,83 @@
 $(document).ready(function(){
     const root_url = $('.root_url').val();
+    var root_url_public = $('.root_url2').val();
+    // alert(root_url_public)
+
     getUsers();        
     getPlanCategories();
     userGetTransactions();
     adminGetTransactions();
+    getPublicPlans();
+    getPlans();
 
-    
-    // $('#filter_user_table').click(function(e){
-    //     const phone = $('#phone_filter').val();
-    //     const email = $('#email_filter').val();
-    //     const date_from = $('#date_from_filter').val();
-    //     const date_to = $('#date_to_filter').val();
-    //    $("#plan_categories_table").DataTable().destroy();
-    //     getUsers(date_from,date_to,phone,email,'');
-    // })
+    function getPublicPlans(date_from ='', date_to =''){
+
+      const data = {
+        date_from : date_from,
+        date_to : date_to,
+      };
+      
+      // const url = root_url_public + 'product_plans/fetch_public_product_plans?date_from='+date_from+'&&date_to='+date_to;
+      const url = root_url_public + 'product_plans/fetch_public_product_plans';
+      // alert(url)
+      $('#public_product_plans').DataTable({
+                autoWidth: false,
+                processing: true,
+                searching: true,
+                bInfo: false,
+                bLengthChange: true,
+                pageLength: 50,
+                ajax: root_url_public + 'product_plans/fetch_public_product_plans?date_from='+date_from+'&&date_to='+date_to,
+                // ajax:  "{{ route('admin.users.fetch_users',"+data+") }}",
+                columns: [
+                    {data: 'DT_RowIndex', name: 'DT_RowIndex'},
+                    {data: 'product_name', name: 'product_name'},
+                    {data: 'network_name', name: 'network_name'},
+                    {data: 'product_plan_name', name: 'product_plan_name'},
+                    {data: 'product_plan_category_id', name: 'product_plan_category_id'},
+                    {data: 'data_size_in_mb', name: 'data_size_in_mb'},
+                    {data: 'user_level_1_selling_price', name: 'user_level_1_selling_price'},
+                    {data: 'validity_in_days', name: 'validity_in_days'}
+                  ]
+        });
+    }
+
+    function getPlans(date_from ='', date_to =''){
+
+      const data = {
+        date_from : date_from,
+        date_to : date_to,
+      };
+   
+      $('#product_plans_table').DataTable({
+                autoWidth: false,
+                processing: true,
+                searching: true,
+                bInfo: false,
+                bLengthChange: true,
+                pageLength: 50,
+                ajax: root_url + 'admin/product_plans/fetch_product_plans?date_from='+date_from+'&&date_to='+date_to,
+                // ajax:  "{{ route('admin.users.fetch_users',"+data+") }}",
+                columns: [
+                    {data: 'DT_RowIndex', name: 'DT_RowIndex'},
+                    {data: 'product_name', name: 'product_name'},
+                    {data: 'network_name', name: 'network_name'},
+                    {data: 'product_plan_name', name: 'product_plan_name'},
+                    {data: 'product_plan_category_id', name: 'product_plan_category_id'},
+                    {data: 'automation', name: 'automation'},
+                    {data: 'data_size_in_mb', name: 'data_size_in_mb'},
+                    {data: 'validity_in_days', name: 'validity_in_days'},
+                    {data: 'cost_price', name: 'cost_price'},
+                    {data: 'user_level_1_selling_price', name: 'user_level_1_selling_price'},
+                    {data: 'user_level_2_selling_price', name: 'user_level_2_selling_price'},
+                    {data: 'user_level_3_selling_price', name: 'user_level_3_selling_price'},
+                    {data: 'user_level_4_selling_price', name: 'user_level_4_selling_price'},
+                    {data: 'visibility', name: 'visibility'},
+                    {data: 'public_visibility', name: 'public_visibility'},
+                    {data: 'date', name: 'date'}
+                  ]
+        });
+    }
 
     function getPlanCategories(date_from ='', date_to =''){
       const data = {

@@ -66,18 +66,18 @@
             </div>
         </div>
         <div class="lg:col-span-6 col-span-12">
-            <div class="authentication-page w-full">
+            <div class="authentication-page w-full ">
                 <!-- ========== MAIN CONTENT ========== -->
-                <main id="content" class="w-full max-w-md mx-auto p-6">
+                <main id="content" class="w-full max-w-md mx-auto p-6 ">
                     {{-- <a href="#" class="header-logo lg:hidden">
                         <img src="../assets/img/brand-logos/desktop-logo.png" alt="logo" class="mx-auto block dark:hidden">
                         <img src="../assets/img/brand-logos/desktop-dark.png" alt="logo" class="mx-auto hidden dark:block">
                     </a> --}}
-                    <div class="mt-7">
+                    <div class="mt-7 ">
                         <div class="p-4 sm:p-7">
-                            <a href="#" class="header-logo">
-                                <img src="{{ asset(env('APP_ASSETS_BASE_URL').'img/logos/logo.png') }}" alt="logo"
-                                class="w-20 h-20 mx-auto block dark:hidden" >
+                            <a href="#" class="header-logo ">
+                                <img style="background-size: contain;" src="{{ asset(env('APP_ASSETS_BASE_URL').'img/logos/logo.png') }}" alt="logo"
+                                class="w-20 h-20 mx-auto  block dark:hidden" >
                                 {{-- <img src="../../assets/img/logos/{{  $logo }}" alt="logo"
                                 class="w-20 h-20 mx-auto hidden dark:block" alt="logo" class=""> --}}
                                 {{-- <img src="../assets/img/brand-logos/desktop-dark.png" alt="logo" class="mx-auto hidden dark:block"> --}}

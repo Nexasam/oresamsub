@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\ProductPlan;
 use App\Http\Middleware\RoleAssess;
 use App\Models\LandingPagesSetting;
 use Illuminate\Support\Facades\Route;
@@ -35,6 +36,10 @@ Route::get('/', function () {
     foreach($landing_data as $landing_component){
         $data[$landing_component->field_name] = $landing_component->field_details;
     }
+
+    $product_plans = ProductPlan::get();
+    $data['product_plans'] = $product_plans;
+
     // dd($data);
     return view('landing.index')->with($data);
 });
@@ -71,6 +76,8 @@ Route::get('/access_denied', function () {
 
 //this will be adjusted later
 Route::middleware(['auth','verified'])->get('/dashboard', [UserDashboardController::class, 'index'])->name('dashboard');
+Route::get('product_plans/fetch_public_product_plans', [ProductPlanController::class, 'fetch_public_product_plans'])->name('fetch_public_product_plans');
+
 Route::post('admin/wallets/crystal_pay_webhook', [WalletsController::class, 'webhook'])->name('admin.wallet.crystalpay.webhook');
 
 
@@ -117,6 +124,7 @@ Route::middleware(['auth','verified','user'])->get('user/transactions/user_fetch
 
 Route::middleware(['auth','verified','admin'])->get('admin/product_plans', [ProductPlanController::class, 'index'])->name('admin.product_plans.index');
 Route::middleware(['auth','verified','admin'])->post('admin/product_plans/store', [ProductPlanController::class, 'store'])->name('admin.product_plans.store');
+Route::middleware(['auth','verified','admin'])->get('admin/product_plans/fetch_product_plans', [ProductPlanController::class, 'fetch_product_plans'])->name('admin.product_plans.fetch_product_plans');
 
 
 

@@ -17,6 +17,10 @@
     <link rel="stylesheet" href="{{ asset(env('APP_ASSETS_BASE_URL').'landing_page_assets/owl.theme.default.min.css') }}">
     <link rel="stylesheet" href="{{ asset(env('APP_ASSETS_BASE_URL').'landing_page_assets/css/style.css') }}">
     <link href='https://unpkg.com/boxicons@2.1.1/css/boxicons.min.css' rel='stylesheet'>
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.0.8/css/dataTables.dataTables.min.css">
+
+
+
    
 
     <title>{{ $site_title }}</title>
@@ -70,6 +74,8 @@
             <div class="row justify-content-between">
                 <div class="col-auto">
                     <p> <i class='bx bxs-envelope'></i> {{ $topnav_email  }}</p>
+                     <input value="{{  env('APP_URL') }}" type="hidden" class="root_url2">
+
                     <p>  <a style="text-decoration: none; color:white" href="tel:08168509044"><i class='bx bxs-phone-call'></i>{{ $topnav_phone }}</a> </p>
                 </div>
                 <div class="col-auto social-icons">
@@ -356,7 +362,7 @@
                 {{-- <p class="mx-auto">Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Pellentesque et neque id ligula mattis commodo.</p> --}}
             </div>
         </div>
-     </div>
+       </div>
 
     </div>
   </div>
@@ -391,64 +397,63 @@
 </section>
 
 
+<section class="bg-light pb-7 pt-6 py-xl-6">
+    <div class="container mb-1 mb-md-6">
+   
+      <div class="row">
+        <div class="col-12">
+            <div class="intro">
+                <h1>Product Plans & Prices</h1>
+                <p class="mx-auto">Here's a list of all our product plans and the prices.</p>
+            </div>
+        </div>
+      </div>
 
-    <section class="bg-white" id="portfolio">
-        <div class="container">
-            <div class="row">
-                <div class="col-12">
-                    <div class="intro">
-                        <h6>Contact</h6>
-                        <h1>Need something else?</h1>
-                        <p class="mx-auto">We’re here to help! Reach out to our customer support team through the following channels:</p>
-                        <span>Email:  <a href="#">{{ $topnav_email }}</a>  </span> <br>
-                        <span>Reach us on whatsapp by <a href="{{ $twitter_link }}">clicking this link</a>  </span>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div id="projects-slider" class="owl-theme owl-carousel">
-            <div class="project">
-                <div class="overlay"></div>
-                <img src="img/project1.jpg" alt="">
-                <div class="content">
-                    <h2>Consulting Marketing</h2>
-                    <h6>Website Design</h6>
-                </div>
-            </div>
-            <div class="project">
-                <div class="overlay"></div>
-                <img src="img/project2.jpg" alt="">
-                <div class="content">
-                    <h2>Consulting Marketing</h2>
-                    <h6>Website Design</h6>
-                </div>
-            </div>
-            <div class="project">
-                <div class="overlay"></div>
-                <img src="img/project3.jpg" alt="">
-                <div class="content">
-                    <h2>Consulting Marketing</h2>
-                    <h6>Website Design</h6>
-                </div>
-            </div>
-            <div class="project">
-                <div class="overlay"></div>
-                <img src="img/project4.jpg" alt="">
-                <div class="content">
-                    <h2>Consulting Marketing</h2>
-                    <h6>Website Design</h6>
-                </div>
-            </div>
-            <div class="project">
-                <div class="overlay"></div>
-                <img src="img/project5.jpg" alt="">
-                <div class="content">
-                    <h2>Consulting Marketing</h2>
-                    <h6>Website Design</h6>
-                </div>
-            </div>
-        </div>
-    </section>
+    </div>
+    <div class="container">
+      <div class="row gy-5 gy-md-6">
+        {{-- <table class="table" id="fetch_public_product_plans"> --}}
+            <table id="public_product_plans" class="ti-custom-table ti-custom-table-head">    
+            <thead class="bg-gray-50 dark:bg-black/20">     
+              <tr>
+                <th>ID</th>
+                <th>Product name</th>
+                <th>Network</th>
+                <th>Plan name</th>
+                <th>Plan Category</th>
+                <th>Data Size (MB)</th>
+                <th>Selling Price</th>
+           
+                <th>Validity (Days)</th>
+                
+             
+              </tr>
+            </thead>
+            <tbody></tbody>
+            {{-- <tbody>
+                @foreach ($product_plans as $key=>$product_plan)
+                    <tr>
+                        <td>{{$key + 1}}</td>
+                        <td>{{ $product_plan->product_plan_name }}</td>
+                        <td>{{ $product_plan->product_plan_category->product_plan_category_name }}</td>
+                        <td>{{ $product_plan->data_size_in_mb }}</td>
+                        <td>	&#8358;{{ $product_plan->user_level_1_selling_price }}</td>
+                        <td>{{ $product_plan->validity_in_days }}</td>
+                      
+                    
+                    
+                    </tr>
+                @endforeach
+            </tbody> --}}
+          </table>
+         {{-- {{ $product_plans->links() }}  --}}
+
+      </div>
+    </div>
+  </section>
+  
+
+
 
     {{-- <section class="bg-light" id="portfolio">
         <div class="container">
@@ -463,7 +468,7 @@
                 </div>
             </div>
         </div>
-        <div id="projects-slider" class="owl-theme owl-carousel">
+        <div id="projects-slider" class="owl-tdeme owl-carousel">
             <div class="project">
                 <div class="overlay"></div>
                 <img src="img/project1.jpg" alt="">
@@ -629,6 +634,69 @@
         </div>
     </section>
 
+    
+
+    <section class="bg-white" id="portfolio">
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <div class="intro">
+                        <h6>Contact</h6>
+                        <h1>Need something else?</h1>
+                        <p class="mx-auto">We’re here to help! Reach out to our customer support team through the following channels:</p>
+                        <span>Email:  <a href="#">{{ $topnav_email }}</a>  </span> <br>
+                        <span>Reach us on whatsapp by <a href="{{ $twitter_link }}">clicking this link</a>  </span> <br>
+                        @if ($physical_address != '' && $physical_address != NULL)
+                        <span>Office Address: {{ $physical_address }}  </span>                            
+                        @endif
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="projects-slider" class="owl-theme owl-carousel">
+            <div class="project">
+                <div class="overlay"></div>
+                <img src="img/project1.jpg" alt="">
+                <div class="content">
+                    <h2>Consulting Marketing</h2>
+                    <h6>Website Design</h6>
+                </div>
+            </div>
+            <div class="project">
+                <div class="overlay"></div>
+                <img src="img/project2.jpg" alt="">
+                <div class="content">
+                    <h2>Consulting Marketing</h2>
+                    <h6>Website Design</h6>
+                </div>
+            </div>
+            <div class="project">
+                <div class="overlay"></div>
+                <img src="img/project3.jpg" alt="">
+                <div class="content">
+                    <h2>Consulting Marketing</h2>
+                    <h6>Website Design</h6>
+                </div>
+            </div>
+            <div class="project">
+                <div class="overlay"></div>
+                <img src="img/project4.jpg" alt="">
+                <div class="content">
+                    <h2>Consulting Marketing</h2>
+                    <h6>Website Design</h6>
+                </div>
+            </div>
+            <div class="project">
+                <div class="overlay"></div>
+                <img src="img/project5.jpg" alt="">
+                <div class="content">
+                    <h2>Consulting Marketing</h2>
+                    <h6>Website Design</h6>
+                </div>
+            </div>
+        </div>
+    </section>
+
     {{-- <section id="blog">
         <div class="container">
             <div class="row">
@@ -707,7 +775,7 @@
         </div> --}}
         <div class="footer-bottom text-center">
             {{-- <p class="mb-0" style="color: white">Copyright Crystalpay 2024. All rights Reserved</p> --}}
-            <p class="mb-0" style="color: white">Developed with ❤️ by Subutility 	&#169; {{ date('Y') }} . All rights Reserved</p>
+            <p class="mb-0" style="color: white">Developed with ❤️ by <a href="#">Subutility</a> 	&#169; {{ date('Y') }} . Owned by <a href="#">{{ $site_title }}</a>. All rights Reserved</p>
         </div>
     </footer>
 
@@ -766,14 +834,18 @@
     </div>
 
 
+    <script src="{{ asset(env('APP_ASSETS_BASE_URL').'landing_page_assets/js/bootstrap.bundle.min.js') }}"></script>
 
 
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://cdn.datatables.net/2.0.8/js/dataTables.min.js"></script>
+    <script src="{{asset(env('APP_ASSETS_BASE_URL').'js/admin_datatables/datatables.js') }}"></script>
 
 
-
-   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+   {{-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+       <script src="https://cdn.datatables.net/2.0.8/js/dataTables.min.js"></script> --}}
+    {{-- <script src="{{asset(env('APP_ASSETS_BASE_URL').'js/admin_datatables/datatables.js') }}"></script> --}}
    <script src="{{ asset(env('APP_ASSETS_BASE_URL').'landing_page_assets/js/main.js') }}"></script>
-   <script src="{{ asset(env('APP_ASSETS_BASE_URL').'landing_page_assets/js/bootstrap.bundle.min.js') }}"></script>
    <script src="{{ asset(env('APP_ASSETS_BASE_URL').'landing_page_assets/js/owl.carousel.min.js') }}"></script>
    <script src="{{ asset(env('APP_ASSETS_BASE_URL').'landing_page_assets/js/app.js') }}"></script>
 </body>
