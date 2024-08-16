@@ -81,7 +81,7 @@
                                             data-hs-overlay="#hs-slide-down-animation-modal">Basic filter</a>
                                             {{-- <a href="javascript:void(0)" data-target="#testing" data-toggle="modal">Basic filter</a> --}}
                                             <a id="reload_user_tbl" class="ti-dropdown-item" href="javascript:void(0)">Refresh</a>
-                                            <a class="ti-dropdown-item" href="javascript:void(0)">Export</a>
+                                            {{-- <a class="ti-dropdown-item" href="javascript:void(0)">Export</a> --}}
                                           </div>
     
                                           <div id="hs-slide-down-animation-modal" class="hs-overlay hidden ti-modal">
@@ -129,7 +129,7 @@
                                                     data-hs-overlawerwry="#hs-slide-down-animation-modal">
                                                     Closeoooo
                                                   </button> --}}
-                                                  <a id="filter_user_txn_table" class="ti-btn ti-btn-primary" data-hs-overlay="#hs-slide-down-animation-modal"
+                                                  <a id="filter_user_table" class="ti-btn ti-btn-primary" data-hs-overlay="#hs-slide-down-animation-modal"
                                                     href="javascript:void(0);">
                                                     Save changes
                                                   </a>

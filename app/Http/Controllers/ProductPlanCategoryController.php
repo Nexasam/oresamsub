@@ -59,7 +59,7 @@ class ProductPlanCategoryController extends Controller
         'product_id' => 'required|exists:products,id',
         'network_id' => 'nullable|exists:networks,id',
         'automation_id' => 'required|exists:automations,id',
-        'discount_value' => 'required'
+        // 'discount_value' => 'required'
       ]);
 
       if ($validator->stopOnFirstFailure()->fails()) {

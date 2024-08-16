@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\FundingOption;
 use App\Models\UserVirtualAccount;
 use Illuminate\Http\Request;
 use App\Models\DynamicAccount;
@@ -116,7 +117,9 @@ class CrystalPayController extends Controller
 
           
           //call crystalpay generate endpoint: revamp later
-                $crystal_pay_key = '1417307778664652904fd25';
+                $crystal_funding = FundingOption::where('slug','crystal_pay')->first();
+                $crystal_pay_key = $crystal_funding->api_secret_key;
+                // $crystal_pay_key = '1417307778664652904fd25';
                 $curl = curl_init();
                 curl_setopt_array($curl, array(
                 CURLOPT_URL => 'https://api.crystalpay.finance/business/v1/virtual-account',
@@ -171,6 +174,8 @@ class CrystalPayController extends Controller
                    
                     UserVirtualAccount::create([
                         'user_id' => $user_details->id,
+                        'funding_option_id' => $crystal_funding->id,
+                        'funding_slug' => $crystal_funding->slug,
                         'response_status' =>$response_dec['status'],
                         'bank_name' =>$response_dec['data']['bank_name'],
                         'account_name' =>$response_dec['data']['account_name'],

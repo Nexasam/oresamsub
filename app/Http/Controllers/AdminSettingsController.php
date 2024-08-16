@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\FundingOption;
+use App\Models\FundingOptionBankCodes;
 use App\Models\User;
 use App\Models\Automation;
 use Illuminate\Http\Request;
@@ -45,12 +47,16 @@ class AdminSettingsController extends Controller
         $ogdams = Automation::where('slug','ogdams')->first();
         $smeplug = Automation::where('slug','smeplug')->first();
         $megasubplug = Automation::where('slug','megasubplug')->first();
+
+        $funding_options = FundingOption::with('bank_codes')->get();
+        // return $funding_options;
         
         $data['referral_setting'] = $referral_setting;
         $data['admin_2fa_setting'] = $admin_2fa_setting;
         $data['ogdams'] = $ogdams;
         $data['smeplug'] = $smeplug;
         $data['megasubplug'] = $megasubplug;
+        $data['funding_options'] = $funding_options;
         // dd($data);
 
        
@@ -137,6 +143,58 @@ class AdminSettingsController extends Controller
         Session::flash('success','2fa successfully updated for all users');
         return redirect()->back();
       
+    }
+
+    public function add_funding_option_bank_code(Request $request){
+        $validator = Validator::make($request->all(), [
+          'funding_option_id' => 'required',
+          'bank_code' => 'required',    
+        ]);
+
+        if ($validator->stopOnFirstFailure()->fails()) {
+          return redirect()->back()->withErrors($validator)->withInput();
+        }
+  
+        $check = FundingOptionBankCodes::where('funding_option_id',$request->funding_option_id)->where('bank_code',$request->bank_code)->first();
+        if($check){
+          Session::flash('failure','Sorry, this bank code seem already added for this funding option');
+          return redirect()->back();
+        }
+        
+        $create = FundingOptionBankCodes::create([
+          'funding_option_id' => $request->funding_option_id,
+          'bank_code' => $request->bank_code,
+        ]);
+
+        if(! $create){
+          Session::flash('failure','Error occured while adding bank code for this funding option');
+          return redirect()->back();
+        }
+
+        Session::flash('success','Funding option  was successfully updated');
+        return redirect()->back();
+   
+    }
+    public function update_funding_options(Request $request){
+      $validator = Validator::make($request->all(), [
+        'id' => 'required',
+        'api_public_key' => 'required',
+        'api_secret_key' => 'required',      
+      ]);
+
+      if ($validator->stopOnFirstFailure()->fails()) {
+        return redirect()->back()->withErrors($validator)->withInput();
+      }
+
+      
+      FundingOption::where('id',$request->id)->update([
+        'api_public_key' => $request->api_public_key,
+        'api_secret_key' => $request->api_secret_key,
+      ]);
+
+      Session::flash('success','Funding option  was successfully updated');
+      return redirect()->back();
+   
     }
 
     public function manage_automations_keys(Request $request){

@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Yajra\DataTables\DataTables;
 use App\Models\ProductPlanCategory;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Validator;
 
 class ProductPlanController extends Controller
 {
@@ -24,7 +25,47 @@ class ProductPlanController extends Controller
     }
 
 
-    public function fetch_product_plans(Request $request){
+    public function toggle_product_public_visibility(Request $request){    
+      $validator = Validator::make($request->all(), [
+        'productPlanId' => 'required|max:255|exists:product_plans,id',
+        'token' => 'required',
+      ]);
+      
+      if ($validator->stopOnFirstFailure()->fails()) {
+        return redirect()->back()->withErrors($validator)->withInput();
+      }
+
+      $detail = ProductPlan::where('id',$request->productPlanId)->first();
+      $update = $detail->public_visibility ? 0 : 1;
+      $detail->update([
+        'public_visibility' => $update
+      ]);
+
+      return response()->json(['status'=>'1', 'message'=>'success' ]);     
+    }
+
+    public function toggle_product_visibility(Request $request){
+      
+      $validator = Validator::make($request->all(), [
+        'productPlanId' => 'required|max:255|exists:product_plans,id',
+        'token' => 'required',
+      ]);
+      
+
+      if ($validator->stopOnFirstFailure()->fails()) {
+        return redirect()->back()->withErrors($validator)->withInput();
+      }
+
+      $detail = ProductPlan::where('id',$request->productPlanId)->first();
+      $update = $detail->visibility ? 0 : 1;
+      $detail->update([
+        'visibility' => $update
+      ]);
+
+      return response()->json(['status'=>'1', 'message'=>'success']);
+
+    }
+    public function admin_fetch_product_plans(Request $request){
         $data = ProductPlan::with(['automation','product_plan_category.network','product_plan_category.product'])
         ->latest()
         ->get();
@@ -72,10 +113,34 @@ class ProductPlanController extends Controller
           return number_format($data->user_level_4_selling_price,2);
         })
         ->addColumn('visibility',function($data){
-          return $data->visibility == 1 ? 'PUBLIC' : 'PRIVATE';
+          $escapedUrl = htmlspecialchars(json_encode($data->id));
+          $token = htmlspecialchars(json_encode(csrf_token()));
+          $checked = $data->visibility == 1 ? 'checked':'';
+          $actual_value = $data->visibility;
+          $checkedd = htmlspecialchars(json_encode($actual_value));
+          $toggle_btn = '<div class="flex items-center">';
+          $toggle_btn .=  '<input onchange="toggleProductPlanVisibility('.$escapedUrl.','.$token.','.$checkedd.')" type="checkbox" id="hs-basic-with-description-checked'.$data->id.'" class="ti-switch" '.$checked.'>';
+          $toggle_btn .=  '<label for="hs-basic-with-description-checked" class="text-sm text-gray-500 ms-3 dark:text-white/70 "></label>';
+          $toggle_btn .=  ' <span class="badge rounded-sm bg-success/10 text-success hidden" id="nnotification'.$data->id.'"></span>  </div>';
+          
+          return $toggle_btn;
+          // return $data->visibility ? 'YES' : 'NO';
+          // return $data->visibility == 1 ? 'PUBLIC' : 'PRIVATE';
         })
         ->addColumn('public_visibility',function($data){
-          return $data->public_visibility == 1 ? 'PUBLIC' : 'PRIVATE';
+          $escapedUrl = htmlspecialchars(json_encode($data->id));
+          $token = htmlspecialchars(json_encode(csrf_token()));
+          $checked = $data->public_visibility == 1 ? 'checked':'';
+          $actual_value = $data->public_visibility;
+          $checkedd = htmlspecialchars(json_encode($actual_value));
+          $toggle_btn = '<div class="flex items-center">';
+          $toggle_btn .=  '<input onchange="toggleProductPlanPublicVisibility('.$escapedUrl.','.$token.','.$checkedd.')" type="checkbox" id="hs-basic-with-description-checked'.$data->id.'" class="ti-switch" '.$checked.'>';
+          $toggle_btn .=  '<label for="hs-basic-with-description-checked" class="text-sm text-gray-500 ms-3 dark:text-white/70 "></label>';
+          $toggle_btn .=  ' <span class="badge rounded-sm bg-success/10 text-success hidden" id="nnotification2'.$data->id.'"></span>  </div>';
+          
+          return $toggle_btn;
+          // return $data->public_visibility ? 'YES' : 'NO';
+          // return $data->public_visibility == 1 ? 'PUBLIC' : 'PRIVATE';
 
         })
         ->addColumn('date',function($data){

@@ -124,7 +124,9 @@ Route::middleware(['auth','verified','user'])->get('user/transactions/user_fetch
 
 Route::middleware(['auth','verified','admin'])->get('admin/product_plans', [ProductPlanController::class, 'index'])->name('admin.product_plans.index');
 Route::middleware(['auth','verified','admin'])->post('admin/product_plans/store', [ProductPlanController::class, 'store'])->name('admin.product_plans.store');
-Route::middleware(['auth','verified','admin'])->get('admin/product_plans/fetch_product_plans', [ProductPlanController::class, 'fetch_product_plans'])->name('admin.product_plans.fetch_product_plans');
+Route::middleware(['auth','verified','admin'])->get('admin/product_plans/fetch_product_plans', [ProductPlanController::class, 'admin_fetch_product_plans'])->name('admin.product_plans.admin_fetch_product_plans');
+Route::middleware(['auth','verified','admin'])->get('admin/toggle_product_visibility', [ProductPlanController::class, 'toggle_product_visibility'])->name('admin.product_plans.toggle_product_visibility');
+Route::middleware(['auth','verified','admin'])->get('admin/toggle_product_public_visibility', [ProductPlanController::class, 'toggle_product_public_visibility'])->name('admin.product_plans.toggle_product_public_visibility');
 
 
 
@@ -132,6 +134,8 @@ Route::middleware(['auth','verified','admin'])->get('admin/product_categories', 
 
 Route::middleware(['auth','verified','admin'])->get('admin/settings', [AdminSettingsController::class, 'index'])->name('admin.settings.index');
 Route::middleware(['auth','verified','admin'])->post('admin/manage_automations_keys', [AdminSettingsController::class, 'manage_automations_keys'])->name('admin.settings.manage_automations_keys');
+Route::middleware(['auth','verified','admin'])->post('admin/update_funding_options', [AdminSettingsController::class, 'update_funding_options'])->name('admin.settings.update_funding_options'); //
+Route::middleware(['auth','verified','admin'])->post('admin/add_funding_option_bank_code', [AdminSettingsController::class, 'add_funding_option_bank_code'])->name('admin.settings.add_funding_option_bank_code'); //
 Route::middleware(['auth','verified','admin'])->post('admin/update_site_logo', [AdminSettingsController::class, 'manage_site_logo'])->name('admin.settings.manage_site_logo');
 Route::middleware(['auth','verified','admin'])->post('admin/manage_global_user_2fa', [AdminSettingsController::class, 'manage_global_user_2fa'])->name('admin.settings.manage_global_user_2fa');
 Route::middleware(['auth','verified','admin'])->post('admin/referral_settings', [AdminSettingsController::class, 'manage_referral_settings'])->name('admin.settings.referral_settings');

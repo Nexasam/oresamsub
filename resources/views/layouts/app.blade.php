@@ -1003,6 +1003,66 @@ $('#hs-basic-modal').trigger('click');
           })
         }
 
+        
+        function toggleProductPlanVisibility(productPlanId,token,checkedd){
+        
+                  const data = {
+                    productPlanId : productPlanId,
+                    token : token
+                  };
+                  // console.log(data);
+
+                   $.ajax({
+                    type: 'GET',
+                    url: "{{ route('admin.product_plans.toggle_product_visibility') }}",
+                    data: data,
+                    dataType: 'json',
+                    success: function(response) {
+                        $('#nnotification'+productPlanId).removeClass('hidden');
+                        $('#nnotification'+productPlanId).html(response.message);
+                        console.log(response);
+                        // console.log(response.data);
+                        // var result = JSON.stringify(response);
+                        // var dataList = JSON.parse(result);
+                        // if(dataList.status == 1){
+                        //    sweetAlertDisplay(dataList.message,'Success','success');
+                        //    reload(3000);
+                        // }else{
+                        //   sweetAlertDisplay(dataList.message,'Error','error');
+                        // }
+                    },
+                    error: function(xhr, status, error) {
+                        // Handle errors if needed
+                        console.error(xhr.responseText);
+                    }
+                });
+        }
+
+        function toggleProductPlanPublicVisibility(productPlanId,token,checkedd){
+        
+        const data = {
+          productPlanId : productPlanId,
+          token : token
+        };
+        // console.log(data);
+
+         $.ajax({
+          type: 'GET',
+          url: "{{ route('admin.product_plans.toggle_product_public_visibility') }}",
+          data: data,
+          dataType: 'json',
+          success: function(response) {
+              $('#nnotification2'+productPlanId).removeClass('hidden');
+              $('#nnotification2'+productPlanId).html(response.message);
+              console.log(response);
+          },
+          error: function(xhr, status, error) {
+              // Handle errors if needed
+              console.error(xhr.responseText);
+          }
+      });
+}
+
         function toggleHotSales(planCategoryId,token,checkedd){
                   // alert(planCategoryId)
                   // var check = $('#hs-basic-with-description-checked'+planCategoryId).checked;

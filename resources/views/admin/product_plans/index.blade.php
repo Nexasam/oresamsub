@@ -80,10 +80,10 @@
                                     <th>Data Size (MB)</th>
                                     <th>Validity (Days)</th>
                                     <th>Cost Price</th>
-                                    <th>User Level 1 Selling Price</th>
-                                    <th>User Level 2 Selling Price</th>
-                                    <th>User Level 3 Selling Price</th>
-                                    <th>User Level 4 Selling Price</th>
+                                    <th>User Level 1 Selling Price <br> (% discount for airtime)</th>
+                                    <th>User Level 2 Selling Price <br> (% discount for airtime)</th>
+                                    <th>User Level 3 Selling Price <br> (% discount for airtime)</th>
+                                    <th>User Level 4 Selling Price <br> (% discount for airtime)</th>
                                     <th>Visibility</th>
                                     <th>Public Visibility</th>
                                     <th>Date Added</th>

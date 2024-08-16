@@ -5,18 +5,24 @@ namespace Database\Seeders;
 use App\Models\Role;
 use App\Models\User;
 use App\Models\Network;
-// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use App\Models\Product;
+// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use App\Models\UserPlan;
+use App\Models\Automation;
+use App\Models\Permission;
 use App\Models\ProductPlan;
+use App\Models\Transaction;
 use App\Models\ProductCategory;
+use App\Models\ReferralSetting;
 use App\Models\UserProductPlan;
 use Illuminate\Database\Seeder;
+use App\Models\UserBulkDataWallet;
+use App\Models\LandingPagesSetting;
 use App\Models\ProductPlanCategory;
 use Illuminate\Support\Facades\Hash;
 
 
-class DatabaseSeeder extends Seeder
+class DatabaseSeederBackup extends Seeder
 {
     /**
      * Seed the application's database.
@@ -24,53 +30,90 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
 
+
+        //create the default list here
+        ReferralSetting::create();
+
+        //create landing pages defaultss
+        $landing_pages_arr = config('landing_pages');
+        foreach($landing_pages_arr as $key=>$value){
+            $data['field_name'] = $key;
+            $data['field_details'] = $value[2];
+            $data['template_type'] = 'template_1';
+            $data['visibility'] = 1;
+            LandingPagesSetting::create($data);
+        }
+
         //AUTOMATIONS
         //megasub
-        Automation::create([
-            "automation_name" => 'Megasubplug',
+        $megasub = Automation::create([
+            "id" => "9c2887ea-55b5-4f19-904e-e490a10682ea",
+            "automation_name" => 'MEGASUBPLUB',
             "slug" =>'megasubplug',
+            "api_public_key" =>'102325246266435f47e344b',
+            "api_password" =>'Akwaowo0000@',
         ]);
 
         //ogdams
-        Automation::create([
-            "automation_name" => 'Ogdams',
+        $ogdams =Automation::create([
+            "id" => "9c2887ea-59c7-471a-9407-1ff44b61a349",
+            "automation_name" => 'OGDAMS',
             "slug" =>'ogdams',
+            "api_public_key" => 'sk_live_b73e769b-1ec0-47ea-9593-58c0d8b2cf9e'
         ]);
 
+         //ogdams - 2
+         $ogdamsv2 =Automation::create([
+            "id" => "9c2887ea-59c7-471a-9407-1ff44b61akj1",
+            "automation_name" => 'OGDAMS v2',
+            "slug" =>'ogdams_v2',
+            "api_public_key" => 'sk_live_b73e769b-1ec0-47ea-9593-58c0d8b2cf9e'
+        ]);
+
+
         //autopilot
-        Automation::create([
-            "automation_name" => 'Autopilot',
+        $autopilot = Automation::create([
+            "id" => "9c2887ea-5a69-410a-8d67-a6f62f90d19b",
+            "automation_name" => 'AUTOPILOT',
             "slug" =>'autopilot',
         ]);
 
         //cloudsimhost
-        Automation::create([
-            "automation_name" => 'CloudSimHost',
+        $cloudsimhost = Automation::create([
+            "id" => "9c2887ea-5b03-4085-99bb-03565b043bc6",
+            "automation_name" => 'CLOUDSIMHOST',
             "slug" =>'cloudsimhost',
+        ]);
+
+        $smeplug = Automation::create([
+            "id" => "9c2887ea-7c78-4085-99bb-03565b066we5",
+            "automation_name" => 'SMEPLUG',
+            "slug" =>'smeplug',
         ]);
 
 
         //NETWORKS
         $mtn_network = Network::create([
+            'id' => '9c29efbb-0062-4f47-9e64-92ff101274d5',
             'network_name' => 'MTN'
         ]);
 
         $glo_network = Network::create([
+            'id' => '9c29efbb-0609-4468-bfb3-880b06035f11',
             'network_name' => 'GLO'
         ]);
 
         $airtel_network = Network::create([
+            'id' => '9c29efbb-06a8-4441-bb6c-2de40276150b',
             'network_name' => 'AIRTEL'
         ]);
 
         $_9mobile_network = Network::create([
+            'id' => '9c29efbb-0740-4e48-8b55-d1c57fe3b916',
             'network_name' => '9MOBILE'
         ]);
 
-        
-        
-        
-        
+           
         
         //USER PLANS -     
         // $user_product_plans_percentage_for_basic_user_plan = 0;
@@ -82,32 +125,24 @@ class DatabaseSeeder extends Seeder
             'plan_level' => 1,
             'updated_user_plan_name' => NULL,
             'is_default' => 1,
-            'percentage_profit_share' => 0,
-            // 'user_product_plan_id' => $user_basic_product_plan->id
         ]);
         $user_plan_gold = UserPlan::create([
             'user_plan_name' => 'Gold Reseller Plan',
             'plan_level' => 2,
             'updated_user_plan_name' => NULL,
             'is_default' => 0,
-            'percentage_profit_share' => 18,
-            // 'user_product_plan_id' => $user_gold_product_plan->id
         ]);
         $user_plan_diamond = UserPlan::create([
             'user_plan_name' => 'Diamond Reseller Plan',
             'plan_level' => 3,
             'updated_user_plan_name' => NULL,
             'is_default' => 0,
-            'percentage_profit_share' => 24,
-            // 'user_product_plan_id' => $user_diamond_product_plan->id
         ]);
         $user_plan_platinum = UserPlan::create([
             'user_plan_name' => 'Platinum Reseller Plan',
             'plan_level' => 4,
             'updated_user_plan_name' => NULL,
             'is_default' => 0,
-            'percentage_profit_share' => 28,
-            // 'user_product_plan_id' => $user_diamond_product_plan->id
         ]);
               
 
@@ -115,9 +150,50 @@ class DatabaseSeeder extends Seeder
         $admin_role = Role::create([
             'role_name' => 'Admin',
         ]);
+        //assign all permissions to Admin:
+        $file_permissions = config('permissions');
+        // logger($file_permissions);
+        foreach($file_permissions as $key=>$permission){
+            if($file_permissions[$key]['slug'] != 'data_purchase'){
+                Permission::updateOrCreate(
+                [
+                    'role_id' => $admin_role->id,
+                    'permission_slug' => $file_permissions[$key]['slug'],
+                ],
+                [
+                    'permission_name' => $file_permissions[$key]['name'],
+                    'permission_slug' => $file_permissions[$key]['slug'],
+                    'permission_create' => $file_permissions[$key]['create'],
+                    'permission_read' => $file_permissions[$key]['read'],
+                    'permission_update' => $file_permissions[$key]['update'],
+                    'permission_delete' => $file_permissions[$key]['delete'],
+                ]);
+            }
+        }
+
         $user_role = Role::create([
             'role_name' => 'User',
         ]);
+        $user_permissions = ['data_purchase'];
+        foreach($file_permissions as $key=>$permission){
+
+            if( in_array($file_permissions[$key]['slug'],$user_permissions) ){
+                Permission::updateOrCreate(
+                    [
+                        'role_id' => $user_role->id,
+                        'permission_slug' => $file_permissions[$key]['slug'],
+                    ],
+                    [
+                        'permission_name' => $file_permissions[$key]['name'],
+                        'permission_slug' => $file_permissions[$key]['slug'],
+                        'permission_create' => $file_permissions[$key]['create'],
+                        'permission_read' => $file_permissions[$key]['read'],
+                        'permission_update' => $file_permissions[$key]['update'],
+                        'permission_delete' => $file_permissions[$key]['delete'],
+                ]);
+            }
+           
+        }
 
 
         //PERMISSION LATER...
@@ -125,693 +201,806 @@ class DatabaseSeeder extends Seeder
         
         //USERS
         User::factory()->create([
+            'username' => 'samuel'.rand(11,99),
             'first_name' => 'Samuel',
             'last_name' => 'Adebunmi',
-            'role' => $admin_role,
-            'user_plan_id' => NULL,
+            'pin' => rand(1111,9999),
+            'main_wallet' => 20000,
+            'role_id' => $admin_role,
+            'user_plan_id' => $user_plan_diamond->id,
             'email' => 'adebsholey4real@gmail.com',
             'phone_number' => '08168509044',
             'password' => Hash::make('password'),
         ]); 
-        User::factory()->create([
+       $user_ore =  User::factory()->create([
+            'username' => 'oreofe'.rand(11,99),
             'first_name' => 'Oreofe',
             'last_name' => 'Adebunmi',
-            'role' => $user_role,
+            'pin' => 1234,
+            'role_id' => $user_role,
             'user_plan_id' => $user_plan_basic->id,
             'email' => 'oreofe@gmail.com',
             'phone_number' => '08198092334',
             'password' => Hash::make('password'),
         ]); 
         User::factory()->create([
+            'username' => 'emmanuel'.rand(11,99),
             'first_name' => 'Emmanuel',
             'last_name' => 'Adebunmi',
-            'role' => $user_role,
+            'pin' => rand(1111,9999),
+            'role_id' => $user_role,
             'user_plan_id' => $user_plan_diamond->id,
             'email' => 'emmanuel@gmail.com',
-            'phone_number' => '08198092889',
+            'phone_number' => '08198092771',
             'password' => Hash::make('password'),
         ]); 
         User::factory()->create([
+            'username' => 'tolubobo'.rand(11,99),
             'first_name' => 'Tolubobo',
             'last_name' => 'Adebunmi',
-            'role' => $user_role,
+            'pin' => rand(1111,9999),
+            'role_id' => $user_role,
             'user_plan_id' => $user_plan_gold->id,
             'email' => 'tolubobo@gmail.com',
             'phone_number' => '08198092889',
             'password' => Hash::make('password'),
         ]); 
         User::factory()->create([
+            'username' => 'paul'.rand(11,99),
             'first_name' => 'Paul',
             'last_name' => 'Dennis',
-            'role' => $user_role,
+            'pin' => rand(1111,9999),
+            'role_id' => $user_role,
             'user_plan_id' => $user_plan_gold->id,
             'email' => 'pauldennis@gmail.com',
             'phone_number' => '08087675566',
             'password' => Hash::make('password'),
         ]); 
-        User::factory(1000)->create();
+        User::factory(300)->create();
 
 
-        //PRODUCT CATEGORIES
-        $product_category_data = ProductCategory::create([
-            'product_category_name' => 'DATA',
+        //PRODUCT CATEGORIES change to===> PRODUCTS
+        $product_data = Product::create([
+            'id' => '9c3a0c19-1920-434b-b98d-8d3d370afa9b',
+            'product_name' => 'DATA',
             'slug' => 'data',
             'visibility' => 1,
             'active_status' => 1
         ]);
-        $product_category_airtime = ProductCategory::create([
-            'product_category_name' => 'AIRTIME',
+
+        $product_airtime = Product::create([
+            'id' => '9c3a0c19-1d05-4a07-8135-9dcaab9c3994',
+            'product_name' => 'AIRTIME',
             'slug' => 'airtime',
             'visibility' => 1,
             'active_status' => 1
         ]);
-        $product_category_bills = ProductCategory::create([
-            'product_category_name' => 'UTILITY BILLS',
+        $product_bills = Product::create([
+            'id' => '9c3a0c19-1da5-49e2-b9fd-6094c7f37610',
+            'product_name' => 'UTILITY BILLS',
             'slug' => 'utility_bills',
             'visibility' => 1,
             'active_status' => 1
         ]);
-        $product_category_cable = ProductCategory::create([
-            'product_category_name' => 'CABLE SUBSCRIPTION',
+        $product_cable = Product::create([
+            'id' => '9c3a0c19-1e76-4e58-9ebb-a74853b4eebb',
+            'product_name' => 'CABLE SUBSCRIPTION',
             'slug' => 'cable_subscription',
             'visibility' => 1,
             'active_status' => 1
         ]);
-        $product_category_epins = ProductCategory::create([
-            'product_category_name' => 'E-PINS',
+        $product_epins = Product::create([
+            'id' => '9c3a0c19-2059-4423-a413-91dff2688730',
+            'product_name' => 'E-PINS',
             'slug' => 'e_pins',
             'visibility' => 1,
             'active_status' => 1
         ]);
-        $product_category_result_checker = ProductCategory::create([
-            'product_category_name' => 'RESULT CHECKER',
+        $product_result_checker = Product::create([
+            'id' => '9c3a0c19-214a-4fad-96e0-fa0438dae861',
+            'product_name' => 'RESULT CHECKER',
             'slug' => 'result_checker',
             'visibility' => 1,
             'active_status' => 1
-        ]);
+        ]); 
 
 
-        //PRODUCTS
-        $mtn_data_product = Product::create([
-            'product_name' => 'MTN Data',
-            'network_id' => $mtn_network->id,
-            'slug' => 'mtn_data_product',
-            'product_categories_id' => $product_category_data->id,
-            'visibility' => 1,
-            'active_status' => 1
-        ]);
 
-        $mtn_airtime_product = Product::create([
-            'product_name' => 'MTN Airtime',
-            'network_id' => $mtn_network->id,
-            'slug' => 'mtn_airtime_product',
-            'product_categories_id' => $product_category_airtime->id,
-            'visibility' => 1,
-            'active_status' => 1
-        ]);
 
-        $glo_data_product = Product::create([
-            'product_name' => 'GLO Data',
-            'network_id' => $glo_network->id,
-            'slug' => 'glo_data_product',
-            'product_categories_id' => $product_category_data->id,
-            'visibility' => 1,
-            'active_status' => 1
-        ]);
+       // PRODUCT PLAN CATEGORIES - compulsory*** - for deeper classification
+       $pr_plan_mtn_airtime_momo = ProductPlanCategory::create([
+        'id' => 'e2d7b231-7c9f-44dd-9b05-7c27ed29e16e',
+        'product_plan_category_name' => 'MTN AIRTIME (MOMO)',
+        'product_id' => $product_airtime->id,
+        'network_id' => $mtn_network->id,
+        'automation_id' => $megasub->id,
+        'is_hot_sales' => 0,
+        // 'bulk_data_wallet_in_mb' => 1048576
+      ]);
 
-        $glo_airtime_product = Product::create([
-            'product_name' => 'GLO Airtime',
-            'network_id' => $glo_network->id,
-            'slug' => 'glo_airtime_product',
-            'product_categories_id' => $product_category_airtime->id,
-            'visibility' => 1,
-            'active_status' => 1
-        ]);
+      $pr_plan_mtn_airtime_vtu = ProductPlanCategory::create([
+        'id' => '0ed2d8b7-8c2e-4442-85c7-840f801552f0',
+        'product_plan_category_name' => 'MTN VTU (Virtual Top Up)',
+        'product_id' => $product_airtime->id,
+        'network_id' => $mtn_network->id,
+        'automation_id' => $megasub->id,
+        'is_hot_sales' => 0,
+        // 'bulk_data_wallet_in_mb' => 1048576
+      ]);
 
-        $airtel_data_product = Product::create([
-            'product_name' => 'AIRTEL Data',
-            'network_id' => $airtel_network->id,
-            'slug' => 'airtel_data_product',
-            'product_categories_id' => $product_category_data->id,
-            'visibility' => 1,
-            'active_status' => 1
-        ]);
+      $pr_plan_mtn_airtime_share_n_sell = ProductPlanCategory::create([
+        'id' => '1fb2806c-6dd5-49d3-badb-481d70e372a1',
+        'product_plan_category_name' => 'MTN AIRTIME (SHARE N SELL)',
+        'product_id' => $product_airtime->id,
+        'network_id' => $mtn_network->id,
+        'automation_id' => $megasub->id,
+        'is_hot_sales' => 0,
+        // 'bulk_data_wallet_in_mb' => 1048576
+      ]);
 
-        $airtel_airtime_product = Product::create([
-            'product_name' => 'AIRTEL Airtime',
-            'network_id' => $airtel_network->id,
-            'slug' => 'airtel_airtime_product',
-            'product_categories_id' => $product_category_airtime->id,
-            'visibility' => 1,
-            'active_status' => 1
-        ]);
 
-        $_9mobile_data_product = Product::create([
-            'product_name' => '9MOBILE Data',
-            'network_id' => $_9mobile_network->id,
-            'slug' => '9mobile_data_product',
-            'product_categories_id' => $product_category_data->id,
-            'visibility' => 1,
-            'active_status' => 1
-        ]);
-        $_9mobile_airtime_product = Product::create([
-            'product_name' => '9MOBLE Airtime',
-            'network_id' => $_9mobile_network->id,
-            'slug' => '9mobile_airtime_product',
-            'product_categories_id' => $product_category_airtime->id,
-            'visibility' => 1,
-            'active_status' => 1
-        ]);
-        $cable_gotv_product = Product::create([
-            'product_name' => 'CABLE - GOTV',
-            'network_id' => NULL,
-            'slug' => 'gotv_product',
-            'product_categories_id' => $product_category_cable->id,
-            'visibility' => 1,
-            'active_status' => 1
-        ]);
-        $cable_startimes_product = Product::create([
-            'product_name' => 'CABLE - STAR TIMES',
-            'network_id' => NULL,
-            'slug' => 'startimes_product',
-            'product_categories_id' => $product_category_cable->id,
-            'visibility' => 1,
-            'active_status' => 1
-        ]);
-        $cable_dstv_product = Product::create([
-            'product_name' => 'CABLE - DSTV',
-            'network_id' => NULL,
-            'slug' => 'dstv_product',
-            'product_categories_id' => $product_category_cable->id,
-            'visibility' => 1,
-            'active_status' => 1
-        ]);
+      $pr_plan_glo_airtime = ProductPlanCategory::create([
+        'id' => 'fb1064bd-0d51-4eb1-b78f-fa74fab4b89f',
+        'product_plan_category_name' => 'GLO VTU (Virtual Top Up)',
+        'product_id' => $product_airtime->id,
+        'network_id' => $glo_network->id,
+        'automation_id' => $megasub->id,
+        'is_hot_sales' => 0,
+        // 'bulk_data_wallet_in_mb' => 1048576
+      ]);
+      
+
+      $pr_plan_airtel_airtime = ProductPlanCategory::create([
+        'id' => '93d019fc-d9a0-4bcd-957c-8a11a9e5e133',
+        'product_plan_category_name' => 'AIRTEL VTU (Virtual Top Up)',
+        'product_id' => $product_airtime->id,
+        'network_id' => $airtel_network->id,
+        'automation_id' => $megasub->id,
+        'is_hot_sales' => 0,
+        // 'bulk_data_wallet_in_mb' => 1048576
+      ]);
+
+      $pr_plan_9mobile_airtime = ProductPlanCategory::create([
+        'id' => '7559521a-272e-4b27-9330-c1442154626f',
+        'product_plan_category_name' => '9MOBILE VTU (Virtual Top Up)',
+        'product_id' => $product_airtime->id,
+        'network_id' => $_9mobile_network->id,
+        'automation_id' => $megasub->id,
+        'is_hot_sales' => 0,
+        // 'bulk_data_wallet_in_mb' => 1048576
+      ]);
        
-        $electricity_product = Product::create([
-            'product_name' => 'ELECTRICITY / BILLS',
-            'network_id' => NULL,
-            'slug' => 'bills_product',
-            'product_categories_id' => $product_category_bills->id,
-            'visibility' => 1,
-            'active_status' => 1
+
+        // SME
+        $pr_plan_mtn_sme_data = ProductPlanCategory::create([
+            'id' => '9c39f216-00a0-42ab-b195-558133f67a15',
+            'product_plan_category_name' => 'MTN SME DATA',
+            'product_id' => $product_data->id,
+            'network_id' => $mtn_network->id,
+            'automation_id' => $megasub->id,
+            'is_hot_sales' => 0,
+            // 'bulk_data_wallet_in_mb' => 1048576
         ]);
 
-        $result_checker_product = Product::create([
-            'product_name' => 'RESULT CHECKER',
-            'network_id' => NULL,
-            'slug' => 'result_checker_product',
-            'product_categories_id' => $product_category_result_checker->id,
-            'visibility' => 1,
-            'active_status' => 1
+        $pr_plan_glo_sme_data = ProductPlanCategory::create([
+            'id' => '9c39f216-020d-4d37-842b-840a7ff82d54',
+            'product_plan_category_name' => 'GLO SME DATA',
+            'product_id' => $product_data->id,
+            'network_id' => $glo_network->id,
+            'automation_id' => $megasub->id,
+            'is_hot_sales' => 0,
+            // 'bulk_data_wallet_in_mb' => 1048576
         ]);
 
-        $epins_product = Product::create([
-            'product_name' => 'RESULT CHECKER',
-            'network_id' => NULL,
-            'slug' => 'e_pins_product',
-            'product_categories_id' => $product_category_result_checker->id,
-            'visibility' => 1,
-            'active_status' => 1
+        $pr_plan_airtel_sme_data = ProductPlanCategory::create([
+            'id' => '9c39f216-02d9-4a46-b8de-eb48f668da88',
+            'product_plan_category_name' => 'AIRTEL SME DATA',
+            'product_id' => $product_data->id,
+            'network_id' => $airtel_network->id,
+            'automation_id' => $megasub->id,
+            'is_hot_sales' => 0,
+            // 'bulk_data_wallet_in_mb' => 1048576
         ]);
 
+        $pr_plan_9mobile_sme_data = ProductPlanCategory::create([
+            'id' => '9c39f216-03e8-4417-bcc9-c098e77f2c51',
+            'product_plan_category_name' => '9MOBILE SME DATA',
+            'product_id' => $product_data->id,
+            'network_id' => $_9mobile_network->id,
+            'automation_id' => $megasub->id,
+            'is_hot_sales' => 0,
+            // 'bulk_data_wallet_in_mb' => 1048576
+        ]);
+
+
+         // SME2
+         $pr_plan_mtn_sme2_data = ProductPlanCategory::create([
+            'id' => '9c39f216-0484-4070-a83c-906999d62c97',
+            'product_plan_category_name' => 'MTN SME2 DATA',
+            'product_id' => $product_data->id,
+            'network_id' => $mtn_network->id,
+            'automation_id' => $megasub->id,
+            'is_hot_sales' => 0,
+            // 'bulk_data_wallet_in_mb' => 1048576
+        ]);
+
+        $pr_plan_glo_sme2_data = ProductPlanCategory::create([
+            'id' => '9c39f216-0513-4050-994d-59a60e99c464',
+            'product_plan_category_name' => 'GLO SME2 DATA',
+            'product_id' => $product_data->id,
+            'network_id' => $glo_network->id,
+            'automation_id' => $megasub->id,
+            'is_hot_sales' => 0,
+            // 'bulk_data_wallet_in_mb' => 1048576
+        ]);
+
+        $pr_plan_airtel_sme2_data = ProductPlanCategory::create([
+            'id' => '9c39f216-05ab-4db8-8de8-fbe47374224a',
+            'product_plan_category_name' => 'AIRTEL SME2 DATA',
+            'product_id' => $product_data->id,
+            'network_id' => $airtel_network->id,
+            'automation_id' => $megasub->id,
+            'is_hot_sales' => 0,
+            // 'bulk_data_wallet_in_mb' => 1048576
+        ]);
+
+        $pr_plan_9mobile_sme2_data = ProductPlanCategory::create([
+            'id' => '9c39f216-063f-40ce-bba1-c0edb16e05a5',
+            'product_plan_category_name' => '9MOBILE SME2 DATA',
+            'product_id' => $product_data->id,
+            'network_id' => $_9mobile_network->id,
+            'automation_id' => $megasub->id,
+            'is_hot_sales' => 0,
+            // 'bulk_data_wallet_in_mb' => 1048576 
+        ]);
+
+
+
+         // CG
+         $pr_plan_mtn_cg_data = ProductPlanCategory::create([
+            'id'=> '9c39f216-06d6-48fc-971e-d5778723497e',
+            'product_plan_category_name' => 'MTN CG DATA',
+            'product_id' => $product_data->id,
+            'network_id' => $mtn_network->id,
+            'automation_id' => $megasub->id,
+            'is_hot_sales' => 0,
+            // 'bulk_data_wallet_in_mb' => 1048576 
+        ]);
+
+        $pr_plan_glo_cg_data = ProductPlanCategory::create([
+            'id'=> '9c39f216-076e-4697-b93e-785e05643fa5',
+            'product_plan_category_name' => 'GLO CG DATA',
+            'product_id' => $product_data->id,
+            'network_id' => $glo_network->id,
+            'automation_id' => $megasub->id,
+            'is_hot_sales' => 0,
+            // 'bulk_data_wallet_in_mb' => 1048576 
+        ]);
+
+        $pr_plan_airtel_cg_data = ProductPlanCategory::create([
+            'id'=> '9c39f216-0805-4e5c-89b6-2c251f5821ab',
+            'product_plan_category_name' => 'AIRTEL CG DATA',
+            'product_id' => $product_data->id,
+            'network_id' => $airtel_network->id,
+            'automation_id' => $megasub->id,
+            'is_hot_sales' => 0,
+            // 'bulk_data_wallet_in_mb' => 1048576 
+        ]);
+
+        $pr_plan_9mobile_cg_data = ProductPlanCategory::create([
+            'id'=> '9c39f216-089c-44fc-a535-cc6f6a56bf68',
+            'product_plan_category_name' => '9MOBILE CG DATA',
+            'product_id' => $product_data->id,
+            'network_id' => $_9mobile_network->id,
+            'automation_id' => $megasub->id,
+            'is_hot_sales' => 0,
+            // 'bulk_data_wallet_in_mb' => 1048576 
+        ]);
+
+
+         // Gifting
+         $pr_plan_mtn_gifting_data = ProductPlanCategory::create([
+            'id'=> '9c39f216-095b-46de-8466-88158a31e3e2',
+            'product_plan_category_name' => 'MTN GIFTING DATA',
+            'product_id' => $product_data->id,
+            'network_id' => $mtn_network->id,
+            'automation_id' => $megasub->id,
+            'is_hot_sales' => 0,
+            // 'bulk_data_wallet_in_mb' => 1048576 
+        ]);
+
+        $pr_plan_glo_gifting_data = ProductPlanCategory::create([
+            'id'=> '9c39f216-09f1-433d-ab74-f86737ea7f1e',
+            'product_plan_category_name' => 'GLO GIFTING DATA',
+            'product_id' => $product_data->id,
+            'network_id' => $glo_network->id,
+            'automation_id' => $megasub->id,
+            'is_hot_sales' => 0,
+            // 'bulk_data_wallet_in_mb' => 1048576 
+        ]);
+
+        $pr_plan_airtel_gifting_data = ProductPlanCategory::create([
+            'id'=> '9c39f216-0a81-4113-abf1-65e18c728ddc',
+            'product_plan_category_name' => 'AIRTEL GIFTING DATA',
+            'product_id' => $product_data->id,
+            'network_id' => $airtel_network->id,
+            'automation_id' => $megasub->id,
+            'is_hot_sales' => 0,
+            // 'bulk_data_wallet_in_mb' => 1048576 
+        ]);
+
+        $pr_plan_9mobile_gifting_data = ProductPlanCategory::create([
+            'id'=> '9c39f216-0b12-4c61-b72a-f5ff38b0a689',
+            'product_plan_category_name' => '9MOBILE GIFTING DATA',
+            'product_id' => $product_data->id,
+            'network_id' => $_9mobile_network->id,
+            'automation_id' => $megasub->id,
+            'is_hot_sales' => 0,
+            // 'bulk_data_wallet_in_mb' => 1048576 
+        ]);
+
+
+        // share data
+        $pr_plan_mtn_share_data = ProductPlanCategory::create([
+            'id'=> '9c39f216-0bb9-472d-8775-6bc4379fec91',
+            'product_plan_category_name' => 'MTN SHARE DATA',
+            'product_id' => $product_data->id,
+            'network_id' => $mtn_network->id,
+            'automation_id' => $megasub->id,
+            'is_hot_sales' => 0,
+            // 'bulk_data_wallet_in_mb' => 1048576 
+        ]);
+
+        $pr_plan_glo_share_data = ProductPlanCategory::create([
+            'id'=> '9c39f216-0c42-48fc-af5a-528e86d1de12',
+            'product_plan_category_name' => 'GLO SHARE DATA',
+            'product_id' => $product_data->id,
+            'network_id' => $glo_network->id,
+            'automation_id' => $megasub->id,
+            'is_hot_sales' => 0,
+            // 'bulk_data_wallet_in_mb' => 1048576 
+        ]);
+
+        $pr_plan_airtel_share_data = ProductPlanCategory::create([
+            'id'=> '9c39f216-0ccf-4860-aab5-60b25eab9e3a',
+            'product_plan_category_name' => 'AIRTEL SHARE DATA',
+            'product_id' => $product_data->id,
+            'network_id' => $airtel_network->id,
+            'automation_id' => $megasub->id,
+            'is_hot_sales' => 0,
+            // 'bulk_data_wallet_in_mb' => 1048576
+        ]);
+
+        $pr_plan_9mobile_share_data = ProductPlanCategory::create([
+            'id'=> '9c39f216-0d65-4f57-a15f-db1b07c58c95',
+            'product_plan_category_name' => '9MOBILE SHARE DATA',
+            'product_id' => $product_data->id,
+            'network_id' => $_9mobile_network->id,
+            'automation_id' => $megasub->id,
+            'is_hot_sales' => 0,
+            // 'bulk_data_wallet_in_mb' => 1048576
+        ]);
+
+
+        // AWOOF data
+        $pr_plan_mtn_awoof_data = ProductPlanCategory::create([
+            'id'=> '9c39f216-0df6-48d9-8530-3e320243058f',
+            'product_plan_category_name' => 'MTN AWOOF DATA',
+            'product_id' => $product_data->id,
+            'network_id' => $mtn_network->id,
+            'automation_id' => $megasub->id,
+            'is_hot_sales' => 0,
+            // 'bulk_data_wallet_in_mb' => 1048576
+        ]);
+
+        $pr_plan_glo_awoof_data = ProductPlanCategory::create([
+            'id'=> '9c39f216-0e89-4455-8f37-c764c5f26ead',
+            'product_plan_category_name' => 'GLO AWOOF DATA',
+            'product_id' => $product_data->id,
+            'network_id' => $glo_network->id,
+            'automation_id' => $megasub->id,
+            'is_hot_sales' => 0,
+            // 'bulk_data_wallet_in_mb' => 1048576
+        ]);
+
+        $pr_plan_airtel_awoof_data = ProductPlanCategory::create([
+            'id'=> '9c39f216-0f19-4ba0-96ee-decb9ed99a82',
+            'product_plan_category_name' => 'AIRTEL AWOOF DATA',
+            'product_id' => $product_data->id,
+            'network_id' => $airtel_network->id,
+            'automation_id' => $megasub->id,
+            'is_hot_sales' => 0,
+            // 'bulk_data_wallet_in_mb' => 1048576
+        ]);
+
+        $pr_plan_9mobile_awoof_data = ProductPlanCategory::create([
+            'id'=> '9c39f216-0faf-4924-bee6-52a1149341ef',
+            'product_plan_category_name' => '9MOBILE AWOOF DATA',
+            'product_id' => $product_data->id,
+            'network_id' => $_9mobile_network->id,
+            'automation_id' => $megasub->id,
+            'is_hot_sales' => 0,
+            // 'bulk_data_wallet_in_mb' => 1048576
+        ]);
+
+        $pr_gotv = ProductPlanCategory::create([
+            'id'=> '9ade7334-bfae-4fe1-9bc1-cd78fef6fac8',
+            'product_plan_category_name' => 'GOTV',
+            'product_id' => $product_cable->id,
+            'automation_id' => $megasub->id,
+            'is_hot_sales' => 0,
+            // 'bulk_data_wallet_in_mb' => 1048576
+        ]);
+
+
+        $pr_startimes = ProductPlanCategory::create([
+            'id'=> 'b3176d9f-6f12-45e0-9640-71c509271825',
+            'product_plan_category_name' => 'STARTIMES',
+            'product_id' => $product_cable->id,
+            'automation_id' => $megasub->id,
+            'is_hot_sales' => 0,
+            // 'bulk_data_wallet_in_mb' => 1048576
+        ]);
+
+        $pr_dstv = ProductPlanCategory::create([
+            'id'=> 'a798c9a4-cd1b-4bd1-b26c-8932119d00a5',
+            'product_plan_category_name' => 'DSTV',
+            'product_id' => $product_cable->id,
+            'automation_id' => $megasub->id,
+            'is_hot_sales' => 0,
+            // 'bulk_data_wallet_in_mb' => 1048576
+        ]);
+
+        $pr_bills_prepaid = ProductPlanCategory::create([
+            'id'=> '12c6a955-8ce2-452e-ae09-40266fd6c531',
+            'product_plan_category_name' => 'PREPAID',
+            'product_id' => $product_bills->id,
+            'automation_id' => $megasub->id,
+            'is_hot_sales' => 0,
+            // 'bulk_data_wallet_in_mb' => 1048576
+        ]);
+
+        $users = User::with(['role' => function($query){
+            $query->where('role_name','User');
+        }])->get();
+        
+        foreach($users as $user){
+            if($user->role != NULL){
+                $product_plan_categories = ProductPlanCategory::with(['product' => function($query){
+                    $query->where('slug','data');
+                }])->pluck('id');
+                // return $product_plan_categories;
+                // dd($product_plan_categories);
+                foreach($product_plan_categories as $product_plan_category){
+                    UserBulkDataWallet::updateOrCreate([
+                        'user_id' => $user->id,
+                        'product_plan_category_id' => $product_plan_category,
+                    ],[]);
+                } 
+            }
+             
+        }
+
+
+
+        //transactions seeding
+        // $table->uuid('id')->primary();
+        // $table->foreignUuid('user_id')->constrained(table: 'users');
+        // $table->string('product_plan_id')->constrained(table: 'product_plans');
+        // $table->string('transaction_category')->nullable()->comment('Options: data, airtime, bills, cable subscription etc');
+        // $table->string('status')->default(0)->nullable()->comment('status of transaction: 1:success, 0:pending(default), -1:failed, 2:refunded, 3:processing');
+        // $table->string('wallet_category')->comment('data_wallet/main_wallet');
+        // $table->string('phone_number')->comment('phone number that benefits')->nullable();
+        // $table->string('smart_card_number')->comment('iuc number that benefits that benefits')->nullable();
+        // $table->string('metre_number')->comment('metre number that benefits')->nullable();
+        // $table->string('cable_tv_slots')->comment('no of slots bought')->nullable();
+        // $table->string('amount')->comment('amount that was bought');
+        // $table->string('balance_before');
+        // $table->string('balance_after');
+        // $table->string('description');
+        // $table->longText('user_screen_message')->nullable();
+        // $table->longText('admin_screen_message')->nullable();
+        // $table->timestamps();
+
+        //data, main wallet
+        for($i = 1; $i <= 100; $i++){
+            Transaction::create([
+                'user_id' => $user_ore->id,
+                'product_plan_id' => '9c83dc1a-8262-4f54-8c40-41029830fe5a',
+                'transaction_category' => 'data',
+                'status' => 1,
+                'wallet_category' => 'main_wallet',
+                'phone_number' => '08168509044',
+                'amount' => '00',
+                'balance_before' => '10000',
+                'balance_after' => '9000000',
+                'description' => 'Data Purchase - TEST',
+                'user_screen_message' => 'successfully processed',
+                'admin_screen_message' => 'successfully processed',
+            ]);
+        }
+
+        //data, data wallet
+        for($i = 1; $i <= 100; $i++){
+            Transaction::create([
+                'user_id' => $user_ore->id,
+                'product_plan_id' => '9c83dc1a-8262-4f54-8c40-41029830fe5a',
+                'transaction_category' => 'data',
+                'status' => 1,
+                'wallet_category' => 'data_wallet',
+                'phone_number' => '08168509044',
+                'amount' => '1000',
+                'balance_before' => '10000',
+                'balance_after' => '9000000',
+                'description' => 'Data Purchase - TEST',
+                'user_screen_message' => 'successfully processed',
+                'admin_screen_message' => 'successfully processed',
+            ]);
+        }
+
+        //airtime
+        for($i = 1; $i <= 100; $i++){
+            Transaction::create([
+                'user_id' => $user_ore->id,
+                'product_plan_id' => '9ca4dde6-8cd7-4cb7-80da-608887b2de8d',
+                'transaction_category' => 'airtime',
+                'status' => 1,
+                'wallet_category' => 'main_wallet',
+                'phone_number' => '08168509044',
+                'amount' => '1000',
+                'balance_before' => '10000',
+                'balance_after' => '9000000',
+                'description' => 'Airtime Purchase - TEST',
+                'user_screen_message' => 'successfully processed',
+                'admin_screen_message' => 'successfully processed',
+            ]);
+        }
+
+        //prepaid, electricity
+        for($i = 1; $i <= 100; $i++){
+            Transaction::create([
+                'user_id' => $user_ore->id,
+                'product_plan_id' => '12c6a955-8ce2-452e-ae09-40266fd6c531',
+                'transaction_category' => 'utility_bills',
+                'status' => 1,
+                'wallet_category' => 'main_wallet',
+                'phone_number' => '08168509044',
+                'metre_number' => '123456789',
+                'amount' => '1000',
+                'balance_before' => '10000',
+                'balance_after' => '9000000',
+                'description' => 'Utility Purchase - TEST',
+                'user_screen_message' => 'successfully processed',
+                'admin_screen_message' => 'successfully processed',
+            ]);
+        }
+
+        //cable
+        for($i = 1; $i <= 100; $i++){
+            Transaction::create([
+                'user_id' => $user_ore->id,
+                'product_plan_id' => 'b3176d9f-6f12-45e0-9640-71c509271825',
+                'transaction_category' => 'cable_subscription',
+                'status' => 1,
+                'wallet_category' => 'main_wallet',
+                'phone_number' => '08168509044',
+                'smart_card_number' => '123456789',
+                'amount' => '1000',
+                'balance_before' => '10000',
+                'balance_after' => '9000000',
+                'description' => 'Cable Purchase - TEST',
+                'user_screen_message' => 'successfully processed',
+                'admin_screen_message' => 'successfully processed',
+            ]);
+        }
         
 
 
-        // PRODUCT PLAN CATEGORIES - optional - for deeper classification
-        $product_plan_categories_mtn_sme = ProductPlanCategory::create([
-            'product_plan_category_name' => 'MTN SME',
-            'product_id' => $mtn_data_product->id,
-        ]);
-        $product_plan_categories_mtn_gifting = ProductPlanCategory::create([
-            'product_plan_category_name' => 'MTN GIFTING',
-            'product_id' => $mtn_data_product->id,
-        ]);
-        $product_plan_categories_mtn_direct_data = ProductPlanCategory::create([
-            'product_plan_category_name' => 'MTN SHARE DATA',
-            'product_id' => $mtn_data_product->id,
-        ]);
-        $product_plan_categories_mtn_cg_data = ProductPlanCategory::create([
-            'product_plan_category_name' => 'MTN CORPORATE GIFTING',
-            'product_id' => $mtn_data_product->id,
-        ]);
-        $product_plan_categories_mtn_sme2_data = ProductPlanCategory::create([
-            'product_plan_category_name' => 'MTN SME2',
-            'product_id' => $mtn_data_product->id,
-        ]);
 
-        $product_plan_categories_mtn_share_data = ProductPlanCategory::create([
-            'product_plan_category_name' => 'MTN SHARE DATA',
-            'product_id' => $mtn_data_product->id,
-        ]);
-        
+        //OBSOLETE
+        // $product_plan_categories_sme = ProductPlanCategory::create([
+        //     'product_plan_category_name' => 'MTN CG DATA)',
+        //     'product_id' => $product_data->id,
+        //     'network_id' => $mtn_network->id,
+        //     'automation_id' => $megasub->id
+        // ]);
+
+        // $product_plan_categories_gifting = ProductPlanCategory::create([
+        //     'product_plan_category_name' => 'GIFTING',
+        //     'automation_id' => $ogdams->id
+        // ]);
+        // $product_plan_categories_direct = ProductPlanCategory::create([
+        //     'product_plan_category_name' => 'DIRECT DATA',
+        //     'automation_id' => $megasub->id
+        // ]);
+        // $product_plan_categories_cg_data = ProductPlanCategory::create([
+        //     'product_plan_category_name' => 'CORPORATE GIFTING',
+        //     'automation_id' => $megasub->id
+        //     // 'product_id' => $mtn_data_product->id,
+        // ]);
+        // $product_plan_categories_sme2 = ProductPlanCategory::create([
+        //     'product_plan_category_name' => 'SME2',
+        //     'automation_id' => $ogdams->id
+
+        //     // 'product_id' => $mtn_data_product->id,
+        // ]);
+
+        // $product_plan_categories_share_data = ProductPlanCategory::create([
+        //     'product_plan_category_name' => 'DATA SHARE',
+        //     'automation_id' => $megasub->id
+        //     // 'product_id' => $mtn_data_product->id,
+        // ]);
+
+        // $product_plan_categories_share_data = ProductPlanCategory::create([
+        //     'product_plan_category_name' => 'AWOOF',
+        //     'automation_id' => $autopilot->id
+        //     // 'product_id' => $mtn_data_product->id,
+        // ]);
+
+
+        // $product_plan_categories_mtn_sme = ProductPlanCategory::create([
+        //     'product_plan_category_name' => 'DATA SME',
+        //     'product_id' => $mtn_data_product->id,
+        // ]);
+        // $product_plan_categories_mtn_gifting = ProductPlanCategory::create([
+        //     'product_plan_category_name' => 'DATA GIFTING',
+        //     'product_id' => $mtn_data_product->id,
+        // ]);
+        // $product_plan_categories_mtn_direct_data = ProductPlanCategory::create([
+        //     'product_plan_category_name' => 'DATA DIRECT DATA',
+        //     'product_id' => $mtn_data_product->id,
+        // ]);
+        // $product_plan_categories_mtn_cg_data = ProductPlanCategory::create([
+        //     'product_plan_category_name' => 'MTN DATA CORPORATE GIFTING',
+        //     'product_id' => $mtn_data_product->id,
+        // ]);
+        // $product_plan_categories_mtn_sme2_data = ProductPlanCategory::create([
+        //     'product_plan_category_name' => 'MTN DATA SME2',
+        //     'product_id' => $mtn_data_product->id,
+        // ]);
+
+        // $product_plan_categories_mtn_share_data = ProductPlanCategory::create([
+        //     'product_plan_category_name' => 'MTN DATA SHARE DATA',
+        //     'product_id' => $mtn_data_product->id,
+        // ]);
 
 
         // THIS LOGIC NO LONGER HOLDS FOR NOW
         //PRODUCT PLAN AND PRICES - ADMIN LEVEL.... This needs to change and be created based on the automation
         //MTN Special Gifiting::::::::::::   
-        // $product_plans_data1 = ProductPlan::create([
-        //     'product_plan_name' => '50MB 30days', //just concatenate other params here: majorly price: costprice + profit::::: if it has a product plan category e.g MTN 1GB MTN SME or just add those detail
-        //     'product_id' => $mtn_data_product->id,
-        //     'data_size_in_mb' => 50,
-        //     'validity_in_days' => 30,
-        //     'cost_price' => 45,
-        //     'profit' => 5, //admin product: this is what he shares into user_product_plans, customer buying sees: 45+5=50
-        //     'product_plan_category_id' => $product_plan_categories_mtn_gifting->id, // NULLABLE
-        //     'visibility' => 1,
-        //     'active_status' => 1,
-        // ]);
-        // $product_plans_data2 = ProductPlan::create([
-        //     'product_plan_name' => '250MB 30days', //just concatenate other params here: majorly price: costprice + profit::::: if it has a product plan category e.g MTN 1GB MTN SME or just add those detail
-        //     'product_id' => $mtn_data_product->id,
-        //     'data_size_in_mb' => 250,
-        //     'validity_in_days' => 30,
-        //     'cost_price' => 100,
-        //     'profit' => 30, //admin product: this is what he shares into user_product_plans, customer buying sees: 250+80=330
-        //     'product_plan_category_id' => $product_plan_categories_mtn_gifting->id, // NULLABLE
-        //     'visibility' => 1,
-        //     'active_status' => 1,
-        // ]);
-        // $product_plans_data3 = ProductPlan::create([
-        //     'product_plan_name' => '500MB 30days', //just concatenate other params here: majorly price: costprice + profit::::: if it has a product plan category e.g MTN 1GB MTN SME or just add those detail
-        //     'product_id' => $mtn_data_product->id,
-        //     'data_size_in_mb' => 500,
-        //     'validity_in_days' => 30,
-        //     'cost_price' => 150,
-        //     'profit' => 50, //admin product: this is what he shares into user_product_plans, customer buying sees: 250+80=330
-        //     'product_plan_category_id' => $product_plan_categories_mtn_gifting->id, // NULLABLE
-        //     'visibility' => 1,
-        //     'active_status' => 1,
-        // ]);
-        // $product_plans_data4 = ProductPlan::create([
-        //     'product_plan_name' => '1GB 30days', //just concatenate other params here: majorly price: costprice + profit::::: if it has a product plan category e.g MTN 1GB MTN SME or just add those detail
-        //     'product_id' => $mtn_data_product->id,
-        //     'data_size_in_mb' => 1000,
-        //     'validity_in_days' => 30,
-        //     'cost_price' => 230,
-        //     'profit' => 70, //admin product: this is what he shares into user_product_plans, customer buying sees: 250+80=330
-        //     'product_plan_category_id' => $product_plan_categories_mtn_gifting->id, // NULLABLE
-        //     'visibility' => 1,
-        //     'active_status' => 1,
-        // ]);
-        // $product_plans_data5 = ProductPlan::create([
-        //     'product_plan_name' => '2GB 30days', //just concatenate other params here: majorly price: costprice + profit::::: if it has a product plan category e.g MTN 1GB MTN SME or just add those detail
-        //     'product_id' => $mtn_data_product->id,
-        //     'data_size_in_mb' => 2000,
-        //     'validity_in_days' => 30,
-        //     'cost_price' => 400,
-        //     'profit' => 100, //admin product: this is what he shares into user_product_plans, customer buying sees: 250+80=330
-        //     'product_plan_category_id' => $product_plan_categories_mtn_gifting->id, // NULLABLE
-        //     'visibility' => 1,
-        //     'active_status' => 1,
-        // ]);
-        // $product_plans_data6 = ProductPlan::create([
-        //     'product_plan_name' => '3GB 30days', //just concatenate other params here: majorly price: costprice + profit::::: if it has a product plan category e.g MTN 1GB MTN SME or just add those detail
-        //     'product_id' => $mtn_data_product->id,
-        //     'data_size_in_mb' => 3000,
-        //     'validity_in_days' => 30,
-        //     'cost_price' => 450,
-        //     'profit' => 150, //admin product: this is what he shares into user_product_plans, customer buying sees: 250+80=330
-        //     'product_plan_category_id' => $product_plan_categories_mtn_gifting->id, // NULLABLE
-        //     'visibility' => 1,
-        //     'active_status' => 1,
-        // ]);
 
 
-        // //MTN SMEs
-        // $product_plans_data7 = ProductPlan::create([
-        //     'product_plan_name' => '1GB 30days', //just concatenate other params here: majorly price: costprice + profit::::: if it has a product plan category e.g MTN 1GB MTN SME or just add those detail
-        //     'product_id' => $mtn_data_product->id,
-        //     'data_size_in_mb' => 1000,
-        //     'validity_in_days' => 30,
-        //     'cost_price' => 250,
-        //     'profit' => 80, //admin product: this is what he shares into user_product_plans, customer buying sees: 250+80=330
-        //     'product_plan_category_id' => $product_plan_categories_mtn_sme->id, // NULLABLE
-        //     'visibility' => 1,
-        //     'active_status' => 1,
-        // ]);
-        // $product_plans_data8 = ProductPlan::create([
-        //     'product_plan_name' => '2GB 30days', //just concatenate other params here: majorly price: costprice + profit::::: if it has a product plan category e.g MTN 1GB MTN SME or just add those detail
-        //     'product_id' => $mtn_data_product->id,
-        //     'data_size_in_mb' => 2000,
-        //     'validity_in_days' => 30,
-        //     'cost_price' => 350,
-        //     'profit' => 150, //admin product: this is what he shares into user_product_plans, customer buying sees: 250+80=330
-        //     'product_plan_category_id' => $product_plan_categories_mtn_sme->id, // NULLABLE
-        //     'visibility' => 1,
-        //     'active_status' => 1,
-        // ]);
-        // $product_plans_data9 = ProductPlan::create([
-        //     'product_plan_name' => '5GB 30days', //just concatenate other params here: majorly price: costprice + profit::::: if it has a product plan category e.g MTN 1GB MTN SME or just add those detail
-        //     'product_id' => $mtn_data_product->id,
-        //     'data_size_in_mb' => 5000,
-        //     'validity_in_days' => 30,
-        //     'cost_price' => 1300,
-        //     'profit' => 225, //admin product: this is what he shares into user_product_plans, customer buying sees: 250+80=330
-        //     'product_plan_category_id' => $product_plan_categories_mtn_sme->id, // NULLABLE
-        //     'visibility' => 1,
-        //     'active_status' => 1,
-        // ]);
-
-        // //glo = 1gb, 2gb
-        // $product_plans_data10 = ProductPlan::create([
-        //     'product_plan_name' => '1GB 30days', //just concatenate other params here: majorly price: costprice + profit::::: if it has a product plan category e.g MTN 1GB MTN SME or just add those detail
-        //     'product_id' => $glo_data_product->id,
-        //     'data_size_in_mb' => 1000,
-        //     'validity_in_days' => 30,
-        //     'cost_price' => 200,
-        //     'profit' => 70, //admin product: this is what he shares into user_product_plans, customer buying sees: 250+80=330
-        //     'product_plan_category_id' => NULL, // NULLABLE
+            
+        //PRODUCTS should be eradicated and product categories should be product.
+        // $mtn_data_product = Product::create([
+        //     'id' => '9c2887f1-0fea-484a-ba7e-2fdce05241bf',
+        //     'product_name' => 'MTN Data',
+        //     'network_id' => $mtn_network->id,
+        //     'slug' => 'mtn_data_product',
+        //     'product_categories_id' => $product_category_data->id,
         //     'visibility' => 1,
         //     'active_status' => 1
         // ]);
 
-        // $product_plans_data11 = ProductPlan::create([
-        //     'product_plan_name' => '2GB 30days', //just concatenate other params here: majorly price: costprice + profit::::: if it has a product plan category e.g MTN 1GB MTN SME or just add those detail
-        //     'product_id' => $glo_data_product->id,
-        //     'data_size_in_mb' => 2000,
-        //     'validity_in_days' => 30,
-        //     'cost_price' => 300,
-        //     'profit' => 80, //admin product: this is what he shares into user_product_plans, customer buying sees: 250+80=330
-        //     'product_plan_category_id' =>NULL, // NULLABLE
-        //     'visibility' => 1,
-        //     'active_status' => 1,
-        // ]);
-
-        // //airtel = 1gb, 2gb
-        // $product_plans_data12 = ProductPlan::create([
-        //     'product_plan_name' => '1GB 30days', //just concatenate other params here: majorly price: costprice + profit::::: if it has a product plan category e.g MTN 1GB MTN SME or just add those detail
-        //     'product_id' => $airtel_data_product->id,
-        //     'data_size_in_mb' => 1000,
-        //     'validity_in_days' => 30,
-        //     'cost_price' => 240,
-        //     'profit' => 55, //admin product: this is what he shares into user_product_plans, customer buying sees: 250+80=330
-        //     'product_plan_category_id' => NULL, // NULLABLE
+        // $mtn_airtime_product = Product::create([
+        //     'product_name' => 'MTN Airtime',
+        //     'network_id' => $mtn_network->id,
+        //     'slug' => 'mtn_airtime_product',
+        //     'product_categories_id' => $product_category_airtime->id,
         //     'visibility' => 1,
         //     'active_status' => 1
         // ]);
 
-        // $product_plans_data13 = ProductPlan::create([
-        //     'product_plan_name' => '2GB 30days', //just concatenate other params here: majorly price: costprice + profit::::: if it has a product plan category e.g MTN 1GB MTN SME or just add those detail
-        //     'product_id' => $airtel_data_product->id,
-        //     'data_size_in_mb' => 2000,
-        //     'validity_in_days' => 30,
-        //     'cost_price' => 310,
-        //     'profit' => 80, //admin product: this is what he shares into user_product_plans, customer buying sees: 250+80=330
-        //     'product_plan_category_id' =>NULL, // NULLABLE
-        //     'visibility' => 1,
-        //     'active_status' => 1,
-        // ]);
-
-        // //9mobile = 1gb, 2gb
-        // $product_plans_data14 = ProductPlan::create([
-        //     'product_plan_name' => '1GB 30days', //just concatenate other params here: majorly price: costprice + profit::::: if it has a product plan category e.g MTN 1GB MTN SME or just add those detail
-        //     'product_id' => $_9mobile_data_product->id,
-        //     'data_size_in_mb' => 1000,
-        //     'validity_in_days' => 30,
-        //     'cost_price' => 200,
-        //     'profit' => 70, //admin product: this is what he shares into user_product_plans, customer buying sees: 250+80=330
-        //     'product_plan_category_id' => NULL, // NULLABLE
+        // $glo_data_product = Product::create([
+        //     'id' => '9c2887f1-1196-491c-8648-ba226a592790',
+        //     'product_name' => 'GLO Data',
+        //     'network_id' => $glo_network->id,
+        //     'slug' => 'glo_data_product',
+        //     'product_categories_id' => $product_category_data->id,
         //     'visibility' => 1,
         //     'active_status' => 1
         // ]);
 
-        // $product_plans_data15 = ProductPlan::create([
-        //     'product_plan_name' => '2GB 30days', //just concatenate other params here: majorly price: costprice + profit::::: if it has a product plan category e.g MTN 1GB MTN SME or just add those detail
-        //     'product_id' => $_9mobile_data_product->id,
-        //     'data_size_in_mb' => 2000,
-        //     'validity_in_days' => 30,
-        //     'cost_price' => 300,
-        //     'profit' => 80, //admin product: this is what he shares into user_product_plans, customer buying sees: 250+80=330
-        //     'product_plan_category_id' =>NULL, // NULLABLE
+        // $glo_airtime_product = Product::create([
+           
+        //     'product_name' => 'GLO Airtime',
+        //     'network_id' => $glo_network->id,
+        //     'slug' => 'glo_airtime_product',
+        //     'product_categories_id' => $product_category_airtime->id,
         //     'visibility' => 1,
-        //     'active_status' => 1,
+        //     'active_status' => 1
         // ]);
 
-        // //product plans - airtime
-        // $product_plans_airtime = ProductPlan::create([
-        //     'product_plan_name' => 'MTN Airtime', //just concatenate other params here: majorly price: costprice + profit::::: if it has a product plan category e.g MTN 1GB MTN SME or just add those detail
-        //     'product_id' => $mtn_airtime_product->id,
-        //     'data_size_in_mb' => NULL,
-        //     'validity_in_days' => NULL,
-        //     'cost_price' => NULL,
-        //     'profit' => 2, //admin product: this is what he shares into user_product_plans, customer buying sees: 250+80=330
-        //     'product_plan_category_id' =>NULL, // NULLABLE
+        // $airtel_data_product = Product::create([
+        //     'id' => '9c2887f1-1309-4277-b6cf-0ba63316acfc',
+        //     'product_name' => 'AIRTEL Data',
+        //     'network_id' => $airtel_network->id,
+        //     'slug' => 'airtel_data_product',
+        //     'product_categories_id' => $product_category_data->id,
         //     'visibility' => 1,
-        //     'active_status' => 1,
-        // ]);
-        // $product_plans_airtime2 = ProductPlan::create([
-        //     'product_plan_name' => 'GLO Airtime', //just concatenate other params here: majorly price: costprice + profit::::: if it has a product plan category e.g MTN 1GB MTN SME or just add those detail
-        //     'product_id' => $glo_airtime_product->id,
-        //     'data_size_in_mb' => NULL,
-        //     'validity_in_days' => NULL,
-        //     'cost_price' => NULL,
-        //     'profit' => 2, //admin product: this is what he shares into user_product_plans, customer buying sees: 250+80=330
-        //     'product_plan_category_id' =>NULL, // NULLABLE
-        //     'visibility' => 1,
-        //     'active_status' => 1,
-        // ]);
-        // $product_plans_airtime3 = ProductPlan::create([
-        //     'product_plan_name' => 'AIRTEL Airtime', //just concatenate other params here: majorly price: costprice + profit::::: if it has a product plan category e.g MTN 1GB MTN SME or just add those detail
-        //     'product_id' => $airtel_airtime_product->id,
-        //     'data_size_in_mb' => NULL,
-        //     'validity_in_days' => NULL,
-        //     'cost_price' => NULL,
-        //     'profit' => 2, //admin product: this is what he shares into user_product_plans, customer buying sees: 250+80=330
-        //     'product_plan_category_id' =>NULL, // NULLABLE
-        //     'visibility' => 1,
-        //     'active_status' => 1,
-        // ]);
-        // $product_plans_airtime4 = ProductPlan::create([
-        //     'product_plan_name' => '9MOBILE Airtime', //just concatenate other params here: majorly price: costprice + profit::::: if it has a product plan category e.g MTN 1GB MTN SME or just add those detail
-        //     'product_id' => $_9mobile_airtime_product->id,
-        //     'data_size_in_mb' => NULL,
-        //     'validity_in_days' => NULL,
-        //     'cost_price' => NULL,
-        //     'profit' => 2, //admin product: this is what he shares into user_product_plans, customer buying sees: 250+80=330
-        //     'product_plan_category_id' =>NULL, // NULLABLE
-        //     'visibility' => 1,
-        //     'active_status' => 1,
+        //     'active_status' => 1
         // ]);
 
-        // //electricty electricity_ibadan_ibedc_product
-        // $product_plans_ibadan_bills = ProductPlan::create([
-        //     'product_plan_name' => 'Ibadan Prepaid', //just concatenate other params here: majorly price: costprice + profit::::: if it has a product plan category e.g MTN 1GB MTN SME or just add those detail
-        //     'product_id' => $electricity_product->id,
-        //     'data_size_in_mb' => NULL,
-        //     'validity_in_days' => NULL,
-        //     'cost_price' => 500,
-        //     'profit' => 30, //admin product: this is what he shares into user_product_plans, customer buying sees: 250+80=330
-        //     'product_plan_category_id' =>NULL, // NULLABLE
+        // $airtel_airtime_product = Product::create([
+        //     'product_name' => 'AIRTEL Airtime',
+        //     'network_id' => $airtel_network->id,
+        //     'slug' => 'airtel_airtime_product',
+        //     'product_categories_id' => $product_category_airtime->id,
         //     'visibility' => 1,
-        //     'active_status' => 1,
-        // ]);
-        // $product_plans_lagos_bills = ProductPlan::create([
-        //     'product_plan_name' => 'Lagos Prepaid', //just concatenate other params here: majorly price: costprice + profit::::: if it has a product plan category e.g MTN 1GB MTN SME or just add those detail
-        //     'product_id' => $electricity_product->id,
-        //     'data_size_in_mb' => NULL,
-        //     'validity_in_days' => NULL,
-        //     'cost_price' => 500,
-        //     'profit' => 30, //admin product: this is what he shares into user_product_plans, customer buying sees: 250+80=330
-        //     'product_plan_category_id' =>NULL, // NULLABLE
-        //     'visibility' => 1,
-        //     'active_status' => 1,
+        //     'active_status' => 1
         // ]);
 
-        // //TV subscriptions
-        // $dstv_compact = ProductPlan::create([
-        //     'product_plan_name' => 'DSTV Compact', //just concatenate other params here: majorly price: costprice + profit::::: if it has a product plan category e.g MTN 1GB MTN SME or just add those detail
-        //     'product_id' => $cable_dstv_product->id,
-        //     'data_size_in_mb' => NULL,
-        //     'validity_in_days' => NULL,
-        //     'cost_price' => 15000,
-        //     'profit' => 200, //admin product: this is what he shares into user_product_plans, customer buying sees: 250+80=330
-        //     'product_plan_category_id' =>NULL, // NULLABLE
+        // $_9mobile_data_product = Product::create([
+        //     'id' => '9c2887f1-1422-4c78-b676-b1c8640ad9f9',
+        //     'product_name' => '9MOBILE Data',
+        //     'network_id' => $_9mobile_network->id,
+        //     'slug' => '9mobile_data_product',
+        //     'product_categories_id' => $product_category_data->id,
         //     'visibility' => 1,
-        //     'active_status' => 1,
+        //     'active_status' => 1
         // ]);
 
-        // $dstv_compact_plus = ProductPlan::create([
-        //     'product_plan_name' => 'DSTV Compact Plus', //just concatenate other params here: majorly price: costprice + profit::::: if it has a product plan category e.g MTN 1GB MTN SME or just add those detail
-        //     'product_id' => $cable_dstv_product->id,
-        //     'data_size_in_mb' => NULL,
-        //     'validity_in_days' => NULL,
-        //     'cost_price' => 25000,
-        //     'profit' => 200, //admin product: this is what he shares into user_product_plans, customer buying sees: 250+80=330
-        //     'product_plan_category_id' =>NULL, // NULLABLE
+        // $_9mobile_airtime_product = Product::create([
+        //     'product_name' => '9MOBLE Airtime',
+        //     'network_id' => $_9mobile_network->id,
+        //     'slug' => '9mobile_airtime_product',
+        //     'product_categories_id' => $product_category_airtime->id,
         //     'visibility' => 1,
-        //     'active_status' => 1,
+        //     'active_status' => 1
         // ]);
-
-        // $dstv_premium = ProductPlan::create([
-        //     'product_plan_name' => 'DSTV Premium', //just concatenate other params here: majorly price: costprice + profit::::: if it has a product plan category e.g MTN 1GB MTN SME or just add those detail
-        //     'product_id' => $cable_dstv_product->id,
-        //     'data_size_in_mb' => NULL,
-        //     'validity_in_days' => NULL,
-        //     'cost_price' => 37000,
-        //     'profit' => 200, //admin product: this is what he shares into user_product_plans, customer buying sees: 250+80=330
-        //     'product_plan_category_id' =>NULL, // NULLABLE
+        // $cable_gotv_product = Product::create([
+        //     'product_name' => 'CABLE - GOTV',
+        //     'network_id' => NULL,
+        //     'slug' => 'gotv_product',
+        //     'product_categories_id' => $product_category_cable->id,
         //     'visibility' => 1,
-        //     'active_status' => 1,
+        //     'active_status' => 1
         // ]);
-
-        // $gotv_smallie_monthly = ProductPlan::create([
-        //     'product_plan_name' => 'GOTV Smallie Monthly', //just concatenate other params here: majorly price: costprice + profit::::: if it has a product plan category e.g MTN 1GB MTN SME or just add those detail
-        //     'product_id' => $cable_gotv_product->id,
-        //     'data_size_in_mb' => NULL,
-        //     'validity_in_days' => NULL,
-        //     'cost_price' => 1500,
-        //     'profit' => 85, //admin product: this is what he shares into user_product_plans, customer buying sees: 250+80=330
-        //     'product_plan_category_id' =>NULL, // NULLABLE
+        // $cable_startimes_product = Product::create([
+        //     'product_name' => 'CABLE - STAR TIMES',
+        //     'network_id' => NULL,
+        //     'slug' => 'startimes_product',
+        //     'product_categories_id' => $product_category_cable->id,
         //     'visibility' => 1,
-        //     'active_status' => 1,
+        //     'active_status' => 1
         // ]);
-        // $gotv_smallie_yearly = ProductPlan::create([
-        //     'product_plan_name' => 'GOTV Smallie Yearly', //just concatenate other params here: majorly price: costprice + profit::::: if it has a product plan category e.g MTN 1GB MTN SME or just add those detail
-        //     'product_id' => $cable_gotv_product->id,
-        //     'data_size_in_mb' => NULL,
-        //     'validity_in_days' => NULL,
-        //     'cost_price' => 10200,
-        //     'profit' => 200, //admin product: this is what he shares into user_product_plans, customer buying sees: 250+80=330
-        //     'product_plan_category_id' =>NULL, // NULLABLE
+        // $cable_dstv_product = Product::create([
+        //     'product_name' => 'CABLE - DSTV',
+        //     'network_id' => NULL,
+        //     'slug' => 'dstv_product',
+        //     'product_categories_id' => $product_category_cable->id,
         //     'visibility' => 1,
-        //     'active_status' => 1,
+        //     'active_status' => 1
         // ]);
-        // $gotv_max = ProductPlan::create([
-        //     'product_plan_name' => 'GOTV Max', //just concatenate other params here: majorly price: costprice + profit::::: if it has a product plan category e.g MTN 1GB MTN SME or just add those detail
-        //     'product_id' => $cable_gotv_product->id,
-        //     'data_size_in_mb' => NULL,
-        //     'validity_in_days' => NULL,
-        //     'cost_price' => 7000,
-        //     'profit' => 200, //admin product: this is what he shares into user_product_plans, customer buying sees: 250+80=330
-        //     'product_plan_category_id' =>NULL, // NULLABLE
-        //     'visibility' => 1,
-        //     'active_status' => 1,
-        // ]);
-        
-
-        // $startimes_nova_weekly = ProductPlan::create([
-        //     'product_plan_name' => 'DTT (Antenna) Nova Weekly', //just concatenate other params here: majorly price: costprice + profit::::: if it has a product plan category e.g MTN 1GB MTN SME or just add those detail
-        //     'product_id' => $cable_startimes_product->id,
-        //     'data_size_in_mb' => NULL,
-        //     'validity_in_days' => NULL,
-        //     'cost_price' => 500,
-        //     'profit' => 20, //admin product: this is what he shares into user_product_plans, customer buying sees: 250+80=330
-        //     'product_plan_category_id' =>NULL, // NULLABLE
-        //     'visibility' => 1,
-        //     'active_status' => 1,
-        // ]);
-
-        // $startimes_nova_monthly = ProductPlan::create([
-        //     'product_plan_name' => 'DTT (Antenna) Nova Monthly', //just concatenate other params here: majorly price: costprice + profit::::: if it has a product plan category e.g MTN 1GB MTN SME or just add those detail
-        //     'product_id' => $cable_startimes_product->id,
-        //     'data_size_in_mb' => NULL,
-        //     'validity_in_days' => NULL,
-        //     'cost_price' => 1700,
-        //     'profit' => 20, //admin product: this is what he shares into user_product_plans, customer buying sees: 250+80=330
-        //     'product_plan_category_id' =>NULL, // NULLABLE
-        //     'visibility' => 1,
-        //     'active_status' => 1,
-        // ]);
-
-        // $startimes_basic_weekly = ProductPlan::create([
-        //     'product_plan_name' => 'DTT (Antenna) Basic Weekly', //just concatenate other params here: majorly price: costprice + profit::::: if it has a product plan category e.g MTN 1GB MTN SME or just add those detail
-        //     'product_id' => $cable_startimes_product->id,
-        //     'data_size_in_mb' => NULL,
-        //     'validity_in_days' => NULL,
-        //     'cost_price' => 1000,
-        //     'profit' => 40, //admin product: this is what he shares into user_product_plans, customer buying sees: 250+80=330
-        //     'product_plan_category_id' =>NULL, // NULLABLE
-        //     'visibility' => 1,
-        //     'active_status' => 1,
-        // ]);
-
-        // $startimes_basic_monthly = ProductPlan::create([
-        //     'product_plan_name' => 'DTT (Antenna) Basic Monthly', //just concatenate other params here: majorly price: costprice + profit::::: if it has a product plan category e.g MTN 1GB MTN SME or just add those detail
-        //     'product_id' => $cable_startimes_product->id,
-        //     'data_size_in_mb' => NULL,
-        //     'validity_in_days' => NULL,
-        //     'cost_price' => 3000,
-        //     'profit' => 40, //admin product: this is what he shares into user_product_plans, customer buying sees: 250+80=330
-        //     'product_plan_category_id' =>NULL, // NULLABLE
-        //     'visibility' => 1,
-        //     'active_status' => 1,
-        // ]);
-
-        // //Result Checker
-        // $waec_result_checker = ProductPlan::create([
-        //     'product_plan_name' => 'WAEC Token (Result Checker)', //just concatenate other params here: majorly price: costprice + profit::::: if it has a product plan category e.g MTN 1GB MTN SME or just add those detail
-        //     'product_id' => $result_checker_product->id,
-        //     'data_size_in_mb' => NULL,
-        //     'validity_in_days' => NULL,
-        //     'cost_price' => 1350,
-        //     'profit' => 150, //admin product: this is what he shares into user_product_plans, customer buying sees: 250+80=330
-        //     'product_plan_category_id' =>NULL, // NULLABLE
-        //     'visibility' => 1,
-        //     'active_status' => 1,
-        // ]);
-        // $neco_result_checker = ProductPlan::create([
-        //     'product_plan_name' => 'NECO Token (Result Checker)', //just concatenate other params here: majorly price: costprice + profit::::: if it has a product plan category e.g MTN 1GB MTN SME or just add those detail
-        //     'product_id' => $result_checker_product->id,
-        //     'data_size_in_mb' => NULL,
-        //     'validity_in_days' => NULL,
-        //     'cost_price' => 3600,
-        //     'profit' => 300, //admin product: this is what he shares into user_product_plans, customer buying sees: 250+80=330
-        //     'product_plan_category_id' =>NULL, // NULLABLE
-        //     'visibility' => 1,
-        //     'active_status' => 1,
-        // ]);
-
-        
-   
-        //THIS LOGIC NO LONGER HOLDS:::: USER PRODUCT PLANS inherits from product_plans .... things that will change:
-        // name of the user product plan
-        // profit_category: FLAT / PERCENTAGE
-        // profit: flat/percentage   flat rate cannot be more than productplan profit: percentage cannot be more than 90%/100% sha
-        // : profit of product_plans
-        // the id of the product_plan
-        // but the actual creation will be a loop through with percentage as the default: will be easier for the Admin
-        // which can be edited later to flat rate for each as he wishes
-        
        
-        //create user product plan for basic user plan
-        // $fetch_all_product_plans = ProductPlan::get();
-        // // logger(json_encode($fetch_all_product_plans->toArray()));
-        // // logger(json_encode($fetch_all_product_plans));
-        // // logger(gettype($fetch_all_product_plans->toArray()));
-        // foreach($fetch_all_product_plans as  $product_plan){
-        //     // $product_plan_cost_price = $product_plan->cost_price ?? 0;
-        //     // logger($product_plan);
-        //     $data['user_plan_id'] = $user_plan_basic->id;
-        //     $data['product_plan_id'] = $product_plan->id;
-        //     $data['profit'] = ($user_plan_basic->percentage_profit_share / 100) * $product_plan->profit;
-        //     UserProductPlan::create($data);
-
-        //     $dataGold['user_plan_id'] = $user_plan_gold->id;
-        //     $dataGold['product_plan_id'] = $product_plan->id;
-        //     $dataGold['profit'] = ($user_plan_gold->percentage_profit_share / 100) * $product_plan->profit;
-        //     UserProductPlan::create($dataGold);
-
-        //     $dataDiamond['user_plan_id'] = $user_plan_diamond->id;
-        //     $dataDiamond['product_plan_id'] = $product_plan->id;
-        //     $dataDiamond['profit'] = ($user_plan_diamond->percentage_profit_share / 100) * $product_plan->profit;
-        //     UserProductPlan::create($dataDiamond);
-
-        //     $dataPlatinum['user_plan_id'] = $user_plan_platinum->id;
-        //     $dataPlatinum['product_plan_id'] = $product_plan->id;
-        //     $dataPlatinum['profit'] = ($user_plan_platinum->percentage_profit_share / 100) * $product_plan->profit;
-        //     UserProductPlan::create($dataPlatinum);     
-        // }
-        
-        // NOTE: if a user_product_plan is not found, its parent plan details will apply
-        // $user_basic_product_plan = UserProductPlan::create([
-
+        // $electricity_product = Product::create([
+        //     'product_name' => 'ELECTRICITY / BILLS',
+        //     'network_id' => NULL,
+        //     'slug' => 'bills_product',
+        //     'product_categories_id' => $product_category_bills->id,
+        //     'visibility' => 1,
+        //     'active_status' => 1
         // ]);
-        // $user_gold_product_plan = '';
-        // $user_diamond_product_plan = '';
+
+        // $result_checker_product = Product::create([
+        //     'product_name' => 'RESULT CHECKER',
+        //     'network_id' => NULL,
+        //     'slug' => 'result_checker_product',
+        //     'product_categories_id' => $product_category_result_checker->id,
+        //     'visibility' => 1,
+        //     'active_status' => 1
+        // ]);
+
+        // $epins_product = Product::create([
+        //     'product_name' => 'RESULT CHECKER',
+        //     'network_id' => NULL,
+        //     'slug' => 'e_pins_product',
+        //     'product_categories_id' => $product_category_epins->id,
+        //     'visibility' => 1,
+        //     'active_status' => 1
+        // ]);
 
         
-
-
         
     }
 }

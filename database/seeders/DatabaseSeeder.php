@@ -12,6 +12,7 @@ use App\Models\Automation;
 use App\Models\Permission;
 use App\Models\ProductPlan;
 use App\Models\Transaction;
+use App\Models\FundingOption;
 use App\Models\ProductCategory;
 use App\Models\ReferralSetting;
 use App\Models\UserProductPlan;
@@ -43,6 +44,25 @@ class DatabaseSeeder extends Seeder
             $data['visibility'] = 1;
             LandingPagesSetting::create($data);
         }
+
+        // FUNDING OPTIONS
+        $crystal_pay = FundingOption::create([
+            "funding_option_name" => "Crystal Pay",
+            "slug" => "crystal_pay",
+            "is_current_option" => "1",
+            "api_public_key" => 'xxxxxxxx',
+            "api_secret_key" =>'xxxxxxxx',
+            "activation_status" =>1,
+        ]);
+
+        $flutterwave = FundingOption::create([
+            "funding_option_name" => "Flutterwave",
+            "slug" => "flutterwave",
+            "is_current_option" => "0",
+            "api_public_key" => 'xxxxxxxx',
+            "api_secret_key" =>'xxxxxxxx',
+            "activation_status" =>0,
+        ]);
 
         //AUTOMATIONS
         //megasub

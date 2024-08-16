@@ -13,7 +13,9 @@ return new class extends Migration
     {
         Schema::create('user_virtual_accounts', function (Blueprint $table) {
             $table->uuid('id')->primary();
+            $table->foreignUuid('funding_option_id')->constrained('funding_options');
             $table->foreignUuid('user_id')->constrained('users');
+            $table->string('funding_slug')->nullable();
             $table->string('response_status')->nullable();
             $table->string('bank_name')->nullable();
             $table->string('account_name')->nullable();
