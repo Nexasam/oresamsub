@@ -173,10 +173,19 @@ class ProductPlanController extends Controller
         return $data->product_plan_category->product_plan_category_name;
       })
       ->addColumn('data_size_in_mb',function($data){
-        return $data->data_size_in_mb;
+        if($data->product_plan_category->product->product_name == 'DATA'){
+          return $data->data_size_in_mb;
+        }else{
+          return 'nil';
+        }
       })
       ->addColumn('user_level_1_selling_price',function($data){
-        return number_format($data->user_level_1_selling_price,2);
+        if($data->product_plan_category->product->product_name == 'AIRTIME'){
+          return number_format($data->user_level_1_selling_price,2). ' (% Discount)';
+        }else{
+          return number_format($data->user_level_1_selling_price,2);
+
+        }
       })
       ->addColumn('validity_in_days',function($data){
         return $data->validity_in_days;

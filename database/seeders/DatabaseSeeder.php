@@ -780,7 +780,7 @@ class DatabaseSeeder extends Seeder
         for($i = 1; $i <= 100; $i++){
             Transaction::create([
                 'user_id' => $user_ore->id,
-                'product_plan_id' => '12c6a955-8ce2-452e-ae09-40266fd6c531',
+                'product_plan_id' => '9cc91f03-44c3-4e53-a7a1-a1eed50138b0', 
                 'transaction_category' => 'utility_bills',
                 'status' => 1,
                 'wallet_category' => 'main_wallet',
@@ -799,7 +799,7 @@ class DatabaseSeeder extends Seeder
         for($i = 1; $i <= 100; $i++){
             Transaction::create([
                 'user_id' => $user_ore->id,
-                'product_plan_id' => 'b3176d9f-6f12-45e0-9640-71c509271825',
+                'product_plan_id' => '9cc91e28-6ec3-40fb-89f5-847ad2aada72',
                 'transaction_category' => 'cable_subscription',
                 'status' => 1,
                 'wallet_category' => 'main_wallet',

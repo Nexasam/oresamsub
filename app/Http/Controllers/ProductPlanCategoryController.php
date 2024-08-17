@@ -202,9 +202,7 @@ class ProductPlanCategoryController extends Controller
           
           // return $automation_display;
       }) 
-      ->addColumn('discount_value',function($data){
-        return $data->discount_value ?? 'nil';
-       })  
+    
       ->addColumn('network_id',function($data){
             return $data->network->network_name ?? 'nil';
         }) 

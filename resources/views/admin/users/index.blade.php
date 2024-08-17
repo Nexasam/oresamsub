@@ -71,11 +71,11 @@
                                   <div class="flex">
                                     <h5 class="box-title my-auto">Filter options</h5>
                                     <div class="hs-dropdown ti-dropdown block ms-auto my-auto s  sm:flex items-center justify-between">
-                                      {{-- <div class="flex items-center justify-between"> --}}
-                                         
-                                        <button type="button"
+                                    
+                                          <button type="button"
                                           class="hs-dropdown-toggle ti-dropdown-toggle rounded-sm p-1 px-3 mr-8 !border border-gray-200 text-gray-400 hover:text-gray-500 hover:bg-gray-200 hover:border-gray-200 focus:ring-gray-200  dark:hover:bg-black/30 dark:border-white/10 dark:hover:border-white/20 dark:focus:ring-white/10 dark:focus:ring-offset-white/10">
-                                          Filter <i class="ti ti-chevron-down"></i></button>
+                                          Filter <i class="ti ti-chevron-down"></i>
+                                          </button>
                                           <div class="hs-dropdown-menu ti-dropdown-menu ">
                                             <a href="javascript:void(0)" class="ti-dropdown-item hs-dropdown-toggle"
                                             data-hs-overlay="#hs-slide-down-animation-modal">Basic filter</a>
@@ -138,14 +138,7 @@
                                             </div>
                                           </div>
                                           
-                                          {{-- <label class="mr-4" for="">Date range:</label>
-                                          <input type="date"  class="rounded-sm p-1 px-3 mr-4 !border border-gray-200 text-gray-400 hover:text-gray-500 hover:bg-gray-200 hover:border-gray-200 focus:ring-gray-200  dark:hover:bg-black/30 dark:border-white/10 dark:hover:border-white/20 dark:focus:ring-white/10 dark:focus:ring-offset-white/10">
-                                          <input type="date"  class="rounded-sm p-1 px-3 mr-4 !border border-gray-200 text-gray-400 hover:text-gray-500 hover:bg-gray-200 hover:border-gray-200 focus:ring-gray-200  dark:hover:bg-black/30 dark:border-white/10 dark:hover:border-white/20 dark:focus:ring-white/10 dark:focus:ring-offset-white/10"> --}}
-                                  
-                                      {{-- </div> --}}
-                                      
                                     
-                                   
                                     </div>                       
                                   </div> 
                                 </div>

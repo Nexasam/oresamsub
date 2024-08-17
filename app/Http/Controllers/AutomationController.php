@@ -238,6 +238,12 @@ class AutomationController extends Controller
     
                 curl_close($curl);
                 // echo $response;
+
+                $response_decoded = json_decode($response,true);
+                if(isset($response_decoded['Status']) && $response_decoded['Status'] == 'Error'){
+                    Session::flash('failure',$response_decoded['Detail']);
+                    return back();
+                }
                 // dd($response);
     
                 $product_plan_categories = ProductPlanCategory::select('id','product_plan_category_name')->get();

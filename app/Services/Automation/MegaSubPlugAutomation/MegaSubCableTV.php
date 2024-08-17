@@ -71,6 +71,7 @@ class MegaSubCableTV{
         $plan_details = ProductPlan::with('product_plan_category')
         ->where('visibility',1)
         ->where('id',$this->plan_id)->first();
+       
       
         if(! $plan_details){
             return [
@@ -82,12 +83,6 @@ class MegaSubCableTV{
 
         $this->cable_plan_api_id = $this->getProviderApiID($plan_details->product_plan_category->product_plan_category_name);
         $smart_card_number = $this->smart_card_number;
-
-        // return [
-        //     'status' => 1,
-        //     'address' => $smart_card_number,
-        //     'name' =>  $this->cable_plan_api_id,
-        // ];
         
         $curl = curl_init();
 
@@ -102,33 +97,32 @@ class MegaSubCableTV{
         CURLOPT_CUSTOMREQUEST => 'GET',
         CURLOPT_HTTPHEADER => array(
             'Password: '.$this->api_password,
-            'Authorization: '.$this->api_key,
-            'Cookie: PHPSESSID=j9408e536n6vurmrla0omj4hob'
+            'Authorization: '.$this->api_key
         ),
         ));
 
         $response = curl_exec($curl);
 
-        logger($response);
+        // logger($response);
 
         curl_close($curl);
 
         $response_decode = json_decode($response,true);
 
-        if(isset($response_decode['Status']) && $response_decode['Status'] == 'Success' && isset($response_decode['Detail']['customer_name']) 
+        if(isset($response_decode['Detail']['success']) && $response_decode['Detail']['success'] == true && isset($response_decode['Status']) && $response_decode['Status'] == 'Success' && isset($response_decode['Detail']['customer_name']) 
         &&  $response_decode['Detail']['customer_name'] != ''  ){
            //successful transaction
            return [
                'status' => 1,
                'address' => isset($response_decode['Detail']['customer_address']) ? $response_decode['Detail']['customer_address']  :  'Address not found',
-               'name' => isset($response_decode['Detail']['customer_name']) ? $response_decode['Detail']['customer_name']  :  'Name not found',
+               'name' => isset($response_decode['Detail']['customer_name']) ? $response_decode['Detail']['customer_name']  :  'Defaulted to: '.auth()->user()->first_name.' '.auth()->user()->last_name,
            ];
        }else{
             
             return [
                 'status' => 1,
                 'address' =>  'Address not found1',
-                'name' => 'Name not found1',
+                'name' => 'Defaulted to: '.auth()->user()->first_name.' '.auth()->user()->last_name,
            ];
        }
 

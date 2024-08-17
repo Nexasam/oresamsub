@@ -5,20 +5,32 @@ namespace App\Http\Controllers;
 use App\Models\ProductPlan;
 use App\Models\Transaction;
 use Illuminate\Http\Request;
+use App\Models\ProductPlanCategory;
 use Yajra\DataTables\Facades\DataTables;
 
 class TransactionController extends Controller
 {
     //
 
-    
+  public function user_all_transactions(){
+    $data['product_plan_categories'] = ProductPlanCategory::select('id','product_plan_category_name')->get();
+
+    return view('user.transactions.index')->with($data);
+  } 
+  
+  public function admin_all_transactions(){
+    $data['product_plan_categories'] = ProductPlanCategory::select('id','product_plan_category_name')->get();
+
+    return view('admin.transactions.index')->with($data);
+  } 
 
   public function user_fetch_transactions(Request $request){
 
         // $date_from = $request->date_from ?? '';
         // $date_to= $request->date_to ?? '';
 
-        $date_from = $request->date_from ?? date('Y-m-d');
+        // $date_from = $request->date_from ?? date('Y-m-d');
+        $date_from = $request->date_from ?? date('Y-m-d', strtotime('-10 days'));
         $date_to= $request->date_to ?? date('Y-m-d');
 
         $product_plan_category_filter = $request->product_plan_category_filter ?? '';
@@ -26,7 +38,7 @@ class TransactionController extends Controller
         $phone = $request->phone_recharged ?? '';
         
 
-        $limit = $request->limit ?? 500;
+        $limit = $request->limit ?? 2000;
 
         // ->when( !empty($email) , function ($query) use ($email){
         //     $query->where('email',$email);
@@ -44,7 +56,7 @@ class TransactionController extends Controller
         })->when(!empty($phone) , function ($query) use ($phone){
           $query->where('phone_number',$phone);
         })
-        ->with(['user','product_plan'])->latest()->limit(4000)->get();
+        ->with(['user','product_plan'])->latest()->limit($limit)->get();
 
         //  return $data;
       return DataTables::of($data)
@@ -69,7 +81,7 @@ class TransactionController extends Controller
                 $dataa =  $data->product_plan->product_plan_name.'<br>';
                 $dataa .=  $data->product_plan->product_plan_category->product_plan_category_name.'<br>';
                 if($data->transaction_category == 'cable_subscription'){
-                    $dataa .=  'Smart Card No: '.$data->smart_card_number.'p<br>';
+                    $dataa .=  'Smart Card No: '.$data->smart_card_number.'<br>';
                 }
                 if($data->transaction_category == 'utility_bills'){
                     $dataa .=  'Metre No: '.$data->metre_number.'o<br>';
@@ -151,19 +163,15 @@ class TransactionController extends Controller
 
   public function admin_fetch_transactions(Request $request){
 
-    // $date_from = $request->date_from ?? '';
-        // $date_to= $request->date_to ?? '';
-
-        // return $request->all();
-
-        $date_from = $request->date_from ?? date('Y-m-d');
+        // $date_from = $request->date_from ?? date('Y-m-d');
+        $date_from = $request->date_from ?? date('Y-m-d', strtotime('-10 days'));
         $date_to= $request->date_to ?? date('Y-m-d');
 
         $product_plan_category_filter = $request->product_plan_category_filter ?? '';
         
         $phone = $request->phone_recharged ?? '';
     
-        $limit = $request->limit ?? 500;
+        $limit = $request->limit ?? 2000;
 
         
         $data = Transaction::when(!empty($date_from) && !empty($date_to) , function ($query) use ($date_from,$date_to){
@@ -175,7 +183,7 @@ class TransactionController extends Controller
         })->when(!empty($phone) , function ($query) use ($phone){
           $query->where('phone_number',$phone);
         })
-        ->with(['user','product_plan'])->latest()->limit(4000)->get();
+        ->with(['user','product_plan'])->latest()->limit($limit)->get();
 
 
         return DataTables::of($data)
@@ -200,7 +208,7 @@ class TransactionController extends Controller
                 $dataa =  $data->product_plan->product_plan_name.'<br>';
                 $dataa .=  $data->product_plan->product_plan_category->product_plan_category_name.'<br>';
                 if($data->transaction_category == 'cable_subscription'){
-                    $dataa .=  'Smart Card No: '.$data->smart_card_number.'p<br>';
+                    $dataa .=  'Smart Card No: '.$data->smart_card_number.'<br>';
                 }
                 if($data->transaction_category == 'utility_bills'){
                     $dataa .=  'Metre No: '.$data->metre_number.'o<br>';
@@ -276,5 +284,5 @@ class TransactionController extends Controller
         ->make(true);
 
 
-}
+  }
 }

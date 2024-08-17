@@ -51,20 +51,6 @@
 
 
                 @if (strtolower(auth()->user()->role->role_name) == 'admin')
-                    
-               
-                {{-- <li class="slide  has-sub mt-10">
-                    <a href="javascript:void(0);" class="side-menu__item">
-                        <i class="ti ti-3d-rotate side-menu__icon"></i>
-                        <span class="side-menu__label">Users Management</span>
-                        <i class="ri ri-arrow-right-s-line side-menu__angle"></i>
-                    </a>
-                    <ul class="slide-menu child1">
-                        <li class="slide"><a href="{{ route('admin.users.index') }}"  class="side-menu__item">Users</a></li>
-                        <li class="slide"><a href="{{ route('admin.users.create') }}" class="side-menu__item">Create User</a></li>           
-                    </ul>
-                </li> --}}
-             
 
                   <!-- Start::slide -->
                   <li class="slide  has-sub">
@@ -102,7 +88,20 @@
                     <ul class="slide-menu child1">
                         {{-- <li class="slide"><a href="#" class="side-menu__item">View Networks</a></li> --}}
                     </ul>
-                </li>
+                  </li>
+                <!-- End::slide -->
+
+                 <!-- Start::slide -->
+                 <li class="slide  has-sub">
+                    <a href="{{ route('admin.transactions.index')}}" class="side-menu__item">
+                        <i class="ti ti-exchange side-menu__icon"></i>
+                        <span class="side-menu__label">Transactions</span>
+                        <i class="ri ri-arrow-right-s-line side-menu__angle"></i>
+                    </a>
+                    <ul class="slide-menu child1">
+                        {{-- <li class="slide"><a href="#" class="side-menu__item">View Networks</a></li> --}}
+                    </ul>
+                  </li>
                 <!-- End::slide -->
 
                 <!-- Start::slide -->
@@ -264,51 +263,33 @@
                 </li>
                 <!-- End::slide -->
 
-                   <!-- Start::slide -->
-                   <li class="slide  has-sub">
-                    <a href="javascript:void(0);" class="side-menu__item">
-                        <i class="ti ti-recharging side-menu__icon"></i>
-                        <span class="side-menu__label">Electricity Subscription</span>
-                        <i class="ri ri-arrow-right-s-line side-menu__angle"></i>
-                    </a>
-                    <ul class="slide-menu child1">
-                        <li class="slide"><a href="{{ route('user.electricity.buy_electricity_subscription') }}" class="side-menu__item">Pay Electricity</a></li>
-                        {{-- <li class="slide"><a href="{{ route('user.cabletv.buy_cable_subscription') }}" class="side-menu__item">Cable Subscription</a></li> --}}
-                        {{-- <li class="slide"><a href="#" class="side-menu__item">Bills Transactions</a></li> --}}
-                    </ul>
+                <!-- Start::slide -->
+                <li class="slide  has-sub">
+                <a href="javascript:void(0);" class="side-menu__item">
+                    <i class="ti ti-recharging side-menu__icon"></i>
+                    <span class="side-menu__label">Electricity Subscription</span>
+                    <i class="ri ri-arrow-right-s-line side-menu__angle"></i>
+                </a>
+                <ul class="slide-menu child1">
+                    <li class="slide"><a href="{{ route('user.electricity.buy_electricity_subscription') }}" class="side-menu__item">Pay Electricity</a></li>
+                    {{-- <li class="slide"><a href="{{ route('user.cabletv.buy_cable_subscription') }}" class="side-menu__item">Cable Subscription</a></li> --}}
+                    {{-- <li class="slide"><a href="#" class="side-menu__item">Bills Transactions</a></li> --}}
+                </ul>
                 </li>
                 <!-- End::slide -->
 
                  <!-- Start::slide -->
-                 {{-- <li class="slide  has-sub">
-                    <a href="javascript:void(0);" class="side-menu__item">
-                        <i class="ri-home-8-line side-menu__icon"></i>
-                        <span class="side-menu__label">E-PIN</span>
+                 <li class="slide  has-sub">
+                    <a href="{{ route('user.transactions.index')}}" class="side-menu__item">
+                        <i class="ti ti-exchange side-menu__icon"></i>
+                        <span class="side-menu__label">Transactions</span>
                         <i class="ri ri-arrow-right-s-line side-menu__angle"></i>
                     </a>
                     <ul class="slide-menu child1">
-                        <li class="slide"><a href="#" class="side-menu__item">Pay electricity</a></li>
-                        <li class="slide"><a href="#" class="side-menu__item">Electricity Transactions</a></li>
-                        
+                        {{-- <li class="slide"><a href="#" class="side-menu__item">View Networks</a></li> --}}
                     </ul>
-                </li> --}}
+                  </li>
                 <!-- End::slide -->
-
-                 <!-- Start::slide -->
-                 {{-- <li class="slide  has-sub">
-                    <a href="javascript:void(0);" class="side-menu__item">
-                        <i class="ri-home-8-line side-menu__icon"></i>
-                        <span class="side-menu__label">Result Checker</span>
-                        <i class="ri ri-arrow-right-s-line side-menu__angle"></i>
-                    </a>
-                    <ul class="slide-menu child1">
-                        <li class="slide"><a href="#" class="side-menu__item">Pay electricity</a></li>
-                        <li class="slide"><a href="#" class="side-menu__item">Electricity Transactions</a></li>
-                        
-                    </ul>
-                </li> --}}
-                <!-- End::slide -->
-
 
                  <!-- Start::slide: for users -->
                  <li class="slide  has-sub">

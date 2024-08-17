@@ -13,6 +13,7 @@ use App\Models\Transaction;
 use Illuminate\Http\Request;
 use App\Models\ProductCategory;
 use Illuminate\Validation\Rule;
+use Yajra\DataTables\DataTables;
 use App\Models\UserBulkDataWallet;
 use Illuminate\Support\Facades\DB;
 use App\Models\ProductPlanCategory;
@@ -94,21 +95,11 @@ class AirtimeController extends Controller
         foreach($product_plans as $product_plan){
 
             $user_level_selling = "user_level_".$plan_level."_selling_price";
-            // $user_level_selling = "{user_level_$user_level_selling_price}";
-            $selling_price = $product_plan->$user_level_selling;
-      
-            $is_purchase_discount_percentage = $plan_category->is_purchase_discount_percentage ? 'percent':'flat';
-
-            if($is_purchase_discount_percentage == 'percent'){
-                $purchase_discount = $plan_category->discount_value; 
-                $actual_discount_value = ceil(($purchase_discount/100) * $amount);  
-                }else{
-                    $actual_discount_value = $plan_category->discount_value;  
-                }
-                $purchase_discount = $plan_category->discount_value; 
-                $discounted_selling_price = $amount - abs($actual_discount_value);
-                $selling_price = 0; //this is from the system, not applicable for airtime
         
+            $purchase_discount = $product_plan->$user_level_selling;
+            $actual_discount_value = ceil(($purchase_discount/100) * $amount);  
+            $discounted_selling_price = $amount - abs($actual_discount_value);
+            $selling_price = 0; //this is from the system, not applicable for airtime
            
             if($product_plan){
                 $counter++;
@@ -121,6 +112,10 @@ class AirtimeController extends Controller
                 $product_planss[$counter]['automation_id'] = $product_plan->automation_id;    
             }
         }
+
+        $product = Product::where('slug','airtime')->first(); //TODO: have enums that gets the id later
+        $product_plan_categories = ProductPlanCategory::where('product_id',$product->id)->get(); //TODO: have enums that gets the id later
+        $data['product_plan_categories'] = $product_plan_categories;
 
       
         //data txns list
@@ -162,21 +157,10 @@ class AirtimeController extends Controller
         foreach($product_plans as $product_plan){
 
             $user_level_selling = "user_level_".$plan_level."_selling_price";
-            // $user_level_selling = "{user_level_$user_level_selling_price}";
-            $selling_price = $product_plan->$user_level_selling;
-      
-            $is_purchase_discount_percentage = $plan_category->is_purchase_discount_percentage ? 'percent':'flat';
-
-            if($is_purchase_discount_percentage == 'percent'){
-                $purchase_discount = $plan_category->discount_value; 
-                $actual_discount_value = ceil(($purchase_discount/100) * $amount);  
-            }else{
-                $actual_discount_value = $plan_category->discount_value;  
-            }
-            $purchase_discount = $plan_category->discount_value; 
+            $purchase_discount = $product_plan->$user_level_selling;
+            $actual_discount_value = ceil(($purchase_discount/100) * $amount);  
             $discounted_selling_price = $amount - abs($actual_discount_value);
             $selling_price = 0; //this is from the system, not applicable for airtime
-        
            
             if($product_plan){
                 $counter++;
@@ -227,33 +211,27 @@ class AirtimeController extends Controller
         $message = 'Pending';
         $display_results = [];
 
+        $user_details = auth()->user();
+        $user_plan_id = $user_details->user_plan_id;
+        $user_id = $user_details->id;
+        $user_level = UserPlan::select('plan_level')->where('id',$user_plan_id)->first();
+        $plan_level = $user_level->plan_level;
 
         
         $plan_details = ProductPlan::with('product_plan_category')
         ->where('visibility',1)
         ->where('id',$request->product_plan_id)->first();
         $automation_id = $plan_details->automation_id;
-        // $data_value_mb = $plan_details->data_size_in_mb ?? 0;
         $product_plan_category = $plan_details->product_plan_category;
         $amount = $request->amount;
 
-        $is_purchase_discount_percentage = $product_plan_category->is_purchase_discount_percentage ? 'percent':'flat';
-
-        if($is_purchase_discount_percentage == 'percent'){
-            $purchase_discount = $product_plan_category->discount_value; 
-            $actual_discount_value = ceil(($purchase_discount/100) * $amount);  
-          }else{
-              $actual_discount_value = $product_plan_category->discount_value;  
-          }
-          $purchase_discount = $product_plan_category->discount_value; 
-          $discounted_selling_price = $amount - abs($actual_discount_value);
-          $selling_price = 0; //this is from the system, not applicable for airtime
-
-         $amount = $discounted_selling_price;//actual amount to deduct
-
-
-        $user_details = auth()->user();
-
+        $user_level_selling = "user_level_".$plan_level."_selling_price";
+        $purchase_discount =  $plan_details->$user_level_selling;
+        $actual_discount_value = ceil(($purchase_discount/100) * $amount);  
+        //below forms the new amount to sell to the user
+        $amount = ceil($amount - abs($actual_discount_value));
+        
+        
         if(! $user_details){
             //end session and redirect to login
             redirect(url('/login'));
@@ -425,72 +403,135 @@ class AirtimeController extends Controller
 
     }
 
-     /**
-     * Get all the products plans. currently not in use
-     */
-    // public function fetch_product_plans(Request $request)
-    // {
-    //     $network_id = $request->network_id ?? '';
-    //     $plan_category_id = $request->plan_category_id ?? '';
-    //     $product_id = Product::where('slug','airtime')->first()->id;
+
+  
+    public function fetch_airtime_transactions(Request $request){
+
+        
+        $date_from = $request->date_from ?? date('Y-m-d', strtotime('-10 days'));
+        $date_to= $request->date_to ?? date('Y-m-d');
+
+        $product_plan_category_filter = $request->product_plan_category_filter ?? '';
+        
+        $phone = $request->phone_recharged ?? '';
+        
+        $limit = $request->limit ?? 2000;
+
+       
+        $data = Transaction::when(!empty($date_from) && !empty($date_to) , function ($query) use ($date_from,$date_to){
+            $date_to = date('Y-m-d', strtotime('+1 day', strtotime($date_to)));
+            $query->where('created_at','>=',$date_from)->where('created_at','<=',$date_to);
+        })->when(!empty($product_plan_category_filter) , function ($query) use ($product_plan_category_filter){
+            $product_plan_ids = ProductPlan::where('product_plan_category_id',$product_plan_category_filter)->pluck('id');
+            $query->whereIn('product_plan_id',$product_plan_ids);
+        })->when(!empty($phone) , function ($query) use ($phone){
+          $query->where('phone_number',$phone);
+        })
+        ->where('transaction_category','airtime')
+        ->with(['user','product_plan'])->latest()->limit($limit)->get();
+        // return $data;
 
 
+      return DataTables::of($data)
+      ->addIndexColumn()
+      ->addColumn('DT_RowIndex',function($data){
+        return $data->id;
+        })
+        ->addColumn('user_id',function($data){
+            $first_name = $data->user->first_name  ?? 'nil';
+            $last_name = $data->user->last_name  ?? 'nil';
+            $phone_number = $data->user->phone_number  ?? 'nil';
+            $user_details =  $first_name.'<br>'.$last_name.'<br>'.$phone_number.'<br>';     
+            return $user_details;
+        })
+        ->addColumn('wallet_category',function($data){
+            $wallet_category = $data->wallet_category == 'main_wallet' ?  'MAIN' : 'DATA_WALLET';
+            return $wallet_category;
+        })
+        ->addColumn('plan_details',function($data){
+            if($data->product_plan != NULL){
+               
+                $dataa =  $data->product_plan->product_plan_name.'<br>';
+                $dataa .=  $data->product_plan->product_plan_category->product_plan_category_name.'<br>';
+                if($data->transaction_category == 'cable_subscription'){
+                    $dataa .=  'Smart Card No: '.$data->smart_card_number.'<br>';
+                }
+                if($data->transaction_category == 'utility_bills'){
+                    $dataa .=  'Metre No: '.$data->metre_number.'o<br>';
+                }
+                if($data->transaction_category == 'data'){
+                    $dataa .= number_format($data->product_plan->data_size_in_mb ?? '0') .' MB';
+                }
 
-    //     if($plan_category_id == ''){
-    //         $product_plan_categories = ProductPlanCategory::select('id','automation_id')->where('product_id',$product_id)->where('network_id',$network_id)->get();
-    //     }else{
-    //         $product_plan_categories = ProductPlanCategory::select('id','automation_id')
-    //         ->where('product_id',$product_id)
-    //         ->where('network_id',$network_id)
-    //         ->where('id',$plan_category_id)
-    //         ->get();
-    //     }
+            }else{
+                $dataa = 'NIL';
+            }
+            return $dataa;
+        })
+     
+        ->addColumn('transaction_category',function($data){
+            $transaction_category = $data->transaction_category;
+            return $transaction_category;
+        })
+        ->addColumn('response',function($data){
+            return  '<span style="white-space: normal;word-wrap: break-word;word-break: normal;width:auto">'.$data->user_screen_message.'</span>';
+            // return $user_screen_message;
+        })
+        ->addColumn('phone_number',function($data){
+            return $data->phone_number;
+        }) 
+       ->addColumn('amount',function($data){
+        return '&#8358;'.(number_format($data->amount,2));
+        }) 
+        ->addColumn('balance_before',function($data){
+            return $data->wallet_category == 'main_wallet' ? '₦'.number_format($data->balance_before,2) : number_format($data->balance_before).'MB';
+
+        })  
+        ->addColumn('data_size',function($data){
+         $data_size = number_format($data->product_plan->data_size_in_mb ?? '0') .' MB';
+         return $data_size;
+        })  
+        ->addColumn('balance_after',function($data){
+        return $data->wallet_category == 'main_wallet' ? '₦'.number_format($data->balance_after,2) : number_format($data->balance_after).'MB';
+        })  
+        ->addColumn('status',function($data){
+            if($data->status == 1){
+                $status_display = '<span class="badge bg-success text-white">Success</span>';
+            }
+            elseif($data->status == -1){
+                $status_display = '<span class="badge bg-danger text-white">Failed</span>';
+            }
+            elseif($data->status == 0){
+                $status_display = '<span class="badge bg-warning text-white">Pending</span>';
+            }
+            elseif($data->status == 2){
+                $status_display = '<span class="badge bg-primary text-white">Refunded</span>';
+            }
+            elseif($data->status == 3){
+                $status_display = '<span class="badge bg-gray text-white">Processing</span>';
+            }else{
+                $status_display = '<span class="badge bg-gray text-white">Unknown</span>';
+            }
+           return $status_display;  
+        }) 
+        ->addColumn('created_at',function($data){
+            return $data->created_at;
+        }) 
+        ->addColumn('action',function($data){
+            $route = '#';
+            // $route = route('transaction_details',$data->id);
+            $actionBtn = '<a href="'.$route.'" type="button" class="hs-dropdown-toggle ti-btn ti-btn-primary" data-hs-overlay="#hs-vertically-centered-scrollable-modal'.$data->email.'">
+            Details
+            </a>';
+            return $actionBtn;
+        })
+        
+        ->escapeColumns([])
+        ->make(true);
 
 
        
-    //     $product_planss = [];
-    //     $counter =0;
-
-    //    //TODO: 
-    //     $user_details = auth()->user();
-    //     $user_plan_id = $user_details->user_plan_id;
-    //     $user_id = $user_details->id;
-    //     $user_level = UserPlan::select('plan_level')->where('id',$user_plan_id)->first();
-    //     $plan_level = $user_level->plan_level;
-
-
-    //     foreach($product_plan_categories as $key=>$product_plan_category){
-    //         //get the automation id
-    //         //get the product_category_id 
-    //         $product_plans = ProductPlan::where('product_plan_category_id',$product_plan_category->id)
-    //         ->where('automation_id',$product_plan_category->automation_id)
-    //         ->get();
-    //         if(count($product_plans) > 0){
-    //             foreach($product_plans as $product_plan){
-
-    //                 $user_level_selling = "user_level_".$plan_level."_selling_price";
-    //                 // $user_level_selling = "{user_level_$user_level_selling_price}";
-    //                 $selling_price = $product_plan->$user_level_selling;
-    //                 if($product_plan){
-    //                     $counter++;
-    //                     $product_planss[$counter]['product_plan_id'] = $product_plan->id;
-    //                     $product_planss[$counter]['selling_price'] = $selling_price;
-    //                     $product_planss[$counter]['product_plan_name'] = $product_plan->product_plan_name;
-    //                     $product_planss[$counter]['data_size_in_mb'] = $product_plan->data_size_in_mb;
-    //                     $product_planss[$counter]['validity_in_days'] = $product_plan->validity_in_days;    
-    //                     $product_planss[$counter]['automation_id'] = $product_plan->automation_id;    
-    //                 }
-    //             }
-    //         }    
-    //     }
-        
-           
-    //     return response()->json(['status'=>'1','user_level'=>$plan_level ,'message'=>'Product plans fetched','counter' =>count($product_planss),'data' => $product_planss ]);
-    //     // return response()->json(['status'=>'1','user_level'=>$user_plan_id ,'message'=>'Product plans fetched','counter' =>count($product_planss),'data' => $product_planss ]);
-
-    // }
-
-    
+    }
 
 
     /**

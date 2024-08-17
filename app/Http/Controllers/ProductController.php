@@ -23,6 +23,7 @@ class ProductController extends Controller
         return view('admin.products.index')->with($data);
     }
 
+    //not made available for now
     public function store(Request $request){
         // dd($request->all());
         // Gate::authorize('create', Product::class);
@@ -54,4 +55,44 @@ class ProductController extends Controller
     
           return redirect()->route('admin.products.index');
     }
+
+    public function update(Request $request){
+      // dd($request->all());
+
+
+        $validator = Validator::make($request->all(), [
+          'first_downline_crediting_feature' => 'required',
+          'set_first_downline_crediting_flat_rate' => 'required',
+          'set_first_downline_crediting_percentage_rate' => 'required',
+          'set_first_downline_crediting_cap' => 'required',
+          'product_id' => 'required|exists:products,id'
+        ]);
+        
+  
+        if ($validator->stopOnFirstFailure()->fails()) {
+          return redirect()->back()->withErrors($validator)->withInput();
+        }
+
+        //percentage
+        if($request->set_first_downline_crediting_percentage_rate > 100){
+          Session::flash('failure','Percentage rate cannot be greater than 100');
+          return redirect()->back();
+        }
+  
+        $data['first_downline_crediting_feature'] = $request->first_downline_crediting_feature;
+        $data['set_first_downline_crediting_flat_rate'] = $request->set_first_downline_crediting_flat_rate;
+        $data['set_first_downline_crediting_percentage_rate'] = $request->set_first_downline_crediting_percentage_rate;
+        $data['set_first_downline_crediting_cap'] = $request->set_first_downline_crediting_cap;
+       
+        $create_product = Product::where('id',$request->product_id)->update($data);
+  
+        if($create_product){
+          Session::flash('success','Product successfully updated');
+          
+        }else{
+          Session::flash('failure','Error occurred while creating product');
+        }
+  
+        return redirect()->route('admin.products.index');
+  }
 }

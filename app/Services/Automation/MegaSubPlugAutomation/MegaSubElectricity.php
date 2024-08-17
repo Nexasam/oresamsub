@@ -114,14 +114,14 @@ class MegaSubElectricity{
            return [
                'status' => 1,
                'address' => isset($response_decode['Detail']['customer']['customerName']) ? $response_decode['Detail']['customer']['customerAddress']  :  'Address not found',
-               'name' => isset($response_decode['Detail']['customer']['customerName']) ? $response_decode['Detail']['customer']['customerName']  :  'Name not found',
+               'name' => isset($response_decode['Detail']['customer']['customerName']) ? $response_decode['Detail']['customer']['customerName']  :  'Defaulted to: '.auth()->user()->first_name.' '.auth()->user()->last_name,
            ];
        }else{
             
             return [
                 'status' => 1,
                 'address' =>  'Address not found',
-                'name' => 'Name not found',
+                'name' => 'Defaulted to: '.auth()->user()->first_name.' '.auth()->user()->last_name,
            ];
        }
 

@@ -686,9 +686,6 @@
      
 
 <script>
-
-$('#hs-basic-modal').trigger('click');
-
         function numberWithCommas(x) {
           return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
         }
@@ -1141,6 +1138,7 @@ $('#hs-basic-modal').trigger('click');
 
           }
           else if(typpe == 'cable'){
+            console.log('hereee')
             var smart_card_number = $('#smart_card_number').val();
             var url = "{{ route('user.cable_subscription.validate_smart_card_number') }}";
             var plan_id = $('#cable_product_plan_id').val();
@@ -1620,15 +1618,13 @@ $('#hs-basic-modal').trigger('click');
            
               //display product plans categories
               const cable_product_plan_category_id = $('#cable_product_plan_category_id').val();
-              const smart_card_number = $('#smart_card_number').val();
+              let smart_card_number = $('#smart_card_number').val();
               const validation_customer_name = $('#validation_customer_name').val();
               const wallet_category = $('#wallet_category').val();
               const cable_product_plan_id = $('#cable_product_plan_id').val();
               const pin = $('#pin').val();
               const no_of_slots = $('#no_of_slots').val();
               
-              
-
               const data = {
                 cable_product_plan_category_id : cable_product_plan_category_id,
                 smart_card_number : smart_card_number,

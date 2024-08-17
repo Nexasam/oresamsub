@@ -9,6 +9,10 @@ $(document).ready(function(){
     adminGetTransactions();
     getPublicPlans();
     getPlans();
+    getAirtimeTransactions();
+    getDataTransactions();
+    getCableTransactions();
+    getElectricityTransactions();
 
     function getPublicPlans(date_from ='', date_to =''){
 
@@ -100,7 +104,7 @@ $(document).ready(function(){
                     {data: 'product_plan_category_name', name: 'product_plan_category_name'},
                     {data: 'product_id', name: 'product_id'},
                     {data: 'automation_id', name: 'automation_id'},
-                    {data: 'discount_value', name: 'discount_value'},
+                   
                     {data: 'network_id', name: 'network_id'},
                     {data: 'created_at', name: 'created_at'},
                     {data: 'is_hot_sales', name: 'is_hot_sales'},
@@ -146,23 +150,9 @@ $(document).ready(function(){
       });
     }
 
-    $('#filter_user_txn_table').click(function(e){
-      const product_plan_category_filter = $('#product_plan_category_filter').val();
-      const date_from = $('#date_from_filter').val();
-      const date_to = $('#date_to_filter').val();
-      const phone_recharged = $('#phone_recharged').val();
+  
 
-      if(date_from > date_to){
-        alert('Date from must be less than Date to');
-        return;
-      }
-   
-      $("#user_transactions_table").DataTable().destroy();
-      userGetTransactions(date_from,date_to,product_plan_category_filter,phone_recharged);
 
-      $("#admin_transactions_table").DataTable().destroy();
-      adminGetTransactions(date_from,date_to,product_plan_category_filter,phone_recharged);
-    })
 
     function adminGetTransactions(date_from ='', date_to ='', product_plan_category_filter = '', phone_recharged = ''){
       const data = {
@@ -201,6 +191,196 @@ $(document).ready(function(){
         });
     }
 
+    function getAirtimeTransactions(date_from ='', date_to ='', product_plan_category_filter = '', phone_recharged = ''){
+      const data = {
+        date_from : date_from,
+        date_to : date_to,
+        product_plan_category_filter : product_plan_category_filter,
+        phone_recharged : phone_recharged
+      };
+      console.log(data);
+      // return;
+      $('#airtime_transactions_table').DataTable({
+                autoWidth: false,
+                processing: true,
+                searching: true,
+                bInfo: false,
+                bLengthChange: true,
+                pageLength: 10,
+                ajax: root_url + 'transactions/fetch_airtime_transactions?date_from='+date_from+'&&date_to='+date_to+'&&product_plan_category_filter='+product_plan_category_filter+'&&phone_recharged='+phone_recharged,
+                // ajax:  "{{ route('admin.users.fetch_users',"+data+") }}",
+                columns: [
+                  {data: 'DT_RowIndex', name: 'DT_RowIndex'},
+                  {data: 'user_id', name: 'user_id'},
+                  {data: 'wallet_category', name: 'wallet_category'},
+                  {data: 'plan_details', name: 'plan_details'},
+                  {data: 'transaction_category', name: 'transaction_category'},
+                  {data: 'response', name: 'response'},
+                  {data: 'phone_number', name: 'phone_number'},
+                  {data: 'amount', name: 'amount'},
+                  {data: 'balance_before', name: 'balance_before'},
+                  // {data: 'data_size', name: 'data_size'},
+                  {data: 'balance_after', name: 'balance_after'},
+                  {data: 'status', name: 'status'},
+                  {data: 'created_at', name: 'created_at'},
+                  {data: 'action', name: 'action'},
+                ]
+        });
+    }
+
+    function getDataTransactions(date_from ='', date_to ='', product_plan_category_filter = '', phone_recharged = ''){
+      const data = {
+        date_from : date_from,
+        date_to : date_to,
+        product_plan_category_filter : product_plan_category_filter,
+        phone_recharged : phone_recharged
+      };
+      console.log(data);
+      // return;
+      $('#data_transactions_table').DataTable({
+                autoWidth: false,
+                processing: true,
+                searching: true,
+                bInfo: false,
+                bLengthChange: true,
+                pageLength: 10,
+                ajax: root_url + 'transactions/fetch_data_transactions?date_from='+date_from+'&&date_to='+date_to+'&&product_plan_category_filter='+product_plan_category_filter+'&&phone_recharged='+phone_recharged,
+                // ajax:  "{{ route('admin.users.fetch_users',"+data+") }}",
+                columns: [
+                  {data: 'DT_RowIndex', name: 'DT_RowIndex'},
+                  {data: 'user_id', name: 'user_id'},
+                  {data: 'wallet_category', name: 'wallet_category'},
+                  {data: 'plan_details', name: 'plan_details'},
+                  {data: 'transaction_category', name: 'transaction_category'},
+                  {data: 'response', name: 'response'},
+                  {data: 'phone_number', name: 'phone_number'},
+                  {data: 'amount', name: 'amount'},
+                  {data: 'balance_before', name: 'balance_before'},
+                  // {data: 'data_size', name: 'data_size'},
+                  {data: 'balance_after', name: 'balance_after'},
+                  {data: 'status', name: 'status'},
+                  {data: 'created_at', name: 'created_at'},
+                  {data: 'action', name: 'action'},
+                ]
+        });
+    }
+
+    
+    function getCableTransactions(date_from ='', date_to ='', product_plan_category_filter = '', smart_card_number = ''){
+      const data = {
+        date_from : date_from,
+        date_to : date_to,
+        product_plan_category_filter : product_plan_category_filter,
+        smart_card_number : smart_card_number
+      };
+      console.log(data);
+      // return;
+      $('#cable_transactions_table').DataTable({
+                autoWidth: false,
+                processing: true,
+                searching: true,
+                bInfo: false,
+                bLengthChange: true,
+                pageLength: 10,
+                ajax: root_url + 'transactions/fetch_cable_transactions?date_from='+date_from+'&&date_to='+date_to+'&&product_plan_category_filter='+product_plan_category_filter+'&&smart_card_number='+smart_card_number,
+                // ajax:  "{{ route('admin.users.fetch_users',"+data+") }}",
+                columns: [
+                  {data: 'DT_RowIndex', name: 'DT_RowIndex'},
+                  {data: 'user_id', name: 'user_id'},
+                  {data: 'wallet_category', name: 'wallet_category'},
+                  {data: 'plan_details', name: 'plan_details'},
+                  {data: 'transaction_category', name: 'transaction_category'},
+                  {data: 'response', name: 'response'},
+                  {data: 'phone_number', name: 'phone_number'},
+                  {data: 'smart_card_number', name: 'smart_card_number'},
+                  {data: 'amount', name: 'amount'},
+                  {data: 'balance_before', name: 'balance_before'},
+                  // {data: 'data_size', name: 'data_size'},
+                  {data: 'balance_after', name: 'balance_after'},
+                  {data: 'status', name: 'status'},
+                  {data: 'created_at', name: 'created_at'},
+                  {data: 'action', name: 'action'},
+                ]
+        });
+    }
+
+    function getElectricityTransactions(date_from ='', date_to ='', product_plan_category_filter = '', metre_number = ''){
+      const data = {
+        date_from : date_from,
+        date_to : date_to,
+        product_plan_category_filter : product_plan_category_filter,
+        metre_number : metre_number
+      };
+      console.log(data);
+      // return;
+      $('#electricty_transactions_table').DataTable({
+                autoWidth: false,
+                processing: true,
+                searching: true,
+                bInfo: false,
+                bLengthChange: true,
+                pageLength: 10,
+                ajax: root_url + 'transactions/fetch_electricity_transactions?date_from='+date_from+'&&date_to='+date_to+'&&product_plan_category_filter='+product_plan_category_filter+'&&metre_number='+metre_number,
+                // ajax:  "{{ route('admin.users.fetch_users',"+data+") }}",
+                columns: [
+                  {data: 'DT_RowIndex', name: 'DT_RowIndex'},
+                  {data: 'user_id', name: 'user_id'},
+                  {data: 'wallet_category', name: 'wallet_category'},
+                  {data: 'plan_details', name: 'plan_details'},
+                  {data: 'transaction_category', name: 'transaction_category'},
+                  {data: 'response', name: 'response'},
+                  {data: 'phone_number', name: 'phone_number'},
+                  {data: 'metre_number', name: 'metre_number'},
+                  {data: 'amount', name: 'amount'},
+                  {data: 'balance_before', name: 'balance_before'},
+                  // {data: 'data_size', name: 'data_size'},
+                  {data: 'balance_after', name: 'balance_after'},
+                  {data: 'status', name: 'status'},
+                  {data: 'created_at', name: 'created_at'},
+                  {data: 'action', name: 'action'},
+                ]
+        });
+    }
+    
+
+
+  ///txns
+    $('#filter_user_txn_table').click(function(e){
+      const product_plan_category_filter = $('#product_plan_category_filter').val();
+      const date_from = $('#date_from_filter').val();
+      const date_to = $('#date_to_filter').val();
+      const phone_recharged = $('#phone_recharged').val();
+      const smart_card_number = $('#smart_card_numberr').val();
+      const metre_number = $('#metre_numberr').val();
+      
+
+      if(date_from > date_to){
+        alert('Date from must be less than Date to');
+        return;
+      }
+   
+      $("#user_transactions_table").DataTable().destroy();
+      userGetTransactions(date_from,date_to,product_plan_category_filter,phone_recharged);
+
+      $("#admin_transactions_table").DataTable().destroy();
+      adminGetTransactions(date_from,date_to,product_plan_category_filter,phone_recharged);
+
+      $("#airtime_transactions_table").DataTable().destroy();
+      getAirtimeTransactions(date_from,date_to,product_plan_category_filter,phone_recharged);
+
+      $("#data_transactions_table").DataTable().destroy();
+      getDataTransactions(date_from,date_to,product_plan_category_filter,phone_recharged);
+
+      $("#cable_transactions_table").DataTable().destroy();
+      getCableTransactions(date_from,date_to,product_plan_category_filter,smart_card_number);
+
+      
+      $("#electricity_transactions_table").DataTable().destroy();
+      getElectricityTransactions(date_from,date_to,product_plan_category_filter,metre_number);
+
+
+      })
+
     ///////users
     $('#filter_user_table').click(function(e){
         const phone = $('#phone_filter').val();
@@ -217,6 +397,28 @@ $(document).ready(function(){
     $('#reload_user_tbl').click(function(){
       $("#userss_table").DataTable().destroy();
       getUsers();
+    })
+
+    $('#reload_txns_tbl').click(function(){
+      $("#user_transactions_table").DataTable().destroy();
+      userGetTransactions();
+
+      $("#admin_transactions_table").DataTable().destroy();
+      adminGetTransactions();
+
+      $("#airtime_transactions_table").DataTable().destroy();
+      getAirtimeTransactions();
+
+      $("#data_transactions_table").DataTable().destroy();
+      getDataTransactions();
+
+      $("#cable_transactions_table").DataTable().destroy();
+      getCableTransactions();
+
+      $("#electricity_transactions_table").DataTable().destroy();
+      getElectricityTransactions();
+
+      
     })
 
     function getUsers(date_from ='', date_to ='', phone = '', email = '', limit = ''){

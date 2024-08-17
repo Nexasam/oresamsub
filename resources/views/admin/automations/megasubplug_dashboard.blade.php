@@ -101,19 +101,30 @@
                                                         <div class="mb-3">
                                                           <input type="hidden" value="{{ $data_plans[$i]['product_provider'] }}" name="network_id_{{ $data_plans[$i]['id'] }}" id="network_id_{{  $data_plans[$i]['id'] }}">      
 
-                                                            {{-- @if (strpos($mtn_products['name'],"MB"))
-                                                              <input type="text" value="{{ (float) $mtn_products['name'] }}" name="data_size_in_mb_{{  $data_plans[$i]['id'] }}" id="data_size_in_mb_{{ $data_plans[$i]['id'] }}">                                                               
-                                                            @else --}}
-                                                              <label class="ti-form-label mb-0">Data size in mb</label>
-                                                              <input type="number" placeholder="" value="1000"  name="data_size_in_mb_{{  $data_plans[$i]['id'] }}" id="data_size_in_mb_{{  $data_plans[$i]['id'] }}">    <br>    <br>
-                                                            {{-- @endif --}}
+                                                        
+                                                              <label class="ti-form-label mb-0">Data size in mb  
 
-                                                            <label class="ti-form-label mb-0">Validity in days</label>
+                                                                @if ($data_plans[$i]['product'] == 'Airtime' || $data_plans[$i]['product'] == 'Cable Plan' || $data_plans[$i]['product'] == 'Electricity')
+                                                                    &nbsp;  (<b>Disregard for {{ $data_plans[$i]['product'] }}</b>)
+                                                                @endif
+                                                              </label>
+                                                              <input type="number" placeholder="" value="1000"  name="data_size_in_mb_{{  $data_plans[$i]['id'] }}" id="data_size_in_mb_{{  $data_plans[$i]['id'] }}">    <br>    <br>
+                                                         
+
+                                                            <label class="ti-form-label mb-0">Validity in days
+                                                              @if ($data_plans[$i]['product'] == 'Airtime' || $data_plans[$i]['product'] == 'Cable Plan' || $data_plans[$i]['product'] == 'Electricity')
+                                                                    &nbsp;  (<b>Disregard for {{ $data_plans[$i]['product'] }}</b>)
+                                                                @endif
+                                                            </label>
                                                             <input type="number" placeholder="validity in days" value="30" name="validity_in_day_{{ $data_plans[$i]['id'] }}" id="validity_in_day_{{  $data_plans[$i]['id'] }}"> <br><br>
                                                           
                                                             <input type="hidden"  name="automation_product_plan_id_{{  $data_plans[$i]['id'] }}" id="automation_product_plan_id_{{  $data_plans[$i]['id'] }}" value="{{ $data_plans[$i]['id'] }}">
                                                         
-                                                            <label class="ti-form-label mb-0">Cost Price</label>
+                                                            <label class="ti-form-label mb-0">Cost Price
+                                                              @if ($data_plans[$i]['product'] == 'Airtime')
+                                                                    &nbsp;  (<b>Disregard for {{ $data_plans[$i]['product'] }}</b>)
+                                                                @endif
+                                                            </label>
                                                             <input type="text" id="cost_price_{{  $data_plans[$i]['id'] }}"  name="cost_price_{{  $data_plans[$i]['id'] }}" value="{{ $data_plans[$i]['cost'] }}" class="my-auto ti-form-input"> <br>
 
                                                             <div class="mb-2">
@@ -133,7 +144,11 @@
 
                                                         </div>
                                                         <div class="">
-                                                          <label class="ti-form-label mb-0">SP</label>
+                                                          <label class="ti-form-label mb-0">SP
+                                                            @if ($data_plans[$i]['product'] == 'Airtime')
+                                                                    &nbsp;  (<b>This is percentage discount for Airtime</b>)
+                                                            @endif
+                                                          </label>
                                                           {{-- <input type="text" id="selling_price_{{  $data_plans[$i]['id'] }}" name="selling_price_{{  $mtn_products['planId'] }}" value="{{ $mtn_products['price'] + 200}}" class="my-auto ti-form-input"> --}}
                                                           <input type="text" id="selling_price_{{ $data_plans[$i]['id'] }}" name="selling_price_{{ $data_plans[$i]['id'] }}" value="{{ $data_plans[$i]['price'] + 200 }}" class="my-auto ti-form-input">
                                                           <br>
@@ -142,7 +157,11 @@
                                                               @endphp
                                                               @foreach ($user_plans as $user_plan)
                                                                   <div class="mb-3">
-                                                                      <label class="ti-form-label mb-0">SP for {{ $user_plan->updated_user_plan_name ?? $user_plan->user_plan_name }}</label>
+                                                                      <label class="ti-form-label mb-0">SP for {{ $user_plan->updated_user_plan_name ?? $user_plan->user_plan_name }}   
+                                                                        @if ($data_plans[$i]['product'] == 'Airtime')
+                                                                        &nbsp;  (<b>This is percentage discount for Airtime</b>)
+                                                                      @endif
+                                                                    </label>
                                                                       <input type="text" id="user_plan_{{  $data_plans[$i]['id'] }}_{{  $user_plan->plan_level }}"  name="user_plan_{{  $user_plan->plan_level }}" value="{{ $data_plans[$i]['price'] + floor(200 / $user_plan->plan_level )}}" class="my-auto ti-form-input">
                                                                   </div>             
                                                               @endforeach

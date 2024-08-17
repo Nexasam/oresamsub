@@ -11,6 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
+        //this migration is currently obsolete
         Schema::create('referral_settings', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->string('first_downline_crediting_feature')->default(3)->comment('1- award upline by flat rate, 2- award upline by percentage rate, 3 - dont award ');

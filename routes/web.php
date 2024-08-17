@@ -106,6 +106,8 @@ Route::middleware(['auth','verified','admin'])->get('admin/automations/{slug}/vi
 
 Route::middleware(['auth','verified','admin'])->get('admin/products', [ProductController::class, 'index'])->name('admin.products.index');
 Route::middleware(['auth','verified','admin'])->post('admin/products/store', [ProductController::class, 'store'])->name('admin.products.store');
+Route::middleware(['auth','verified','admin'])->post('admin/products/update', [ProductController::class, 'update'])->name('admin.products.update');
+
 
 Route::middleware(['auth','verified','admin'])->get('admin/toggle_hot_sales', [ProductPlanCategoryController::class, 'toggle_hot_sales'])->name('admin.product_plan_categories.toggle_hot_sales');
 Route::middleware(['auth','verified','admin'])->get('admin/product_plan_categories', [ProductPlanCategoryController::class, 'index'])->name('admin.product_plan_categories.index');
@@ -119,7 +121,9 @@ Route::middleware(['auth','verified','admin'])->get('admin/bulk_data_plans/{prod
 Route::middleware(['auth','verified','admin'])->post('admin/bulk_data_plans/store', [BulkDataPlanController::class, 'store'])->name('admin.bulk_data_plans.store');
 
 Route::middleware(['auth','verified','admin'])->get('admin/transactions/admin_fetch_transactions', [TransactionController::class, 'admin_fetch_transactions'])->name('admin.transactions.admin_fetch_transactions');
+Route::middleware(['auth','verified','admin'])->get('admin/transactions/index', [TransactionController::class, 'admin_all_transactions'])->name('admin.transactions.index');
 Route::middleware(['auth','verified','user'])->get('user/transactions/user_fetch_transactions', [TransactionController::class, 'user_fetch_transactions'])->name('user.transactions.user_fetch_transactions');
+Route::middleware(['auth','verified','user'])->get('user/transactions/index', [TransactionController::class, 'user_all_transactions'])->name('user.transactions.index');
 
 
 Route::middleware(['auth','verified','admin'])->get('admin/product_plans', [ProductPlanController::class, 'index'])->name('admin.product_plans.index');
@@ -160,6 +164,13 @@ Route::middleware(['auth','verified','user'])->get('user/data/buy_bulk_data', [D
 Route::middleware(['auth','verified','user'])->post('user/data/buy_bulk_data_action', [DataController::class, 'buy_bulk_data_action'])->name('user.data.buy_bulk_data_action');
 Route::middleware(['auth','verified','user'])->post('user/data/fetch_bulk_data_plans', [DataController::class, 'fetch_bulk_data_plans'])->name('user.data.fetch_bulk_data_plans');
 Route::middleware(['auth','verified','user'])->get('user/data/fetch_bulk_data_plan_details', [DataController::class, 'fetch_bulk_data_plan_details'])->name('user.data.fetch_bulk_data_plan_details');
+
+//available to both user and admin
+Route::middleware(['auth','verified'])->get('transactions/fetch_airtime_transactions', [AirtimeController::class, 'fetch_airtime_transactions'])->name('transactions.fetch_airtime_transactions');
+Route::middleware(['auth','verified'])->get('transactions/fetch_data_transactions', [DataController::class, 'fetch_data_transactions'])->name('transactions.fetch_data_transactions');
+Route::middleware(['auth','verified'])->get('transactions/fetch_cable_transactions', [CableSubscriptionController::class, 'fetch_cable_transactions'])->name('transactions.fetch_cable_transactions');
+Route::middleware(['auth','verified'])->get('transactions/fetch_electricity_transactions', [ElectricitySubscriptionController::class, 'fetch_electricity_transactions'])->name('transactions.fetch_electricity_transactions');
+
 
 Route::middleware(['auth','verified','user'])->get('user/airtime/buy_airtime', [AirtimeController::class, 'buy_airtime'])->name('user.airtime.buy_airtime');
 Route::middleware(['auth','verified','user'])->get('user/airtime/store', [AirtimeController::class, 'buy_airtime_action'])->name('user.airtime.buy_airtime_action');

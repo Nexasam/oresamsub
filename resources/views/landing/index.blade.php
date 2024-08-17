@@ -411,8 +411,8 @@
 
     </div>
     <div class="container">
-      <div class="row gy-5 gy-md-6">
-        {{-- <table class="table" id="fetch_public_product_plans"> --}}
+      <div class="row gy-5 gy-md-6 overflow-auto">
+      
             <table id="public_product_plans" class="ti-custom-table ti-custom-table-head">    
             <thead class="bg-gray-50 dark:bg-black/20">     
               <tr>
@@ -429,25 +429,10 @@
              
               </tr>
             </thead>
-            <tbody></tbody>
-            {{-- <tbody>
-                @foreach ($product_plans as $key=>$product_plan)
-                    <tr>
-                        <td>{{$key + 1}}</td>
-                        <td>{{ $product_plan->product_plan_name }}</td>
-                        <td>{{ $product_plan->product_plan_category->product_plan_category_name }}</td>
-                        <td>{{ $product_plan->data_size_in_mb }}</td>
-                        <td>	&#8358;{{ $product_plan->user_level_1_selling_price }}</td>
-                        <td>{{ $product_plan->validity_in_days }}</td>
-                      
-                    
-                    
-                    </tr>
-                @endforeach
-            </tbody> --}}
-          </table>
-         {{-- {{ $product_plans->links() }}  --}}
+            <tbody>
 
+            </tbody>
+          </table>
       </div>
     </div>
   </section>
