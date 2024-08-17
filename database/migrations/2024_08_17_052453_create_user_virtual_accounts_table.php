@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('funding_slug')->nullable();
             $table->string('response_status')->nullable();
             $table->string('bank_name')->nullable();
+            $table->string('bank_code')->nullable();
             $table->string('account_name')->nullable();
             $table->string('account_email')->nullable();
             $table->string('account_number')->nullable();

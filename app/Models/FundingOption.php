@@ -15,4 +15,6 @@ class FundingOption extends Model
         return $this->hasMany(FundingOptionBankCodes::class,'funding_option_id','id');
     }
 
+   
+
 }

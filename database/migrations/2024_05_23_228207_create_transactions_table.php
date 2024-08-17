@@ -29,6 +29,7 @@ return new class extends Migration
             $table->string('description');
             $table->longText('user_screen_message')->nullable();
             $table->longText('admin_screen_message')->nullable();
+            $table->longText('commission_status')->nullable()->default(0)->comment('1 - given 0 - not given');
             $table->timestamps();
         });
     }

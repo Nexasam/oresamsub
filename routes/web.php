@@ -204,7 +204,9 @@ Route::middleware(['auth','verified','user'])->get('user/generate_dynamic_accoun
 Route::middleware(['auth','verified','user'])->post('user/generate_virtual_account', [CrystalPayController::class, 'generate_virtual_account'])->name('user.crystalpay.generate_virtual_account');
 
 
+Route::middleware(['auth','verified','user'])->get('user/wallet/index', [WalletsController::class, 'index'])->name('user.wallet.index');
 Route::middleware(['auth','verified','user'])->get('user/wallet/fund_wallet', [WalletsController::class, 'fund_wallet'])->name('user.wallet.fund_wallet');
+Route::middleware(['auth','verified','user'])->post('user/wallet/generate_virtual_account', [WalletsController::class, 'generate_virtual_account'])->name('user.wallet.generate_virtual_account');
 
 
 Route::middleware(['auth','verified','user'])->get('user/airtime/buy_airtime', [AirtimeController::class, 'buy_airtime'])->name('user.airtime.buy_airtime');

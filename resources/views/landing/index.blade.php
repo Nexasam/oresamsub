@@ -423,10 +423,7 @@
                 <th>Plan Category</th>
                 <th>Data Size (MB)</th>
                 <th>Selling Price</th>
-           
                 <th>Validity (Days)</th>
-                
-             
               </tr>
             </thead>
             <tbody>
