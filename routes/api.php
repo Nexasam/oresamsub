@@ -6,12 +6,15 @@ use App\Models\ProductPlanCategory;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UsersController;
 use App\Http\Controllers\NetworkController;
+use App\Http\Controllers\WalletsController;
 use App\Http\Controllers\MobileApiController;
 use App\Http\Controllers\UserDashboardController;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
+
+Route::post('admin/wallets/crystal_pay_webhook', [WalletsController::class, 'webhook'])->name('admin.wallet.crystalpay.webhook');
 
 
 Route::post('/login', [MobileApiController::class, 'mobile_login'])->name('api.mobile_login');

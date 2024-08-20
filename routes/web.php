@@ -78,7 +78,6 @@ Route::get('/access_denied', function () {
 Route::middleware(['auth','verified'])->get('/dashboard', [UserDashboardController::class, 'index'])->name('dashboard');
 Route::get('product_plans/fetch_public_product_plans', [ProductPlanController::class, 'fetch_public_product_plans'])->name('fetch_public_product_plans');
 
-Route::post('admin/wallets/crystal_pay_webhook', [WalletsController::class, 'webhook'])->name('admin.wallet.crystalpay.webhook');
 
 
 

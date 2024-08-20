@@ -417,6 +417,7 @@
                                         <th>Response</th>
                                         <th>Phone</th>
                                         <th>Amount</th>
+                                        {{-- <th>Amount</th> --}}
                                         <th>Balance Before</th>
                                         {{-- <th>Data size</th> --}}
                                         <th>Balance After</th>

@@ -11,8 +11,15 @@ use Illuminate\Support\Facades\Session;
 class WalletsController extends Controller
 {
     public function webhook(Request $request){
-        logger('correct');
+        // logger('correct');
         // logger($request->all());
+
+        header('Content-Type: application/json');
+        $response = file_get_contents('php://input');
+        logger('testing webhook start');
+        logger($response);
+        logger('testing webhook end');
+
     }
 
     public function index(Request $request){
