@@ -8,7 +8,7 @@
              <!-- Page Header -->
         <div class="block justify-between page-header md:flex">
             <div>
-                <h3 class="text-gray-700 hover:text-gray-900 dark:text-white dark:hover:text-white text-2xl font-medium"> Profile Settings for <strong>{{ $user->first_name.' '.$user->last_name }}</strong></h3>
+                <h3 class="text-gray-700 hover:text-gray-900 dark:text-white dark:hover:text-white text-2xl font-medium"> Profile Settings for <strong>{{ $user->first_name.' '.$user->last_name }}  ({{ $user->role->role_name }})</strong></h3>
             </div>
             <ol class="flex items-center whitespace-nowrap min-w-0">
                 <li class="text-sm">
@@ -26,6 +26,29 @@
 
         <!-- Start::row-1 -->
         <div class="grid grid-cols-12 gap-x-6">
+          <div class="col-span-12">
+            @if (Session::has('success'))
+            <div class="bg-success/10 border border-success/10 alert text-success" role="alert">
+              Great! {{ Session::get('success') }}
+              </div>
+            @endif
+
+            @if (Session::has('failure'))
+              <div class="bg-danger/10 border border-danger/10 alert text-danger" role="alert">
+               Ops! {{ Session::get('failure') }}
+              </div>
+            @endif
+            
+            @if ($errors->any())
+              <div class="bg-danger/10 border border-danger/10 alert text-danger" role="alert">
+                <ul>
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+              </div>
+            @endif
+          </div>
           <div class="col-span-12 xl:col-span-3">
             <div class="box">
               <div class="box-body relative">
@@ -78,7 +101,7 @@
                 <div id="profile-settings-1" role="tabpanel" aria-labelledby="profile-settings-item-1">
                   <div class="box border-0 shadow-none mb-0">
                     <div class="box-header">
-                      <h5 class="box-title leading-none flex"><i class="ri ri-shield-user-line me-2"></i> Personal Settings</h5>
+                      <h5 class="box-title leading-none flex"><i class="ri ri-shield-user-line me-2"></i> Personal Settings  </h5>
                     </div>
                     <div class="box-body">
                       <div>
@@ -109,7 +132,13 @@
                             </div>
                             <div class="space-y-2">
                               <label class="ti-form-label mb-0">PIN</label>
-                              <input type="number" class="my-auto ti-form-input" id="pin" name="pin" value="{{ $user->pin }}" placeholder="PIN">
+                              @if ($user->role->role_name == 'User')
+                                <input type="number" class="my-auto ti-form-input" id="pin" name="pin" value="{{  $user->pin }}" placeholder="PIN">
+                                  
+                              @else
+                              <input type="text" class="my-auto ti-form-input" id="pin" name="pin" value="xxxx" placeholder="PIN">
+                                  
+                              @endif
                             </div>
                             <div class="space-y-2">
                               <label class="ti-form-label mb-0">Upline: @if ($upline != NULL){{ $upline->email_address .' '.$upline->phone_number }}@endif</label>
@@ -227,6 +256,12 @@
                                         <input type="hidden" class="my-auto ti-form-input" value="{{ $user->id }}" name="user_id" id="user_id" placeholder="">
                                     </div>
                                 </div>
+                                <div class="grid lg:grid-cols-2 gap-6 mb-6">
+                                  <div class="space-y-2">
+                                      <label class="ti-form-label mb-0">PIN</label>
+                                      <input type="password" class="my-auto ti-form-input" required name="pin" id="pin" placeholder="Enter pin">
+                                  </div>
+                              </div>
                             </div>
     
                             <div class="my-5">

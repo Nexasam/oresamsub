@@ -156,8 +156,8 @@ class MegaSubVendAirtime{
             //successful transaction
             return [
                 'status' => 1,
-                'user_message' => isset($response_decode['Detail']['info']['Detail']) ? $response_decode['Detail']['info']['Detail']  :  'Transaction was successful',
-                'admin_message' => isset($response_decode['Detail']['info']['Detail']) ? $response_decode['Detail']['info']['Detail']  :  'Transaction was successful',
+                'user_message' => isset($response_decode['Detail']['info']['Detail']) ? 'Transaction was successfully processed'  :  'Transaction was successful',
+                'admin_message' => isset($response_decode['Detail']['info']['Detail']) ? $response  :  'Transaction was successful',
             ];
         }
  

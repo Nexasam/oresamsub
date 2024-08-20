@@ -375,9 +375,9 @@ class CableSubscriptionController extends Controller
                                     $buy_cable_subscription = (new MegaSubCableTV($smart_card_number,$request->cable_product_plan_id,$total_amount,$request->validation_customer_name,1,$plan_category_details->product_plan_category_name))->buyCable();
                                 }else{
                                     //this will be like this until other automations are processed
-                                    $buy_cable_subscription['status'] = 1;
-                                    $buy_cable_subscription['user_message'] = 'Cable subscription was successfully processed.';
-                                    $buy_cable_subscription['admin_message'] = 'Cable subscription was successfully processed.';
+                                    $buy_cable_subscription['status'] = -1;
+                                    $buy_cable_subscription['user_message'] = 'Cable subscription failed.';
+                                    $buy_cable_subscription['admin_message'] = 'Cable subscription failed.';
                                 }
                                 // logger(json_encode($buy_cable_subscription_megasub));
                                 // dd($buy_cable_subscription_megasub);
@@ -428,6 +428,7 @@ class CableSubscriptionController extends Controller
                                 $creationData['smart_card_number'] = $request->smart_card_number;
                                 $creationData['cable_tv_slots'] = 1;
                                 $creationData['amount'] = $amount;
+                                $creationData['discounted_amount'] = $amount;
                                 $creationData['status'] = $status;
                                 $creationData['balance_before'] = $wallet_before;
                                 $creationData['balance_after'] = $wallet_after;

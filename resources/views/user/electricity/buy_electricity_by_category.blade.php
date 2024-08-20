@@ -141,9 +141,10 @@
                                     <th>Product Details</th>
                                     <th>Txn Category</th>
                                     <th>Response</th>
-                                    <th>Phone</th>
+                                    {{-- <th>Phone</th> --}}
                                     <th>Metre Number</th>
                                     <th>Amount</th>
+                                    <th>Discounted Amount</th>
                                     <th>Balance Before</th>
                                     {{-- <th>Data size</th> --}}
                                     <th>Balance After</th>
@@ -196,23 +197,22 @@
                                         <br>
                                         <br>
                                         <form>
-                                            <input type="hidden" id="_token" name="_token" value="{{ csrf_token() }}" />
-                                            <input type="hidden" id="product_slug" name="product_slug" value="utility_bills" />
-                                            <input type="hidden" id="electricity_product_plan_category_id" name="electricity_product_plan_category_id" value="{{ $plan_category->id }}" />
+                                            <input type="text" id="_token" name="_token" value="{{ csrf_token() }}" />
+                                            <input type="text" id="product_slug" name="product_slug" value="utility_bills" />
+                                            <input type="text" id="electricity_product_plan_category_id" name="electricity_product_plan_category_id" value="{{ $plan_category->id }}" />
                                      
                                             <div class="grid w-full lg:w-1/2 lg:grid-cols-1 gap-6 space-y-4 lg:space-y-0">
                                                 <input type="hidden" value="main_wallet" class="ti-form-checkbox mt-0.5 pointer-events-none" name="wallet_category" id="wallet_category">
                                              
-                                                
-                                                {{-- <div class="space-y-2">
-                                                  
-                                                        <label class="p-3 flex w-full bg-white border border-gray-200 rounded-sm text-sm focus:border-primary focus:ring-primary dark:bg-bgdark dark:border-white/10 dark:text-white/70">
-                                                          <input type="checkbox" class="ti-form-checkbox mt-0.5 pointer-events-none" id="filter_by_plan_category">
-                                                          <span class="text-sm text-gray-500 ms-2 dark:text-white/70">Filter by plan categories</span>
-                                                        </label>
-                                                </div> --}}
-                    
                                                 <div class="space-y-2">
+                                                  <label class="ti-form-label mb-0">Amount:</label>
+                                                  <input type="number" class="my-auto ti-form-input" id="utility_amount" name="utility_amount" value="" placeholder="Enter amount"> 
+                                                  <div class="display_actual_amount">
+                                                        
+                                                  </div>
+                                                </div>
+                    
+                                                {{-- <div class="space-y-2">
                                                     <label class="ti-form-label mb-0">Product Plans List</label>
                                                     <select required name="electricity_product_plan_id" id="electricity_product_plan_id" class="my-auto ti-form-select">
                                                         <option value="">Select</option>
@@ -221,8 +221,15 @@
                                                         @endforeach
                     
                                                       </select>
-                                                </div>
+                                                </div> --}}
                                       
+                                                <div class="space-y-2">
+                                                  <label class="ti-form-label mb-0">Product Plans List</label>
+                                                  <select required name="electricity_product_plan_id" id="electricity_product_plan_id" class="my-auto ti-form-select">
+                                                      <option value="all">Select</option>
+                  
+                                                    </select>
+                                              </div>
 
                                                 <div class="space-y-2">
                                                   <label class="ti-form-label mb-0">Metre No*</label>

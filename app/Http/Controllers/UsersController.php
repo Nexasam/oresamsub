@@ -11,9 +11,11 @@ use App\Models\ProductPlanCategory;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Auth\Events\Registered;
 use App\Http\Requests\StoreUserRequest;
+use App\Mail\WalletFundingNotification;
 use Illuminate\Support\Facades\Session;
 use App\Http\Requests\UpdateUserRequest;
 use Illuminate\Support\Facades\Validator;
@@ -93,13 +95,22 @@ class UsersController extends Controller
       //  Gate::authorize('viewAny', User::class);
 
       $validator = Validator::make($request->all(), [
-        'amount' => 'required|max:255',
+        'amount' => 'required|numeric',
+        'pin' => 'required|max:255',
         'user_id' => 'required|exists:users,id',
       ]);
       
 
       if ($validator->stopOnFirstFailure()->fails()) {
         return redirect()->back()->withErrors($validator)->withInput();
+      }
+
+      if(auth()->user()->pin != $request->pin){
+        //end session and redirect to login
+        $dataaa['status'] = 'failed';
+        Mail::to(auth()->user())->send(new WalletFundingNotification($dataaa));
+        Session::flash('failure','Incorrect PIN entered'); 
+        return redirect()->back();
       }
 
       $user_id = $request->user_id;
@@ -126,9 +137,13 @@ class UsersController extends Controller
 
 
       if($update_user_wallet){
+        $dataaa['status'] = 'successful';
+        Mail::to(auth()->user())->send(new WalletFundingNotification($dataaa));
         Session::flash('success','Wallet was successfully funded for '. $full_name);
       }else{
-        Session::flash('failure','Error occurred while creating account');
+        $dataaa['status'] = 'failed';
+        Mail::to(auth()->user())->send(new WalletFundingNotification($dataaa));
+        Session::flash('failure','Error occurred while funding account');
       }
 
       return redirect()->route('admin.users.index');
@@ -190,7 +205,7 @@ class UsersController extends Controller
         // $date_from = date('Y-m-d',strtotime($date_from));
         // $date_to = date('Y-m-d',strtotime($date_to));
         
-        $data = User::when( !empty($phone) , function ($query) use ($phone){
+        $data = User::with('role')->when(!empty($phone) , function ($query) use ($phone){
           $query->where('phone_number',$phone);
         })
         ->when( !empty($email) , function ($query) use ($email){

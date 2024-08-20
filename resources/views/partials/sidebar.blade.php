@@ -212,7 +212,7 @@
                         <i class="ri ri-arrow-right-s-line side-menu__angle"></i>
                     </a>
                     <ul class="slide-menu child1">
-                        <li class="slide"><a href="{{ route('user.wallet.fund_wallet') }}" class="side-menu__item">Fund wallet</a></li>
+                        <li class="slide"><a href="{{ route('user.wallet.index') }}" class="side-menu__item">Fund wallet</a></li>
                         {{-- <li class="slide"><a href="{{ route('user.data.buy_bulk_data') }}" class="side-menu__item">Buy Bulk Data</a></li> --}}
                       
                     </ul>

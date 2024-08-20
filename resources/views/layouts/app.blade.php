@@ -738,13 +738,13 @@
                                     const selling_price = dataList[child].selling_price;
                                     if(product_slug == 'data'){
                                       option = "<option value="+idd+">"+product_plan_name+'- &#8358;'+selling_price+"</option>";
-                                    }else if(product_slug == 'airtime' && amount != ''){
+                                    }
+                                    else if(product_slug == 'airtime' && amount != ''){
                                       option = "<option value="+idd+">"+product_plan_name+'- You are buying for: &#8358;'+selling_price+"</option>";
                                     }
                                     else if(product_slug == 'airtime' && amount == ''){
                                       option = "<option value="+idd+">"+product_plan_name+"</option>";
-                                    }
-                                    else{
+                                    }else{
                                       option = "<option value="+idd+">"+product_plan_name+"</option>";
                                     }
                                     $('#product_plan_id').append(option);
@@ -760,6 +760,8 @@
                           }
                  });
         }
+
+    
 
         function getSingleAirtimePlan(plan_category_id='', amount = ''){
                
@@ -855,13 +857,15 @@
                 });
         }
 
-        function getElectricityProductPlans(plan_category_id='', product_slug=''){
+        function getElectricityProductPlans(plan_category_id='', product_slug='', amount = ''){
                
                var data = {
                  plan_category_id : plan_category_id,
-                 product_slug : product_slug
+                 product_slug : product_slug,
+                 amount : amount,
                };
-                
+               
+               console.log('electric',data);
  
                 $.ajax({
                           type: 'GET',
@@ -870,6 +874,7 @@
                           dataType: 'json',
                           success: function(response) {
                               console.log(response)
+                              console.log('e dey reach here o')
                               // console.log(response.data)
                               var result = JSON.stringify(response.data);
                               var dataList = JSON.parse(result);
@@ -879,14 +884,11 @@
        
                                 // let jj = jsonn;
                                 for (const child in dataList) {
-                                 
                                     const idd = dataList[child].product_plan_id;
                                     const product_plan_name = dataList[child].product_plan_name;
                                     const selling_price = dataList[child].selling_price;
-                                    option = "<option value="+idd+">"+product_plan_name+'- &#8358;'+selling_price+"</option>";
-                                    
+                                    option = "<option value="+idd+">"+product_plan_name+'- You are buying for: &#8358;'+selling_price+"</option>";     
                                     $('#electricity_product_plan_id').append(option);
-                                  
                                 }
                               
                             
@@ -1259,6 +1261,19 @@
               const wallet_type = $(this).val();
           });
 
+          $('#utility_amount').keyup(function(e){
+              e.preventDefault();
+              var amount =  $(this).val();
+              var product_slug = $("#product_slug").val();
+              var plan_category_id = $('#electricity_product_plan_category_id').val();
+               
+              var amount = product_slug == 'airtime' || product_slug == 'utility_bills'  ? amount : '';
+              // alert(plan_category_id)
+
+              getElectricityProductPlans(plan_category_id,product_slug,amount);
+
+          });
+
           $('#amount').keyup(function(e){
               e.preventDefault();
               var amount =  $(this).val();
@@ -1271,7 +1286,7 @@
                 return;
               }
               var amount = product_slug == 'airtime' ? $('#amount').val() : '';
-            
+        
               getProductPlans(network_id,plan_category_id,product_slug,amount);
           });
 
@@ -1695,6 +1710,7 @@
               const electricity_product_plan_id = $('#electricity_product_plan_id').val();
               const pin = $('#pin').val();
               const no_of_slots = $('#no_of_slots').val();
+              const utility_amount = $('#utility_amount').val();
               
               
 
@@ -1706,8 +1722,8 @@
                 electricity_product_plan_id : electricity_product_plan_id,
                 pin : pin,
                 no_of_slots : no_of_slots,
+                amount : utility_amount,
               };
-
 
               // console.log(data);
               // return;

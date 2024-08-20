@@ -70,7 +70,7 @@ class DatabaseSeeder extends Seeder
             "id" => "9c2887ea-55b5-4f19-904e-e490a10682ea",
             "automation_name" => 'MEGASUBPLUB',
             "slug" =>'megasubplug',
-            "api_public_key" =>'102325246266435f47e344b',
+            "api_public_key" =>'xxxx246266435f47e344bxxxx',
             "api_password" =>'Akwaowo0000@',
         ]);
 
@@ -79,7 +79,7 @@ class DatabaseSeeder extends Seeder
             "id" => "9c2887ea-59c7-471a-9407-1ff44b61a349",
             "automation_name" => 'OGDAMS',
             "slug" =>'ogdams',
-            "api_public_key" => 'sk_live_b73e769b-1ec0-47ea-9593-58c0d8b2cf9e'
+            "api_public_key" => 'xxxxx-1ec0-47ea-9593-xxxxx'
         ]);
 
          //ogdams - 2
@@ -87,7 +87,7 @@ class DatabaseSeeder extends Seeder
             "id" => "9c2887ea-59c7-471a-9407-1ff44b61akj1",
             "automation_name" => 'OGDAMS v2',
             "slug" =>'ogdams_v2',
-            "api_public_key" => 'sk_live_b73e769b-1ec0-47ea-9593-58c0d8b2cf9e'
+            "api_public_key" => 'xxxxx-1ec0-47ea-9593-xxxxx'
         ]);
 
 
@@ -119,7 +119,7 @@ class DatabaseSeeder extends Seeder
         ]);
 
         $glo_network = Network::create([
-            'id' => '9c29efbb-0609-4468-bfb3-880b06035f11',
+            'id' => 'a7642d68-84b8-4532-a4b9-3dce8895f2e8',
             'network_name' => 'GLO'
         ]);
 

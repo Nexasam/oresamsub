@@ -94,8 +94,8 @@
                                     <p class="mt-1 text-gray-800 dark:text-white/70">Filter by Plan Category:</p>
                                     <select name="product_plan_category_filter" id="product_plan_category_filter">
                                         <option value="">Select</option>
-                                        @foreach ($product_plan_categories as $plan_category)
-                                         <option value="{{ $plan_category->id}}">{{ $plan_category->product_plan_category_name }}</option>   
+                                        @foreach ($product_plan_categories as $plan_categoryy)
+                                         <option value="{{ $plan_categoryy->id}}">{{ $plan_categoryy->product_plan_category_name }}</option>   
                                         @endforeach
                                     </select>
                                     <br>
@@ -147,6 +147,7 @@
                                   <th>Response</th>
                                   <th>Phone</th>
                                   <th>Amount</th>
+                                  <th>Discounted Amount</th>
                                   <th>Balance Before</th>
                                   {{-- <th>Data size</th> --}}
                                   <th>Balance After</th>
@@ -201,8 +202,8 @@
                                         <form>
                                             <input type="hidden" id="_token" name="_token" value="{{ csrf_token() }}" />
                                             <input type="hidden" id="product_slug" name="product_slug" value="airtime" />
-                                            <input type="hidden" id="product_plan_category_id" name="product_plan_category_id" value="{{$plan_category->id}}" />
-                                            <input type="hidden" id="network_id" name="network_id" value="{{  $plan_category->network->id }}" />
+                                            <input type="hidden" id="product_plan_category_id" name="product_plan_category_id" value="{{ $plan_category->id }}" />
+                                            <input type="hidden" id="network_id" name="network_id" value="{{  $plan_category->network_id }}" />
                                      
                                             <div class="grid w-full lg:w-1/2 lg:grid-cols-1 gap-6 space-y-4 lg:space-y-0">
                                                 <input type="hidden" value="main_wallet" class="ti-form-checkbox mt-0.5 pointer-events-none" name="wallet_category" id="wallet_category">

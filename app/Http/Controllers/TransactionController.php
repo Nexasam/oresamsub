@@ -110,6 +110,9 @@ class TransactionController extends Controller
        ->addColumn('amount',function($data){
         return '&#8358;'.(number_format($data->amount,2));
         }) 
+        ->addColumn('discounted_amount',function($data){
+            return '&#8358;'.(number_format($data->discounted_amount,2));
+            }) 
         ->addColumn('balance_before',function($data){
             return $data->wallet_category == 'main_wallet' ? '₦'.number_format($data->balance_before,2) : number_format($data->balance_before).'MB';
 
@@ -231,11 +234,18 @@ class TransactionController extends Controller
             return  '<span style="white-space: normal;word-wrap: break-word;word-break: normal;width:auto">'.$data->user_screen_message.'</span>';
             // return $user_screen_message;
         })
+        ->addColumn('admin_response',function($data){
+            return  '<span style="white-space: normal;word-wrap: break-word;word-break: normal;width:auto">'.$data->admin_screen_message.'</span>';
+            // return $user_screen_message;
+        })
         ->addColumn('phone_number',function($data){
             return $data->phone_number;
         }) 
         ->addColumn('amount',function($data){
         return '&#8358;'.(number_format($data->amount,2));
+        }) 
+        ->addColumn('discounted_amount',function($data){
+            return '&#8358;'.(number_format($data->amount,2));
         }) 
         ->addColumn('balance_before',function($data){
             return $data->wallet_category == 'main_wallet' ? '₦'.number_format($data->balance_before,2) : number_format($data->balance_before).'MB';

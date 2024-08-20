@@ -112,6 +112,9 @@ class DataController extends Controller
        ->addColumn('amount',function($data){
         return '&#8358;'.(number_format($data->amount,2));
         }) 
+        ->addColumn('discounted_amount',function($data){
+            return '&#8358;'.(number_format($data->discounted_amount,2));
+            }) 
         ->addColumn('balance_before',function($data){
             return $data->wallet_category == 'main_wallet' ? '₦'.number_format($data->balance_before,2) : number_format($data->balance_before).'MB';
 
@@ -340,14 +343,14 @@ class DataController extends Controller
                                 if($automation_details->slug == 'megasubplug'){
                                     $sell_data = (new MegaSubVendData($phone_numbers_array[$i],$request->product_plan_id))->buyData();
                                 }
-                                if($automation_details->slug == 'ogdams' || $automation_details->slug == 'ogdamsv2'){
+                                else if($automation_details->slug == 'ogdams' || $automation_details->slug == 'ogdamsv2'){
                                     $sell_data = (new OgdamsVendData($phone_numbers_array[$i],$request->product_plan_id))->buyData();
                                 }
                                 else{
                                     //this will be like this until other automations are processed
-                                    $sell_data['status'] = 1;
-                                    $sell_data['user_message'] = 'Data was successfully processed.';
-                                    $sell_data['admin_message'] = 'Data was successfully processed.';
+                                    $sell_data['status'] = -1;
+                                    $sell_data['user_message'] = 'Data processing failed.';
+                                    $sell_data['admin_message'] = 'Data processing failed.';
                                 }
                                 // logger(json_encode($sell_data_megasub));
                                 // dd($sell_data_megasub);
@@ -396,6 +399,7 @@ class DataController extends Controller
                                 $creationData['product_plan_id'] = $request->product_plan_id;
                                 $creationData['phone_number'] = $phone_numbers_array[$i];
                                 $creationData['amount'] = $amount;
+                                $creationData['discounted_amount'] = $amount;
                                 $creationData['status'] = $status;
                                 $creationData['balance_before'] = $wallet_before;
                                 $creationData['balance_after'] = $wallet_after;
@@ -747,12 +751,17 @@ class DataController extends Controller
      */
     public function fetch_product_plans(Request $request)
     {
+
+        // return response()->json(['status'=>'1','user_level'=>3 ,'message'=>'Product plans fetched','counter' =>5,'data' => $request->all() ]);
+
         $network_id = $request->network_id ?? '';
         $amount = $request->amount ?? '';
         $plan_category_id = $request->plan_category_id ?? '';
         $product_slug = $request->product_slug ?? ''; //this is required
         
+        
         $product_id = Product::where('slug',$product_slug)->first()->id;
+        logger($plan_category_id);
          
         if($plan_category_id == ''){
             $product_plan_categories = ProductPlanCategory::select('id','automation_id')->where('product_id',$product_id)->where('network_id',$network_id)->get();
@@ -764,6 +773,9 @@ class DataController extends Controller
             ->where('id',$plan_category_id)
             ->get();
         }
+
+        // return response()->json(['status'=>'1','user_level'=>3 ,'message'=>'Product plans fetchedddd','counter' =>5,'data' => $network_id ]);
+
 
 
        
@@ -802,13 +814,13 @@ class DataController extends Controller
                     // $user_level_selling = "{user_level_$user_level_selling_price}";
                     $selling_price = $product_plan->$user_level_selling;
                     
-                    if($product_slug == 'airtime' && $amount != ''){
+                    if( ( $product_slug == 'airtime' || $product_slug == 'utility_bills' ) && $amount != ''){
                           $purchase_discount = $product_plan->$user_level_selling;
                           $actual_discount_value = ceil(($purchase_discount/100) * $amount);  
                           $discounted_selling_price = $amount - abs($actual_discount_value);
                           $selling_price = 0; //this is from the system, not applicable for airtime
                     }else{
-                        $discounted_selling_price = $selling_price - 5;
+                        $discounted_selling_price = $selling_price;
                     }
                    
                     if($product_plan){

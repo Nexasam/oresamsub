@@ -19,6 +19,8 @@ use Illuminate\Support\Facades\DB;
 use App\Models\ProductPlanCategory;
 use App\Models\BulkDataProductPlans;
 use App\Models\UserBulkDataPurchase;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\WalletFundingNotification;
 use Illuminate\Support\Facades\Validator;
 use App\Services\Automation\MegaSubPlugAutomation\VendData;
 use App\Services\Automation\MegaSubPlugAutomation\MegaSubVendData;
@@ -75,6 +77,10 @@ class AirtimeController extends Controller
     {
 
         $plan_category = ProductPlanCategory::with('product','network','automation')->where('id',$id)->first();
+        // dd($plan_category->id);
+        $data['plan_category'] = $plan_category;
+        $data['plan_category_idd'] = $id;
+
         
         $product_plans = ProductPlan::where('automation_id',$plan_category->automation->id)
         ->where('visibility',1)
@@ -126,10 +132,9 @@ class AirtimeController extends Controller
         $data['airtime_transactions'] = $airtime_transactions;
         $data['user_details'] = $user_details;
         $data['amount'] = $amount;
-        $data['plan_category'] = $plan_category;
         $data['product_plans'] = $product_planss;
         
-        // dd($data);
+        // return $data;
         return view('user.airtime.buy_airtime_by_plan_category')->with($data);
     }
 
@@ -174,11 +179,8 @@ class AirtimeController extends Controller
             }
         }
 
-      
         //data txns list
-     
         // $data['product_plans'] = $product_planss;
-        
         return response()->json(['status'=>'1','user_level'=>$plan_level ,'message'=>'Product plans fetched','counter' =>count($product_planss),'data' => $product_planss ]);
        
     }
@@ -223,24 +225,29 @@ class AirtimeController extends Controller
         ->where('id',$request->product_plan_id)->first();
         $automation_id = $plan_details->automation_id;
         $product_plan_category = $plan_details->product_plan_category;
-        $amount = $request->amount;
+        $actual_amount = $request->amount;
 
         $user_level_selling = "user_level_".$plan_level."_selling_price";
         $purchase_discount =  $plan_details->$user_level_selling;
-        $actual_discount_value = ceil(($purchase_discount/100) * $amount);  
+        $actual_discount_value = ceil(($purchase_discount/100) * $actual_amount);  
         //below forms the new amount to sell to the user
-        $amount = ceil($amount - abs($actual_discount_value));
+        $amount = ceil($actual_amount - abs($actual_discount_value));
         
         
         if(! $user_details){
             //end session and redirect to login
+    
             redirect(url('/login'));
             return response()->json(['status'=>'-1', 'message'=>'please logout and login again' ]);
         }
 
 
+
+
+
         if($user_details->pin != $request->pin){
             //end session and redirect to login
+           
             return response()->json(['status'=>'-1', 'message'=>'Incorrect PIN' ]);
         }
 
@@ -271,13 +278,13 @@ class AirtimeController extends Controller
                                 //this is for megasubplug: vend for Airtime
                                 
                                 if($automation_details->slug == 'megasubplug'){
-                                    $buy_airtime = (new MegaSubVendAirtime($phone_numbers_array[$i],$request->product_plan_id,$amount))->buyAirtime();
+                                    $buy_airtime = (new MegaSubVendAirtime($phone_numbers_array[$i],$request->product_plan_id,$actual_amount))->buyAirtime();
                                     // logger($buy_airtime);
                                 }else{
                                     //this will be like this until other automations are processed
-                                    $buy_airtime['status'] = 1;
-                                    $buy_airtime['user_message'] = 'Airtime was successfully processed.';
-                                    $buy_airtime['admin_message'] = 'Airtime was successfully processed.';
+                                    $buy_airtime['status'] = -1;
+                                    $buy_airtime['user_message'] = 'Airtime transaction failed.';
+                                    $buy_airtime['admin_message'] = 'Airtime transaction failed...';
                                 }
                                 // logger(json_encode($buy_airtime_megasub));
                                 // dd($buy_airtime_megasub);
@@ -325,7 +332,8 @@ class AirtimeController extends Controller
                                 $creationData['wallet_category'] = $request->wallet_category;
                                 $creationData['product_plan_id'] = $request->product_plan_id;
                                 $creationData['phone_number'] = $phone_numbers_array[$i];
-                                $creationData['amount'] = $amount;
+                                $creationData['amount'] = $actual_amount;
+                                $creationData['discounted_amount'] = $amount;
                                 $creationData['status'] = $status;
                                 $creationData['balance_before'] = $wallet_before;
                                 $creationData['balance_after'] = $wallet_after;
@@ -482,6 +490,9 @@ class AirtimeController extends Controller
         }) 
        ->addColumn('amount',function($data){
         return '&#8358;'.(number_format($data->amount,2));
+        }) 
+        ->addColumn('discounted_amount',function($data){
+            return '&#8358;'.(number_format($data->discounted_amount,2));
         }) 
         ->addColumn('balance_before',function($data){
             return $data->wallet_category == 'main_wallet' ? '₦'.number_format($data->balance_before,2) : number_format($data->balance_before).'MB';

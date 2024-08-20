@@ -105,14 +105,17 @@ class ElectricitySubscriptionController extends Controller
             return  '<span style="white-space: normal;word-wrap: break-word;word-break: normal;width:auto">'.$data->user_screen_message.'</span>';
             // return $user_screen_message;
         })
-        ->addColumn('phone_number',function($data){
-            return $data->phone_number;
-        }) 
+        // ->addColumn('phone_number',function($data){
+        //     return $data->phone_number;
+        // }) 
         ->addColumn('metre_number',function($data){
             return $data->metre_number;
         })
        ->addColumn('amount',function($data){
         return '&#8358;'.(number_format($data->amount,2));
+        }) 
+        ->addColumn('discounted_amount',function($data){
+            return '&#8358;'.(number_format($data->discounted_amount,2));
         }) 
         ->addColumn('balance_before',function($data){
             return $data->wallet_category == 'main_wallet' ? '₦'.number_format($data->balance_before,2) : number_format($data->balance_before).'MB';
@@ -293,6 +296,7 @@ class ElectricitySubscriptionController extends Controller
             'electricity_product_plan_id' => 'required',
             'wallet_category' => 'required',
             'no_of_slots' => 'required',
+            'amount' => 'required',
             'pin' => ['required','digits:4'],
         ]);
         
@@ -331,8 +335,10 @@ class ElectricitySubscriptionController extends Controller
         $user_level = UserPlan::select('plan_level')->where('id',$user_plan_id)->first();
         $plan_level = $user_level->plan_level;
         $user_plan_selling_price = 'user_level_'.$plan_level.'_selling_price';
-        $amount = abs($plan_details->$user_plan_selling_price);
         $user_details = auth()->user();
+        $user_id = $user_details->id;
+        $metre_number = $request->metre_number;
+
         if(! $user_details){
             //end session and redirect to login
             redirect(url('/login'));
@@ -345,8 +351,16 @@ class ElectricitySubscriptionController extends Controller
             return response()->json(['status'=>'-1', 'message'=>'Incorrect PIN' ]);
         }
 
-        $user_id = $user_details->id;
-        $metre_number = $request->metre_number;
+        //////////////////////    
+        $automation_id = $plan_details->automation_id;
+        $product_plan_category = $plan_details->product_plan_category;
+        $actual_amount = $request->amount;
+
+        $user_level_selling = "user_level_".$plan_level."_selling_price";
+        $purchase_discount =  $plan_details->$user_level_selling;
+        $actual_discount_value = ceil(($purchase_discount/100) * $actual_amount);  
+        //below forms the new amount to sell to the user: discounted
+        $amount = ceil($actual_amount - abs($actual_discount_value));
      
 
         DB::beginTransaction();
@@ -378,9 +392,9 @@ class ElectricitySubscriptionController extends Controller
                                
                                 }else{
                                     //this will be like this until other automations are processed
-                                    $buy_electricity_subscription['status'] = 1;
-                                    $buy_electricity_subscription['user_message'] = 'Electricity subscription was successfully processed.';
-                                    $buy_electricity_subscription['admin_message'] = 'Electricity subscription was successfully processed.';
+                                    $buy_electricity_subscription['status'] = -1;
+                                    $buy_electricity_subscription['user_message'] = 'Electricity subscription failed...';
+                                    $buy_electricity_subscription['admin_message'] = 'Electricity subscription failed...';
                                 }
                                 // logger(json_encode($buy_electricity_subscription_megasub));
                                 // dd($buy_electricity_subscription_megasub);
@@ -430,7 +444,8 @@ class ElectricitySubscriptionController extends Controller
                                 $creationData['phone_number'] =  NULL;
                                 $creationData['metre_number'] = $request->metre_number;
                                 // $creationData['electricity_tv_slots'] = 1;
-                                $creationData['amount'] = $amount;
+                                $creationData['amount'] = $actual_amount;
+                                $creationData['discounted_amount'] = $amount;
                                 $creationData['status'] = $status;
                                 $creationData['balance_before'] = $wallet_before;
                                 $creationData['balance_after'] = $wallet_after;

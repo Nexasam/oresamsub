@@ -141,9 +141,10 @@
                                     <th>Product Details</th>
                                     <th>Txn Category</th>
                                     <th>Response</th>
-                                    <th>Phone</th>
+                                    {{-- <th>Phone</th> --}}
                                     <th>Metre Number</th>
                                     <th>Amount</th>
+                                    <th>Discounted Amount</th>
                                     <th>Balance Before</th>
                                     {{-- <th>Data size</th> --}}
                                     <th>Balance After</th>
@@ -222,6 +223,15 @@
                     
                                                       </select>
                                                 </div>
+
+                                                <div class="space-y-2">
+                                                  <label class="ti-form-label mb-0">Amount:</label>
+                                                  <input type="number" class="my-auto ti-form-input" id="utility_amount" name="utility_amount" value="" placeholder="Enter amount"> 
+                                                  <div class="display_actual_amount">
+                                                        
+                                                  </div>
+                                                </div>
+                                                
                     
                                                 <div class="space-y-2">
                                                     <label class="ti-form-label mb-0">Product Plans List</label>
