@@ -56,7 +56,9 @@ class TransactionController extends Controller
         })->when(!empty($phone) , function ($query) use ($phone){
           $query->where('phone_number',$phone);
         })
-        ->with(['user','product_plan'])->latest()->limit($limit)->get();
+        ->with(['user','product_plan'])
+        ->where('user_id',auth()->id())
+        ->latest()->limit($limit)->get();
 
         //  return $data;
       return DataTables::of($data)

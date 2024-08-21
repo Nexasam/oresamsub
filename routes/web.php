@@ -45,7 +45,7 @@ Route::get('/', function () {
 });
 
 Route::get('/access_denied', function () {
-    return 'You are not authorized';
+    return 'You are not authorized. <a href="'.route('login').'">Return back</a>';
 })->name('access_denied');
 
 
@@ -206,6 +206,7 @@ Route::middleware(['auth','verified','user'])->post('user/generate_virtual_accou
 Route::middleware(['auth','verified','user'])->get('user/wallet/index', [WalletsController::class, 'index'])->name('user.wallet.index');
 Route::middleware(['auth','verified','user'])->get('user/wallet/fund_wallet', [WalletsController::class, 'fund_wallet'])->name('user.wallet.fund_wallet');
 Route::middleware(['auth','verified','user'])->post('user/wallet/generate_virtual_account', [WalletsController::class, 'generate_virtual_account'])->name('user.wallet.generate_virtual_account');
+Route::middleware(['auth','verified','user'])->get('user/transactions/fetch_crystal_pay_funding_transactions', [WalletsController::class, 'fetch_crystal_pay_funding_transactions'])->name('user.transactions.fetch_crystal_pay_funding_transactions');
 
 
 Route::middleware(['auth','verified','user'])->get('user/airtime/buy_airtime', [AirtimeController::class, 'buy_airtime'])->name('user.airtime.buy_airtime');

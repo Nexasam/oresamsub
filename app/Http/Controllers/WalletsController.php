@@ -2,24 +2,218 @@
 
 namespace App\Http\Controllers;
 
+use Exception;
+use App\Models\User;
 use Illuminate\Http\Request;
 use App\Models\FundingOption;
+use Yajra\DataTables\DataTables;
 use App\Models\UserVirtualAccount;
-use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\DB;
+use App\Models\FundingWebhookPayload;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Validator;
 
 class WalletsController extends Controller
 {
     public function webhook(Request $request){
-        // logger('correct');
-        // logger($request->all());
+      
+        //{
+        //   $resp = '{"event":"VIRTUAL_ACCOUNT_INFLOW",
+        //   "source":{
+        //       "bank_name":"WEMA BANK",
+        //       "account_name":"OLUSOLA  ADEBUNMI",
+        //       "account_number":"0239582872"
+        //   },
+        //   "reference":"2144185",
+        //   "event_data":{
+        //       "data":{
+        //         "paid":500,
+        //         "charged":25,
+        //         "settled":475,
+        //         "currency":"NGN"
+        //       },
+        //       "status":"SUCCESSFUL",
+        //       "message":"Virtual Account Payment received",
+        //       "success":true
+        //   },
+        //   "package_id":1,
+        //   "amount_info":{
+        //       "paid":500,
+        //       "charged":25,
+        //       "settled":475,
+        //       "currency":"NGN"
+        //   },
+        //   "destination":{
+        //       "bank_code":"",
+        //       "bank_name":"wema",
+        //       "account_name":"CrystalPay-konnectdataOreofeAdebu",
+        //       "account_email":"oreofe@gmail.com",
+        //       "account_number":"7172937429",
+        //       "account_reference":"wema_7172937429"
+        //   },
+        //   "collection_reference":"COLLECTED_20240820144515_000000214418558",
+        //   "transaction_reference":"COLLECTED_20240820144515_000000214418558"
+        // }';
 
         header('Content-Type: application/json');
         $response = file_get_contents('php://input');
+        $response_decode = json_decode($response,true);
         logger('testing webhook start');
         logger($response);
         logger('testing webhook end');
+        $can_fund = '';
+        
+        //Check if webhook has been sent before
+
+        DB::beginTransaction();
+        try{
+
+        $check_exists = FundingWebhookPayload::where('transaction_reference',$response_decode['transaction_reference'])
+        ->first();
+
+        if( ($response_decode['event_data']['status'] == 'SUCCESSFUL') && (!$check_exists) ){    
+            $email = $response_decode['destination']['account_email'];
+            $user_details = User::select('id','main_wallet')->where('email',$email)->first();
+            if($user_details){
+              $created_data['funding_status'] = 'success';
+
+              //carry out funding here::: this will change later
+              $old_amount = $user_details->main_wallet;
+              $amount_funded = $response_decode['event_data']['data']['settled'];
+              $new_amount = $old_amount + $amount_funded;
+              //carry out funding here
+              $can_fund = 'yes';
+            
+            }else{
+              $created_data['funding_status'] = 'failed';
+              $can_fund = 'no';
+            }
+            $created_data['funding_slug'] = 'crystal_pay';
+            $created_data['user_id'] = $user_details->id;
+            $created_data['user_email'] = $email;
+            $created_data['status'] = $response_decode['event_data']['status'];
+            $created_data['message'] = $response_decode['event_data']['message'];
+            $created_data['package_id'] = $response_decode['package_id'];
+            $created_data['bank_name'] = $response_decode['destination']['bank_name'];
+            $created_data['account_name'] = $response_decode['destination']['account_name'];
+            $created_data['account_number'] = $response_decode['destination']['account_number'];
+            $created_data['account_reference'] = $response_decode['destination']['account_reference'];
+            $created_data['amount_paid'] = $response_decode['event_data']['data']['paid'];
+            $created_data['amount_charged'] = $response_decode['event_data']['data']['charged'];
+            $created_data['amount_settled'] = $response_decode['event_data']['data']['settled'];
+            $created_data['currency'] = $response_decode['event_data']['data']['currency'];
+            $created_data['collection_reference'] = $response_decode['collection_reference'];
+            $created_data['transaction_reference'] = $response_decode['transaction_reference'];
+            $created_data['payload_content'] = $response;
+
+          
+              $created = FundingWebhookPayload::create($created_data);
+              if($can_fund == 'yes'){
+                $updated = $user_details->update([
+                  'main_wallet' => $new_amount
+                ]);
+              }else{
+                $updated = false;
+              }
+  
+  
+              if( $created && $updated ){
+                DB::commit();
+              }else{
+                DB::rollBack();
+              }
+           
+        }
+      }catch(Exception $ex){
+        logger($ex->getMessage().' on line '.$ex->getLine());
+        DB::rollBack();
+      }
     }
+
+
+    public function fetch_crystal_pay_funding_transactions(Request $request){
+
+      $date_from = $request->date_from ?? date('Y-m-d', strtotime('-5 days'));
+      $date_to= $request->date_to ?? date('Y-m-d');
+
+      $reference = $request->reference ?? '';
+    
+      $limit = $request->limit ?? 2000;
+      
+      $data = FundingWebhookPayload::when(!empty($date_from) && !empty($date_to) , function ($query) use ($date_from,$date_to){
+          $date_to = date('Y-m-d', strtotime('+1 day', strtotime($date_to)));
+          $query->where('created_at','>=',$date_from)->where('created_at','<=',$date_to);
+      })->when(!empty($reference) , function ($query) use ($reference){
+        $query->where('transaction_reference',$reference);
+      })
+      ->where('user_id',auth()->id())
+      ->latest()->limit($limit)->get();
+  
+      return DataTables::of($data)
+      ->addIndexColumn()
+      ->addColumn('DT_RowIndex',function($data){
+        return $data->id;
+      })
+      ->addColumn('user_email',function($data){
+        return $data->user_email;
+      })
+      ->addColumn('transaction_reference',function($data){
+        return $data->transaction_reference;
+      })
+      ->addColumn('status',function($data){
+        return $data->status;
+      })
+      ->addColumn('funding_status',function($data){
+        return $data->funding_status;
+      })
+      ->addColumn('message',function($data){
+        return $data->message;
+      })
+      ->addColumn('package_id',function($data){
+        return $data->package_id;
+      })
+      ->addColumn('bank_name',function($data){
+        return $data->bank_name;
+      })
+      ->addColumn('account_name',function($data){
+        return $data->account_name;
+      })
+      ->addColumn('account_number',function($data){
+        return $data->account_number;
+      })
+      ->addColumn('account_reference',function($data){
+        return $data->account_reference;
+      })
+      ->addColumn('amount_paid',function($data){
+        return $data->amount_paid;
+      })
+      ->addColumn('amount_charged',function($data){
+        return $data->amount_charged;
+      })
+      ->addColumn('amount_settled',function($data){
+        return $data->amount_settled;
+      })
+      ->addColumn('user_email',function($data){
+        return $data->user_email;
+      })
+      ->addColumn('created_at',function($data){
+          return $data->created_at;
+      }) 
+      ->addColumn('action',function($data){
+          $route = '#';
+          // $route = route('transaction_details',$data->id);
+          $actionBtn = '<a href="'.$route.'" type="button" class="hs-dropdown-toggle ti-btn ti-btn-primary" data-hs-overlay="#hs-vertically-centered-scrollable-modal'.$data->email.'">
+          Details
+          </a>';
+          return '-';
+      })
+      
+      ->escapeColumns([])
+      ->make(true);
+
+
+     
+}
 
     public function index(Request $request){
         // dd('good');

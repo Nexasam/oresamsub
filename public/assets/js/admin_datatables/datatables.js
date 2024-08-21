@@ -13,6 +13,7 @@ $(document).ready(function(){
     getDataTransactions();
     getCableTransactions();
     getElectricityTransactions();
+    getCrystalPayUserFundingTransactions();
 
     function getPublicPlans(date_from ='', date_to =''){
 
@@ -232,6 +233,46 @@ $(document).ready(function(){
         });
     }
 
+
+    
+
+    function  getCrystalPayUserFundingTransactions(date_from ='', date_to ='', reference = ''){
+      const data = {
+        date_from : date_from,
+        date_to : date_to,
+        reference : reference
+      };
+      $('#crystal_pay_funding_logs_table').DataTable({
+                autoWidth: false,
+                processing: true,
+                searching: true,
+                bInfo: false,
+                bLengthChange: true,
+                pageLength: 10,
+                ajax: root_url + 'user/transactions/fetch_crystal_pay_funding_transactions?date_from='+date_from+'&&date_to='+date_to+'&&reference='+reference,
+                // ajax:  "{{ route('admin.users.fetch_users',"+data+") }}",
+                columns: [
+                  {data: 'DT_RowIndex', name: 'DT_RowIndex'},
+                  {data: 'user_email', name: 'user_email'},
+                  {data: 'transaction_reference', name: 'transaction_reference'},
+                  {data: 'status', name: 'status'},
+                  {data: 'funding_status', name: 'funding_status'},
+                  {data: 'message', name: 'message'},
+                  {data: 'package_id', name: 'package_id'},
+                  {data: 'bank_name', name: 'bank_name'},
+                  {data: 'account_name', name: 'account_name'},
+                  {data: 'account_number', name: 'account_number'},
+                  {data: 'account_reference', name: 'account_reference'},
+                  // {data: 'data_size', name: 'data_size'},
+                  {data: 'amount_paid', name: 'amount_paid'},
+                  {data: 'amount_charged', name: 'amount_charged'},
+                  {data: 'amount_settled', name: 'amount_settled'},
+                  {data: 'created_at', name: 'created_at'},
+                  {data: 'action', name: 'action'},
+                ]
+        });
+    }
+
     function getDataTransactions(date_from ='', date_to ='', product_plan_category_filter = '', phone_recharged = ''){
       const data = {
         date_from : date_from,
@@ -349,6 +390,14 @@ $(document).ready(function(){
     }
     
 
+    $('#filter_crystalpay_txn_table').click(function(e){
+      const date_from = $('#date_from_filter').val();
+      const date_to = $('#date_to_filter').val();
+      const txn_reference = $('#txn_reference').val();
+
+      $("#crystal_pay_funding_logs_table").DataTable().destroy();
+      getCrystalPayUserFundingTransactions(date_from,date_to,txn_reference);
+    })
 
   ///txns
     $('#filter_user_txn_table').click(function(e){
@@ -383,7 +432,6 @@ $(document).ready(function(){
       
       $("#electricity_transactions_table").DataTable().destroy();
       getElectricityTransactions(date_from,date_to,product_plan_category_filter,metre_number);
-
 
       })
 
@@ -423,6 +471,9 @@ $(document).ready(function(){
 
       $("#electricity_transactions_table").DataTable().destroy();
       getElectricityTransactions();
+
+      $("#crystal_pay_funding_logs_table").DataTable().destroy();
+      getCrystalPayUserFundingTransactions();
 
       
     })
