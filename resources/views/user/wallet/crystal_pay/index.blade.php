@@ -84,8 +84,8 @@
                                       @if (count($funding_option->bank_codes) > 0)
                                           @foreach ($funding_option->bank_codes as $key=>$bank_code)
                                           <tr aria-colspan="3">
-                                            <td>Bank Name: {{ $bank_code->bank_name }} <br> Charges(%): {{ $bank_code->bank_name }}
-                                            <hr>
+                                            <td>Bank Name: {{ $bank_code->bank_name }} <br> Charges(%): {{ $bank_code->bank_code }}
+                                            <br>
                                           
                                                @if ($bank_code->virtual_user_account_with_bank_code == NULL)
                                                   <button type="button" class="hs-dropdown-toggle ti-btn ti-btn-primary" data-hs-overlay="#hs-vertically-centered-modal{{$bank_code->id}}">
@@ -155,7 +155,7 @@
                                                     </div>
                                                   </div>
                                                 </div>
-                                                
+
                                                 </div>
                                             </td>
                                             <td>
