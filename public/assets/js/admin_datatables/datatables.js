@@ -258,7 +258,7 @@ $(document).ready(function(){
                   {data: 'status', name: 'status'},
                   {data: 'funding_status', name: 'funding_status'},
                   {data: 'message', name: 'message'},
-                  {data: 'package_id', name: 'package_id'},
+                  // {data: 'package_id', name: 'package_id'},
                   {data: 'bank_name', name: 'bank_name'},
                   {data: 'account_name', name: 'account_name'},
                   {data: 'account_number', name: 'account_number'},

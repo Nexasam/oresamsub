@@ -138,11 +138,11 @@
                                                                     <label class="ti-form-label mb-0">BVN:</label>
                                                                     <span>This is needed due to the directive from CBN</span>
                                                                     <input type="text" class="my-auto ti-form-input" required id="bvn" name="bvn" value="" placeholder="Enter your bvn">
-                                                                    <input type="text" class="my-auto ti-form-input" id="first_name" name="first_name" value="{{ auth()->user()->first_name }}">
-                                                                    <input type="text" class="my-auto ti-form-input" id="email_address" name="email_address" value="{{ auth()->user()->email_address }}">
-                                                                    <input type="text" class="my-auto ti-form-input" id="last_name" name="last_name" value="{{ auth()->user()->last_name }}">
-                                                                    <input type="text" class="my-auto ti-form-input" id="bank_code" name="bank_code" value="{{ $bank_code->bank_code }}">
-                                                                    <input type="text" class="my-auto ti-form-input" id="funding_option" name="funding_option" value="{{ $funding_option->id }}">
+                                                                    <input type="hidden" class="my-auto ti-form-input" id="first_name" name="first_name" value="{{ auth()->user()->first_name }}">
+                                                                    <input type="hidden" class="my-auto ti-form-input" id="email_address" name="email_address" value="{{ auth()->user()->email_address }}">
+                                                                    <input type="hidden" class="my-auto ti-form-input" id="last_name" name="last_name" value="{{ auth()->user()->last_name }}">
+                                                                    <input type="hidden" class="my-auto ti-form-input" id="bank_code" name="bank_code" value="{{ $bank_code->bank_code }}">
+                                                                    <input type="hidden" class="my-auto ti-form-input" id="funding_option" name="funding_option" value="{{ $funding_option->id }}">
                                                                  
                                                                   </div>
                 
