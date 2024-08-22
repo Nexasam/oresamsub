@@ -374,7 +374,7 @@
                                 <thead class="bg-gray-50 dark:bg-black/20">
                                 <tr>
                                     <th>ID</th>
-                                    <th>User</th>
+                                    {{-- <th>User</th> --}}
                                     <th>Wallet</th>
                                     <th>Product Details</th>
                                     <th>Txn Category</th>
