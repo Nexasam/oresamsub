@@ -76,7 +76,6 @@
                                 <tr>
                                     {{-- <th>ID</th> --}}
                                     <th>Bank Name </th>
-                                    <th>Charges(%)</th>
                                     <th>Account Details</th>
                                     <th></th>
                                 </tr>
@@ -85,21 +84,10 @@
                                       @if (count($funding_option->bank_codes) > 0)
                                           @foreach ($funding_option->bank_codes as $key=>$bank_code)
                                           <tr aria-colspan="3">
-                                            <td>{{ $bank_code->bank_name }}</td>
-                                            <td>{{ $bank_code->bank_charges }}</td>
-                                            <td>
-                                              @if ($bank_code->virtual_user_account_with_bank_code != NULL)
-                                                    <span class="badge bg-success text-white">Generated</span><br>
-                                                    <p>Account number:  {{  $bank_code->virtual_user_account_with_bank_code->account_number  }}</p>
-                                                    <p>Bank name:  {{  $bank_code->virtual_user_account_with_bank_code->bank_name  }}</p>
-                                                    <p>Account name:  {{  $bank_code->virtual_user_account_with_bank_code->account_name  }}</p>
-                                                    <p>Account email:  {{  $bank_code->virtual_user_account_with_bank_code->account_email  }}</p>
-                                                  @else
-                                                  <span class="badge bg-warning text-white">Pending</span>
-                                              @endif
-                                            </td>
-                                            <td> 
-                                                @if ($bank_code->virtual_user_account_with_bank_code == NULL)
+                                            <td>Bank Name: {{ $bank_code->bank_name }} <br> Charges(%): {{ $bank_code->bank_name }}
+                                            <hr>
+                                          
+                                               @if ($bank_code->virtual_user_account_with_bank_code == NULL)
                                                   <button type="button" class="hs-dropdown-toggle ti-btn ti-btn-primary" data-hs-overlay="#hs-vertically-centered-modal{{$bank_code->id}}">
                                                     Generate
                                                   </button> 
@@ -107,7 +95,6 @@
                                                     <b>-</b>
                                                 @endif
                                              
-                                                
                                                 <div id="hs-vertically-centered-modal{{$bank_code->id}}" class="hs-overlay ti-modal hidden">
                                                   <div class="ti-modal-box">
                                                     <div class="ti-modal-content">
@@ -138,9 +125,9 @@
                                                                     <label class="ti-form-label mb-0">BVN:</label>
                                                                     <span>This is needed due to the directive from CBN</span>
                                                                     <input type="text" class="my-auto ti-form-input" required id="bvn" name="bvn" value="" placeholder="Enter your bvn">
-                                                                    <input type="hidden" class="my-auto ti-form-input" id="first_name" name="first_name" value="{{ auth()->user()->first_name }}">
+                                                                    {{-- <input type="hidden" class="my-auto ti-form-input" id="first_name" name="first_name" value="{{ auth()->user()->first_name }}">
                                                                     <input type="hidden" class="my-auto ti-form-input" id="email_address" name="email_address" value="{{ auth()->user()->email }}">
-                                                                    <input type="hidden" class="my-auto ti-form-input" id="last_name" name="last_name" value="{{ auth()->user()->last_name }}">
+                                                                    <input type="hidden" class="my-auto ti-form-input" id="last_name" name="last_name" value="{{ auth()->user()->last_name }}"> --}}
                                                                     <input type="hidden" class="my-auto ti-form-input" id="bank_code" name="bank_code" value="{{ $bank_code->bank_code }}">
                                                                     <input type="hidden" class="my-auto ti-form-input" id="funding_option" name="funding_option" value="{{ $funding_option->id }}">
                                                                  
@@ -168,9 +155,19 @@
                                                     </div>
                                                   </div>
                                                 </div>
+                                                
                                                 </div>
-                                                
-                                                
+                                            </td>
+                                            <td>
+                                              @if ($bank_code->virtual_user_account_with_bank_code != NULL)
+                                                    <span class="badge bg-success text-white">Generated</span><br>
+                                                    <p>Account number:  {{  $bank_code->virtual_user_account_with_bank_code->account_number  }}</p>
+                                                    <p>Bank name:  {{  $bank_code->virtual_user_account_with_bank_code->bank_name  }}</p>
+                                                    <p>Account name:  {{  $bank_code->virtual_user_account_with_bank_code->account_name  }}</p>
+                                                    <p>Account email:  {{  $bank_code->virtual_user_account_with_bank_code->account_email  }}</p>
+                                                  @else
+                                                  <span class="badge bg-warning text-white">Pending</span>
+                                              @endif
                                             </td>
                                           </tr>
                                               

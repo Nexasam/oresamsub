@@ -193,9 +193,9 @@ class WalletsController extends Controller
       ->addColumn('amount_settled',function($data){
         return $data->amount_settled;
       })
-      ->addColumn('user_email',function($data){
-        return $data->user_email;
-      })
+      // ->addColumn('user_email',function($data){
+      //   return $data->user_email;
+      // })
       ->addColumn('created_at',function($data){
           return $data->created_at;
       }) 
@@ -242,9 +242,9 @@ class WalletsController extends Controller
         $validator = Validator::make($request->all(), [
             'pin' => 'required|digits:4|exists:users,pin',
             'bvn' => 'required|max:255',
-            'first_name' => 'required|max:255',
-            'last_name' => 'required|max:255',
-            'email_address' => 'required|max:255',
+            // 'first_name' => 'required|max:255',
+            // 'last_name' => 'required|max:255',
+            // 'email_address' => 'required|max:255',
             'bank_code' => 'required|max:255',
             'funding_option' => 'required|exists:funding_options,id|max:255',
           ]);
@@ -275,9 +275,7 @@ class WalletsController extends Controller
           $email = $user_details->email;
           $bvn = $request->bvn;
           $bank_code = $request->bank_code;
-          $funding_option_id = $request->funding_option;
-
-         
+          $funding_option_id = $request->funding_option;      
 
           
           //   $fetch_user_accts = UserVirtualAccount::where('user_id',$user_details->id)->where('bank_name','WEMA BANK')->first();
