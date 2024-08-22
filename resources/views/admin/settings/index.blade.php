@@ -466,7 +466,7 @@
                                     <tr>
                                       <td>{{ $loop->index + 1 }}</td>
                                       <td>{{ $funding_option->funding_option_name }}</td>
-                                      <td> Webhook url:<strong>{{ env('APP_URL').'/admin/wallets/'.$funding_option->slug.'_webhook'  }}</strong><br>
+                                      <td> Webhook url:<strong>{{ env('APP_URL').'admin/wallets/'.$funding_option->slug.'_webhook'  }}</strong><br>
                                         <span class="text-red-600 mt-4"><b>(This must be the same with the webhook set on your {{  $funding_option->funding_option_name }} Dashboard)</b></span></td>
                                       <td>
                                         <div class=" flex items-center justify-start">
