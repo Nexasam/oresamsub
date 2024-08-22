@@ -17,9 +17,9 @@
                     <i class="ti ti-chevrons-right flex-shrink-0 mx-3 overflow-visible text-gray-300 dark:text-gray-300 rtl:rotate-180"></i>
                   </a>
                 </li>
-                <li class="text-sm text-gray-500 hover:text-primary dark:text-white/70 " aria-current="page">
+                {{-- <li class="text-sm text-gray-500 hover:text-primary dark:text-white/70 " aria-current="page">
                     Profile Settings
-                </li>
+                </li> --}}
             </ol>
         </div>
         <!-- Page Header Close -->

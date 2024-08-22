@@ -134,7 +134,7 @@ $(document).ready(function(){
                 // ajax:  "{{ route('admin.users.fetch_users',"+data+") }}",
                 columns: [
                     {data: 'DT_RowIndex', name: 'DT_RowIndex'},
-                    {data: 'user_id', name: 'user_id'},
+                    // {data: 'user_id', name: 'user_id'},
                     {data: 'wallet_category', name: 'wallet_category'},
                     {data: 'plan_details', name: 'plan_details'},
                     {data: 'transaction_category', name: 'transaction_category'},
@@ -215,7 +215,7 @@ $(document).ready(function(){
                 // ajax:  "{{ route('admin.users.fetch_users',"+data+") }}",
                 columns: [
                   {data: 'DT_RowIndex', name: 'DT_RowIndex'},
-                  {data: 'user_id', name: 'user_id'},
+                  // {data: 'user_id', name: 'user_id'},
                   {data: 'wallet_category', name: 'wallet_category'},
                   {data: 'plan_details', name: 'plan_details'},
                   {data: 'transaction_category', name: 'transaction_category'},
@@ -293,7 +293,7 @@ $(document).ready(function(){
                 // ajax:  "{{ route('admin.users.fetch_users',"+data+") }}",
                 columns: [
                   {data: 'DT_RowIndex', name: 'DT_RowIndex'},
-                  {data: 'user_id', name: 'user_id'},
+                  // {data: 'user_id', name: 'user_id'},
                   {data: 'wallet_category', name: 'wallet_category'},
                   {data: 'plan_details', name: 'plan_details'},
                   {data: 'transaction_category', name: 'transaction_category'},
@@ -332,7 +332,7 @@ $(document).ready(function(){
                 // ajax:  "{{ route('admin.users.fetch_users',"+data+") }}",
                 columns: [
                   {data: 'DT_RowIndex', name: 'DT_RowIndex'},
-                  {data: 'user_id', name: 'user_id'},
+                  // {data: 'user_id', name: 'user_id'},
                   {data: 'wallet_category', name: 'wallet_category'},
                   {data: 'plan_details', name: 'plan_details'},
                   {data: 'transaction_category', name: 'transaction_category'},
@@ -370,7 +370,7 @@ $(document).ready(function(){
                 // ajax:  "{{ route('admin.users.fetch_users',"+data+") }}",
                 columns: [
                   {data: 'DT_RowIndex', name: 'DT_RowIndex'},
-                  {data: 'user_id', name: 'user_id'},
+                  // {data: 'user_id', name: 'user_id'},
                   {data: 'wallet_category', name: 'wallet_category'},
                   {data: 'plan_details', name: 'plan_details'},
                   {data: 'transaction_category', name: 'transaction_category'},

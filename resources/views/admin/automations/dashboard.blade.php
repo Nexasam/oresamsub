@@ -6,15 +6,15 @@
 
         <!-- Page Header -->
         <div class="block justify-between page-header md:flex">
-            <div>
+            {{-- <div>
                 <h3 class="text-gray-700 hover:text-gray-900 dark:text-white dark:hover:text-white text-2xl font-medium"> Automation: {{ $automation->automation_name }}</h3>
             </div>
             <ol class="flex items-center whitespace-nowrap min-w-0">
               
-                {{-- <li class="text-sm text-gray-500 hover:text-primary dark:text-white/70 " aria-current="page">
+                <li class="text-sm text-gray-500 hover:text-primary dark:text-white/70 " aria-current="page">
                     Home
-                </li> --}}
-            </ol>
+                </li>
+            </ol> --}}
         </div>
         <!-- Page Header Close -->
 
@@ -24,7 +24,7 @@
           <div class="col-span-12 md:col-span-6 xxl:!col-span-12">
             <div class="box">
                 <div class="box-header">
-                    <h5 class="box-title">Settings for {{ $automation->automation_name }}</h5>
+                    <h5 class="box-title">Automation Settings for {{ $automation->automation_name }}</h5>
                 </div>
                 <div class="box-body">
                   <nav class="flex space-x-2" aria-label="Tabs" role="tablist">

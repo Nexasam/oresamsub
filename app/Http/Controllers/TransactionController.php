@@ -66,13 +66,13 @@ class TransactionController extends Controller
       ->addColumn('DT_RowIndex',function($data){
         return $data->id;
         })
-        ->addColumn('user_id',function($data){
-            $first_name = $data->user->first_name  ?? 'nil';
-            $last_name = $data->user->last_name  ?? 'nil';
-            $phone_number = $data->user->phone_number  ?? 'nil';
-            $user_details =  $first_name.'<br>'.$last_name.'<br>'.$phone_number.'<br>';     
-            return $user_details;
-        })
+        // ->addColumn('user_id',function($data){
+        //     $first_name = $data->user->first_name  ?? 'nil';
+        //     $last_name = $data->user->last_name  ?? 'nil';
+        //     $phone_number = $data->user->phone_number  ?? 'nil';
+        //     $user_details =  $first_name.'<br>'.$last_name.'<br>'.$phone_number.'<br>';     
+        //     return $user_details;
+        // })
         ->addColumn('wallet_category',function($data){
             $wallet_category = $data->wallet_category == 'main_wallet' ?  'MAIN' : 'DATA_WALLET';
             return $wallet_category;
@@ -86,7 +86,11 @@ class TransactionController extends Controller
                     $dataa .=  'Smart Card No: '.$data->smart_card_number.'<br>';
                 }
                 if($data->transaction_category == 'utility_bills'){
-                    $dataa .=  'Metre No: '.$data->metre_number.'o<br>';
+                    $response_decode = json_decode($data->admin_screen_message,true);
+                    $token_details = isset($response_decode['Detail']['info']['realresponse']) ? $response_decode['Detail']['info']['realresponse'] :  '-';
+                    $prefix = $token_details == '-' ? 'Token details: ' : '';
+                    $dataa .=  'Metre No: '.$data->metre_number.'<br>';
+                    $dataa .=  $prefix.':  '.$token_details.'<br>';
                 }
                 if($data->transaction_category == 'data'){
                     $dataa .= number_format($data->product_plan->data_size_in_mb ?? '0') .' MB';
@@ -216,7 +220,11 @@ class TransactionController extends Controller
                     $dataa .=  'Smart Card No: '.$data->smart_card_number.'<br>';
                 }
                 if($data->transaction_category == 'utility_bills'){
-                    $dataa .=  'Metre No: '.$data->metre_number.'o<br>';
+                    $response_decode = json_decode($data->admin_screen_message,true);
+                    $token_details = isset($response_decode['Detail']['info']['realresponse']) ? $response_decode['Detail']['info']['realresponse'] :  '-';
+                    $prefix = $token_details == '-' ? 'Token details: ' : '';
+                    $dataa .=  'Metre No: '.$data->metre_number.'<br>';
+                    $dataa .=  '<b>'.$prefix.'  '.$token_details.'</b>  <br>';
                 }
                 if($data->transaction_category == 'data'){
                     $dataa .= number_format($data->product_plan->data_size_in_mb ?? '0') .' MB';
@@ -225,7 +233,7 @@ class TransactionController extends Controller
             }else{
                 $dataa = 'NIL';
             }
-            return $dataa;
+            return '<span style="white-space: normal;word-wrap: break-word;word-break: normal;width:auto">'.$dataa.'</span>';
         })
 
         ->addColumn('transaction_category',function($data){

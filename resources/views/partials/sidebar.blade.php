@@ -158,9 +158,9 @@
                     </a>
                     <ul class="slide-menu child1">
                         <li class="slide"><a href="{{ route('admin.automation.dashboard_view','ogdams') }}"  class="side-menu__item">Ogdams</a></li>      
-                        <li class="slide"><a href="{{ route('admin.automation.dashboard_view','ogdams_v2') }}"  class="side-menu__item">Ogdams V2</a></li>      
+                        {{-- <li class="slide"><a href="{{ route('admin.automation.dashboard_view','ogdams_v2') }}"  class="side-menu__item">Ogdams V2</a></li>       --}}
                         <li class="slide"><a href="{{ route('admin.automation.dashboard_view','megasubplug') }}"  class="side-menu__item">MegasubPlug</a></li>      
-                        <li class="slide"><a href="{{ route('admin.automation.dashboard_view','smeplug') }}"  class="side-menu__item">SMEPlug</a></li>      
+                        {{-- <li class="slide"><a href="{{ route('admin.automation.dashboard_view','smeplug') }}"  class="side-menu__item">SMEPlug</a></li>       --}}
 
                         {{-- @foreach (App\Models\Automation::get() as $automation)
                          <li class="slide"><a href="{{ route('admin.automation.dashboard_view',$automation->slug) }}"  class="side-menu__item">{{ $automation->automation_name }}</a></li>      

@@ -56,6 +56,7 @@ class ElectricitySubscriptionController extends Controller
           $query->where('metre_number',$metre);
         })
         ->where('transaction_category','utility_bills')
+        ->where('user_id',auth()->id())
         ->with(['user','product_plan'])->latest()->limit($limit)->get();
         // return $data;
 
@@ -65,13 +66,13 @@ class ElectricitySubscriptionController extends Controller
       ->addColumn('DT_RowIndex',function($data){
         return $data->id;
         })
-        ->addColumn('user_id',function($data){
-            $first_name = $data->user->first_name  ?? 'nil';
-            $last_name = $data->user->last_name  ?? 'nil';
-            $phone_number = $data->user->phone_number  ?? 'nil';
-            $user_details =  $first_name.'<br>'.$last_name.'<br>'.$phone_number.'<br>';     
-            return $user_details;
-        })
+        // ->addColumn('user_id',function($data){
+        //     $first_name = $data->user->first_name  ?? 'nil';
+        //     $last_name = $data->user->last_name  ?? 'nil';
+        //     $phone_number = $data->user->phone_number  ?? 'nil';
+        //     $user_details =  $first_name.'<br>'.$last_name.'<br>'.$phone_number.'<br>';     
+        //     return $user_details;
+        // })
         ->addColumn('wallet_category',function($data){
             $wallet_category = $data->wallet_category == 'main_wallet' ?  'MAIN' : 'DATA_WALLET';
             return $wallet_category;

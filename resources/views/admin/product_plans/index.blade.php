@@ -6,15 +6,15 @@
 
         <!-- Page Header -->
         <div class="block justify-between page-header md:flex">
-            <div>
+            {{-- <div>
                 <h3 class="text-gray-700 hover:text-gray-900 dark:text-white dark:hover:text-white text-2xl font-medium"> Products Plans</h3>
             </div>
             <ol class="flex items-center whitespace-nowrap min-w-0">
               
-                {{-- <li class="text-sm text-gray-500 hover:text-primary dark:text-white/70 " aria-current="page">
+                <li class="text-sm text-gray-500 hover:text-primary dark:text-white/70 " aria-current="page">
                     Products
-                </li> --}}
-            </ol>
+                </li>
+            </ol> --}}
         </div>
         <!-- Page Header Close -->
 
@@ -49,14 +49,14 @@
           
               <div class="box">
                 <div class="box-header">
-                  <h5 class="box-title">Product Plans</h5>
+                  <h5 class="box-title">Product Plans </h5>
                 </div>
 
                 <div class="box-body">
                   <nav class="flex space-x-2" aria-label="Tabs" role="tablist">
-                    <button type="button" class="hs-tab-active:bg-primary hs-tab-active:text-white py-3 px-4 inline-flex items-center gap-2 bg-transparent text-sm font-medium text-center text-gray-500 rounded-sm hover:text-primary  dark:text-white/70 dark:hover:text-white active" id="pills-with-brand-color-item-2" data-hs-tab="#pills-with-brand-color-2" aria-controls="pills-with-brand-color-2">
+                    {{-- <button type="button" class="hs-tab-active:bg-primary hs-tab-active:text-white py-3 px-4 inline-flex items-center gap-2 bg-transparent text-sm font-medium text-center text-gray-500 rounded-sm hover:text-primary  dark:text-white/70 dark:hover:text-white active" id="pills-with-brand-color-item-2" data-hs-tab="#pills-with-brand-color-2" aria-controls="pills-with-brand-color-2">
                       View Product Plans
-                    </button>
+                    </button> --}}
                     {{-- <button type="button" class="hs-tab-active:bg-primary hs-tab-active:text-white py-3 px-4 inline-flex items-center gap-2 bg-transparent text-sm font-medium text-center text-gray-500 rounded-sm hover:text-primary  dark:text-white/70 dark:hover:text-white " id="pills-with-brand-color-item-1" data-hs-tab="#pills-with-brand-color-1" aria-controls="pills-with-brand-color-1">
                       Create Product Plan
                     </button> --}}

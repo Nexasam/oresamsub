@@ -130,7 +130,7 @@ class MegaSubVendData{
             //successful transaction
             return [
                 'status' => 1,
-                'user_message' => isset($response_decode['Detail']['info']['Detail']) ? 'Transaction was successfullly processed' :  'Transaction was successful',
+                'user_message' => isset($response_decode['Detail']['info']['realresponse']) ? $response_decode['Detail']['info']['realresponse'] :  'Transaction was successful',
                 'admin_message' => isset($response_decode['Detail']['info']['Detail']) ? $response  :  'Transaction was successful',
             ];
         }

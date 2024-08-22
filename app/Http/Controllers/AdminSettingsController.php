@@ -149,6 +149,8 @@ class AdminSettingsController extends Controller
         $validator = Validator::make($request->all(), [
           'funding_option_id' => 'required',
           'bank_code' => 'required',    
+          'bank_name' => 'required',    
+          'bank_charges' => 'required',    
         ]);
 
         if ($validator->stopOnFirstFailure()->fails()) {
@@ -160,10 +162,17 @@ class AdminSettingsController extends Controller
           Session::flash('failure','Sorry, this bank code seem already added for this funding option');
           return redirect()->back();
         }
+
+        if($request->bank_charges > 50){
+          Session::flash('failure','Sorry, bank charges cannot be greater than 50%');
+          return redirect()->back();
+        }
         
         $create = FundingOptionBankCodes::create([
           'funding_option_id' => $request->funding_option_id,
           'bank_code' => $request->bank_code,
+          'bank_name' => $request->bank_name,
+          'bank_charges' => $request->bank_charges,
         ]);
 
         if(! $create){

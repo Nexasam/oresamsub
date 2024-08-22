@@ -6,7 +6,7 @@
 
         <!-- Page Header -->
         <div class="block justify-between page-header md:flex">
-            <div>
+            {{-- <div>
                 <h3 class="text-gray-700 hover:text-gray-900 dark:text-white dark:hover:text-white text-2xl font-medium"> Buy {{ $plan_category->product_plan_category_name }}</h3>
             </div>
             <ol class="flex items-center whitespace-nowrap min-w-0">
@@ -19,7 +19,7 @@
                 <li class="text-sm text-gray-500 hover:text-primary dark:text-white/70 " aria-current="page">
                     Buy Utility Bills
                 </li>
-            </ol>   
+            </ol>    --}}
         </div>
         <!-- Page Header Close -->
 
@@ -32,7 +32,7 @@
           
               <div class="box">
                 <div class="box-header">
-                  <h5 class="box-title">Utility Bills Transactions</h5>
+                  <h5 class="box-title">Buy {{ $plan_category->product_plan_category_name }}</h5>
                 </div>
 
                 <div class="box-body">
@@ -136,7 +136,7 @@
                                 <thead class="bg-gray-50 dark:bg-black/20">
                                   <tr>
                                     <th>ID</th>
-                                    <th>User</th>
+                                    {{-- <th>User</th> --}}
                                     <th>Wallet</th>
                                     <th>Product Details</th>
                                     <th>Txn Category</th>
@@ -197,9 +197,9 @@
                                         <br>
                                         <br>
                                         <form>
-                                            <input type="text" id="_token" name="_token" value="{{ csrf_token() }}" />
-                                            <input type="text" id="product_slug" name="product_slug" value="utility_bills" />
-                                            <input type="text" id="electricity_product_plan_category_id" name="electricity_product_plan_category_id" value="{{ $plan_category->id }}" />
+                                            <input type="hidden" id="_token" name="_token" value="{{ csrf_token() }}" />
+                                            <input type="hidden" id="product_slug" name="product_slug" value="utility_bills" />
+                                            <input type="hidden" id="electricity_product_plan_category_id" name="electricity_product_plan_category_id" value="{{ $plan_category->id }}" />
                                      
                                             <div class="grid w-full lg:w-1/2 lg:grid-cols-1 gap-6 space-y-4 lg:space-y-0">
                                                 <input type="hidden" value="main_wallet" class="ti-form-checkbox mt-0.5 pointer-events-none" name="wallet_category" id="wallet_category">

@@ -6,7 +6,7 @@
 
         <!-- Page Header -->
         <div class="block justify-between page-header md:flex">
-            <div>
+            {{-- <div>
                 <h3 class="text-gray-700 hover:text-gray-900 dark:text-white dark:hover:text-white text-2xl font-medium"> Buy Cable TV : <strong>{{ $plan_category->product_plan_category_name }}</strong> </h3>
             </div>
             <ol class="flex items-center whitespace-nowrap min-w-0">
@@ -19,7 +19,7 @@
                 <li class="text-sm text-gray-500 hover:text-primary dark:text-white/70 " aria-current="page">
                     Buy Cable TV
                 </li>
-            </ol>   
+            </ol>    --}}
         </div>
         <!-- Page Header Close -->
 
@@ -32,7 +32,7 @@
           
               <div class="box">
                 <div class="box-header">
-                  <h5 class="box-title"><strong>{{ $plan_category->product_plan_category_name }}</strong></h5>
+                  <h5 class="box-title">Buy Cable TV : {{ $plan_category->product_plan_category_name }}</h5>
                 </div>
 
                 <div class="box-body">

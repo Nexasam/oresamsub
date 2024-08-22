@@ -6,15 +6,15 @@
 
         <!-- Page Header -->
         <div class="block justify-between page-header md:flex">
-            <div>
+            {{-- <div>
                 <h3 class="text-gray-700 hover:text-gray-900 dark:text-white dark:hover:text-white text-2xl font-medium"> Settings</h3>
             </div>
             <ol class="flex items-center whitespace-nowrap min-w-0">
               
-                {{-- <li class="text-sm text-gray-500 hover:text-primary dark:text-white/70 " aria-current="page">
+                <li class="text-sm text-gray-500 hover:text-primary dark:text-white/70 " aria-current="page">
                     Home
-                </li> --}}
-            </ol>
+                </li> 
+            </ol> --}}
         </div>
         <!-- Page Header Close -->
 
@@ -456,6 +456,7 @@
                                   <tr>
                                       <th>SN</th>
                                       <th>Funding Name</th>
+                                      <th>Webhook</th>
                                       <th>Action</th>
                                      
                                   </tr>
@@ -465,6 +466,8 @@
                                     <tr>
                                       <td>{{ $loop->index + 1 }}</td>
                                       <td>{{ $funding_option->funding_option_name }}</td>
+                                      <td> Webhook url:<strong>{{ env('APP_URL').'/admin/wallets/'.$funding_option->slug.'_webhook'  }}</strong><br>
+                                        <span class="text-red-600 mt-4"><b>(This must be the same with the webhook set on your {{  $funding_option->funding_option_name }} Dashboard)</b></span></td>
                                       <td>
                                         <div class=" flex items-center justify-start">
                                           {{-- <a href="#" type="button" data-hs-overlay="#hs-vertically-centered-modal{{$funding_option->id}}"   aria-label="button" type="button" class="hs-dropdown-toggle ti-btn flex-shrink-0 h-[0.070rem] w-[0.070rem] ti-btn-primary text-sm"> 
@@ -472,7 +475,7 @@
                                           </a> --}}
 
                                           <button type="button" class="hs-dropdown-toggle ti-btn ti-btn-primary" data-hs-overlay="#hs-vertically-centered-modal{{$funding_option->id}}">
-                                            Update
+                                            Update keys
                                           </button> 
                                           <div id="hs-vertically-centered-modal{{$funding_option->id}}" class="hs-overlay ti-modal hidden">
                                             <div class="ti-modal-box">
@@ -534,7 +537,7 @@
                                               <div class="ti-modal-content">
                                                 <div class="ti-modal-header">
                                                   <h3 class="ti-modal-title">
-                                                    Add Bank Codes for {{ $funding_option->funding_option_name }}
+                                                    Add bank codes for {{ $funding_option->funding_option_name }}
                                                   </h3>
                                                  
                                                   <button type="button" class="hs-dropdown-toggle ti-modal-clode-btn"
@@ -549,26 +552,35 @@
                                                   </button>
                                                 </div>
                                                 <div class="ti-modal-body">
-    
+                                                  <h3><strong>Banks Codes Addition</strong></h3>
                                                   @if (count($funding_option->bank_codes) > 0)
-                                                    <p>Already added bank codes:</p>
+                                                    <p><b>Already added bank codes:</b></p>
                                                     <ul>
                                                       @foreach ($funding_option->bank_codes as $key=>$bank_code)
-                                                      <li>{{ $key + 1 }} - {{  $bank_code->bank_code }}</li>
+                                                        SN: {{ $key + 1 }} <br> Bank Code: {{  $bank_code->bank_code }} <br> Bank Name: {{  $bank_code->bank_name }}  <hr>
+                                                     
                                                     @endforeach
                                                     </ul>
                                                   @else
                                                     <p>No bank codes added yet</p>
-                                                  @endif
-                                                 
-                                                  
+                                                  @endif                                                 
                                                   <form enctype="multipart/form-data" method="POST" action="{{ route('admin.settings.add_funding_option_bank_code')  }}">
                                                     @csrf
                                                    <div>
                                                     <div class="space-y-2 mt-5">
-                                                      <label class="ti-form-label mb-0">Bank Code: </label>
+                                                      <label class="ti-form-label mb-0">Bank Name: </label>
                                                       <input type="hidden" required class="my-auto ti-form-input" name="funding_option_id" value="{{ $funding_option->id }}"  placeholder="">
+                                                      <input type="text" required class="my-auto ti-form-input" name="bank_name" value=""  placeholder="">
+                                                    </div>
+
+                                                    <div class="space-y-2 mt-5">
+                                                      <label class="ti-form-label mb-0">Bank Code: </label>
                                                       <input type="text" required class="my-auto ti-form-input" name="bank_code" value=""  placeholder="">
+                                                    </div>
+
+                                                    <div class="space-y-2 mt-5">
+                                                      <label class="ti-form-label mb-0">Charges(%): </label>
+                                                      <input type="text" required class="my-auto ti-form-input" name="bank_charges" value=""  placeholder="">
                                                     </div>
                                               
                                                   </div>
@@ -576,14 +588,16 @@
                                                   <div class="space-y-2">
                                                     <button type="submit" class="ti-btn ti-btn-primary w-full">Add Bank Code</button>
                                                   </div>
-                                                  <button type="button"
+                                                  {{-- <button type="button"
                                                     class="hs-dropdown-toggle ti-btn ti-border font-medium bg-white text-gray-700 shadow-sm align-middle hover:bg-gray-50 focus:ring-offset-white focus:ring-primary dark:bg-bgdark dark:hover:bg-black/20 dark:border-white/10 dark:text-white/70 dark:hover:text-white dark:focus:ring-offset-white/10"
                                                     data-hs-overlay="#hs-basic-modal">
                                                     Close
-                                                  </button>
-              
-                                                </div>
+                                                  </button> --}}
+                                                  </div>
                                                   </form>
+
+                                                 
+                                                  
                                               </div>
                                             </div>
                                           </div>  

@@ -169,9 +169,9 @@ class WalletsController extends Controller
       ->addColumn('message',function($data){
         return $data->message;
       })
-      ->addColumn('package_id',function($data){
-        return $data->package_id;
-      })
+      // ->addColumn('package_id',function($data){
+      //   return $data->package_id;
+      // })
       ->addColumn('bank_name',function($data){
         return $data->bank_name;
       })
