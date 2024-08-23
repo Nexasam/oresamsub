@@ -178,7 +178,7 @@ class MegaSubCableTV{
             return [
                 'status' => 1,
                 'user_message' => isset($response_decode['Detail']['info']['Detail']) ? 'Transaction was successfully processed' :  'Transaction was successful',
-                'admin_message' => isset($response_decode['Detail']['info']['Detail']) ? $response  :  'Transaction was successful',
+                'admin_message' => $response
             ];
         }
 
@@ -186,7 +186,7 @@ class MegaSubCableTV{
         return [
             'status' => -1,
             'user_message' => isset($response_decode['Detail']['message']) ? $response_decode['Detail']['message'].'_'.$error :  'Transaction failed_'.$error,
-            'admin_message' => isset($response_decode['Detail']['message']) ? $response_decode['Detail']['message'].'_'.$error  :  'Transaction failed',
+            'admin_message' => $response
         ];
 
         //REAL
