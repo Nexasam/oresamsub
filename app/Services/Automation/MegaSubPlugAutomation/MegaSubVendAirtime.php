@@ -20,7 +20,7 @@ class MegaSubVendAirtime{
 
     private $duplication_check = 1;
 
-    private $validatephonenetwork = 1;
+    private $validatephonenetwork = 0;
 
     private $plan_id = '';
 
