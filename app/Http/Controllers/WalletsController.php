@@ -254,10 +254,12 @@ class WalletsController extends Controller
         $funding_option = FundingOption::with('bank_codes.virtual_user_account_with_bank_code')->where('activation_status',1)->first();
         $data['funding_option'] = $funding_option;
 
-        // $generated_user_virtual_accts_funding_option_id = UserVirtualAccount::where('user_id',auth()->id())->pluck('funding_option_id')->first();
-        // $generated_user_virtual_accts_bank_code = UserVirtualAccount::where('user_id',auth()->id())->pluck('bank_code')->first();
-        // $data['generated_user_virtual_accts_funding_option_id'] = $generated_user_virtual_accts_funding_option_id;
-        // $data['generated_user_virtual_accts_bank_code'] = $generated_user_virtual_accts_bank_code;
+        $generated_user_virtual_accts_funding_option_id = UserVirtualAccount::where('user_id',auth()->id())->pluck('funding_option_id')->first();
+        $generated_user_virtual_accts_bank_code = UserVirtualAccount::where('user_id',auth()->id())->pluck('bank_code')->first();
+        $user_virtual_accounts = UserVirtualAccount::where('user_id',auth()->id())->get();
+        $data['generated_user_virtual_accts_funding_option_id'] = $generated_user_virtual_accts_funding_option_id;
+        $data['generated_user_virtual_accts_bank_code'] = $generated_user_virtual_accts_bank_code;
+        $data['user_virtual_accounts'] = $user_virtual_accounts;
         // return $data;
         
         return view('user.wallet.crystal_pay.index')->with($data);
