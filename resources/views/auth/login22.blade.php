@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title> Data - We sell data, airtime and other things etc </title>
-    <meta name="description" content="We are an amazing data solution provider determined and full prepared to give you data, airtime at very affordable price and blazing speed.">
+    <meta name="description" content="Empowering Connections, One Byte at a Time - {{ env('APP_NAME') }}">
     <meta name="keywords" content="data purchase, mtn, airtel, utility bills, cable subscription">
 
     <!-- Favicon -->
