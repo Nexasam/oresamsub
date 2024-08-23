@@ -87,23 +87,11 @@
                                           
                                             <td>Bank Name: {{ $bank_code->bank_name }} <br> Charges(%): {{ $bank_code->bank_charges }}
                                             <br>
-                                               @if (count($user_virtual_accounts) > 0)
-                                                       @foreach ($user_virtual_accounts as $vacct)
-                                                          @if ( $vacct->bank_code != $bank_code->bank_code && $vacct->funding_option_id != $bank_code->funding_option_id   )
-                                                          <button type="button" class="hs-dropdown-toggle ti-btn ti-btn-primary" data-hs-overlay="#hs-vertically-centered-modal{{$bank_code->id}}">
-                                                            Generate
-                                                          </button> 
-                                                          @else
-                                                            -
-                                                          @endif
-                                                       @endforeach
-                                                       
-
-                                               @else
-                                                    <b>-</b>
-                                               @endif
-                                               
-                                             
+                                            @if ($bank_code->virtual_user_account_with_bank_code != NULL && $bank_code->virtual_user_account_with_bank_code->user_id == auth()->id())
+                                            
+                                                <button type="button" class="hs-dropdown-toggle ti-btn ti-btn-primary" data-hs-overlay="#hs-vertically-centered-modal{{$bank_code->id}}">
+                                                  Generate
+                                                </button> 
                                                 <div id="hs-vertically-centered-modal{{$bank_code->id}}" class="hs-overlay ti-modal hidden">
                                                   <div class="ti-modal-box">
                                                     <div class="ti-modal-content">
@@ -166,9 +154,17 @@
                                                 </div>
 
                                                 </div>
+
+                                            @else
+
+                                                <b> - </b>
+                                            
+                                            @endif
+                                               
                                             </td>
                                             <td>
-                                              @if ($bank_code->virtual_user_account_with_bank_code != NULL)
+                                              
+                                              @if ($bank_code->virtual_user_account_with_bank_code != NULL && $bank_code->virtual_user_account_with_bank_code->user_id == auth()->id())
                                                     <span class="badge bg-success text-white">Generated</span><br>
                                                     <p>Account number:  {{  $bank_code->virtual_user_account_with_bank_code->account_number  }}</p>
                                                     <p>Bank name:  {{  $bank_code->virtual_user_account_with_bank_code->bank_name  }}</p>
