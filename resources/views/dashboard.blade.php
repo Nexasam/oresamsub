@@ -370,7 +370,7 @@
                 <div class="box-body px-6">
                     <div id="taskactive" class="" role="tabpanel" aria-labelledby="active-item">
                         <div class="overflow-auto">
-                            <table  id="user_transactions_table" class="ti-custom-table ti-custom-table-head">    
+                            <table  id="user_transactions_table" class="table ti-custom-table ti-custom-table-head">    
                                 <thead class="bg-gray-50 dark:bg-black/20">
                                 <tr>
                                     <th>ID</th>

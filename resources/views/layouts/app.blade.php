@@ -70,6 +70,22 @@
             box-shadow: 0 5px 15px rgb(0 0 0 / 50%);
             border: 1px solid rgba(0, 0, 0, .2)
         }
+
+     .table.dataTable  {
+          /* font-family: Verdana, Geneva, Tahoma, sans-serif; */
+          font-size: 9px;
+      }
+
+      .table.dataTable td  {
+          /* font-family: Verdana, Geneva, Tahoma, sans-serif; */
+          font-size: 12px;
+      }
+
+      .table.dataTable th  {
+          /* font-family: Verdana, Geneva, Tahoma, sans-serif; */
+          font-size: 10.5px;
+          text-transform: capitalize;
+      }
           
     </style>
 
