@@ -9,7 +9,7 @@ trait WalletTransactionLogs{
     public function log_wallet_transactions($array): void
     {
         // DATA_FROM_MAIN_WALLET, DATA_FROM_DATA_WALLET, AIRTIME, CABLE, BILLS, BULK_DATA_PURCHASE
-        // ADMIN_WALLET_CREDITING, USER_WALLET_CREDITING
+        // ADMIN_WALLET_CREDITING, USER_WALLET_CREDITING?:check use , CRYSTALPAY_WALLET_FUNDING
         WalletLog::create([
             'user_id' => $array['user_id'],
             'transaction_category' => $array['transaction_category'], //  

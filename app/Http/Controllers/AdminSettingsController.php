@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\AdminWebhookString;
 use App\Models\FundingOption;
 use App\Models\FundingOptionBankCodes;
 use App\Models\User;
@@ -48,7 +49,7 @@ class AdminSettingsController extends Controller
         $smeplug = Automation::where('slug','smeplug')->first();
         $megasubplug = Automation::where('slug','megasubplug')->first();
 
-        $funding_options = FundingOption::with('bank_codes')->get();
+        $funding_options = FundingOption::with('bank_codes','webhook_string')->get();
         // return $funding_options;
         
         $data['referral_setting'] = $referral_setting;
@@ -87,6 +88,36 @@ class AdminSettingsController extends Controller
           Session::flash('success','Referral settings successfully updated');
 
           return redirect()->back();
+    }
+
+    public function update_webhook_suffix_string(Request $request){
+      $validator = Validator::make($request->all(), [
+        'funding_option_id' => 'required',
+        'webhook_suffix_string' => 'required',
+      ]);
+
+      if ($validator->stopOnFirstFailure()->fails()) {
+        return redirect()->back()->withErrors($validator)->withInput();
+      }
+
+        $admin_webhook_string = AdminWebhookString::where('funding_option_id',$request->funding_option_id)->first();
+        if($admin_webhook_string == NULL){
+          //insert
+          AdminWebhookString::create([
+            'funding_option_id' => $request->funding_option_id,
+            'webhook_suffix_string' => $request->webhook_suffix_string
+          ]);
+        }else{
+          //update
+          $admin_webhook_string->update([
+            'webhook_suffix_string' => $request->webhook_suffix_string
+          ]);
+        }
+        Session::flash('success','Webhook suffix string successfully updated');
+        return redirect()->back();
+
+      
+
     }
 
     public function manage_site_logo(Request $request){

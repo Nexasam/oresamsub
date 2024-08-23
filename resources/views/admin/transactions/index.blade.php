@@ -122,8 +122,8 @@
                                 <th>Wallet</th>
                                 <th>Product Details</th>
                                 <th>Txn Category</th>
-                                <th>User Response</th>
-                                <th>Admin Response</th>
+                                {{-- <th>User Response</th>
+                                <th>Admin Response</th> --}}
                                 <th>Phone</th>
                                 <th>Amount</th>
                                 <th>Discounted Amount</th>

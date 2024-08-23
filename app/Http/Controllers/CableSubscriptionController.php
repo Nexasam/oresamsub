@@ -102,10 +102,10 @@ class CableSubscriptionController extends Controller
             $transaction_category = $data->transaction_category;
             return $transaction_category;
         })
-        ->addColumn('response',function($data){
-            return  '<span style="white-space: normal;word-wrap: break-word;word-break: normal;width:auto">'.$data->user_screen_message.'</span>';
-            // return $user_screen_message;
-        })
+        // ->addColumn('response',function($data){
+        //     return  '<span style="white-space: normal;word-wrap: break-word;word-break: normal;width:auto">'.$data->user_screen_message.'</span>';
+        //     // return $user_screen_message;
+        // })
         ->addColumn('phone_number',function($data){
             return $data->phone_number;
         }) 
@@ -150,8 +150,7 @@ class CableSubscriptionController extends Controller
             return $data->created_at;
         }) 
         ->addColumn('action',function($data){
-            $route = '#';
-            // $route = route('transaction_details',$data->id);
+            $route = route('transactions.transaction_details',$data->id);
             $actionBtn = '<a href="'.$route.'" type="button" class="hs-dropdown-toggle ti-btn ti-btn-primary" data-hs-overlay="#hs-vertically-centered-scrollable-modal'.$data->email.'">
             Details
             </a>';

@@ -466,7 +466,7 @@
                                     <tr>
                                       <td>{{ $loop->index + 1 }}</td>
                                       <td>{{ $funding_option->funding_option_name }}</td>
-                                      <td> Webhook url:<strong>{{ env('APP_URL').'api/admin/wallets/'.$funding_option->slug.'_webhook'  }}</strong><br>
+                                      <td> Webhook url:<strong>{{ $funding_option->webhook_string == NULL ?  env('APP_URL').'api/admin/wallets/'.$funding_option->slug.'_webhook/NOT_SET' : env('APP_URL').'api/admin/wallets/'.$funding_option->slug.'_webhook/'.$funding_option->webhook_string->webhook_suffix_string  }}</strong><br>
                                         <span class="text-red-600 mt-4"><b>(This must be the same with the webhook set on your {{  $funding_option->funding_option_name }} Dashboard)</b></span></td>
                                       <td>
                                         <div class=" flex items-center justify-start">
@@ -475,7 +475,7 @@
                                           </a> --}}
 
                                           <button type="button" class="hs-dropdown-toggle ti-btn ti-btn-primary" data-hs-overlay="#hs-vertically-centered-modal{{$funding_option->id}}">
-                                            Update keys
+                                            Update keys & Webhook
                                           </button> 
                                           <div id="hs-vertically-centered-modal{{$funding_option->id}}" class="hs-overlay ti-modal hidden">
                                             <div class="ti-modal-box">
@@ -498,34 +498,54 @@
                                                 <div class="ti-modal-body">
                                                   <form enctype="multipart/form-data" method="POST" action="{{ route('admin.settings.update_funding_options')  }}">
                                                     @csrf
-                                                  <div>
-                                                    <div class="space-y-2 mt-5">
-                                                      <label class="ti-form-label mb-0">Public key: </label>
-                                                      <input type="hidden" required class="my-auto ti-form-input" name="id" value="{{ $funding_option->id }}"  placeholder="">
-                                                      <input type="text" required class="my-auto ti-form-input" name="api_public_key" value="{{ $funding_option->api_public_key != NULL  ? substr($funding_option->api_public_key,0,2).str_repeat('X',5).substr($funding_option->api_public_key,-3)  : '' }}"  placeholder="">
-                                                    </div>
-                                                    <div class="space-y-2 mt-5">
-                                                      <label class="ti-form-label mb-0">Secret key: </label>
-                                                      <input type="text" required class="my-auto ti-form-input" name="api_secret_key" value="{{ $funding_option->api_secret_key != NULL  ? substr($funding_option->api_secret_key,0,2).str_repeat('X',5).substr($funding_option->api_secret_key,-3)  : '' }}"  placeholder="">
+                                                      <div>
+                                                        <div class="space-y-2 mt-5">
+                                                          <label class="ti-form-label mb-0">Public key: </label>
+                                                          <input type="hidden" required class="my-auto ti-form-input" name="id" value="{{ $funding_option->id }}"  placeholder="">
+                                                          <input type="text" required class="my-auto ti-form-input" name="api_public_key" value="{{ $funding_option->api_public_key != NULL  ? substr($funding_option->api_public_key,0,2).str_repeat('X',5).substr($funding_option->api_public_key,-3)  : '' }}"  placeholder="">
+                                                        </div>
+                                                        <div class="space-y-2 mt-5">
+                                                          <label class="ti-form-label mb-0">Secret key: </label>
+                                                          <input type="text" required class="my-auto ti-form-input" name="api_secret_key" value="{{ $funding_option->api_secret_key != NULL  ? substr($funding_option->api_secret_key,0,2).str_repeat('X',5).substr($funding_option->api_secret_key,-3)  : '' }}"  placeholder="">
+                                                        </div>
+                                                        <hr>
+                                                        <div class="space-y-2">
+                                                        <button type="submit" class="ti-btn ti-btn-primary w-full">Update Funding Option</button>
 
-                                                  </div>
+                                                        </div>
+                                                    </form>
+                                                    <form enctype="multipart/form-data" method="POST" action="{{ route('admin.settings.update_webhook_suffix_string')  }}">
+                                                      @csrf
+                                                        <div>
+                                                          <div class="space-y-2 mt-5">
+                                                            <label class="ti-form-label mb-0">Change Webhook Suffix String </label>
+                                                            <small>This string is attached to your {{ $funding_option->funding_option_name }} <br> base webhook url which forms a unique webhook url for your business</small>
+                                                            <input type="hidden" required class="my-auto ti-form-input" name="funding_option_id" value="{{ $funding_option->id }}"  placeholder="">
+                                                            <input type="text" required class="my-auto ti-form-input" name="webhook_suffix_string" value="{{ $funding_option->api_public_key != NULL  ? substr($funding_option->api_public_key,0,2).str_repeat('X',5).substr($funding_option->api_public_key,-3)  : '' }}"  placeholder="">
+                                                          </div>
+                                        
+                                                          <hr>
+                                                          <div class="space-y-2">
+                                                            <button type="submit" class="ti-btn ti-btn-primary w-full">Update Webhook Suffix String</button>
+
+  
+                                                          </div>
+                                                      </form>
                                                 </div>
                                                 <div class="ti-modal-footer">
-                                                  <div class="space-y-2">
-                                                    <button type="submit" class="ti-btn ti-btn-primary w-full">Update Funding Option</button>
-                                                  </div>
+                                                  
                                                   <button type="button"
                                                     class="hs-dropdown-toggle ti-btn ti-border font-medium bg-white text-gray-700 shadow-sm align-middle hover:bg-gray-50 focus:ring-offset-white focus:ring-primary dark:bg-bgdark dark:hover:bg-black/20 dark:border-white/10 dark:text-white/70 dark:hover:text-white dark:focus:ring-offset-white/10"
-                                                    data-hs-overlay="#hs-basic-modal">
+                                                    data-hs-overlay="#hs-vertically-centered-modal{{$funding_option->id}}">
                                                     Close
                                                   </button>
               
                                                 </div>
-                                                  </form>
                                               </div>
                                             </div>
                                           </div>
                                           </div>
+                                        </div>
 
                                           <button type="button" class="hs-dropdown-toggle ti-btn ti-btn-warning" data-hs-overlay="#hs-basic-modal{{$funding_option->id}}">
                                             Add bank codes
@@ -588,11 +608,11 @@
                                                   <div class="space-y-2">
                                                     <button type="submit" class="ti-btn ti-btn-primary w-full">Add Bank Code</button>
                                                   </div>
-                                                  {{-- <button type="button"
+                                                  <button type="button"
                                                     class="hs-dropdown-toggle ti-btn ti-border font-medium bg-white text-gray-700 shadow-sm align-middle hover:bg-gray-50 focus:ring-offset-white focus:ring-primary dark:bg-bgdark dark:hover:bg-black/20 dark:border-white/10 dark:text-white/70 dark:hover:text-white dark:focus:ring-offset-white/10"
-                                                    data-hs-overlay="#hs-basic-modal">
+                                                    data-hs-overlay="#hs-basic-modal{{$funding_option->id}}">
                                                     Close
-                                                  </button> --}}
+                                                  </button>
                                                   </div>
                                                   </form>
 

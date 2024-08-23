@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\AdminWebhookString;
 use Exception;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -15,8 +16,8 @@ use Illuminate\Support\Facades\Validator;
 
 class WalletsController extends Controller
 {
-    public function webhook(Request $request){
-      
+    public function webhook( $id,Request $request){
+       
         //{
         //   $resp = '{"event":"VIRTUAL_ACCOUNT_INFLOW",
         //   "source":{
@@ -60,8 +61,14 @@ class WalletsController extends Controller
         $response_decode = json_decode($response,true);
         logger('testing webhook start');
         logger($response);
-        logger('testing webhook end');
+      
         $can_fund = '';
+
+        $funding_option_details = FundingOption::with('webhook_string')->where('slug','crystal_pay')->first();
+
+        if($id != $funding_option_details->webhook_string->webhook_suffix_string){
+          logger('Wrong suffix webhook string detected');
+        }
         
         //Check if webhook has been sent before
 
@@ -71,9 +78,13 @@ class WalletsController extends Controller
         $check_exists = FundingWebhookPayload::where('transaction_reference',$response_decode['transaction_reference'])
         ->first();
 
+       
+
         if( ($response_decode['event_data']['status'] == 'SUCCESSFUL') && (!$check_exists) ){    
+            
             $email = $response_decode['destination']['account_email'];
             $user_details = User::select('id','main_wallet')->where('email',$email)->first();
+            
             if($user_details){
               $created_data['funding_status'] = 'success';
 
@@ -83,10 +94,12 @@ class WalletsController extends Controller
               $new_amount = $old_amount + $amount_funded;
               //carry out funding here
               $can_fund = 'yes';
-            
+             
             }else{
               $created_data['funding_status'] = 'failed';
               $can_fund = 'no';
+              logger('Cannot fund because user details not found');
+
             }
             $created_data['funding_slug'] = 'crystal_pay';
             $created_data['user_id'] = $user_details->id;
@@ -108,26 +121,46 @@ class WalletsController extends Controller
 
           
               $created = FundingWebhookPayload::create($created_data);
+
               if($can_fund == 'yes'){
                 $updated = $user_details->update([
                   'main_wallet' => $new_amount
                 ]);
+
               }else{
                 $updated = false;
+
               }
   
-  
+              $settled_amount = $response_decode['event_data']['data']['settled'];
+              $walletLog['user_id'] = $user_details->id;
+              $walletLog['transaction_category'] = 'CRYSTALPAY_WALLET_FUNDING';
+              $walletLog['balance_before'] = $user_details->main_wallet;
+              $walletLog['balance_after'] = $user_details->main_wallet + $response_decode['event_data']['data']['settled'];
+              $walletLog['transaction_id'] = $response_decode['transaction_reference'];
+              $walletLog['action_by'] = 'webhook';           
+              $walletLog['description'] = "Wallet of the user with the email: $email has been credited with $settled_amount via crystal pay";
+              $this->log_wallet_transactions($walletLog);
+              
+
               if( $created && $updated ){
                 DB::commit();
+                logger('Great... All good.');
+
               }else{
+                logger('Crediting failed for some reasons...');
                 DB::rollBack();
               }
            
+        }else{
+          logger('This webhook did not update wallet because its likely that the payment has been processed before');
         }
       }catch(Exception $ex){
         logger($ex->getMessage().' on line '.$ex->getLine());
         DB::rollBack();
       }
+
+      logger('testing webhook end');
     }
 
 

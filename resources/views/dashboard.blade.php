@@ -377,8 +377,8 @@
                                     {{-- <th>User</th> --}}
                                     <th>Wallet</th>
                                     <th>Product Details</th>
-                                    <th>Txn Category</th>
-                                    <th>Response</th>
+                                    <th>Category</th>
+                                    {{-- <th>Response</th> --}}
                                     <th>Phone</th>
                                     <th>Amount</th>
                                     <th>Balance Before</th>

@@ -140,30 +140,40 @@
                                                               <select required id="product_plan_category_id_{{  $data_plans[$i]['id']  }}" name="product_plan_category_id_{{ $data_plans[$i]['id']  }}"  class="my-auto ti-form-select">
                                                                 <option value="">Select</option>
                                                                 @foreach ($product_plan_categories as $product_plan_category)
-                                                                <option   value="{{ $product_plan_category->id }}">{{ $product_plan_category->product_plan_category_name }}</option>
+                                                                <option
+                                                                   
+                                                                   value="{{ $product_plan_category->id }}">{{ $product_plan_category->product_plan_category_name }}</option>
                                                                 @endforeach
                                                               </select>
                                                             </div>
 
                                                         </div>
                                                         <div class="">
-                                                          <label class="ti-form-label mb-0">SP
+                                                          <label class="ti-form-label mb-0">SP/Discount
                                                             @if ($data_plans[$i]['product'] == 'Airtime')
                                                                     &nbsp;  (<b>This is percentage discount for Airtime</b>)
                                                             @endif
                                                             @if ($data_plans[$i]['product'] == 'Electricity')
                                                             &nbsp;  (<b>This is percentage discount for Electricity</b>)
-                                                    @endif
+                                                            @endif
                                                           </label>
                                                           {{-- <input type="text" id="selling_price_{{  $data_plans[$i]['id'] }}" name="selling_price_{{  $mtn_products['planId'] }}" value="{{ $mtn_products['price'] + 200}}" class="my-auto ti-form-input"> --}}
-                                                          <input type="text" id="selling_price_{{ $data_plans[$i]['id'] }}" name="selling_price_{{ $data_plans[$i]['id'] }}" value="{{ $data_plans[$i]['price'] + 200 }}" class="my-auto ti-form-input">
+                                                          
+                                                          @if ($data_plans[$i]['product'] == 'Airtime' || $data_plans[$i]['product'] == 'Electricity')
+                                                             <input type="text" id="selling_price_{{ $data_plans[$i]['id'] }}" name="selling_price_{{ $data_plans[$i]['id'] }}" value="2" class="my-auto ti-form-input">
+                                                              
+                                                          @else
+                                                             <input type="text" id="selling_price_{{ $data_plans[$i]['id'] }}" name="selling_price_{{ $data_plans[$i]['id'] }}" value="{{ $data_plans[$i]['price'] + 200 }}" class="my-auto ti-form-input">
+                                                              
+                                                          @endif
+                                                          
                                                           <br>
                                                               @php
                                                                   $countt = 1;
                                                               @endphp
                                                               @foreach ($user_plans as $user_plan)
                                                                   <div class="mb-3">
-                                                                      <label class="ti-form-label mb-0">SP for {{ $user_plan->updated_user_plan_name ?? $user_plan->user_plan_name }}   
+                                                                      <label class="ti-form-label mb-0">SP/Discount for {{ $user_plan->updated_user_plan_name ?? $user_plan->user_plan_name }}   
                                                                         @if ($data_plans[$i]['product'] == 'Airtime')
                                                                          &nbsp;  (<b>This is percentage discount for Airtime</b>)
                                                                         @endif
@@ -171,7 +181,14 @@
                                                                          &nbsp;   (<b>This is percentage discount for Electricity</b>)
                                                                         @endif
                                                                       </label>
-                                                                      <input type="text" id="user_plan_{{  $data_plans[$i]['id'] }}_{{  $user_plan->plan_level }}"  name="user_plan_{{  $user_plan->plan_level }}" value="{{ $data_plans[$i]['price'] + floor(200 / $user_plan->plan_level )}}" class="my-auto ti-form-input">
+                                                                      
+                                                                      @if ($data_plans[$i]['product'] == 'Airtime' || $data_plans[$i]['product'] == 'Electricity')
+                                                                        <input type="text" id="user_plan_{{  $data_plans[$i]['id'] }}_{{  $user_plan->plan_level }}"  name="user_plan_{{  $user_plan->plan_level }}" value="{{ $user_plan->plan_level + 1 }}" class="my-auto ti-form-input">
+                                                                
+                                                                      @else
+                                                                         <input type="text" id="user_plan_{{  $data_plans[$i]['id'] }}_{{  $user_plan->plan_level }}"  name="user_plan_{{  $user_plan->plan_level }}" value="{{ $data_plans[$i]['price'] + floor(200 / $user_plan->plan_level )}}" class="my-auto ti-form-input">
+                                                                           
+                                                                      @endif
                                                                   </div>             
                                                               @endforeach
                                                         </div>

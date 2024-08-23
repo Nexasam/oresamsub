@@ -244,7 +244,14 @@ class AutomationController extends Controller
                     Session::flash('failure',$response_decoded['Detail']);
                     return back();
                 }
-                // dd($response);
+                
+                // $plan_details = json_decode($response,true)['Detail'];
+                // for($i = 0; $i < count($plan_details); $i++) {
+                //     $already_saved_check = in_array($plan_details[$i]['id'],$product_plan_ids);
+                //     $plan_details[$i]['product_plan_category_id'] = ;
+                // }
+                // exit;
+               
     
                 $product_plan_categories = ProductPlanCategory::select('id','product_plan_category_name')->get();
                 $data['product_plan_ids'] = $product_plan_ids;

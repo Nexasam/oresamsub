@@ -136,6 +136,7 @@ Route::middleware(['auth','verified','admin'])->get('admin/toggle_product_public
 Route::middleware(['auth','verified','admin'])->get('admin/product_categories', [ProductCategoryController::class, 'index'])->name('admin.product_categories.index');
 
 Route::middleware(['auth','verified','admin'])->get('admin/settings', [AdminSettingsController::class, 'index'])->name('admin.settings.index');
+Route::middleware(['auth','verified','admin'])->post('admin/update_webhook_suffix_string', [AdminSettingsController::class, 'update_webhook_suffix_string'])->name('admin.settings.update_webhook_suffix_string');
 Route::middleware(['auth','verified','admin'])->post('admin/manage_automations_keys', [AdminSettingsController::class, 'manage_automations_keys'])->name('admin.settings.manage_automations_keys');
 Route::middleware(['auth','verified','admin'])->post('admin/update_funding_options', [AdminSettingsController::class, 'update_funding_options'])->name('admin.settings.update_funding_options'); //
 Route::middleware(['auth','verified','admin'])->post('admin/add_funding_option_bank_code', [AdminSettingsController::class, 'add_funding_option_bank_code'])->name('admin.settings.add_funding_option_bank_code'); //
@@ -164,11 +165,13 @@ Route::middleware(['auth','verified','user'])->post('user/data/buy_bulk_data_act
 Route::middleware(['auth','verified','user'])->post('user/data/fetch_bulk_data_plans', [DataController::class, 'fetch_bulk_data_plans'])->name('user.data.fetch_bulk_data_plans');
 Route::middleware(['auth','verified','user'])->get('user/data/fetch_bulk_data_plan_details', [DataController::class, 'fetch_bulk_data_plan_details'])->name('user.data.fetch_bulk_data_plan_details');
 
-//available to both user and admin
+//available to both user and admin: first 4 majorely for users
 Route::middleware(['auth','verified'])->get('transactions/fetch_airtime_transactions', [AirtimeController::class, 'fetch_airtime_transactions'])->name('transactions.fetch_airtime_transactions');
 Route::middleware(['auth','verified'])->get('transactions/fetch_data_transactions', [DataController::class, 'fetch_data_transactions'])->name('transactions.fetch_data_transactions');
 Route::middleware(['auth','verified'])->get('transactions/fetch_cable_transactions', [CableSubscriptionController::class, 'fetch_cable_transactions'])->name('transactions.fetch_cable_transactions');
 Route::middleware(['auth','verified'])->get('transactions/fetch_electricity_transactions', [ElectricitySubscriptionController::class, 'fetch_electricity_transactions'])->name('transactions.fetch_electricity_transactions');
+Route::middleware(['auth','verified'])->get('transactions/details/{id}', [TransactionController::class, 'transaction_details'])->name('transactions.transaction_details');
+Route::middleware(['auth','verified'])->post('transactions/transaction_refund', [TransactionController::class, 'transaction_refund'])->name('transactions.transaction_refund');
 
 
 Route::middleware(['auth','verified','user'])->get('user/airtime/buy_airtime', [AirtimeController::class, 'buy_airtime'])->name('user.airtime.buy_airtime');

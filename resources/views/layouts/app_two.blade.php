@@ -6,8 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title> Data App - {{ env('APP_NAME') }} </title>
 
-    <meta name="description" content="A Tailwind CSS admin template is a pre-designed web page for an admin dashboard. Optimizing it for SEO includes using meta descriptions and ensuring it's responsive and fast-loading.">
-    <meta name="keywords" content="analytics dashboard,jobs dashboard,crm dashboard examples,personal dashboard,sales dashboard sample,best crm dashboard,crypto dashboard template,sales analytics dashboard,stocks dashboard,hrm dashboard,ecommerce admin panel template,sales admin dashboard,admin panel for ecommerce website,website template ecommerce,template dashboard,course dashboard,template ecommerce website">
+    <meta name="description" content="We are an amazing data solution provider determined and full prepared to give you data, airtime at very affordable price and blazing speed.">
+    <meta name="keywords" content="data purchase, mtn, airtel, utility bills, cable subscription">
 
     <!-- Quil Css -->    
     <link id="style" rel="stylesheet" href="{{ asset(env('APP_ASSETS_BASE_URL').'libs/quill/quill.snow.css') }}">
@@ -822,9 +822,9 @@
                 dataType: 'json',
                 success: function(response) {
                     // showDisplayButton(id);
-                    // console.log(response);
+                    console.log(response);
                     // $('#notify_span'+id).text(response.message);
-                    $('#notify_span'+id).text('successfully saved...');
+                    $('#notify_span'+id).text(response.message);
                     showDisplayButton(id);
                 },
                 error: function(xhr, status, error) {

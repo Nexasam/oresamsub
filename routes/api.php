@@ -15,7 +15,7 @@ Route::get('/user', function (Request $request) {
 })->middleware('auth:sanctum');
 
 //FIXED
-Route::post('admin/wallets/crystal_pay_webhook', [WalletsController::class, 'webhook'])->name('admin.wallet.crystalpay.webhook');
+Route::post('admin/wallets/crystal_pay_webhook/{id}', [WalletsController::class, 'webhook'])->name('admin.wallet.crystalpay.webhook');
 
 
 Route::post('/login', [MobileApiController::class, 'mobile_login'])->name('api.mobile_login');

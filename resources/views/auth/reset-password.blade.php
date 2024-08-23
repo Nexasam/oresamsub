@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title> {{env('APP_NAME')}} - Enjoy data at the best rate </title>
     <meta name="description" content="This is an amazing data website for your special data needs">
-    <meta name="keywords" content="analytics dashboard,jobs dashboard,crm dashboard examples,personal dashboard,sales dashboard sample,best crm dashboard,crypto dashboard template,sales analytics dashboard,stocks dashboard,hrm dashboard,ecommerce admin panel template,sales admin dashboard,admin panel for ecommerce website,website template ecommerce,template dashboard,course dashboard,template ecommerce website">
+    <meta name="keywords" content="data purchase, mtn, airtel, utility bills, cable subscription">
 
      <!-- Favicon -->
     {{-- <link rel="shortcut icon" href="../assets/img/brand-logos/favicon.ico"> --}}

@@ -6,7 +6,11 @@ use App\Models\ProductPlan;
 use App\Models\Transaction;
 use Illuminate\Http\Request;
 use App\Models\ProductPlanCategory;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\WalletFundingNotification;
+use Illuminate\Support\Facades\Session;
 use Yajra\DataTables\Facades\DataTables;
+use Illuminate\Support\Facades\Validator;
 
 class TransactionController extends Controller
 {
@@ -23,6 +27,39 @@ class TransactionController extends Controller
 
     return view('admin.transactions.index')->with($data);
   } 
+
+  public function transaction_details($id){
+    $data['data'] = Transaction::with(['user','product_plan'])->where('id',$id)->first();
+    return view('transaction_details')->with($data);
+  }
+
+  public function transaction_refund(Request $request){
+    $validator = Validator::make($request->all(), [
+        'pin' => 'required|max:255',
+        'transaction_id' => 'required|exists:tranactions,id',
+      ]);
+
+      return [
+        'status' => 'still in progress'
+      ];
+      
+
+      if ($validator->stopOnFirstFailure()->fails()) {
+        return redirect()->back()->withErrors($validator)->withInput();
+      }
+
+      if(auth()->user()->pin != $request->pin){
+        //end session and redirect to login
+        Session::flash('failure','Incorrect PIN entered'); 
+        return redirect()->back();
+      }
+
+      //steps to refund::: put in a service class later: put in a separation fxn temporaritly
+      //get the amount of txn, get the balance of the user, then add the funds back, next log what has happened
+      //if refs, work on their reversals too but this should never happen because rewards happen only when txn is confirmed
+      //if data purchase, treat separately
+
+  }
 
   public function user_fetch_transactions(Request $request){
 
@@ -90,7 +127,7 @@ class TransactionController extends Controller
                     $token_details = isset($response_decode['Detail']['info']['realresponse']) ? $response_decode['Detail']['info']['realresponse'] :  '-';
                     $prefix = $token_details == '-' ? 'Token details: ' : '';
                     $dataa .=  'Metre No: '.$data->metre_number.'<br>';
-                    $dataa .=  $prefix.':  '.$token_details.'<br>';
+                    $dataa .=  '<b>'.$prefix.':  '.$token_details.'</b><br>';
                 }
                 if($data->transaction_category == 'data'){
                     $dataa .= number_format($data->product_plan->data_size_in_mb ?? '0') .' MB';
@@ -99,17 +136,17 @@ class TransactionController extends Controller
             }else{
                 $dataa = 'NIL';
             }
-            return $dataa;
+            return '<span style="white-space: normal;word-wrap: break-word;word-break: normal;width:auto">'.$dataa.'</span>';
         })
      
         ->addColumn('transaction_category',function($data){
             $transaction_category = $data->transaction_category;
             return $transaction_category;
         })
-        ->addColumn('response',function($data){
-            return  '<span style="white-space: normal;word-wrap: break-word;word-break: normal;width:auto">'.$data->user_screen_message.'</span>';
-            // return $user_screen_message;
-        })
+        // ->addColumn('response',function($data){
+        //     return  '<span style="white-space: normal;word-wrap: break-word;word-break: normal;width:auto">'.$data->user_screen_message.'</span>';
+        //     // return $user_screen_message;
+        // })
         ->addColumn('phone_number',function($data){
             return $data->phone_number;
         }) 
@@ -121,7 +158,6 @@ class TransactionController extends Controller
             }) 
         ->addColumn('balance_before',function($data){
             return $data->wallet_category == 'main_wallet' ? '₦'.number_format($data->balance_before,2) : number_format($data->balance_before).'MB';
-
         })  
         ->addColumn('data_size',function($data){
          $data_size = number_format($data->product_plan->data_size_in_mb ?? '0') .' MB';
@@ -154,8 +190,8 @@ class TransactionController extends Controller
             return $data->created_at;
         }) 
         ->addColumn('action',function($data){
-            $route = '#';
-            // $route = route('transaction_details',$data->id);
+            // $route = 'transactions.transaction_details';
+            $route = route('transactions.transaction_details',$data->id);
             $actionBtn = '<a href="'.$route.'" type="button" class="hs-dropdown-toggle ti-btn ti-btn-primary" data-hs-overlay="#hs-vertically-centered-scrollable-modal'.$data->email.'">
             Details
             </a>';
@@ -240,14 +276,14 @@ class TransactionController extends Controller
             $transaction_category = $data->transaction_category;
             return $transaction_category;
         })
-        ->addColumn('response',function($data){
-            return  '<span style="white-space: normal;word-wrap: break-word;word-break: normal;width:auto">'.$data->user_screen_message.'</span>';
-            // return $user_screen_message;
-        })
-        ->addColumn('admin_response',function($data){
-            return  '<span style="white-space: normal;word-wrap: break-word;word-break: normal;width:auto">'.$data->admin_screen_message.'</span>';
-            // return $user_screen_message;
-        })
+        // ->addColumn('response',function($data){
+        //     return  '<span style="white-space: normal;word-wrap: break-word;word-break: normal;width:auto">'.$data->user_screen_message.'</span>';
+        //     // return $user_screen_message;
+        // })
+        // ->addColumn('admin_response',function($data){
+        //     return  '<span style="white-space: normal;word-wrap: break-word;word-break: normal;width:auto">'.$data->admin_screen_message.'</span>';
+        //     // return $user_screen_message;
+        // })
         ->addColumn('phone_number',function($data){
             return $data->phone_number;
         }) 
@@ -292,8 +328,7 @@ class TransactionController extends Controller
             return $data->created_at;
         }) 
         ->addColumn('action',function($data){
-            $route = '#';
-            // $route = route('transaction_details',$data->id);
+            $route = route('transactions.transaction_details',$data->id);
             $actionBtn = '<a href="'.$route.'" type="button" class="hs-dropdown-toggle ti-btn ti-btn-primary" data-hs-overlay="#hs-vertically-centered-scrollable-modal'.$data->email.'">
             Details
             </a>';

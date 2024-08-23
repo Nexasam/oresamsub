@@ -102,10 +102,10 @@ class ElectricitySubscriptionController extends Controller
             $transaction_category = $data->transaction_category;
             return $transaction_category;
         })
-        ->addColumn('response',function($data){
-            return  '<span style="white-space: normal;word-wrap: break-word;word-break: normal;width:auto">'.$data->user_screen_message.'</span>';
-            // return $user_screen_message;
-        })
+        // ->addColumn('response',function($data){
+        //     return  '<span style="white-space: normal;word-wrap: break-word;word-break: normal;width:auto">'.$data->user_screen_message.'</span>';
+        //     // return $user_screen_message;
+        // })
         // ->addColumn('phone_number',function($data){
         //     return $data->phone_number;
         // }) 
@@ -153,8 +153,7 @@ class ElectricitySubscriptionController extends Controller
             return $data->created_at;
         }) 
         ->addColumn('action',function($data){
-            $route = '#';
-            // $route = route('transaction_details',$data->id);
+            $route = route('transactions.transaction_details',$data->id);
             $actionBtn = '<a href="'.$route.'" type="button" class="hs-dropdown-toggle ti-btn ti-btn-primary" data-hs-overlay="#hs-vertically-centered-scrollable-modal'.$data->email.'">
             Details
             </a>';
@@ -355,13 +354,15 @@ class ElectricitySubscriptionController extends Controller
         //////////////////////    
         $automation_id = $plan_details->automation_id;
         $product_plan_category = $plan_details->product_plan_category;
-        $actual_amount = $request->amount;
+        $actual_amount = abs($request->amount);
 
         $user_level_selling = "user_level_".$plan_level."_selling_price";
         $purchase_discount =  $plan_details->$user_level_selling;
         $actual_discount_value = ceil(($purchase_discount/100) * $actual_amount);  
         //below forms the new amount to sell to the user: discounted
-        $amount = ceil($actual_amount - abs($actual_discount_value));
+        // $amount = ceil($actual_amount - abs($actual_discount_value));
+        $amount = $actual_discount_value < 0 || $actual_discount_value > $actual_amount ? $actual_amount : ($actual_amount - $actual_discount_value);
+
      
 
         DB::beginTransaction();

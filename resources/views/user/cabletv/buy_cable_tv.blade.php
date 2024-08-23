@@ -140,7 +140,7 @@
                                     <th>Wallet</th>
                                     <th>Product Details</th>
                                     <th>Txn Category</th>
-                                    <th>Response</th>
+                                    {{-- <th>Response</th> --}}
                                     <th>Phone</th>
                                     <th>IUC Number</th>
                                     <th>Amount</th>

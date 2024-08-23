@@ -228,27 +228,26 @@ class ProductPlanController extends Controller
           $data['user_level_6_selling_price'] = NULL;
           $data['visibility'] = 1;
           $data['active_status'] = 1;
-          // $data['network_id'] = $request->network_id;
-
-        //   return response()->json(['status'=>'-1', 'message'=>$request->all()  ]);
-
+          
+          $fetch_product_plan_category = ProductPlanCategory::with('product')->where('id',$request->product_plan_category_id)->first();
+          if(! $fetch_product_plan_category){
+            return response()->json(['status'=>'-1', 'message'=> 'Error: Product category not set'  ]);
         
+          }
+          if($fetch_product_plan_category && ($fetch_product_plan_category->product->slug == 'airtime' || $fetch_product_plan_category->product->slug == 'utility_bills' ) ){
+             if($request->user_plan_1 > 100 || $request->user_plan_2 > 100 || $request->user_plan_3 > 100 || $request->user_plan_4 > 100 ){
+               return response()->json(['status'=>'-1', 'message'=> 'Error: Percentage discount cannot be greater than 100% for airtime and utility bills'  ]);
+             }
+          }
+          
           $product_plan = ProductPlan::updateOrCreate([
             'automation_product_plan_id' => $request->id,
             'automation_id' => $request->automation_id,
           ],$data);
 
-          return response()->json(['status'=>'1', 'message'=>'successfully saved'. 'plan_id:'.$request->id.' auto_id: '.$request->automation_id. 'data:'.json_encode($data),  ]);
+          // return response()->json(['status'=>'1', 'message'=>'successfully saved'. 'plan_id:'.$request->id.' auto_id: '.$request->automation_id. 'data:'.json_encode($data),  ]);
+          return response()->json(['status'=>'1', 'message'=>'Plan was successfully saved' ]);
 
     
-        //   if($product_plan){
-        //     Session::flash('success','Product plan was successfully saved');
-        //   }else{
-        //     Session::flash('failure','Error occurred while saving product plan');
-        //   }
-
-
-    
-        //   return redirect()->route('admin.users.index');
     }
 }

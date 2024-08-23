@@ -2,9 +2,10 @@
 
 namespace App\Models;
 
+use App\Models\AdminWebhookString;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
 
 class FundingOption extends Model
 {
@@ -13,6 +14,10 @@ class FundingOption extends Model
     protected $guarded = [];
     public function bank_codes(){
         return $this->hasMany(FundingOptionBankCodes::class,'funding_option_id','id');
+    }
+
+    public function webhook_string(){
+        return $this->hasOne(AdminWebhookString::class,'funding_option_id','id');
     }
 
    

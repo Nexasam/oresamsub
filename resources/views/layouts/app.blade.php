@@ -7,7 +7,7 @@
     <meta name="csrf_token" content="{{ csrf_token() }}">
     <title> Data App - {{ env('APP_NAME') }} </title>
     <meta name="description" content="We are a data website selling data related products at affordable prices with quality">
-    <meta name="keywords" content="analytics dashboard,jobs dashboard,crm dashboard examples,personal dashboard,sales dashboard sample,best crm dashboard,crypto dashboard template,sales analytics dashboard,stocks dashboard,hrm dashboard,ecommerce admin panel template,sales admin dashboard,admin panel for ecommerce website,website template ecommerce,template dashboard,course dashboard,template ecommerce website">
+    <meta name="keywords" content="data purchase, mtn, airtel, utility bills, cable subscription">
 
     <!-- Favicon -->
     {{-- <link rel="shortcut icon" href="{{ asset( env('APP_ASSETS_BASE_URL').'img/brand-logos/favicon.ico') }}"> --}}
