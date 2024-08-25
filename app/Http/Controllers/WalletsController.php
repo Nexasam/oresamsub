@@ -16,7 +16,7 @@ use Illuminate\Support\Facades\Validator;
 
 class WalletsController extends Controller
 {
-    public function webhook( $id,Request $request){
+    public function webhook($id,Request $request){
        
         //{
         //   $resp = '{"event":"VIRTUAL_ACCOUNT_INFLOW",

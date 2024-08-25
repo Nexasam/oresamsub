@@ -139,6 +139,28 @@ class ProductPlanCategoryController extends Controller
           return response()->json(['status'=>'-1', 'message'=>'successfully updated' ]);
     }
 
+    public function toggle_plan_category_visibility(Request $request){
+      
+      $validator = Validator::make($request->all(), [
+        'productPlanCategoryId' => 'required|max:255|exists:product_plan_categories,id',
+        'token' => 'required',
+      ]);
+      
+
+      if ($validator->stopOnFirstFailure()->fails()) {
+        return redirect()->back()->withErrors($validator)->withInput();
+      }
+
+      $detail = ProductPlanCategory::where('id',$request->productPlanCategoryId)->first();
+      $update = $detail->visibility ? 0 : 1;
+      $detail->update([
+        'visibility' => $update
+      ]);
+
+      return response()->json(['status'=>'1', 'message'=>'success']);
+
+    }
+
     public function toggle_hot_sales(Request $request){
       
       $validator = Validator::make($request->all(), [
@@ -220,6 +242,21 @@ class ProductPlanCategoryController extends Controller
           $toggle_btn .=  '<input onchange="toggleHotSales('.$escapedUrl.','.$token.','.$checkedd.')" type="checkbox" id="hs-basic-with-description-checked'.$data->id.'" class="ti-switch" '.$checked.'>';
           $toggle_btn .=  '<label for="hs-basic-with-description-checked" class="text-sm text-gray-500 ms-3 dark:text-white/70 "></label>';
           $toggle_btn .=  ' <span class="badge rounded-sm bg-success/10 text-success hidden" id="hot_sales_notification'.$data->id.'"></span>  </div>';
+          
+          return $toggle_btn;
+          // return $data->is_hot_sales ? 'YES' : 'NO';
+         }) 
+         ->addColumn('visibility',function($data){
+          // onchange="toggleHotSales('.$data->id.')"
+          $escapedUrl = htmlspecialchars(json_encode($data->id));
+          $token = htmlspecialchars(json_encode(csrf_token()));
+          $checked = $data->visibility == 1 ? 'checked':'';
+          $actual_value = $data->visibility;
+          $checkedd = htmlspecialchars(json_encode($actual_value));
+          $toggle_btn = '<div class="flex items-center">';
+          $toggle_btn .=  '<input onchange="togglePlanCategoryVisibility('.$escapedUrl.','.$token.','.$checkedd.')" type="checkbox" id="hs-basic-with-description-checked'.$data->id.'" class="ti-switch" '.$checked.'>';
+          $toggle_btn .=  '<label for="hs-basic-with-description-checked" class="text-sm text-gray-500 ms-3 dark:text-white/70 "></label>';
+          $toggle_btn .=  ' <span class="badge rounded-sm bg-success/10 text-success hidden" id="plan_cat_visibility_notification'.$data->id.'"></span>  </div>';
           
           return $toggle_btn;
           // return $data->is_hot_sales ? 'YES' : 'NO';

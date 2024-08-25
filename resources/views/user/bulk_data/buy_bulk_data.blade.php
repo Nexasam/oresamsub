@@ -180,7 +180,8 @@
                                                     <select required id="bulk_data_wallet_id" name="bulk_data_wallet_id" class="my-auto ti-form-select">
                                                         <option value="">Select</option>
                                                         @foreach ($bulk_data_wallets as $bulk_data_wallet)
-                                                          <option value="{{ $bulk_data_wallet->id }}" >{{ $bulk_data_wallet->product_plan_category->product_plan_category_name }} - {{ number_format($bulk_data_wallet->bulk_wallet_balance_mb). 'MB' }}</option>
+                                                        {{-- - {{ number_format($bulk_data_wallet->bulk_wallet_balance_mb). 'MB' }} --}}
+                                                          <option value="{{ $bulk_data_wallet->id }}" >{{ $bulk_data_wallet->product_plan_category->product_plan_category_name }}</option>
                                                         @endforeach                                   
                                                      
                                                     </select>

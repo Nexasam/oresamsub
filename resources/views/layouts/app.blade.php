@@ -1078,6 +1078,41 @@
       });
 }
 
+        function togglePlanCategoryVisibility(productPlanCategoryId,token,checkedd){
+               
+
+                  const data = {
+                    productPlanCategoryId : productPlanCategoryId,
+                    token : token
+                  };
+                  // console.log(data);
+
+                   $.ajax({
+                    type: 'GET',
+                    url: "{{ route('admin.product_plan_categories.toggle_plan_category_visibility') }}",
+                    data: data,
+                    dataType: 'json',
+                    success: function(response) {
+                        $('#plan_cat_visibility_notification'+productPlanCategoryId).removeClass('hidden');
+                        $('#plan_cat_visibility_notification'+productPlanCategoryId).html(response.message);
+                        console.log(response);
+                        // console.log(response.data);
+                        // var result = JSON.stringify(response);
+                        // var dataList = JSON.parse(result);
+                        // if(dataList.status == 1){
+                        //    sweetAlertDisplay(dataList.message,'Success','success');
+                        //    reload(3000);
+                        // }else{
+                        //   sweetAlertDisplay(dataList.message,'Error','error');
+                        // }
+                    },
+                    error: function(xhr, status, error) {
+                        // Handle errors if needed
+                        console.error(xhr.responseText);
+                    }
+                });
+        }
+
         function toggleHotSales(planCategoryId,token,checkedd){
                   // alert(planCategoryId)
                   // var check = $('#hs-basic-with-description-checked'+planCategoryId).checked;

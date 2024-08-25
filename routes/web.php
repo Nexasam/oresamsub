@@ -108,6 +108,8 @@ Route::middleware(['auth','verified','admin'])->post('admin/products/store', [Pr
 Route::middleware(['auth','verified','admin'])->post('admin/products/update', [ProductController::class, 'update'])->name('admin.products.update');
 
 
+
+Route::middleware(['auth','verified','admin'])->get('admin/toggle_plan_category_visibility', [ProductPlanCategoryController::class, 'toggle_plan_category_visibility'])->name('admin.product_plan_categories.toggle_plan_category_visibility');
 Route::middleware(['auth','verified','admin'])->get('admin/toggle_hot_sales', [ProductPlanCategoryController::class, 'toggle_hot_sales'])->name('admin.product_plan_categories.toggle_hot_sales');
 Route::middleware(['auth','verified','admin'])->get('admin/product_plan_categories', [ProductPlanCategoryController::class, 'index'])->name('admin.product_plan_categories.index');
 Route::middleware(['auth','verified','admin'])->get('admin/product_plan_categories/view/{id}', [ProductPlanCategoryController::class, 'view_details'])->name('admin.product_plan_categories.view_details');

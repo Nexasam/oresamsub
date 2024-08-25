@@ -109,6 +109,7 @@ $(document).ready(function(){
                     {data: 'network_id', name: 'network_id'},
                     {data: 'created_at', name: 'created_at'},
                     {data: 'is_hot_sales', name: 'is_hot_sales'},
+                    {data: 'visibility', name: 'visibility'},
                     {data: 'action', name: 'action'},
                   ]
         });

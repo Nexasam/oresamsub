@@ -48,7 +48,10 @@ class AirtimeController extends Controller
         $data['product'] = $product;
 
 
-        $product_plan_categories = ProductPlanCategory::where('product_id',$product->id)->get(); //TODO: have enums that gets the id later
+        $product_plan_categories = ProductPlanCategory::where('product_id',$product->id)
+        ->where('visibility',1)
+        ->get(); //TODO: have enums that gets the id later
+       
         $data['product_plan_categories'] = $product_plan_categories;
 
         $user_details = auth()->user();

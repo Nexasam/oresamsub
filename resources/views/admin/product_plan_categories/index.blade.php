@@ -79,6 +79,7 @@
                                     <th>Network</th>
                                     <th>Date added</th>
                                     <th>Hot sales</th>
+                                    <th>Visibility</th>
                                     <th>Bulk data plans</th>
                                 </tr>
                                </thead>
