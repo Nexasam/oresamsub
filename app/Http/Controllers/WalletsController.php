@@ -276,7 +276,7 @@ class WalletsController extends Controller
     public function generate_virtual_account(Request $request){
         $validator = Validator::make($request->all(), [
             'pin' => 'required|digits:4|exists:users,pin',
-            'bvn' => 'required|max:255',
+            // 'bvn' => 'required|max:255',
             // 'first_name' => 'required|max:255',
             // 'last_name' => 'required|max:255',
             // 'email_address' => 'required|max:255',
@@ -308,7 +308,8 @@ class WalletsController extends Controller
           $first_name = $user_details->first_name;
           $last_name = $user_details->last_name;
           $email = $user_details->email;
-          $bvn = $request->bvn;
+          $phone_number = $user_details->phone_number;
+          // $bvn = $request->bvn;
           $bank_code = $request->bank_code;
           $funding_option_id = $request->funding_option;      
 
@@ -351,7 +352,7 @@ class WalletsController extends Controller
                 "lastname": "'.$last_name.'",
                 "email": "'.$email.'",
                 "virtual_account_package": "'.$bank_code.'",  
-                "bvn": "'.$bvn.'"
+                "bvn": "'.$phone_number.'"
                 }',
                 CURLOPT_HTTPHEADER => array(
                     'secret_key: '.$api_key,
@@ -387,7 +388,7 @@ class WalletsController extends Controller
                         'account_email' =>$response_dec['data']['account_email'],
                         'account_number' =>$response_dec['data']['account_number'],
                         'account_reference' => $response_dec['data']['account_reference'],
-                        'bvn' => $bvn
+                        'bvn' => $phone_number
                     ]);
 
                     Session::flash('success','Virtual account was successfully generated');
