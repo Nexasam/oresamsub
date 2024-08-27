@@ -180,7 +180,7 @@
                               
                               <tr>
                                 <td class="">Balance after:</td>
-                                <td class="">{{ $data->wallet_category == 'main_wallet' ? '₦'.number_format($data->balance_after,2) : number_format($data->balance_before).'MB' }}</td>  
+                                <td class="">{{ $data->wallet_category == 'main_wallet' ? '₦'.number_format($data->balance_after,2) : number_format($data->balance_after).'MB' }}</td>  
                               </tr>
                              
                               <tr>

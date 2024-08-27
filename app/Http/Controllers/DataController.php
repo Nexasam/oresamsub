@@ -463,7 +463,7 @@ class DataController extends Controller
                                 else{
                                     //this will be like this until other automations are processed
                                     $sell_data['status'] = -1;
-                                    $sell_data['user_message'] = 'Bul data processing failed.';
+                                    $sell_data['user_message'] = 'Bulk data processing failed.';
                                     $sell_data['admin_message'] = 'Bulk data processing failed.';
                                 }
 
@@ -532,10 +532,6 @@ class DataController extends Controller
                                 $walletLog['action_by'] = auth()->user()->id;
                                 $walletLog['description'] = 'Data Purchase from data wallet';
                                 $this->log_wallet_transactions($walletLog);
-
-                    
-                               
-                    
                             }
     
                             DB::commit();
