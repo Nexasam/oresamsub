@@ -76,7 +76,7 @@
                     <p> <i class='bx bxs-envelope'></i> {{ $topnav_email  }}</p>
                      <input value="{{  env('APP_URL') }}" type="hidden" class="root_url2">
 
-                    <p>  <a style="text-decoration: none; color:white" href="tel:08168509044"><i class='bx bxs-phone-call'></i>{{ $topnav_phone }}</a> </p>
+                    <p>  <a style="text-decoration: none; color:white" href="tel:{{ $topnav_phone  }}"><i class='bx bxs-phone-call'></i>{{ $topnav_phone }}</a> </p>
                 </div>
                 <div class="col-auto social-icons">
                     <a href="{{ $facebook_link }}"><i class='bx bxl-facebook'></i></a>

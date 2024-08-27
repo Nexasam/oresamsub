@@ -332,7 +332,7 @@ class DataController extends Controller
                             //calling the actual vending via the automation:
                             $automation_details = Automation::where('id',$automation_id)->first();
                     
-                            //TODO: candidate for separation
+                            //TODO: candidate for separation:
                             for($i = 0; $i < count($phone_numbers_array); $i++ ){
                             
                                 //vend data
@@ -454,30 +454,60 @@ class DataController extends Controller
                             
                                 //vend data
                                 //HERE the endpoint of the automation service is called
+                                if($automation_details->slug == 'megasubplug'){
+                                    $sell_data = (new MegaSubVendData($phone_numbers_array[$i],$request->product_plan_id))->buyData();
+                                }
+                                else if($automation_details->slug == 'ogdams' || $automation_details->slug == 'ogdamsv2'){
+                                    $sell_data = (new OgdamsVendData($phone_numbers_array[$i],$request->product_plan_id))->buyData();
+                                }
+                                else{
+                                    //this will be like this until other automations are processed
+                                    $sell_data['status'] = -1;
+                                    $sell_data['user_message'] = 'Bul data processing failed.';
+                                    $sell_data['admin_message'] = 'Bulk data processing failed.';
+                                }
+
+                                if($sell_data['status'] == 1){
+                                    $success++;
+                                    $status = 1;
+                                    $get_bulk_data_wallet_details = UserBulkDataWallet::where('user_id',$user_id)->where('product_plan_category_id',$request->product_plan_category_id)->first();
+                                    $bulk_wallet_balance_before = $get_bulk_data_wallet_details->bulk_wallet_balance_mb;
+                                    $bulk_wallet_balance_after = $bulk_wallet_balance_before - $data_value_mb; 
+                                }else{
+                                    //it might be processing or it failed
+                                    $status = -1;
+                                    $failure++;
+                                    $get_bulk_data_wallet_details = UserBulkDataWallet::where('user_id',$user_id)->where('product_plan_category_id',$request->product_plan_category_id)->first();
+                                    $bulk_wallet_balance_before = $get_bulk_data_wallet_details->bulk_wallet_balance_mb;
+                                    $bulk_wallet_balance_after = $bulk_wallet_balance_before;
+                                }
                                 //simulate success
-                                $success++;
-                                $message = 'Successfully processed via bulk data wallet';
-                                $status = 1;
+
+                                $user_message = $sell_data['user_message'];
+                                $admin_message = $sell_data['admin_message'];
                                 $display_results[$i] = array(
-                                    'message' => $message,
+                                    'message' => $user_message,
+                                    'admin_message' => $admin_message,
                                     'status' => $status
                                 );
-                                $get_bulk_data_wallet_details = UserBulkDataWallet::where('user_id',$user_id)->where('product_plan_category_id',$request->product_plan_category_id)->first();
-                                $bulk_wallet_balance_before = $get_bulk_data_wallet_details->bulk_wallet_balance_mb;
-                               
-                                $bulk_wallet_balance_after = $bulk_wallet_balance_before - $data_value_mb;
-                    
-                    
-                                //this should not run though because it has already been checked
+
+
                                 if($bulk_wallet_balance_after <= 0){
                                     $status = -1;
                                     $message = 'Failed due to insufficient balance via bulk data wallet';
                                     $failure++;
                                     $display_results[$i] = array(
-                                        'message' => $message,
+                                        'message' => $user_message,
+                                        'admin_message' => $admin_message,
                                         'status' => $status
                                     );
                                 }
+
+                                UserBulkDataWallet::where('user_id',$user_id)
+                                ->where('product_plan_category_id',$request->product_plan_category_id)
+                                ->update([
+                                    'bulk_wallet_balance_mb' => $bulk_wallet_balance_after
+                                ]);
                         
                                 $description = 'Purchase of data via data wallet';
                                 $creationData['transaction_category'] = 'data';
@@ -504,16 +534,16 @@ class DataController extends Controller
                                 $this->log_wallet_transactions($walletLog);
 
                     
-                                UserBulkDataWallet::where('user_id',$user_id)
-                                                    ->where('product_plan_category_id',$request->product_plan_category_id)
-                                                    ->update([
-                                                        'bulk_wallet_balance_mb' => $bulk_wallet_balance_after
-                                                    ]);
+                               
                     
                             }
     
                             DB::commit();
-                            return response()->json(['status'=>1, 'message'=>'Transaction was successfully processed', 'data' => $display_results  ]);
+                            if($failure > 0){
+                                return response()->json(['status'=>2, 'message'=>" $failure issue(s) found. Check transaction history", 'data' => $display_results  ]);   
+                            }
+                            return response()->json(['status'=>1, 'message'=>'Bulk data transaction was successfully processed', 'data' => $display_results  ]);
+                     
                     
 
 
