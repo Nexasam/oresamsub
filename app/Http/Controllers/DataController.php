@@ -520,8 +520,8 @@ class DataController extends Controller
                                 $creationData['balance_before'] = $bulk_wallet_balance_before;
                                 $creationData['balance_after'] = $bulk_wallet_balance_after;
                                 $creationData['description'] = $description;
-                                $creationData['user_screen_message'] = $message;
-                                $creationData['admin_screen_message'] = $message;
+                                $creationData['user_screen_message'] = $user_message;
+                                $creationData['admin_screen_message'] = $admin_message;
                                 $transaction = Transaction::create($creationData);
 
                                 $walletLog['user_id'] = $user_id;
@@ -531,7 +531,7 @@ class DataController extends Controller
                                 $walletLog['transaction_id'] = $transaction->id;
                                 $walletLog['action_by'] = auth()->user()->id;
                                 $walletLog['description'] = 'Data Purchase from data wallet';
-                                $this->log_wallet_transactions($walletLog);
+                                $this->log_wallet_transactions($walletLog);             
                             }
     
                             DB::commit();
