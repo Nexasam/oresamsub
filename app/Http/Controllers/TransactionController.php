@@ -35,8 +35,8 @@ class TransactionController extends Controller
 
   public function transaction_refund(Request $request){
     $validator = Validator::make($request->all(), [
-        'pin' => 'required|max:255',
-        'transaction_id' => 'required|exists:tranactions,id',
+        'pin' => 'required|digits:4',
+        'transaction_id' => 'required|exists:transactions,id',
       ]);
 
     //   return [
@@ -69,7 +69,7 @@ class TransactionController extends Controller
       $transaction_category = $transaction_details->transaction_category;
       $status = $transaction_details->status;
       $user_id = $transaction_details->user_id;
-      if($transaction_details->status != 2){
+      if($transaction_details->status == 2){
         Session::flash('failure','This is a refunded transaction'); 
         return redirect()->back();
       }
@@ -97,6 +97,9 @@ class TransactionController extends Controller
          $walletLog['description'] = 'Transaction was refunded for the ID: '. $transaction_details->id;
          $this->log_wallet_transactions($walletLog);
         //log: refund
+
+        Session::flash('success','Refund was successful'); 
+        return redirect()->back();
 
       }else{
 

@@ -195,7 +195,9 @@
                                   @if ($data->status != 2)
                                     <button type="button" class="hs-dropdown-toggle ti-btn ti-btn-danger" data-hs-overlay="#hs-basic-modal">
                                       Refund
-                                    </button>      
+                                    </button> 
+                                    @else
+                                     <strong>Refunded</strong>     
                                   @endif   
                                   {{-- <button type="button" class="w-20 !p-1 ti-btn ti-btn-danger">Cancel</button> --}}
                                   <div id="hs-basic-modal" class="hs-overlay ti-modal hidden">
@@ -218,12 +220,22 @@
                                           </button>
                                         </div>
                                         <div class="ti-modal-body">
-                                          Are you sure you want to make a refund of this transaction ?
+                                          Are you sure you want to make a refund of this transaction ? <br> <hr>
+                                          <form class=" space-x-2" method="POST" action="{{ route('transactions.transaction_refund') }}">
+                                            @csrf
+                                            <div class="space-x-2">
+                                              <input type="hidden" name="transaction_id" id="transaction_id" value="{{  $data->id }}">
+                                              <input type="text" required name="pin" id="pin" placeholder="enter PIN" value="">
+  
+                                            </div>
+                                            <div class="space-y-2">
+                                              <button type="submit" class="ti-btn ti-btn-danger w-full">Confirm refund</button>
+                                            </div>
+                                          </form>
                                         </div>
                                           <div class="ti-modal-footer">
-                                          <div class="space-y-2">
-                                            <button type="submit" class="ti-btn ti-btn-danger w-full">Confirm refund</button>
-                                          </div>
+                                           
+                                            
                                           <button type="button"
                                             class="hs-dropdown-toggle ti-btn ti-border font-medium bg-white text-gray-700 shadow-sm align-middle hover:bg-gray-50 focus:ring-offset-white focus:ring-primary dark:bg-bgdark dark:hover:bg-black/20 dark:border-white/10 dark:text-white/70 dark:hover:text-white dark:focus:ring-offset-white/10"
                                             data-hs-overlay="#hs-basic-modal">
