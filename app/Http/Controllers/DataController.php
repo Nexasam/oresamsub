@@ -278,6 +278,7 @@ class DataController extends Controller
             'product_plan_id' => 'required',
             'pin' => ['required','digits:4'],
             'wallet_category'=>['required',Rule::in(['main_wallet','data_wallet'])],
+            'validatephonenetwork'=>['required',Rule::in([0,1])],
         ]);
         
         if ($validator->stopOnFirstFailure()->fails()) {
@@ -341,7 +342,7 @@ class DataController extends Controller
                                 //this is for megasubplug
                                 
                                 if($automation_details->slug == 'megasubplug'){
-                                    $sell_data = (new MegaSubVendData($phone_numbers_array[$i],$request->product_plan_id))->buyData();
+                                    $sell_data = (new MegaSubVendData($phone_numbers_array[$i],$request->product_plan_id,$request->validatephonenetwork))->buyData();
                                 }
                                 else if($automation_details->slug == 'ogdams' || $automation_details->slug == 'ogdamsv2'){
                                     $sell_data = (new OgdamsVendData($phone_numbers_array[$i],$request->product_plan_id))->buyData();
@@ -455,7 +456,7 @@ class DataController extends Controller
                                 //vend data
                                 //HERE the endpoint of the automation service is called
                                 if($automation_details->slug == 'megasubplug'){
-                                    $sell_data = (new MegaSubVendData($phone_numbers_array[$i],$request->product_plan_id))->buyData();
+                                    $sell_data = (new MegaSubVendData($phone_numbers_array[$i],$request->product_plan_id,$request->validatephonenetwork))->buyData();
                                 }
                                 else if($automation_details->slug == 'ogdams' || $automation_details->slug == 'ogdamsv2'){
                                     $sell_data = (new OgdamsVendData($phone_numbers_array[$i],$request->product_plan_id))->buyData();
@@ -657,7 +658,6 @@ class DataController extends Controller
             $dataaa['amount_spent'] = $price;
             $dataaa['mb_data_measurement'] =$bulk_data_plan->mb_data_measurement;
             // return response()->json(['status'=>'-1', 'message'=>json_encode($dataaa)]);
-
             $create = UserBulkDataPurchase::create($dataaa);
 
           
@@ -671,6 +671,21 @@ class DataController extends Controller
                 'bulk_wallet_balance_mb' => $new_data_wallet_balance,
                 'alltime_bulk_wallet_balance_mb' => $new_alltime_data_wallet_balance,
             ]);
+
+            $description = 'Bulk Data Purchase';
+            $creationData['transaction_category'] = 'bulk_data';
+            $creationData['user_id'] = auth()->id();
+            $creationData['wallet_category'] = 'main_wallet';
+            $creationData['product_plan_id'] = $user_bulk_data_wallet->id; //not sure what to do here
+            $creationData['amount'] = $price;
+            $creationData['discounted_amount'] = $price;
+            $creationData['status'] = 0;
+            $creationData['balance_before'] = $wallet_before;
+            $creationData['balance_after'] = $wallet_after;
+            $creationData['description'] = $description;
+            $creationData['admin_screen_message'] = 'Bulk data purchase was successful: '. $bulk_data_plan->bulk_data_plan_name;
+            $creationData['user_screen_message'] = 'Purchase of Bulk data plan: '. $bulk_data_plan->bulk_data_plan_name.' was successful';
+            $transaction = Transaction::create($creationData);
 
             $walletLog['user_id'] = $user_details->id;
             $walletLog['transaction_category'] = 'BULK_DATA_PURCHASE';

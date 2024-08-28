@@ -238,6 +238,13 @@
                                                     <textarea id="phone_number" name="phone_number" class="my-auto ti-form-input"
                                                         placeholder="e.g 08168509044, 09011988807"></textarea>
                                                 </div>
+
+                                                <div class="space-y-2">
+                                                  <label class="p-3 flex w-full bg-white border border-gray-200 rounded-sm text-sm focus:border-primary focus:ring-primary dark:bg-bgdark dark:border-white/10 dark:text-white/70">
+                                                       <input type="checkbox" class="ti-form-checkbox mt-0.5 pointer-events-none" id="validatephonenetwork">
+                                                       <span class="text-sm text-gray-500 ms-2 dark:text-white/70">Validate phone network</span>
+                                                     </label>
+                                                </div>
                     
                                                
 

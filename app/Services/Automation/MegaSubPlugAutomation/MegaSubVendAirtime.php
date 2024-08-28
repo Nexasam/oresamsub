@@ -28,8 +28,9 @@ class MegaSubVendAirtime{
     private $api_key = '';
     private $api_password = '';
 
-    public function __construct($mobile_number,$plan_id,$amount){
+    public function __construct($mobile_number,$plan_id,$amount,$validatephonenetwork = 0){
         $this->amount = $amount;
+        $this->validatephonenetwork = $validatephonenetwork;
         $this->mobile_number = $mobile_number;
         $this->plan_id = $plan_id;
         $this->api_key = Automation::where('slug','megasubplug')->first()->api_public_key;

@@ -163,8 +163,11 @@
                             </div>
 
                             <div class="col-span-12">
-                                <div class="box">
-                                    
+                                <div class="box p-4">
+                                    <div><strong>NOTE:</strong>
+                                      You can generate/add your bulk data wallets by using the link below: <br>
+                                      <a class="ti-btn ti-btn-warning w-1/4" href="{{ route('user.generate_user_bulk_data_wallets') }}">Generate wallets now</a>
+                                    </div>
                                     <div class="box-body">
                                         <form>
                                            {{-- <div id="dialog" title="Basic dialog">

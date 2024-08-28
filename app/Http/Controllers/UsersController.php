@@ -7,6 +7,7 @@ use App\Models\User;
 use App\Models\UserPlan;
 use Illuminate\Http\Request;
 use Yajra\DataTables\DataTables;
+use App\Models\UserBulkDataWallet;
 use App\Models\ProductPlanCategory;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
@@ -43,6 +44,25 @@ class UsersController extends Controller
         $data['roles'] = $roles;
         $data['users'] = $users;
         return view('admin.users.index')->with($data);
+    }
+
+
+    public function generate_user_bulk_data_wallets(){
+        $product_plan_categories = ProductPlanCategory::with(['product' => function($query){
+            $query->where('slug','data');
+        }])->pluck('id');
+        // return $product_plan_categories;
+        // dd($product_plan_categories);
+        foreach($product_plan_categories as $product_plan_category){
+            UserBulkDataWallet::updateOrCreate([
+                'user_id' => auth()->id(),
+                'product_plan_category_id' => $product_plan_category,
+            ],[]);
+        } 
+        
+        Session::flash('success','Wallets successfully generated');
+        return redirect()->back();
+        
     }
 
 

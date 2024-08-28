@@ -26,9 +26,10 @@ class MegaSubVendData{
     private $api_key = '';
     private $api_password = '';
 
-    public function __construct($mobile_number,$plan_id){
+    public function __construct($mobile_number,$plan_id,$validatephonenetwork = 0){
         $this->mobile_number = $mobile_number;
         $this->plan_id = $plan_id;
+        $this->validatephonenetwork = $validatephonenetwork;
         $this->api_key = Automation::where('slug','megasubplug')->first()->api_public_key;
         $this->api_password = Automation::where('slug','megasubplug')->first()->api_password;
       

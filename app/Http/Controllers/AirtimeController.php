@@ -203,7 +203,7 @@ class AirtimeController extends Controller
             'product_plan_id' => 'required',
             'pin' => ['required','digits:4'],
             'amount' => 'required|numeric|gt:0',
-            // 'wallet_category'=>['required',Rule::in(['main_wallet'])],
+            'validatephonenetwork'=>['required',Rule::in([0,1])],
         ]);
         
         if ($validator->stopOnFirstFailure()->fails()) {
@@ -282,7 +282,7 @@ class AirtimeController extends Controller
                                 //this is for megasubplug: vend for Airtime
                                 
                                 if($automation_details->slug == 'megasubplug'){
-                                    $buy_airtime = (new MegaSubVendAirtime($phone_numbers_array[$i],$request->product_plan_id,$actual_amount))->buyAirtime();
+                                    $buy_airtime = (new MegaSubVendAirtime($phone_numbers_array[$i],$request->product_plan_id,$actual_amount,$request->validatephonenetwork))->buyAirtime();
                                     // logger($buy_airtime);
                                 }else{
                                     //this will be like this until other automations are processed

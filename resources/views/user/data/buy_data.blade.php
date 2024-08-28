@@ -218,12 +218,13 @@
                                                       </select>
                                                 </div>
                                                 <div class="space-y-2">
-                                                    {{-- <div class="grid sm:grid-cols-2 gap-2"> --}}
-                                                        <label class="p-3 flex w-full bg-white border border-gray-200 rounded-sm text-sm focus:border-primary focus:ring-primary dark:bg-bgdark dark:border-white/10 dark:text-white/70">
+                                                     <label class="p-3 flex w-full bg-white border border-gray-200 rounded-sm text-sm focus:border-primary focus:ring-primary dark:bg-bgdark dark:border-white/10 dark:text-white/70">
                                                           <input type="checkbox" class="ti-form-checkbox mt-0.5 pointer-events-none" id="filter_by_plan_category">
                                                           <span class="text-sm text-gray-500 ms-2 dark:text-white/70">Filter by plan categories</span>
                                                         </label>
                                                 </div>
+
+                                             
                     
                                                 {{-- single_select --}}
                                                 <div id="product_plan_category_div" class="space-y-2 hidden">
@@ -250,6 +251,13 @@
                                                     <textarea id="phone_number" name="phone_number" class="my-auto ti-form-input"
                                                         placeholder="e.g 08168509044, 09011988807"></textarea>
                                                 </div>
+
+                                                <div class="space-y-2">
+                                                  <label class="p-3 flex w-full bg-white border border-gray-200 rounded-sm text-sm focus:border-primary focus:ring-primary dark:bg-bgdark dark:border-white/10 dark:text-white/70">
+                                                       <input type="checkbox" class="ti-form-checkbox mt-0.5 pointer-events-none" id="validatephonenetwork">
+                                                       <span class="text-sm text-gray-500 ms-2 dark:text-white/70">Validate phone network</span>
+                                                     </label>
+                                                </div>
                     
                                                 <div class="space-y-2">
                                                   <label class="ti-form-label mb-0">PIN:</label>
@@ -259,6 +267,8 @@
                                                     <label for="hs-basic-with-description-unchecked" class="text-sm text-gray-500 ms-3 dark:text-white/70 ">Show PIN</label>
                                                   </div>  
                                                 </div>
+
+                                            
 
                                                 <div class="space-y-2">
                                                     <button type="submit" id="buy_data_btn" class="ti-btn ti-btn-primary w-full">Buy Data</button><br>

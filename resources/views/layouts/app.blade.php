@@ -1661,7 +1661,7 @@
                             $('.display_wallet_details').text(display);
                             return;
                         }else{
-                            const display = 'Your wallet balance for is 0 MB... Buy bulk data wallet';
+                            const display = 'Your wallet balance is 0 MB... Buy bulk data wallet';
                             $('.display_wallet_details').text(display);
                         }
 
@@ -1834,6 +1834,14 @@
               const wallet_category = $('#wallet_category').val();
               const product_plan_id = $('#product_plan_id').val();
               const pin = $('#pin').val();
+              // const validatephonenetwork = $('#validatephonenetwork').val();
+              let checkvalidatephonenetwork = $('#validatephonenetwork').is(":checked");
+              if(checkvalidatephonenetwork){
+                var validatephonenetwork = 1;
+              }else{
+                var validatephonenetwork = 0;
+                
+              }
               
 
               const data = {
@@ -1842,7 +1850,8 @@
                 phone_number : phone_number,
                 wallet_category : wallet_category,
                 product_plan_id : product_plan_id,
-                pin : pin
+                pin : pin,
+                validatephonenetwork : validatephonenetwork
               };
 
               
@@ -1860,7 +1869,7 @@
                     data: data,
                     dataType: 'json',
                     success: function(response) {
-                        // console.log(response);
+                        console.log(response);
                         // console.log(response.data);
                         var result = JSON.stringify(response);
                         var dataList = JSON.parse(result);
@@ -1905,6 +1914,13 @@
               const wallet_category = $('#wallet_category').val();
               const product_plan_id = $('#product_plan_id').val();
               const pin = $('#pin').val();
+              let checkvalidatephonenetwork = $('#validatephonenetwork').is(":checked");
+              if(checkvalidatephonenetwork){
+                var validatephonenetwork = 1;
+              }else{
+                var validatephonenetwork = 0;
+                
+              }
 
               if($('#amount_for_airtime_category').val() == ''){
                 var amount = $('#amount_for_airtime_category').val();
@@ -1932,7 +1948,8 @@
                 wallet_category : wallet_category,
                 product_plan_id : product_plan_id,
                 pin : pin,
-                amount : amount
+                amount : amount,
+                validatephonenetwork : validatephonenetwork
               };
 
               // console.log(data);
