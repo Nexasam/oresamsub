@@ -14,6 +14,7 @@
     
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title> Data App - {{ env('APP_NAME') }} </title>
     <meta name="description" content="Empowering Connections, One Byte at a Time - {{ env('APP_NAME') }}">
     <meta name="keywords" content="data purchase, mtn, airtel, utility bills, cable subscription">

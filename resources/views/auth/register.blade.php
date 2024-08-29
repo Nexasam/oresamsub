@@ -13,9 +13,10 @@
     gtag('config', 'G-NCKP7MH1KN');
     </script>
     
-    
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title> {{env('APP_NAME')}} - Enjoy data at the best rate </title>
     <meta name="description" content="This is an amazing data website for your special data needs">
 
@@ -125,6 +126,7 @@
                                                 <label for="first_name" class="block text-sm mb-2 dark:text-white">First Name</label>
                                                 <div class="relative">
                                                     <x-text-input id="first_name" class="block mt-1 w-full" type="text" name="first_name" :value="old('first_name')" required autofocus autocomplete="first_name" />
+                                                    <input type="hidden" name="_token" value="{{ csrf_token() }}" />
                                                     <x-input-error :messages="$errors->get('first_name')" class="mt-2" />
                                                 </div>
                                             </div>
