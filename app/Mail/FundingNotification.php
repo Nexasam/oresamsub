@@ -32,7 +32,7 @@ class FundingNotification extends Mailable
         // );
 
         return new Envelope(
-            from: new Address('info@mail.com', env('APP_NAME')),
+            from: new Address('info@foxdatahub.com', env('APP_NAME')),
             subject: 'Wallet Funding Notification',
         );
     }
