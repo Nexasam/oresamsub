@@ -1,19 +1,19 @@
 <?php
 
 return [
-    'site_title' => ['field_name','field_details','Subutility Data Website'],
-    'site_logo_alt' => ['field_name','field_details','Subutility'],
+    'site_title' => ['field_name','field_details','Oresamsub Data Website'],
+    'site_logo_alt' => ['field_name','field_details','Oresamsub'],
     'sub_hero1' => ['field_name','field_details','Ready for quality?'],
     'hero1_part1' => ['field_name','field_details','We are committed'],
     'hero1_part2' => ['field_name','field_details','to giving you quality services'],
     'sub_hero2' => ['field_name','field_details','Competitive prices'],
     'hero2_part1' => ['field_name','field_details','Our customers love us because'],
     'hero2_part2' => ['field_name','field_details','we give the best market prices'],
-    'aboutus_introduction' => ['field_name','field_details','Welcome to Subutility Solutions, your trusted partner in seamless and efficient bill payment services. Founded with a vision to simplify financial transactions, Subutility Solutions is dedicated to providing a convenient, secure, and user-friendly platform for managing all your bill payments in one place.'],
+    'aboutus_introduction' => ['field_name','field_details','Welcome to Oresamsub Solutions, your trusted partner in seamless and efficient bill payment services. Founded with a vision to simplify financial transactions, Oresamsub Solutions is dedicated to providing a convenient, secure, and user-friendly platform for managing all your bill payments in one place.'],
     'title_analytics1' => ['field_name','field_details','Happy clients'],
-    'value_analytics1' => ['field_name','field_details','10K+'],
+    'value_analytics1' => ['field_name','field_details','5K+'],
     'title_analytics2' => ['field_name','field_details','Transactions'],
-    'value_analytics2' => ['field_name','field_details','45M'],
+    'value_analytics2' => ['field_name','field_details','10K'],
     'title_analytics3' => ['field_name','field_details','Referral bonuses'],
     'value_analytics3' => ['field_name','field_details','12M+'],
     'title_analytics4' => ['field_name','field_details','Instagram followers'],
@@ -46,7 +46,7 @@ return [
     'review3' => ['field_name','field_details','Lorem ipsum dolor sit amet consectetur, adipisicing elit. Aut quis, rem culpa labore voluptate
                     ullam! In, nostrum. Dicta, vero nihil. Delectus minus vitae rerum voluptatum, excepturi incidunt ut,
                     enim nam exercitationem optio ducimus!'],  
-    'topnav_email' => ['field_name','field_details','info@Subutility.com'],  
+    'topnav_email' => ['field_name','field_details','info@Oresamsub.com'],  
     'topnav_phone' => ['field_name','field_details','08168509044'],  
     'facebook_link' => ['field_name','field_details','https://facebook.com'],  
     'instagram_link' => ['field_name','field_details','https://instagram.com'],  
