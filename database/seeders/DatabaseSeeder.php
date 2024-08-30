@@ -170,54 +170,55 @@ class DatabaseSeeder extends Seeder
         $admin_role = Role::create([
             'role_name' => 'Admin',
         ]);
+     
+     
         //assign all permissions to Admin:
-        $file_permissions = config('permissions');
-        // logger($file_permissions);
-        foreach($file_permissions as $key=>$permission){
-            if($file_permissions[$key]['slug'] != 'data_purchase'){
-                Permission::updateOrCreate(
-                [
-                    'role_id' => $admin_role->id,
-                    'permission_slug' => $file_permissions[$key]['slug'],
-                ],
-                [
-                    'permission_name' => $file_permissions[$key]['name'],
-                    'permission_slug' => $file_permissions[$key]['slug'],
-                    'permission_create' => $file_permissions[$key]['create'],
-                    'permission_read' => $file_permissions[$key]['read'],
-                    'permission_update' => $file_permissions[$key]['update'],
-                    'permission_delete' => $file_permissions[$key]['delete'],
-                ]);
-            }
-        }
+        // $file_permissions = config('permissions');
+        // // logger($file_permissions);
+        // foreach($file_permissions as $key=>$permission){
+        //     if($file_permissions[$key]['slug'] != 'data_purchase'){
+        //         Permission::updateOrCreate(
+        //         [
+        //             'role_id' => $admin_role->id,
+        //             'permission_slug' => $file_permissions[$key]['slug'],
+        //         ],
+        //         [
+        //             'permission_name' => $file_permissions[$key]['name'],
+        //             'permission_slug' => $file_permissions[$key]['slug'],
+        //             'permission_create' => $file_permissions[$key]['create'],
+        //             'permission_read' => $file_permissions[$key]['read'],
+        //             'permission_update' => $file_permissions[$key]['update'],
+        //             'permission_delete' => $file_permissions[$key]['delete'],
+        //         ]);
+        //     }
+        // }
 
-        $user_role = Role::create([
-            'role_name' => 'User',
-        ]);
-        $user_permissions = ['data_purchase'];
-        foreach($file_permissions as $key=>$permission){
+        // $user_permissions = ['data_purchase'];
+        // foreach($file_permissions as $key=>$permission){
 
-            if( in_array($file_permissions[$key]['slug'],$user_permissions) ){
-                Permission::updateOrCreate(
-                    [
-                        'role_id' => $user_role->id,
-                        'permission_slug' => $file_permissions[$key]['slug'],
-                    ],
-                    [
-                        'permission_name' => $file_permissions[$key]['name'],
-                        'permission_slug' => $file_permissions[$key]['slug'],
-                        'permission_create' => $file_permissions[$key]['create'],
-                        'permission_read' => $file_permissions[$key]['read'],
-                        'permission_update' => $file_permissions[$key]['update'],
-                        'permission_delete' => $file_permissions[$key]['delete'],
-                ]);
-            }
-           
-        }
-
-
+        //     if( in_array($file_permissions[$key]['slug'],$user_permissions) ){
+        //         Permission::updateOrCreate(
+        //             [
+        //                 'role_id' => $user_role->id,
+        //                 'permission_slug' => $file_permissions[$key]['slug'],
+        //             ],
+        //             [
+        //                 'permission_name' => $file_permissions[$key]['name'],
+        //                 'permission_slug' => $file_permissions[$key]['slug'],
+        //                 'permission_create' => $file_permissions[$key]['create'],
+        //                 'permission_read' => $file_permissions[$key]['read'],
+        //                 'permission_update' => $file_permissions[$key]['update'],
+        //                 'permission_delete' => $file_permissions[$key]['delete'],
+        //         ]);
+        //     }
+        // }
         //PERMISSION LATER...
 
+
+        
+         $user_role = Role::create([
+            'role_name' => 'User',
+        ]);
         
         //USERS
         User::factory()->create([
@@ -684,43 +685,7 @@ class DatabaseSeeder extends Seeder
             $query->where('role_name','User');
         }])->get();
         
-        // foreach($users as $user){
-        //     if($user->role != NULL){
-        //         $product_plan_categories = ProductPlanCategory::with(['product' => function($query){
-        //             $query->where('slug','data');
-        //         }])->pluck('id');
-        //         // return $product_plan_categories;
-        //         // dd($product_plan_categories);
-        //         foreach($product_plan_categories as $product_plan_category){
-        //             UserBulkDataWallet::updateOrCreate([
-        //                 'user_id' => $user->id,
-        //                 'product_plan_category_id' => $product_plan_category,
-        //             ],[]);
-        //         } 
-        //     }
-             
-        // }
 
-
-
-        //transactions seeding
-        // $table->uuid('id')->primary();
-        // $table->foreignUuid('user_id')->constrained(table: 'users');
-        // $table->string('product_plan_id')->constrained(table: 'product_plans');
-        // $table->string('transaction_category')->nullable()->comment('Options: data, airtime, bills, cable subscription etc');
-        // $table->string('status')->default(0)->nullable()->comment('status of transaction: 1:success, 0:pending(default), -1:failed, 2:refunded, 3:processing');
-        // $table->string('wallet_category')->comment('data_wallet/main_wallet');
-        // $table->string('phone_number')->comment('phone number that benefits')->nullable();
-        // $table->string('smart_card_number')->comment('iuc number that benefits that benefits')->nullable();
-        // $table->string('metre_number')->comment('metre number that benefits')->nullable();
-        // $table->string('cable_tv_slots')->comment('no of slots bought')->nullable();
-        // $table->string('amount')->comment('amount that was bought');
-        // $table->string('balance_before');
-        // $table->string('balance_after');
-        // $table->string('description');
-        // $table->longText('user_screen_message')->nullable();
-        // $table->longText('admin_screen_message')->nullable();
-        // $table->timestamps();
 
         //data, main wallet
         for($i = 1; $i <= 100; $i++){
@@ -740,23 +705,23 @@ class DatabaseSeeder extends Seeder
             ]);
         }
 
-        //data, data wallet
-        for($i = 1; $i <= 100; $i++){
-            Transaction::create([
-                'user_id' => $user_ore->id,
-                'product_plan_id' => '9c83dc1a-8262-4f54-8c40-41029830fe5a',
-                'transaction_category' => 'data',
-                'status' => 1,
-                'wallet_category' => 'data_wallet',
-                'phone_number' => '08168509044',
-                'amount' => '1000',
-                'balance_before' => '10000',
-                'balance_after' => '9000000',
-                'description' => 'Data Purchase - TEST',
-                'user_screen_message' => 'successfully processed',
-                'admin_screen_message' => 'successfully processed',
-            ]);
-        }
+        // //data, data wallet
+        // for($i = 1; $i <= 100; $i++){
+        //     Transaction::create([
+        //         'user_id' => $user_ore->id,
+        //         'product_plan_id' => '9c83dc1a-8262-4f54-8c40-41029830fe5a',
+        //         'transaction_category' => 'data',
+        //         'status' => 1,
+        //         'wallet_category' => 'data_wallet',
+        //         'phone_number' => '08168509044',
+        //         'amount' => '1000',
+        //         'balance_before' => '10000',
+        //         'balance_after' => '9000000',
+        //         'description' => 'Data Purchase - TEST',
+        //         'user_screen_message' => 'successfully processed',
+        //         'admin_screen_message' => 'successfully processed',
+        //     ]);
+        // }
 
         //airtime
         for($i = 1; $i <= 100; $i++){
@@ -812,215 +777,7 @@ class DatabaseSeeder extends Seeder
                 'user_screen_message' => 'successfully processed',
                 'admin_screen_message' => 'successfully processed',
             ]);
-        }
-        
-
-
-
-        //OBSOLETE
-        // $product_plan_categories_sme = ProductPlanCategory::create([
-        //     'product_plan_category_name' => 'MTN CG DATA)',
-        //     'product_id' => $product_data->id,
-        //     'network_id' => $mtn_network->id,
-        //     'automation_id' => $megasub->id
-        // ]);
-
-        // $product_plan_categories_gifting = ProductPlanCategory::create([
-        //     'product_plan_category_name' => 'GIFTING',
-        //     'automation_id' => $ogdams->id
-        // ]);
-        // $product_plan_categories_direct = ProductPlanCategory::create([
-        //     'product_plan_category_name' => 'DIRECT DATA',
-        //     'automation_id' => $megasub->id
-        // ]);
-        // $product_plan_categories_cg_data = ProductPlanCategory::create([
-        //     'product_plan_category_name' => 'CORPORATE GIFTING',
-        //     'automation_id' => $megasub->id
-        //     // 'product_id' => $mtn_data_product->id,
-        // ]);
-        // $product_plan_categories_sme2 = ProductPlanCategory::create([
-        //     'product_plan_category_name' => 'SME2',
-        //     'automation_id' => $ogdams->id
-
-        //     // 'product_id' => $mtn_data_product->id,
-        // ]);
-
-        // $product_plan_categories_share_data = ProductPlanCategory::create([
-        //     'product_plan_category_name' => 'DATA SHARE',
-        //     'automation_id' => $megasub->id
-        //     // 'product_id' => $mtn_data_product->id,
-        // ]);
-
-        // $product_plan_categories_share_data = ProductPlanCategory::create([
-        //     'product_plan_category_name' => 'AWOOF',
-        //     'automation_id' => $autopilot->id
-        //     // 'product_id' => $mtn_data_product->id,
-        // ]);
-
-
-        // $product_plan_categories_mtn_sme = ProductPlanCategory::create([
-        //     'product_plan_category_name' => 'DATA SME',
-        //     'product_id' => $mtn_data_product->id,
-        // ]);
-        // $product_plan_categories_mtn_gifting = ProductPlanCategory::create([
-        //     'product_plan_category_name' => 'DATA GIFTING',
-        //     'product_id' => $mtn_data_product->id,
-        // ]);
-        // $product_plan_categories_mtn_direct_data = ProductPlanCategory::create([
-        //     'product_plan_category_name' => 'DATA DIRECT DATA',
-        //     'product_id' => $mtn_data_product->id,
-        // ]);
-        // $product_plan_categories_mtn_cg_data = ProductPlanCategory::create([
-        //     'product_plan_category_name' => 'MTN DATA CORPORATE GIFTING',
-        //     'product_id' => $mtn_data_product->id,
-        // ]);
-        // $product_plan_categories_mtn_sme2_data = ProductPlanCategory::create([
-        //     'product_plan_category_name' => 'MTN DATA SME2',
-        //     'product_id' => $mtn_data_product->id,
-        // ]);
-
-        // $product_plan_categories_mtn_share_data = ProductPlanCategory::create([
-        //     'product_plan_category_name' => 'MTN DATA SHARE DATA',
-        //     'product_id' => $mtn_data_product->id,
-        // ]);
-
-
-        // THIS LOGIC NO LONGER HOLDS FOR NOW
-        //PRODUCT PLAN AND PRICES - ADMIN LEVEL.... This needs to change and be created based on the automation
-        //MTN Special Gifiting::::::::::::   
-
-
-            
-        //PRODUCTS should be eradicated and product categories should be product.
-        // $mtn_data_product = Product::create([
-        //     'id' => '9c2887f1-0fea-484a-ba7e-2fdce05241bf',
-        //     'product_name' => 'MTN Data',
-        //     'network_id' => $mtn_network->id,
-        //     'slug' => 'mtn_data_product',
-        //     'product_categories_id' => $product_category_data->id,
-        //     'visibility' => 1,
-        //     'active_status' => 1
-        // ]);
-
-        // $mtn_airtime_product = Product::create([
-        //     'product_name' => 'MTN Airtime',
-        //     'network_id' => $mtn_network->id,
-        //     'slug' => 'mtn_airtime_product',
-        //     'product_categories_id' => $product_category_airtime->id,
-        //     'visibility' => 1,
-        //     'active_status' => 1
-        // ]);
-
-        // $glo_data_product = Product::create([
-        //     'id' => '9c2887f1-1196-491c-8648-ba226a592790',
-        //     'product_name' => 'GLO Data',
-        //     'network_id' => $glo_network->id,
-        //     'slug' => 'glo_data_product',
-        //     'product_categories_id' => $product_category_data->id,
-        //     'visibility' => 1,
-        //     'active_status' => 1
-        // ]);
-
-        // $glo_airtime_product = Product::create([
-           
-        //     'product_name' => 'GLO Airtime',
-        //     'network_id' => $glo_network->id,
-        //     'slug' => 'glo_airtime_product',
-        //     'product_categories_id' => $product_category_airtime->id,
-        //     'visibility' => 1,
-        //     'active_status' => 1
-        // ]);
-
-        // $airtel_data_product = Product::create([
-        //     'id' => '9c2887f1-1309-4277-b6cf-0ba63316acfc',
-        //     'product_name' => 'AIRTEL Data',
-        //     'network_id' => $airtel_network->id,
-        //     'slug' => 'airtel_data_product',
-        //     'product_categories_id' => $product_category_data->id,
-        //     'visibility' => 1,
-        //     'active_status' => 1
-        // ]);
-
-        // $airtel_airtime_product = Product::create([
-        //     'product_name' => 'AIRTEL Airtime',
-        //     'network_id' => $airtel_network->id,
-        //     'slug' => 'airtel_airtime_product',
-        //     'product_categories_id' => $product_category_airtime->id,
-        //     'visibility' => 1,
-        //     'active_status' => 1
-        // ]);
-
-        // $_9mobile_data_product = Product::create([
-        //     'id' => '9c2887f1-1422-4c78-b676-b1c8640ad9f9',
-        //     'product_name' => '9MOBILE Data',
-        //     'network_id' => $_9mobile_network->id,
-        //     'slug' => '9mobile_data_product',
-        //     'product_categories_id' => $product_category_data->id,
-        //     'visibility' => 1,
-        //     'active_status' => 1
-        // ]);
-
-        // $_9mobile_airtime_product = Product::create([
-        //     'product_name' => '9MOBLE Airtime',
-        //     'network_id' => $_9mobile_network->id,
-        //     'slug' => '9mobile_airtime_product',
-        //     'product_categories_id' => $product_category_airtime->id,
-        //     'visibility' => 1,
-        //     'active_status' => 1
-        // ]);
-        // $cable_gotv_product = Product::create([
-        //     'product_name' => 'CABLE - GOTV',
-        //     'network_id' => NULL,
-        //     'slug' => 'gotv_product',
-        //     'product_categories_id' => $product_category_cable->id,
-        //     'visibility' => 1,
-        //     'active_status' => 1
-        // ]);
-        // $cable_startimes_product = Product::create([
-        //     'product_name' => 'CABLE - STAR TIMES',
-        //     'network_id' => NULL,
-        //     'slug' => 'startimes_product',
-        //     'product_categories_id' => $product_category_cable->id,
-        //     'visibility' => 1,
-        //     'active_status' => 1
-        // ]);
-        // $cable_dstv_product = Product::create([
-        //     'product_name' => 'CABLE - DSTV',
-        //     'network_id' => NULL,
-        //     'slug' => 'dstv_product',
-        //     'product_categories_id' => $product_category_cable->id,
-        //     'visibility' => 1,
-        //     'active_status' => 1
-        // ]);
-       
-        // $electricity_product = Product::create([
-        //     'product_name' => 'ELECTRICITY / BILLS',
-        //     'network_id' => NULL,
-        //     'slug' => 'bills_product',
-        //     'product_categories_id' => $product_category_bills->id,
-        //     'visibility' => 1,
-        //     'active_status' => 1
-        // ]);
-
-        // $result_checker_product = Product::create([
-        //     'product_name' => 'RESULT CHECKER',
-        //     'network_id' => NULL,
-        //     'slug' => 'result_checker_product',
-        //     'product_categories_id' => $product_category_result_checker->id,
-        //     'visibility' => 1,
-        //     'active_status' => 1
-        // ]);
-
-        // $epins_product = Product::create([
-        //     'product_name' => 'RESULT CHECKER',
-        //     'network_id' => NULL,
-        //     'slug' => 'e_pins_product',
-        //     'product_categories_id' => $product_category_epins->id,
-        //     'visibility' => 1,
-        //     'active_status' => 1
-        // ]);
-
-        
+        }    
         
     }
 }
