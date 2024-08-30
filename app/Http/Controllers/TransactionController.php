@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\ProductPlan;
 use App\Models\Transaction;
 use Illuminate\Http\Request;
+use App\Models\UserBulkDataWallet;
 use App\Models\ProductPlanCategory;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\WalletFundingNotification;
@@ -39,9 +40,7 @@ class TransactionController extends Controller
         'transaction_id' => 'required|exists:transactions,id',
       ]);
 
-    //   return [
-    //     'status' => 'still in progress'
-    //   ];
+  
       
 
       if ($validator->stopOnFirstFailure()->fails()) {
@@ -76,7 +75,7 @@ class TransactionController extends Controller
 
       if($wallet_category == 'main_wallet'){
         $former_wallet_balance =  $transaction_details->user->main_wallet;
-        $new_wallet_balance = $transaction_details->user->main_wallet + abs($amount_deducted);
+        $new_wallet_balance = $transaction_details->user->main_wallet + $amount_deducted;
 
         //update user wallet
          $transaction_details->user->update([
@@ -103,32 +102,43 @@ class TransactionController extends Controller
 
       }else{
 
-            return [
-                'status' => 'refund of transaction from data wallet in progress'
-            ];
+            // return [
+            //     'status' => 'refund of transaction from data wallet in progress'
+            // ];
 
-        //data wallet... for data purchase from data wallet
-        // $former_wallet_balance =  $transaction_details->user->main_wallet;
-        // $new_wallet_balance = $transaction_details->user->main_wallet + abs($amount_deducted);
+            $product_plan_details = ProductPlan::select('product_plan_category_id')->where('id',$transaction_details->product_plan_id)->first();
 
-        // //update user wallet
-        //  $transaction_details->user->update([
-        //     'main_wallet' => $new_wallet_balance
-        //  ]); 
+            $get_bulk_data_wallet_details = UserBulkDataWallet::where('user_id',$user_id)->where('product_plan_category_id',$product_plan_details->product_plan_category_id)->first();
+                            
+            if(! $get_bulk_data_wallet_details ){
+                 Session::flash('failure','No bulk data wallet found'); 
+                 return redirect()->back();
+            }
+            $current_bulk_wallet_balance = $get_bulk_data_wallet_details->bulk_wallet_balance_mb;
+            $data_size_bought = $transaction_details->balance_before - $transaction_details->balance_after;
+            $new_bulk_wallet_balance = $current_bulk_wallet_balance + $data_size_bought;
+        
+            //update user wallet
+            UserBulkDataWallet::where('user_id',$user_id)->where('product_plan_category_id',$product_plan_details->product_plan_category_id)
+            ->update([
+                'bulk_wallet_balance_mb' => $new_bulk_wallet_balance
+            ]); 
 
+            $transaction_details->update([
+              'status' => 2 //i.e refunded
+            ]); 
+        
+             $walletLog['user_id'] = $user_id;
+             $walletLog['transaction_category'] = 'REFUND_DATA_WALLET_TRANSACTION';
+             $walletLog['balance_before'] = $current_bulk_wallet_balance;
+             $walletLog['balance_after'] = $new_bulk_wallet_balance;
+             $walletLog['transaction_id'] = $transaction_details->id;
+             $walletLog['action_by'] = auth()->user()->id;
+             $walletLog['description'] = 'Data wallet transaction was refunded for the ID: '. $transaction_details->id;
+             $this->log_wallet_transactions($walletLog);
 
-        //  $transaction_details->update([
-        //     'status' => 2 //i.e refunded
-        //  ]); 
-
-        //  $walletLog['user_id'] = $user_id;
-        //  $walletLog['transaction_category'] = 'REFUND_TRANSACTION';
-        //  $walletLog['balance_before'] = $former_wallet_balance;
-        //  $walletLog['balance_after'] = $new_wallet_balance;
-        //  $walletLog['transaction_id'] = $transaction_details->id;
-        //  $walletLog['action_by'] = auth()->user()->id;
-        //  $walletLog['description'] = 'Transaction was refunded for the ID: '. $transaction_details->id;
-        //  $this->log_wallet_transactions($walletLog);
+             Session::flash('success','Refund was successful.'); 
+             return redirect()->back();
       }
 
       
@@ -170,6 +180,7 @@ class TransactionController extends Controller
           $query->where('phone_number',$phone);
         })
         ->with(['user','product_plan'])
+        ->where('wallet_category','!=','data_wallet')
         ->where('user_id',auth()->id())
         ->latest()->limit($limit)->get();
 
@@ -304,6 +315,7 @@ class TransactionController extends Controller
         })->when(!empty($phone) , function ($query) use ($phone){
           $query->where('phone_number',$phone);
         })
+        ->where('wallet_category','!=','data_wallet')
         ->with(['user','product_plan'])->latest()->limit($limit)->get();
 
 

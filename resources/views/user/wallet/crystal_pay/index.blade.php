@@ -261,8 +261,8 @@
                               </div>
                             </div>   
                           </div>                       
-                        </div> 
-                          </div>
+                          </div> 
+                        </div>
                         </div>
                         {{-- FILTER ENDS HERE --}}
                      
@@ -273,7 +273,7 @@
                                   <tr>
                           
                                     <th>ID</th>
-                                    <th>Email</th>
+                                    <th>User</th>
                                     <th>Txn Reference</th>
                                     <th>Txn Status</th>
                                     <th>Funding Status</th>

@@ -225,7 +225,7 @@
                                             @csrf
                                             <div class="space-x-2">
                                               <input type="hidden" name="transaction_id" id="transaction_id" value="{{  $data->id }}">
-                                              <input type="text" required name="pin" id="pin" placeholder="enter PIN" value="">
+                                              <input type="text" required name="pin" id="pin" placeholder="Enter PIN" value="">
   
                                             </div>
                                             <div class="space-y-2">

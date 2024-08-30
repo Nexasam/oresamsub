@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\Validator;
 
 class WalletsController extends Controller
 {
+
     public function webhook($id,Request $request){
        
         //{
@@ -163,90 +164,100 @@ class WalletsController extends Controller
       logger('testing webhook end');
     }
 
+    public function wallet_creditings(Request $request){
+      // dd('sss');
+      return view('admin.wallets_creditings.index');
+    }
 
     public function fetch_crystal_pay_funding_transactions(Request $request){
 
-      $date_from = $request->date_from ?? date('Y-m-d', strtotime('-5 days'));
-      $date_to= $request->date_to ?? date('Y-m-d');
+          $date_from = $request->date_from ?? date('Y-m-d', strtotime('-10000 days'));
+          $date_to= $request->date_to ?? date('Y-m-d');
 
-      $reference = $request->reference ?? '';
-    
-      $limit = $request->limit ?? 2000;
+          $reference = $request->reference ?? '';
+        
+          $limit = $request->limit ?? 2000;
+          
+          $data = FundingWebhookPayload::when(!empty($date_from) && !empty($date_to) , function ($query) use ($date_from,$date_to){
+              $date_to = date('Y-m-d', strtotime('+1 day', strtotime($date_to)));
+              $query->where('created_at','>=',$date_from)->where('created_at','<=',$date_to);
+          })->when(!empty($reference) , function ($query) use ($reference){
+            $query->where('transaction_reference',$reference);
+          })->when(auth()->user()->role->role_name == 'User', function($query){
+            $query->where('user_id',auth()->id());
+          })
+          ->latest()->limit($limit)->get();
       
-      $data = FundingWebhookPayload::when(!empty($date_from) && !empty($date_to) , function ($query) use ($date_from,$date_to){
-          $date_to = date('Y-m-d', strtotime('+1 day', strtotime($date_to)));
-          $query->where('created_at','>=',$date_from)->where('created_at','<=',$date_to);
-      })->when(!empty($reference) , function ($query) use ($reference){
-        $query->where('transaction_reference',$reference);
-      })
-      ->where('user_id',auth()->id())
-      ->latest()->limit($limit)->get();
-  
-      return DataTables::of($data)
-      ->addIndexColumn()
-      ->addColumn('DT_RowIndex',function($data){
-        return $data->id;
-      })
-      ->addColumn('user_email',function($data){
-        return $data->user_email;
-      })
-      ->addColumn('transaction_reference',function($data){
-        return $data->transaction_reference;
-      })
-      ->addColumn('status',function($data){
-        return $data->status;
-      })
-      ->addColumn('funding_status',function($data){
-        return $data->funding_status;
-      })
-      ->addColumn('message',function($data){
-        return $data->message;
-      })
-      // ->addColumn('package_id',function($data){
-      //   return $data->package_id;
-      // })
-      ->addColumn('bank_name',function($data){
-        return $data->bank_name;
-      })
-      ->addColumn('account_name',function($data){
-        return $data->account_name;
-      })
-      ->addColumn('account_number',function($data){
-        return $data->account_number;
-      })
-      ->addColumn('account_reference',function($data){
-        return $data->account_reference;
-      })
-      ->addColumn('amount_paid',function($data){
-        return $data->amount_paid;
-      })
-      ->addColumn('amount_charged',function($data){
-        return $data->amount_charged;
-      })
-      ->addColumn('amount_settled',function($data){
-        return $data->amount_settled;
-      })
-      // ->addColumn('user_email',function($data){
-      //   return $data->user_email;
-      // })
-      ->addColumn('created_at',function($data){
-          return $data->created_at;
-      }) 
-      ->addColumn('action',function($data){
-          $route = '#';
-          // $route = route('transaction_details',$data->id);
-          $actionBtn = '<a href="'.$route.'" type="button" class="hs-dropdown-toggle ti-btn ti-btn-primary" data-hs-overlay="#hs-vertically-centered-scrollable-modal'.$data->email.'">
-          Details
-          </a>';
-          return '-';
-      })
-      
-      ->escapeColumns([])
-      ->make(true);
+          return DataTables::of($data)
+          ->addIndexColumn()
+          ->addColumn('DT_RowIndex',function($data){
+            return $data->id;
+          })
+          ->addColumn('user_email',function($data){
+            $first_name = $data->user->first_name  ?? 'nil';
+            $last_name = $data->user->last_name  ?? 'nil';
+            $phone_number = $data->user->phone_number  ?? 'nil';
+            $email = $data->user->email  ?? 'nil';
+            $user_details =  $first_name.'<br>'.$last_name.'<br>'.$phone_number.'<br>'.$email.'<br>';     
+            return $user_details;
+          })
+          ->addColumn('transaction_reference',function($data){
+            return $data->transaction_reference;
+          })
+          ->addColumn('status',function($data){
+            return $data->status;
+          })
+          ->addColumn('funding_status',function($data){
+            return $data->funding_status;
+          })
+          ->addColumn('message',function($data){
+            return $data->message;
+          })
+          // ->addColumn('package_id',function($data){
+          //   return $data->package_id;
+          // })
+          ->addColumn('bank_name',function($data){
+            return $data->bank_name;
+          })
+          ->addColumn('account_name',function($data){
+            return $data->account_name;
+          })
+          ->addColumn('account_number',function($data){
+            return $data->account_number;
+          })
+          ->addColumn('account_reference',function($data){
+            return $data->account_reference;
+          })
+          ->addColumn('amount_paid',function($data){
+            return $data->amount_paid;
+          })
+          ->addColumn('amount_charged',function($data){
+            return $data->amount_charged;
+          })
+          ->addColumn('amount_settled',function($data){
+            return $data->amount_settled;
+          })
+          // ->addColumn('user_email',function($data){
+          //   return $data->user_email;
+          // })
+          ->addColumn('created_at',function($data){
+              return $data->created_at;
+          }) 
+          ->addColumn('action',function($data){
+              $route = '#';
+              // $route = route('transaction_details',$data->id);
+              $actionBtn = '<a href="'.$route.'" type="button" class="hs-dropdown-toggle ti-btn ti-btn-primary" data-hs-overlay="#hs-vertically-centered-scrollable-modal'.$data->email.'">
+              Details
+              </a>';
+              return '-';
+          })
+          
+          ->escapeColumns([])
+          ->make(true);
 
 
-     
-}
+        
+    }
 
     public function index(Request $request){
         // dd('good');

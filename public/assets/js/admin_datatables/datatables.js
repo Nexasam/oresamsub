@@ -11,6 +11,7 @@ $(document).ready(function(){
     getPlans();
     getAirtimeTransactions();
     getDataTransactions();
+    getDataWalletTransactions();
     getCableTransactions();
     getElectricityTransactions();
     getCrystalPayUserFundingTransactions();
@@ -250,7 +251,7 @@ $(document).ready(function(){
                 bInfo: false,
                 bLengthChange: true,
                 pageLength: 10,
-                ajax: root_url + 'user/transactions/fetch_crystal_pay_funding_transactions?date_from='+date_from+'&&date_to='+date_to+'&&reference='+reference,
+                ajax: root_url + 'transactions/fetch_crystal_pay_funding_transactions?date_from='+date_from+'&&date_to='+date_to+'&&reference='+reference,
                 // ajax:  "{{ route('admin.users.fetch_users',"+data+") }}",
                 columns: [
                   {data: 'DT_RowIndex', name: 'DT_RowIndex'},
@@ -268,6 +269,47 @@ $(document).ready(function(){
                   {data: 'amount_paid', name: 'amount_paid'},
                   {data: 'amount_charged', name: 'amount_charged'},
                   {data: 'amount_settled', name: 'amount_settled'},
+                  {data: 'created_at', name: 'created_at'},
+                  {data: 'action', name: 'action'},
+                ]
+        });
+    }  
+    
+    
+    
+
+    function getDataWalletTransactions(date_from ='', date_to ='', product_plan_category_filter = '', phone_recharged = ''){
+      const data = {
+        date_from : date_from,
+        date_to : date_to,
+        product_plan_category_filter : product_plan_category_filter,
+        phone_recharged : phone_recharged
+      };
+      console.log(data);
+      // return;
+      $('#data_wallet_transactions_table').DataTable({
+                autoWidth: false,
+                processing: true,
+                searching: true,
+                bInfo: false,
+                bLengthChange: true,
+                pageLength: 10,
+                ajax: root_url + 'transactions/fetch_data_wallet_transactions?date_from='+date_from+'&&date_to='+date_to+'&&product_plan_category_filter='+product_plan_category_filter+'&&phone_recharged='+phone_recharged,
+                // ajax:  "{{ route('admin.users.fetch_users',"+data+") }}",
+                columns: [
+                  {data: 'DT_RowIndex', name: 'DT_RowIndex'},
+                  // {data: 'user_id', name: 'user_id'},
+                  {data: 'wallet_category', name: 'wallet_category'},
+                  {data: 'plan_details', name: 'plan_details'},
+                  {data: 'transaction_category', name: 'transaction_category'},
+                  // {data: 'response', name: 'response'},
+                  {data: 'phone_number', name: 'phone_number'},
+                  {data: 'amount', name: 'amount'},
+                  {data: 'discounted_amount', name: 'discounted_amount'},
+                  {data: 'balance_before', name: 'balance_before'},
+                  // {data: 'data_size', name: 'data_size'},
+                  {data: 'balance_after', name: 'balance_after'},
+                  {data: 'status', name: 'status'},
                   {data: 'created_at', name: 'created_at'},
                   {data: 'action', name: 'action'},
                 ]
@@ -427,9 +469,11 @@ $(document).ready(function(){
       $("#data_transactions_table").DataTable().destroy();
       getDataTransactions(date_from,date_to,product_plan_category_filter,phone_recharged);
 
+      $("#data_wallet_transactions_table").DataTable().destroy();
+      getDataWalletTransactions(date_from,date_to,product_plan_category_filter,phone_recharged);
+
       $("#cable_transactions_table").DataTable().destroy();
       getCableTransactions(date_from,date_to,product_plan_category_filter,smart_card_number);
-
       
       $("#electricity_transactions_table").DataTable().destroy();
       getElectricityTransactions(date_from,date_to,product_plan_category_filter,metre_number);
@@ -466,6 +510,9 @@ $(document).ready(function(){
 
       $("#data_transactions_table").DataTable().destroy();
       getDataTransactions();
+
+      $("#data_wallet_transactions_table").DataTable().destroy();
+      getDataWalletTransactions();
 
       $("#cable_transactions_table").DataTable().destroy();
       getCableTransactions();
