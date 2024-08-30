@@ -23,7 +23,7 @@ use App\Models\ProductPlanCategory;
 use Illuminate\Support\Facades\Hash;
 
 
-class DatabaseSeeder extends Seeder
+class DatabaseSeederTesting extends Seeder
 {
     /**
      * Seed the application's database.
@@ -662,5 +662,98 @@ class DatabaseSeeder extends Seeder
         }])->get();
         
 
+
+        //data, main wallet
+        for($i = 1; $i <= 100; $i++){
+            Transaction::create([
+                'user_id' => $user_ore->id,
+                'product_plan_id' => '9c83dc1a-8262-4f54-8c40-41029830fe5a',
+                'transaction_category' => 'data',
+                'status' => 1,
+                'wallet_category' => 'main_wallet',
+                'phone_number' => '08168509044',
+                'amount' => '00',
+                'balance_before' => '10000',
+                'balance_after' => '9000000',
+                'description' => 'Data Purchase - TEST',
+                'user_screen_message' => 'successfully processed',
+                'admin_screen_message' => 'successfully processed',
+            ]);
+        }
+
+        // //data, data wallet
+        // for($i = 1; $i <= 100; $i++){
+        //     Transaction::create([
+        //         'user_id' => $user_ore->id,
+        //         'product_plan_id' => '9c83dc1a-8262-4f54-8c40-41029830fe5a',
+        //         'transaction_category' => 'data',
+        //         'status' => 1,
+        //         'wallet_category' => 'data_wallet',
+        //         'phone_number' => '08168509044',
+        //         'amount' => '1000',
+        //         'balance_before' => '10000',
+        //         'balance_after' => '9000000',
+        //         'description' => 'Data Purchase - TEST',
+        //         'user_screen_message' => 'successfully processed',
+        //         'admin_screen_message' => 'successfully processed',
+        //     ]);
+        // }
+
+        //airtime
+        for($i = 1; $i <= 100; $i++){
+            Transaction::create([
+                'user_id' => $user_ore->id,
+                'product_plan_id' => '9ca4dde6-8cd7-4cb7-80da-608887b2de8d',
+                'transaction_category' => 'airtime',
+                'status' => 1,
+                'wallet_category' => 'main_wallet',
+                'phone_number' => '08168509044',
+                'amount' => '1000',
+                'balance_before' => '10000',
+                'balance_after' => '9000000',
+                'description' => 'Airtime Purchase - TEST',
+                'user_screen_message' => 'successfully processed',
+                'admin_screen_message' => 'successfully processed',
+            ]);
+        }
+
+        //prepaid, electricity
+        for($i = 1; $i <= 100; $i++){
+            Transaction::create([
+                'user_id' => $user_ore->id,
+                'product_plan_id' => '9cc91f03-44c3-4e53-a7a1-a1eed50138b0', 
+                'transaction_category' => 'utility_bills',
+                'status' => 1,
+                'wallet_category' => 'main_wallet',
+                'phone_number' => '08168509044',
+                'metre_number' => '123456789',
+                'amount' => '1000',
+                'balance_before' => '10000',
+                'balance_after' => '9000000',
+                'description' => 'Utility Purchase - TEST',
+                'user_screen_message' => 'successfully processed',
+                'admin_screen_message' => 'successfully processed',
+            ]);
+        }
+
+        //cable
+        for($i = 1; $i <= 100; $i++){
+            Transaction::create([
+                'user_id' => $user_ore->id,
+                'product_plan_id' => '9cc91e28-6ec3-40fb-89f5-847ad2aada72',
+                'transaction_category' => 'cable_subscription',
+                'status' => 1,
+                'wallet_category' => 'main_wallet',
+                'phone_number' => '08168509044',
+                'smart_card_number' => '123456789',
+                'amount' => '1000',
+                'balance_before' => '10000',
+                'balance_after' => '9000000',
+                'description' => 'Cable Purchase - TEST',
+                'user_screen_message' => 'successfully processed',
+                'admin_screen_message' => 'successfully processed',
+            ]);
+        }    
+        
     }
 }
