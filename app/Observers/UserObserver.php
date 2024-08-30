@@ -18,17 +18,17 @@ class UserObserver implements ShouldHandleEventsAfterCommit
             // $check_existence = UserBulkDataWallet::where('user_id',$user->id)->first();
             // if(! $check_existence){
             // Create bulk wallet accounts based on product plan categories
-            $product_plan_categories = ProductPlanCategory::with(['product' => function($query){
-                $query->where('slug','data');
-            }])->pluck('id');
-            // return $product_plan_categories;
-            // dd($product_plan_categories);
-            foreach($product_plan_categories as $product_plan_category){
-                UserBulkDataWallet::updateOrCreate([
-                    'user_id' => $user->id,
-                    'product_plan_category_id' => $product_plan_category,
-                ],[]);
-            }    
+            // $product_plan_categories = ProductPlanCategory::with(['product' => function($query){
+            //     $query->where('slug','data');
+            // }])->pluck('id');
+            // // return $product_plan_categories;
+            // // dd($product_plan_categories);
+            // foreach($product_plan_categories as $product_plan_category){
+            //     UserBulkDataWallet::updateOrCreate([
+            //         'user_id' => $user->id,
+            //         'product_plan_category_id' => $product_plan_category,
+            //     ],[]);
+            // }    
             // }
 
 
