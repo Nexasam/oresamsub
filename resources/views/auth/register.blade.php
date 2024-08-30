@@ -156,13 +156,13 @@
                                             <!-- End Form Group -->
 
                                              <!-- Form Group -->
-                                             <div>
+                                             {{-- <div>
                                                 <label for="last_name" class="block text-sm mb-2 dark:text-white">Other Names</label>
                                                 <div class="relative">
                                                     <x-text-input id="other_names" class="block mt-1 w-full" type="text" name="other_names" :value="old('other_names')" required autofocus autocomplete="other_names" />
                                                     <x-input-error :messages="$errors->get('other_names')" class="mt-2" />
                                                 </div>
-                                            </div>
+                                            </div> --}}
                                             <!-- End Form Group -->
 
                                             <!-- Form Group -->

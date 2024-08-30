@@ -350,7 +350,7 @@ class UsersController extends Controller
         'pin' => ['required','digits:4'],
         'first_name' => 'required|max:255',
         'last_name' => 'required|max:255',
-        'other_names' => 'nullable|max:255',
+        // 'other_names' => 'nullable|max:255',
         'phone_number' => 'required|digits:11',
         'email' => 'required|unique:users,email',
         // 'role_id' => 'required|unique:roles,id',
@@ -374,7 +374,7 @@ class UsersController extends Controller
       $data['first_name'] = $request->first_name;
       $data['last_name'] = $request->last_name;
       $data['username'] = $request->username;
-      $data['other_names'] = $request->other_names;
+      // $data['other_names'] = $request->other_names;
       $data['phone_number'] = $request->phone_number;
       $data['email'] = $request->email;
       $data['role_id'] = $role_details->id;
