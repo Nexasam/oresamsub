@@ -599,7 +599,7 @@
                                                     </div>
 
                                                     <div class="space-y-2 mt-5">
-                                                      <label class="ti-form-label mb-0">Charges(%): </label>
+                                                      <label class="ti-form-label mb-0">Charges(%), <strong>Note:</strong> Set as flat rate for WEMA: </label>
                                                       <input type="text" required class="my-auto ti-form-input" name="bank_charges" value=""  placeholder="">
                                                     </div>
                                               
