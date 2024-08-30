@@ -684,22 +684,22 @@ class DatabaseSeeder extends Seeder
             $query->where('role_name','User');
         }])->get();
         
-        foreach($users as $user){
-            if($user->role != NULL){
-                $product_plan_categories = ProductPlanCategory::with(['product' => function($query){
-                    $query->where('slug','data');
-                }])->pluck('id');
-                // return $product_plan_categories;
-                // dd($product_plan_categories);
-                foreach($product_plan_categories as $product_plan_category){
-                    UserBulkDataWallet::updateOrCreate([
-                        'user_id' => $user->id,
-                        'product_plan_category_id' => $product_plan_category,
-                    ],[]);
-                } 
-            }
+        // foreach($users as $user){
+        //     if($user->role != NULL){
+        //         $product_plan_categories = ProductPlanCategory::with(['product' => function($query){
+        //             $query->where('slug','data');
+        //         }])->pluck('id');
+        //         // return $product_plan_categories;
+        //         // dd($product_plan_categories);
+        //         foreach($product_plan_categories as $product_plan_category){
+        //             UserBulkDataWallet::updateOrCreate([
+        //                 'user_id' => $user->id,
+        //                 'product_plan_category_id' => $product_plan_category,
+        //             ],[]);
+        //         } 
+        //     }
              
-        }
+        // }
 
 
 
