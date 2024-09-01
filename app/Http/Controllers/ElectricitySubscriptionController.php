@@ -306,6 +306,11 @@ class ElectricitySubscriptionController extends Controller
             return response()->json(['status'=>'-1', 'message'=>$validator->errors()->first(),'data' => $request->all() ]);
         }
 
+        
+        if($request->amount < 0){
+            return response()->json(['status'=>'-1', 'message'=>'amount cannot be less than 0','data' => ''  ]);
+        }
+
         $success = 0;
         $failure = 0;
         $status = 0;
@@ -372,7 +377,7 @@ class ElectricitySubscriptionController extends Controller
                         if($request->wallet_category == 'main_wallet'){
                             $wallet_before = $user_details->main_wallet;
                             $total_amount =  $no_of_slots * $amount;
-                            if($total_amount > $wallet_before){
+                            if($total_amount > $wallet_before || $wallet_before < 0){
                                 return response()->json(['status'=>'-1', 'message'=>'Insufficient wallet balance' ]);
                             }
                     

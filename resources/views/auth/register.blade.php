@@ -117,6 +117,19 @@
                                         Or</div> --}}
 
                                     <!-- Form -->
+                                    <div class="cols-span-1">
+                                        @if (Session::has('success'))
+                                        <div class="bg-success/10 border border-success/10 alert text-success" role="alert">
+                                        {{ Session::get('success') }}
+                                        </div>
+                                        @endif
+
+                                        @if (Session::has('failure'))
+                                        <div class="bg-danger/10 border border-danger/10 alert text-danger" role="alert">
+                                        {{ Session::get('failure') }}
+                                        </div>
+                                        @endif
+                                    </div>
                                     <form action="{{ route('register') }}" method="POST">
                                         @csrf
                                         <div class="grid gap-y-4">

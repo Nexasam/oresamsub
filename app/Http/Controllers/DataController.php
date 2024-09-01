@@ -455,7 +455,7 @@ class DataController extends Controller
                         if($request->wallet_category == 'main_wallet'){
                             $wallet_before = $user_details->main_wallet;
                             $total_amount = $phone_numbers_count * $amount;
-                            if($total_amount > $wallet_before){
+                            if($total_amount > $wallet_before || $wallet_before < 0){
                                 return response()->json(['status'=>'-1', 'message'=>'Insufficient wallet balance' ]);
                             }
                     

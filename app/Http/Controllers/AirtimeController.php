@@ -205,9 +205,15 @@ class AirtimeController extends Controller
             'amount' => 'required|numeric|gt:0',
             'validatephonenetwork'=>['required',Rule::in([0,1])],
         ]);
+
         
         if ($validator->stopOnFirstFailure()->fails()) {
             return response()->json(['status'=>'-1', 'message'=>$validator->errors()->first(),'data' => $request->all() ]);
+        }
+
+
+        if($request->amount < 50){
+            return response()->json(['status'=>'-1', 'message'=>'amount cannot be less than 50','data' => ''  ]);
         }
 
         $success = 0;
@@ -246,9 +252,6 @@ class AirtimeController extends Controller
         }
 
 
-
-
-
         if($user_details->pin != $request->pin){
             //end session and redirect to login
            
@@ -268,7 +271,7 @@ class AirtimeController extends Controller
                         if($request->wallet_category == 'main_wallet'){
                             $wallet_before = $user_details->main_wallet;
                             $total_amount = $phone_numbers_count * $amount;
-                            if($total_amount > $wallet_before){
+                            if($total_amount > $wallet_before || $wallet_before < 0){
                                 return response()->json(['status'=>'-1', 'message'=>'Insufficient wallet balance' ]);
                             }
                     

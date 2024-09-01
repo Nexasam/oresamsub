@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Auth\Events\Registered;
+use Illuminate\Support\Facades\Session;
 use Illuminate\Validation\Rules\Password;
 
 class RegisteredUserController extends Controller
@@ -56,6 +57,17 @@ class RegisteredUserController extends Controller
             ->symbols()
             ->uncompromised()::defaults()],
         ]);
+
+        // 	echo REGEX_CountMatches('as.sfad.asdferw.asdfsdf.@gmail.com','.');
+        // 	echo $count = preg_match_all('/\b.\b/','as.sfad.asdferw.asdfsdf.l.@gmail.com');
+        // 	echo $count = preg_match_all('/\b.\b/','ade.a@gmail.com');
+        // 	echo substr_count('as.sfad.asdferw.asdfsdf.l.@gmail.com','.');
+        // 	echo substr_count('sam.ade@gmail.com','.');
+        $validate_email =  count(explode('.',$request->email));
+        if($validate_email > 2){
+            Session::flash('failure','This email is not allowed.. You can reach out to our support via whatsapp');
+            return redirect()->back();
+        }
 
         $upline_details = User::where('phone_number',$request->upline_referral_phone_number)->first();
         $upline_id = $upline_details != NULL ? $upline_details->id : NULL;
