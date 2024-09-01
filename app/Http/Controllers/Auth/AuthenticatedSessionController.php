@@ -13,6 +13,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use Laravel\Fortify\Contracts\LoginResponse;
+use Laravel\Fortify\Actions\LogoutOtherDevices;
 use Laravel\Fortify\Http\Requests\LoginRequest;
 use Laravel\Fortify\Actions\AttemptToAuthenticate;
 use Laravel\Fortify\Actions\EnsureLoginIsNotThrottled;
@@ -88,6 +89,7 @@ class AuthenticatedSessionController extends Controller
             Features::enabled(Features::twoFactorAuthentication()) ? RedirectIfTwoFactorAuthenticatable::class : null,
             AttemptToAuthenticate::class,
             PrepareAuthenticatedSession::class,
+            LogoutOtherDevices::class,
         ]));
     }
 
