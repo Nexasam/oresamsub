@@ -13,7 +13,6 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use Laravel\Fortify\Contracts\LoginResponse;
-use Laravel\Fortify\Actions\LogoutOtherDevices;
 use Laravel\Fortify\Http\Requests\LoginRequest;
 use Laravel\Fortify\Actions\AttemptToAuthenticate;
 use Laravel\Fortify\Actions\EnsureLoginIsNotThrottled;
@@ -46,18 +45,19 @@ class AuthenticatedSessionController extends Controller
     public function store(LoginRequest $request)
     {
         // dd($request->all());
-        // $user_check = User::where('email',$request->email)->first();
-        // if(!$user_check){
-        //     Session::flash('failure','Sorry you are already logged in on another device');
-        //     return redirect()->route('login');
-        // }
+        $user_check = User::select('id')->where('email',$request->email)->first();
+        if($user_check){
+            $check_login = DB::table('sessions')->where('user_id',$user_check->id)->first();
+            if($check_login){
+                //a login exists somewhere
+                DB::table('sessions')->where('user_id',$user_check->id)->update([
+                    'user_id' => NULL,
+                    'last_activity' => 172520111
+                ]);
+            }      
+        }
 
-        // $check_login = DB::table('sessions')->where('user_id',$user_check->id)->first();
-        // if($check_login){
-        //     //a login exists somewhere
-        //     Session::flash('failure','Sorry you are already logged in on another device');
-        //     return redirect()->route('login');
-        // }
+
         return $this->loginPipeline($request)->then(function ($request) {
             return app(LoginResponse::class);
         });
@@ -89,7 +89,6 @@ class AuthenticatedSessionController extends Controller
             Features::enabled(Features::twoFactorAuthentication()) ? RedirectIfTwoFactorAuthenticatable::class : null,
             AttemptToAuthenticate::class,
             PrepareAuthenticatedSession::class,
-            LogoutOtherDevices::class,
         ]));
     }
 
