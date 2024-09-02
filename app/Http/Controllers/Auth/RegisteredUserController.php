@@ -69,6 +69,17 @@ class RegisteredUserController extends Controller
             return redirect()->back();
         }
 
+        //second security check
+        $new_email_array = explode('.',$request->email);
+        $last_item = array_pop($new_email_array);
+        // echo $last_item;
+        $checked_email = implode('',$new_email_array).'.'.$last_item;
+
+        if($request->email != $checked_email){
+            Session::flash('failure','This email is not allowed.. You can reach out to our support via whatsapp...');
+            return redirect()->back();
+        }
+
         $upline_details = User::where('phone_number',$request->upline_referral_phone_number)->first();
         $upline_id = $upline_details != NULL ? $upline_details->id : NULL;
         // $upline_id = $upline_details->id;
