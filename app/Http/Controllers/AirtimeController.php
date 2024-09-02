@@ -279,22 +279,34 @@ class AirtimeController extends Controller
                             $automation_details = Automation::where('id',$automation_id)->first();            
                             //TODO: candidate for separation
                             for($i = 0; $i < count($phone_numbers_array); $i++ ){
-                            
-                                //vend data
-                                //HERE the endpoint of the automation service is called:
-                                //this is for megasubplug: vend for Airtime
+                                sleep(2); //add throttle here
                                 
-                                if($automation_details->slug == 'megasubplug'){
+                                //always check the wallet balance after every loop:
+                                if($wallet_before < 0){
+                                     //this will be like this until other automations are processed
+                                     $buy_airtime['status'] = -1;
+                                     $buy_airtime['user_message'] = 'Airtime transaction failed.';
+                                     $buy_airtime['admin_message'] = 'Airtime transaction failed...';
+                                    // return response()->json(['status'=>'-1', 'message'=>'Insufficient wallet balance' ]);
+                                }else{
+                                    //vend data
+                                    //HERE the endpoint of the automation service is called:
+                                    //this is for megasubplug: vend for Airtime
+
+                                    if($automation_details->slug == 'megasubplug'){
                                     $buy_airtime = (new MegaSubVendAirtime($phone_numbers_array[$i],$request->product_plan_id,$actual_amount,$request->validatephonenetwork))->buyAirtime();
                                     // logger($buy_airtime);
-                                }else{
+                                    }else{
                                     //this will be like this until other automations are processed
                                     $buy_airtime['status'] = -1;
                                     $buy_airtime['user_message'] = 'Airtime transaction failed.';
                                     $buy_airtime['admin_message'] = 'Airtime transaction failed...';
+                                    }
+                                    // logger(json_encode($buy_airtime_megasub));
+                                    // dd($buy_airtime_megasub);
                                 }
-                                // logger(json_encode($buy_airtime_megasub));
-                                // dd($buy_airtime_megasub);
+
+                               
 
                                 if($buy_airtime['status'] == 1){
                                     $success++;
@@ -317,21 +329,20 @@ class AirtimeController extends Controller
                                     'admin_message' => $admin_message,
                                     'status' => $status
                                 );
-                               
-                    
+                                       
                     
                                 //this should not run though because it has already been checked
-                                if($wallet_after <= 0){
-                                    $status = -1;
-                                    $user_message = 'Failed due to insufficient balance';
-                                    $admin_message = 'Failed due to insufficient balance';
-                                    $failure++;
-                                    $display_results[$i] = array(
-                                        'message' => $user_message,
-                                        'admin_message' => $admin_message,
-                                        'status' => $status
-                                    );
-                                }
+                                // if($wallet_after <= 0){
+                                //     $status = -1;
+                                //     $user_message = 'Failed due to insufficient balance';
+                                //     $admin_message = 'Failed due to insufficient balance';
+                                //     $failure++;
+                                //     $display_results[$i] = array(
+                                //         'message' => $user_message,
+                                //         'admin_message' => $admin_message,
+                                //         'status' => $status
+                                //     );
+                                // }
                         
                                 $description = 'Purchase of airtime';
                                 $creationData['transaction_category'] = 'airtime';
