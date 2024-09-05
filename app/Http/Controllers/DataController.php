@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\Utils\UtilService;
 use Exception;
 use App\Models\User;
 use App\Models\Network;
@@ -414,6 +415,7 @@ class DataController extends Controller
             return response()->json(['status'=>'-1', 'message'=>$validator->errors()->first(),'data' => $request->all() ]);
         }
 
+
         $success = 0;
         $failure = 0;
         $status = 0;
@@ -444,9 +446,19 @@ class DataController extends Controller
 
         $user_id = $user_details->id;
         $phone_numbers = $request->phone_number;
+        //ensure there are no mapping issue:
         $phone_numbers = trim($phone_numbers);
         $phone_numbers_array = explode(',',$phone_numbers);
         $phone_numbers_count = count($phone_numbers_array);
+
+        if($phone_numbers_count == 1){
+            $phone_number = $phone_numbers;
+            $validate_phone = (new UtilService())->phoneNumberValidation($phone_number);
+            $validated_phone_number = $validate_phone['validated_phone_number'];
+            if($validate_phone['status'] != 1){
+                return response()->json(['status'=>'-1', 'message'=>$validate_phone['message'].' Number: '.$validated_phone_number  ]);
+            }
+        }
 
         DB::beginTransaction();
         try{
@@ -464,17 +476,26 @@ class DataController extends Controller
                     
                             //TODO: candidate for separation:
                             for($i = 0; $i < count($phone_numbers_array); $i++ ){
-                            
+                                $phone_number = $phone_numbers_array[$i];
+                                $validate_phone = (new UtilService())->phoneNumberValidation($phone_number);
+                                $validated_phone_number = $validate_phone['validated_phone_number'];
+                                
                                 //vend data
                                 //HERE the endpoint of the automation service is called:
-                                
                                 //this is for megasubplug
                                 
-                                if($automation_details->slug == 'megasubplug'){
-                                    $sell_data = (new MegaSubVendData($phone_numbers_array[$i],$request->product_plan_id,$request->validatephonenetwork))->buyData();
+
+                                if($validate_phone['status'] != 1){
+                                    //something when wrong
+                                    $sell_data['status'] = -1;
+                                    $sell_data['user_message'] = 'This number is not a valid number: '.$phone_number;
+                                    $sell_data['admin_message'] = 'This number is not a valid number: '.$phone_number;
+                                }
+                                else if($automation_details->slug == 'megasubplug'){
+                                    $sell_data = (new MegaSubVendData($validated_phone_number,$request->product_plan_id,$request->validatephonenetwork))->buyData();
                                 }
                                 else if($automation_details->slug == 'ogdams' || $automation_details->slug == 'ogdamsv2'){
-                                    $sell_data = (new OgdamsVendData($phone_numbers_array[$i],$request->product_plan_id))->buyData();
+                                    $sell_data = (new OgdamsVendData($validated_phone_number,$request->product_plan_id))->buyData();
                                 }
                                 else{
                                     //this will be like this until other automations are processed
@@ -527,7 +548,7 @@ class DataController extends Controller
                                 $creationData['user_id'] = $user_id;
                                 $creationData['wallet_category'] = $request->wallet_category;
                                 $creationData['product_plan_id'] = $request->product_plan_id;
-                                $creationData['phone_number'] = $phone_numbers_array[$i];
+                                $creationData['phone_number'] = $validated_phone_number;
                                 $creationData['amount'] = $amount;
                                 $creationData['discounted_amount'] = $amount;
                                 $creationData['status'] = $status;

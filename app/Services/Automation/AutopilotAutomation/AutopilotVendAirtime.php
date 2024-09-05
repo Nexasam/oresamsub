@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Services\Automation\OgdamsAutomation;
+namespace App\Services\Automation\AutopilotAutomation;
 
 use App\Models\Automation;
 use App\Models\ProductPlan;
 
-class OgdamsVendAirtime{
+class AutopilotVendAirtime{
 
     private $mobile_number;
 

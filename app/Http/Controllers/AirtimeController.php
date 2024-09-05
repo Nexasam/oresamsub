@@ -17,6 +17,7 @@ use Yajra\DataTables\DataTables;
 use App\Models\UserBulkDataWallet;
 use Illuminate\Support\Facades\DB;
 use App\Models\ProductPlanCategory;
+use App\Services\Utils\UtilService;
 use App\Models\BulkDataProductPlans;
 use App\Models\UserBulkDataPurchase;
 use Illuminate\Support\Facades\Mail;
@@ -264,6 +265,15 @@ class AirtimeController extends Controller
         $phone_numbers_array = explode(',',$phone_numbers);
         $phone_numbers_count = count($phone_numbers_array);
 
+        if($phone_numbers_count == 1){
+            $phone_number = $phone_numbers;
+            $validate_phone = (new UtilService())->phoneNumberValidation($phone_number);
+            $validated_phone_number = $validate_phone['validated_phone_number'];
+            if($validate_phone['status'] != 1){
+                return response()->json(['status'=>'-1', 'message'=>$validate_phone['message'].' Number is: '.$validated_phone_number  ]);
+            }
+        }
+
         DB::beginTransaction();
         try{
 
@@ -280,9 +290,25 @@ class AirtimeController extends Controller
                             //TODO: candidate for separation
                             for($i = 0; $i < count($phone_numbers_array); $i++ ){
                                 sleep(2); //add throttle here
+
+                                $phone_number = $phone_numbers_array[$i];
+                                $validate_phone = (new UtilService())->phoneNumberValidation($phone_number);
+                                $validated_phone_number = $validate_phone['validated_phone_number'];
                                 
+                                //vend data
+                                //HERE the endpoint of the automation service is called:
+                                //this is for megasubplug
+                                
+
+                                if($validate_phone['status'] != 1){
+                                    //something when wrong
+                                    $sell_data['status'] = -1;
+                                    $sell_data['user_message'] = 'This number is not a valid number: '.$phone_number;
+                                    $sell_data['admin_message'] = 'This number is not a valid number: '.$phone_number;
+                                }
+
                                 //always check the wallet balance after every loop:
-                                if($wallet_before < 0){
+                                else if($wallet_before < 0){
                                      //this will be like this until other automations are processed
                                      $buy_airtime['status'] = -1;
                                      $buy_airtime['user_message'] = 'Airtime transaction failed.';
@@ -294,13 +320,13 @@ class AirtimeController extends Controller
                                     //this is for megasubplug: vend for Airtime
 
                                     if($automation_details->slug == 'megasubplug'){
-                                    $buy_airtime = (new MegaSubVendAirtime($phone_numbers_array[$i],$request->product_plan_id,$actual_amount,$request->validatephonenetwork))->buyAirtime();
-                                    // logger($buy_airtime);
+                                      $buy_airtime = (new MegaSubVendAirtime($phone_numbers_array[$i],$request->product_plan_id,$actual_amount,$request->validatephonenetwork))->buyAirtime();
+                                     // logger($buy_airtime);
                                     }else{
-                                    //this will be like this until other automations are processed
-                                    $buy_airtime['status'] = -1;
-                                    $buy_airtime['user_message'] = 'Airtime transaction failed.';
-                                    $buy_airtime['admin_message'] = 'Airtime transaction failed...';
+                                        //this will be like this until other automations are processed
+                                        $buy_airtime['status'] = -1;
+                                        $buy_airtime['user_message'] = 'Airtime transaction failed.';
+                                        $buy_airtime['admin_message'] = 'Airtime transaction failed...';
                                     }
                                     // logger(json_encode($buy_airtime_megasub));
                                     // dd($buy_airtime_megasub);

@@ -2,16 +2,17 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\BulkDataProductPlans;
-use App\Models\Product;
-use App\Models\ProductPlanCategory;
-use App\Models\Transaction;
 use Exception;
 use App\Models\Role;
 use App\Models\User;
 use App\Models\Network;
+use App\Models\Product;
 use App\Models\UserPlan;
+use App\Models\Transaction;
 use Illuminate\Http\Request;
+use App\Models\ProductPlanCategory;
+use App\Models\BulkDataProductPlans;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Validation\Rules\Password;

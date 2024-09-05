@@ -81,7 +81,7 @@ class RegisteredUserController extends Controller
         }
 
         $upline_details = User::where('phone_number',$request->upline_referral_phone_number)->first();
-        $upline_id = $upline_details != NULL ? $upline_details->id : NULL;
+        $upline_id = $upline_details != NULL && $request->upline_referral_phone_number != $request->phone_number ? $upline_details->id : NULL;
         // $upline_id = $upline_details->id;
        
 
