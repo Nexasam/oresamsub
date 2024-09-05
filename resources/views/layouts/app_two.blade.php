@@ -4,6 +4,7 @@
 <head>
 
     <!-- Google tag (gtag.js) -->
+    @if (env('APP_NAME') == 'FoxDataHub' )
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-NCKP7MH1KN"></script>
     <script>
     window.dataLayer = window.dataLayer || [];
@@ -12,6 +13,7 @@
 
     gtag('config', 'G-NCKP7MH1KN');
     </script>
+    @endif
     
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">

@@ -3,15 +3,18 @@
 
 <head>
     <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-NCKP7MH1KN"></script>
-    <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-
-    gtag('config', 'G-NCKP7MH1KN');
-    </script>
     
+    @if (env('APP_NAME') == 'FoxDataHub' )
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-NCKP7MH1KN"></script>
+        <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'G-NCKP7MH1KN');
+        </script>
+        
+    @endif
 
     <!-- Required meta tags -->
     <meta charset="utf-8">
