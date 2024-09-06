@@ -2,17 +2,26 @@
 <html lang="en" dir="ltr" class="h-full">
 
 <head>
-    <!-- Google tag (gtag.js) -->
     @if (env('APP_NAME') == 'FoxDataHub' )
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-NCKP7MH1KN"></script>
-    <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
 
-    gtag('config', 'G-NCKP7MH1KN');
-    </script>
-   @endif
+    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+     new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+     j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+     'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+     })(window,document,'script','dataLayer','GTM-NPMMTFT6');</script>
+     
+  
+  
+     <script async src="https://www.googletagmanager.com/gtag/js?id=G-NCKP7MH1KN"></script>
+     <script>
+     window.dataLayer = window.dataLayer || [];
+     function gtag(){dataLayer.push(arguments);}
+     gtag('js', new Date());
+  
+     gtag('config', 'G-NCKP7MH1KN');
+     </script>
+  
+    @endif
     
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -39,6 +48,10 @@
 </head>
 
 <body class="error-page flex h-full !py-0 bg-white dark:bg-bgdark">
+    @if (env('APP_NAME') == 'FoxDataHub')
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-NPMMTFT6"
+     height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+    @endif
     <div class="grid grid-cols-12 gap-6 w-full h-full">
         <div class="lg:col-span-6 col-span-12 hidden lg:block relative">
             <div class="cover relative w-full h-full z-[1]">

@@ -3,18 +3,26 @@
 
 <head>
 
-    <!-- Google tag (gtag.js) -->
     @if (env('APP_NAME') == 'FoxDataHub' )
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-NCKP7MH1KN"></script>
-    <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
 
-    gtag('config', 'G-NCKP7MH1KN');
-    </script>
-    
-@endif
+    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+     new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+     j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+     'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+     })(window,document,'script','dataLayer','GTM-NPMMTFT6');</script>
+     
+  
+  
+     <script async src="https://www.googletagmanager.com/gtag/js?id=G-NCKP7MH1KN"></script>
+     <script>
+     window.dataLayer = window.dataLayer || [];
+     function gtag(){dataLayer.push(arguments);}
+     gtag('js', new Date());
+  
+     gtag('config', 'G-NCKP7MH1KN');
+     </script>
+  
+    @endif
     
 
     <meta charset="UTF-8">
@@ -67,6 +75,10 @@
 
 <body class="error-page flex h-full !py-0 bg-white dark:bg-bgdark">
 
+    @if (env('APP_NAME') == 'FoxDataHub')
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-NPMMTFT6"
+     height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+    @endif
     
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
     {{-- &text=Hola%21%20Quisiera%20m%C3%A1s%20informaci%C3%B3n%20sobre%20Varela%202. --}}
