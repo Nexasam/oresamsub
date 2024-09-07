@@ -30,6 +30,8 @@ use App\Http\Controllers\CableSubscriptionController;
 use App\Http\Controllers\ProductPlanCategoryController;
 use App\Http\Controllers\ElectricitySubscriptionController;
 
+Route::get('logs', [\Rap2hpoutre\LaravelLogViewer\LogViewerController::class, 'index']);
+
 Route::get('/', function () {
     // dd('e dey');
     $landing_data = LandingPagesSetting::get();
