@@ -46,7 +46,7 @@ return [
     'review3' => ['field_name','field_details','Lorem ipsum dolor sit amet consectetur, adipisicing elit. Aut quis, rem culpa labore voluptate
                     ullam! In, nostrum. Dicta, vero nihil. Delectus minus vitae rerum voluptatum, excepturi incidunt ut,
                     enim nam exercitationem optio ducimus!'],  
-    'topnav_email' => ['field_name','field_details','info@victelData.com'],  
+    'topnav_email' => ['field_name','field_details','info@victeldata.com'],  
     'topnav_phone' => ['field_name','field_details','08168509044'],  
     'facebook_link' => ['field_name','field_details','https://facebook.com'],  
     'instagram_link' => ['field_name','field_details','https://instagram.com'],  
