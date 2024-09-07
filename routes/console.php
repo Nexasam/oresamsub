@@ -10,4 +10,5 @@ Artisan::command('inspire', function () {
     // Schedule::command('php artisan migrate')->everyMinute();
     
 })->purpose('Display an inspiring quote')->hourly();
-Schedule::command('php artisan migrate')->everyFiveMinutes();
+
+Schedule::command('migrate --force')->everyMinute();
