@@ -28,7 +28,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
      <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title> {{env('APP_NAME')}} - Enjoy data at the best rate </title>
+    <title> {{env('APP_NAME')}} - Enjoy data at the best rate... </title>
     <meta name="description" content="Empowering Connections, One Byte at a Time - {{ env('APP_NAME') }}">
     <meta name="keywords" content="data purchase, mtn, airtel, utility bills, cable subscription">
 
@@ -115,7 +115,7 @@
                             <br>
 
                             <div class="text-center mb-4">
-                                <h1 class="block text-2xl font-bold text-gray-800 dark:text-white">Sign in.</h1>
+                                <h1 class="block text-2xl font-bold text-gray-800 dark:text-white">Sign in....</h1>
                                 <p class="mt-3 text-sm text-gray-600 dark:text-white/70">
                                     Don't have an account yet?
                                     <a class="text-primary decoration-2 hover:underline font-medium"  href="{{route('register')}}">
