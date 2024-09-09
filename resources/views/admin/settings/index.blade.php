@@ -65,7 +65,7 @@
                       Landing pages
                     </button>
                     <button type="button" class="hs-tab-active:bg-primary hs-tab-active:text-white py-3 px-4 inline-flex items-center gap-2 bg-transparent text-sm font-medium text-center text-gray-500 rounded-sm hover:text-primary  dark:text-white/70 dark:hover:text-white" id="pills-with-brand-color-item-3" data-hs-tab="#pills-with-brand-color-3" aria-controls="pills-with-brand-color-3">
-                      Site logo
+                      Site Images & Colors
                     </button>
                     <button type="button" class="hs-tab-active:bg-primary hs-tab-active:text-white py-3 px-4 inline-flex items-center gap-2 bg-transparent text-sm font-medium text-center text-gray-500 rounded-sm hover:text-primary  dark:text-white/70 dark:hover:text-white" id="pills-with-brand-color-item-4" data-hs-tab="#pills-with-brand-color-4" aria-controls="pills-with-brand-color-4">
                       Automation settings
@@ -404,7 +404,89 @@
                             
                               <br>
                           </div>
-                      </form>
+                        </form>
+                      </div> 
+                      <hr>
+                      <div class="overflow-auto">
+                        <form enctype="multipart/form-data" method="POST" action="{{ route('admin.settings.manage_site_colors')  }}">
+                          @csrf
+                          <div class="grid w-full lg:w-1/2 lg:grid-cols-1 gap-6 space-y-1 lg:space-y-0">
+                              <div class="space-y-2 mt-1">
+                                <div class="box-body">
+                                  <label class="ti-form-label mb-0">Choose Site Primary Color</label>
+                                  <input type="color" value="{{ isset($site_primary_color) && $site_primary_color != NULL ? $site_primary_color : "#5a66f2"  }}"  class="p-1 h-10 w-10 block bg-white border border-gray-200 cursor-pointer rounded-sm disabled:opacity-50 disabled:pointer-events-none dark:bg-bgdark dark:border-white/10" id="hs-color-input" name="site_primary_color" title="Choose your color">
+                                </div>
+                              </div>
+
+                              <div class="box-body">
+                                <label class="ti-form-label mb-0">Choose Admin Site Color (In RGB):</label>
+                                <div class="flex items-center space-x-2 ">
+                                  <input type="number"  value="{{ isset($admin_site_color_r) && $admin_site_color_r != NULL ? $admin_site_color_r : 90 }}" name="admin_site_color_r" class="p-1 h-10 w-20 block bg-white border border-gray-200 cursor-pointer rounded-sm disabled:opacity-50 disabled:pointer-events-none dark:bg-bgdark dark:border-white/10" id="hs-color-input"  title="Choose your color">
+                                  <input type="number"  value="{{ isset($admin_site_color_g) && $admin_site_color_g != NULL ? $admin_site_color_g : 102  }}" name="admin_site_color_g" class="p-1 h-10 w-20 block bg-white border border-gray-200 cursor-pointer rounded-sm disabled:opacity-50 disabled:pointer-events-none dark:bg-bgdark dark:border-white/10" id="hs-color-input"  title="Choose your color">
+                                  <input type="number"  value="{{ isset($admin_site_color_b) && $admin_site_color_b != NULL ? $admin_site_color_b : 241  }}" name="admin_site_color_b" class="p-1 h-10 w-20 block bg-white border border-gray-200 cursor-pointer rounded-sm disabled:opacity-50 disabled:pointer-events-none dark:bg-bgdark dark:border-white/10" id="hs-color-input"  title="Choose your color">
+                                </div>
+                              </div>
+
+                             
+
+                              <div class="space-y-2 mt-1">
+                                <div class="box-body">
+                                  <label class="ti-form-label mb-0">Choose Landing Page Hover Color</label>
+                                  <input type="color" value="{{ isset($site_landing_page_hover_color) && $site_landing_page_hover_color != NULL ? $site_landing_page_hover_color : "#d64022"  }}"  class="p-1 h-10 w-10 block bg-white border border-gray-200 cursor-pointer rounded-sm disabled:opacity-50 disabled:pointer-events-none dark:bg-bgdark dark:border-white/10" id="hs-color-input" name="site_landing_page_hover_color"  title="Choose your color">
+                                </div>
+                              </div>
+
+                              <div class="space-y-2 mt-1">
+                                <div class="box-body">
+                                  <label class="ti-form-label mb-0">Choose Admin Sidebar Color</label>
+                                  <input type="color" value="{{ isset($site_admin_sidebar_color) && $site_admin_sidebar_color != NULL ? $site_admin_sidebar_color : NULL  }}" name="site_admin_sidebar_color" class="p-1 h-10 w-10 block bg-white border border-gray-200 cursor-pointer rounded-sm disabled:opacity-50 disabled:pointer-events-none dark:bg-bgdark dark:border-white/10" id="hs-color-input" title="Choose your color">
+                                </div>
+                              </div>  
+
+                              <div class="box-body">
+                                <label class="ti-form-label mb-0">Choose Landing Page Analytics Color (In RGB) </label>
+                                <div class="flex items-center space-x-2 ">
+                                  <input type="number"  value="{{ isset($site_landing_analytics_color_r) && $site_landing_analytics_color_r != NULL ? $site_landing_analytics_color_r : 90  }}" name="site_landing_analytics_color_r" class="p-1 h-10 w-20 block bg-white border border-gray-200 cursor-pointer rounded-sm disabled:opacity-50 disabled:pointer-events-none dark:bg-bgdark dark:border-white/10" id="hs-color-input"  title="Choose your color">
+                                  <input type="number"  value="{{ isset($site_landing_analytics_color_g) && $site_landing_analytics_color_g != NULL ? $site_landing_analytics_color_g : 102  }}" name="site_landing_analytics_color_g" class="p-1 h-10 w-20 block bg-white border border-gray-200 cursor-pointer rounded-sm disabled:opacity-50 disabled:pointer-events-none dark:bg-bgdark dark:border-white/10" id="hs-color-input"  title="Choose your color">
+                                  <input type="number"  value="{{ isset($site_landing_analytics_color_b) && $site_landing_analytics_color_b != NULL ? $site_landing_analytics_color_b : 204  }}" name="site_landing_analytics_color_b" class="p-1 h-10 w-20 block bg-white border border-gray-200 cursor-pointer rounded-sm disabled:opacity-50 disabled:pointer-events-none dark:bg-bgdark dark:border-white/10" id="hs-color-input"  title="Choose your color">
+                                </div>
+                              </div>
+
+
+                              {{-- <div class="box-body">
+                                <label class="ti-form-label mb-0">Choose Landing Page Reviews (In RGB) </label>
+                                <div class="flex items-center space-x-2 ">
+                                  <input type="number"  value="{{ isset($site_landing_review_r) && $site_landing_review_r != NULL ? explode(',',$site_landing_review_color)[0] : 8  }}" name="site_landing_review_color_r" class="p-1 h-10 w-20 block bg-white border border-gray-200 cursor-pointer rounded-sm disabled:opacity-50 disabled:pointer-events-none dark:bg-bgdark dark:border-white/10" id="hs-color-input"  title="Choose your color">
+                                  <input type="number"  value="{{ isset($site_landing_review_g) && $site_landing_review_g != NULL ? explode(',',$site_landing_review_color)[1] : 32  }}" name="site_landing_review_color_g" class="p-1 h-10 w-20 block bg-white border border-gray-200 cursor-pointer rounded-sm disabled:opacity-50 disabled:pointer-events-none dark:bg-bgdark dark:border-white/10" id="hs-color-input"  title="Choose your color">
+                                  <input type="number"  value="{{ isset($site_landing_review_b) && $site_landing_review_b != NULL ? explode(',',$site_landing_review_color)[2] : 50  }}" name="site_landing_review_color_b" class="p-1 h-10 w-20 block bg-white border border-gray-200 cursor-pointer rounded-sm disabled:opacity-50 disabled:pointer-events-none dark:bg-bgdark dark:border-white/10" id="hs-color-input"  title="Choose your color">
+                                </div>
+                              </div> --}}
+                            
+
+                             
+                              
+                              {{-- <div class="space-y-2 mt-1">
+                                <div class="box-body">
+                                  <label class="ti-form-label mb-0">Choose Analytics Color 1 (In RGB)</label>
+                                  <input type="color" value="{{ isset($site_landing_analytics_color1) && $site_landing_analytics_color1 != NULL ? $site_landing_analytics_color1 : "#5a66f2"  }}" name="site_landing_analytics_color1" class="p-1 h-10 w-10 block bg-white border border-gray-200 cursor-pointer rounded-sm disabled:opacity-50 disabled:pointer-events-none dark:bg-bgdark dark:border-white/10" id="hs-color-input"  title="Choose your color">
+                                </div>
+                              </div>  
+
+                              <div class="space-y-2 mt-1">
+                                <div class="box-body">
+                                  <label class="ti-form-label mb-0">Choose Analytics Color 2 (In RGB)</label>
+                                  <input type="color" value="{{ isset($site_landing_analytics_color2) && $site_landing_analytics_color2 != NULL ? $site_landing_analytics_color2 : "#5a66f2"  }}" name="site_landing_analytics_color2" class="p-1 h-10 w-10 block bg-white border border-gray-200 cursor-pointer rounded-sm disabled:opacity-50 disabled:pointer-events-none dark:bg-bgdark dark:border-white/10" id="hs-color-input"  title="Choose your color">
+                                </div>
+                              </div>   --}}
+
+                              
+                              <div class="space-y-2">
+                                  <button type="submit" class="ti-btn ti-btn-primary w-full">Update Site Colors</button>
+                              </div>
+                            
+                              <br>
+                          </div>
+                        </form>
                       </div>  
                     </div>
                     <div id="pills-with-brand-color-4" class="hidden" role="tabpanel" aria-labelledby="pills-with-brand-color-item-4">

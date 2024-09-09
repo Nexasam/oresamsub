@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\AdminColorSetting;
 use App\Models\ProductPlan;
 use App\Http\Middleware\RoleAssess;
 use App\Models\LandingPagesSetting;
@@ -38,6 +39,29 @@ Route::get('/', function () {
     foreach($landing_data as $landing_component){
         $data[$landing_component->field_name] = $landing_component->field_details;
     }
+
+    $site_colors = AdminColorSetting::get();
+    foreach($site_colors as $site_color){
+        if($site_color->color_name == 'site_landing_analytics_color'){
+            $data['site_landing_analytics_color_r'] = explode(', ',$site_color->color_value)[0];
+            $data['site_landing_analytics_color_g'] = explode(', ',$site_color->color_value)[1];
+            $data['site_landing_analytics_color_b'] = explode(', ',$site_color->color_value)[2];
+        }else if($site_color->color_name == 'admin_site_color'){
+            $data['admin_site_color_r'] = explode(', ',$site_color->color_value)[0];
+            $data['admin_site_color_g'] = explode(', ',$site_color->color_value)[1];
+            $data['admin_site_color_b'] = explode(', ',$site_color->color_value)[2];
+        }else if($site_color->color_name == 'site_landing_review_color'){
+            $data['site_landing_review_color_r'] = explode(', ',$site_color->color_value)[0];
+            $data['site_landing_review_color_g'] = explode(', ',$site_color->color_value)[1];
+            $data['site_landing_review_color_b'] = explode(', ',$site_color->color_value)[2];
+        }     
+        else{
+            $data[$site_color->color_name] = $site_color->color_value;
+
+        }
+    }
+
+    // dd($data);
 
     $product_plans = ProductPlan::get();
     $data['product_plans'] = $product_plans;
@@ -145,6 +169,7 @@ Route::middleware(['auth','verified','admin'])->post('admin/manage_automations_k
 Route::middleware(['auth','verified','admin'])->post('admin/update_funding_options', [AdminSettingsController::class, 'update_funding_options'])->name('admin.settings.update_funding_options'); //
 Route::middleware(['auth','verified','admin'])->post('admin/add_funding_option_bank_code', [AdminSettingsController::class, 'add_funding_option_bank_code'])->name('admin.settings.add_funding_option_bank_code'); //
 Route::middleware(['auth','verified','admin'])->post('admin/update_site_logo', [AdminSettingsController::class, 'manage_site_logo'])->name('admin.settings.manage_site_logo');
+Route::middleware(['auth','verified','admin'])->post('admin/update_site_color', [AdminSettingsController::class, 'manage_site_colors'])->name('admin.settings.manage_site_colors');
 Route::middleware(['auth','verified','admin'])->post('admin/manage_global_user_2fa', [AdminSettingsController::class, 'manage_global_user_2fa'])->name('admin.settings.manage_global_user_2fa');
 Route::middleware(['auth','verified','admin'])->post('admin/referral_settings', [AdminSettingsController::class, 'manage_referral_settings'])->name('admin.settings.referral_settings');
 Route::middleware(['auth','verified','admin'])->post('admin/landing_page_settings', [AdminSettingsController::class, 'manage_landing_page_settings'])->name('admin.settings.manage_landing_page_settings');

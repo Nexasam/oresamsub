@@ -1,7 +1,12 @@
-<aside class="app-sidebar" id="sidebar">
+<aside class="app-sidebar id="sidebar">
 
+    {{-- style="background-color: {{ 'blue'  }};
+    style="background-color: {{ 'blue'  }}; --}}
     <!-- Start::main-sidebar-header -->
-    <div class="main-sidebar-header ">
+    @php
+       $sidebar_color =  App\Models\AdminColorSetting::where('color_name','site_admin_sidebar_color')->first();   
+    @endphp
+    <div class="main-sidebar-header " style="background-color: {{ $sidebar_color != NULL && $sidebar_color->color_name != '#000000' ? $sidebar_color->color_value: ''  }} ;">
         <a href="#" class="header-logo mt-3 mb-20">
             {{-- <img src="../assets/img/brand-logos/desktop-logo.png" alt="logo" class="main-logo desktop-logo">
             <img src="../assets/img/brand-logos/toggle-logo.png" alt="logo" class="main-logo toggle-logo">
@@ -16,7 +21,7 @@
     <!-- End::main-sidebar-header -->
 
     <!-- Start::main-sidebar -->
-    <div class="main-sidebar " id="sidebar-scroll">
+    <div class="main-sidebar"  id="sidebar-scroll" style="background-color: {{ $sidebar_color != NULL && $sidebar_color->color_name != '#000000' ? $sidebar_color->color_value: ''  }} ;">
 
         <!-- Start::nav -->
         <nav class="main-menu-container nav nav-pills flex-column sub-open">

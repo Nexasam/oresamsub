@@ -9459,6 +9459,7 @@ select:where([dir="rtl"], [dir="rtl"] *){
 /* End Tailwind Styles */
 /* Start Variables Styles */
 :root {
+  /* --color-primary: 34 197 94; */
   --color-primary: 90 102 241;
   --color-primary-rgb: 90,102,241;
   --color-secondary: 96 165 250;

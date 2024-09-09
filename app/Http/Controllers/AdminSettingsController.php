@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\AdminColorSetting;
 use App\Models\AdminWebhookString;
 use App\Models\FundingOption;
 use App\Models\FundingOptionBankCodes;
@@ -25,6 +26,34 @@ class AdminSettingsController extends Controller
         foreach($landing_page_settings as $landing_page_setting){
             $data[$landing_page_setting->field_name] = $landing_page_setting->field_details;
         }
+
+
+        $color_settings = AdminColorSetting::get();
+        // $color_settings = config('landing_pages');
+        // dd($color_settings);
+        foreach($color_settings as $site_color){
+          if($site_color->color_name == 'site_landing_analytics_color'){
+              $data['site_landing_analytics_color_r'] = explode(', ',$site_color->color_value)[0];
+              $data['site_landing_analytics_color_g'] = explode(', ',$site_color->color_value)[1];
+              $data['site_landing_analytics_color_b'] = explode(', ',$site_color->color_value)[2];
+          }else if($site_color->color_name == 'admin_site_color'){
+              $data['admin_site_color_r'] = explode(', ',$site_color->color_value)[0];
+              $data['admin_site_color_g'] = explode(', ',$site_color->color_value)[1];
+              $data['admin_site_color_b'] = explode(', ',$site_color->color_value)[2];
+          }else if($site_color->color_name == 'site_landing_review_color'){
+              $data['site_landing_review_color_r'] = explode(', ',$site_color->color_value)[0];
+              $data['site_landing_review_color_g'] = explode(', ',$site_color->color_value)[1];
+              $data['site_landing_review_color_b'] = explode(', ',$site_color->color_value)[2];
+          }     
+          else{
+              $data[$site_color->color_name] = $site_color->color_value;
+
+          }
+        }
+
+        // dd($data);
+
+        
 
         $admin_2fa_setting = Admin2faSetting::first();
         if(!$admin_2fa_setting){
@@ -175,6 +204,75 @@ class AdminSettingsController extends Controller
         return redirect()->back();
       
     }
+
+    public function manage_site_colors(Request $request){
+      // return $request->all();
+      $validator = Validator::make($request->all(), [
+        'site_primary_color' => 'required|max:255',
+        'site_landing_page_hover_color' => 'required|max:255',
+        'site_admin_sidebar_color' => 'required|max:255',
+        'site_landing_analytics_color_r' => 'required|max:255',
+        'site_landing_analytics_color_g' => 'required|max:255',
+        'site_landing_analytics_color_b' => 'required|max:255',
+        // 'site_landing_review_color_r' => 'required|max:255',
+        // 'site_landing_review_color_g' => 'required|max:255',
+        // 'site_landing_review_color_b' => 'required|max:255',
+        'admin_site_color_r' => 'required|max:255',
+        'admin_site_color_g' => 'required|max:255',
+        'admin_site_color_b' => 'required|max:255',
+      ]);
+
+      if ($validator->stopOnFirstFailure()->fails()) {
+        return redirect()->back()->withErrors($validator)->withInput();
+      }
+      
+     
+        AdminColorSetting::updateOrCreate([
+          'color_name' => 'site_primary_color'
+         ],[
+          'color_value' => $request->site_primary_color
+         ]);
+
+         AdminColorSetting::updateOrCreate([
+          'color_name' => 'site_landing_page_hover_color'
+         ],[
+          'color_value' => $request->site_landing_page_hover_color
+         ]);
+
+         AdminColorSetting::updateOrCreate([
+          'color_name' => 'site_admin_sidebar_color'
+         ],[
+          'color_value' => $request->site_admin_sidebar_color
+
+         ]);
+
+         AdminColorSetting::updateOrCreate([
+          'color_name' => 'site_landing_analytics_color'
+         ],[
+          'color_value' => $request->site_landing_analytics_color_r.', '.$request->site_landing_analytics_color_g.', '.$request->site_landing_analytics_color_b
+         ]);
+
+         AdminColorSetting::updateOrCreate([
+          'color_name' => 'admin_site_color'
+         ],[
+          'color_value' => $request->admin_site_color_r.', '.$request->admin_site_color_g.', '.$request->admin_site_color_b
+         ]);
+
+        //  AdminColorSetting::updateOrCreate([
+        //   'color_name' => 'site_landing_review_color'
+        //  ],[
+        //   'color_value' => $request->site_landing_review_color_r.', '.$request->site_landing_review_color_g.', '.$request->site_landing_review_color_b
+        //  ]);
+
+         
+
+   
+        Session::flash('success','Site colors successfully updated');
+        return redirect()->back();
+      
+    }
+
+    
 
     public function add_funding_option_bank_code(Request $request){
         $validator = Validator::make($request->all(), [

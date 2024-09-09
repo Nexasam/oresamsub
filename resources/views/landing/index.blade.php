@@ -44,21 +44,87 @@
     <link rel="stylesheet" href="https://cdn.datatables.net/2.0.8/css/dataTables.dataTables.min.css">
 
 
-
-   
-
     <title>{{ $site_title }}</title>
 
-    {{-- <style>
+    <style>
+        
+        :root {
+            --brand:   {{ isset($site_primary_color) && $site_primary_color != NULL ? $site_primary_color : "#5a66f2"  }};
+            /* --brand: #5a66f1; */
+            --dark: #092032;
+            --body: #516171;
+            --border: rgba(0,0,0,0.08);
+            --shadow: 0px 6px 30px rgba(0, 0, 0, 0.08);    
+        }
+
+        .btn-brand:hover {
+        background-color: #d64022;
+        border-color: #d64022;
+        color: #fff;
+        }
+
+        .slide {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        }
+
         .slide1 {
-            background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url('http://127.0.0.1:8080/assets/landing_page_assets/img/bg_banner2.jpg');
+        background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url({{  env('APP_URL').'assets/landing_page_assets/img/bg_banner1.jpg' }});
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        }
+
+        .slide2 {
+        background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url({{  env('APP_URL').'assets/landing_page_assets/img/bg_banner2.jpg' }});
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        }
+
+
+        
+        #milestone11 {
+            background: linear-gradient(rgba({{ $site_landing_analytics_color_r ?? 90 }},{{ $site_landing_analytics_color_g ?? 102}},{{ $site_landing_analytics_color_b ?? 204}}, 0.85), rgba({{ $site_landing_analytics_color_r ?? 90 }},{{ $site_landing_analytics_color_g ?? 102}},{{ $site_landing_analytics_color_b ?? 204}}, 0.85)), url({{  env('APP_URL').'assets/landing_page_assets/img/bg_banner1.jpg' }});
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
         }
-    </style> --}}
 
-    <style>
+        /* #reviews11 {
+
+        background: linear-gradient(-90deg, rgba({{ $site_landing_review_r ?? 8 }},{{ $site_landing_review_g ?? 32}},{{ $site_landing_review_b ?? 50}}, 0.8), rgba({{ $site_landing_review_r ?? 8 }},{{ $site_landing_review_g ?? 32}},{{ $site_landing_review_b ?? 50}}, 0.8)), url({{  env('APP_URL').'assets/landing_page_assets/img/bg_banner1.jpg' }}), #980123;
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        } */
+        
+      
+        
+
+        .btn-brand:hover {
+        background-color: {{ isset($site_landing_page_hover_color) && $site_landing_page_hover_color != NULL ? $site_landing_page_hover_color : "#d64022"  }};
+        border-color: {{ isset($site_landing_page_hover_color) && $site_landing_page_hover_color != NULL ? $site_landing_page_hover_color : "#d64022"  }};
+        color: #fff;
+        }
+
+        footer {
+        /* background: linear-gradient(0deg, rgba(8, 32, 50, 0.9), rgba(8, 32, 50, 0.9)), url(../img/bg_banner1.jpg), #082032;; */
+        /* background-color:#5a66f1p;5a66f1p */
+        background-color: {{ isset($site_primary_color) && $site_primary_color != NULL ? $site_primary_color : "#5a66f2"  }};
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        }
+
+        .slide .display-3 {
+        text-transform: uppercase;
+        color: #fff;
+        }
+
         .float{
          position:fixed;
          width:60px;
@@ -160,7 +226,7 @@
     <!-- SLIDER -->
     <div class="owl-carousel owl-theme hero-slider">
         {{-- style=" background-image: 'url( {{ asset(env('APP_ASSETS_BASE_URL').'landing_page_assets/img/bg_banner2.jpg')  }} )' " --}}
-        <div  class="slide slide1">
+        <div class="slide slide1">
             <div class="container">
                 <div class="row">
                     <div class="col-12 text-center text-white">
@@ -290,23 +356,24 @@
     </section>
 
     <!-- MILESTONE -->
-    <section id="milestone">
-        <div class="container">
+    {{-- background-color: {{ isset($site_primary_color) && $site_primary_color != NULL ? $site_primary_color : "#5a66f2" }} --}}
+    <section id="milestone11"  style="color: white; ">
+        <div class="container" >
             <div class="row text-center justify-content-center gy-4">
-                <div class="col-lg-2 col-sm-6">
-                    <h1 class="display-4">{{ $value_analytics1 }}</h1>
+                <div class="col-lg-2 col-sm-6" >
+                    <h1 class="display-4" style="color:white;" >{{ $value_analytics1 }}</h1>
                     <p class="mb-0">{{ $title_analytics1 }}</p>
                 </div>
                 <div class="col-lg-2 col-sm-6">
-                    <h1 class="display-4">{{ $value_analytics2 }}</h1>
+                    <h1 class="display-4" style="color:white;">{{ $value_analytics2 }}</h1>
                     <p class="mb-0">{{ $title_analytics2 }}</p>
                 </div>
                 <div class="col-lg-2 col-sm-6">
-                    <h1 class="display-4">{{ $value_analytics3 }}</h1>
+                    <h1 class="display-4" style="color:white;">{{ $value_analytics3 }}</h1>
                     <p class="mb-0">{{ $title_analytics3 }}</p>
                 </div>
                 <div class="col-lg-2 col-sm-6">
-                    <h1 class="display-4">{{ $value_analytics4 }}</h1>
+                    <h1 class="display-4" style="color:white;">{{ $value_analytics4 }}</h1>
                     <p class="mb-0">{{ $title_analytics4 }}</p>
                 </div>
             </div>
@@ -784,7 +851,7 @@
         </div> --}}
         <div class="footer-bottom text-center">
             {{-- <p class="mb-0" style="color: white">Copyright Crystalpay 2024. All rights Reserved</p> --}}
-            <p class="mb-0" style="color: white">Developed with ❤️ by <a href="#">Subutility</a> 	&#169; {{ date('Y') }} . Owned by <a href="#">{{ $site_title }}</a>. All rights Reserved</p>
+            <p class="mb-0" style="color: white">Developed with ❤️ by <a href="#" style="color: white;">Subutility</a> 	&#169; {{ date('Y') }} . Owned by <a href="#" style="color: white;">{{ $site_title }}</a>. All rights Reserved</p>
         </div>
     </footer>
 

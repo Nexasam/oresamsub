@@ -63,9 +63,37 @@
     <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&display=swap" rel="stylesheet"> --}}
 
     {{-- <link href="https://cdn.jsdelivr.net/npm/flowbite@2.4.1/dist/flowbite.min.css" rel="stylesheet" /> --}}
-
+      
+    @php
+       $admin_site_color =  App\Models\AdminColorSetting::where('color_name','admin_site_color')->first();
+       $admin_site_color_value = $admin_site_color->color_value ?? (int) '90, 102, 241'; 
+       echo $admin_site_color_value;  
+    @endphp
 
     <style>
+        :root {
+              --color-primary: {{  $admin_site_color_value  }};
+              /* --color-primary: 90 102 241; */
+              --color-primary-rgb: 90,102,241;
+              --color-secondary: 96 165 250;
+              --color-success: 34 197 94;
+              --color-info: 76 117 207;
+              --color-warning: 234 179 8;
+              --color-danger: 244 63 94;
+              --body-bg: 242 246 249;
+              --default-text-color: 71 85 105;
+              --default-border: 243 243 243;
+              --muted: 140 144 151;
+              --dark-rgb: 14 16 20;
+              --menu-bg: 255 255 255;
+              --menu-border-color: 243 243 243;
+              --menu-prime-color: 100 116 139;
+              --header-bg: 255 255 255;
+              --header-prime-color: 100 116 139;
+              --header-border-color: 243 243 243;
+              --dark-bg: 30 41 59;
+              --dark-bg2: 249 250 251;
+          }
          .float{
           position:fixed;
           width:60px;
