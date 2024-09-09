@@ -49,10 +49,16 @@
     <!-- Color Picker Css -->
     {{-- <link rel="stylesheet" href="../assets/libs/@simonwep/pickr/themes/nano.min.css"> --}}
      <link rel="stylesheet"  href="{{ asset(env('APP_ASSETS_BASE_URL').'libs/@simonwep/pickr/themes/nano.min.css') }}">
+  
+     @php
+     $admin_site_color =  App\Models\AdminColorSetting::where('color_name','admin_site_color')->first();
+     $admin_site_color_value = $admin_site_color->color_value ?? (int) '90, 102, 241'; 
+     echo $admin_site_color_value;  
+    @endphp
 
-     <style>
-        :root {
-            --color-primary: 215, 51, 154;
+    <style>
+      :root {
+            --color-primary: {{  $admin_site_color_value  }};
             /* --color-primary: 90 102 241; */
             --color-primary-rgb: 90,102,241;
             --color-secondary: 96 165 250;
@@ -74,7 +80,7 @@
             --dark-bg: 30 41 59;
             --dark-bg2: 249 250 251;
         }
-        
+
         .float{
          position:fixed;
          width:60px;
