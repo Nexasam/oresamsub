@@ -12,8 +12,11 @@
             <img src="../assets/img/brand-logos/toggle-logo.png" alt="logo" class="main-logo toggle-logo">
             <img src="../assets/img/brand-logos/desktop-dark.png" alt="logo" class="main-logo desktop-dark">
             <img src="../assets/img/brand-logos/toggle-dark.png" alt="logo" class="main-logo toggle-dark"> --}}
-            <img src="{{ asset( env('APP_ASSETS_BASE_URL').'img/logos/logo.png') }}" alt="logo"
-            class="w-14 h-16 mx-auto block dark:hidden" >
+            {{-- <img src="{{ asset( env('APP_ASSETS_BASE_URL').'img/logos/logo.png') }}" alt="logo"
+            class="w-14 h-16 mx-auto block dark:hidden" > --}}
+
+            <h1 class="block text-2xl font-bold text-white dark:text-white">{{ env('APP_NAME') }}</h1>
+            
           
 
         </a>

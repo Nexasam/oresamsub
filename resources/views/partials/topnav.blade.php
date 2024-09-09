@@ -13,10 +13,12 @@
         </div>
 
         <div class="responsive-logo">
-          <a class="responsive-logo-dark" href="index.html" aria-label="Brand"><img
+          {{-- <a class="responsive-logo-dark" href="index.html" aria-label="Brand"><img
               src="{{ asset(env('APP_ASSETS_BASE_URL').'img/logos/logo.png') }}" height="50" width="60" alt="logo" class="mx-auto"></a>
           <a class="responsive-logo-light" href="index.html" aria-label="Brand"><img
-              src="{{ asset(env('APP_ASSETS_BASE_URL').'img/logos/logo.png') }}" height="50" width="60"  alt="logo" class="mx-auto"></a>
+              src="{{ asset(env('APP_ASSETS_BASE_URL').'img/logos/logo.png') }}" height="50" width="60"  alt="logo" class="mx-auto"></a> --}}
+              <h1 class="block text-2xl font-bold text-gray-800 dark:text-white">{{ env('APP_NAME') }}</h1>
+              
         </div>
 
         <div class="header-right">

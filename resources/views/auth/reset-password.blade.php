@@ -46,7 +46,55 @@
     {{-- <link rel="stylesheet" href="../assets/libs/@simonwep/pickr/themes/nano.min.css"> --}}
     <link rel="stylesheet" href="{{ asset(env('APP_ASSETS_BASE_URL').'libs/@simonwep/pickr/themes/nano.min.css') }}">
 
-    
+    @php
+    $admin_site_color =  App\Models\AdminColorSetting::where('color_name','admin_site_color')->first();
+    $admin_site_color_value = $admin_site_color->color_value ?? (int) '90, 102, 241'; 
+   //  echo $admin_site_color_value;  
+   @endphp
+
+   <style>
+     :root {
+           --color-primary: {{  $admin_site_color_value  }};
+           /* --color-primary: 90 102 241; */
+           --color-primary-rgb: 90,102,241;
+           --color-secondary: 96 165 250;
+           --color-success: 34 197 94;
+           --color-info: 76 117 207;
+           --color-warning: 234 179 8;
+           --color-danger: 244 63 94;
+           --body-bg: 242 246 249;
+           --default-text-color: 71 85 105;
+           --default-border: 243 243 243;
+           --muted: 140 144 151;
+           --dark-rgb: 14 16 20;
+           --menu-bg: 255 255 255;
+           --menu-border-color: 243 243 243;
+           --menu-prime-color: 100 116 139;
+           --header-bg: 255 255 255;
+           --header-prime-color: 100 116 139;
+           --header-border-color: 243 243 243;
+           --dark-bg: 30 41 59;
+           --dark-bg2: 249 250 251;
+       }
+        .float{
+         position:fixed;
+         width:60px;
+         height:60px;
+         bottom:40px;
+         right:40px;
+         background-color:#25d366;
+         color:#FFF;
+         border-radius:50px;
+         text-align:center;
+         font-size:30px;
+         box-shadow: 2px 2px 3px #999;
+         z-index:100;
+         }
+
+         .my-float{
+         margin-top:16px;
+         }
+   </style>
 
 </head>
 
@@ -72,15 +120,15 @@
                     <div class="mt-7">
                         <div class="p-4 sm:p-7">
                             <a href="#" class="header-logo">
-                                <img src="{{ asset(env('APP_ASSETS_BASE_URL').'img/logos/logo.png') }}" alt="logo"
-                                class="w-20 h-20 mx-auto block dark:hidden" alt="logo" class="">
+                                {{-- <img src="{{ asset(env('APP_ASSETS_BASE_URL').'img/logos/logo.png') }}" alt="logo"
+                                class="w-20 h-20 mx-auto block dark:hidden" alt="logo" class=""> --}}
                                 {{-- <img src="../../assets/img/logos/{{  $logo }}" alt="logo"
                                 class="w-20 h-20 mx-auto hidden dark:block" alt="logo" class=""> --}}
                                 {{-- <img src="../assets/img/brand-logos/desktop-dark.png" alt="logo" class="mx-auto hidden dark:block"> --}}
                             </a>
-                             <br>
+                             {{-- <br>
                             <hr>
-                            <br>
+                            <br> --}}
 
                             <div class="text-center">
                                 @if (session('status') == 'verification-link-sent')
@@ -88,7 +136,9 @@
                                     {{ __('A new verification link has been sent to the email address you provided during registration.') }}
                                 </div>
                                 @endif
-                                <h1 class="block text-2xl font-bold text-gray-800 dark:text-white">Complete Password Reset</h1>
+                                <h1 class="block text-2xl font-bold text-gray-800 dark:text-white">{{ env('APP_NAME') }}</h1>
+                                <hr>
+                                <h3 class="block mt-2 text-xl text-gray-800 dark:text-white">Complete Password Reset</h3>
                                 {{-- <p class="mt-3 text-sm text-gray-600 dark:text-white/70">
                                     Forgot your password? No problem. Just let us know your email address and we will email you a password reset link that will allow you to choose a new one.
                                 </p> --}}

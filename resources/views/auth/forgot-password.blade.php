@@ -68,16 +68,20 @@
                     </a> --}}
                     <div class="mt-7">
                         <div class="p-4 sm:p-7">
+                            
                             <a href="#" class="header-logo">
-                                <img src="{{ asset(env('APP_ASSETS_BASE_URL').'img/logos/logo.png') }}" alt="logo"
-                                class="w-20 h-20 mx-auto block dark:hidden" alt="logo" class="">
+                                
+                                {{-- <img src="{{ asset(env('APP_ASSETS_BASE_URL').'img/logos/logo.png') }}" alt="logo"
+                                class="w-20 h-20 mx-auto block dark:hidden" alt="logo" class=""> --}}
+
+
                                 {{-- <img src="../../assets/img/logos/{{  $logo }}" alt="logo"
                                 class="w-20 h-20 mx-auto hidden dark:block" alt="logo" class=""> --}}
                                 {{-- <img src="../assets/img/brand-logos/desktop-dark.png" alt="logo" class="mx-auto hidden dark:block"> --}}
                             </a>
-                             <br>
+                             {{-- <br>
                             <hr>
-                            <br>
+                            <br> --}}
 
                             <div class="text-center">
                                 @if (session('status') == 'verification-link-sent')
@@ -85,7 +89,9 @@
                                     {{ __('A new verification link has been sent to the email address you provided during registration.') }}
                                 </div>
                                 @endif
-                                <h1 class="block text-2xl font-bold text-gray-800 dark:text-white">Password Reset</h1>
+                                <h1 class="block text-2xl font-bold text-gray-800 dark:text-white">{{ env('APP_NAME') }}</h1>
+                                <hr>
+                                <h3 class="block mt-2 text-xl text-gray-800 dark:text-white">Password Reset</h3>
                                 <p class="mt-3 text-sm text-gray-600 dark:text-white/70">
                                     Forgot your password? No problem. Just let us know your email address and we will email you a password reset link that will allow you to choose a new one.
                                 </p>
