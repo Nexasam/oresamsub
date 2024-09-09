@@ -87,7 +87,7 @@
     @php
        $admin_site_color =  App\Models\AdminColorSetting::where('color_name','admin_site_color')->first();
        $admin_site_color_value = $admin_site_color->color_value ?? (int) '90, 102, 241'; 
-       echo $admin_site_color_value;  
+      //  echo $admin_site_color_value;  
     @endphp
 
     <style>
