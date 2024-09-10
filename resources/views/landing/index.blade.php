@@ -727,7 +727,7 @@
                         <h1>Need something else?</h1>
                         <p class="mx-auto">We’re here to help! Reach out to our customer support team through the following channels:</p>
                         <span>Email:  <a href="#">{{ $topnav_email }}</a>  </span> <br>
-                        <span>Reach us on whatsapp by <a href="{{ $twitter_link }}">clicking this link</a>  </span> <br>
+                        <span>Reach us on whatsapp by <a href="https://api.whatsapp.com/send?phone={{  $support_whatsapp_number  }}&text=Hello,%20Please%20I%20need%20help">clicking this link</a>  </span> <br>
                         @if ($physical_address != '' && $physical_address != NULL)
                         <span>Office Address: {{ $physical_address }}  </span>                            
                         @endif
