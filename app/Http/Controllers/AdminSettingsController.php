@@ -2,18 +2,20 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\AdminColorSetting;
-use App\Models\AdminWebhookString;
-use App\Models\FundingOption;
-use App\Models\FundingOptionBankCodes;
 use App\Models\User;
+use App\Models\SiteImage;
 use App\Models\Automation;
 use Illuminate\Http\Request;
+use App\Models\FundingOption;
 use App\Models\Admin2faSetting;
 use App\Models\ReferralSetting;
+use App\Models\AdminColorSetting;
+use App\Models\AdminWebhookString;
 use App\Models\AdminGeneralSetting;
 use App\Models\LandingPagesSetting;
+use App\Models\FundingOptionBankCodes;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 
 class AdminSettingsController extends Controller
@@ -201,6 +203,68 @@ class AdminSettingsController extends Controller
           ]);
         }
         Session::flash('success','2fa successfully updated for all users');
+        return redirect()->back();
+      
+    }
+
+    
+
+    public function manage_site_images(Request $request){
+      // return $request->all();
+      $validator = Validator::make($request->all(), [
+        'hero_image1' => 'nullable|image|mimes:png,jpg,jpeg|max:8048',
+        'hero_image2' => 'nullable|image|mimes:png,jpg,jpeg|max:8048',
+      ]);
+
+      if ($validator->stopOnFirstFailure()->fails()) {
+        return redirect()->back()->withErrors($validator)->withInput();
+      }
+
+        if($request->hasFile('hero_image1')){
+            //first cleanup directory
+            $current_image = SiteImage::where('image_category','hero_image1')->first();
+            if($current_image){
+              @unlink(public_path('assets/landing_page_assets/img/hero_image1/'.$current_image->image_name));              
+            }
+
+          $hero_image1 = 'hero_image1_'.time().'.'.$request->hero_image1->extension();
+          $checkupload = $request->hero_image1->move(public_path('assets/landing_page_assets/img/hero_image1'), $hero_image1);
+          if($checkupload){
+            SiteImage::updateOrCreate([
+              'image_category' => 'hero_image1'
+              ],[
+              'image_name' => $hero_image1
+            ]);
+          }else{
+            Session::flash('failure','Site images upload could not be completed... Check hero image 1');
+            return redirect()->back();
+          }
+        
+        }
+
+        if($request->hasFile('hero_image2')){
+          //first cleanup directory
+          $current_image = SiteImage::where('image_category','hero_image2')->first();
+          if($current_image){
+            @unlink(public_path('assets/landing_page_assets/img/hero_image2/'.$current_image->image_name));              
+          }
+
+
+          $hero_image2 = 'hero_image2_'.time().'.'.$request->hero_image2->extension();
+          $checkupload = $request->hero_image2->move(public_path('assets/landing_page_assets/img/hero_image2'), $hero_image2);
+          if($checkupload){
+            SiteImage::updateOrCreate([
+              'image_category' => 'hero_image2'
+              ],[
+              'image_name' => $hero_image2
+            ]);
+          }else{
+            Session::flash('failure','Site images upload could not be completed... Check hero image 2');
+            return redirect()->back();
+          }
+        }
+   
+        Session::flash('success','Site images successfully updated');
         return redirect()->back();
       
     }

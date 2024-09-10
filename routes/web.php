@@ -4,6 +4,7 @@ use App\Models\AdminColorSetting;
 use App\Models\ProductPlan;
 use App\Http\Middleware\RoleAssess;
 use App\Models\LandingPagesSetting;
+use App\Models\SiteImage;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DataController;
 use App\Http\Controllers\RoleController;
@@ -35,6 +36,16 @@ Route::get('logs', [\Rap2hpoutre\LaravelLogViewer\LogViewerController::class, 'i
 
 Route::get('/', function () {
     // dd('e dey');
+    $data = [];
+    $site_images_data = SiteImage::get();
+    if(count($site_images_data) > 0){
+        foreach($site_images_data as $site_image){
+            $data[$site_image->image_category] = $site_image->image_name;
+        }
+    }
+   
+
+
     $landing_data = LandingPagesSetting::get();
     foreach($landing_data as $landing_component){
         $data[$landing_component->field_name] = $landing_component->field_details;
@@ -169,6 +180,7 @@ Route::middleware(['auth','verified','admin'])->post('admin/manage_automations_k
 Route::middleware(['auth','verified','admin'])->post('admin/update_funding_options', [AdminSettingsController::class, 'update_funding_options'])->name('admin.settings.update_funding_options'); //
 Route::middleware(['auth','verified','admin'])->post('admin/add_funding_option_bank_code', [AdminSettingsController::class, 'add_funding_option_bank_code'])->name('admin.settings.add_funding_option_bank_code'); //
 Route::middleware(['auth','verified','admin'])->post('admin/update_site_logo', [AdminSettingsController::class, 'manage_site_logo'])->name('admin.settings.manage_site_logo');
+Route::middleware(['auth','verified','admin'])->post('admin/update_site_images', [AdminSettingsController::class, 'manage_site_images'])->name('admin.settings.manage_site_images');
 Route::middleware(['auth','verified','admin'])->post('admin/update_site_color', [AdminSettingsController::class, 'manage_site_colors'])->name('admin.settings.manage_site_colors');
 Route::middleware(['auth','verified','admin'])->post('admin/manage_global_user_2fa', [AdminSettingsController::class, 'manage_global_user_2fa'])->name('admin.settings.manage_global_user_2fa');
 Route::middleware(['auth','verified','admin'])->post('admin/referral_settings', [AdminSettingsController::class, 'manage_referral_settings'])->name('admin.settings.referral_settings');

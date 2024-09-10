@@ -46,6 +46,12 @@
 
     <title>{{ $site_title }}</title>
 
+    @php
+       $hero1 = isset($hero_image1) ? env('APP_URL').'assets/landing_page_assets/img/hero_image1/'.$hero_image1 : env('APP_URL').'assets/landing_page_assets/img/bg_banner1.jpg';
+       $hero2 = isset($hero_image1) ? env('APP_URL').'assets/landing_page_assets/img/hero_image2/'.$hero_image2 : env('APP_URL').'assets/landing_page_assets/img/bg_banner2.jpg';
+       
+    @endphp
+
     <style>
         
         :root {
@@ -72,14 +78,14 @@
         }
 
         .slide1 {
-        background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url({{  env('APP_URL').'assets/landing_page_assets/img/bg_banner1.jpg' }});
+        background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url({{  $hero1  }});
         background-size: cover;
         background-position: center;
         background-repeat: no-repeat;
         }
 
         .slide2 {
-        background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url({{  env('APP_URL').'assets/landing_page_assets/img/bg_banner2.jpg' }});
+        background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url({{  $hero2  }});
         background-size: cover;
         background-position: center;
         background-repeat: no-repeat;
