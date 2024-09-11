@@ -2,8 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Network;
+use App\Models\Product;
+use App\Models\UserPlan;
+use App\Models\Automation;
 use App\Models\ProductPlan;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 use Yajra\DataTables\DataTables;
 use App\Models\ProductPlanCategory;
 use Illuminate\Support\Facades\Session;
@@ -19,6 +24,7 @@ class ProductPlanController extends Controller
         $product_plan_categories = ProductPlanCategory::get();
         $data['product_plans'] = $product_plans;
         $data['product_plan_categories'] = $product_plan_categories;
+        // dd($data);
 
         
         return view('admin.product_plans.index')->with($data);
@@ -63,11 +69,30 @@ class ProductPlanController extends Controller
       ]);
 
       return response()->json(['status'=>'1', 'message'=>'success']);
+    }
 
+    public function product_plan_details($id){
+        $data['automations'] = Automation::select('id','automation_name')->get();
+        $data['networks'] = Network::select('id','network_name')->get();
+        $data['products'] = Product::select('id','product_name')->get();
+
+        $data['basic_plan'] = UserPlan::where('user_plan_name','Basic Plan')->first();
+        $data['gold_plan'] = UserPlan::where('user_plan_name','Gold Reseller Plan')->first();
+        $data['diamond_plan'] = UserPlan::where('user_plan_name','Diamond Reseller Plan')->first();
+        $data['platinum_plan'] = UserPlan::where('user_plan_name','Platinum Reseller Plan')->first();
+        
+        $product_plan_categories = ProductPlanCategory::with(['product' => function($query){
+          $query->where('slug','data');
+        }])->latest()->get();
+        
+        $data['product_plan_categories'] = $product_plan_categories;
+        $product_plan_details = ProductPlan::with('automation')->where('id',$id)->first();
+        $data['product_plan'] = $product_plan_details;
+        return view('admin.product_plans.product_plan_details')->with($data);
     }
     public function admin_fetch_product_plans(Request $request){
         $data = ProductPlan::with(['automation','product_plan_category.network','product_plan_category.product'])
-        ->latest()
+        ->orderBy('updated_at','desc')
         ->get();
 
         return DataTables::of($data)
@@ -145,6 +170,17 @@ class ProductPlanController extends Controller
         })
         ->addColumn('date',function($data){
           return $data->created_at;
+        })
+        ->addColumn('updated_at',function($data){
+          return $data->updated_at;
+        })
+        ->addColumn('action',function($data){
+           // $route = 'transactions.transaction_details';
+           $route = route('admin.product_plans.product_plan_details',$data->id);
+           $actionBtn = '<a href="'.$route.'" type="button" class="hs-dropdown-toggle ti-btn ti-btn-primary" data-hs-overlay="#hs-vertically-centered-scrollable-modal'.$data->email.'">
+           Details
+           </a>';
+           return $actionBtn;
         })
         ->escapeColumns([])
         ->make(true);
@@ -250,4 +286,55 @@ class ProductPlanController extends Controller
 
     
     }
+
+    public function update(Request $request){
+       
+      //  return $request->all();
+      $validator = Validator::make($request->all(), [
+         'product_plan_id' => 'required|max:255|exists:product_plans,id',
+         'product_plan_name' => 'required|max:255',
+         'product_plan_category_idd' => 'required',
+         'automation_product_plan_id' => 'required',
+         'cost_price' => 'required|numeric|gt:0',
+         'data_size_in_mb' => 'required|numeric',
+         'validity_in_days' => 'required|numeric',
+         'default_selling_price' => 'required|numeric',
+         'user_level_1_selling_price' => 'required|numeric',
+         'user_level_2_selling_price' => 'required|numeric',
+         'user_level_3_selling_price' => 'required|numeric',
+         'user_level_4_selling_price' => 'required|numeric',
+         'upline_commission_option' => ['required',Rule::in(['flat','percentage'])],
+         'upline_percentage_commission' => 'required|numeric',
+         'upline_flat_commission' => 'required|numeric',
+         'upline_commission_cap' => 'required|numeric',
+       ]);
+
+       if ($validator->stopOnFirstFailure()->fails()) {
+         return redirect()->back()->withErrors($validator)->withInput();
+       }
+
+       if($request->upline_percentage_commission > 100){
+          Session::flash('failure','Upline percentage commission cannot be greater than 100');
+          return redirect()->back();
+        }
+
+       
+
+       $data = $validator->validated();
+       unset($data['product_plan_category_idd']);
+       unset($data['product_plan_id']);
+       $data['product_plan_category_id'] = $request->product_plan_category_idd;
+      
+      //  dd($data);
+
+       $create_product_plans = ProductPlan::where('id',$request->product_plan_id)->update($data);
+ 
+       if($create_product_plans){
+         Session::flash('success','Product plan successfully updated');
+       }else{
+         Session::flash('failure','Error occurred while updating product plan');
+       }
+ 
+       return redirect()->route('admin.product_plans.index');
+   }
 }

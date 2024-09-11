@@ -86,7 +86,9 @@
                                     <th>User Level 4 Selling Price <br> (% discount for airtime)</th>
                                     <th>Visibility</th>
                                     <th>Public Visibility</th>
-                                    <th>Date Added</th>
+                                    <th>Created At</th>
+                                    <th>Last Updated</th>
+                                    <th>Action</th>
                                   </tr>
                                </thead>
                             <tbody>

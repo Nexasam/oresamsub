@@ -6,13 +6,14 @@ use App\Models\Network;
 use App\Models\Product;
 use App\Models\UserPlan;
 use App\Models\Automation;
+use App\Models\ProductPlan;
 use Illuminate\Http\Request;
-use League\CommonMark\Renderer\Inline\TextRenderer;
 use Yajra\DataTables\DataTables;
 use App\Models\ProductPlanCategory;
 use App\Models\BulkDataProductPlans;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
+use League\CommonMark\Renderer\Inline\TextRenderer;
 
 class ProductPlanCategoryController extends Controller
 {
@@ -34,6 +35,7 @@ class ProductPlanCategoryController extends Controller
        
         return view('admin.product_plan_categories.index')->with($data);
     }
+
 
 
     public function view_details($id){
@@ -116,6 +118,8 @@ class ProductPlanCategoryController extends Controller
     
           return redirect()->back();
     }
+
+  
 
     public function updateAutomation(Request $request){
           $validator = Validator::make($request->all(), [

@@ -80,7 +80,9 @@ $(document).ready(function(){
                     {data: 'user_level_4_selling_price', name: 'user_level_4_selling_price'},
                     {data: 'visibility', name: 'visibility'},
                     {data: 'public_visibility', name: 'public_visibility'},
-                    {data: 'date', name: 'date'}
+                    {data: 'date', name: 'date'},
+                    {data: 'updated_at', name: 'updated_at'},
+                    {data: 'action', name: 'action'},
                   ]
         });
     }
