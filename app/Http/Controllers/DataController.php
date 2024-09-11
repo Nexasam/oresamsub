@@ -955,7 +955,10 @@ class DataController extends Controller
         logger($plan_category_id);
          
         if($plan_category_id == ''){
-            $product_plan_categories = ProductPlanCategory::select('id','automation_id')->where('product_id',$product_id)->where('network_id',$network_id)->get();
+            $product_plan_categories = ProductPlanCategory::select('id','automation_id')
+            ->where('product_id',$product_id)
+            ->where('network_id',$network_id)
+            ->get();
         }else{
             $product_plan_categories = ProductPlanCategory::when(!empty($network_id), function($query) use ($network_id) {
                 $query->where('network_id',$network_id);
@@ -995,6 +998,7 @@ class DataController extends Controller
                 $product_plans = ProductPlan::where('product_plan_category_id',$product_plan_category->id)
                 ->where('visibility',1)
                 ->where('automation_id',$product_plan_category->automation_id)
+                ->orderBy('data_size_in_mb')
                 ->get();
             }
 
