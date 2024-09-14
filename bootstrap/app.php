@@ -20,6 +20,10 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias(['admin' => RoleAdminAccess::class, 'user' => RoleUserAccess::class, ]);
         // $middleware->alias(['user' => RoleUserAccess::class]);
         $middleware->statefulApi();
+        $middleware->validateCsrfTokens(
+            // Specify the routes to exclude from CSRF protection
+            except: ['register']
+        );
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //

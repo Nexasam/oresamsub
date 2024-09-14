@@ -172,7 +172,7 @@
                                         @endif
                                     </div>
                                     <form action="{{ route('register') }}" method="POST">
-                                        @csrf
+                                        {{-- @csrf --}}
                                         <div class="grid gap-y-4">
 
                                             <!-- Form Group -->

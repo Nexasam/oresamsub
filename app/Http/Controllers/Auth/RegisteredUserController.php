@@ -48,7 +48,7 @@ class RegisteredUserController extends Controller
             'pin' => ['required', 'numeric', 'digits:4'],
             // 'other_names' => ['nullable', 'string', 'max:255'],
             'phone_number' => ['required', 'string', 'max:255'],
-            'upline_referral_phone_number' => ['nullable', 'string','exists:users,phone_number' ,'max:255'],
+            // 'upline_referral_phone_number' => ['nullable', 'string','exists:users,phone_number' ,'max:255'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
             'password' => ['required', 'confirmed', Password::min(8)
             ->letters()
