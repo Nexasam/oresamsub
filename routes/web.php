@@ -125,6 +125,7 @@ Route::middleware(['auth','verified','admin'])->post('admin/users/fund_user_wall
 Route::middleware(['auth','verified','admin'])->post('admin/users/reset_2fa', [UsersController::class, 'reset_2fa'])->name('admin.users.reset_2fa');
 Route::middleware(['auth','verified','admin'])->post('admin/users/store', [UsersController::class, 'store'])->name('admin.users.store');
 Route::middleware(['auth','verified','admin'])->get('admin/users/fetch_users', [UsersController::class, 'fetch_users'])->name('admin.users.fetch_users');
+Route::middleware(['auth','verified','admin'])->get('admin/users/toggle_verification_status', [UsersController::class, 'toggle_verification_status'])->name('admin.users.toggle_verification_status');
 
 Route::middleware(['auth','verified','admin'])->get('admin/networks', [NetworkController::class, 'index'])->name('admin.networks.index');
 

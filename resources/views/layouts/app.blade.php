@@ -1169,6 +1169,33 @@
                 });
         }
 
+        function toggleUserStatus(userId,token,actualValue){
+               
+
+               const data = {
+                 userId : userId,
+                 token : token
+               };
+              //  console.log(data);
+              //  return;
+               
+                $.ajax({
+                 type: 'GET',
+                 url: "{{ route('admin.users.toggle_verification_status') }}",
+                 data: data,
+                 dataType: 'json',
+                 success: function(response) {
+                     $('#user_verification_notification'+userId).removeClass('hidden');
+                     $('#user_verification_notification'+userId).html(response.message);
+                     console.log(response);
+                 },
+                 error: function(xhr, status, error) {
+                     // Handle errors if needed
+                     console.error(xhr.responseText);
+                 }
+             });
+     }
+
         function toggleHotSales(planCategoryId,token,checkedd){
                   // alert(planCategoryId)
                   // var check = $('#hs-basic-with-description-checked'+planCategoryId).checked;
