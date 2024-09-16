@@ -140,7 +140,7 @@ class WalletsController extends Controller
                   'main_wallet' => $new_amount
                 ]);
               }else{
-                $updated = false;
+                $updated = true;
               }
   
               $settled_amount = $response_decode['event_data']['data']['settled'];
