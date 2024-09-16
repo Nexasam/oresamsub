@@ -68,7 +68,7 @@
                       Site Images & Colors
                     </button>
                     <button type="button" class="hs-tab-active:bg-primary hs-tab-active:text-white py-3 px-4 inline-flex items-center gap-2 bg-transparent text-sm font-medium text-center text-gray-500 rounded-sm hover:text-primary  dark:text-white/70 dark:hover:text-white" id="pills-with-brand-color-item-4" data-hs-tab="#pills-with-brand-color-4" aria-controls="pills-with-brand-color-4">
-                      Automation settings
+                      Settings
                     </button>
                     <button type="button" class="hs-tab-active:bg-primary hs-tab-active:text-white py-3 px-4 inline-flex items-center gap-2 bg-transparent text-sm font-medium text-center text-gray-500 rounded-sm hover:text-primary  dark:text-white/70 dark:hover:text-white" id="pills-with-brand-color-item-6" data-hs-tab="#pills-with-brand-color-6" aria-controls="pills-with-brand-color-6">
                       Funding settings
@@ -543,6 +543,25 @@
                               <hr>      
                               <div class="space-y-2">
                                   <button type="submit" class="ti-btn ti-btn-primary w-full">Update keys</button>
+                              </div>
+                            
+                              <br>
+                          </div>
+                        </form>
+                        <br>
+                        <hr>
+                        <br>
+                        <form enctype="multipart/form-data" method="POST" action="{{ route('admin.settings.update')  }}">
+                          @csrf
+                          <div class="grid w-full lg:w-1/2 lg:grid-cols-1 gap-2 space-y-4 lg:space-y-0">
+                             
+                              <div class="">
+                                <label class="ti-form-label mb-0">Maximum Automatic Crediting Allowed: </label>
+                                <input type="number"  required class="my-auto ti-form-input" name="max_automatic_crediting_allowed" value="{{ $max_automatic_crediting_allowed  ?? '' }}"  placeholder="">
+                              </div> 
+                                  
+                              <div class="space-y-2">
+                                  <button type="submit" class="ti-btn ti-btn-primary w-full">Update Setting</button>
                               </div>
                             
                               <br>

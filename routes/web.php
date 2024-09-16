@@ -181,6 +181,7 @@ Route::middleware(['auth','verified','admin'])->get('admin/settings', [AdminSett
 Route::middleware(['auth','verified','admin'])->post('admin/update_webhook_suffix_string', [AdminSettingsController::class, 'update_webhook_suffix_string'])->name('admin.settings.update_webhook_suffix_string');
 Route::middleware(['auth','verified','admin'])->post('admin/manage_automations_keys', [AdminSettingsController::class, 'manage_automations_keys'])->name('admin.settings.manage_automations_keys');
 Route::middleware(['auth','verified','admin'])->post('admin/update_funding_options', [AdminSettingsController::class, 'update_funding_options'])->name('admin.settings.update_funding_options'); //
+Route::middleware(['auth','verified','admin'])->post('admin/settings/update', [AdminSettingsController::class, 'update_settings'])->name('admin.settings.update'); //
 Route::middleware(['auth','verified','admin'])->post('admin/add_funding_option_bank_code', [AdminSettingsController::class, 'add_funding_option_bank_code'])->name('admin.settings.add_funding_option_bank_code'); //
 Route::middleware(['auth','verified','admin'])->post('admin/update_site_logo', [AdminSettingsController::class, 'manage_site_logo'])->name('admin.settings.manage_site_logo');
 Route::middleware(['auth','verified','admin'])->post('admin/update_site_images', [AdminSettingsController::class, 'manage_site_images'])->name('admin.settings.manage_site_images');
@@ -259,6 +260,8 @@ Route::middleware(['auth','verified','user'])->get('user/wallet/index', [Wallets
 Route::middleware(['auth','verified','user'])->get('user/wallet/fund_wallet', [WalletsController::class, 'fund_wallet'])->name('user.wallet.fund_wallet');
 Route::middleware(['auth','verified','user'])->post('user/wallet/generate_virtual_account', [WalletsController::class, 'generate_virtual_account'])->name('user.wallet.generate_virtual_account');
 Route::middleware(['auth','verified'])->get('transactions/fetch_crystal_pay_funding_transactions', [WalletsController::class, 'fetch_crystal_pay_funding_transactions'])->name('transactions.fetch_crystal_pay_funding_transactions');
+Route::middleware(['auth','verified'])->get('transactions/fetch_crystal_pay_pending_transactions', [WalletsController::class, 'fetch_crystal_pay_pending_transactions'])->name('transactions.fetch_crystal_pay_pending_transactions');
+Route::middleware(['auth','verified'])->get('transactions/pending_funding_transactions', [WalletsController::class, 'pending_funding_transactions'])->name('admin.transactions.pending_funding_transactions');
 
 
 Route::middleware(['auth','verified','user'])->get('user/airtime/buy_airtime', [AirtimeController::class, 'buy_airtime'])->name('user.airtime.buy_airtime');

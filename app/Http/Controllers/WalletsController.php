@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\AdminWebhookString;
+use App\Models\MaxCrystalPaymentsPendingApproval;
 use Exception;
 use App\Models\User;
+use App\Models\Setting;
 use Illuminate\Http\Request;
 use App\Models\FundingOption;
 use Yajra\DataTables\DataTables;
+use App\Models\AdminWebhookString;
 use App\Models\UserVirtualAccount;
 use Illuminate\Support\Facades\DB;
 use App\Models\FundingWebhookPayload;
@@ -66,12 +68,7 @@ class WalletsController extends Controller
         $can_fund = '';
 
         $funding_option_details = FundingOption::with('webhook_string')->where('slug','crystal_pay')->first();
-
-        // if($id != $funding_option_details->webhook_string->webhook_suffix_string){
-        //   logger('Wrong suffix webhook string detected');
-        // }
-        
-        //Check if webhook has been sent before
+ 
 
         DB::beginTransaction();
         try{
@@ -84,6 +81,7 @@ class WalletsController extends Controller
         if( ($response_decode['event_data']['status'] == 'SUCCESSFUL') && (!$check_exists) ){    
             
             $email = $response_decode['destination']['account_email'];
+
             $user_details = User::select('id','main_wallet')->where('email',$email)->first();
             
             if($user_details){
@@ -92,16 +90,30 @@ class WalletsController extends Controller
               //carry out funding here::: this will change later
               $old_amount = $user_details->main_wallet;
               $amount_funded = $response_decode['event_data']['data']['settled'];
-              $new_amount = $old_amount + $amount_funded;
-              //carry out funding here
-              $can_fund = 'yes';
-             
+           
+             //check if the amount is greater than the max set for automatic crediting
+              $setting = Setting::where('field_name','max_automatic_crediting_allowed')->first();
+              if($setting && $amount_funded > intval($setting->max_automatic_crediting_allowed) ){
+                //log automatic crediting
+                $can_fund = 'no';
+                MaxCrystalPaymentsPendingApproval::create([
+                  'user_id' => $user_details->id,
+                  'amount' => $amount_funded,
+                  'payment_reference' => $response_decode['transaction_reference']
+                ]);
+              }else{
+                $new_amount = $old_amount + $amount_funded;
+                //carry out funding here
+                $can_fund = 'yes';
+              }
+                           
             }else{
               $created_data['funding_status'] = 'failed';
               $can_fund = 'no';
               logger('Cannot fund because user details not found');
-
             }
+
+
             $created_data['funding_slug'] = 'crystal_pay';
             $created_data['user_id'] = $user_details->id;
             $created_data['user_email'] = $email;
@@ -127,10 +139,8 @@ class WalletsController extends Controller
                 $updated = $user_details->update([
                   'main_wallet' => $new_amount
                 ]);
-
               }else{
                 $updated = false;
-
               }
   
               $settled_amount = $response_decode['event_data']['data']['settled'];
@@ -167,6 +177,11 @@ class WalletsController extends Controller
     public function wallet_creditings(Request $request){
       // dd('sss');
       return view('admin.wallets_creditings.index');
+    }
+
+    public function pending_funding_transactions(Request $request){
+      // dd('sss');
+      return view('admin.wallets_creditings.pending_creditings');
     }
 
     public function fetch_crystal_pay_funding_transactions(Request $request){
@@ -258,6 +273,65 @@ class WalletsController extends Controller
 
         
     }
+
+    public function fetch_crystal_pay_pending_transactions(Request $request){
+
+      $date_from = $request->date_from ?? date('Y-m-d', strtotime('-10000 days'));
+      $date_to= $request->date_to ?? date('Y-m-d');
+
+      $reference = $request->reference ?? '';
+    
+      $limit = $request->limit ?? 2000;
+      
+      $data = MaxCrystalPaymentsPendingApproval::when(!empty($date_from) && !empty($date_to) , function ($query) use ($date_from,$date_to){
+          $date_to = date('Y-m-d', strtotime('+1 day', strtotime($date_to)));
+          $query->where('created_at','>=',$date_from)->where('created_at','<=',$date_to);
+      })->when(!empty($reference) , function ($query) use ($reference){
+        $query->where('payment_reference',$reference);
+      })->when(auth()->user()->role->role_name == 'User', function($query){
+        $query->where('user_id',auth()->id());
+      })
+      ->latest()->limit($limit)->get();
+  
+      return DataTables::of($data)
+      ->addIndexColumn()
+      ->addColumn('DT_RowIndex',function($data){
+        return $data->id;
+      })
+      ->addColumn('user',function($data){
+        $first_name = $data->user->first_name  ?? 'nil';
+        $last_name = $data->user->last_name  ?? 'nil';
+        $phone_number = $data->user->phone_number  ?? 'nil';
+        $email = $data->user->email  ?? 'nil';
+        $user_details =  $first_name.'<br>'.$last_name.'<br>'.$phone_number.'<br>'.$email.'<br>';     
+        return $user_details;
+      })
+      ->addColumn('payment_reference',function($data){
+        return $data->transaction_reference;
+      })
+      ->addColumn('amount',function($data){
+        return $data->amount_paid;
+      })
+      ->addColumn('status',function($data){
+        return $data->status;
+      })
+      ->addColumn('date',function($data){
+        return $data->created_at;
+      })
+      ->addColumn('action',function($data){
+          $route = '#';
+          // $route = route('transaction_details',$data->id);
+          $actionBtn = '<a href="'.$route.'" type="button" class="hs-dropdown-toggle ti-btn ti-btn-primary" data-hs-overlay="#hs-vertically-centered-scrollable-modal'.$data->email.'">
+          Details
+          </a>';
+          return '-';
+      }) 
+      ->escapeColumns([])
+      ->make(true);
+
+
+    
+}
 
     public function index(Request $request){
         // dd('good');

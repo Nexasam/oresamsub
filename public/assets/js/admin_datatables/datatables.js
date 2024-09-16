@@ -237,8 +237,34 @@ $(document).ready(function(){
         });
     }
 
-
     
+    function  getCrystalPayUserPendingTransactions(date_from ='', date_to ='', reference = ''){
+      const data = {
+        date_from : date_from,
+        date_to : date_to,
+        reference : reference
+      };
+      $('#crystal_pay_pending_logs_table').DataTable({
+                autoWidth: false,
+                processing: true,
+                searching: true,
+                bInfo: false,
+                bLengthChange: true,
+                pageLength: 10,
+                ajax: root_url + 'transactions/fetch_crystal_pay_pending_transactions?date_from='+date_from+'&&date_to='+date_to+'&&reference='+reference,
+                // ajax:  "{{ route('admin.users.fetch_users',"+data+") }}",
+                columns: [
+                  {data: 'DT_RowIndex', name: 'DT_RowIndex'},
+                  {data: 'user', name: 'user'},
+                  {data: 'payment_reference', name: 'payment_reference'},
+                  {data: 'amount', name: 'amount'},
+                  {data: 'status', name: 'status'},
+                  {data: 'created_at', name: 'created_at'},
+                  {data: 'action', name: 'action'},
+                ]
+        });
+    }  
+
 
     function  getCrystalPayUserFundingTransactions(date_from ='', date_to ='', reference = ''){
       const data = {
@@ -276,9 +302,6 @@ $(document).ready(function(){
                 ]
         });
     }  
-    
-    
-    
 
     function getDataWalletTransactions(date_from ='', date_to ='', product_plan_category_filter = '', phone_recharged = ''){
       const data = {

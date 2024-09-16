@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Setting;
 use App\Models\User;
 use App\Models\SiteImage;
 use App\Models\Automation;
@@ -21,7 +22,18 @@ use Illuminate\Support\Facades\Validator;
 class AdminSettingsController extends Controller
 {
     public function index(){
-    //landingpages
+       
+      
+        $settings = Setting::get();
+        if(count($settings) > 0){
+          foreach($settings as $key=>$setting){
+             $data[$setting->field_name] = $setting->field_value;
+          }
+        }
+
+        // dd($data);
+      
+        //landingpages
         $landing_page_settings = LandingPagesSetting::get();
         // $landing_page_settings = config('landing_pages');
         // dd($landing_page_settings);
@@ -94,6 +106,36 @@ class AdminSettingsController extends Controller
        
         // dd($data);
         return view('admin.settings.index')->with($data);
+    }
+
+    public function update_settings(Request $request){
+      $validator = Validator::make($request->all(), [
+        'max_automatic_crediting_allowed' => 'required|numeric',
+      ]);
+      
+
+      if ($validator->stopOnFirstFailure()->fails()) {
+        return redirect()->back()->withErrors($validator)->withInput();
+      }
+
+    
+      $data['max_automatic_crediting_allowed'] = $request->max_automatic_crediting_allowed;
+      $max_automatic_crediting_allowed = Setting::where('field_name','max_automatic_crediting_allowed')->first();
+        
+        $max_automatic_crediting_allowed ? $max_automatic_crediting_allowed->update([
+          'field_value' => $request->max_automatic_crediting_allowed
+        ])
+        : Setting::create([
+          'field_name' => 'max_automatic_crediting_allowed',
+          'field_value' => $request->max_automatic_crediting_allowed,
+        ]);
+      
+
+
+     
+      Session::flash('success','Settings successfully updated');
+
+      return redirect()->back();
     }
 
     public function manage_referral_settings(Request $request){
