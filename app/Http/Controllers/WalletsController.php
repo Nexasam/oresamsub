@@ -324,7 +324,7 @@ class WalletsController extends Controller
           $actionBtn = '<a href="'.$route.'" type="button" class="hs-dropdown-toggle ti-btn ti-btn-primary" data-hs-overlay="#hs-vertically-centered-scrollable-modal'.$data->email.'">
           Details
           </a>';
-          return '-';
+          return $actionBtn;
       }) 
       ->escapeColumns([])
       ->make(true);

@@ -15,6 +15,7 @@ $(document).ready(function(){
     getCableTransactions();
     getElectricityTransactions();
     getCrystalPayUserFundingTransactions();
+    getCrystalPayUserPendingTransactions();
 
     function getPublicPlans(date_from ='', date_to =''){
 
