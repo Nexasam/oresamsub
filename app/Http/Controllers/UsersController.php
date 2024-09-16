@@ -327,6 +327,7 @@ class UsersController extends Controller
               // </div>';  
             
             })
+            ->escapeColumns([])
             ->make(true);
     }
 
