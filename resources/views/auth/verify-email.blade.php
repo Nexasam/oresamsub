@@ -46,6 +46,10 @@
     {{-- <link rel="stylesheet" href="../assets/libs/@simonwep/pickr/themes/nano.min.css"> --}}
     <link rel="stylesheet" href="{{ asset(env('APP_ASSETS_BASE_URL').'libs/@simonwep/pickr/themes/nano.min.css') }}">
 
+    <a href="https://api.whatsapp.com/send?phone={{  $support_whatsapp_number  }}&text=Hello,%20Please%20I%20need%20help" class="float" target="_blank">
+        <i class="fa fa-whatsapp my-float"></i>
+        </a>  
+
     @php
     $admin_site_color =  App\Models\AdminColorSetting::where('color_name','admin_site_color')->first();
     $admin_site_color_value = $admin_site_color->color_value ?? (int) '90, 102, 241'; 
@@ -142,7 +146,7 @@
                                     Thanks for your interest in our platform! <br> Before getting started, could you verify your email address by clicking on the link we just emailed to you? If you didn't receive the email, we will gladly send you another.
                                 </p>
                                 <p class="mt-3 text-sm text-gray-900 font-bold dark:text-white/70">
-                                    If you are having issues verifying your email, kindly reach out to our support team on whatsapp: <a href="https://api.whatsapp.com/send?phone={{  $support_whatsapp_number  }}&text=Hello,%20Please%20I%20need%20help">Chat with our support</a>
+                                    If you are having issues verifying your email, kindly reach out to our support team on whatsapp
                                 </p>
                             </div>
 
