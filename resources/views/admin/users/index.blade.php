@@ -150,6 +150,7 @@
                                     <th>SN</th>
                                     <th>Fullname Name</th>
                                     <th>Main wallet(&#8358;)</th>
+                                    <th>Status</th>
 
                                     {{-- <th>Last Name</th> --}}
                                     <th>Email Address</th>

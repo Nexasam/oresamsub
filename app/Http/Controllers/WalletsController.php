@@ -67,9 +67,9 @@ class WalletsController extends Controller
 
         $funding_option_details = FundingOption::with('webhook_string')->where('slug','crystal_pay')->first();
 
-        if($id != $funding_option_details->webhook_string->webhook_suffix_string){
-          logger('Wrong suffix webhook string detected');
-        }
+        // if($id != $funding_option_details->webhook_string->webhook_suffix_string){
+        //   logger('Wrong suffix webhook string detected');
+        // }
         
         //Check if webhook has been sent before
 

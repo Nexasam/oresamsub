@@ -249,14 +249,18 @@ class UsersController extends Controller
             })
             ->addColumn('main_wallet',function($data){
               return number_format($data->main_wallet,2);
-             }) 
-            ->addColumn('phone_number',function($data){
-                return $data->phone_number;
+            }) 
+            ->addColumn('status',function($data){
+              return $data->email_verified_at == NULL ? '<span class="badge bg-danger text-white">Unverified</span>' : '<span class="badge bg-success text-white">Verified</span>';
             }) 
             ->addColumn('email',function($data){
               return $data->email;
              }) 
-            
+          
+            ->addColumn('phone_number',function($data){
+                return $data->phone_number;
+            }) 
+           
             ->addColumn('action', function($data){
                 // $actionBtn = ' ';
                 // <a href="javascript:void(0)" class="delete btn btn-danger btn-sm">Delete</a>
