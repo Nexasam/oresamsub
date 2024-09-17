@@ -307,13 +307,13 @@ class WalletsController extends Controller
         return $user_details;
       })
       ->addColumn('payment_reference',function($data){
-        return $data->transaction_reference;
+        return $data->payment_reference;
       })
       ->addColumn('amount',function($data){
-        return $data->amount_paid;
+        return $data->amount;
       })
       ->addColumn('status',function($data){
-        return $data->status;
+        return $data->status == 0 ? '<span class="badge bg-primary text-white">Pending</span>' : '<span class="badge bg-success text-white">Success</span>';
       })
       ->addColumn('date',function($data){
         return $data->created_at;
