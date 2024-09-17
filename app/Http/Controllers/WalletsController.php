@@ -346,7 +346,7 @@ class WalletsController extends Controller
           'pin' => 'required|digits:4|exists:users,pin',
           'user_id' => 'required|exists:users,id',
           'transaction_id' => 'required|max:255|exists:max_crystal_payments_pending_approvals,id',
-          'action' => ['required',Rule::in([0,1])],
+          'action' => ['required',Rule::in([-1,1])],
         ]);
         
 
