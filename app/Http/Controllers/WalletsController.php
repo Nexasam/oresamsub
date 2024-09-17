@@ -93,7 +93,7 @@ class WalletsController extends Controller
            
              //check if the amount is greater than the max set for automatic crediting
               $setting = Setting::where('field_name','max_automatic_crediting_allowed')->first();
-              if($setting && $amount_funded > intval($setting->max_automatic_crediting_allowed) ){
+              if($setting && $amount_funded > intval($setting->field_value) ){
                 //log automatic crediting
                 $can_fund = 'no';
                 MaxCrystalPaymentsPendingApproval::create([
