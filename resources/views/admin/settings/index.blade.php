@@ -412,13 +412,13 @@
                           @csrf
                           <div class="grid w-full lg:w-1/2 lg:grid-cols-1 gap-6 space-y-4 lg:space-y-0">
                               <div class="space-y-2 mt-5">
-                                <label class="ti-form-label mb-0">Update Hero Image 1</label>
+                                <label class="ti-form-label mb-0">Update Slider Image 1</label>
                                 <input type="file"  class="my-auto ti-form-input" name="hero_image1" max="100" placeholder="update hero image">
                               </div>
                           </div>
                           <div class="grid w-full lg:w-1/2 lg:grid-cols-1 gap-6 space-y-4 lg:space-y-0">
                             <div class="space-y-2 mt-5">
-                              <label class="ti-form-label mb-0">Update Hero Image 2</label>
+                              <label class="ti-form-label mb-0">Update Slider Image 2</label>
                               <input type="file"  class="my-auto ti-form-input" name="hero_image2" max="100" placeholder="update hero image">
                             </div>
                           </div>
