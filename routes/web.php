@@ -194,6 +194,8 @@ Route::middleware(['auth','verified','admin'])->get('admin/profile/index', [User
 
 
 Route::middleware(['auth','verified','admin'])->get('admin/wallet_creditings/index', [WalletsController::class, 'wallet_creditings'])->name('admin.wallet_creditings.index');
+Route::middleware(['auth','verified','admin'])->get('admin/wallet/crediting_details/{id}', [WalletsController::class, 'wallet_crediting_details'])->name('admin.wallet.crediting_details');
+Route::middleware(['auth','verified','admin'])->post('admin/wallet/complete_pending_wallet_crediting/', [WalletsController::class, 'complete_pending_wallet_crediting'])->name('admin.wallet.complete_pending_wallet_crediting');
 
 
 Route::middleware(['auth','verified','user'])->get('user/profile/index', [UsersController::class, 'manage_profile'])->name('user.manage_profile.index');
@@ -259,6 +261,7 @@ Route::middleware(['auth','verified','user'])->post('user/generate_virtual_accou
 Route::middleware(['auth','verified','user'])->get('user/wallet/index', [WalletsController::class, 'index'])->name('user.wallet.index');
 Route::middleware(['auth','verified','user'])->get('user/wallet/fund_wallet', [WalletsController::class, 'fund_wallet'])->name('user.wallet.fund_wallet');
 Route::middleware(['auth','verified','user'])->post('user/wallet/generate_virtual_account', [WalletsController::class, 'generate_virtual_account'])->name('user.wallet.generate_virtual_account');
+
 Route::middleware(['auth','verified'])->get('transactions/fetch_crystal_pay_funding_transactions', [WalletsController::class, 'fetch_crystal_pay_funding_transactions'])->name('transactions.fetch_crystal_pay_funding_transactions');
 Route::middleware(['auth','verified'])->get('transactions/fetch_crystal_pay_pending_transactions', [WalletsController::class, 'fetch_crystal_pay_pending_transactions'])->name('transactions.fetch_crystal_pay_pending_transactions');
 Route::middleware(['auth','verified'])->get('transactions/pending_funding_transactions', [WalletsController::class, 'pending_funding_transactions'])->name('admin.transactions.pending_funding_transactions');

@@ -8,20 +8,10 @@
              <!-- Page Header -->
         <div class="block justify-between page-header md:flex">
             <div>
-                <h3 class="text-gray-700 hover:text-gray-900 dark:text-white dark:hover:text-white text-2xl font-medium"> Transaction details</strong></h3>
+                <h3 class="text-gray-700 hover:text-gray-900 dark:text-white dark:hover:text-white text-2xl font-medium"> Crediting details</strong></h3>
                 
 
-                <div class="bg-gray-100 border border-gray-300 text-gray-600 alert" role="alert">
-                  <span class="font-bold"> @if (strtolower(auth()->user()->role->role_name) == 'admin')
-                      User
-                  @endif   Screen Message:</span> {{  $data->user_screen_message  }}
-                </div>
-
-                @if (strtolower(auth()->user()->role->role_name) == 'admin')
-                  <div class="bg-gray-100 border border-gray-300 text-gray-600 alert" role="alert">
-                    <span class="font-bold">Admin Screen Message</span> {{  $data->admin_screen_message  }}
-                  </div>
-                @endif
+                
                
                 
                 {{-- <h4><p><b>Response:</b> {{  $data->user_screen_message  }}</p></h4>
@@ -91,85 +81,29 @@
                               @endif
                            
                               <tr>
-                                <td class="">Status:</td>
+                                <td class="">Status:  {{  $data->status }}</td>
                                 <td class="">
-                                   @switch($data->status)
-                                       @case($data->status == 1)
-                                           <span class="badge bg-success text-white">Success</span>
-                                           @break
-                                        @case($data->status == -1)
-                                          <span class="badge bg-danger text-white">Failed</span>
-                                          @break
-                                        @case($data->status == 0)
-                                          <span class="badge bg-warning text-white">Pending</span>
-                                          @break
-                                        @case($data->status == 2)
-                                          <span class="badge bg-primary text-white">Refunded</span>
-                                          @break
-                                        @case($data->status == 3)
-                                          <span class="badge bg-gray text-white">Processing</span>
-                                          @break                                     
-                                       @default
-                                          <span class="badge bg-gray text-white">Unknown</span>
-                                   @endswitch
+                                  @if ($data->status == 1)
+                                    <span class="badge bg-success text-white">Success</span>     
+                                  @endif
+
+                                  @if ($data->status == -1)
+                                    <span class="badge bg-danger text-white">Failed</span>     
+                                  @endif
+
+                                  @if ($data->status == 0)
+                                    <span class="badge bg-warning text-white">Pending</span>     
+                                  @endif
                                 </td>
                               </tr>
+                          
                               <tr>
-                                <td class="">Category:</td>
-                                <td class="" style="white-space: normal;word-wrap: break-word;word-break: normal;width:auto;"> <p>{{  strtoupper($data->transaction_category)  }}</p> </td>                 
-                              </tr>
-                            
-                              <tr>
-                                <td class="">Wallet:</td>
-                                <td class="">{{   $data->wallet_category == 'main_wallet' ?  'MAIN' : 'DATA_WALLET'  }}</td>                 
-                              </tr>
-                              <tr>
-                                <td class="">Product Details:</td>
-                                <td class="">
-                                  @if ($data->product_plan != NULL)
-                                      {{   $data->product_plan->product_plan_name }}<br>
-                                      {{   $data->product_plan->product_plan_category->product_plan_category_name }}<br>
-                                        
-                                     
-                                      @if ($data->transaction_category == 'cable_subscription')
-                                          {{  'Smart Card No: '.$data->smart_card_number }} <br>
-                                      @endif
-
-                                      @if ($data->transaction_category == 'utility_bills')
-                                          @php
-                                              $response_decode = json_decode($data->admin_screen_message,true);
-                                              $token_details = isset($response_decode['Detail']['info']['realresponse']) ? $response_decode['Detail']['info']['realresponse'] :  '-';
-                                              $prefix = $token_details == '-' ? 'Token details: ' : '';
-                                              $dataa =  'Metre No: '.$data->metre_number.'<br>';
-                                              $dataa .=  '<b>'.$prefix.':  '.$token_details.'</b><br>';
-                                              echo $dataa;
-                                          @endphp
-                                      @endif
-
-                                      @if ($data->transaction_category == 'data')
-                                          {{  number_format($data->product_plan->data_size_in_mb ?? '0') .' MB' }}
-                                      @endif
-                                  @else
-                                     NIL
-                                  @endif
-                                  
-                                </td>                 
-                              </tr>
-                              <tr>
-                                <td class="">Phone recharged:</td>
-                                <td class="">{{  $data->phone_number }}</td>  
+                                <td class="">Current Balance:</td>
+                                <td class="">&#8358;{{ (number_format($data->user->main_wallet,2)) }}</td>  
                               </tr>
                               <tr>
                                 <td class="">Amount:</td>
                                 <td class="">&#8358;{{ (number_format($data->amount,2)) }}</td>  
-                              </tr>
-                              <tr>
-                                <td class="">Deducted Amount:</td>
-                                <td class="">&#8358;{{ (number_format($data->discounted_amount,2)) }}</td>  
-                              </tr>
-                               <tr>
-                                  <td class="">Balance before:</td>
-                                  <td class="">{{ $data->wallet_category == 'main_wallet' ? '₦'.number_format($data->balance_before,2) : number_format($data->balance_before).'MB' }}</td>  
                               </tr>
                               @if ($data->transaction_category == 'data')
                                 <tr>
@@ -179,8 +113,8 @@
                               @endif
                               
                               <tr>
-                                <td class="">Balance after:</td>
-                                <td class="">{{ $data->wallet_category == 'main_wallet' ? '₦'.number_format($data->balance_after,2) : number_format($data->balance_after).'MB' }}</td>  
+                                <td class="">Reference:</td>
+                                <td class="">{{ $data->payment_reference }}</td>  
                               </tr>
                              
                               <tr>
@@ -192,20 +126,19 @@
                               <tr>
                                 <td class=""></td>
                                 <td class="">
-                                  @if ($data->status != 2)
-                                    <button type="button" class="hs-dropdown-toggle ti-btn ti-btn-danger" data-hs-overlay="#hs-basic-modal">
-                                      Refund
-                                    </button> 
-                                    @else
-                                     <strong>Refunded</strong>     
-                                  @endif   
+                                  @if ($data->status == 0 )
+                                  <button type="button" class="hs-dropdown-toggle ti-btn ti-btn-primary" data-hs-overlay="#hs-basic-modal">
+                                    Complete Transaction    
+                                  </button>   
+                                  @endif
+                                     
                                   {{-- <button type="button" class="w-20 !p-1 ti-btn ti-btn-danger">Cancel</button> --}}
                                   <div id="hs-basic-modal" class="hs-overlay ti-modal hidden">
                                     <div class="ti-modal-box">
                                       <div class="ti-modal-content">
                                         <div class="ti-modal-header">
                                           <h3 class="ti-modal-title">
-                                            Transaction Refund
+                                            Complete Transaction
                                           </h3>
                                          
                                           <button type="button" class="hs-dropdown-toggle ti-modal-clode-btn"
@@ -220,16 +153,28 @@
                                           </button>
                                         </div>
                                         <div class="ti-modal-body">
-                                          Are you sure you want to make a refund of this transaction ? <br> <hr>
-                                          <form class=" space-x-2" method="POST" action="{{ route('transactions.transaction_refund') }}">
+                                          Are you sure you want to complete this transaction ? <br> <hr>
+                                          <form class=" space-x-2" method="POST" action="{{ route('admin.wallet.complete_pending_wallet_crediting') }}">
                                             @csrf
-                                            <div class="space-x-2">
-                                              <input type="hidden" name="transaction_id" id="transaction_id" value="{{  $data->id }}">
-                                              <input type="password" required name="pin" id="pin" placeholder="Enter PIN" value="">
-  
-                                            </div>
+                                            <div class="space-y-2 mt-4">
+                                              {{-- <label class="ti-form-label mb-0">Take Action</label> --}}
+                                              <select required id="action" name="action"  class="my-auto ti-form-select">
+                                                <option value="">Select</option>
+                                                <option value="1">Mark as Completed</option>
+                                                <option value="-1">Mark as FAILED</option>
+                                              </select>
+                                            
+                                              </div>
+
+                                              <div class="space-y-2 mt-4">
+                                                <input type="hidden" name="user_id" id="user_id" value="{{  $data->user_id }}">
+                                                <input type="hidden" name="transaction_id" id="transaction_id" value="{{  $data->id }}">
+                                                <label class="ti-form-label mb-0">PIN</label>
+                                                <input type="password" class="my-auto ti-form-input" id="pin" name="pin" value="" placeholder="PIN">
+                                             </div>
+                                          
                                             <div class="space-y-2">
-                                              <button type="submit" class="ti-btn ti-btn-danger w-full">Confirm refund</button>
+                                              <button type="submit" class="ti-btn ti-btn-primary w-full">Complete Transaction</button>
                                             </div>
                                           </form>
                                         </div>

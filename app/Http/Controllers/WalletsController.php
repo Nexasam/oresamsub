@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\MaxCrystalPaymentsPendingApproval;
 use Exception;
 use App\Models\User;
 use App\Models\Setting;
 use Illuminate\Http\Request;
 use App\Models\FundingOption;
+use Illuminate\Validation\Rule;
 use Yajra\DataTables\DataTables;
 use App\Models\AdminWebhookString;
 use App\Models\UserVirtualAccount;
@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\DB;
 use App\Models\FundingWebhookPayload;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
+use App\Models\MaxCrystalPaymentsPendingApproval;
 
 class WalletsController extends Controller
 {
@@ -321,11 +322,16 @@ class WalletsController extends Controller
         return $data->created_at;
       })
       ->addColumn('action',function($data){
-          $route = '#';
-          // $route = route('transaction_details',$data->id);
-          $actionBtn = '<a href="'.$route.'" type="button" class="hs-dropdown-toggle ti-btn ti-btn-primary" data-hs-overlay="#hs-vertically-centered-scrollable-modal'.$data->email.'">
-          Details
-          </a>';
+          $route = route('admin.wallet.crediting_details',$data->id);
+          
+          if($data->status == 0){
+            $actionBtn = '<a href="'.$route.'" type="button" class="hs-dropdown-toggle ti-btn ti-btn-primary" data-hs-overlay="#hs-vertically-centered-scrollable-modal'.$data->email.'">
+            Details
+            </a>';
+          }else{
+            $actionBtn = '-';
+          }
+          
           return $actionBtn;
       }) 
       ->escapeColumns([])
@@ -333,7 +339,87 @@ class WalletsController extends Controller
 
 
     
-}
+    }
+
+    public function complete_pending_wallet_crediting(Request $request){
+        $validator = Validator::make($request->all(), [
+          'pin' => 'required|digits:4|exists:users,pin',
+          'user_id' => 'required|exists:users,id',
+          'transaction_id' => 'required|max:255|exists:max_crystal_payments_pending_approvals,id',
+          'action' => ['required',Rule::in([0,1])],
+        ]);
+        
+
+        if ($validator->stopOnFirstFailure()->fails()) {
+          return redirect()->back()->withErrors($validator)->withInput();
+        }
+
+        $user_details = auth()->user();
+        $pin = $request->pin;
+
+
+        
+        if(! $user_details){
+          Session::flash('failure','Record not found');
+          return redirect()->back();
+        }
+
+        if($user_details->pin != $pin){
+          Session::flash('failure','Wrong PIN entered');
+          return redirect()->back();
+        }
+
+        $details = MaxCrystalPaymentsPendingApproval::where('id',$request->transaction_id)->first();
+      
+        if($details->status == 1){
+          Session::flash('failure','This crediting has already been marked as success');
+          return redirect()->back();
+        }
+
+        if($details->status == -1){
+          Session::flash('failure','This crediting has already been marked as failed');
+          return redirect()->back();
+        }
+
+        $user_to_fund_details = User::where('id',$details->user_id)->first();
+
+        //actual action
+        if($request->action == 1){
+          $new_amount = $details->amount +  $user_to_fund_details->main_wallet;
+          // carry out a crediting of users wallet
+          $user_to_fund_details->update([
+            'main_wallet' => $new_amount
+          ]);
+
+          $details->update([
+            'status' => 1
+          ]);
+
+          Session::flash('success','Successfully marked as success');
+          return redirect()->back();  
+          // update status to 1
+        }
+        else if($request->action == -1){
+          // update status to -1
+          $details->update([
+            'status' => -1
+          ]);
+
+          Session::flash('success','Successfully marked as failed');
+          return redirect()->back();
+
+        }else{
+          //this should not happen 
+          Session::flash('failure','Something went wrong... Please inform Developer');
+          return redirect()->back();
+        }  
+    }
+
+    public function wallet_crediting_details($id){
+      $data['data'] = MaxCrystalPaymentsPendingApproval::with(['user'])->where('id',$id)->first();
+      // dd($data);
+      return view('admin.wallets_creditings.wallet_crediting_details')->with($data);
+    }
 
     public function index(Request $request){
         // dd('good');
