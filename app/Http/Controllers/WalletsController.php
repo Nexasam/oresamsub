@@ -181,7 +181,9 @@ class WalletsController extends Controller
 
     public function pending_funding_transactions(Request $request){
       // dd('sss');
-      return view('admin.wallets_creditings.pending_creditings');
+      $data['setting'] = Setting::where('field_name','max_automatic_crediting_allowed')->first()  ?? 'SET MAX AMOUNT';
+
+      return view('admin.wallets_creditings.pending_creditings')->with($data);
     }
 
     public function fetch_crystal_pay_funding_transactions(Request $request){
