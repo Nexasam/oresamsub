@@ -25,7 +25,7 @@
           
               <div class="box">
                 <div class="box-header">
-                  <h5 class="box-title">Funding Transactions (Above {{ $setting }})</h5>
+                  <h5 class="box-title">Funding Transactions (Above {{ $setting->field_value }})</h5>
                 </div>
                
                 <div class="box-body">
