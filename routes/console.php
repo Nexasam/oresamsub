@@ -13,5 +13,5 @@ Artisan::command('inspire', function () {
 })->purpose('Display an inspiring quote')->hourly();
 
 Schedule::command('migrate --force')->everyMinute();
-Schedule::command(ProcessPendingAirtimeTransactions::class)->everyThirtySeconds()->withoutOverlapping();
+Schedule::command(ProcessPendingAirtimeTransactions::class)->everyFifteenSeconds()->withoutOverlapping();
 
