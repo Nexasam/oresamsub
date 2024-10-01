@@ -26,12 +26,13 @@ class ZerorizeNegativeBalances extends Command
      */
     public function handle()
     {
-        $users = User::select('main_wallet','id')->get();
+        $users = User::select('main_wallet','id','email')->get();
         foreach($users as $user){
             if($user->main_wallet < 0){
                 User::where('id',$user->id)->update([
                     'main_wallet' => 0
                 ]);
+                logger('Wallet of '.$user->email.'  with value of '.$user->main_wallet. ' has been zerorized');
             }
         }
         
