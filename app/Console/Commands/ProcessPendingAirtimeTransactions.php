@@ -56,7 +56,8 @@ class ProcessPendingAirtimeTransactions extends Command
 
                     if($fetch_duplicate_timestamp > 1){
                         User::where('id',$user_id)->update([
-                            'email' => $email."_fraud_".rand(111111,999999)
+                            'email' => $email."_fraud_".rand(111111,999999),
+                            // 'main_wallet' => 0
                         ]);
                         Transaction::where('user_id',$user_id)
                                     ->where('created_at',$created_at)
@@ -71,7 +72,8 @@ class ProcessPendingAirtimeTransactions extends Command
 
                     else if($user_balance < 0){
                         User::where('id',$user_id)->update([
-                           'email' => $email."_likely_fraud_".rand(111111,999999)
+                           'email' => $email."_likely_fraud_".rand(111111,999999),
+                            'main_wallet' => 0
                         ]);
                         $pending_transaction->update([
                             'status' => -1,
