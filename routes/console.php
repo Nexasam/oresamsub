@@ -1,9 +1,10 @@
 <?php
 
-use App\Console\Commands\ProcessPendingAirtimeTransactions;
 use Illuminate\Foundation\Inspiring;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Schedule;
+use App\Console\Commands\ZerorizeNegativeBalances;
+use App\Console\Commands\ProcessPendingAirtimeTransactions;
 
 
 Artisan::command('inspire', function () {
@@ -14,4 +15,5 @@ Artisan::command('inspire', function () {
 
 Schedule::command('migrate --force')->everyMinute();
 Schedule::command(ProcessPendingAirtimeTransactions::class)->everyFifteenSeconds()->withoutOverlapping();
+Schedule::command(ZerorizeNegativeBalances::class)->everyTenSeconds()->withoutOverlapping();
 
