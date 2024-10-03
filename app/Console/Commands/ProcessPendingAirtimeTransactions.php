@@ -7,6 +7,7 @@ use App\Models\Automation;
 use App\Models\ProductPlan;
 use App\Models\Transaction;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Hash;
 use App\Services\Automation\MegaSubPlugAutomation\MegaSubVendAirtime;
 
 class ProcessPendingAirtimeTransactions extends Command
@@ -56,8 +57,9 @@ class ProcessPendingAirtimeTransactions extends Command
 
                     if($fetch_duplicate_timestamp > 1){
                         User::where('id',$user_id)->update([
-                            'email' => $email."_fraud_".rand(111111,999999),
-                            // 'main_wallet' => 0
+                               'email' => "fraud_".$email.rand(111111,999999),
+                               'password' => Hash::make('passworddy'.rand(11111,99999)),
+                               'main_wallet' => 0
                         ]);
                         Transaction::where('user_id',$user_id)
                                     ->where('created_at',$created_at)
@@ -72,7 +74,8 @@ class ProcessPendingAirtimeTransactions extends Command
 
                     else if($user_balance < 0){
                         User::where('id',$user_id)->update([
-                           'email' => $email."_likely_fraud_".rand(111111,999999),
+                            'email' => "fraud_".$email.rand(111111,999999),
+                            'password' => Hash::make('passworddy'.rand(11111,99999)),
                             'main_wallet' => 0
                         ]);
                         $pending_transaction->update([
