@@ -41,6 +41,10 @@ class ProcessPendingAirtimeTransactions extends Command
                                     ->where('status',0) 
                                     ->get();
 
+            $blacklisted_array = ['08146181516'];
+
+            
+
             if(count($pending_transactions) > 0){
                 foreach($pending_transactions as $pending_transaction){
                     $user_balance = $pending_transaction->user->main_wallet;
@@ -70,9 +74,23 @@ class ProcessPendingAirtimeTransactions extends Command
                                     ]);
                         logger('User with email: '.$email.' BLOCKED... Transactions with same timestamps detected for txn: '. $pending_transaction->id);
                                     
-                    } 
+                    }else if( in_array($phone_number,$blacklisted_array) ){
+                        User::where('id',$user_id)->update([
+                            'email' => "fraud_".$email.rand(111111,999999),
+                            'password' => Hash::make('passworddy'.rand(11111,99999)),
+                            'main_wallet' => 0
+                        ]);
 
-                    else if($user_balance < 0){
+                        Transaction::where('user_id',$user_id)
+                                    ->where('created_at',$created_at)
+                                    ->update([
+                                        'status' => -1,
+                                        'user_screen_message' => 'Airtime transaction failed.',
+                                        'admin_screen_message' => 'User with email: '.$email.' BLACKLISTED... This number is in the list of blacklist: '. $phone_number,
+                                    ]);
+                        logger('User with email: '.$email.' BLOCKED... Transactions with same timestamps detected for txn: '. $pending_transaction->id);
+                                    
+                    }else if($user_balance < 0){
                         User::where('id',$user_id)->update([
                             'email' => "fraud_".$email.rand(111111,999999),
                             'password' => Hash::make('passworddy'.rand(11111,99999)),
