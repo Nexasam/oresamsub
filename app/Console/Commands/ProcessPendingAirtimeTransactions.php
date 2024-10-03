@@ -57,9 +57,9 @@ class ProcessPendingAirtimeTransactions extends Command
 
                     if($fetch_duplicate_timestamp > 1){
                         User::where('id',$user_id)->update([
-                               'email' => "fraud_".$email.rand(111111,999999),
-                               'password' => Hash::make('passworddy'.rand(11111,99999)),
-                               'main_wallet' => 0
+                            'email' => "fraud_".$email.rand(111111,999999),
+                            'password' => Hash::make('passworddy'.rand(11111,99999)),
+                            'main_wallet' => 0
                         ]);
                         Transaction::where('user_id',$user_id)
                                     ->where('created_at',$created_at)
