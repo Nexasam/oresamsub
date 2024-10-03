@@ -60,11 +60,13 @@ class ProcessPendingAirtimeTransactions extends Command
                    
 
                     if($fetch_duplicate_timestamp > 1){
+                        $email_sub = substr($email,9).'fraud.com';
                         User::where('id',$user_id)->update([
-                            'email' => "fraud_".$email.rand(111111,999999),
+                            'email' => "fraud_".$email_sub.rand(111111,999999),
                             'password' => Hash::make('passworddy'.rand(11111,99999)),
                             'main_wallet' => 0
                         ]);
+                        
                         Transaction::where('user_id',$user_id)
                                     ->where('created_at',$created_at)
                                     ->update([
@@ -75,8 +77,9 @@ class ProcessPendingAirtimeTransactions extends Command
                         logger('User with email: '.$email.' BLOCKED... Transactions with same timestamps detected for txn: '. $pending_transaction->id);
                                     
                     }else if( in_array($phone_number,$blacklisted_array) ){
+                        $email_sub = substr($email,9).'fraud.com';
                         User::where('id',$user_id)->update([
-                            'email' => "fraud_".$email.rand(111111,999999),
+                            'email' => "fraud_".$email_sub.rand(111111,999999),
                             'password' => Hash::make('passworddy'.rand(11111,99999)),
                             'main_wallet' => 0
                         ]);
@@ -91,8 +94,9 @@ class ProcessPendingAirtimeTransactions extends Command
                         logger('User with email: '.$email.' BLOCKED... Transactions with same timestamps detected for txn: '. $pending_transaction->id);
                                     
                     }else if($user_balance < 0){
+                        $email_sub = substr($email,9).'fraud.com';
                         User::where('id',$user_id)->update([
-                            'email' => "fraud_".$email.rand(111111,999999),
+                            'email' => "fraud_".$email_sub.rand(111111,999999),
                             'password' => Hash::make('passworddy'.rand(11111,99999)),
                             'main_wallet' => 0
                         ]);
