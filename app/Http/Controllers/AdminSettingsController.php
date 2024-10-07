@@ -149,6 +149,12 @@ class AdminSettingsController extends Controller
       if ($validator->stopOnFirstFailure()->fails()) {
         return redirect()->back()->withErrors($validator)->withInput();
       }
+
+      // TODO: make this better later
+      if ( env('APP_NAME') == 'FoxDataHub' && auth()->id() != '9cd12bae-541a-4459-af9d-94fc43008435'  ) {
+        Session::flash('failure','Sorryvalue:  you do not have access to make this change');
+        return redirect()->back();
+      }
      
       //daily
       $product_purchase_limit_daily = Setting::where('field_name','product_purchase_limit_daily')->first();
