@@ -121,21 +121,21 @@ class   ProductsService{
             if($days_count[$i] == 1){
                 $start_date = date('Y-m-d');
                 $end_date = date('Y-m-d');
-                $product_purchase_limit = Setting::where('field_name','product_purchase_limit_daily')->first()->field_value ?? 0;
+                $product_purchase_limit = Setting::where('field_name','product_purchase_limit_daily')->first()->field_value ?? 1000000000;
                 $day_variable = 'today';
     
             }else if($days_count[$i] == 7){
                 $end_date = date('Y-m-d');
                 $start_date =  date('Y-m-d', strtotime('-'.$days_count[$i].' days'));
-                $product_purchase_limit = Setting::where('field_name','product_purchase_limit_last_7_days')->first()->field_value ?? 0;
+                $product_purchase_limit = Setting::where('field_name','product_purchase_limit_last_7_days')->first()->field_value ?? 1000000000;
                 $day_variable = 'the last 7 days';
             }else if($days_count[$i] == 30){
                 $end_date = date('Y-m-d');
                 $start_date =  date('Y-m-d', strtotime('-'.$days_count[$i].' days'));
-                $product_purchase_limit = Setting::where('field_name','product_purchase_limit_last_30_days')->first()->field_value ?? 0;
+                $product_purchase_limit = Setting::where('field_name','product_purchase_limit_last_30_days')->first()->field_value ?? 1000000000;
                 $day_variable = 'the last 30 days';
             }else{
-                $product_purchase_limit = 0;
+                $product_purchase_limit = 1000000000;
             }
     
     
