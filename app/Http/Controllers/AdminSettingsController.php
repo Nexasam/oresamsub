@@ -138,6 +138,54 @@ class AdminSettingsController extends Controller
       return redirect()->back();
     }
 
+    public function update_purchase_limit_settings(Request $request){
+      $validator = Validator::make($request->all(), [
+        'product_purchase_limit_daily' => 'required|numeric',
+        'product_purchase_limit_last_7_days' => 'required|numeric',
+        'product_purchase_limit_last_30_days' => 'required|numeric',
+      ]);
+      
+
+      if ($validator->stopOnFirstFailure()->fails()) {
+        return redirect()->back()->withErrors($validator)->withInput();
+      }
+     
+      //daily
+      $product_purchase_limit_daily = Setting::where('field_name','product_purchase_limit_daily')->first();
+      $product_purchase_limit_daily ? $product_purchase_limit_daily->update([
+        'field_value' => $request->product_purchase_limit_daily
+      ])
+      : Setting::create([
+        'field_name' => 'product_purchase_limit_daily',
+        'field_value' => $request->product_purchase_limit_daily,
+      ]);
+
+       //last 7 days
+       $product_purchase_limit_last_7_days = Setting::where('field_name','product_purchase_limit_last_7_days')->first();
+       $product_purchase_limit_last_7_days ? $product_purchase_limit_last_7_days->update([
+         'field_value' => $request->product_purchase_limit_last_7_days
+       ])
+       : Setting::create([
+         'field_name' => 'product_purchase_limit_last_7_days',
+         'field_value' => $request->product_purchase_limit_last_7_days,
+       ]);
+
+       //last 30 days
+       $product_purchase_limit_last_30_days = Setting::where('field_name','product_purchase_limit_last_30_days')->first();
+       $product_purchase_limit_last_30_days ? $product_purchase_limit_last_30_days->update([
+         'field_value' => $request->product_purchase_limit_last_30_days
+       ])
+       : Setting::create([
+         'field_name' => 'product_purchase_limit_last_30_days',
+         'field_value' => $request->product_purchase_limit_last_30_days,
+       ]);
+      
+  
+      Session::flash('success','Purchase Limit Settings successfully updated');
+
+      return redirect()->back();
+    }
+
     public function manage_referral_settings(Request $request){
         //TODO: validation later
         $validator = Validator::make($request->all(), [

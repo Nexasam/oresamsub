@@ -20,6 +20,7 @@ use App\Models\ProductPlanCategory;
 use App\Models\BulkDataProductPlans;
 use App\Models\UserBulkDataPurchase;
 use Illuminate\Support\Facades\Validator;
+use App\Services\Products\ProductsService;
 use App\Services\Automation\MegaSubPlugAutomation\VendData;
 use App\Services\Automation\MegaSubPlugAutomation\MegaSubCableTV;
 
@@ -299,6 +300,13 @@ class CableSubscriptionController extends Controller
 
         if ($validator->stopOnFirstFailure()->fails()) {
             return response()->json(['status'=>'-1', 'message'=>$validator->errors()->first(),'data' => $request->all() ]);
+        }
+
+        $data1['days_count'] = [1,7,30];
+        $data1['user_id'] = auth()->id();
+        $check_purchase_limit =  ProductsService::check_purchase_limit($data1);
+        if($check_purchase_limit['status'] == -1){
+            return response()->json(['status'=>'-1', 'message'=>$check_purchase_limit['message'] ]);
         }
 
         $success = 0;

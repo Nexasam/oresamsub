@@ -2,8 +2,10 @@
 namespace App\Services\Products;
 
 use App\Models\Product;
+use App\Models\Setting;
 use App\Models\UserPlan;
 use App\Models\ProductPlan;
+use App\Models\Transaction;
 use App\Models\ProductPlanCategory;
 
 class   ProductsService{
@@ -31,10 +33,6 @@ class   ProductsService{
         }
 
         // return response()->json(['status'=>'1','user_level'=>3 ,'message'=>'Product plans fetchedddd','counter' =>5,'data' => $network_id ]);
-
-
-
-       
         $product_planss = [];
         $counter =0;
 
@@ -101,5 +99,69 @@ class   ProductsService{
             'plan_level' => $plan_level
         ];
           
+    }
+
+    static public function check_purchase_limit($data){
+        $days_count = $data['days_count'] ;
+        $user_id = $data['user_id'] ?? NULL; // null should not happen
+
+        // for($i=0; $i < count($days_count); $i++){
+        //     $start_date =  date('Y-m-d', strtotime('-'.$days_count[$i].' days'));
+
+        //     $array[] = $start_date;
+
+        // }
+        
+        // return [
+        //     'status' => -1,
+        //     'message' => $array
+        // ];
+
+        for($i=0; $i < count($days_count); $i++){
+            if($days_count[$i] == 1){
+                $start_date = date('Y-m-d');
+                $end_date = date('Y-m-d');
+                $product_purchase_limit = Setting::where('field_name','product_purchase_limit_daily')->first()->field_value ?? 0;
+                $day_variable = 'today';
+    
+            }else if($days_count[$i] == 7){
+                $end_date = date('Y-m-d');
+                $start_date =  date('Y-m-d', strtotime('-'.$days_count[$i].' days'));
+                $product_purchase_limit = Setting::where('field_name','product_purchase_limit_last_7_days')->first()->field_value ?? 0;
+                $day_variable = 'the last 7 days';
+            }else if($days_count[$i] == 30){
+                $end_date = date('Y-m-d');
+                $start_date =  date('Y-m-d', strtotime('-'.$days_count[$i].' days'));
+                $product_purchase_limit = Setting::where('field_name','product_purchase_limit_last_30_days')->first()->field_value ?? 0;
+                $day_variable = 'the last 30 days';
+            }else{
+                $product_purchase_limit = 0;
+            }
+    
+    
+            $check_transaction_sum = Transaction::where('user_id',$user_id)->where('status',1)->whereDate('created_at','>=',$start_date)->whereDate('created_at','<=',$end_date)->sum('amount');
+            if($check_transaction_sum >= $product_purchase_limit){
+                return [
+                    'status' => -1,
+                    'message' => 'Sorry, transaction limit has been reached for '.$day_variable.'. Reach out to our Support team  via whatsapp to increase limit. Thank you.'
+                    // 'message' => $check_transaction_sum
+                ];
+            }
+    
+        }
+     
+        return [
+            'status' => 1,
+            'message' => 'Good. User can still carry out transaction'
+        ];
+
+        
+      
+        
+        // return [
+        //     'status' => 0,
+        //     'message' => 'Sorry an error occurred'
+        // ]
+        
     }
 }

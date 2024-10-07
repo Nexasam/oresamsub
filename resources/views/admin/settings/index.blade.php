@@ -567,6 +567,37 @@
                               <br>
                           </div>
                         </form>
+
+                        <br>
+                        <hr>
+                        <br>
+                        <form enctype="multipart/form-data" method="POST" action="{{ route('admin.settings.update_purchase_limit_settings')  }}">
+                          @csrf
+                          <div class="grid w-full lg:w-1/2 lg:grid-cols-1 gap-2 space-y-4 lg:space-y-0">
+                             
+                              <div class="">
+                                <label class="ti-form-label mb-2">Product Purchase Limit (Daily) </label>
+                                <input type="number"  required class="my-auto ti-form-input" name="product_purchase_limit_daily" value="{{ $product_purchase_limit_daily  ?? '' }}"  placeholder="">
+                              </div> 
+
+                              <div class="">
+                                <label class="ti-form-label mb-2">Product Purchase Limit (Last 7 days) </label>
+                                <input type="number"  required class="my-auto ti-form-input" name="product_purchase_limit_last_7_days" value="{{ $product_purchase_limit_last_7_days  ?? '' }}"  placeholder="">
+                              </div> 
+
+                                 
+                              <div class="">
+                                <label class="ti-form-label mb-2">Product Purchase Limit (Last 30 days) </label>
+                                <input type="number"  required class="my-auto ti-form-input" name="product_purchase_limit_last_30_days" value="{{ $product_purchase_limit_last_30_days  ?? '' }}"  placeholder="">
+                              </div> 
+                                  
+                              <div class="space-y-2">
+                                  <button type="submit" class="ti-btn ti-btn-primary w-full">Update Purchase Limit Setting</button>
+                              </div>
+                            
+                              <br>
+                          </div>
+                        </form>
                         
                       </div>  
                     </div>

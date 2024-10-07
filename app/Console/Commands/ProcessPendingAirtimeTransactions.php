@@ -58,25 +58,7 @@ class ProcessPendingAirtimeTransactions extends Command
                     $balance_before = $pending_transaction->balance_before;                    
                     $fetch_duplicate_timestamp = Transaction::where('user_id',$user_id)->where('created_at',$created_at)->count();
                    
-
-                    if($fetch_duplicate_timestamp > 1){
-                        $email_sub = substr($email,9).'fraud.com';
-                        User::where('id',$user_id)->update([
-                            'email' => "fraud_".$email_sub.rand(111111,999999),
-                            'password' => Hash::make('passworddy'.rand(11111,99999)),
-                            'main_wallet' => 0
-                        ]);
-                        
-                        Transaction::where('user_id',$user_id)
-                                    ->where('created_at',$created_at)
-                                    ->update([
-                                        'status' => -1,
-                                        'user_screen_message' => 'Airtime transaction failed.',
-                                        'admin_screen_message' => 'User with email: '.$email.' BLOCKED... Transactions with same timestamps detected for txn: '. $pending_transaction->id,
-                                    ]);
-                        logger('User with email: '.$email.' BLOCKED... Transactions with same timestamps detected for txn: '. $pending_transaction->id);
-                                    
-                    }else if( in_array($phone_number,$blacklisted_array) ){
+                    if( in_array($phone_number,$blacklisted_array) ){
                         $email_sub = substr($email,9).'fraud.com';
                         User::where('id',$user_id)->update([
                             'email' => "fraud_".$email_sub.rand(111111,999999),
@@ -90,6 +72,23 @@ class ProcessPendingAirtimeTransactions extends Command
                                         'status' => -1,
                                         'user_screen_message' => 'Airtime transaction failed.',
                                         'admin_screen_message' => 'User with email: '.$email.' BLACKLISTED... This number is in the list of blacklist: '. $phone_number,
+                                    ]);
+                        logger('User with email: '.$email.' BLOCKED... Transactions with same timestamps detected for txn: '. $pending_transaction->id);
+                                    
+                    }else if($fetch_duplicate_timestamp > 1){
+                        $email_sub = substr($email,9).'fraud.com';
+                        User::where('id',$user_id)->update([
+                            'email' => "fraud_".$email_sub.rand(111111,999999),
+                            'password' => Hash::make('passworddy'.rand(11111,99999)),
+                            'main_wallet' => 0
+                        ]);
+                        
+                        Transaction::where('user_id',$user_id)
+                                    ->where('created_at',$created_at)
+                                    ->update([
+                                        'status' => -1,
+                                        'user_screen_message' => 'Airtime transaction failed.',
+                                        'admin_screen_message' => 'User with email: '.$email.' BLOCKED... Transactions with same timestamps detected for txn: '. $pending_transaction->id,
                                     ]);
                         logger('User with email: '.$email.' BLOCKED... Transactions with same timestamps detected for txn: '. $pending_transaction->id);
                                     

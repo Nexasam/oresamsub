@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\Products\ProductsService;
 use App\Services\Utils\UtilService;
 use Exception;
 use App\Models\User;
@@ -414,6 +415,15 @@ class DataController extends Controller
         if ($validator->stopOnFirstFailure()->fails()) {
             return response()->json(['status'=>'-1', 'message'=>$validator->errors()->first(),'data' => $request->all() ]);
         }
+
+
+        $data1['days_count'] = [1,7,30];
+        $data1['user_id'] = auth()->id();
+        $check_purchase_limit =  ProductsService::check_purchase_limit($data1);
+        if($check_purchase_limit['status'] == -1){
+            return response()->json(['status'=>'-1', 'message'=>$check_purchase_limit['message'] ]);
+        }
+
 
 
         $success = 0;
