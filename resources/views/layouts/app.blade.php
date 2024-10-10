@@ -738,7 +738,7 @@
         <footer class="mt-auto py-3 border-t dark:border-white/10 bg-white dark:bg-bgdark">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 {{-- <p class="text-center">Copyright © <span id="year"></span> <a href="javascript:void(0)" class="text-primary">DataApp</a>    All rights reserved </p> --}}
-                <p class="text-center">Copyright © <span id="year"></span> <a href="javascript:void(0)" class="text-primary">Developed with ❤️ by Subutility</a> All rights reserved </p>
+                <p class="text-center">Copyright © <span id="year"></span> <a href="https://api.whatsapp.com/send?phone={{  '2347073459839'  }}&text=Hello,%20Please%20I%20want%20to%20own%20a%20data%20website" class="text-primary">Developed with ❤️ by Subutility</a> All rights reserved </p>
               </div>
         </footer>
 
