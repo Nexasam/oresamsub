@@ -510,6 +510,17 @@ class WalletsController extends Controller
                     return redirect()->back();
                 }
 
+                $arrr = [
+                    "firstname"=>$first_name,
+                    "lastname"=>$last_name,
+                    "email"=>$email,
+                    "virtual_account_package"=>$bank_code,  
+                    "bvn"=>$phone_number
+                ];
+
+                // return $arrr;
+                $arrjson = json_encode($arrr);
+
                 $curl = curl_init();
                 curl_setopt_array($curl, array(
                 CURLOPT_URL => 'https://api.crystalpay.finance/business/v1/virtual-account',
@@ -520,22 +531,24 @@ class WalletsController extends Controller
                 CURLOPT_FOLLOWLOCATION => true,
                 CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
                 CURLOPT_CUSTOMREQUEST => 'POST',
-                CURLOPT_POSTFIELDS =>'{
-                "firstname": "'.$first_name.'",
-                "lastname": "'.$last_name.'",
-                "email": "'.$email.'",
-                "virtual_account_package": "'.$bank_code.'",  
-                "bvn": "'.$phone_number.'"
-                }',
+                // CURLOPT_POSTFIELDS =>'{
+                // "firstname": "'.$first_name.'",
+                // "lastname": "'.$last_name.'",
+                // "email": "'.$email.'",
+                // "virtual_account_package": "'.$bank_code.'",  
+                // "bvn": "'.$phone_number.'"
+                // }',
+                CURLOPT_POSTFIELDS =>$arrjson,
                 CURLOPT_HTTPHEADER => array(
                     'secret_key: '.$api_key,
                     'Content-Type: application/json',
-                    'Accept: application/json',
-                    'Cookie: PHPSESSID=tb6qhjmkbpmqcq5fhqla929se5'
+                    'Accept: application/json'
                 ),
                 ));
 
                 $response = curl_exec($curl);
+
+                // return $response;
 
                 $response_dec = json_decode($response,true);
 
