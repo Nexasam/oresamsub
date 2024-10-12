@@ -518,7 +518,7 @@ class WalletsController extends Controller
                     "bvn"=>$phone_number
                 ];
 
-                return $arrr;
+                // return $arrr;
                 $arrjson = json_encode($arrr);
 
                 $curl = curl_init();
