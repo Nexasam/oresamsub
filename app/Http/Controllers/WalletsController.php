@@ -548,7 +548,7 @@ class WalletsController extends Controller
 
                 $response = curl_exec($curl);
 
-                // return $response;
+                return $response;
 
                 $response_dec = json_decode($response,true);
 
