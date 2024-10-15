@@ -103,7 +103,7 @@ class RegisteredUserController extends Controller
         // $data['confirm_password'] = Hash::make($request->confirm_password);
 
         $dataaa['status'] = 'failed';
-        Mail::to($data)->send(new UserRegistrationNotification($dataaa));
+        // Mail::to($data)->send(new UserRegistrationNotification($dataaa));
 
 
         $user = User::create($data);
