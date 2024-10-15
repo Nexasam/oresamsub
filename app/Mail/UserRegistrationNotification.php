@@ -9,18 +9,18 @@ use Illuminate\Mail\Mailables\Content;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use MailerSend\LaravelDriver\MailerSendTrait;
 
-class UserRegistrationNotification extends Mailable
+class UserRegistrationNotification extends Mailable implements ShouldQueue
 {
-    use Queueable, SerializesModels;
+    use Queueable, SerializesModels, MailerSendTrait;
 
-    public $data;
     /**
      * Create a new message instance.
      */
-    public function __construct($data)
+    public function __construct(public array $data)
     {
-        $this->data = $data;
+        //
     }
 
     /**
@@ -29,8 +29,10 @@ class UserRegistrationNotification extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            from: new Address(env('MAIL_FROM_ADDRESS'), env('APP_NAME')),
-            subject: 'User Registration Notification',
+            replyTo: [
+                new Address(env('MAIL_FROM_ADDRESS'), ''),
+            ],
+            subject: $this->data['subject'],
         );
     }
 
@@ -39,8 +41,15 @@ class UserRegistrationNotification extends Mailable
      */
     public function content(): Content
     {
+        
+        $url = env('APP_URL');
         return new Content(
-            markdown: 'mail.info.user_registration_notification',
+            markdown: 'emails.user_registration_notification',
+            with: [
+                'content' => $this->data['content'],
+                'website_url' => $url
+
+            ],
         );
     }
 
