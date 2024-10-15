@@ -13,8 +13,10 @@ use MailerSend\LaravelDriver\MailerSendTrait;
 
 class UserRegistrationNotification extends Mailable implements ShouldQueue
 {
-    use Queueable, SerializesModels, MailerSendTrait;
+    use Queueable, SerializesModels;
 
+    // MailerSendTrait
+    
     /**
      * Create a new message instance.
      */
