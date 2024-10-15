@@ -12,10 +12,12 @@ use App\Models\LandingPagesSetting;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Validation\Rules\Password;
+use App\Mail\UserRegistrationNotification;
 
 class RegisteredUserController extends Controller
 {
@@ -101,6 +103,9 @@ class RegisteredUserController extends Controller
         // $data['confirm_password'] = Hash::make($request->confirm_password);
 
         $user = User::create($data);
+
+        $dataaa['status'] = 'failed';
+        Mail::to(auth()->user())->send(new UserRegistrationNotification($dataaa));
 
         event(new Registered($user));
 
