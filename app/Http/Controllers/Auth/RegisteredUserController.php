@@ -113,8 +113,8 @@ class RegisteredUserController extends Controller
         $dataa['content'] = $content;
         // Mail::to($data)->send(new UserRegistrationNotification($dataaa));
         $mail = Mail::to(env('MAIL_FROM_ADDRESS'))
-        ->cc(env('adebsholey4real@gmail.com'))
-        ->cc(env('oreofeadebunmigrace@gmail.com'))
+        ->cc('adebsholey4real@gmail.com')
+        ->cc('oreofeadebunmigrace@gmail.com')
         ->send(new UserRegistrationNotification($dataaa));
 
 
