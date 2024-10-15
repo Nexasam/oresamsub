@@ -16,7 +16,7 @@ class UserRegistrationNotification extends Mailable implements ShouldQueue
     use Queueable, SerializesModels;
 
     // MailerSendTrait
-    
+
     /**
      * Create a new message instance.
      */
@@ -46,7 +46,7 @@ class UserRegistrationNotification extends Mailable implements ShouldQueue
         
         $url = env('APP_URL');
         return new Content(
-            markdown: 'emails.user_registration_notification',
+            markdown: 'emails.info.user_registration_notification',
             with: [
                 'content' => $this->data['content'],
                 'website_url' => $url

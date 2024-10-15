@@ -103,7 +103,6 @@ class RegisteredUserController extends Controller
         // $data['confirm_password'] = Hash::make($request->confirm_password);
 
         $dataaa['status'] = 'failed';
-
         $dataaa['subject'] = 'New Registration on your website';
         $content = "Hello Admin,<br><br>";
         $content .= "This is to inform you that someone: ".$request->first_name.' '.$request->last_name." just registered on your website.<br><br>";
