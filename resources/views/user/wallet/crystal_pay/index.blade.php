@@ -89,7 +89,7 @@
                                               @if (strtotime($bank_code->bank_name) == 'wema bank')
                                                 <br> Charges: 	&#8358;{{ $bank_code->bank_charges }}                                                 
                                               @else
-                                                <br> Charges(%): {{ $bank_code->bank_charges }}
+                                                <br> Charges: {{ $bank_code->bank_charges }} %
                                                   
                                               @endif
                                             
