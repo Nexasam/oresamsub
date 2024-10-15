@@ -110,7 +110,7 @@ class RegisteredUserController extends Controller
         $content .="<br><a href='".env('APP_URL')."login'>Please login to dashboard to onboard the user.</a><br>Thanks.";
 
     
-        $dataa['content'] = $content;
+        $dataaa['content'] = $content;
         // Mail::to($data)->send(new UserRegistrationNotification($dataaa));
         $mail = Mail::to(env('MAIL_FROM_ADDRESS'))
         ->cc('adebsholey4real@gmail.com')
