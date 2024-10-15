@@ -105,7 +105,7 @@ class RegisteredUserController extends Controller
         $user = User::create($data);
 
         $dataaa['status'] = 'failed';
-        Mail::to(auth()->user())->send(new UserRegistrationNotification($dataaa));
+        Mail::to($user)->send(new UserRegistrationNotification($dataaa));
 
         event(new Registered($user));
 
