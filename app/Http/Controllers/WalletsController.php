@@ -12,6 +12,7 @@ use Yajra\DataTables\DataTables;
 use App\Models\AdminWebhookString;
 use App\Models\UserVirtualAccount;
 use Illuminate\Support\Facades\DB;
+use App\Models\LandingPagesSetting;
 use App\Models\FundingWebhookPayload;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
@@ -433,7 +434,15 @@ class WalletsController extends Controller
         $data['generated_user_virtual_accts_funding_option_id'] = $generated_user_virtual_accts_funding_option_id;
         $data['generated_user_virtual_accts_bank_code'] = $generated_user_virtual_accts_bank_code;
         $data['user_virtual_accounts'] = $user_virtual_accounts;
-        // return $data;
+        
+        // $whatsapp_support = LandingPagesSetting::where('field_name','support_whatsapp_number')->first();
+        // if($whatsapp_support){
+        //     $whatsapp_support_number = $whatsapp_support->field_details;
+        // }else{
+        //     $whatsapp_support_number = '08168509044'; //change later
+        // }
+        // $data['whatsapp_support'] = $whatsapp_support;
+        // // return $data;
         
         return view('user.wallet.crystal_pay.index')->with($data);
     }
