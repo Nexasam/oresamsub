@@ -49,7 +49,7 @@
                   <h5 class="box-title">Fund wallet using  <b>{{ $funding_option->funding_option_name }}</b></h5>
                   <b>Please note:</b>
                   <p>You can also make a direct payment to our bank account and your wallet will be credited. <br>
-                     <a class="ti-btn ti-btn-primary w-full" href="{{ session()->get('whatsapp_support_number') }}">Click here to reach us on whatsapp</a>
+                     <a class="ti-btn ti-btn-primary w-1/2" href="{{ session()->get('whatsapp_support_number') }}">Click here to reach us on whatsapp</a>
 
                   </p>
                 </div>
