@@ -99,7 +99,14 @@
                                               @endif
                                             
                                               <br>
-                                            @if ($bank_code->virtual_user_account_with_bank_code != NULL && $bank_code->virtual_user_account_with_bank_code->user_id == auth()->id())
+                                            @if (count($user_virtual_accounts) > 0)
+                                                @foreach ($user_virtual_accounts as $user_virtual_account)
+                                                    @if ($user_virtual_account->id == auth()->id() && $user_virtual_account->bank_code == $bank_code->bank_code)
+                                                        -
+                                                    @else
+                                                       @break
+                                                    @endif
+                                                @endforeach
                                             
                                                 <b> - </b>
                                             @else
