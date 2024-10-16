@@ -498,8 +498,8 @@ class AdminSettingsController extends Controller
     public function manage_automations_keys(Request $request){
       // dd($request->all());
       $validator = Validator::make($request->all(), [
-        'smeplug_api_secret_key' => 'required',
-        'ogdams_api_secret_key' => 'required',
+        // 'smeplug_api_secret_key' => 'required',
+        // 'ogdams_api_secret_key' => 'required',
         'megasub_api_password' => 'required',
         'megasub_api_public_key' => 'required'
         
@@ -511,17 +511,17 @@ class AdminSettingsController extends Controller
       
       $automations = Automation::all();
       foreach($automations as $automation){
-        if($automation->slug == 'ogdams' || $automation->slug == 'ogdams_v2') {
-            Automation::where('slug','ogdams')->update([
-              'api_secret_key' => $request->ogdams_api_secret_key
-            ]);
-        }
+        // if($automation->slug == 'ogdams' || $automation->slug == 'ogdams_v2') {
+        //     Automation::where('slug','ogdams')->update([
+        //       'api_secret_key' => $request->ogdams_api_secret_key
+        //     ]);
+        // }
 
-        if($automation->slug == 'smeplug') {
-          Automation::where('slug','smeplug')->update([
-            'api_secret_key' => $request->smeplug_api_secret_key
-          ]);
-        }
+        // if($automation->slug == 'smeplug') {
+        //   Automation::where('slug','smeplug')->update([
+        //     'api_secret_key' => $request->smeplug_api_secret_key
+        //   ]);
+        // }
 
         if($automation->slug == 'megasubplug') {
           Automation::where('slug','megasubplug')->update([
