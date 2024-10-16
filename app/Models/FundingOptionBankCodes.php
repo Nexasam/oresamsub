@@ -13,7 +13,7 @@ class FundingOptionBankCodes extends Model
     protected $guarded = [];
 
     public function virtual_user_account(){
-        return $this->belongsTo(UserVirtualAccount::class,'id','user_id');
+        return $this->belongsTo(UserVirtualAccount::class,'user_id','user_id');
     }
 
    
