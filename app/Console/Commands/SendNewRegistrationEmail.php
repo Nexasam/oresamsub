@@ -42,7 +42,7 @@ class SendNewRegistrationEmail extends Command
             $dataaa['last_name'] = $user->last_name;
             $dataaa['email'] = $user->email;
             $dataaa['phone_number'] = $user->phone_number;
-            $dataaa['url'] = env('APP_URL').'login';
+            $dataaa['url'] = config('app.url').'login';
             
             Mail::to(env('MAIL_FROM_ADDRESS'))
             ->cc('oreofeadebunmigrace@gmail.com') //TODO:: this should be dynamic later for all vendors
