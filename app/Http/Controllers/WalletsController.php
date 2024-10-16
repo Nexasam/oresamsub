@@ -442,7 +442,7 @@ class WalletsController extends Controller
         //     $whatsapp_support_number = '08168509044'; //change later
         // }
         // $data['whatsapp_support'] = $whatsapp_support;
-        // // return $data;
+        return $data;
         
         return view('user.wallet.crystal_pay.index')->with($data);
     }
