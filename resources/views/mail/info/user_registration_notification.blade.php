@@ -8,6 +8,7 @@ Email: {{ $data['email'] }} <br>
 Phone Number: {{ $data['phone_number'] }} <br>
 <br>
 Please login to follow up <br>
+{{ $data['url'] }}
 
 <x-mail::button :url="{{ $data['url'] }}">
   Click to login
