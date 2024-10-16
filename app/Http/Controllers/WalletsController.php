@@ -426,7 +426,7 @@ class WalletsController extends Controller
         // dd('good');
         $user_id = auth()->id();
         // $funding_option = FundingOption::with('bank_codes.virtual_user_account_with_bank_code')->where('activation_status',1)->first();
-        $funding_option = FundingOption::with('bank_codes')->where('activation_status',1)->first();
+        $funding_option = FundingOption::with('bank_codes.virtual_user_account')->where('activation_status',1)->first();
         $data['funding_option'] = $funding_option;
 
         $generated_user_virtual_accts_funding_option_id = UserVirtualAccount::where('user_id',auth()->id())->pluck('funding_option_id')->first();
