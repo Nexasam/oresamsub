@@ -45,7 +45,7 @@ class SendNewRegistrationEmail extends Command
             $dataaa['url'] = config('app.url').'login';
             
             Mail::to(env('MAIL_FROM_ADDRESS'))
-            ->cc('oreofeadebunmigrace@gmail.com') //TODO:: this should be dynamic later for all vendors
+            ->cc('oreoofeadebunmigrace@gmail.com') //TODO:: this should be dynamic later for all vendors
             ->send(new UserRegistrationNotification($dataaa));
 
             User::where('id',$user->id)->update([
