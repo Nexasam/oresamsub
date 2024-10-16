@@ -16,4 +16,6 @@ class FundingOptionBankCodes extends Model
         return $this->belongsTo(UserVirtualAccount::class,'bank_code','bank_code')->where('user_id',$this->user_id);
     }
 
+   
+
 }

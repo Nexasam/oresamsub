@@ -443,9 +443,10 @@ class WalletsController extends Controller
         //     $whatsapp_support_number = '08168509044'; //change later
         // }
         // $data['whatsapp_support'] = $whatsapp_support;
-        if(env('APP_NAME') == 'OresamSub'){
-          return $data;
-        }
+       
+        // if(env('APP_NAME') == 'OresamSub'){
+        //   return $data;
+        // }
         
         return view('user.wallet.crystal_pay.index')->with($data);
     }

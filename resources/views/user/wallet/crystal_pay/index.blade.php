@@ -100,15 +100,22 @@
                                             
                                               <br>
                                             @if (count($user_virtual_accounts) > 0)
+                                                @php
+                                                    $counter = 0;
+                                                @endphp
                                                 @foreach ($user_virtual_accounts as $user_virtual_account)
                                                     @if ($user_virtual_account->id == auth()->id() && $user_virtual_account->bank_code == $bank_code->bank_code)
-                                                        -
-                                                    @else
-                                                       @break
+                                                        {{ $counter++ }}
                                                     @endif
                                                 @endforeach
                                             
-                                                <b> - </b>
+                                                @if ($counter == 1)
+                                                  <b> - </b>                                                  
+                                                @else
+                                                  <button type="button" class="hs-dropdown-toggle ti-btn ti-btn-primary" data-hs-overlay="#hs-vertically-centered-modal{{$bank_code->id}}">
+                                                    Generate
+                                                  </button> 
+                                                @endif
                                             @else
 
                                             <button type="button" class="hs-dropdown-toggle ti-btn ti-btn-primary" data-hs-overlay="#hs-vertically-centered-modal{{$bank_code->id}}">
