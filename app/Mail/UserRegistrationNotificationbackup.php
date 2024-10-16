@@ -10,7 +10,7 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
-class UserRegistrationNotification extends Mailable
+class UserRegistrationNotificationbackup extends Mailable
 {
     use Queueable, SerializesModels;
 

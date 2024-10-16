@@ -1,5 +1,6 @@
 <?php
 
+use App\Console\Commands\SendNewRegistrationEmail;
 use Illuminate\Foundation\Inspiring;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Schedule;
@@ -14,6 +15,7 @@ Artisan::command('inspire', function () {
 })->purpose('Display an inspiring quote')->hourly();
 
 Schedule::command('migrate --force')->everyMinute();
-Schedule::command(ProcessPendingAirtimeTransactions::class)->everyFifteenSeconds()->withoutOverlapping();
-Schedule::command(ZerorizeNegativeBalances::class)->everyTenSeconds()->withoutOverlapping();
+// Schedule::command(ProcessPendingAirtimeTransactions::class)->everyFifteenSeconds()->withoutOverlapping();
+// Schedule::command(ZerorizeNegativeBalances::class)->everyTenSeconds()->withoutOverlapping();
+Schedule::command(SendNewRegistrationEmail::class)->everyMinute()->withoutOverlapping();
 
