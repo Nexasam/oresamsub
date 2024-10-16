@@ -53,8 +53,6 @@ class SendNewRegistrationEmail extends Command
                 'new_user_alert' => 1
             ]);
             logger('Processed');
-        }else{
-            logger('vendor not supported');
         }
        
     }
