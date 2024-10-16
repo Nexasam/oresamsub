@@ -185,11 +185,9 @@
                                                           <p>Bank name:  {{  $user_virtual_account->bank_name  }}</p>
                                                           <p>Account name:  {{  $user_virtual_account->account_name  }}</p>
                                                           <p>Account email:  {{  $user_virtual_account->account_email  }}</p>
-                                                        @else
-                                                            <p>Nil</p>
                                                         @endif
                                                     @endforeach
-                                                  @else
+                                              @else
                                                   <span class="badge bg-warning text-white">Pending</span>
                                               @endif
                                             </td>
