@@ -444,9 +444,9 @@ class WalletsController extends Controller
         // }
         // $data['whatsapp_support'] = $whatsapp_support;
        
-        if(env('APP_NAME') == 'OresamSub'){
-          return $data;
-        }
+        // if(env('APP_NAME') == 'OresamSub'){
+        //   return $data;
+        // }
         
         return view('user.wallet.crystal_pay.index')->with($data);
     }

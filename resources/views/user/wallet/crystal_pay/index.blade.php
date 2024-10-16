@@ -178,11 +178,17 @@
                                             <td>
                                               
                                               @if ( in_array($bank_code->bank_code,$generated_user_virtual_accts_bank_code))
-                                                    <span class="badge bg-success text-white">Generated</span><br>
-                                                    <p>Account number:  {{  $bank_code->virtual_user_account_with_bank_code->account_number  }}</p>
-                                                    <p>Bank name:  {{  $bank_code->virtual_user_account_with_bank_code->bank_name  }}</p>
-                                                    <p>Account name:  {{  $bank_code->virtual_user_account_with_bank_code->account_name  }}</p>
-                                                    <p>Account email:  {{  $bank_code->virtual_user_account_with_bank_code->account_email  }}</p>
+                                                    @foreach ($user_virtual_accounts as $user_virtual_account)
+                                                        @if ($user_virtual_account->bank_code == $bank_code->bank_code)
+                                                          <span class="badge bg-success text-white">Generated</span><br>
+                                                          <p>Account number:  {{  $user_virtual_account->account_number  }}</p>
+                                                          <p>Bank name:  {{  $user_virtual_account->bank_name  }}</p>
+                                                          <p>Account name:  {{  $user_virtual_account->account_name  }}</p>
+                                                          <p>Account email:  {{  $user_virtual_account->account_email  }}</p>
+                                                        @else
+                                                            <p>Nil</p>
+                                                        @endif
+                                                    @endforeach
                                                   @else
                                                   <span class="badge bg-warning text-white">Pending</span>
                                               @endif
