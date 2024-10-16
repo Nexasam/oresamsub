@@ -177,7 +177,7 @@
                                             </td>
                                             <td>
                                               
-                                              @if ($bank_code->virtual_user_account_with_bank_code != NULL && $bank_code->virtual_user_account_with_bank_code->user_id == auth()->id())
+                                              @if ( in_array($bank_code->bank_code,$generated_user_virtual_accts_bank_code))
                                                     <span class="badge bg-success text-white">Generated</span><br>
                                                     <p>Account number:  {{  $bank_code->virtual_user_account_with_bank_code->account_number  }}</p>
                                                     <p>Bank name:  {{  $bank_code->virtual_user_account_with_bank_code->bank_name  }}</p>
