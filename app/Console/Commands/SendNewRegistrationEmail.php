@@ -42,6 +42,7 @@ class SendNewRegistrationEmail extends Command
             $dataaa['last_name'] = $user->last_name;
             $dataaa['email'] = $user->email;
             $dataaa['phone_number'] = $user->phone_number;
+            $dataaa['created_at'] = $user->created_at;
             $dataaa['url'] = config('app.url').'login';
             
             Mail::to(env('MAIL_FROM_ADDRESS'))
