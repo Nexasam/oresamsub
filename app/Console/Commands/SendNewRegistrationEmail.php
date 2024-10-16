@@ -43,6 +43,10 @@ class SendNewRegistrationEmail extends Command
             $dataaa['phone_number'] = $user->phone_number;
             
             Mail::to(env('MAIL_FROM_ADDRESS'))->send(new UserRegistrationNotification($dataaa));
+
+            User::where('id',$user->id)->update([
+                'new_user_alert' => 1
+            ]);
             logger('Processed');
         }else{
             logger('vendor not supported');
