@@ -31,7 +31,7 @@ class SendNewRegistrationEmail extends Command
     {
 
         if(env('APP_NAME') == 'OresamSub'){
-            $user = User::where('new_user_alert',0)->where('username','emmanuel32')->first();
+            $user = User::where('new_user_alert',0)->where('username','emmanuel80')->first();
             if(! $user){
                 //comment out later
                 logger('No registration...');
