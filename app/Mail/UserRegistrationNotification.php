@@ -30,7 +30,7 @@ class UserRegistrationNotification extends Mailable
     {
         return new Envelope(
             from: new Address(env('MAIL_FROM_ADDRESS'), env('APP_NAME')),
-            subject: 'A New User Just Registered',
+            subject: 'A New User Just Registered on'. env('APP_NAME'),
         );
     }
 
