@@ -10,7 +10,7 @@ Phone Number: {{ $data['phone_number'] }} <br>
 <br>
 Please login to follow up
 
-<x-mail::button :url="{{ config("app.url") }}">
+<x-mail::button :url={{ config("app.url") }}>
   Click to login
 </x-mail::button>
 
