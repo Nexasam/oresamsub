@@ -33,26 +33,26 @@ class SendNewRegistrationEmail extends Command
         if(env('APP_NAME') == 'OresamSub'){
             // $user = User::where('new_user_alert',0)->where('username','emmanuel80')->first();
             $user = User::where('new_user_alert',0)->first();
-            if(! $user){
-                //comment out later
-                logger('No registration...');
-            }
-            $dataaa['status'] = 'Success';
-            $dataaa['first_name'] = $user->first_name;
-            $dataaa['last_name'] = $user->last_name;
-            $dataaa['email'] = $user->email;
-            $dataaa['phone_number'] = $user->phone_number;
-            $dataaa['created_at'] = $user->created_at;
-            $dataaa['url'] = config('app.url').'login';
-            
-            Mail::to(env('MAIL_FROM_ADDRESS'))
-            ->cc('oreoofeadebunmigrace@gmail.com') //TODO:: this should be dynamic later for all vendors
-            ->send(new UserRegistrationNotification($dataaa));
+            if( $user){
+                $dataaa['status'] = 'Success';
+                $dataaa['first_name'] = $user->first_name;
+                $dataaa['last_name'] = $user->last_name;
+                $dataaa['email'] = $user->email;
+                $dataaa['phone_number'] = $user->phone_number;
+                $dataaa['created_at'] = $user->created_at;
+                $dataaa['url'] = config('app.url').'login';
+                
+                Mail::to(env('MAIL_FROM_ADDRESS'))
+                ->cc('oreoofeadebunmigrace@gmail.com') //TODO:: this should be dynamic later for all vendors
+                ->send(new UserRegistrationNotification($dataaa));
+    
+                User::where('id',$user->id)->update([
+                    'new_user_alert' => 1
+                ]);
+                logger('Processed');
 
-            User::where('id',$user->id)->update([
-                'new_user_alert' => 1
-            ]);
-            logger('Processed');
+            }
+    
         }
        
     }
