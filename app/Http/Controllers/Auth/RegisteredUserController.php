@@ -102,21 +102,6 @@ class RegisteredUserController extends Controller
         $data['password'] = Hash::make($request->password);
         // $data['confirm_password'] = Hash::make($request->confirm_password);
 
-        $dataaa['status'] = 'failed';
-        $dataaa['subject'] = 'New Registration on your website';
-        $content = "Hello Admin,<br><br>";
-        $content .= "This is to inform you that someone: ".$request->first_name.' '.$request->last_name." just registered on your website.<br><br>";
-        $content .="<br><a href='".env('APP_URL')."login'>Please login to dashboard to onboard the user.</a><br>Thanks.";
-
-    
-        $dataaa['content'] = $content;
-        // Mail::to($data)->send(new UserRegistrationNotification($dataaa));
-        $mail = Mail::to(env('MAIL_FROM_ADDRESS'))
-        ->cc('adebsholey4real@gmail.com')
-        ->cc('oreofeadebunmigrace@gmail.com')
-        ->send(new UserRegistrationNotification($dataaa));
-
-
         $user = User::create($data);
 
         // $user_record = User::where($user->id)->first()->toa;
