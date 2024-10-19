@@ -860,7 +860,7 @@
         </div> --}}
         <div class="footer-bottom text-center">
             {{-- <p class="mb-0" style="color: white">Copyright Crystalpay 2024. All rights Reserved</p> --}}
-            <p class="mb-0" style="color: white">Developed with ❤️ by <a href="https://api.whatsapp.com/send?phone={{  '2347073459839'  }}&text=Hello,%20Please%20I%20want%20to%20own%20a%20data%20website" style="color: white;">Subutility</a> 	&#169; {{ date('Y') }} . Owned by <a href="https://api.whatsapp.com/send?phone={{  '2347073459839'  }}&text=Hello,%20Please%20I%20want%20to%20own%20a%20data%20website" style="color: white;">{{ $site_title }}</a>. All rights Reserved</p>
+            <p class="mb-0" style="color: white">Developed wittth ❤️ by <a href="https://api.whatsapp.com/send?phone={{  '2347073459839'  }}&text=Hello,%20Please%20I%20want%20to%20own%20a%20data%20website" style="color: white;">Subutility</a> 	&#169; {{ date('Y') }} . Owned by <a href="https://api.whatsapp.com/send?phone={{  '2347073459839'  }}&text=Hello,%20Please%20I%20want%20to%20own%20a%20data%20website" style="color: white;">{{ $site_title }}</a>. All rights Reserved</p>
         </div>
     </footer>
 

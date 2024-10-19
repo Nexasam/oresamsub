@@ -516,7 +516,7 @@
                         <form enctype="multipart/form-data" method="POST" action="{{ route('admin.settings.manage_automations_keys')  }}">
                           @csrf
                           <div class="grid w-full lg:w-1/2 lg:grid-cols-1 gap-2 space-y-4 lg:space-y-0">
-                              <p>SME PLUG AUTOMATION</p>
+                              {{-- <p>SME PLUG AUTOMATION</p>
                               <div class="">
                                 <label class="ti-form-label mb-0">Secret key: </label>
                                 <input type="text"  required class="my-auto ti-form-input" name="smeplug_api_secret_key" value="{{ $smeplug->api_secret_key  ?? '' }}"  placeholder="">
@@ -529,7 +529,7 @@
                                 <input type="text" required class="my-auto ti-form-input"  value="{{ $ogdams->api_secret_key != NULL  ? substr($ogdams->api_secret_key,0,2).str_repeat('X',8).substr($ogdams->api_secret_key,-2)  : '' }}"  name="ogdams_api_secret_key"  placeholder="">
                               </div>
                               <br>
-                              <hr>
+                              <hr> --}}
                               <p>MEGASUBPLUG AUTOMATION</p>
                               <div class="space-y-2 mt-5">
                                 <label class="ti-form-label mb-0">Api Password: </label>
