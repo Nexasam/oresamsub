@@ -15,7 +15,7 @@ Artisan::command('inspire', function () {
 })->purpose('Display an inspiring quote')->hourly();
 
 Schedule::command('migrate --force')->everyMinute();
-// Schedule::command(ProcessPendingAirtimeTransactions::class)->everyFifteenSeconds()->withoutOverlapping();
-// Schedule::command(ZerorizeNegativeBalances::class)->everyTenSeconds()->withoutOverlapping();
-Schedule::command(SendNewRegistrationEmail::class)->everyMinute()->withoutOverlapping();
+Schedule::command(ProcessPendingAirtimeTransactions::class)->everyFifteenSeconds()->withoutOverlapping();
+Schedule::command(ZerorizeNegativeBalances::class)->everyTenSeconds()->withoutOverlapping();
+Schedule::command(SendNewRegistrationEmail::class)->everyFiveMinutes()->withoutOverlapping();
 
