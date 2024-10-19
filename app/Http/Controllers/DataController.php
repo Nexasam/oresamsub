@@ -600,7 +600,7 @@ class DataController extends Controller
                             if(! $get_bulk_data_wallet_details ){
                                 $bulk_wallet_balance_before = 0;
                             }
-                            $bulk_wallet_balance_before = $get_bulk_data_wallet_details->bulk_wallet_balance_mb;
+                            $bulk_wallet_balance_before = $get_bulk_data_wallet_details->bulk_wallet_balance_mb ?? 0;
 
                             $total_value_to_buy_in_mb = $phone_numbers_count * $data_value_mb;
                             if($total_value_to_buy_in_mb > $bulk_wallet_balance_before){

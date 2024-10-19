@@ -183,7 +183,12 @@ class WalletsController extends Controller
 
     public function pending_funding_transactions(Request $request){
       // dd('sss');
-      $data['setting'] = Setting::where('field_name','max_automatic_crediting_allowed')->first()  ?? 'SET MAX AMOUNT';
+      $setting = Setting::where('field_name','max_automatic_crediting_allowed')->first();
+      if(! $setting){
+        Session::flash('failure','Please ensure your setting for "max_automatic_crediting_allowed" is set');
+        return redirect()->route('admin.settings.index');
+      }  
+      $data['setting'] = $setting;
 
       return view('admin.wallets_creditings.pending_creditings')->with($data);
     }
