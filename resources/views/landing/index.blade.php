@@ -310,7 +310,7 @@
                     <div class="intro">
                         <h6>about us</h6>
                         <h1>Who we are</h1>
-                        <p class="mx-auto">{{ $aboutus_introduction }}</p>
+                        <p class="mx-auto w-3/4">{{ $aboutus_introduction }}</p>
                     </div>
                 </div>
             </div>
