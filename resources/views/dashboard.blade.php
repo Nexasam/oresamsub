@@ -109,42 +109,46 @@
                 </div>
             </div>
         </div>
-        <div class="col-span-12 xxxl:col-span-2 md:col-span-3">
-            <div class="box">
-                <div class="box-body">
-                    <div class="flex space-x-4 rtl:space-x-reverse">
-                        <div class="flex items-center justify-center ecommerce-icon px-0">
-                            <span class="rounded-sm p-4 bg-secondary/10">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="fill-white svg2"
-                                    enable-background="new 0 0 24 24" height="24px" viewBox="0 0 24 24"
-                                    width="24px" fill="#000000">
-                                    <g>
-                                        <rect fill="none" height="24" width="24"></rect>
-                                        <path
-                                            d="M18,6h-2c0-2.21-1.79-4-4-4S8,3.79,8,6H6C4.9,6,4,6.9,4,8v12c0,1.1,0.9,2,2,2h12c1.1,0,2-0.9,2-2V8C20,6.9,19.1,6,18,6z M12,4c1.1,0,2,0.9,2,2h-4C10,4.9,10.9,4,12,4z M18,20H6V8h2v2c0,0.55,0.45,1,1,1s1-0.45,1-1V8h4v2c0,0.55,0.45,1,1,1s1-0.45,1-1V8 h2V20z">
-                                        </path>
-                                    </g>
-                                </svg>
-                            </span>
-                        </div>
-                        <div class="">
-                            <div class="mb-2">Total Transactions</div>
-                            <div class="text-gray-500 dark:text-white/70 mb-1 text-xs">
-                                <span
-                                    class="text-gray-800 font-semibold text-xl leading-none align-bottom dark:text-white">
-                                    {{ number_format( count($transactions))  }}
+
+        <a href="{{ route('user.transactions.index')}}">
+            <div class="col-span-12 xxxl:col-span-2 md:col-span-3">
+                <div class="box">
+                    <div class="box-body">
+                        <div class="flex space-x-4 rtl:space-x-reverse">
+                            <div class="flex items-center justify-center ecommerce-icon px-0">
+                                <span class="rounded-sm p-4 bg-secondary/10">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="fill-white svg2"
+                                        enable-background="new 0 0 24 24" height="24px" viewBox="0 0 24 24"
+                                        width="24px" fill="#000000">
+                                        <g>
+                                            <rect fill="none" height="24" width="24"></rect>
+                                            <path
+                                                d="M18,6h-2c0-2.21-1.79-4-4-4S8,3.79,8,6H6C4.9,6,4,6.9,4,8v12c0,1.1,0.9,2,2,2h12c1.1,0,2-0.9,2-2V8C20,6.9,19.1,6,18,6z M12,4c1.1,0,2,0.9,2,2h-4C10,4.9,10.9,4,12,4z M18,20H6V8h2v2c0,0.55,0.45,1,1,1s1-0.45,1-1V8h4v2c0,0.55,0.45,1,1,1s1-0.45,1-1V8 h2V20z">
+                                            </path>
+                                        </g>
+                                    </svg>
                                 </span>
                             </div>
-                            {{-- <div>
-                                <span class="text-xs mb-0">Decreased by
-                                    <span class="text-danger">-1.41%</span>
-                                </span>
-                            </div> --}}
+                            <div class="">
+                                <div class="mb-2">Total Transactions</div>
+                                <div class="text-gray-500 dark:text-white/70 mb-1 text-xs">
+                                    <span
+                                        class="text-gray-800 font-semibold text-xl leading-none align-bottom dark:text-white">
+                                        {{ number_format( count($transactions))  }}
+                                    </span>
+                                </div>
+                                {{-- <div>
+                                    <span class="text-xs mb-0">Decreased by
+                                        <span class="text-danger">-1.41%</span>
+                                    </span>
+                                </div> --}}
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
+        </a>
+      
       
         <div class="col-span-12 xxxl:col-span-3 md:col-span-3">
             <div class="box">
