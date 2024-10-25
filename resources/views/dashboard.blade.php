@@ -110,7 +110,7 @@
             </div>
         </div>
 
-        <a href="{{ route('user.transactions.index')}}">
+        {{-- <a href="{{ route('user.transactions.index')}}"> --}}
             <div class="col-span-12 xxxl:col-span-2 md:col-span-3">
                 <div class="box">
                     <div class="box-body">
@@ -147,7 +147,7 @@
                     </div>
                 </div>
             </div>
-        </a>
+        {{-- </a> --}}
       
       
         <div class="col-span-12 xxxl:col-span-3 md:col-span-3">
