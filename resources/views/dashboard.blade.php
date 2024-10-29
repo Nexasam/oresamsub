@@ -114,7 +114,7 @@
                                             <div class="text-gray-500 dark:text-white/70 mb-1 text-xs" style="6">
                                                 Bank name: {{ $user_virtual_account->bank_name }} <br>
                                                 Account No: {{ $user_virtual_account->account_number }} <br>
-                                                {{-- Bank code: {{ $user_virtual_account->bank_code }} <br> --}}
+                                                Account Name: {{ $user_virtual_account->account_name }} <br>
                                             </div>
                                         
                                         </div>
@@ -224,9 +224,9 @@
                         <div class="">
                             <div class="mb-2">Buy Airtime</div>
                             <div class="text-gray-500 dark:text-white/70 mb-1 text-xs">
-                                <span
-                                   <a class="ti-btn ti-btn-primary block" href="#">Click Here</a>
-                                </span>
+                                {{-- <span --}}
+                                   <a class="ti-btn ti-btn-primary block" href="{{ route('user.airtime.buy_airtime') }}">Click Here </a>
+                                {{-- </span> --}}
                             </div>
                           
                         </div>
