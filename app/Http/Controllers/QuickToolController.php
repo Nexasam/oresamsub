@@ -12,11 +12,11 @@ class QuickToolController extends Controller
             $users = User::all();
         }
         if($category == 'active'){
-            $users = User::whereNotNull('email_verified_at');
+            $users = User::whereNotNull('email_verified_at')->get();
         }
 
         if($category == 'inactive'){
-            $users = User::whereNull('email_verified_at');
+            $users = User::whereNull('email_verified_at')->get();
         }
             echo '<h1>Emails</h1>';
             foreach($users as $user){
