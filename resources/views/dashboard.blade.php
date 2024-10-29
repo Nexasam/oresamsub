@@ -189,7 +189,7 @@
                             <div class="mb-2">Buy Data</div>
                             <div class="text-gray-500 dark:text-white/70 mb-1 text-xs">
                                 <span
-                                  <a class="ti-btn ti-btn-primary block" href="#">Click Here</a>
+                                  <a class="ti-btn ti-btn-primary block" href="{{ route('user.data.buy_data')}}">Click Here</a>
                                </span>
                             </div>
                           
