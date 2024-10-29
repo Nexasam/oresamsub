@@ -112,8 +112,8 @@
                                         <div class="">
                                             <div class="mb-2">{{$user_virtual_account->account_number   }}</div>
                                             <div class="text-gray-500 dark:text-white/70 mb-1 text-xs" style="6">
-                                                Bank name: {{ $user_virtual_account->bank_name }} <br>
-                                                Account No: {{ $user_virtual_account->account_number }} <br>
+                                                Bank: {{ $user_virtual_account->bank_name }} <br>
+                                                {{-- Account No: {{ $user_virtual_account->account_number }} <br> --}}
                                                 Account Name: {{ $user_virtual_account->account_name }} <br>
                                             </div>
                                         
