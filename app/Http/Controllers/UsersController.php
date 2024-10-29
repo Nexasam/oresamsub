@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Role;
 use App\Models\User;
 use App\Models\UserPlan;
+use App\Models\UserVirtualAccount;
 use Illuminate\Http\Request;
 use Yajra\DataTables\DataTables;
 use App\Models\UserBulkDataWallet;
@@ -34,6 +35,7 @@ class UsersController extends Controller
     public function index(Request $request)
     {
       //  Gate::authorize('viewAny', User::class);
+
 
         $users = User::with(['role' => function($query){
           $query->where('role_name','User');

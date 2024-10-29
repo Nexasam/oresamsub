@@ -9,6 +9,7 @@ use App\Models\Transaction;
 use Illuminate\Http\Request;
 use App\Models\UserProductPlan;
 use App\Models\UserBulkDataWallet;
+use App\Models\UserVirtualAccount;
 use App\Models\LandingPagesSetting;
 use App\Models\ProductPlanCategory;
 use App\Http\Controllers\Controller;
@@ -19,7 +20,12 @@ class UserDashboardController extends Controller
  
   public function index(){
     $hot_sales = ProductPlanCategory::with('product')->where('is_hot_sales',1)->get();
+    $user_virtual_accounts = UserVirtualAccount::where('user_id',auth()->id())->get();
+    // dd($user_virtual_accounts);
     $new_hot_sales_array = [];
+
+    $data['user_virtual_accounts'] = $user_virtual_accounts;
+
     foreach($hot_sales as $key=>$hot_sale){
       $new_hot_sales_array[$key]['product_slug'] = $hot_sale->product->slug;
       switch($hot_sale->product->slug){
