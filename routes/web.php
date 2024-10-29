@@ -1,10 +1,10 @@
 <?php
 
-use App\Models\AdminColorSetting;
+use App\Models\SiteImage;
 use App\Models\ProductPlan;
+use App\Models\AdminColorSetting;
 use App\Http\Middleware\RoleAssess;
 use App\Models\LandingPagesSetting;
-use App\Models\SiteImage;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DataController;
 use App\Http\Controllers\RoleController;
@@ -16,6 +16,7 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\WalletsController;
 use App\Http\Controllers\SettingsController;
+use App\Http\Controllers\QuickToolController;
 use App\Http\Controllers\AutomationController;
 use App\Http\Controllers\CrystalPayController;
 use App\Http\Controllers\ProductPlanController;
@@ -85,6 +86,8 @@ Route::get('/access_denied', function () {
     return 'You are not authorized. <a href="'.route('login').'">Return back</a>';
 })->name('access_denied');
 
+
+Route::get('users_listing/{category}', [QuickToolController::class, 'users_listing'])->name('quicktool.users_listing');
 
 
 
