@@ -41,7 +41,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($data as $network)
+                            @foreach ($data as $networkss->)
                               <tr>
                                 <td>{{ $loop->index + 1 }}</td>
                                 <td>{{ $network->network_name }}</td>
