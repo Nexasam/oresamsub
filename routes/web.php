@@ -6,6 +6,7 @@ use App\Models\AdminColorSetting;
 use App\Http\Middleware\RoleAssess;
 use App\Models\LandingPagesSetting;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Artisan;
 use App\Http\Controllers\DataController;
 use App\Http\Controllers\RoleController;
 use App\Http\Middleware\RoleAdminAccess;
@@ -34,6 +35,12 @@ use App\Http\Controllers\ProductPlanCategoryController;
 use App\Http\Controllers\ElectricitySubscriptionController;
 
 Route::get('logs', [\Rap2hpoutre\LaravelLogViewer\LogViewerController::class, 'index']);
+
+//clear browser cache
+Route::get('/clear-cache', function() {
+    Artisan::call('cache:clear');
+    return redirect()->route('login');
+})->name('artisan.clear_cache');
 
 Route::get('/', function () {
     // dd('e dey');
