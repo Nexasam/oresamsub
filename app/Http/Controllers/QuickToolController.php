@@ -57,7 +57,7 @@ class QuickToolController extends Controller
                 echo $user->email.', ';
             }
 
-            echo '<h1>Emails Inctive</h1>';
+            echo '<h1>Emails Inactive</h1>';
             foreach($users_inactive as $user){
                 echo $user->email.', ';
             }
