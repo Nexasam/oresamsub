@@ -150,9 +150,8 @@
                             <div class="">
                                 <div class="mb-2">Fund Wallet</div>
                                 <div class="text-gray-500 dark:text-white/70 mb-1 text-xs">
-                                    <span
-                                    <a class="ti-btn ti-btn-primary block" href="#">Click Here</a>
-                                    </span>
+                                     <a class="ti-btn ti-btn-primary block" href="{{ route('user.wallet.index')}}">Click Here</a>
+                                 
                                 </div>
                             
                             </div>
