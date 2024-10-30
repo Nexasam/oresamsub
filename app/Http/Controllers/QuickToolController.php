@@ -49,7 +49,7 @@ class QuickToolController extends Controller
             $users_inactive_count = count($users_inactive);
        
             echo '<h1>Active users: '.$users_active_count.'</h1>';
-            echo '<h1>Inctive: '.$users_inactive_count.'</h1>';
+            echo '<h1>Inactive users: '.$users_inactive_count.'</h1>';
             echo '<hr>';
             echo '<hr>';
             echo '<h1>Emails Active</h1>';
@@ -62,6 +62,7 @@ class QuickToolController extends Controller
                 echo $user->email.', ';
             }
 
+            echo '<hr>';
             echo '<hr>';
             echo '<hr>';
             echo '<h1>Phone Numbers Inactive</h1>';
