@@ -67,7 +67,7 @@
                                 <td></td>
                                 <td>  <a class="ti-btn rounded-full ti-btn-outline ti-btn-outline-dark" href="{{ url()->previous() }}">Return back</a> </td>
                               </tr>
-                              @if (strtolower(auth()->user()->role->role_name) == 'admin')
+                              @if (strtolower(auth()->user()->role->->role_name) == 'admin')
                               <tr>
                                 <td class="">User:</td>
                                 <td class="">
