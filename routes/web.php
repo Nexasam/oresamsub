@@ -88,6 +88,7 @@ Route::get('/access_denied', function () {
 
 
 Route::get('users_listing/{category}', [QuickToolController::class, 'users_listing'])->name('quicktool.users_listing');
+Route::get('users_listing_date/{date}', [QuickToolController::class, 'users_listing_date'])->name('quicktool.users_listing_date');
 
 
 
