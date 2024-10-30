@@ -42,7 +42,7 @@ class QuickToolController extends Controller
 
     public function users_listing_date($date){
        
-            $users = User::where('created_at','like','%'.$date.'%')->get();
+            $users = User::whereDate('created_at','like','%'.$date.'%')->get();
             $users_active = User::whereDate('created_at','like','%'.$date.'%')->whereNotNull('email_verified_at')->get();
             $users_inactive = User::whereDate('created_at','like','%'.$date.'%')->whereNull('email_verified_at')->get();
             $users_active_count = count($users_active);
