@@ -110,7 +110,7 @@
                                             </span>
                                         </div>
                                         <div class="">
-                                            <div class="mb-2">{{$user_virtual_account->account_number   }}</div>
+                                            <div class="mb-2"><strong>{{$user_virtual_account->account_number   }}</strong></div>
                                             <div class="text-gray-500 dark:text-white/70 mb-1 text-xs" style="6">
                                                 Bank: {{ $user_virtual_account->bank_name }} <br>
                                                 {{-- Account No: {{ $user_virtual_account->account_number }} <br> --}}
