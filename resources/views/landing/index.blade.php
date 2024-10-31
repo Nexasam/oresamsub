@@ -310,7 +310,7 @@
             {{-- @if (env('APP_NAME') == 'OresamSusdfjlsdfjlsdfb') --}}
                 <div class="row">
                     <div class="col-lg-6">
-                        <img src="{{ asset(env('APP_ASSETS_BASE_URL').'img/landing/about.jpg') }}" alt="">
+                        <img src="{{ asset(env('APP_ASSETS_BASE_URL').'img/authentication/auth11.jpg') }}" alt="">
                     </div>
                     <div class="col-lg-6 mt-5">
                         <div class="intro">
