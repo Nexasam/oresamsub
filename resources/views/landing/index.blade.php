@@ -303,17 +303,36 @@
             </div>
         </div>
     </section> --}}
+
+
     <section class="bg-light" id="about">
         <div class="container">
-            <div class="row">
-                <div class="col-12">
-                    <div class="intro">
-                        <h6>about us</h6>
-                        <h1>Who we are</h1>
-                        <p class="mx-auto w-3/4">{{ $aboutus_introduction }}</p>
+            {{-- @if (env('APP_NAME') == 'OresamSusdfjlsdfjlsdfb') --}}
+                <div class="row">
+                    <div class="col-lg-6">
+                        <img src="{{ asset(env('APP_ASSETS_BASE_URL').'img/landing/about.jpg') }}" alt="">
+                    </div>
+                    <div class="col-lg-6 mt-5">
+                        <div class="intro">
+                            <h6>about us</h6>
+                            <h1>Who we are</h1>
+                            <p  class="mx-auto text-left w-3/4">{{ $aboutus_introduction }}</p>
+                        </div>
                     </div>
                 </div>
-            </div>
+            {{-- @else
+                <div class="row">    
+                    <div class="col-12">
+                        <div class="intro">
+                            <h6>about us</h6>
+                            <h1>Who we are</h1>
+                            <p class="mx-auto w-3/4">{{ $aboutus_introduction }}</p>
+                        </div>
+                    </div>
+                </div>
+            @endif --}}
+        
+          
         </div>
 
         {{-- this was hidden - examine later --}}
