@@ -292,9 +292,13 @@
                         </form>
                         <hr>
                         <div class="overflow-auto">
-                          
+                          <span class="ti-btn ti-btn-danger w-1/2">Note: The 2fa feature is currently disabled. It will be enabled as as soon as possible.</span>
+           
+
+                          {{-- Note: Please we are currently making some updates and as a result, the 2fa will be temporarily unavailable.
+                          We are sorry for the inconvenience this might cause. Thanks --}}
                           <br>
-                          <form method="POST" action="{{ url('/user/two-factor-authentication') }}">
+                          {{-- <form method="POST" action="{{ url('/user/two-factor-authentication') }}">
                                 @csrf
                     
                                 @if(auth()->user()->two_factor_secret)
@@ -324,7 +328,7 @@
                                       <button type="submit" class="ti-btn ti-btn-primary w-1/2">Enable Two Factor Authentication</button>
                                     </div>
                                 @endif
-                          </form>
+                          </form> --}}
 
 
                             {{-- <form method="POST" action="{{ url('user/two-factor-authentication')  }}">
