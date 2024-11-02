@@ -128,7 +128,6 @@ Route::get('product_plans/fetch_public_product_plans', [ProductPlanController::c
 
 
 
-
 Route::middleware(['auth','verified','admin'])->get('admin/users', [UsersController::class, 'index'])->name('admin.users.index');
 Route::middleware(['auth','verified','admin'])->get('admin/users/create', [UsersController::class, 'create'])->name('admin.users.create');
 Route::middleware(['auth','verified','admin'])->get('admin/users/{id}/manage_user', [UsersController::class, 'manage_user'])->name('admin.users.manage_user');
@@ -184,8 +183,6 @@ Route::middleware(['auth','verified','admin'])->get('admin/product_plans/fetch_p
 Route::middleware(['auth','verified','admin'])->get('admin/toggle_product_visibility', [ProductPlanController::class, 'toggle_product_visibility'])->name('admin.product_plans.toggle_product_visibility');
 Route::middleware(['auth','verified','admin'])->get('admin/toggle_product_public_visibility', [ProductPlanController::class, 'toggle_product_public_visibility'])->name('admin.product_plans.toggle_product_public_visibility');
 
-
-
 Route::middleware(['auth','verified','admin'])->get('admin/product_categories', [ProductCategoryController::class, 'index'])->name('admin.product_categories.index');
 
 Route::middleware(['auth','verified','admin'])->get('admin/settings', [AdminSettingsController::class, 'index'])->name('admin.settings.index');
@@ -201,6 +198,7 @@ Route::middleware(['auth','verified','admin'])->post('admin/update_site_color', 
 Route::middleware(['auth','verified','admin'])->post('admin/manage_global_user_2fa', [AdminSettingsController::class, 'manage_global_user_2fa'])->name('admin.settings.manage_global_user_2fa');
 Route::middleware(['auth','verified','admin'])->post('admin/referral_settings', [AdminSettingsController::class, 'manage_referral_settings'])->name('admin.settings.referral_settings');
 Route::middleware(['auth','verified','admin'])->post('admin/landing_page_settings', [AdminSettingsController::class, 'manage_landing_page_settings'])->name('admin.settings.manage_landing_page_settings');
+Route::middleware(['auth','verified','admin'])->post('admin/settings/update_user_authentication_dashboard', [AdminSettingsController::class, 'update_user_authentication_dashboard'])->name('admin.settings.update_user_authentication_dashboard');
 
 Route::middleware(['auth','verified','admin'])->get('admin/profile/index', [UsersController::class, 'admin_manage_profile'])->name('admin.manage_profile.index');
 

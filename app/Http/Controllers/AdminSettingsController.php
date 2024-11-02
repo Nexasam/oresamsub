@@ -31,6 +31,15 @@ class AdminSettingsController extends Controller
           }
         }
 
+        $users_redirect_after_authentication = Setting::where('field_name','users_redirect_after_authentication')->first();
+        if(! $users_redirect_after_authentication){
+          $createee = Setting::create([
+              'field_name' => 'users_redirect_after_authentication',
+              'field_value' => 'dashboard'
+          ]);
+          $data['users_redirect_after_authentication'] = $createee->field_value;
+        }
+
         // dd($data);
       
         //landingpages
@@ -106,6 +115,34 @@ class AdminSettingsController extends Controller
        
         // dd($data);
         return view('admin.settings.index')->with($data);
+    }
+
+    public function update_user_authentication_dashboard(Request $request){
+      $validator = Validator::make($request->all(), [
+        'users_redirect_after_authentication' => 'required'
+      ]);
+      
+
+      if ($validator->stopOnFirstFailure()->fails()) {
+        return redirect()->back()->withErrors($validator)->withInput();
+      }
+
+
+        $users_redirect_after_authentication = Setting::where('field_name','users_redirect_after_authentication')->first();
+        
+        $users_redirect_after_authentication ? $users_redirect_after_authentication->update([
+          'field_value' => $request->users_redirect_after_authentication
+        ])
+        : Setting::create([
+          'field_name' => 'users_redirect_after_authentication',
+          'field_value' => $request->users_redirect_after_authentication,
+        ]);
+
+        Session::flash('success','Settings successfully updated');
+
+        return redirect()->back();
+
+
     }
 
     public function update_settings(Request $request){

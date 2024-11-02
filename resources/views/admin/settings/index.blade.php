@@ -598,6 +598,34 @@
                               <br>
                           </div>
                         </form>
+
+                        <br>
+                        <hr>
+                        <br>
+                        <form enctype="multipart/form-data" method="POST" action="{{ route('admin.settings.update_user_authentication_dashboard')  }}">
+                          @csrf
+                          <div class="grid w-full lg:w-1/2 lg:grid-cols-1 gap-2 space-y-4 lg:space-y-0">
+                             
+                              <div class="">
+                                <label class="ti-form-label mb-2">Redirect users to this page after authentication: </label>
+                                <select id="users_redirect_after_authentication" name="users_redirect_after_authentication" required class="my-auto ti-form-select">
+                                 
+                                  <option @if ($users_redirect_after_authentication != NULL && $users_redirect_after_authentication == 'dashboard') selected @endif value="dashboard">Select</option>
+                                  <option @if ($users_redirect_after_authentication != NULL && $users_redirect_after_authentication == 'dashboard') selected @endif  value="dashboard">Main Dashboard Page</option>
+                                  <option @if ($users_redirect_after_authentication != NULL && $users_redirect_after_authentication == 'user/data/buy_data') selected @endif value="user/data/buy_data">Buy Data Page</option>
+                                  <option @if ($users_redirect_after_authentication != NULL && $users_redirect_after_authentication == 'user/airtime/buy_airtime') selected @endif value="user/airtime/buy_airtime">Buy Airtime Page</option>
+                                  <option @if ($users_redirect_after_authentication != NULL && $users_redirect_after_authentication == 'user/electricity/buy_electricity') selected @endif value="user/electricity/buy_electricity">Buy Electricity Page</option>
+                                  <option @if ($users_redirect_after_authentication != NULL && $users_redirect_after_authentication == 'user/cable_subscription/buy_cable_subscription') selected @endif value="user/cable_subscription/buy_cable_subscription">Buy Cable subscription Page</option>
+                                </select>
+                              </div>   
+                                
+                              <div class="space-y-2">
+                                  <button type="submit" class="ti-btn ti-btn-primary w-full">Update Page after authentication</button>
+                              </div>
+                            
+                              <br>
+                          </div>
+                        </form>
                         
                       </div>  
                     </div>
@@ -827,11 +855,9 @@
                                 <select id="global_user_2fa_setting" name="global_user_2fa_setting" required class="my-auto ti-form-select">
                                     <option value="">Select</option>
                                     <option @if ($admin_2fa_setting->global_user_2fa_setting == NULL) selected @endif value="OFF">OFF</option>
-                                    <option @if ($admin_2fa_setting->global_user_2fa_setting == 'ON') selected @endif value="ON">ON</option>
-                                    <option @if ($admin_2fa_setting->global_user_2fa_setting == 'OFF') selected @endif value="OFF">OFF</option>
-                                  </select>
-                                </div>     
-                              <div class="space-y-2">
+                                    <option  value="ON">ON</option>
+                                    <option  value="OFF">OFF</option>
+                                  </select> <div class="space-y-2">
                                   <button type="submit" class="ti-btn ti-btn-primary w-full">Globally Hide/Show 2fa</button>
                               </div>
                             

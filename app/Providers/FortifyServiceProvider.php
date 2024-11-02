@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Models\User;
+use App\Models\Setting;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Laravel\Fortify\Fortify;
@@ -13,6 +14,8 @@ use Illuminate\Cache\RateLimiting\Limit;
 use App\Actions\Fortify\ResetUserPassword;
 use App\Actions\Fortify\UpdateUserPassword;
 use Illuminate\Support\Facades\RateLimiter;
+use Laravel\Fortify\Contracts\LoginResponse;
+use Laravel\Fortify\Contracts\RegisterResponse;
 use App\Actions\Fortify\UpdateUserProfileInformation;
 
 class FortifyServiceProvider extends ServiceProvider
@@ -22,7 +25,38 @@ class FortifyServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        $this->app->instance(LoginResponse::class, new class implements LoginResponse {
+            public function toResponse($request)
+            {
+                $users_redirect_after_authentication = Setting::where('field_name','users_redirect_after_authentication')->first();
+                $user_dashboard = $users_redirect_after_authentication == NULL ? 'dashboard' : $users_redirect_after_authentication->field_value;
+                return redirect()->intended('/'.$user_dashboard);
+                // return redirect()->intended('/user/data/buy_dataaa');
+                
+            }
+        });
+
+        $this->app->instance(LoginResponse::class, new class implements LoginResponse {
+            public function toResponse($request)
+            {
+                $users_redirect_after_authentication = Setting::where('field_name','users_redirect_after_authentication')->first();
+                $user_auth_redirect_page = $users_redirect_after_authentication == NULL ? 'dashboard' : $users_redirect_after_authentication->field_value;
+                return redirect()->intended('/'.$user_auth_redirect_page);
+                // return redirect()->intended('/user/data/buy_dataaa');
+                
+            }
+        });
+
+        $this->app->instance(RegisterResponse::class, new class implements RegisterResponse {
+            public function toResponse($request)
+            {
+                $users_redirect_after_authentication = Setting::where('field_name','users_redirect_after_authentication')->first();
+                $user_auth_redirect_page = $users_redirect_after_authentication == NULL ? 'dashboard' : $users_redirect_after_authentication->field_value;
+                return redirect()->intended('/'.$user_auth_redirect_page);
+                // return redirect()->intended('/user/data/buy_dataaa');
+                
+            }
+        });
     }
 
     /**
@@ -33,7 +67,7 @@ class FortifyServiceProvider extends ServiceProvider
 
         
 
-                Fortify::loginView(function () {
+            Fortify::loginView(function () {
                 return view('auth.login');
             });
 

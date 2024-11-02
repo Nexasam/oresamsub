@@ -104,7 +104,7 @@ class UserDashboardController extends Controller
       $data['bulk_data_wallet_sum'] = UserBulkDataWallet::select('bulk_wallet_balance_mb')->sum('bulk_wallet_balance_mb');
       $data['alltime_bulk_wallet_balance_mb'] = UserBulkDataWallet::select('alltime_bulk_wallet_balance_mb')->sum('alltime_bulk_wallet_balance_mb');
       $data['transactions'] = Transaction::with(['user','product_plan'])->latest()->get();
-      
+      //no need here
       return view('admin_dashboard')->with($data);
     }
   }

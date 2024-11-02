@@ -1,7 +1,10 @@
 <?php
 
+// use App\Models\Setting;
 use Laravel\Fortify\Features;
 
+
+$user_dashboard = 'dashboard';
 return [
 
     /*
@@ -72,8 +75,8 @@ return [
     | and the user is authenticated. You are free to change this value.
     |
     */
-
-    'home' => '/dashboard',
+    
+    'home' => $user_dashboard,
 
     /*
     |--------------------------------------------------------------------------
