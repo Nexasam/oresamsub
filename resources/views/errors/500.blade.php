@@ -37,16 +37,16 @@
                         {{-- <i class="ri-arrow-line"></i> --}}
                         Clear session
                     </a>
-                    @php
+                    {{-- @php
                                 $landing_data = App\Models\LandingPagesSetting::get();
                                 foreach($landing_data as $landing_component){
                                 $data[$landing_component->field_name] = $landing_component->field_details;
                                 }
-                    @endphp
+                    @endphp --}}
                     <a class="w-full sm:w-auto inline-flex justify-center items-center gap-x-3 text-center bg-primary hover:bg-primary border border-transparent text-white text-sm font-medium rounded-sm focus:outline-none focus:ring-0 focus:ring-primary focus:ring-offset-0 focus:ring-offset-white transition py-2 px-3 dark:focus:ring-offset-white/10"
-                        href="https://api.whatsapp.com/send?phone={{  $support_whatsapp_number  }}&text=Hello,%20Please%20I%20need%20help">
+                        href="#">
                         <i class="ri-arrow-left-line"></i>
-                        Reach out to our support
+                        Please reach out to our support team
                     </a>
                      
                 </div>
