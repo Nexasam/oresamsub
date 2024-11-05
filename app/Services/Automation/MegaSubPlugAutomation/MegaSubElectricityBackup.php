@@ -2,20 +2,28 @@
 
 namespace App\Services\Automation\MegaSubPlugAutomation;
 
-use App\Models\User;
 use App\Models\Automation;
 use App\Models\ProductPlan;
 use Illuminate\Support\Facades\Http;
 
-class MegaSubElectricity{
+class MegaSubElectricityBackup{
 
     private $metre_number;
+
     private $electricity_plan_api_id;
+
+
     private $amount;
+
     private $phone_number;
+
+
     private $automation_slug = 'megasubplug';
+
     private $validatephonenetwork = 1;
+
     private $plan_id = '';
+
     private $extra_info = '';
     private $no_of_slots = '';
 
@@ -25,12 +33,8 @@ class MegaSubElectricity{
     private $api_key = '';
     private $api_password = '';
 
-    private $user_id = '';
-
-
-    public function __construct($metre_number,$plan_id = null,$amount = null,$extra_info = null,$no_of_slots = 1,$product_plan_category_name = null,$phone_number = null, $user_id = null){
+    public function __construct($metre_number,$plan_id = null,$amount = null,$extra_info = null,$no_of_slots = null,$product_plan_category_name = null,$phone_number = null){
         $this->metre_number = $metre_number; //metreno
-        $this->user_id = $user_id;
         $this->extra_info = $extra_info;
         $this->plan_id = $plan_id;
         $this->phone_number = $phone_number;
@@ -62,22 +66,13 @@ class MegaSubElectricity{
 
 
     public function validateMetreNumber(){
-        $user_details = User::where('id',$this->user_id)->first();
-        if(! $user_details){
-            return [
-                'status' => -1,
-                'message' => 'User record not found'
-            ];
-        }
-
         $plan_details = ProductPlan::with('product_plan_category')
         ->where('visibility',1)
         ->where('id',$this->plan_id)->first();
-        
+      
         if(! $plan_details){
             return [
                 'status' => -1,
-                'message' => 'An error occurred while processing this transaction. Please try again or reach out to support',
                 'user_message' => 'An error occurred while processing this transaction. Please try again or reach out to support',
                 'admin_message' => 'Wrong plan Id',
             ];
@@ -119,17 +114,14 @@ class MegaSubElectricity{
            return [
                'status' => 1,
                'address' => isset($response_decode['Detail']['customer']['customerName']) ? $response_decode['Detail']['customer']['customerAddress']  :  'Address not found',
-               'name' => isset($response_decode['Detail']['customer']['customerName']) ? $response_decode['Detail']['customer']['customerName']  :  'Defaulted to: '.$user_details->first_name.' '.$user_details->last_name,
-               'message' =>  isset($response_decode['Detail']['customer']['customerName']) ? $response_decode['Detail']['customer']['customerName']  :  'Defaulted to: '.$user_details->first_name.' '.$user_details->last_name,
+               'name' => isset($response_decode['Detail']['customer']['customerName']) ? $response_decode['Detail']['customer']['customerName']  :  'Defaulted to: '.auth()->user()->first_name.' '.auth()->user()->last_name,
            ];
        }else{
             
             return [
                 'status' => 1,
                 'address' =>  'Address not found',
-                'name' => 'Defaulted to: '.$user_details->first_name.' '.$user_details->last_name,
-                'message' =>  isset($response_decode['Detail']['customer']['customerName']) ? $response_decode['Detail']['customer']['customerName']  :  'Defaulted to: '.$user_details->first_name.' '.$user_details->last_name,
-
+                'name' => 'Defaulted to: '.auth()->user()->first_name.' '.auth()->user()->last_name,
            ];
        }
 

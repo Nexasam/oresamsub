@@ -45,8 +45,17 @@ class AuthenticatedSessionController extends Controller
     public function store(LoginRequest $request)
     {
         // dd($request->all());
-        $user_check = User::select('id')->where('email',$request->email)->first();
+        $user_check = User::select('id','api_token')->where('email',$request->email)->first();
         if($user_check){
+            
+            if( $user_check->api_token == NULL){
+                // $api_token = bcrypt('password').'_'.rand(1111,9999).'_'.time();
+                $api_token = str()->random(200).time();
+                $user_check->update([
+                    'api_token' => $api_token
+                ]);
+            }
+
             $check_login = DB::table('sessions')->where('user_id',$user_check->id)->first();
             if($check_login){
                 //a login exists somewhere

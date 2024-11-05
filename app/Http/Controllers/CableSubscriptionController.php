@@ -210,9 +210,10 @@ class CableSubscriptionController extends Controller
              ];
          }
  
+         $user_id = auth()->id();
          $automation_slug = $plan_details->automation->slug;
          if($automation_slug == 'megasubplug'){
-             $validate_metre_number = (new MegaSubCableTV(smart_card_number: $request->smart_card_number, plan_id: $request->plan_id))->validateSmartCardNumber();
+             $validate_metre_number = (new MegaSubCableTV(smart_card_number: $request->smart_card_number, plan_id: $request->plan_id, user_id: $user_id))->validateSmartCardNumber();
              return $validate_metre_number;
        
          }
@@ -380,7 +381,7 @@ class CableSubscriptionController extends Controller
                                     // $smart_card_number,$plan_id,$amount,$validation_customer_name,$no_of_slots,$product_plan_category_name
                                     // return response()->json(['status'=>'-1', 'message'=>$smart_card_number ]);
 
-                                    $buy_cable_subscription = (new MegaSubCableTV($smart_card_number,$request->cable_product_plan_id,$total_amount,$request->validation_customer_name,1,$plan_category_details->product_plan_category_name))->buyCable();
+                                    $buy_cable_subscription = (new MegaSubCableTV($smart_card_number,$request->cable_product_plan_id,$total_amount,$request->validation_customer_name,1,$plan_category_details->product_plan_category_name, user_id: $user_id))->buyCable();
                                 }else{
                                     //this will be like this until other automations are processed
                                     $buy_cable_subscription['status'] = -1;

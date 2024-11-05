@@ -192,7 +192,7 @@ class ProcessPendingAirtimeTransactions extends Command
                 }
             }else{
                 // echo 'No pending airtime transactions at the moment';
-                // logger('No pending airtime transactions at the moment');
+                logger('No pending airtime transactions at the moment');
             }
     
     }

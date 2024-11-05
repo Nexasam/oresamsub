@@ -2,20 +2,22 @@
 
 namespace App\Services\Automation\MegaSubPlugAutomation;
 
-use App\Models\User;
 use App\Models\Automation;
 use App\Models\ProductPlan;
 use Illuminate\Support\Facades\Http;
 
-class MegaSubCableTV{
+class MegaSubCableTVBackup{
 
     private $smart_card_number;
 
     private $cable_plan_api_id;
 
+
     private $amount;
 
+
     private $data_api_id;
+
 
     private $automation_slug = 'megasubplug';
 
@@ -32,12 +34,9 @@ class MegaSubCableTV{
     private $api_key = '';
     private $api_password = '';
 
-    private $user_id = '';
-
-    public function __construct($smart_card_number = null,$plan_id = null,$amount= null,$validation_customer_name = null,$no_of_slots = null,$product_plan_category_name = null,$user_id = null){
+    public function __construct($smart_card_number = null,$plan_id = null,$amount= null,$validation_customer_name = null,$no_of_slots = null,$product_plan_category_name = null){
         $this->smart_card_number = $smart_card_number;
         $this->validation_customer_name = $validation_customer_name;
-        $this->user_id = $user_id;
         $this->plan_id = $plan_id;
         $this->no_of_slots = $no_of_slots;
         $this->product_plan_category_name = $product_plan_category_name;
@@ -69,14 +68,6 @@ class MegaSubCableTV{
     }
 
     public function validateSmartCardNumber(){
-        $user_details = User::where('id',$this->user_id)->first();
-        if(! $user_details){
-            return [
-                'status' => -1,
-                'message' => 'User record not found'
-            ];
-        }
-        
         $plan_details = ProductPlan::with('product_plan_category')
         ->where('visibility',1)
         ->where('id',$this->plan_id)->first();
@@ -124,14 +115,14 @@ class MegaSubCableTV{
            return [
                'status' => 1,
                'address' => isset($response_decode['Detail']['customer_address']) ? $response_decode['Detail']['customer_address']  :  'Address not found',
-               'name' => isset($response_decode['Detail']['customer_name']) ? $response_decode['Detail']['customer_name']  :  'Defaulted to: '.$user_details->first_name.' '.$user_details->last_name,
+               'name' => isset($response_decode['Detail']['customer_name']) ? $response_decode['Detail']['customer_name']  :  'Defaulted to: '.auth()->user()->first_name.' '.auth()->user()->last_name,
            ];
        }else{
             
             return [
                 'status' => 1,
                 'address' =>  'Address not found1',
-                'name' => 'Defaulted to: '.$user_details->first_name.' '.$user_details->last_name,
+                'name' => 'Defaulted to: '.auth()->user()->first_name.' '.auth()->user()->last_name,
            ];
        }
 
@@ -175,8 +166,6 @@ class MegaSubCableTV{
         ));
 
         $response = curl_exec($curl);
-
-        logger($response);
 
         curl_close($curl);
     

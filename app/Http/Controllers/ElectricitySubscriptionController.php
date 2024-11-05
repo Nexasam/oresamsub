@@ -212,9 +212,10 @@ class ElectricitySubscriptionController extends Controller
             ];
         }
 
+        $user_id = auth()->id();
         $automation_slug = $plan_details->automation->slug;
         if($automation_slug == 'megasubplug'){
-            $validate_metre_number = (new MegaSubElectricity(metre_number: $request->smart_card_number, plan_id: $request->plan_id))->validateMetreNumber();
+            $validate_metre_number = (new MegaSubElectricity(metre_number: $request->smart_card_number, plan_id: $request->plan_id, user_id: $user_id))->validateMetreNumber();
             return $validate_metre_number;
       
         }

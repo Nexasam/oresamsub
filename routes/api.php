@@ -29,6 +29,8 @@ Route::middleware('auth:sanctum')->get('/mobile_transactions', [MobileApiControl
 
 Route::middleware('auth:sanctum')->post('/mobile_auth_check', [MobileApiController::class, 'mobile_auth_check'])->name('api.mobile_auth_check');
 
+Route::prefix('v1')->group(base_path('routes/api_vendor_users.php'));
+
 // Route::post('/api_authenticate', function (Request $request) {
 //   return $request->all();
 // })->middleware('auth:sanctum');

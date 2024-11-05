@@ -105,18 +105,6 @@ class   ProductsService{
         $days_count = $data['days_count'] ;
         $user_id = $data['user_id'] ?? NULL; // null should not happen
 
-        // for($i=0; $i < count($days_count); $i++){
-        //     $start_date =  date('Y-m-d', strtotime('-'.$days_count[$i].' days'));
-
-        //     $array[] = $start_date;
-
-        // }
-        
-        // return [
-        //     'status' => -1,
-        //     'message' => $array
-        // ];
-
         for($i=0; $i < count($days_count); $i++){
             if($days_count[$i] == 1){
                 $start_date = date('Y-m-d');
