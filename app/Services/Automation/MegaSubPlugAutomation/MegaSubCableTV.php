@@ -90,8 +90,9 @@ class MegaSubCableTV{
             ];
         }
 
-        $this->cable_plan_api_id = $this->getProviderApiID($plan_details->product_plan_category->product_plan_category_name);
-        $smart_card_number = $this->smart_card_number;
+           // $this->cable_plan_api_id = $this->getProviderApiID($plan_details->product_plan_category->product_plan_category_name);
+           $this->cable_plan_api_id = $plan_details->automation_product_plan_id;
+           $smart_card_number = $this->smart_card_number;
         
         $curl = curl_init();
 
