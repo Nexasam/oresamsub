@@ -90,9 +90,13 @@ class MegaSubCableTV{
             ];
         }
 
-           // $this->cable_plan_api_id = $this->getProviderApiID($plan_details->product_plan_category->product_plan_category_name);
-           $this->cable_plan_api_id = $plan_details->automation_product_plan_id;
-           $smart_card_number = $this->smart_card_number;
+            $this->cable_plan_api_id = $this->getProviderApiID($plan_details->product_plan_category->product_plan_category_name);
+            //    $this->cable_plan_api_id = $plan_details->automation_product_plan_id;
+            //    $this->cable_plan_api_id = 9;
+            //    logger('cable plan id: '.$this->cable_plan_api_id);
+            //    logger('name display:'. $plan_details->product_plan_category->product_plan_category_name );
+            $smart_card_number = $this->smart_card_number;
+            //    logger("Smartcard no:$smart_card_number");
         
         $curl = curl_init();
 
@@ -107,13 +111,14 @@ class MegaSubCableTV{
         CURLOPT_CUSTOMREQUEST => 'GET',
         CURLOPT_HTTPHEADER => array(
             'Password: '.$this->api_password,
-            'Authorization: '.$this->api_key
+            'Authorization: '.$this->api_key,
+            'Cookie: PHPSESSID=j9408e536n6vurmrla0omj4hob'
         ),
         ));
 
         $response = curl_exec($curl);
 
-        // logger($response);
+        logger($response);
 
         curl_close($curl);
 

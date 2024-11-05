@@ -29,7 +29,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    {{-- <link rel="icon" type="image/x-icon" href="favicon.ico"> --}}
 
     <!-- Bootstrap CSS -->
     {{-- <link rel="stylesheet" href="css/bootstrap.min.css">
@@ -44,7 +44,7 @@
     <link rel="stylesheet" href="https://cdn.datatables.net/2.0.8/css/dataTables.dataTables.min.css">
 
 
-    <title>{{ $site_title }}</title>
+    <title>{{ $site_title }} ppp</title>
 
     @php
        $hero1 = isset($hero_image1) ? env('APP_URL').'assets/landing_page_assets/img/hero_image1/'.$hero_image1 : env('APP_URL').'assets/landing_page_assets/img/bg_banner1.jpg';
