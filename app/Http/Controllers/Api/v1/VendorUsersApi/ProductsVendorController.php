@@ -19,7 +19,7 @@ use App\Services\Automation\MegaSubPlugAutomation\MegaSubElectricity;
 // use App\Http\Services\Api\v1\VendorUsersApi\Products\ProductsService;
 // use App\Services\Api\Automation\MegaSubPlugAutomation\MegaSubCableTV;
 
-class ProductsController extends Controller
+class ProductsVendorController extends Controller
 {
  
     use JsonResponseWrapper;
