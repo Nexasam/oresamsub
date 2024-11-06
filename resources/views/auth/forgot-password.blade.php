@@ -111,7 +111,8 @@
                                 <hr>
                                 <h3 class="block mt-2 text-xl text-gray-800 dark:text-white">Password Reset</h3>
                                 <p class="mt-3 text-sm text-gray-600 dark:text-white/70">
-                                    Forgot your password? No problem. Just let us know your email address and we will email you a password reset link that will allow you to choose a new one.
+                                    Forgot your password? No problem. Just let us know your email address and we will email you a password reset link that will allow you to choose a new one. <br>
+                                    Please check your spam folder too in case you dont find the email notification sent to you in your inbox.
                                 </p>
                             </div>
 
