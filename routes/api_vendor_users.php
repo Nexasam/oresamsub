@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Api\V1\VendorUsersApi\ProductsVendorController;
+use App\Http\Controllers\Api\v1\VendorUsersApi\ProductsVendorController;
 
 
 // middleware('auth:sanctum')
