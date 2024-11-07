@@ -65,7 +65,8 @@
                             <b>API Key:</b>
                             <p style="color: red">PLEASE PROTECT THIS KEY AND SHARE ONLY WITH A TRUSTED PERSON</p>
                             <br>
-                            <textarea name="" id="" cols="50" rows="5">{{ auth()->user()->api_token  }}</textarea>
+                            <textarea id="myInput" name=""  cols="50" rows="5">{{ auth()->user()->api_token  }}</textarea>
+                            <a class="ti-btn ti-btn-info w-1/4" href="#" onclick="copyToClipboard()"><span id="copyText">Copy Api Key</span></a>
                         </div>
                         <hr>
                         <div>
