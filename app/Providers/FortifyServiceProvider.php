@@ -84,6 +84,7 @@ class FortifyServiceProvider extends ServiceProvider
                 return view('auth.reset-password');
             });
 
+            $data = [];
             $site_images_data = SiteImage::get();
             
             if(count($site_images_data) > 0){
