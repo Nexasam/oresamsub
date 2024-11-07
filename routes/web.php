@@ -189,6 +189,7 @@ Route::middleware(['auth','verified','admin'])->get('admin/toggle_product_public
 
 Route::middleware(['auth','verified','admin'])->get('admin/product_categories', [ProductCategoryController::class, 'index'])->name('admin.product_categories.index');
 
+Route::middleware(['auth','verified','admin'])->get('admin/settings/remove_logo', [AdminSettingsController::class, 'remove_logo'])->name('admin.settings.remove_logo');
 Route::middleware(['auth','verified','admin'])->get('admin/settings', [AdminSettingsController::class, 'index'])->name('admin.settings.index');
 Route::middleware(['auth','verified','admin'])->post('admin/update_webhook_suffix_string', [AdminSettingsController::class, 'update_webhook_suffix_string'])->name('admin.settings.update_webhook_suffix_string');
 Route::middleware(['auth','verified','admin'])->post('admin/manage_automations_keys', [AdminSettingsController::class, 'manage_automations_keys'])->name('admin.settings.manage_automations_keys');

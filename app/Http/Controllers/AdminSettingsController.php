@@ -124,6 +124,11 @@ class AdminSettingsController extends Controller
         return view('admin.settings.index')->with($data);
     }
 
+    public function remove_logo(){
+      $current_image = SiteImage::where('image_category','site_logo')->delete();
+      Session::flash('success','Site logo successfully removed... You can readd again');
+      return redirect()->back();
+    }
     public function update_user_authentication_dashboard(Request $request){
       $validator = Validator::make($request->all(), [
         'users_redirect_after_authentication' => 'required'

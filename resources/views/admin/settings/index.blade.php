@@ -389,20 +389,23 @@
                     </div>
                     <div id="pills-with-brand-color-3" class="hidden" role="tabpanel" aria-labelledby="pills-with-brand-color-item-3">
                       <div class="overflow-auto">
+                        @if (isset($site_logo))
+                        {{-- hidden dark:block --}}
+                         <img src="{{ env('APP_URL').'assets/landing_page_assets/img/site_logo/'.$site_logo }}" alt="logo"
+                         class="w-20 h-20 " alt="logo" class=""> 
+                         <a href="{{ route('admin.settings.remove_logo') }}" style="color: red">remove image</a>
+                       @else
+                           No logo upload found.
+                           <br>  
+                       @endif
                         <form enctype="multipart/form-data" method="POST" action="{{ route('admin.settings.manage_site_logo')  }}">
                           @csrf
                           <div class="grid w-full lg:w-1/2 lg:grid-cols-1 gap-6 space-y-4 lg:space-y-0">
                               <div class="space-y-2 mt-5">
-                                @if (isset($site_logo))
-                                 {{-- hidden dark:block --}}
-                                  <img src="{{ env('APP_URL').'assets/landing_page_assets/img/site_logo/'.$site_logo }}" alt="logo"
-                                  class="w-20 h-20 " alt="logo" class=""> 
-                                @else
-                                    No logo upload found.
-                                    <br>  
-                                @endif
-                           
-                                <label class="ti-form-label mb-0">Update site logo (ONLY PNG) </label>
+                              
+              
+                                <b>Please ensure the logo is a square dimension to display perfectly on the site</b>
+                                <label class="ti-form-label mb-0">Update site logo (ONLY PNG)  </label>
                                 <input type="file" required class="my-auto ti-form-input" name="site_logo" max="100" placeholder="update site logo">
                               </div>
 
