@@ -339,7 +339,7 @@
                      <!-- Start::slide -->
                     <li class="slide  has-sub">
                         <a href="{{ route('user.api.docs')}}" class="side-menu__item">
-                            <i class="ti ti-report-money  side-menu__icon"></i>
+                            <i class="ti ti-briefcase  side-menu__icon"></i>
                             <span class="side-menu__label">API Docs</span>
                             <i class="ri ri-arrow-right-s-line side-menu__angle"></i>
                         </a>
