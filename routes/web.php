@@ -51,6 +51,8 @@ Route::get('/', function () {
             $data[$site_image->image_category] = $site_image->image_name;
         }
     }
+
+    // dd($data);
    
 
 
@@ -58,6 +60,8 @@ Route::get('/', function () {
     foreach($landing_data as $landing_component){
         $data[$landing_component->field_name] = $landing_component->field_details;
     }
+
+   
 
     $site_colors = AdminColorSetting::get();
     foreach($site_colors as $site_color){

@@ -49,6 +49,7 @@
     @php
        $hero1 = isset($hero_image1) ? env('APP_URL').'assets/landing_page_assets/img/hero_image1/'.$hero_image1 : env('APP_URL').'assets/landing_page_assets/img/bg_banner1.jpg';
        $hero2 = isset($hero_image1) ? env('APP_URL').'assets/landing_page_assets/img/hero_image2/'.$hero_image2 : env('APP_URL').'assets/landing_page_assets/img/bg_banner2.jpg';
+       $logo = isset($site_logo) ? env('APP_URL').'assets/landing_page_assets/img/site_logo/'.$site_logo : 'nil';
        
     @endphp
 
@@ -190,7 +191,12 @@
     <!-- BOTTOM NAV -->
     <nav class="navbar navbar-expand-lg navbar-light bg-white sticky-top">
         <div class="container">
-            <a class="navbar-brand" href="#">{{ $site_logo_alt }}<span class="dot">.</span></a>
+            {{-- {{ $logo }} --}}
+            @if ($logo != 'nil')
+                <img src="{{ $logo }}" style="max-height: 90px; max-width: 90px;" alt="">
+            @else
+               <a class="navbar-brand" href="#">{{ $site_logo_alt }}<span class="dot">.</span></a>             
+            @endif
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
                 aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>

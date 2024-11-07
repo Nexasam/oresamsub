@@ -2,12 +2,13 @@
 
 namespace App\Http\Controllers\Auth;
 
-use App\Http\Controllers\Controller;
-use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Validation\ValidationException;
+use App\Models\SiteImage;
 use Illuminate\View\View;
+use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Validation\ValidationException;
 
 class ConfirmablePasswordController extends Controller
 {
@@ -16,7 +17,14 @@ class ConfirmablePasswordController extends Controller
      */
     public function show(): View
     {
-        return view('auth.confirm-password');
+        $site_images_data = SiteImage::get();
+        $data = [];
+        if(count($site_images_data) > 0){
+            foreach($site_images_data as $site_image){
+                $data[$site_image->image_category] = $site_image->image_name;
+            }
+        }
+        return view('auth.confirm-password')->with($data);
     }
 
     /**

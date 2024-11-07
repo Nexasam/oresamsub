@@ -2,15 +2,16 @@
 
 namespace App\Http\Controllers\Auth;
 
-use App\Http\Controllers\Controller;
-use Illuminate\Auth\Events\PasswordReset;
-use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Password;
-use Illuminate\Support\Str;
-use Illuminate\Validation\Rules;
+use App\Models\SiteImage;
 use Illuminate\View\View;
+use Illuminate\Support\Str;
+use Illuminate\Http\Request;
+use Illuminate\Validation\Rules;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Password;
+use Illuminate\Auth\Events\PasswordReset;
 
 class NewPasswordController extends Controller
 {
@@ -19,7 +20,15 @@ class NewPasswordController extends Controller
      */
     public function create(Request $request): View
     {
-        return view('auth.reset-password', ['request' => $request]);
+        $site_images_data = SiteImage::get();
+       $data = [];
+        if(count($site_images_data) > 0){
+            foreach($site_images_data as $site_image){
+                $data[$site_image->image_category] = $site_image->image_name;
+            }
+        }
+        // return view('auth.confirm-password')->with($data);
+        return view('auth.reset-password', ['request' => $request])->with($data);
     }
 
     /**

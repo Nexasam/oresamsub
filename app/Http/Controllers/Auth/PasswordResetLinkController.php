@@ -2,11 +2,12 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Models\SiteImage;
+use Illuminate\View\View;
+use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Password;
-use Illuminate\View\View;
 
 class PasswordResetLinkController extends Controller
 {
@@ -15,7 +16,15 @@ class PasswordResetLinkController extends Controller
      */
     public function create(): View
     {
-        return view('auth.forgot-password');
+        // dd('ssss');
+        $site_images_data = SiteImage::get();
+       $data = [];
+      if(count($site_images_data) > 0){
+            foreach($site_images_data as $site_image){
+                $data[$site_image->image_category] = $site_image->image_name;
+            }
+        }
+        return view('auth.forgot-password')->with($data);
     }
 
     /**

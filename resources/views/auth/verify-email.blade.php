@@ -118,16 +118,19 @@
                     </a> --}}
                     <div class="mt-7">
                         <div class="p-4 sm:p-7">
-                            <a href="#" class="header-logo">
-                                {{-- <img src="{{ asset(env('APP_ASSETS_BASE_URL').'img/logos/logo.png') }}" alt="logo"
-                                class="w-20 h-20 mx-auto block dark:hidden" alt="logo" class=""> --}}
-                                {{-- <img src="../../assets/img/logos/{{  $logo }}" alt="logo"
-                                class="w-20 h-20 mx-auto hidden dark:block" alt="logo" class=""> --}}
+                            @if (  isset($site_logo) && $site_logo != '')
+                    
+                            <a href="#" class="header-logo ">
+                                <img style="background-size: contain;" src="{{ env('APP_URL').'assets/landing_page_assets/img/site_logo/'.$site_logo }}" alt="logo"
+                                class="w-24 h-24 mx-auto  block dark:hidden" > 
+                                <img src="{{ env('APP_URL').'assets/landing_page_assets/img/site_logo/'.$site_logo }}" alt="logo"
+                                    class="w-24 h-24 mx-auto hidden dark:block" alt="logo" class=""> 
                                 {{-- <img src="../assets/img/brand-logos/desktop-dark.png" alt="logo" class="mx-auto hidden dark:block"> --}}
                             </a>
-                             {{-- <br>
+                            <br>
                             <hr>
-                            <br> --}}
+                            <br>
+                            @endif
 
                             <div class="text-center">
                                 @if (session('status') == 'verification-link-sent')
@@ -135,8 +138,12 @@
                                     {{ __('A new verification link has been sent to the email address you provided during registration.') }}
                                 </div>
                                 @endif
-                                <h1 class="block text-2xl font-bold text-gray-800 dark:text-white">{{ env('APP_NAME') }}</h1>
-                                <hr>
+                                
+                                @if ( ! isset($site_logo) )
+                                    <h1 class="block text-2xl font-bold text-gray-800 dark:text-white">{{ env('APP_NAME') }}</h1>
+                                    <hr>
+                                @endif
+                                
                                 <h3 class="block mt-2 text-xl text-gray-800 dark:text-white">Email Verification</h3>
                                 <p class="mt-3 text-sm text-gray-600 dark:text-white/70">
                                     Thanks for your interest in our platform! <br> Before getting started, could you verify your email address by clicking on the link we just emailed to you? If you didn't receive the email, we will gladly send you another. <br>

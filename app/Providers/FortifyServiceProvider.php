@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use App\Models\User;
 use App\Models\Setting;
+use App\Models\SiteImage;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Laravel\Fortify\Fortify;
@@ -83,8 +84,15 @@ class FortifyServiceProvider extends ServiceProvider
                 return view('auth.reset-password');
             });
 
-            Fortify::twoFactorChallengeView(function () {
-            return view('auth.two-factor-challenge');
+            $site_images_data = SiteImage::get();
+            
+            if(count($site_images_data) > 0){
+                foreach($site_images_data as $site_image){
+                    $data[$site_image->image_category] = $site_image->image_name;
+                }
+            }
+            Fortify::twoFactorChallengeView(function () use ($data) {
+            return view('auth.two-factor-challenge')->with($data);
         });
 
 

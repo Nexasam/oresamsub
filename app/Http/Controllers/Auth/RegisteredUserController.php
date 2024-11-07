@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\Models\Role;
 use App\Models\User;
 use App\Models\UserPlan;
+use App\Models\SiteImage;
 use Illuminate\View\View;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rules;
@@ -27,10 +28,18 @@ class RegisteredUserController extends Controller
     public function create(): View
     {
         // dd('sss');
-        $landing_data = LandingPagesSetting::get();
-        foreach($landing_data as $landing_component){
-            $data[$landing_component->field_name] = $landing_component->field_details;
+        $data = [];
+        $landing_data = LandingPagesSetting::where('field_name','support_whatsapp_number')->first();
+        $data[$landing_data->field_name] = $landing_data->field_details;
+        
+
+        $site_images_data = SiteImage::get();
+        if(count($site_images_data) > 0){
+            foreach($site_images_data as $site_image){
+                $data[$site_image->image_category] = $site_image->image_name;
+            }
         }
+        // dd($data);
         return view('auth.register')->with($data);
     }
 

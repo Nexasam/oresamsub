@@ -23,6 +23,13 @@ class AdminSettingsController extends Controller
 {
     public function index(){
        
+      $site_images_data = SiteImage::get();
+      if(count($site_images_data) > 0){
+          foreach($site_images_data as $site_image){
+              $data[$site_image->image_category] = $site_image->image_name;
+          }
+      }
+      // dd($data);
       
         $settings = Setting::get();
         if(count($settings) > 0){
@@ -285,32 +292,41 @@ class AdminSettingsController extends Controller
     }
 
     public function manage_site_logo(Request $request){
-      $validator = Validator::make($request->all(), [
-        'site_logo' => 'required|image|mimes:png|max:2048',
-      ]);
+            $validator = Validator::make($request->all(), [
+              'site_logo' => 'required|image|mimes:png|max:8048',
+            ]);
 
-      if ($validator->stopOnFirstFailure()->fails()) {
-        return redirect()->back()->withErrors($validator)->withInput();
-      }
-      
-      $logo = 'logo.'.$request->site_logo->extension();
-      $checkupload = $request->site_logo->move(public_path('assets/img/logos'), $logo);
-      if($checkupload){
-        $general_setting = AdminGeneralSetting::first();
-        if($general_setting == NULL){
-          //insert
-          AdminGeneralSetting::create([
-            'site_logo_path' => $logo
-          ]);
-        }else{
-          //update
-          $general_setting->update([
-            'site_logo_path' => $logo
-          ]);
-        }
-        Session::flash('success','Site logo successfully updated');
-        return redirect()->back();
-      }
+            if ($validator->stopOnFirstFailure()->fails()) {
+              return redirect()->back()->withErrors($validator)->withInput();
+            }
+
+            if(! $request->hasFile('site_logo')){
+              Session::flash('failure','Site logo was not found');
+              return redirect()->back();
+            }
+
+        
+          //first cleanup directory
+          $current_image = SiteImage::where('image_category','site_logo')->first();
+          if($current_image){
+            @unlink(public_path('assets/landing_page_assets/img/site_logo/'.$current_image->image_name));              
+          }
+
+          $site_logoo = 'site_logo_'.time().'.'.$request->site_logo->extension();
+          $checkupload = $request->site_logo->move(public_path('assets/landing_page_assets/img/site_logo'), $site_logoo);
+          if($checkupload){
+            SiteImage::updateOrCreate([
+              'image_category' => 'site_logo'
+              ],[
+              'image_name' => $site_logoo
+            ]);
+          }else{
+            Session::flash('failure','Site logo upload could not be completed... Check logo to upload');
+            return redirect()->back();
+          }
+              
+          Session::flash('success','Site logo successfully updated');
+          return redirect()->back();
     }
 
     public function manage_global_user_2fa(Request $request){

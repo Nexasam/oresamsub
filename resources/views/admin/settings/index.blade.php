@@ -393,6 +393,15 @@
                           @csrf
                           <div class="grid w-full lg:w-1/2 lg:grid-cols-1 gap-6 space-y-4 lg:space-y-0">
                               <div class="space-y-2 mt-5">
+                                @if (isset($site_logo))
+                                 {{-- hidden dark:block --}}
+                                  <img src="{{ env('APP_URL').'assets/landing_page_assets/img/site_logo/'.$site_logo }}" alt="logo"
+                                  class="w-20 h-20 " alt="logo" class=""> 
+                                @else
+                                    No logo upload found.
+                                    <br>  
+                                @endif
+                           
                                 <label class="ti-form-label mb-0">Update site logo (ONLY PNG) </label>
                                 <input type="file" required class="my-auto ti-form-input" name="site_logo" max="100" placeholder="update site logo">
                               </div>
@@ -412,12 +421,28 @@
                           @csrf
                           <div class="grid w-full lg:w-1/2 lg:grid-cols-1 gap-6 space-y-4 lg:space-y-0">
                               <div class="space-y-2 mt-5">
+                                @if (isset($hero_image1))
+                                  {{-- hidden dark:block --}}
+                                  <img src="{{ env('APP_URL').'assets/landing_page_assets/img/hero_image1/'.$hero_image1 }}" alt="logo"
+                                  class="w-20 h-20 " alt="logo" class=""> 
+                                @else
+                                    No upload found.
+                                    <br>  
+                                @endif
                                 <label class="ti-form-label mb-0">Update Slider Image 1</label>
                                 <input type="file"  class="my-auto ti-form-input" name="hero_image1" max="100" placeholder="update hero image">
                               </div>
                           </div>
                           <div class="grid w-full lg:w-1/2 lg:grid-cols-1 gap-6 space-y-4 lg:space-y-0">
                             <div class="space-y-2 mt-5">
+                              @if (isset($hero_image2))
+                                {{-- hidden dark:block --}}
+                                <img src="{{ env('APP_URL').'assets/landing_page_assets/img/hero_image2/'.$hero_image2 }}" alt="logo"
+                                class="w-20 h-20 " alt="logo" class=""> 
+                              @else
+                                  No upload found.
+                                  <br>  
+                              @endif
                               <label class="ti-form-label mb-0">Update Slider Image 2</label>
                               <input type="file"  class="my-auto ti-form-input" name="hero_image2" max="100" placeholder="update hero image">
                             </div>
