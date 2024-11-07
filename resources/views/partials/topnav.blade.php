@@ -12,13 +12,21 @@
           <!-- End Navigation Toggle -->
         </div>
 
+        @php
+        $site_logo =  App\Models\SiteImage::where('image_category','site_logo')->first();   
+       @endphp
+
         <div class="responsive-logo">
-          {{-- <a class="responsive-logo-dark" href="index.html" aria-label="Brand"><img
-              src="{{ asset(env('APP_ASSETS_BASE_URL').'img/logos/logo.png') }}" height="50" width="60" alt="logo" class="mx-auto"></a>
-          <a class="responsive-logo-light" href="index.html" aria-label="Brand"><img
-              src="{{ asset(env('APP_ASSETS_BASE_URL').'img/logos/logo.png') }}" height="50" width="60"  alt="logo" class="mx-auto"></a> --}}
-              <h1 class="block text-2xl font-bold text-gray-800 dark:text-white">{{ env('APP_NAME') }}</h1>
-              
+          @if ($site_logo)
+              <a class="responsive-logo-dark" href="#" aria-label="{{env('APP_NAME')}}"><img
+              src="{{ env('APP_URL').'assets/landing_page_assets/img/site_logo/'.$site_logo->image_name }}" height="50" width="60" alt="logo" class="mx-auto"></a>
+              <a class="responsive-logo-light" href="#" aria-label="{{env('APP_NAME')}}"><img
+              src="{{ env('APP_URL').'assets/landing_page_assets/img/site_logo/'.$site_logo->image_name }}" height="50" width="60"  alt="logo" class="mx-auto"></a>
+          @endif
+
+          @if (! $site_logo)
+           <h1 class="block text-2xl font-bold text-gray-800 dark:text-white">{{ env('APP_NAME') }}</h1>
+          @endif
         </div>
 
         <div class="header-right">

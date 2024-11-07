@@ -4,10 +4,11 @@
     style="background-color: {{ 'blue'  }}; --}}
     <!-- Start::main-sidebar-header -->
     @php
-       $sidebar_color =  App\Models\AdminColorSetting::where('color_name','site_admin_sidebar_color')->first();   
+       $sidebar_color =  App\Models\AdminColorSetting::where('color_name','site_admin_sidebar_color')->first(); 
+       $site_logo =  App\Models\SiteImage::where('image_category','site_logo')->first();   
     @endphp
     <div class="main-sidebar-header " style="background-color: {{ $sidebar_color != NULL && $sidebar_color->color_name != '#000000' ? $sidebar_color->color_value: ''  }} ;">
-        <a href="#" class="header-logo mt-3 mb-20">
+        <a href="#" class="header-logo mt-3 mb-20" >
             {{-- <img src="../assets/img/brand-logos/desktop-logo.png" alt="logo" class="main-logo desktop-logo">
             <img src="../assets/img/brand-logos/toggle-logo.png" alt="logo" class="main-logo toggle-logo">
             <img src="../assets/img/brand-logos/desktop-dark.png" alt="logo" class="main-logo desktop-dark">
@@ -15,7 +16,19 @@
             {{-- <img src="{{ asset( env('APP_ASSETS_BASE_URL').'img/logos/logo.png') }}" alt="logo"
             class="w-14 h-16 mx-auto block dark:hidden" > --}}
 
-            <h1 class="block text-2xl font-bold text-white dark:text-white">{{ env('APP_NAME') }}</h1>
+            @if ($site_logo)
+            <img style="max-height: 70px; max-width:75px;" src="{{ env('APP_URL').'assets/landing_page_assets/img/site_logo/'.$site_logo->image_name }}" alt="logo" class="main-logo desktop-logo">
+            <img style="max-height: 70px; max-width:75px;" src="{{ env('APP_URL').'assets/landing_page_assets/img/site_logo/'.$site_logo->image_name }}" alt="logo" class="main-logo toggle-logo">
+            <img style="max-height: 70px; max-width:75px;" src="{{ env('APP_URL').'assets/landing_page_assets/img/site_logo/'.$site_logo->image_name }}" alt="logo" class="main-logo desktop-dark">
+            <img style="max-height: 70px; max-width:75px;" src="{{ env('APP_URL').'assets/landing_page_assets/img/site_logo/'.$site_logo->image_name }}" alt="logo" class="main-logo toggle-dark">
+            {{-- <img src="{{ env('APP_URL').'assets/landing_page_assets/img/site_logo/'.$site_logo->image_name }}" alt="logo" --}}
+            {{-- class="w-14 h-16 mx-auto block dark:hidden" > --}}
+            @endif
+
+            @if (! $site_logo)
+            <h1 class="block text-2xl font-bold text-white dark:text-white">{{ env('APP_NAME') }}</h1>                
+            @endif
+
             
           
 
