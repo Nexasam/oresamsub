@@ -335,7 +335,7 @@
                   </li>
                 <!-- End::slide -->
 
-                @if (env('APP_NAME') == 'FoxDataHub' || env('APP_NAME') == 'OresamSub'))
+                @if (env('APP_NAME') == 'FoxDataHub' || env('APP_NAME') == 'OresamSub')
                      <!-- Start::slide -->
                     <li class="slide  has-sub">
                         <a href="{{ route('user.api.docs')}}" class="side-menu__item">
