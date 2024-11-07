@@ -48,6 +48,10 @@ class UsersController extends Controller
         return view('admin.users.index')->with($data);
     }
 
+    public function api_docs(){
+      return view('user.api_docs.index');
+    }
+
 
     public function generate_user_bulk_data_wallets(){
         $product_plan_categories = ProductPlanCategory::with(['product' => function($query){

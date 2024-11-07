@@ -248,7 +248,7 @@
                 {{-- ///USER PAGES HERE --}}
                 
 
-                   <!-- Start::slide -->
+                <!-- Start::slide -->
                  <li class="slide  has-sub">
                     <a href="{{ route('user.wallet.index')}}" class="side-menu__item">
                         <i class="ti ti-report-money  side-menu__icon"></i>
@@ -260,6 +260,9 @@
                     </ul>
                   </li>
                 <!-- End::slide -->
+
+
+                
 
                 <!-- Start::slide -->
                  <li class="slide  has-sub mt-10">
@@ -331,6 +334,22 @@
                     </ul>
                   </li>
                 <!-- End::slide -->
+
+                @if (env('APP_NAME') == 'FoxDataHub' || env('APP_NAME') == 'OresamSub'))
+                     <!-- Start::slide -->
+                    <li class="slide  has-sub">
+                        <a href="{{ route('user.api.docs')}}" class="side-menu__item">
+                            <i class="ti ti-report-money  side-menu__icon"></i>
+                            <span class="side-menu__label">API Docs</span>
+                            <i class="ri ri-arrow-right-s-line side-menu__angle"></i>
+                        </a>
+                        <ul class="slide-menu child1">
+                            {{-- <li class="slide"><a href="#" class="side-menu__item">View Networks</a></li> --}}
+                        </ul>
+                    </li>
+                    <!-- End::slide -->  
+                @endif
+             
 
                  <!-- Start::slide: for users -->
                  <li class="slide  has-sub">
