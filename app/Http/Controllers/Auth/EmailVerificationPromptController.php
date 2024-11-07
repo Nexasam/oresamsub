@@ -16,6 +16,7 @@ class EmailVerificationPromptController extends Controller
      */
     public function __invoke(Request $request): RedirectResponse|View
     {
+        $data = [];
         $landing_data = LandingPagesSetting::get();
         foreach($landing_data as $landing_component){
             $data[$landing_component->field_name] = $landing_component->field_details;
@@ -23,7 +24,7 @@ class EmailVerificationPromptController extends Controller
 
         $site_images_data = SiteImage::get();
             
-       $data = [];
+     
        if(count($site_images_data) > 0){
             foreach($site_images_data as $site_image){
                 $data[$site_image->image_category] = $site_image->image_name;
