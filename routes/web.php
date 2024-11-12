@@ -208,6 +208,7 @@ Route::middleware(['auth','verified','admin'])->post('admin/settings/update_user
 Route::middleware(['auth','verified','admin'])->get('admin/profile/index', [UsersController::class, 'admin_manage_profile'])->name('admin.manage_profile.index');
 
 
+
 Route::middleware(['auth','verified','admin'])->get('admin/wallet_creditings/index', [WalletsController::class, 'wallet_creditings'])->name('admin.wallet_creditings.index');
 Route::middleware(['auth','verified','admin'])->get('admin/wallet/crediting_details/{id}', [WalletsController::class, 'wallet_crediting_details'])->name('admin.wallet.crediting_details');
 Route::middleware(['auth','verified','admin'])->post('admin/wallet/complete_pending_wallet_crediting/', [WalletsController::class, 'complete_pending_wallet_crediting'])->name('admin.wallet.complete_pending_wallet_crediting');
@@ -273,7 +274,9 @@ Route::middleware(['auth','verified','user'])->get('user/data/fetch_product_plan
 Route::middleware(['auth','verified','user'])->get('user/generate_dynamic_account', [CrystalPayController::class, 'generate_dynamic_account'])->name('user.crystalpay.generate_dynamic_account');
 Route::middleware(['auth','verified','user'])->post('user/generate_virtual_account', [CrystalPayController::class, 'generate_virtual_account'])->name('user.crystalpay.generate_virtual_account');
 
-
+Route::middleware(['auth','verified','user'])->get('user/monnify_verifications', [WalletsController::class, 'monnify_verifications'])->name('user.wallet.monnify.verifications');
+Route::middleware(['auth','verified','user'])->post('user/verify_monnify_account_via_bvn', [WalletsController::class, 'verify_monnify_account_via_bvn'])->name('user.wallets.verify_monnify_account_via_bvn');
+Route::middleware(['auth','verified','user'])->post('user/generate_monnify_virtual_accounts', [WalletsController::class, 'generate_monnify_virtual_accounts'])->name('user.wallets.generate_monnify_virtual_accounts');
 Route::middleware(['auth','verified','user'])->get('user/wallet/index', [WalletsController::class, 'index'])->name('user.wallet.index');
 Route::middleware(['auth','verified','user'])->get('user/wallet/fund_wallet', [WalletsController::class, 'fund_wallet'])->name('user.wallet.fund_wallet');
 Route::middleware(['auth','verified','user'])->post('user/wallet/generate_virtual_account', [WalletsController::class, 'generate_virtual_account'])->name('user.wallet.generate_virtual_account');

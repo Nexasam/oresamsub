@@ -110,6 +110,9 @@ class RegisteredUserController extends Controller
         $data['user_plan_id'] = $default_reseller_plan->id;
         $data['password'] = Hash::make($request->password);
         // $data['confirm_password'] = Hash::make($request->confirm_password);
+        if(env('APP_NAME') == 'OresamSub'){
+            $data['email_verified_at'] = date('Y-m-d H:i:s');
+        }
 
         $user = User::create($data);
 

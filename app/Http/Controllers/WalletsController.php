@@ -15,11 +15,33 @@ use Illuminate\Support\Facades\DB;
 use App\Models\LandingPagesSetting;
 use App\Models\FundingWebhookPayload;
 use Illuminate\Support\Facades\Session;
+use App\Models\UserMonnifyVirtualAccount;
 use Illuminate\Support\Facades\Validator;
 use App\Models\MaxCrystalPaymentsPendingApproval;
 
 class WalletsController extends Controller
 {
+
+
+    //TODO .... let it from from DB
+    private $monnify_api_key = 'TUtfVEVTVF9QQlFQWUw0VFNDOlpIOFFLRkpYTEo3WFlaVDNFOTNGVDY3Qk04UUVSR1pC';
+    private $contract_code = '8553974224'; 
+    private $base_url = 'https://sandbox.monnify.com/api/'; 
+
+    //test
+    
+    // private $monnify_api_key_test = 'MK_TEST_1F28BSYQ1M';
+
+    // private $monnify_secret_key = 'EB3LNDJHVZDSUX8U4RL8L58RBV7RT472';
+
+    // private $monnify_webhook = 'https://sandbox.monnify.com';
+
+    // private $monnify_platform_wallet = '2942822539';
+
+    // private $monnify_contract_code = '0034137369';
+
+    //MK_PROD_MQMBKENYJD,  7VY7ZWS45SHTMZA98MP1K1QS20CRVSZV, https://api.monnify.com, 8020165710, 339854561147
+
 
     public function webhook($id,Request $request){
        
@@ -179,6 +201,618 @@ class WalletsController extends Controller
     public function wallet_creditings(Request $request){
       // dd('sss');
       return view('admin.wallets_creditings.index');
+    }
+
+    public function authenticate_with_monnify(){     
+      $curl = curl_init();
+      curl_setopt_array($curl, array(
+      CURLOPT_URL => $this->base_url.'v1/auth/login',
+      CURLOPT_RETURNTRANSFER => true,
+      CURLOPT_ENCODING => '',
+      CURLOPT_MAXREDIRS => 10,
+      CURLOPT_TIMEOUT => 0,
+      CURLOPT_FOLLOWLOCATION => true,
+      CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+      CURLOPT_CUSTOMREQUEST => 'POST',
+      CURLOPT_HTTPHEADER => array(
+      'Accept: application/json',
+      'Content-Type: application/json',
+      'Authorization: Basic '.$this->monnify_api_key
+      ),
+      ));
+      $response = curl_exec($curl);
+      curl_close($curl);
+      $response_dec = json_decode($response,true);
+      logger('Monnify Auth: '.$response);
+
+      if( isset($response_dec['requestSuccessful'])
+      && $response_dec['requestSuccessful'] 
+      && isset($response_dec['responseMessage'])
+      && $response_dec['responseMessage'] == 'success'  ){
+          return [
+              'status' => 1,
+              'message' => $response_dec['responseBody']['accessToken']
+          ];
+      }
+
+      return [
+          'status' => -1,
+          'message' => $response_dec['responseMessage']
+      ];
+      // dd($response);
+    }
+
+
+    public function ninVerification($nin,$nin_fullname,$user_id,$vendor_id,$registered_phone,$nin_phone_number){
+      DB::beginTransaction();
+
+      try{
+          $authenticate = $this->authenticate($vendor_id,$user_id);
+
+         
+          $nin_phone_number_arr = [];
+
+          if( $authenticate['status'] == 1){
+              $token = $authenticate['token']; 
+
+              $curl = curl_init();
+
+              //before calling verification endpoint, check if its been called before:
+              $user_details = User::where('user_id',$user_id)->first();
+              if(! $user_details){
+                  logger('Nin verification: User not found: userid: '. $user_id);
+                  return [
+                      'status' => -1,
+                      'nin'  => $nin,
+                      'message'  => 'User not found',
+                  ];
+              }
+
+              $vendor_details = Vendor::where('vendor_id', $vendor_id)->first();
+              $nin_verification_fee = $vendor_details->nin_verification_fee;
+
+
+
+              if($user_details->nin_response_json != NULL){
+                  //means it has been called before
+                  logger('THIS ONE RAN');
+                  $nin_response_json = $user_details->nin_response_json;
+                  $response_decodde = json_decode($nin_response_json,true);
+                  $responseMessage = $response_decodde['responseMessage'] ;   
+
+
+                  $verifiedNin = $response_decodde['responseBody']['nin'] ?? NULL;
+                  $verifiedNinLastName = $response_decodde['responseBody']['lastName'] ?? NULL;
+                  $verifiedNinFirstName = $response_decodde['responseBody']['firstName'] ?? NULL;
+                  $verifiedNinMobileNumber= $response_decodde['responseBody']['mobileNumber'] ?? NULL;
+
+
+
+                  if( isset($responseMessage) && $responseMessage == 'success' ){
+
+                      if( strlen($nin_phone_number) == 11){
+                          $extracted_number = substr($nin_phone_number,1);
+                          $phone_range1 = $nin_phone_number;
+                          $phone_range2 = "234$extracted_number";
+                          $phone_range3 = "+234$extracted_number";
+                          $nin_phone_number_arr = [ $phone_range1, $phone_range2, $phone_range3 ];
+                       }
+                       if( strlen($nin_phone_number) == 13){
+                           $extracted_number = substr($nin_phone_number,3);
+                           $phone_range1 = "0$extracted_number";
+                           $phone_range2 = "234$extracted_number";
+                           $phone_range3 = "+234$extracted_number";
+                           $nin_phone_number_arr = [ $phone_range1, $phone_range2, $phone_range3 ];
+                       }
+                       if( strlen($nin_phone_number) == 14){
+                           $extracted_number = substr($nin_phone_number,4);
+                           $phone_range1 = "0$extracted_number";
+                           $phone_range2 = "234$extracted_number";
+                           $phone_range3 = "+234$extracted_number";
+                           $nin_phone_number_arr = [ $phone_range1, $phone_range2, $phone_range3 ];
+                       }
+  
+                       logger('userid: '.$user_id);
+                       logger('vendorid: '.$vendor_id);
+                       logger('inputtednin: '.$nin_phone_number);
+                       logger('verifiednin: '.$verifiedNinMobileNumber);
+                       logger(json_encode($nin_phone_number_arr));
+  
+                       //ask if to stop users if their phone number on nin does not match their registered phone number
+                      if(  $verifiedNinMobileNumber == 'Not Available' ||  in_array($verifiedNinMobileNumber,$nin_phone_number_arr) ){
+                           //good status
+                           logger('THIS ONE RAAAAAN - pos');
+                         
+
+                           
+                          $updatee = User::where('user_id',$user_id)
+                          ->where('vendor_id',$vendor_id)
+                          ->update([
+                              'nin'  => $nin,
+                              'verified_nin'  => $verifiedNin,
+                              'is_nin_verified'  => 'YES',
+                              'full_name'  => $verifiedNinFirstName.' '.$verifiedNinLastName,
+                              'old_fullname'  => $user_details->full_name,
+                              'nin_fullname'  => $nin_fullname,
+                              'nin_phone_number'  => $nin_phone_number,
+                              'verified_nin_lastname'  => $verifiedNinLastName,
+                              'verified_nin_firstname' => $verifiedNinFirstName,
+                              'verified_nin_mobile_number' => $verifiedNinMobileNumber == 'Not Available' ? NULL : $verifiedNinMobileNumber
+                          ]);
+                          DB::commit();
+
+
+                          logger(json_encode([
+                              'nin'  => $nin,
+                              'update'  =>$updatee,
+                              'verified_nin'  => $verifiedNin,
+                              'is_nin_verified'  => 'YES',
+                              'nin_fullname'  => $nin_fullname,
+                              'nin_phone_number'  => $nin_phone_number,
+                              'verified_nin_lastname'  => $verifiedNinLastName,
+                              'verified_nin_firstname' => $verifiedNinFirstName,
+                              'verified_nin_mobile_number' =>$verifiedNinMobileNumber == 'Not Available' ? NULL : $verifiedNinMobileNumber
+                           ]));
+
+                          return [
+                              'status' => 1,
+                              'message' => 'NIN successfully updated',
+                          ];
+
+                          
+                  
+                      }else{
+                           logger('THIS ONE RAAAAAN - neg');
+                           //bad status - DONT VERIFY
+                           //user table should now have the status logged
+                           User::where('user_id',$user_id)
+                           ->where('vendor_id',$vendor_id)
+                           ->update([
+                               'nin'  => $nin,
+                               'verified_nin'  => $verifiedNin,
+                               'is_nin_verified'  => 'NO',
+                               'nin_fullname'  => $nin_fullname,
+                               'nin_phone_number'  => $nin_phone_number,
+                               'verified_nin_lastname'  => $verifiedNinLastName,
+                               'verified_nin_firstname' => $verifiedNinFirstName,
+                               'verified_nin_mobile_number' => $verifiedNinMobileNumber == 'Not Available' ? NULL : $verifiedNinMobileNumber
+                           ]);
+  
+                           DB::commit();
+                           return [
+                               'status' => -1,
+                               'nin'  => $nin,
+                               'responseMessage' => $responseMessage,
+                               'message' => 'Phone number does not match NIN registered phone number: '. $verifiedNinMobileNumber,
+                               'is_nin_verified'  => 'NO',
+                               'nin_fullname'  => $nin_fullname,
+                               'nin_phone_number'  => $nin_phone_number,
+                               'verified_nin'  => $verifiedNin,
+                               'verified_nin_lastname'  => $verifiedNinLastName,
+                               'verified_nin_firstname' => $verifiedNinFirstName,
+                               'verified_nin_mobile_number' =>$verifiedNinMobileNumber == 'Not Available' ? NULL : $verifiedNinMobileNumber
+                           ];
+                       }
+  
+                  }
+                  
+              }else{
+                  //call the endpoints
+                  
+                  curl_setopt_array($curl, array(
+                  CURLOPT_URL => 'https://api.monnify.com/api/v1/vas/nin-details',
+                  CURLOPT_RETURNTRANSFER => true,
+                  CURLOPT_ENCODING => '',
+                  CURLOPT_MAXREDIRS => 10,
+                  CURLOPT_TIMEOUT => 0,
+                  CURLOPT_FOLLOWLOCATION => true,
+                  CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                  CURLOPT_CUSTOMREQUEST => 'POST',
+                  CURLOPT_POSTFIELDS =>'{
+                      "nin":"'.$nin.'"
+                  }',
+                  CURLOPT_HTTPHEADER => array(
+                      'Content-Type: application/json',
+                      'Authorization: Bearer '.$token,
+                  ),
+                  ));
+  
+                  $response = curl_exec($curl);
+  
+                  curl_close($curl);
+                    
+                  $response_decode = json_decode($response,true);
+      
+                  $responseMessage = $response_decode['responseMessage'] ;   
+                  
+                  
+      
+                  if( isset($responseMessage) && $responseMessage == 'success' ){
+      
+                          $verifiedNin = $response_decode['responseBody']['nin'] ?? NULL;
+                          $verifiedNinLastName = $response_decode['responseBody']['lastName'] ?? NULL;
+                          $verifiedNinFirstName = $response_decode['responseBody']['firstName'] ?? NULL;
+                          $verifiedNinMobileNumber= $response_decode['responseBody']['mobileNumber'] ?? NULL;
+  
+                          if( strlen($nin_phone_number) == 11){
+                             $extracted_number = substr($nin_phone_number,1);
+                             $phone_range1 = $nin_phone_number;
+                             $phone_range2 = "234$extracted_number";
+                             $phone_range3 = "+234$extracted_number";
+                             $nin_phone_number_arr = [ $phone_range1, $phone_range2, $phone_range3 ];
+                          }
+                          if( strlen($nin_phone_number) == 13){
+                              $extracted_number = substr($nin_phone_number,3);
+                              $phone_range1 = "0$extracted_number";
+                              $phone_range2 = "234$extracted_number";
+                              $phone_range3 = "+234$extracted_number";
+                              $nin_phone_number_arr = [ $phone_range1, $phone_range2, $phone_range3 ];
+                          }
+                          if( strlen($nin_phone_number) == 14){
+                              $extracted_number = substr($nin_phone_number,4);
+                              $phone_range1 = "0$extracted_number";
+                              $phone_range2 = "234$extracted_number";
+                              $phone_range3 = "+234$extracted_number";
+                              $nin_phone_number_arr = [ $phone_range1, $phone_range2, $phone_range3 ];
+                          }
+  
+                          logger($nin_phone_number);
+                          logger(json_encode($nin_phone_number_arr));
+  
+                          //ask if to stop users if their phone number on nin does not match their registered phone number
+                         if(  $verifiedNinMobileNumber == 'Not Available' || in_array($verifiedNinMobileNumber,$nin_phone_number_arr) ){
+                              //good status
+                              //deduct the fee if available         
+                              User::where('user_id',$user_id)
+                              ->where('vendor_id',$vendor_id)
+                              ->update([
+                                  'wallet_balance' => $user_details->wallet_balance - abs($nin_verification_fee),
+                                  'nin_response_json' => $response,
+                                  'nin'  => $nin,
+                                  'verified_nin'  => $verifiedNin,
+                                  'is_nin_verified'  => 'YES',
+                                  'full_name'  => $verifiedNinFirstName.' '.$verifiedNinLastName,
+                                  'old_fullname'  => $user_details->full_name,
+                                  'nin_fullname'  => $nin_fullname,
+                                  'nin_phone_number'  => $nin_phone_number,
+                                  'verified_nin_lastname'  => $verifiedNinLastName,
+                                  'verified_nin_firstname' => $verifiedNinFirstName,
+                                  'verified_nin_mobile_number' => $verifiedNinMobileNumber == 'Not Available' ? NULL : $verifiedNinMobileNumber
+                              ]);
+      
+                              DB::commit();
+  
+                              return [
+                                  'status' => 1,
+                                  'nin'  => $nin,
+                                  'message' => 'NIN was succesfully verified',
+                                  'verified_nin'  => $verifiedNin,
+                                  'is_nin_verified'  => 'YES',
+                                  'nin_fullname'  => $nin_fullname,
+                                  'nin_phone_number'  => $nin_phone_number,
+                                  'verified_nin_lastname'  => $verifiedNinLastName,
+                                  'verified_nin_firstname' => $verifiedNinFirstName,
+                                  'verified_nin_mobile_number' =>$verifiedNinMobileNumber == 'Not Available' ? NULL : $verifiedNinMobileNumber
+                              ];
+                              
+      
+                         }else{
+                              //
+                              //bad status - DONT VERIFY
+                              //user table should now have the status logged
+                              User::where('user_id',$user_id)
+                              ->where('vendor_id',$vendor_id)
+                              ->update([
+                                  'wallet_balance' => $user_details->wallet_balance - abs($nin_verification_fee),
+                                  'nin_response_json' => $response,
+                                  'nin'  => $nin,
+                                  'verified_nin'  => $verifiedNin,
+                                  'is_nin_verified'  => 'NO',
+                                  'nin_fullname'  => $nin_fullname,
+                                  'nin_phone_number'  => $nin_phone_number,
+                                  'verified_nin_lastname'  => $verifiedNinLastName,
+                                  'verified_nin_firstname' => $verifiedNinFirstName,
+                                  'verified_nin_mobile_number' => $verifiedNinMobileNumber == 'Not Available' ? NULL : $verifiedNinMobileNumber
+                              ]);
+  
+                              DB::commit();
+
+                              return [
+                                  'status' => -1,
+                                  'nin'  => $nin,
+                                  'responseMessage' => $responseMessage,
+                                  'message' => 'Phone number does not match NIN registered phone number: '. $verifiedNinMobileNumber,
+                                  'is_nin_verified'  => 'NO',
+                                  'nin_fullname'  => $nin_fullname,
+                                  'nin_phone_number'  => $nin_phone_number,
+                                  'verified_nin'  => $verifiedNin,
+                                  'verified_nin_lastname'  => $verifiedNinLastName,
+                                  'verified_nin_firstname' => $verifiedNinFirstName,
+                                  'verified_nin_mobile_number' => $verifiedNinMobileNumber == 'Not Available' ? NULL : $verifiedNinMobileNumber
+                              ];
+                          }
+      
+                    }else{
+                      return [
+                          'status' => -1,
+                          'message' => $responseMessage
+                      ];
+                    } 
+              }
+
+
+          }else{
+              return [
+                  'status' => -1,
+                  'message' => $authenticate['message'],
+                  
+              ];
+          }
+   
+      }catch(\Exception $e){
+          DB::rollBack();
+          logger($e->getMessage());
+          return [
+              'status' => -1,
+              'message' => $e->getMessage()
+          ];
+      }
+
+    }
+
+   
+    public function verify_monnify_account_via_bvn(Request $request){
+      $validator = Validator::make($request->all(), [
+        'bank_code' => 'required',
+        'bvn' => 'required',
+        'account_number' => 'required',
+        'pin' => ['required','digits:4'],
+    ]);
+    
+    if ($validator->stopOnFirstFailure()->fails()) {
+        return response()->json(['status'=>'-1', 'message'=>$validator->errors()->first(),'data' => $request->all() ]);
+    }
+
+      $bvn = $request->bvn;
+      $bvn_account_number = $request->account_number;
+      $bank_code = $request->bank_code;
+        DB::beginTransaction();
+
+        try{
+            $user_id = auth()->id();
+            $authenticate_with_monnify = $this->authenticate_with_monnify();
+            if($authenticate_with_monnify['status'] !=  1){
+                Session::flash('failure','Authentication failed');
+                return redirect()->back();   
+            }
+
+                $token = $authenticate_with_monnify['message']; 
+                $curl = curl_init();
+    
+                curl_setopt_array($curl, array(
+                    CURLOPT_URL => 'https://api.monnify.com/api/v1/vas/bvn-account-match',
+                    CURLOPT_RETURNTRANSFER => true,
+                    CURLOPT_ENCODING => '',
+                    CURLOPT_MAXREDIRS => 10,
+                    CURLOPT_TIMEOUT => 0,
+                    CURLOPT_FOLLOWLOCATION => true,
+                    CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                    CURLOPT_CUSTOMREQUEST => 'POST',
+                    CURLOPT_POSTFIELDS =>'{
+                      "bankCode":"'.$bank_code.'",
+                      "accountNumber":"'.$bvn_account_number.'",
+                      "bvn":"'.$bvn.'"
+                  }',
+                    CURLOPT_HTTPHEADER => array(
+                      'Content-Type: application/json',
+                      'Authorization: Bearer '.$token,
+                    ),
+                  ));
+                  
+                  $response = curl_exec($curl);
+                  logger('Monnify BVN: ');
+                  logger($response);
+                  logger('Monnify BVN end:');
+                  
+                  curl_close($curl);
+                  
+                  $response_decode = json_decode($response,true);
+    
+                  $responseMessage = $response_decode['responseMessage'];          
+    
+                  if( isset($responseMessage) && $responseMessage == 'success' ){
+                        $verifiedBvn = $response_decode['responseBody']['bvn'];
+                        $verifiedAccountNumber = $response_decode['responseBody']['accountNumber'];
+                        $verifiedAccountName = $response_decode['responseBody']['accountName'];
+                        $verifiedMatchStatus = $response_decode['responseBody']['matchStatus'];
+                        $verifiedMatchPercentage = $response_decode['responseBody']['matchPercentage'];
+                        $verifiedMatchPercentage = $response_decode['responseBody']['matchPercentage'];
+                
+                        
+                      if(  $verifiedBvn == $bvn && ($verifiedMatchStatus == 'FULL_MATCH'  || $verifiedMatchStatus == 'PARTIAL_MATCH')  ){
+                            //good status
+                            User::where('id',$user_id)
+                            ->update([
+                                'bvn_json'  => $response,
+                                'is_bvn_verified'  => 1,
+                                'bvn'  => $bvn
+                            ]);
+    
+                            DB::commit();
+                            Session::flash('success', 'BVN succesfully verified');
+                            return redirect()->back();
+
+                      }else{
+                            logger('Monnify bvn verification failed: '.$responseMessage);
+                            DB::commit();
+                            Session::flash('failure', $responseMessage);
+                            return redirect()->back();   
+                      }
+    
+                  }else{
+                    Session::flash('failure', $responseMessage);
+                    return redirect()->back();   
+                  }   
+            
+    
+        }catch(Exception $e){
+            DB::rollBack();
+            logger($e->getMessage());
+            Session::flash('failure', 'Ops... Something went wrong');
+            return redirect()->back();            
+        }
+    }
+
+    public function generate_monnify_virtual_accounts(Request $request){
+      // $validator = Validator::make($request->all(), [
+      //   'pin' => 'required|digits:4|exists:users,pin'
+      // ]);
+      
+      // if ($validator->stopOnFirstFailure()->fails()) {
+      //   return redirect()->back()->withErrors($validator)->withInput();
+      // }
+
+        // $validator = Validator::make($request->all(), [
+        //     'user_id' => 'required|exists:users,id'
+        // ]);
+
+        // if ($validator->stopOnFirstFailure()->fails()) { 
+        //     return redirect()->back()->withErrors($validator)->withInput();   
+        // }
+
+        $user_id = auth()->id();
+
+        $authenticate_with_monnify = $this->authenticate_with_monnify();
+        if($authenticate_with_monnify['status'] !=  1){
+            Session::flash('failure','Authentication failed');
+            return redirect()->back();   
+        }
+
+        $check_existing_virtual_accounts = UserMonnifyVirtualAccount::where('user_id',$user_id)->get();
+        if(count($check_existing_virtual_accounts)  >= 1 ){
+                Session::flash('failure','You seem to have virtual accounts already generated');
+                return redirect()->back();     
+        }
+
+        $token = $authenticate_with_monnify['message'];
+
+        $get_user_details = User::where('id',auth()->id())->first();
+
+        if($get_user_details->is_bvn_verified == 0 && $get_user_details->is_nin_verified == 0 ){
+            Session::flash('failure','BVN or NIN must be verified');
+            return redirect()->back();       
+        }
+
+        if($get_user_details->user_monnify_reference == NULL ){ 
+            Session::flash('failure','Monnify reference cannot be null');
+            return redirect()->back();    
+        }
+
+        DB::beginTransaction();
+        try{
+
+        if($get_user_details->is_bvn_verified == 1 && $get_user_details->is_nin_verified == 0 ){
+            $array = [
+                "accountReference"=>$get_user_details->user_monnify_reference,
+                "accountName"=>$get_user_details->first_name.' '.$get_user_details->last_name,
+                "currencyCode"=>"NGN",
+                "contractCode"=>$this->contract_code,
+                "customerEmail"=>$get_user_details->email,
+                "customerName"=>$get_user_details->first_name.' '.$get_user_details->last_name,
+                "bvn"=>$get_user_details->bvn,
+                "getAllAvailableBanks"=>true
+            ];
+        }
+
+        if($get_user_details->is_bvn_verified == 0 && $get_user_details->is_nin_verified == 1 ){
+            $array = [
+                "accountReference"=>$get_user_details->user_monnify_reference,
+                "accountName"=>$get_user_details->first_name.' '.$get_user_details->last_name,
+                "currencyCode"=>"NGN",
+                "contractCode"=>$this->contract_code,
+                "customerEmail"=>$get_user_details->email,
+                "customerName"=>$get_user_details->first_name.' '.$get_user_details->last_name,
+                "nin"=>$get_user_details->nin,
+                "getAllAvailableBanks"=>true
+            ];
+        }
+
+        if($get_user_details->is_bvn_verified == 1 && $get_user_details->is_nin_verified == 1 ){
+            $array = [
+                "accountReference"=>$get_user_details->user_monnify_reference,
+                "accountName"=>$get_user_details->first_name.' '.$get_user_details->last_name,
+                "currencyCode"=>"NGN",
+                "contractCode"=>$this->contract_code,
+                "customerEmail"=>$get_user_details->email,
+                "customerName"=>$get_user_details->first_name.' '.$get_user_details->last_name,
+                "bvn"=>$get_user_details->bvn,
+                "nin"=>$get_user_details->nin,
+                "getAllAvailableBanks"=>true
+            ];
+        }
+      
+        $json_encoded_array = json_encode($array);
+        
+        $curl = curl_init();
+
+        curl_setopt_array($curl, array(
+        CURLOPT_URL => $this->base_url.'v2/bank-transfer/reserved-accounts',
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_ENCODING => '',
+        CURLOPT_MAXREDIRS => 10,
+        CURLOPT_TIMEOUT => 0,
+        CURLOPT_FOLLOWLOCATION => true,
+        CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+        CURLOPT_CUSTOMREQUEST => 'POST',
+        CURLOPT_POSTFIELDS =>$json_encoded_array,
+        CURLOPT_HTTPHEADER => array(
+        'Accept: application/json',
+        'Content-Type: application/json',
+        'Authorization: Bearer '.$token
+        ),
+        ));
+
+        $response = curl_exec($curl);
+        logger('Monnify Virtual Accounts Generated: '. $response);
+
+        $response_dec = json_decode($response,true);
+
+        if( isset($response_dec['requestSuccessful'])
+        && $response_dec['requestSuccessful'] 
+        && isset($response_dec['responseMessage'])
+        && $response_dec['responseMessage'] == 'success' ){
+            //here, generate and add the virtual accounts
+            $accounts = $response_dec['responseBody']['accounts'];
+            foreach($accounts as $account){
+                $bank_code = $account['bankCode'];
+                $bank_name = $account['bankName'];
+                $account_name = $account['accountName'];
+                $account_number = $account['accountNumber'];
+                UserMonnifyVirtualAccount::updateOrCreate([
+                    'bank_code' => $bank_code,
+                    'user_id' => $user_id,
+                ],[
+                    'bank_name' => $bank_name,
+                    'account_name' => $account_name,
+                    'account_number' => $account_number,
+                ]);
+            }
+        }else{
+          Session::flash('failure','Error generating virtual accounts');
+          return redirect()->back(); 
+        }
+        curl_close($curl);   
+        DB::commit();
+        Session::flash('success','Successfully generated virtual accounts');
+        return redirect()->back();  
+    }catch(Exception $ex){
+        DB::rollback();
+        logger('Error occurred. :'. $ex->getMessage().' on line: '.$ex->getLine());
+        Session::flash('failure','An Error occurred. Please try again');
+        return redirect()->back();     
+    }      
+
+
     }
 
     public function pending_funding_transactions(Request $request){
@@ -428,6 +1062,18 @@ class WalletsController extends Controller
         // $funding_option = FundingOption::with('bank_codes.virtual_user_account_with_bank_code')->where('activation_status',1)->first();
         $funding_option = FundingOption::with('bank_codes')->where('activation_status',1)->first();
         $data['funding_option'] = $funding_option;
+        $banks = config('banks');
+        foreach($banks as $key=>$bank){
+          $dataa[$key] = $bank;
+        }
+        $data['banks'] = $dataa;
+        // dd($data);
+        if($funding_option->slug == 'monnify'){
+          if( auth()->user()->is_bvn_verified == 0 && auth()->user()->is_nin_verified == 0 ){
+            return redirect()->route('user.wallet.monnify.verifications')->with($data);
+          }
+          return view('user.wallet.monnify.index')->with($data);
+        }
 
         $generated_user_virtual_accts_funding_option_id = UserVirtualAccount::where('user_id',auth()->id())->pluck('funding_option_id')->first();
         $generated_user_virtual_accts_bank_code = UserVirtualAccount::where('user_id',auth()->id())->pluck('bank_code')->toArray();
@@ -436,12 +1082,21 @@ class WalletsController extends Controller
         $data['generated_user_virtual_accts_bank_code'] = $generated_user_virtual_accts_bank_code;
         $data['user_virtual_accounts'] = $user_virtual_accounts;
         
-
-        // if(env('APP_NAME') == 'OresamSub'){
-        //   return $data;
-        // }
+       
+     
+      
         
         return view('user.wallet.crystal_pay.index')->with($data);
+    }
+
+    public function monnify_verifications(Request $request){
+      $banks = config('banks');
+      
+      foreach($banks as $key=>$bank){
+        $dataa[$key] = $bank;
+      }
+      $data['banks'] = $dataa;
+      return view('user.wallet.monnify.verifications')->with($data);
     }
    
     public function fund_wallet(Request $request){
@@ -452,6 +1107,7 @@ class WalletsController extends Controller
         return view('user.wallet.fund_wallet')->with($data);
     }
 
+    //crystalpay accounts generation
     public function generate_virtual_account(Request $request){
         $validator = Validator::make($request->all(), [
             'pin' => 'required|digits:4|exists:users,pin',
