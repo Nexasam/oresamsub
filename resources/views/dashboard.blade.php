@@ -251,7 +251,7 @@
             </div>
         </div>
 
-        <div class="col-span-6 xxxl:col-span-2 md:col-span-3">
+        <div class="col-span-4 xxxl:col-span-2 md:col-span-3">
             <div class="box">
                 <div class="box-body">
                     <div class="flex space-x-4 rtl:space-x-reverse">
@@ -285,7 +285,7 @@
         </div>
 
         {{-- <a href="{{ route('user.transactions.index')}}"> --}}
-        <div class="col-span-6 xxxl:col-span-2 md:col-span-3">
+        <div class="col-span-4 xxxl:col-span-2 md:col-span-3">
             <div class="box">
                 <div class="box-body">
                     <div class="flex space-x-4 rtl:space-x-reverse">
@@ -324,7 +324,7 @@
         {{-- </a> --}}
       
       
-        <div class="col-span-6 xxxl:col-span-3 md:col-span-3">
+        <div class="col-span-4 xxxl:col-span-3 md:col-span-3">
             <div class="box">
                 <div class="box-body">
                     <div class="flex space-x-4 rtl:space-x-reverse">
@@ -422,7 +422,7 @@
             </div>
         </div>
 
-        <div class="col-span-6 xxxl:col-span-2 md:col-span-3">
+        {{-- <div class="col-span-6 xxxl:col-span-2 md:col-span-3">
             <div class="box">
                 <div class="box-body">
                     <div class="flex space-x-4 rtl:space-x-reverse">
@@ -446,14 +446,13 @@
                                
                             </div>
                             <div>
-                                {{-- <span class="text-xs mb-0">Total Sum: <span class="
-                                        text-success">{{  number_format($bulk_data_wallet_sum) }} MB</span></span> --}}
+                               
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
+        </div> --}}
 
       
         <div class="col-span-12 xxl:col-span-12">
