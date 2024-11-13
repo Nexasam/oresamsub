@@ -123,7 +123,10 @@
                             </span>
                         </div>
                         <div class="">
-                            <div class="mt-5 text-lg">Data</div>
+                            <div class="mt-5 text-lg">
+                                <a href="{{ route('user.data.buy_data') }}">Data</a>
+                            </div>
+                            {{-- <div class="mt-5 text-lg">Data</div> --}}
                             {{-- <div class="flex items-center justify-center">Data</div> --}}
                            
                             {{-- <div class="text-gray-500 dark:text-white/70 mb-1 text-xs">
@@ -141,7 +144,7 @@
             <div class="box">
                 <div class="box-body">
                     <div class="flex space-x-4 rtl:space-x-reverse">
-                        <a href="#">
+                        
                             <div class="flex items-center justify-center ecommerce-icon px-0">
                                 <span class="rounded-sm p-4 bg-info/10">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="fill-white svg5"
@@ -160,12 +163,14 @@
                                 </span>
                             </div>
                             <div class="">
-                                <div class="mt-5 text-lg">Airtime</div>
+                                <div class="mt-5 text-lg">
+                                    <a href="{{ route('user.airtime.buy_airtime') }}">Airtime</a>
+                                </div>
                                 {{-- <div class="text-gray-500 dark:text-white/70 mb-1 text-xs">
                                        <a class="ti-btn ti-btn-primary block" href="{{ route('user.airtime.buy_airtime') }}">Click Here </a>
                                 </div> --}}
                             </div>
-                        </a>
+                     
                        
                     </div>
                 </div>
