@@ -125,6 +125,7 @@
      .table.dataTable  {
           /* font-family: Verdana, Geneva, Tahoma, sans-serif; */
           font-size: 9px;
+          
       }
 
       .table.dataTable td  {

@@ -477,7 +477,7 @@
                         <div class="box-header">
                             <div class="flex">
                              
-                              <div class="hs-dropdown ti-dropdown block ms-auto my-auto s  sm:flex items-center justify-between">
+                              <div class="hs-dropdown ti-dropdown block ms-auto my-auto sm:flex items-center justify-between">
                                
                                     <div id="hs-slide-down-animation-modal" class="hs-overlay hidden ti-modal">
                                       <div class="hs-overlay-open:mt-7 ti-modal-box mt-0 ease-out">
@@ -562,7 +562,7 @@
                 <div class="box-body px-6">
                     <div id="taskactive" class="" role="tabpanel" aria-labelledby="active-item">
                         <div class="overflow-auto">
-                            <table  id="user_transactions_table" class="table ti-custom-table ti-custom-table-head">    
+                            <table style="width:100%"  id="user_transactions_table" class="table ti-custom-table ti-custom-table-head">    
                                 <thead class="bg-gray-50 dark:bg-black/20">
                                 <tr>
                                     <th>ID</th>

@@ -92,6 +92,13 @@
         background-repeat: no-repeat;
         }
 
+        .logo_landing {
+        background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url({{  $hero1  }});
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        }
+
 
         
         #milestone11 {
@@ -494,18 +501,18 @@
   <div class="container overflow-hidden">
     <div class="row gy-5 gy-md-6">
       <div class="col-6 col-md-3 align-self-center text-center">
-        <img style="object-fit:cover;" src="{{ asset(env('APP_ASSETS_BASE_URL').'landing_page_assets/img/landing/mtn.jpg') }}" height="200"  alt="">  
+        <img class="logo_landing" style="object-fit:cover;" src="{{ asset(env('APP_ASSETS_BASE_URL').'landing_page_assets/img/landing/mtn.jpg') }}" height="200"  alt="">  
       </div>
       <div class="col-6 col-md-3 align-self-center text-center">
-        <img style="object-fit:cover;" src="{{ asset(env('APP_ASSETS_BASE_URL').'landing_page_assets/img/landing/glo2.jpg') }}" height="200"  alt="">  
+        <img class="logo_landing" style="object-fit:cover;" src="{{ asset(env('APP_ASSETS_BASE_URL').'landing_page_assets/img/landing/glo2.jpg') }}" height="200"  alt="">  
   
     </div>
       <div class="col-6 col-md-3 align-self-center text-center">
-        <img style="object-fit:cover;" src="{{ asset(env('APP_ASSETS_BASE_URL').'landing_page_assets/img/landing/9mobile.jpg') }}" height="200"  alt="">  
+        <img class="logo_landing" style="object-fit:cover;" src="{{ asset(env('APP_ASSETS_BASE_URL').'landing_page_assets/img/landing/9mobile.jpg') }}" height="200"  alt="">  
 
     </div>
       <div class="col-6 col-md-3 align-self-center text-center">
-        <img style="object-fit:cover;" src="{{ asset(env('APP_ASSETS_BASE_URL').'landing_page_assets/img/landing/airtel.png') }}" height="200"  alt="">  
+        <img class="logo_landing" style="object-fit:cover;" src="{{ asset(env('APP_ASSETS_BASE_URL').'landing_page_assets/img/landing/airtel.png') }}" height="200"  alt="">  
   
      </div>
       {{-- <div class="col-6 col-md-3 align-self-center text-center">
