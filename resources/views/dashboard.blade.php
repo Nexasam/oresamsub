@@ -181,6 +181,80 @@
             <div class="box">
                 <div class="box-body">
                     <div class="flex space-x-4 rtl:space-x-reverse">
+                        
+                            <div class="flex items-center justify-center ecommerce-icon px-0">
+                                <span class="rounded-sm p-4 bg-info/10">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="fill-white svg5"
+                                        enable-background="new 0 0 24 24" height="24px" viewBox="0 0 24 24"
+                                        width="24px" fill="#000000">
+                                        <path d="M0,0h24v24H0V0z" fill="none" />
+                                        <g>
+                                            <path
+                                                d="M19.5,3.5L18,2l-1.5,1.5L15,2l-1.5,1.5L12,2l-1.5,1.5L9,2L7.5,3.5L6,2v14H3v3c0,1.66,1.34,3,3,3h12c1.66,0,3-1.34,3-3V2 L19.5,3.5z M15,20H6c-0.55,0-1-0.45-1-1v-1h10V20z M19,19c0,0.55-0.45,1-1,1s-1-0.45-1-1v-3H8V5h11V19z" />
+                                            <rect height="2" width="6" x="9" y="7" />
+                                            <rect height="2" width="2" x="16" y="7" />
+                                            <rect height="2" width="6" x="9" y="10" />
+                                            <rect height="2" width="2" x="16" y="10" />
+                                        </g>
+                                    </svg>
+                                </span>
+                            </div>
+                            <div class="">
+                                <div class="mt-5 text-lg">
+                                    <a href="{{ route('user.cable_subscription.buy_cable_subscription') }}">Cable Subscription</a>
+                                </div>
+                                {{-- <div class="text-gray-500 dark:text-white/70 mb-1 text-xs">
+                                       <a class="ti-btn ti-btn-primary block" href="{{ route('user.airtime.buy_airtime') }}">Click Here </a>
+                                </div> --}}
+                            </div>
+                     
+                       
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-span-6 xxxl:col-span-2 md:col-span-3">
+            <div class="box">
+                <div class="box-body">
+                    <div class="flex space-x-4 rtl:space-x-reverse">
+                        
+                            <div class="flex items-center justify-center ecommerce-icon px-0">
+                                <span class="rounded-sm p-4 bg-info/10">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="fill-white svg5"
+                                        enable-background="new 0 0 24 24" height="24px" viewBox="0 0 24 24"
+                                        width="24px" fill="#000000">
+                                        <path d="M0,0h24v24H0V0z" fill="none" />
+                                        <g>
+                                            <path
+                                                d="M19.5,3.5L18,2l-1.5,1.5L15,2l-1.5,1.5L12,2l-1.5,1.5L9,2L7.5,3.5L6,2v14H3v3c0,1.66,1.34,3,3,3h12c1.66,0,3-1.34,3-3V2 L19.5,3.5z M15,20H6c-0.55,0-1-0.45-1-1v-1h10V20z M19,19c0,0.55-0.45,1-1,1s-1-0.45-1-1v-3H8V5h11V19z" />
+                                            <rect height="2" width="6" x="9" y="7" />
+                                            <rect height="2" width="2" x="16" y="7" />
+                                            <rect height="2" width="6" x="9" y="10" />
+                                            <rect height="2" width="2" x="16" y="10" />
+                                        </g>
+                                    </svg>
+                                </span>
+                            </div>
+                            <div class="">
+                                <div class="mt-5 text-lg">
+                                    <a href="{{ route('user.electricity.buy_electricity_subscription') }}">Electricity</a>
+                                </div>
+                                {{-- <div class="text-gray-500 dark:text-white/70 mb-1 text-xs">
+                                       <a class="ti-btn ti-btn-primary block" href="{{ route('user.airtime.buy_airtime') }}">Click Here </a>
+                                </div> --}}
+                            </div>
+                     
+                       
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-span-6 xxxl:col-span-2 md:col-span-3">
+            <div class="box">
+                <div class="box-body">
+                    <div class="flex space-x-4 rtl:space-x-reverse">
                        
                         <div class="flex items-center justify-center ecommerce-icon px-0">
                             <span class="rounded-sm p-4 bg-info/10">
