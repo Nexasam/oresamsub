@@ -105,7 +105,7 @@
                 <div class="box-body">
                     <div class="flex space-x-4 rtl:space-x-reverse">
                        
-                        <div class="flex items-center justify-center ecommerce-icon px-0">
+                        {{-- <div class="flex items-center justify-center ecommerce-icon px-0">
                             <span class="rounded-sm p-4 bg-info/10">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="fill-white svg5"
                                     enable-background="new 0 0 24 24" height="24px" viewBox="0 0 24 24"
@@ -121,7 +121,7 @@
                                     </g>
                                 </svg>
                             </span>
-                        </div>
+                        </div> --}}
                         <div class="">
                             <div class="mb-2">Buy Data</div>
                             <div class="text-gray-500 dark:text-white/70 mb-1 text-xs">
@@ -141,7 +141,7 @@
                 <div class="box-body">
                     <div class="flex space-x-4 rtl:space-x-reverse">
                        
-                        <div class="flex items-center justify-center ecommerce-icon px-0">
+                        {{-- <div class="flex items-center justify-center ecommerce-icon px-0">
                             <span class="rounded-sm p-4 bg-info/10">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="fill-white svg5"
                                     enable-background="new 0 0 24 24" height="24px" viewBox="0 0 24 24"
@@ -157,7 +157,7 @@
                                     </g>
                                 </svg>
                             </span>
-                        </div>
+                        </div> --}}
                         <div class="">
                             <div class="mb-2">Buy Airtime</div>
                             <div class="text-gray-500 dark:text-white/70 mb-1 text-xs">
