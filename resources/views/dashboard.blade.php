@@ -13,7 +13,7 @@
     <!-- Page Header Close -->
 
   
-    <div class="grid grid-cols-6 gap-x-3">
+    <div class="grid grid-cols-12 gap-x-3">
 
         @if (count($user_virtual_accounts) > 0)
                 @foreach ($user_virtual_accounts as $user_virtual_account)
@@ -25,7 +25,7 @@
                             <td>Account Number: {{ $user_virtual_account->account_number }}</td>
                         </tr> --}}
 
-                        <div class="col-span-12 xxxl:col-span-2 md:col-span-3">
+                        <div class="col-span-6 xxxl:col-span-2 md:col-span-3">
                             <div class="box">
                                 <div class="box-body">
                                     <div class="flex space-x-4 rtl:space-x-reverse">
