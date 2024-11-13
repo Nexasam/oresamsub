@@ -304,7 +304,7 @@
                             </span>
                         </div>
                         <div class="">
-                            <div class="mb-2">Total Transactions</div>
+                            <div class="mb-2">Transactions</div>
                             <div class="text-gray-500 dark:text-white/70 mb-1 text-xs">
                                 <span
                                     class="text-gray-800 font-semibold text-xl leading-none align-bottom dark:text-white">
@@ -347,7 +347,7 @@
                         </div>
                         <div class="">
                             <div class="mb-2 ">
-                               Main Wallet Balance
+                             Balance
                             </div>
                             <div class="text-gray-500 dark:text-white/70 mb-1 text-xs flex items-center justify-between  space-x-3">
                                 <span
