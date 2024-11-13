@@ -25,7 +25,7 @@
                             <td>Account Number: {{ $user_virtual_account->account_number }}</td>
                         </tr> --}}
 
-                        <div class="col-span-6 xxxl:col-span-2 md:col-span-3">
+                        <div class="col-span-12 xxxl:col-span-2 md:col-span-3">
                             <div class="box">
                                 <div class="box-body">
                                     <div class="flex space-x-4 rtl:space-x-reverse">
