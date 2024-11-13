@@ -201,7 +201,7 @@
                             </div>
                             <div class="">
                                 <div class="mt-5 text-lg">
-                                    <a href="{{ route('user.cable_subscription.buy_cable_subscription') }}">Cable Subscription</a>
+                                    <a href="{{ route('user.cable_subscription.buy_cable_subscription') }}">Cable</a>
                                 </div>
                                 {{-- <div class="text-gray-500 dark:text-white/70 mb-1 text-xs">
                                        <a class="ti-btn ti-btn-primary block" href="{{ route('user.airtime.buy_airtime') }}">Click Here </a>
