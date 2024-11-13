@@ -123,7 +123,9 @@
                             </span>
                         </div>
                         <div class="">
-                            <div class="flex items-center justify-center">Data</div>
+                            <div class="mt-5 text-lg">Data</div>
+                            {{-- <div class="flex items-center justify-center">Data</div> --}}
+                           
                             {{-- <div class="text-gray-500 dark:text-white/70 mb-1 text-xs">
                                   <a class="ti-btn ti-btn-primary block" href="{{ route('user.data.buy_data')}}">Click Here</a>
                                
@@ -158,7 +160,7 @@
                             </span>
                         </div>
                         <div class="">
-                            <div class="flex items-center justify-center">Airtime</div>
+                            <div class="mt-5 text-lg">Airtime</div>
                             {{-- <div class="text-gray-500 dark:text-white/70 mb-1 text-xs">
                                    <a class="ti-btn ti-btn-primary block" href="{{ route('user.airtime.buy_airtime') }}">Click Here </a>
                             </div> --}}
