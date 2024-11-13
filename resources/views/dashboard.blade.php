@@ -256,7 +256,7 @@
                 <div class="box-body">
                     <div class="flex space-x-4 rtl:space-x-reverse">
                        
-                        <div class="flex items-center justify-center ecommerce-icon px-0">
+                        {{-- <div class="flex items-center justify-center ecommerce-icon px-0">
                             <span class="rounded-sm p-4 bg-info/10">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="fill-white svg3" height="24px"
                                     viewBox="0 0 24 24" width="24px" fill="#000000">
@@ -265,7 +265,7 @@
                                         d="M12 6c1.1 0 2 .9 2 2s-.9 2-2 2-2-.9-2-2 .9-2 2-2m0 10c2.7 0 5.8 1.29 6 2H6c.23-.72 3.31-2 6-2m0-12C9.79 4 8 5.79 8 8s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4zm0 10c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
                                 </svg>
                             </span>
-                        </div>
+                        </div> --}}
                         <div class="">
                             <div class="mb-2">Plan</div>
                             <div class="text-gray-500 dark:text-white/70 mb-1 text-xs">
@@ -289,7 +289,7 @@
             <div class="box">
                 <div class="box-body">
                     <div class="flex space-x-4 rtl:space-x-reverse">
-                        <div class="flex items-center justify-center ecommerce-icon px-0">
+                        {{-- <div class="flex items-center justify-center ecommerce-icon px-0">
                             <span class="rounded-sm p-4 bg-secondary/10">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="fill-white svg2"
                                     enable-background="new 0 0 24 24" height="24px" viewBox="0 0 24 24"
@@ -302,7 +302,7 @@
                                     </g>
                                 </svg>
                             </span>
-                        </div>
+                        </div> --}}
                         <div class="">
                             <div class="mb-2">Transactions</div>
                             <div class="text-gray-500 dark:text-white/70 mb-1 text-xs">
@@ -328,7 +328,7 @@
             <div class="box">
                 <div class="box-body">
                     <div class="flex space-x-4 rtl:space-x-reverse">
-                        <div class="flex items-center justify-center ecommerce-icon px-0">
+                        {{-- <div class="flex items-center justify-center ecommerce-icon px-0">
                             <span class="rounded-sm p-4 bg-info/10">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="fill-white svg5"
                                     enable-background="new 0 0 24 24" height="24px" viewBox="0 0 24 24"
@@ -344,7 +344,7 @@
                                     </g>
                                 </svg>
                             </span>
-                        </div>
+                        </div> --}}
                         <div class="">
                             <div class="mb-2 ">
                              Balance
