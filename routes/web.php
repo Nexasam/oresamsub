@@ -275,6 +275,7 @@ Route::middleware(['auth','verified','user'])->get('user/generate_dynamic_accoun
 Route::middleware(['auth','verified','user'])->post('user/generate_virtual_account', [CrystalPayController::class, 'generate_virtual_account'])->name('user.crystalpay.generate_virtual_account');
 
 Route::middleware(['auth','verified','user'])->get('user/monnify_verifications', [WalletsController::class, 'monnify_verifications'])->name('user.wallet.monnify.verifications');
+Route::middleware(['auth','verified','user'])->post('user/verify_monnify_account_via_nin', [WalletsController::class, 'verify_monnify_account_via_nin'])->name('user.wallets.verify_monnify_account_via_nin');
 Route::middleware(['auth','verified','user'])->post('user/verify_monnify_account_via_bvn', [WalletsController::class, 'verify_monnify_account_via_bvn'])->name('user.wallets.verify_monnify_account_via_bvn');
 Route::middleware(['auth','verified','user'])->post('user/generate_monnify_virtual_accounts', [WalletsController::class, 'generate_monnify_virtual_accounts'])->name('user.wallets.generate_monnify_virtual_accounts');
 Route::middleware(['auth','verified','user'])->get('user/wallet/index', [WalletsController::class, 'index'])->name('user.wallet.index');

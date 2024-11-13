@@ -12,70 +12,8 @@
     </div>
     <!-- Page Header Close -->
 
-    <!-- Start::row-1 -->
-    {{-- <div class="grid grid-cols-12 gap-x-5">
-        <div class="xxl:col-span-6 col-span-12">
-            <div class="box">
-              <div class="box-header flex justify-between">
-                <div class="box-title my-auto">
-                  Fund Wallet
-                </div>
-                <a aria-label="anchor" class="hs-collapse-toggle inline-flex items-center gap-x-2" href="javascript:void(0);"
-                  id="hs-show-hide-collapse" data-hs-collapse="#collapseExample">
-                  <i class="hs-collapse-open:rotate-180 ri-arrow-up-s-line text-lg"></i>
-                </a>
-              </div>
-              <div class="hs-collapse w-full overflow-hidden transition-[height] duration-300" id="collapseExample"
-                aria-labelledby="hs-show-hide-collapse">
-                <div class="box-body">
-                  <h6 class="text-base font-semibold">Current wallet balance: &#8358; {{ number_format($user->main_wallet,2) }}</h6>
-                  <p class="text-[0.813rem] mb-0">Generate a dynamic account below to fund your wallet</p>
-                 <label for="amount">Enter amount to fund:</label><br>
-                  <input type="number" id="amount" name="amount" value=""><br>
-                  <button type="button" class="ti-btn ti-btn-primary"  id="generate_crystalpay_dynamic_account" name="generate_crystalpay_dynamic_account">Generate</button>
-                  <div class="crystal_pay_dynamic_account_details">
-
-                  </div>
-                
-                </div>
-                <div class="box-footer">
-                  <button type="button" class="ti-btn ti-btn-primary">Read More</button>
-                </div>
-              </div>
-            </div>
-        </div>
-    </div> --}}
-    <div class="grid grid-cols-12 gap-x-3">
-        
-
-        {{-- <div class="col-span-12 xxxl:col-span-2 md:col-span-3">
-            <div class="box">
-                <div class="box-body">
-                    <div class="flex space-x-4 rtl:space-x-reverse">
-                       
-                        <div class="flex items-center justify-center ecommerce-icon px-0">
-                            <span class="rounded-sm p-4 bg-danger/10">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="fill-white svg3" height="24px"
-                                    viewBox="0 0 24 24" width="24px" fill="#000000">
-                                    <path d="M0 0h24v24H0V0z" fill="none" />
-                                    <path
-                                        d="M12 6c1.1 0 2 .9 2 2s-.9 2-2 2-2-.9-2-2 .9-2 2-2m0 10c2.7 0 5.8 1.29 6 2H6c.23-.72 3.31-2 6-2m0-12C9.79 4 8 5.79 8 8s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4zm0 10c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
-                                </svg>
-                            </span>
-                        </div>
-                        <div class="">
-                            <div class="mb-2">Referral Code</div>
-                            <div class="text-gray-500 dark:text-white/70 mb-1 text-xs">
-                                <span
-                                    class="text-gray-800 font-semibold text-xl leading-none align-bottom dark:text-white">
-                                    {{ $user->user_plan->updated_user_plan_name ?? $user->user_plan->user_plan_name  }}
-                                </span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div> --}}
+  
+    <div class="grid grid-cols-6 gap-x-3">
 
         @if (count($user_virtual_accounts) > 0)
                 @foreach ($user_virtual_accounts as $user_virtual_account)
@@ -223,11 +161,8 @@
                         <div class="">
                             <div class="mb-2">Buy Airtime</div>
                             <div class="text-gray-500 dark:text-white/70 mb-1 text-xs">
-                                {{-- <span --}}
                                    <a class="ti-btn ti-btn-primary block" href="{{ route('user.airtime.buy_airtime') }}">Click Here </a>
-                                {{-- </span> --}}
                             </div>
-                          
                         </div>
                     </div>
                 </div>
