@@ -270,7 +270,7 @@
                             <div class="mb-2">Plan</div>
                             <div class="text-gray-500 dark:text-white/70 mb-1 text-xs">
                                 <span
-                                    class="text-gray-800 font-semibold text-lg leading-none align-bottom dark:text-white">
+                                    class="text-gray-800 text-sm leading-none align-bottom dark:text-white">
                                     {{ $user->user_plan->updated_user_plan_name ?? $user->user_plan->user_plan_name  }}
                                 </span>
                             </div>
@@ -307,7 +307,7 @@
                             <div class="mb-2">Transactions</div>
                             <div class="text-gray-500 dark:text-white/70 mb-1 text-xs">
                                 <span
-                                    class="text-gray-800 font-semibold text-lg leading-none align-bottom dark:text-white">
+                                    class="text-gray-800 text-sm leading-none align-bottom dark:text-white">
                                     {{ number_format( count($transactions))  }}
                                 </span>
                             </div>
@@ -351,7 +351,7 @@
                             </div>
                             <div class="text-gray-500 dark:text-white/70 mb-1 text-xs flex items-center justify-between  space-x-3">
                                 <span
-                                    class="text-gray-800 font-semibold text-lg leading-none align-bottom dark:text-white">
+                                    class="text-gray-800 text-sm leading-none align-bottom dark:text-white">
                                     &#8358; {{ number_format($user->main_wallet,2) ?? 0  }}
                                 </span>
                                 <div> 
