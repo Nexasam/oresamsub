@@ -59,7 +59,7 @@
                     @else
                         
                     @endif
-                     <a class="ti-btn ti-btn-primary w-1/2" href="https://api.whatsapp.com/send?phone={{ session()->get('whatsapp_support_number') }}&text=Hello,%20Please%20I%20want%20to%20fund%20my%20wallet%20on%20your%20platform">Click here to reach us on whatsapp</a>
+                     <a class="ti-btn ti-btn-primary w-full md:w-1/3" href="https://api.whatsapp.com/send?phone={{ session()->get('whatsapp_support_number') }}&text=Hello,%20Please%20I%20want%20to%20fund%20my%20wallet%20on%20your%20platform">Click here to reach us on whatsapp</a>
 
                   </p>
                 </div>
