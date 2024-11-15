@@ -49,6 +49,16 @@
                   <h5 class="box-title">Fund wallet using  <b>{{ $funding_option->funding_option_name }}</b></h5>
                   <b>Please note:</b>
                   <p>You can also make a direct payment to our bank account and your wallet will be credited. <br>
+                    @if (env('APP_NAME') == 'OresamSub')
+                        Here's the details: <br>
+                        {{-- 9163128718 <br>
+                        Moniepoint  <br> --}}
+                        3069976671 <br>
+                        First Bank  <br> 
+                        Olusola Samuel Adebunmi
+                    @else
+                        
+                    @endif
                      <a class="ti-btn ti-btn-primary w-1/2" href="https://api.whatsapp.com/send?phone={{ session()->get('whatsapp_support_number') }}&text=Hello,%20Please%20I%20want%20to%20fund%20my%20wallet%20on%20your%20platform">Click here to reach us on whatsapp</a>
 
                   </p>
