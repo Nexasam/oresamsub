@@ -55,7 +55,7 @@
                         Moniepoint  <br> --}}
                         3069976671 <br>
                         First Bank  <br> 
-                        Olusola Samuel Adebunmi
+                        Olusola Samuel Adebunmi <br> 
                     @else
                         
                     @endif
