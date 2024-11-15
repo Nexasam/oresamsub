@@ -50,12 +50,12 @@
                   <b>Please note:</b>
                   <p>You can also make a direct payment to our bank account and your wallet will be credited. <br>
                     @if (env('APP_NAME') == 'OresamSub')
-                        Here's the details: <br>
+                        <b>Here's the details:</b> <br>
                         {{-- 9163128718 <br>
                         Moniepoint  <br> --}}
-                        3069976671 <br>
-                        First Bank  <br> 
-                        Olusola Samuel Adebunmi <br> 
+                        <b>Account Number:</b> 3069976671 <br>
+                        <b>Bank Name:</b>      First Bank  <br> 
+                        <b>Account Name:</b>   Olusola Samuel Adebunmi <br> 
                     @else
                         
                     @endif
