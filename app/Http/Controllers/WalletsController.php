@@ -44,7 +44,6 @@ class WalletsController extends Controller
 
     private $monnify_token_authorization = 'TUtfUFJPRF9NUU1CS0VOWUpEOjdWWTdaV1M0NVNIVE1aQTk4TVAxSzFRUzIwQ1JWU1pW'; //live
     private $contract_code = '339854561147'; //live
-    
     private $base_url = 'https://api.monnify.com/api/'; 
    
 
@@ -482,13 +481,11 @@ class WalletsController extends Controller
         'bvn' => 'required',
         'account_number' => 'required',
         'pin' => ['required','digits:4'],
-    ]);
+      ]);
     
-    if ($validator->stopOnFirstFailure()->fails()) {
-        return response()->json(['status'=>'-1', 'message'=>$validator->errors()->first(),'data' => $request->all() ]);
-    }
-
-   
+      if ($validator->stopOnFirstFailure()->fails()) {
+          return response()->json(['status'=>'-1', 'message'=>$validator->errors()->first(),'data' => $request->all() ]);
+      }
 
       $bvn = $request->bvn;
       $bvn_account_number = $request->account_number;
