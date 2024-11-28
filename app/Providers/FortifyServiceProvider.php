@@ -84,14 +84,14 @@ class FortifyServiceProvider extends ServiceProvider
                 return view('auth.reset-password');
             });
 
-            $data = [];
-            $site_images_data = SiteImage::get();
+            // $data = [];
+            // $site_images_data = SiteImage::get();
             
-            if(count($site_images_data) > 0){
-                foreach($site_images_data as $site_image){
-                    $data[$site_image->image_category] = $site_image->image_name;
-                }
-            }
+            // if(count($site_images_data) > 0){
+            //     foreach($site_images_data as $site_image){
+            //         $data[$site_image->image_category] = $site_image->image_name;
+            //     }
+            // }
             Fortify::twoFactorChallengeView(function () use ($data) {
             return view('auth.two-factor-challenge')->with($data);
         });
