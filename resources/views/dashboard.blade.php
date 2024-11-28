@@ -285,7 +285,7 @@
                             </div>
                         </div>
                         <div class="">
-                            <div class="mt-5 text-lg">
+                            <div class="text-lg">
                                 <a href="{{ route('user.data.buy_data') }}">Data</a>
                             </div>
                             {{-- <div class="mt-5 text-lg">Data</div> --}}
