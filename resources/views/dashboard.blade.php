@@ -246,12 +246,12 @@
                             
                                 <div class="flex items-center justify-center ecommerce-icon px-0">
                                     <span class="rounded-sm p-4 bg-danger/10">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="fill-white svg6" height="24px"
-                                        viewBox="0 0 24 24" width="24px" fill="#000000">
-                                        <path d="M0 0h24v24H0V0z" fill="none" />
-                                        <path
-                                            d="M16.5 3c-1.74 0-3.41.81-4.5 2.09C10.91 3.81 9.24 3 7.5 3 4.42 3 2 5.42 2 8.5c0 3.78 3.4 6.86 8.55 11.54L12 21.35l1.45-1.32C18.6 15.36 22 12.28 22 8.5 22 5.42 19.58 3 16.5 3zm-4.4 15.55l-.1.1-.1-.1C7.14 14.24 4 11.39 4 8.5 4 6.5 5.5 5 7.5 5c1.54 0 3.04.99 3.57 2.36h1.87C13.46 5.99 14.96 5 16.5 5c2 0 3.5 1.5 3.5 3.5 0 2.89-3.14 5.74-7.9 10.05z" />
-                                    </svg>
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="fill-white svg1" height="24px"
+                                                viewBox="0 0 24 24" width="24px" fill="#000000">
+                                                <path d="M0 0h24v24H0V0z" fill="none" />
+                                                <path
+                                                    d="M15.55 13c.75 0 1.41-.41 1.75-1.03l3.58-6.49c.37-.66-.11-1.48-.87-1.48H5.21l-.94-2H1v2h2l3.6 7.59-1.35 2.44C4.52 15.37 5.48 17 7 17h12v-2H7l1.1-2h7.45zM6.16 6h12.15l-2.76 5H8.53L6.16 6zM7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zm10 0c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z" />
+                                        </svg>
                                     </span>
                                 </div>
                                 <div class="">
@@ -280,21 +280,9 @@
                     <div class="flex space-x-4 rtl:space-x-reverse">
                        
                         <div class="flex items-center justify-center ecommerce-icon px-0">
-                            <span class="rounded-sm p-4 bg-info/10">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="fill-white svg5"
-                                    enable-background="new 0 0 24 24" height="24px" viewBox="0 0 24 24"
-                                    width="24px" fill="#000000">
-                                    <path d="M0,0h24v24H0V0z" fill="none" />
-                                    <g>
-                                        <path
-                                            d="M19.5,3.5L18,2l-1.5,1.5L15,2l-1.5,1.5L12,2l-1.5,1.5L9,2L7.5,3.5L6,2v14H3v3c0,1.66,1.34,3,3,3h12c1.66,0,3-1.34,3-3V2 L19.5,3.5z M15,20H6c-0.55,0-1-0.45-1-1v-1h10V20z M19,19c0,0.55-0.45,1-1,1s-1-0.45-1-1v-3H8V5h11V19z" />
-                                        <rect height="2" width="6" x="9" y="7" />
-                                        <rect height="2" width="2" x="16" y="7" />
-                                        <rect height="2" width="6" x="9" y="10" />
-                                        <rect height="2" width="2" x="16" y="10" />
-                                    </g>
-                                </svg>
-                            </span>
+                            <div class="avatar rounded-sm text-warning p-2.5 bg-warning/20 "><i
+                                class="ti ti-briefcase text-2xl leading-none"></i>
+                            </div>
                         </div>
                         <div class="">
                             <div class="mt-5 text-lg">
