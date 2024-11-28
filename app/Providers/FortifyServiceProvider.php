@@ -95,8 +95,8 @@ class FortifyServiceProvider extends ServiceProvider
             // Fortify::twoFactorChallengeView(function () use ($data) {
             // return view('auth.two-factor-challenge')->with($data);
 
-            Fortify::twoFactorChallengeView(function () use () {
-                return view('auth.two-factor-challenge')->with();
+            Fortify::twoFactorChallengeView(function ()  {
+                return view('auth.two-factor-challenge');
             });
 
 
