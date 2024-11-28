@@ -92,9 +92,12 @@ class FortifyServiceProvider extends ServiceProvider
             //         $data[$site_image->image_category] = $site_image->image_name;
             //     }
             // }
-            Fortify::twoFactorChallengeView(function () use ($data) {
-            return view('auth.two-factor-challenge')->with($data);
-        });
+            // Fortify::twoFactorChallengeView(function () use ($data) {
+            // return view('auth.two-factor-challenge')->with($data);
+
+            Fortify::twoFactorChallengeView(function () use () {
+                return view('auth.two-factor-challenge')->with();
+            });
 
 
        Fortify::authenticateUsing(function(Request $request){
