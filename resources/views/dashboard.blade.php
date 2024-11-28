@@ -291,10 +291,10 @@
                             {{-- <div class="mt-5 text-lg">Data</div> --}}
                             {{-- <div class="flex items-center justify-center">Data</div> --}}
                            
-                            {{-- <div class="text-gray-500 dark:text-white/70 mb-1 text-xs">
+                            <div class="text-gray-500 dark:text-white/70 mb-1 text-xs">
                                   <a class="ti-btn ti-btn-primary block" href="{{ route('user.data.buy_data')}}">Click Here</a>
                                
-                            </div> --}}
+                            </div>
                           
                         </div>
                     </div>
@@ -372,7 +372,7 @@
                                     <a href="{{ route('user.cable_subscription.buy_cable_subscription') }}">Cable</a>
                                 </div>
                                 <div class="text-gray-500 dark:text-white/70 mb-1 text-xs">
-                                       <a class="ti-btn ti-btn-primary block" href="{{ route('user.airtime.buy_airtime') }}">Click Here </a>
+                                       <a class="ti-btn ti-btn-primary block" href="{{ route('user.cable_subscription.buy_cable_subscription') }}">Click Here </a>
                                 </div>
                             </div>
                      
@@ -412,7 +412,7 @@
                                     <a href="{{ route('user.electricity.buy_electricity_subscription') }}">Electricity</a>
                                 </div>
                                 <div class="text-gray-500 dark:text-white/70 mb-1 text-xs">
-                                       <a class="ti-btn ti-btn-primary block" href="{{ route('user.airtime.buy_airtime') }}">Click Here </a>
+                                       <a class="ti-btn ti-btn-primary block" href="{{ route('user.electricity.buy_electricity_subscription') }}">Click Here </a>
                                 </div>
                             </div>
                      
