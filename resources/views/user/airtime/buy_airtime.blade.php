@@ -200,7 +200,7 @@
                                 <div class="box">
                                     
                                     <div class="box-body">
-                                        <h3><strong> Wallet balance: {{  number_format($user_details->main_wallet,2) }}</strong></h3>
+                                        <h3><strong> Wallet balance: &#8358;{{  number_format($user_details->main_wallet,2) }}</strong></h3>
                                         <br>
                                         <br>
                                         <form>
