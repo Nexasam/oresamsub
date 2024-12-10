@@ -193,6 +193,9 @@
                                     
                                     <div class="box-body">
                                         <form>
+                                             <h4>
+                                              Main Wallet: &#8358;{{  number_format($user_details->main_wallet) }}
+                                             </h4>
                                             <input type="hidden" id="_token" name="_token" value="{{ csrf_token() }}" />
                                             <input type="hidden" id="product_slug" name="product_slug" value="data" />
                                             
