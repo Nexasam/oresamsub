@@ -192,11 +192,11 @@
                                 <div class="box">
                                     
                                     <div class="box-body">
+                                        <h3><strong> Wallet balance: {{  number_format($user_details->main_wallet,2) }}</strong></h3>
+                                        <br>
+                                        <br>
                                         <form>
-                                             <h4>
-                                              Main Wallet: <b>&#8358;{{  number_format($user_details->main_wallet) }}</b>
-                                             </h4>
-                                             <br>
+                                           
                                             <input type="hidden" id="_token" name="_token" value="{{ csrf_token() }}" />
                                             <input type="hidden" id="product_slug" name="product_slug" value="data" />
                                             
