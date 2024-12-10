@@ -200,16 +200,21 @@
                                             <input type="hidden" id="product_plan_category_id" name="product_plan_category_id" value="{{ $plan_category->id }}" />
                                             
                                             <div class="grid w-full lg:w-1/2 lg:grid-cols-1 gap-6 space-y-4 lg:space-y-0">
-                                                
-                                                <div class="space-y-2">
-                                                    <label class="ti-form-label mb-0">Choose Wallet</label>
-                                                    <select required id="wallet_category" name="wallet_category" class="my-auto ti-form-select">
-                                                        <option value="">Select</option>
-                                                         <option value="main_wallet">Main Wallet - &#8358;{{  number_format($user_details->main_wallet) }}</option>                                        
-                                                         <option value="data_wallet">Data Wallet</option>                                        
-                                                     
-                                                    </select>
-                                                </div>
+                                      
+                                                @if (env('APP_NAME') == 'Edsub')
+                                                  <input type="hidden" class="my-auto ti-form-input" value="main_wallet" required id="wallet_category" name="wallet_category">
+                                                @else
+                                                  <div class="space-y-2">
+                                                      <label class="ti-form-label mb-0">Choose Wallet</label>
+                                                      <select required id="wallet_category" name="wallet_category" class="my-auto ti-form-select">
+                                                          <option value="">Select</option>
+                                                          <option value="main_wallet">Main Wallet - &#8358;{{  number_format($user_details->main_wallet) }}</option>                                        
+                                                          <option value="data_wallet">Data Wallet</option>                                        
+                                                      
+                                                      </select>
+                                                  </div>
+                                                @endif
+                                               
     
                     
                                                 <div class="space-y-2">
