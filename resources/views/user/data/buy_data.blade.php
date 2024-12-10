@@ -217,12 +217,16 @@
                                                         @endforeach
                                                       </select>
                                                 </div>
-                                                <div class="space-y-2">
-                                                     <label class="p-3 flex w-full bg-white border border-gray-200 rounded-sm text-sm focus:border-primary focus:ring-primary dark:bg-bgdark dark:border-white/10 dark:text-white/70">
+
+                                                @if (env('APP_NAME') != 'Edsub')
+                                                  <div class="space-y-2">
+                                                    <label class="p-3 flex w-full bg-white border border-gray-200 rounded-sm text-sm focus:border-primary focus:ring-primary dark:bg-bgdark dark:border-white/10 dark:text-white/70">
                                                           <input type="checkbox" class="ti-form-checkbox mt-0.5 pointer-events-none" id="filter_by_plan_category">
                                                           <span class="text-sm text-gray-500 ms-2 dark:text-white/70">Filter by plan categories</span>
                                                         </label>
-                                                </div>
+                                                  </div>
+                                                @endif
+                                            
 
                                              
                     
