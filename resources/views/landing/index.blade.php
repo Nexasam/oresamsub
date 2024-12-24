@@ -414,13 +414,13 @@
         </div>
     </section>
 
-    
+
     {{-- FOR THE NOW, WE USE ANALYTICS AS EASY STEPS FOR AYANFE'S WEBSITE --}}
     @if (env('APP_NAME') == 'QuickConnect')
             <section id="milestone111"  style="color: white; ">
                 <div class="row">
                     <div class="col-12 -pt-4">
-                            <h1 class=" text-center" style="color: black;">Get to know our products in 3 easy steps {{ env('APP_NAME') }}</h1>
+                            <h1 class=" text-center" style="color: black;">Get to know our products in 3 easy steps</h1>
                     </div>
                 </div>
                 <div class="container mt-3" id="analyti">
