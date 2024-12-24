@@ -32,5 +32,5 @@ Schedule::command('migrate --force')->everyMinute();
 Schedule::command(ProcessPendingAirtimeTransactions::class)->everyFifteenSeconds()->withoutOverlapping();
 Schedule::command(ZerorizeNegativeBalances::class)->everyTenSeconds()->withoutOverlapping();
 Schedule::command(SendNewRegistrationEmail::class)->everyFiveMinutes()->withoutOverlapping();
-Schedule::command(ClearErrorLogs::class)->everyFifteenSeconds()->withoutOverlapping();
+// Schedule::command(ClearErrorLogs::class)->everyFifteenSeconds()->withoutOverlapping();
 
