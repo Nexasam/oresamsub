@@ -12,9 +12,16 @@ Artisan::command('inspire', function () {
     $this->comment(Inspiring::quote());
     // Schedule::command('php artisan migrate')->everyMinute();
     
+   
+    
 })->purpose('Display an inspiring quote')->hourly();
 
-Schedule::command('log:clear --force')->everyMinute();
+
+
+
+
+// Schedule::command('log:clear --force')->everyMinute();
+
 Schedule::command('migrate --force')->everyMinute();
 Schedule::command(ProcessPendingAirtimeTransactions::class)->everyFifteenSeconds()->withoutOverlapping();
 Schedule::command(ZerorizeNegativeBalances::class)->everyTenSeconds()->withoutOverlapping();
