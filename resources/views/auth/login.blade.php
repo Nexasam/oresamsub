@@ -141,7 +141,13 @@
     <div class="grid grid-cols-12 gap-6 w-full h-full">
         <div class="lg:col-span-6 col-span-12 hidden lg:block relative">
             <div class="cover relative w-full h-full z-[1]">
-                <img src="{{ asset(env('APP_ASSETS_BASE_URL').'img/authentication/auth.jpg') }}" alt="logo" class="object-cover mx-auto h-full">
+                @if (isset($login_image) && $login_image != '')
+                   <img src="{{ asset(env('APP_ASSETS_BASE_URL').'landing_page_assets/img/authentication/login/'.$login_image) }}" alt="login" class="object-cover mx-auto h-full">
+                    
+                @else
+                  <img src="{{ asset(env('APP_ASSETS_BASE_URL').'img/authentication/auth.jpg') }}" alt="login" class="object-cover mx-auto h-full">
+                    
+                @endif
             </div>
         </div>
         <div class="lg:col-span-6 col-span-12">

@@ -440,6 +440,28 @@ class AdminSettingsController extends Controller
             return redirect()->back();
           }
         }
+
+        if($request->hasFile('login_image')){
+          //first cleanup directory
+          $about_current_image = SiteImage::where('image_category','login_image')->first();
+          if($about_current_image){
+            @unlink(public_path('assets/landing_page_assets/img/authentication/login/'.$about_current_image->image_name));              
+          }
+
+
+          $login_image = 'login_image_'.time().'.'.$request->login_image->extension();
+          $checkupload = $request->login_image->move(public_path('assets/landing_page_assets/img/authentication/login'), $login_image);
+          if($checkupload){
+            SiteImage::updateOrCreate([
+              'image_category' => 'login_image'
+              ],[
+              'image_name' => $login_image
+            ]);
+          }else{
+            Session::flash('failure','Site images upload could not be completed... Check login image');
+            return redirect()->back();
+          }
+        }
    
         Session::flash('success','Site images successfully updated');
         return redirect()->back();

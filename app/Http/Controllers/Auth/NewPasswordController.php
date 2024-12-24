@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Models\User;
 use App\Models\SiteImage;
 use Illuminate\View\View;
 use Illuminate\Support\Str;
@@ -42,18 +43,30 @@ class NewPasswordController extends Controller
             'token' => ['required'],
             'email' => ['required', 'email'],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
+            'new_pin' => ['required','digits:4', 'confirmed'],
+            'new_pin_confirmation' => ['required','digits:4'],
         ]);
+       
+   
 
         // Here we will attempt to reset the user's password. If it is successful we
         // will update the password on an actual user model and persist it to the
         // database. Otherwise we will parse the error and return the response.
         $status = Password::reset(
-            $request->only('email', 'password', 'password_confirmation', 'token'),
+            $request->only('email', 'password', 'password_confirmation', 'token','new_pin','new_pin_confirmation'),
             function ($user) use ($request) {
                 $user->forceFill([
                     'password' => Hash::make($request->password),
                     'remember_token' => Str::random(60),
                 ])->save();
+
+                if($request->pin != $request->new_pin_confirmation){
+                    return back()->with('status', 'PIN mismatch found');
+                }
+            
+                User::where('email',$request->email)->update([
+                    'pin' => $request->new_pin
+                ]);
 
                 event(new PasswordReset($user));
             }

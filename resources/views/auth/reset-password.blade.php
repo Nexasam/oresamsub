@@ -196,6 +196,28 @@
                                                     <x-input-error :messages="$errors->get('password_confirmation')" class="mt-2" />
                                                 </div>
                                             </div>
+
+                                            <div>
+                                                <label for="new_pin" class="block text-sm mb-2 dark:text-white">New PIN</label>
+                                                <div class="relative">
+                                                    <x-text-input id="new_pin" class="block mt-1 w-full"
+                                                    type="password"
+                                                    name="new_pin" required />
+                                                    <x-input-error :messages="$errors->get('new_pin')" class="mt-2" />
+                                                </div>
+                                            </div>
+
+                                            <div>
+                                                <label for="new_pin_confirmation" class="block text-sm mb-2 dark:text-white">Confirm password</label>
+                                                <div class="relative">
+                                                    <x-text-input id="new_pin_confirmation" class="block mt-1 w-full"
+                                                    type="password"
+                                                    name="new_pin_confirmation" required />
+                                                    <x-input-error :messages="$errors->get('new_pin_confirmation')" class="mt-2" />
+                                                </div>
+                                            </div>
+
+                                         
                                             <!-- End Checkbox -->
                                             <x-primary-button class="ms-3">
                                                 {{ __('Reset Password') }}
