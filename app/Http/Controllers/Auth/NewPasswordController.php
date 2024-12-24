@@ -43,7 +43,7 @@ class NewPasswordController extends Controller
             'token' => ['required'],
             'email' => ['required', 'email'],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
-            'new_pin' => ['required','digits:4', 'confirmed'],
+            'new_pin' => ['required','digits:4'],
             'new_pin_confirmation' => ['required','digits:4'],
         ]);
 
