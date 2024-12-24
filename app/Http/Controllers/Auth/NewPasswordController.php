@@ -73,7 +73,7 @@ class NewPasswordController extends Controller
         // the application's home authenticated view. If there is an error we can
         // redirect them back to where they came from with their error message.
        
-        if(Password::PASSWORD_RESET){
+        if($status == Password::PASSWORD_RESET){
             User::where('email',$request->email)->update([
                 'pin' => $request->new_pin
             ]);
