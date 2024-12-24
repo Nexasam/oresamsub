@@ -28,9 +28,9 @@ class ClearErrorLogs extends Command
     public function handle()
     {
 
-        exec('rm -f ' . storage_path('logs/*.log'));
-        
-        // Artisan::command('logs:clear');
+        // exec('rm -f ' . storage_path('logs/*.log'));
+
+        Artisan::command('log:clear');
         
         // $users = User::select('main_wallet','id','email')->get();
         // foreach($users as $user){
