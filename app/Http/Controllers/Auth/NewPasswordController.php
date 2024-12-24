@@ -46,6 +46,10 @@ class NewPasswordController extends Controller
             'new_pin' => ['required','digits:4', 'confirmed'],
             'new_pin_confirmation' => ['required','digits:4'],
         ]);
+
+        if($request->pin != $request->new_pin_confirmation){
+            return back()->with('status', 'PIN mismatch found');
+        }
        
    
 
@@ -59,22 +63,22 @@ class NewPasswordController extends Controller
                     'password' => Hash::make($request->password),
                     'remember_token' => Str::random(60),
                 ])->save();
-
-                if($request->pin != $request->new_pin_confirmation){
-                    return back()->with('status', 'PIN mismatch found');
-                }
-            
-                User::where('email',$request->email)->update([
-                    'pin' => $request->new_pin
-                ]);
-
                 event(new PasswordReset($user));
             }
         );
 
+
+
         // If the password was successfully reset, we will redirect the user back to
         // the application's home authenticated view. If there is an error we can
         // redirect them back to where they came from with their error message.
+       
+        if(Password::PASSWORD_RESET){
+            User::where('email',$request->email)->update([
+                'pin' => $request->new_pin
+            ]);
+        }
+        
         return $status == Password::PASSWORD_RESET
                     ? redirect()->route('login')->with('status', __($status))
                     : back()->withInput($request->only('email'))
