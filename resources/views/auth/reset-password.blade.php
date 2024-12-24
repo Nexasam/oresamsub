@@ -208,7 +208,7 @@
                                             </div>
 
                                             <div>
-                                                <label for="new_pin_confirmation" class="block text-sm mb-2 dark:text-white">Confirm password</label>
+                                                <label for="new_pin_confirmation" class="block text-sm mb-2 dark:text-white">Confirm New PIN</label>
                                                 <div class="relative">
                                                     <x-text-input id="new_pin_confirmation" class="block mt-1 w-full"
                                                     type="password"
