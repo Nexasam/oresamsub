@@ -47,7 +47,7 @@ class NewPasswordController extends Controller
             'new_pin_confirmation' => ['required','digits:4'],
         ]);
 
-        if($request->pin != $request->new_pin_confirmation){
+        if($request->new_pin != $request->new_pin_confirmation){
             return back()->with('status', 'PIN mismatch found');
         }
        
