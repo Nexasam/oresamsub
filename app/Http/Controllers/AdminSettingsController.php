@@ -443,9 +443,9 @@ class AdminSettingsController extends Controller
 
         if($request->hasFile('login_image')){
           //first cleanup directory
-          $about_current_image = SiteImage::where('image_category','login_image')->first();
-          if($about_current_image){
-            @unlink(public_path('assets/landing_page_assets/img/authentication/login/'.$about_current_image->image_name));              
+          $login_image_curr = SiteImage::where('image_category','login_image')->first();
+          if($login_image_curr){
+            @unlink(public_path('assets/landing_page_assets/img/authentication/login/'.$login_image_curr->image_name));              
           }
 
 
@@ -459,6 +459,29 @@ class AdminSettingsController extends Controller
             ]);
           }else{
             Session::flash('failure','Site images upload could not be completed... Check login image');
+            return redirect()->back();
+          }
+        }
+
+
+        if($request->hasFile('signup_image')){
+          //first cleanup directory
+          $signup_image_curr = SiteImage::where('image_category','signup_image')->first();
+          if($signup_image_curr){
+            @unlink(public_path('assets/landing_page_assets/img/authentication/signup/'.$signup_image_curr->image_name));              
+          }
+
+
+          $signup_image = 'signup_image_'.time().'.'.$request->signup_image->extension();
+          $checkupload = $request->signup_image->move(public_path('assets/landing_page_assets/img/authentication/signup'), $signup_image);
+          if($checkupload){
+            SiteImage::updateOrCreate([
+              'image_category' => 'signup_image'
+              ],[
+              'image_name' => $signup_image
+            ]);
+          }else{
+            Session::flash('failure','Site images upload could not be completed... Check signup image');
             return redirect()->back();
           }
         }
