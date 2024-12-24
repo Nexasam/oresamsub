@@ -179,43 +179,46 @@
                               </div>
                               
                               <div class="space-y-2">
-                              <label class="ti-form-label mb-0">Title analytics 1</label>
+                              <label class="ti-form-label mb-0">{{ env('APP_NAME') == 'QuickConnect' ? 'Step 1 title for site usage' : 'Title analytics 1'  }} </label>
                               <input value="{{ $title_analytics1 }}" type="text"  name="title_analytics1" class="my-auto ti-form-input" placeholder="">
                               </div>
 
                               <div class="space-y-2">
                               <label class="ti-form-label mb-0">Description for title analytics 1</label>
+                              <label class="ti-form-label mb-0">{{ env('APP_NAME') == 'QuickConnect' ? 'Step 1 description for site usage' : 'Description for Title analytics 1'  }} </label>
+
                               <input value="{{ $value_analytics1 }}" type="text"  name="value_analytics1" class="my-auto ti-form-input" placeholder="">
                               </div>
 
                               <div class="space-y-2">
-                                <label class="ti-form-label mb-0">Title analytics 2</label>
+                                <label class="ti-form-label mb-0">{{ env('APP_NAME') == 'QuickConnect' ? 'Step 2 title for site usage' : 'itle analytics 2'  }} </label>
                                 <input value="{{ $title_analytics2 }}" type="text"  name="title_analytics2" class="my-auto ti-form-input" placeholder="">
                                 </div>
   
                                 <div class="space-y-2">
-                                <label class="ti-form-label mb-0">Description for title analytics 2</label>
-                                <input value="{{ $value_analytics2 }}" type="text"  name="value_analytics2" class="my-auto ti-form-input" placeholder="">
+                                  <label class="ti-form-label mb-0">{{ env('APP_NAME') == 'QuickConnect' ? 'Step 2 description for site usage' : 'Description for Title analytics 2'  }} </label>
+                                  <input value="{{ $value_analytics2 }}" type="text"  name="value_analytics2" class="my-auto ti-form-input" placeholder="">
                               </div>
 
                               <div class="space-y-2">
-                                  <label class="ti-form-label mb-0">Title analytics 3</label>
+                                  <label class="ti-form-label mb-0">{{ env('APP_NAME') == 'QuickConnect' ? 'Step 3 title for site usage' : 'Title analytics 3'  }} </label>
+
                                   <input value="{{ $title_analytics3 }}" type="text"  name="title_analytics3" class="my-auto ti-form-input" placeholder="">
                               </div>
     
                               <div class="space-y-2">
-                                  <label class="ti-form-label mb-0">Description for title analytics 3</label>
+                                  <label class="ti-form-label mb-0">{{ env('APP_NAME') == 'QuickConnect' ? 'Step 3 description for site usage' : 'Description for Title analytics 3'  }} </label>
                                   <input value="{{ $value_analytics3 }}" type="text"  name="value_analytics3" class="my-auto ti-form-input" placeholder="">
                               </div>
 
 
                               <div class="space-y-2">
-                                    <label class="ti-form-label mb-0">Title analytics 4</label>
+                                    <label class="ti-form-label mb-0">{{ env('APP_NAME') == 'QuickConnect' ? 'Disregard this.' : 'Title analytics 4'  }} </label>
                                     <input value="{{ $title_analytics4 }}" type="text"  name="title_analytics4" class="my-auto ti-form-input" placeholder="">
                               </div>
       
                                 <div class="space-y-2">
-                                    <label class="ti-form-label mb-0">Description for title analytics 4</label>
+                                    <label class="ti-form-label mb-0">{{ env('APP_NAME') == 'QuickConnect' ? 'Disregard this.' : 'Description for Title analytics 4'  }} </label>
                                     <input value="{{ $value_analytics4 }}" type="text"  name="value_analytics4" class="my-auto ti-form-input" placeholder="">
                                 </div>
 

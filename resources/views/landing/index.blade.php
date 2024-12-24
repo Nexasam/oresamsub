@@ -106,6 +106,17 @@
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
+
+            
+        }
+
+        #milestone111 {
+            background: linear-gradient(rgba({{ $site_landing_analytics_color_r ?? 90 }},{{ $site_landing_analytics_color_g ?? 102}},{{ $site_landing_analytics_color_b ?? 204}}, 0.85), rgba({{ $site_landing_analytics_color_r ?? 90 }},{{ $site_landing_analytics_color_g ?? 102}},{{ $site_landing_analytics_color_b ?? 204}}, 0.85)), url({{  env('APP_URL').'assets/landing_page_assets/img/nil.jpg' }});
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+
+            
         }
 
         /* #reviews11 {
@@ -156,6 +167,10 @@
 
          .my-float{
          margin-top:16px;
+         }
+
+         #analyti{
+            width: 100%;
          }
    </style>
 
@@ -399,30 +414,85 @@
         </div>
     </section>
 
-    <!-- MILESTONE -->
-    {{-- background-color: {{ isset($site_primary_color) && $site_primary_color != NULL ? $site_primary_color : "#5a66f2" }} --}}
-    <section id="milestone11"  style="color: white; ">
-        <div class="container" >
-            <div class="row text-center justify-content-center gy-4">
-                <div class="col-lg-2 col-sm-6" >
+    
+    {{-- FOR THE NOW, WE USE ANALYTICS AS EASY STEPS FOR AYANFE'S WEBSITE --}}
+    @if (env('APP_NAME') == 'QuickConnect')
+            <section id="milestone111"  style="color: white; ">
+                <div class="row">
+                    <div class="col-12 -pt-4">
+                            <h1 class=" text-center" style="color: black;">Get to know our products in 3 easy steps {{ env('APP_NAME') }}</h1>
+                    </div>
+                </div>
+                <div class="container mt-3" id="analyti">
+                    
+                    <div class="row text-center justify-content-start gy-4">
+                        <div class="col-lg-4 col-sm-6" >
+                            <h1 class="display-7" style="color:white;" >{{ $value_analytics1 }}</h1>
+                            <p class="mb-0">{{ $title_analytics1 }}</p>
+                        </div>
+                        <div class="col-lg-4 col-sm-6">
+                            <h1 class="display-7" style="color:white;">{{ $value_analytics2 }}</h1>
+                            <p class="mb-0">{{ $title_analytics2 }}</p>
+                        </div>
+                        <div class="col-lg-4 col-sm-6">
+                            <h1 class="display-7" style="color:white;">{{ $value_analytics3 }}</h1>
+                            <p class="mb-0">{{ $title_analytics3 }}</p>
+                        </div>
+                        {{-- <div class="col-lg-2 col-sm-6">
+                            <h1 class="display-4" style="color:white;">{{ $value_analytics4 }}</h1>
+                            <p class="mb-0">{{ $title_analytics4 }}</p>
+                        </div> --}}
+                    </div>
+                </div>
+            </section>
+
+    @else
+            <section id="milestone11"  style="color: white; ">
+                <div class="container">
+                    <div class="row text-center justify-content-start gy-4">
+                        <div class="col-lg-4 col-sm-6" >
+                            <h1 class="display-4" style="color:white;" >{{ $value_analytics1 }}</h1>
+                            <p class="mb-0">{{ $title_analytics1 }}</p>
+                        </div>
+                        <div class="col-lg-4 col-sm-6">
+                            <h1 class="display-4" style="color:white;">{{ $value_analytics2 }}</h1>
+                            <p class="mb-0">{{ $title_analytics2 }}</p>
+                        </div>
+                        <div class="col-lg-4 col-sm-6">
+                            <h1 class="display-4" style="color:white;">{{ $value_analytics3 }}</h1>
+                            <p class="mb-0">{{ $title_analytics3 }}</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+    @endif
+ 
+
+
+
+    {{-- ANALYTICS BACKUP --}}
+    {{-- @if (env('APP_NAME') != 'QuickConnect') --}}
+    {{-- <section id="milestone11"  style="color: white; ">
+        <div class="container" id="analyti">
+            <div class="row text-center justify-content-start gy-4">
+                <div class="col-lg-4 col-sm-6" >
                     <h1 class="display-4" style="color:white;" >{{ $value_analytics1 }}</h1>
                     <p class="mb-0">{{ $title_analytics1 }}</p>
                 </div>
-                <div class="col-lg-2 col-sm-6">
+                <div class="col-lg-4 col-sm-6">
                     <h1 class="display-4" style="color:white;">{{ $value_analytics2 }}</h1>
                     <p class="mb-0">{{ $title_analytics2 }}</p>
                 </div>
-                <div class="col-lg-2 col-sm-6">
+                <div class="col-lg-4 col-sm-6">
                     <h1 class="display-4" style="color:white;">{{ $value_analytics3 }}</h1>
                     <p class="mb-0">{{ $title_analytics3 }}</p>
                 </div>
-                <div class="col-lg-2 col-sm-6">
-                    <h1 class="display-4" style="color:white;">{{ $value_analytics4 }}</h1>
-                    <p class="mb-0">{{ $title_analytics4 }}</p>
-                </div>
             </div>
         </div>
-    </section>
+    </section> --}}
+    {{-- @endif --}}
+
 
     <section id="services" class="text-center">
         <div class="container">
