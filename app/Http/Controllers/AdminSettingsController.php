@@ -368,6 +368,7 @@ class AdminSettingsController extends Controller
       $validator = Validator::make($request->all(), [
         'hero_image1' => 'nullable|image|mimes:png,jpg,jpeg|max:8048',
         'hero_image2' => 'nullable|image|mimes:png,jpg,jpeg|max:8048',
+        'aboutus_image' => 'nullable|image|mimes:png,jpg,jpeg|max:8048',
       ]);
 
       if ($validator->stopOnFirstFailure()->fails()) {
@@ -414,6 +415,28 @@ class AdminSettingsController extends Controller
             ]);
           }else{
             Session::flash('failure','Site images upload could not be completed... Check hero image 2');
+            return redirect()->back();
+          }
+        }
+
+        if($request->hasFile('aboutus_image')){
+          //first cleanup directory
+          $about_current_image = SiteImage::where('image_category','aboutus_image')->first();
+          if($about_current_image){
+            @unlink(public_path('assets/landing_page_assets/img/aboutus_image/'.$about_current_image->image_name));              
+          }
+
+
+          $aboutus_image = 'aboutus_image_'.time().'.'.$request->aboutus_image->extension();
+          $checkupload = $request->aboutus_image->move(public_path('assets/landing_page_assets/img/aboutus_image'), $aboutus_image);
+          if($checkupload){
+            SiteImage::updateOrCreate([
+              'image_category' => 'aboutus_image'
+              ],[
+              'image_name' => $aboutus_image
+            ]);
+          }else{
+            Session::flash('failure','Site images upload could not be completed... Check about us image');
             return redirect()->back();
           }
         }

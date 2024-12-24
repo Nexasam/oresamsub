@@ -450,8 +450,24 @@
                               <input type="file"  class="my-auto ti-form-input" name="hero_image2" max="100" placeholder="update hero image">
                             </div>
                           </div>
+
                           <div class="grid w-full lg:w-1/2 lg:grid-cols-1 gap-6 space-y-4 lg:space-y-0">
-                            <button type="submit" class="ti-btn ti-btn-primary w-full">Update Hero Images</button>
+                            <div class="space-y-2 mt-5">
+                              @if (isset($aboutus_image))
+                                {{-- hidden dark:block --}}
+                                <img src="{{ env('APP_URL').'assets/landing_page_assets/img/aboutus_image/'.$aboutus_image }}" alt="logo"
+                                class="w-20 h-20 " alt="logo" class=""> 
+                              @else
+                                  No upload found.
+                                  <br>  
+                              @endif
+                              <label class="ti-form-label mb-0">Update About Us Image</label>
+                              <input type="file"  class="my-auto ti-form-input" name="aboutus_image" max="100" placeholder="update aboutus image">
+                            </div>
+                          </div>
+                          
+                          <div class="grid w-full lg:w-1/2 lg:grid-cols-1 gap-6 space-y-4 lg:space-y-0">
+                            <button type="submit" class="ti-btn ti-btn-primary w-full">Update Site Images</button>
                           </div>
                         </form>
                       </div> 

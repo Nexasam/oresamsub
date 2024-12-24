@@ -38,7 +38,7 @@ class UserRegistrationNotification extends Mailable
      * Get the message content definition.
      */
     public function content(): Content
-    {
+    {   
         return new Content(
             markdown: 'mail.info.user_registration_notification',
         );

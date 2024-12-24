@@ -323,7 +323,13 @@
             {{-- @if (env('APP_NAME') == 'OresamSusdfjlsdfjlsdfb') --}}
                 <div class="row">
                     <div class="col-lg-6">
-                        <img src="{{ asset(env('APP_ASSETS_BASE_URL').'img/authentication/auth11.jpg') }}" alt="">
+                        @if (isset($aboutus_image))
+                          {{-- {{ asset(env('APP_ASSETS_BASE_URL').'landing_page_assets/img/aboutus_image/'.$aboutus_image) }} --}}
+                          <img src="{{ asset(env('APP_ASSETS_BASE_URL').'landing_page_assets/img/aboutus_image/'.$aboutus_image) }}" alt="">
+                            
+                        @else
+                          <img src="{{ asset(env('APP_ASSETS_BASE_URL').'img/authentication/auth11.jpg') }}" alt="">
+                        @endif
                     </div>
                     <div class="col-lg-6 mt-5">
                         <div class="intro">
