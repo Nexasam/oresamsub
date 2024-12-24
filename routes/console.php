@@ -1,9 +1,10 @@
 <?php
 
-use App\Console\Commands\SendNewRegistrationEmail;
 use Illuminate\Foundation\Inspiring;
 use Illuminate\Support\Facades\Artisan;
+use App\Console\Commands\ClearErrorLogs;
 use Illuminate\Support\Facades\Schedule;
+use App\Console\Commands\SendNewRegistrationEmail;
 use App\Console\Commands\ZerorizeNegativeBalances;
 use App\Console\Commands\ProcessPendingAirtimeTransactions;
 
@@ -17,6 +18,13 @@ Artisan::command('inspire', function () {
 })->purpose('Display an inspiring quote')->hourly();
 
 
+// Artisan::command('logs:clear', function() {
+    
+//     exec('rm -f ' . storage_path('logs/*.log'));
+
+//     exec('rm -f ' . base_path('*.log'));
+    
+// })->describe('Clear log files');
 
 
 
@@ -26,4 +34,5 @@ Schedule::command('migrate --force')->everyMinute();
 Schedule::command(ProcessPendingAirtimeTransactions::class)->everyFifteenSeconds()->withoutOverlapping();
 Schedule::command(ZerorizeNegativeBalances::class)->everyTenSeconds()->withoutOverlapping();
 Schedule::command(SendNewRegistrationEmail::class)->everyFiveMinutes()->withoutOverlapping();
+Schedule::command(ClearErrorLogs::class)->everyFifteenSeconds()->withoutOverlapping();
 
