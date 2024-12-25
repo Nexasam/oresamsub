@@ -27,7 +27,7 @@ Artisan::command('inspire', function () {
 
 // Schedule::command('log:clear --force')->everyMinute();
 
-Schedule::command('clear-error-logs')->everyMinute();
+// Schedule::command('clear-error-logs')->everyMinute()->withoutOverlapping();
 Schedule::command('migrate --force')->everyMinute();
 Schedule::command(ProcessPendingAirtimeTransactions::class)->everyFifteenSeconds()->withoutOverlapping();
 Schedule::command(ZerorizeNegativeBalances::class)->everyTenSeconds()->withoutOverlapping();
