@@ -34,8 +34,8 @@ class ProductWebhookController extends Controller
             
                         // if( ($response_decode['event_data']['Detail']['success'] == 'true' &&  ($response_decode['event_data']['Detail']['info']['Balance_before'] > $response_decode['event_data']['Detail']['info']['Balance_after'] )  ) ){          
                         ProductWebhook::create([
-                            'product_type' => $response_decode['event_data']['Detail']['info']['Type'],
-                            'status' => $response_decode['event_data']['Detail']['success'],
+                            'product_type' => $response_decode['Detail']['info']['Type'],
+                            'status' => $response_decode['Detail']['success'],
                             'response' => $response,
                         ]);  
                         // }else{
