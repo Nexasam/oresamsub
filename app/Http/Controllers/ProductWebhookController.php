@@ -32,12 +32,14 @@ class ProductWebhookController extends Controller
                     DB::beginTransaction();
                     try{
             
-                        // if( ($response_decode['event_data']['Detail']['success'] == 'true' &&  ($response_decode['event_data']['Detail']['info']['Balance_before'] > $response_decode['event_data']['Detail']['info']['Balance_after'] )  ) ){          
+                        // if( ($response_decode['Detail']['success'] == 'true' &&  ($response_decode['Detail']['info']['Balance_before'] > $response_decode['Detail']['info']['Balance_after'] )  ) ){          
                         ProductWebhook::create([
                             'product_type' => $response_decode['Detail']['info']['Type'],
                             'status' => $response_decode['Detail']['success'],
                             'response' => $response,
                         ]);  
+
+                        DB::commit();
                         // }else{
                         //   logger('This webhook did not update wallet because its likely that the payment has been processed before');
                         // }
