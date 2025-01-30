@@ -34,7 +34,7 @@ Route::get('v1/external/products', [ApiIntegrationController::class, 'products']
 // Route::post('v1/external/auth_check', [ApiIntegrationController::class, 'auth_check'])->name('mobile_auth_check');
 
 
-// validate_user token
+// validate_user tokeng
 Route::group(['prefix'=>'v1/external','as'=>'api.','middleware' =>['auth:sanctum','validate_user']], function(){
     Route::post('/phone_verification', [ApiIntegrationController::class, 'phone_verification'])->name('phone_verification');
     Route::post('/confirm_phone_verification', [ApiIntegrationController::class, 'confirm_phone_verification'])->name('confirm_phone_verification');
