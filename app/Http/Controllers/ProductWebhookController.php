@@ -16,10 +16,10 @@ class ProductWebhookController extends Controller
 
         //log for now, to see the flow:
         //for just oresamsub for now
-        header('Content-Type: application/json');
-        $response = file_get_contents('php://input');
+        // header('Content-Type: application/json');
+        // $response = file_get_contents('php://input');
         // $requestData = json_decode($request->getContent(), true);
-        logger($response);
+        // logger($response);
     
 
         if(env('APP_NAME') == 'OresamSub'){
