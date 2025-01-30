@@ -23,7 +23,7 @@ Route::get('/user', function (Request $request) {
 
 //FIXED WEBHOOK
 Route::post('admin/wallets/crystal_pay_webhook/{id}', [WalletsController::class, 'webhook'])->name('admin.wallet.crystalpay.webhook');
-Route::post('admin/oresamsub', [ProductWebhookController::class, 'product_webhook'])->name('admin.product.webhook');
+// Route::post('admin/oresamsub', [ProductWebhookController::class, 'product_webhook'])->name('admin.product.webhook');
 //WEBHOOK
 
 
