@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ProductWebhookController;
 use App\Models\ProductPlan;
 use Illuminate\Http\Request;
 use App\Models\ProductPlanCategory;
@@ -22,6 +23,7 @@ Route::get('/user', function (Request $request) {
 
 //FIXED WEBHOOK
 Route::post('admin/wallets/crystal_pay_webhook/{id}', [WalletsController::class, 'webhook'])->name('admin.wallet.crystalpay.webhook');
+Route::post('admin/products/oresamsub', [ProductWebhookController::class, 'product_webhook'])->name('admin.product.webhook');
 //WEBHOOK
 
 
