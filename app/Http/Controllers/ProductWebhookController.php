@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Session;
 
 class ProductWebhookController extends Controller
 {
-    public function product_webhook($id,Request $request){
+    public function product_webhook(Request $request){
 
         //log for now, to see the flow:
         //for just oresamsub for now
@@ -22,33 +22,33 @@ class ProductWebhookController extends Controller
         // logger($response);
     
 
-        if(env('APP_NAME') == 'OresamSub'){
+        // if(env('APP_NAME') == 'OresamSub'){
                     header('Content-Type: application/json');
                     $response = file_get_contents('php://input');
                     $response_decode = json_decode($response,true);
-                    logger('testing webhook start');
+                    logger('testing product webhook start');
                     logger($response);
             
-                    DB::beginTransaction();
-                    try{
+                    // DB::beginTransaction();
+                    // try{
             
-                        // if( ($response_decode['event_data']['Detail']['success'] == 'true' &&  ($response_decode['event_data']['Detail']['info']['Balance_before'] > $response_decode['event_data']['Detail']['info']['Balance_after'] )  ) ){          
-                        ProductWebhook::create([
-                            'product_type' => $response_decode['event_data']['Detail']['info']['type'],
-                            'status' => $response_decode['event_data']['Detail']['success'],
-                            'response' => $response,
-                        ]);  
-                        // }else{
-                        //   logger('This webhook did not update wallet because its likely that the payment has been processed before');
-                        // }
+                    //     // if( ($response_decode['event_data']['Detail']['success'] == 'true' &&  ($response_decode['event_data']['Detail']['info']['Balance_before'] > $response_decode['event_data']['Detail']['info']['Balance_after'] )  ) ){          
+                    //     ProductWebhook::create([
+                    //         'product_type' => $response_decode['event_data']['Detail']['info']['type'],
+                    //         'status' => $response_decode['event_data']['Detail']['success'],
+                    //         'response' => $response,
+                    //     ]);  
+                    //     // }else{
+                    //     //   logger('This webhook did not update wallet because its likely that the payment has been processed before');
+                    //     // }
             
-                    }catch(Exception $ex){
-                        logger($ex->getMessage().' on line '.$ex->getLine());
-                        DB::rollBack();
-                    }
+                    // }catch(Exception $ex){
+                    //     logger($ex->getMessage().' on line '.$ex->getLine());
+                    //     DB::rollBack();
+                    // }
                 
-                    logger('testing webhook end');
-        }
+                    logger('testing product webhook end');
+        // }
 
        
   }
