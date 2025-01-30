@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Middleware\AuthenticateExternalIntegration;
 use Illuminate\Support\Facades\Route;
 use App\Http\Middleware\RoleUserAccess;
 use App\Http\Middleware\RoleAdminAccess;
@@ -36,7 +37,7 @@ Route::middleware('guest')->group(function () {
 
     Route::post('reset-password', [NewPasswordController::class, 'store'])
                 ->name('password.store');
-})->withoutMiddleware([RoleUserAccess::class,RoleAdminAccess::class]);
+})->withoutMiddleware([RoleAdminAccess::class,RoleUserAccess::class]);
 
 Route::middleware('auth')->group(function () {
     Route::get('verify-email', EmailVerificationPromptController::class)
@@ -65,4 +66,4 @@ Route::middleware('auth')->group(function () {
 
     Route::post('logout', [AuthenticatedSessionController::class, 'destroy'])
                 ->name('logout');
-})->withoutMiddleware([RoleUserAccess::class,RoleAdminAccess::class]);
+})->withoutMiddleware([RoleAdminAccess::class,RoleUserAccess::class]);

@@ -13,10 +13,13 @@ class RoleAdminAccess
      *
      * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
      */
-    public function handle(Request $request, Closure $next): Response
+    public function handle(Request $request, Closure $next): Response|Array
     {
-        // dd(auth()->user()->role->role_name);
+
     
+        //TODO: later
+        // $currentUrlWithoutQuery = URL::current();
+        // $exceptions_for_admin = ['user.airtime.buy_airtime','user/airtime/buy_data','user.cable_subscription.buy_cable_subscription']
         if(auth()->user()->role->role_name != 'Admin'){
             return redirect()->route('access_denied');
         }

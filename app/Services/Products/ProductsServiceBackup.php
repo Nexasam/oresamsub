@@ -8,7 +8,7 @@ use App\Models\ProductPlan;
 use App\Models\Transaction;
 use App\Models\ProductPlanCategory;
 
-class   ProductsService{
+class   ProductsServiceBackup{
     public function fetch_product_plans($data){
         $network_id = $data['network_id'];
         $amount = $data['amount'];

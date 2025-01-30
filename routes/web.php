@@ -195,6 +195,7 @@ Route::middleware(['auth','verified','admin'])->post('admin/update_webhook_suffi
 Route::middleware(['auth','verified','admin'])->post('admin/manage_automations_keys', [AdminSettingsController::class, 'manage_automations_keys'])->name('admin.settings.manage_automations_keys');
 Route::middleware(['auth','verified','admin'])->post('admin/update_funding_options', [AdminSettingsController::class, 'update_funding_options'])->name('admin.settings.update_funding_options'); //
 Route::middleware(['auth','verified','admin'])->post('admin/settings/update', [AdminSettingsController::class, 'update_settings'])->name('admin.settings.update'); //
+Route::middleware(['auth','verified','admin'])->post('admin/settings/update_api_key', [AdminSettingsController::class, 'update_api_key'])->name('admin.settings.update_api_key'); //
 Route::middleware(['auth','verified','admin'])->post('admin/settings/update_purchase_limit_settings', [AdminSettingsController::class, 'update_purchase_limit_settings'])->name('admin.settings.update_purchase_limit_settings'); //
 Route::middleware(['auth','verified','admin'])->post('admin/add_funding_option_bank_code', [AdminSettingsController::class, 'add_funding_option_bank_code'])->name('admin.settings.add_funding_option_bank_code'); //
 Route::middleware(['auth','verified','admin'])->post('admin/update_site_logo', [AdminSettingsController::class, 'manage_site_logo'])->name('admin.settings.manage_site_logo');

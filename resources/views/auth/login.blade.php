@@ -161,6 +161,15 @@
                     <div class="mt-7 ">
                         <div class="p-4 sm:p-7">
                             
+                            {{--                            
+                                @if ($status)
+                                        <div class= 'font-medium text-sm text-green-600 dark:text-green-400'>
+                                            {{ $status }}
+                                        </div>
+                                @endif 
+                            --}}
+
+
                             @if (  isset($site_logo) && $site_logo != '')
                     
                                     <a href="#" class="header-logo ">

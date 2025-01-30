@@ -187,6 +187,36 @@ class AdminSettingsController extends Controller
       return redirect()->back();
     }
 
+    public function update_api_key(Request $request){
+      $validator = Validator::make($request->all(), [
+        'api_key' => 'required|string',
+      ]);
+      
+
+      if ($validator->stopOnFirstFailure()->fails()) {
+        return redirect()->back()->withErrors($validator)->withInput();
+      }
+
+    
+      $data['api_key'] = $request->api_key;
+      $api_key = Setting::where('field_name','api_key')->first();
+        
+      $api_key ? $api_key->update([
+        'field_value' => $request->api_key
+      ])
+      : Setting::create([
+        'field_name' => 'api_key',
+        'field_value' => $request->api_key,
+      ]);
+      
+
+
+     
+      Session::flash('success','Api key successfully updated');
+
+      return redirect()->back();
+    }
+
     public function update_purchase_limit_settings(Request $request){
       $validator = Validator::make($request->all(), [
         'product_purchase_limit_daily' => 'required|numeric',

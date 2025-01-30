@@ -15,9 +15,11 @@ class RoleUserAccess
      *
      * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
      */
-    public function handle(Request $request, Closure $next): Response
+    public function handle(Request $request, Closure $next): Response|Array
     {
         // dd(auth()->user()->role->role_name);
+        return $request->all();
+
     
         
 

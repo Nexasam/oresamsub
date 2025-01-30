@@ -23,9 +23,9 @@ use App\Models\UserBulkDataPurchase;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\WalletFundingNotification;
 use Illuminate\Support\Facades\Validator;
-use App\Services\Products\ProductsService;
 use App\Services\Automation\MegaSubPlugAutomation\VendData;
 use App\Services\Automation\MegaSubPlugAutomation\MegaSubVendData;
+use App\Http\Services\Api\v1\VendorUsersApi\Products\ProductsService;
 use App\Services\Automation\MegaSubPlugAutomation\MegaSubVendAirtime;
 
 class AirtimeController extends Controller

@@ -31,8 +31,8 @@ class FortifyServiceProvider extends ServiceProvider
             {
                 $users_redirect_after_authentication = Setting::where('field_name','users_redirect_after_authentication')->first();
                 $user_dashboard = $users_redirect_after_authentication == NULL ? 'dashboard' : $users_redirect_after_authentication->field_value;
-                return redirect()->intended('/'.$user_dashboard);
-                // return redirect()->intended('/user/data/buy_dataaa');
+                // return redirect()->intended('/'.$user_dashboard);
+                return redirect()->intended('/dashboard');
                 
             }
         });
@@ -42,9 +42,9 @@ class FortifyServiceProvider extends ServiceProvider
             {
                 $users_redirect_after_authentication = Setting::where('field_name','users_redirect_after_authentication')->first();
                 $user_auth_redirect_page = $users_redirect_after_authentication == NULL ? 'dashboard' : $users_redirect_after_authentication->field_value;
-                return redirect()->intended('/'.$user_auth_redirect_page);
-                // return redirect()->intended('/user/data/buy_dataaa');
-                
+                // return redirect()->intended('/'.$user_auth_redirect_page);
+                return redirect()->intended('/dashboard');
+
             }
         });
 
@@ -53,8 +53,10 @@ class FortifyServiceProvider extends ServiceProvider
             {
                 $users_redirect_after_authentication = Setting::where('field_name','users_redirect_after_authentication')->first();
                 $user_auth_redirect_page = $users_redirect_after_authentication == NULL ? 'dashboard' : $users_redirect_after_authentication->field_value;
-                return redirect()->intended('/'.$user_auth_redirect_page);
+                // return redirect()->intended('/'.$user_auth_redirect_page);
                 // return redirect()->intended('/user/data/buy_dataaa');
+                return redirect()->intended('/dashboard');
+
                 
             }
         });

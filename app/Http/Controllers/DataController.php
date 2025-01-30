@@ -2,8 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Services\Products\ProductsService;
-use App\Services\Utils\UtilService;
 use Exception;
 use App\Models\User;
 use App\Models\Network;
@@ -19,6 +17,7 @@ use Yajra\DataTables\DataTables;
 use App\Models\UserBulkDataWallet;
 use Illuminate\Support\Facades\DB;
 use App\Models\ProductPlanCategory;
+use App\Services\Utils\UtilService;
 use App\Models\BulkDataProductPlans;
 use App\Models\UserBulkDataPurchase;
 use App\Traits\WalletTransactionLogs;
@@ -26,6 +25,7 @@ use Illuminate\Support\Facades\Validator;
 use App\Services\Automation\MegaSubPlugAutomation\VendData;
 use App\Services\Automation\OgdamsAutomation\OgdamsVendData;
 use App\Services\Automation\MegaSubPlugAutomation\MegaSubVendData;
+use App\Http\Services\Api\v1\VendorUsersApi\Products\ProductsService;
 
 class DataController extends Controller
 {

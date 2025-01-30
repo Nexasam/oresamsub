@@ -46,7 +46,6 @@ class WalletsController extends Controller
     private $contract_code = '339854561147'; //live
     private $base_url = 'https://api.monnify.com/api/'; 
    
-
     public function webhook($id,Request $request){
        
         //{
@@ -91,7 +90,7 @@ class WalletsController extends Controller
         $response = file_get_contents('php://input');
         $response_decode = json_decode($response,true);
         logger('testing webhook start');
-        logger($response);
+        // logger($response);
       
         $can_fund = '';
 

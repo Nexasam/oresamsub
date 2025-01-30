@@ -649,6 +649,29 @@
                         <br>
                         <hr>
                         <br>
+                        <br>
+                        <hr>
+                        <br>
+                        <form enctype="multipart/form-data" method="POST" action="{{ route('admin.settings.update_api_key')  }}">
+                          @csrf
+                          <div class="grid w-full lg:w-1/2 lg:grid-cols-1 gap-2 space-y-4 lg:space-y-0">
+                             
+                              <div class="">
+                                <label class="ti-form-label mb-0">API key to allow connection to your website: </label>
+                                <input type="text"  required class="my-auto ti-form-input" name="api_key" value="{{ $api_key  ?? '' }}"  placeholder="">
+                              </div> 
+                                  
+                              <div class="space-y-2">
+                                  <button type="submit" class="ti-btn ti-btn-primary w-full">Update Api Key</button>
+                              </div>
+                            
+                              <br>
+                          </div>
+                        </form>
+
+                        <br>
+                        <hr>
+                        <br>
                         <form enctype="multipart/form-data" method="POST" action="{{ route('admin.settings.update_purchase_limit_settings')  }}">
                           @csrf
                           <div class="grid w-full lg:w-1/2 lg:grid-cols-1 gap-2 space-y-4 lg:space-y-0">
@@ -680,7 +703,7 @@
                         <br>
                         <hr>
                         <br>
-                        <form enctype="multipart/form-data" method="POST" action="{{ route('admin.settings.update_user_authentication_dashboard')  }}">
+                        {{-- <form enctype="multipart/form-data" method="POST" action="{{ route('admin.settings.update_user_authentication_dashboard')  }}">
                           @csrf
                           <div class="grid w-full lg:w-1/2 lg:grid-cols-1 gap-2 space-y-4 lg:space-y-0">
                              
@@ -703,7 +726,7 @@
                             
                               <br>
                           </div>
-                        </form>
+                        </form> --}}
                         
                       </div>  
                     </div>

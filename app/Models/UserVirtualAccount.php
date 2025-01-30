@@ -12,5 +12,13 @@ class UserVirtualAccount extends Model
 
     protected $guarded = [];
 
+       /**
+     * each card belongs to a user 
+    **/
+    public function funding_option()
+    {
+        return $this->belongsTo(FundingOption::class, 'funding_option_id', 'id');
+    }
+
     
 }
