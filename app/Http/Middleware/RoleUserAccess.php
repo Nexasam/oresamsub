@@ -18,7 +18,7 @@ class RoleUserAccess
     public function handle(Request $request, Closure $next): Response|Array
     {
         // dd(auth()->user()->role->role_name);
-        return $request->all();
+        // return $request->all();
 
     
         
