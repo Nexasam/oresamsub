@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Session;
 
 class ProductWebhookController extends Controller
 {
-    public function product_webhook(Request $request){
+    public function product_webhook($id,Request $request){
 
         //log for now, to see the flow:
         //for just oresamsub for now
