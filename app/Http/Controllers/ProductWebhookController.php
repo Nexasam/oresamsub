@@ -20,6 +20,25 @@ class ProductWebhookController extends Controller
         // $response = file_get_contents('php://input');
         // $requestData = json_decode($request->getContent(), true);
         // logger($response);
+
+        // [
+        //     {
+        //        "id":"13597637",
+        //        "recipient":"Phone No. 07032044022 Plan:2: MTN:SME-1GB-1 Month Validity Price@257.00",
+        //        "bal0":"9659.38",
+        //        "bal1":"9402.38",
+        //        "success":"1",
+        //        "type":"Buy_Data",
+        //        "amt":"257.00",
+        //        "reason":"Successful",
+        //        "detail":"Attempt to Buy_Data For Phone No. 07032044022 Plan:2: MTN:SME-1GB-1 Month Validity Price@257.00, <br> Old Balance:9659.38 <br>New Balance: 9402.38 <br>
+        //  \twhich was Successful ",
+        //        "periodn":"2025-02-06 19:13:55",
+        //        "period":"2025-02-06 19:13:55",
+        //        "userid":"Oresam",
+        //        "realresponse":"Dear Customer, You have successfully shared 1GB Data to 2347032044022. Thankyou Your SME data balance is N\/AGB. Thankyou"
+        //     }
+        //  ]
     
 
         if(env('APP_NAME') == 'OresamSub'){
@@ -31,11 +50,11 @@ class ProductWebhookController extends Controller
             
                     DB::beginTransaction();
                     try{
-            
+                        logger($response_decode['type']);
                         // if( ($response_decode['Detail']['success'] == 'true' &&  ($response_decode['Detail']['info']['Balance_before'] > $response_decode['Detail']['info']['Balance_after'] )  ) ){          
                         ProductWebhook::create([
-                            'product_type' => $response_decode['Detail']['info']['Type'],
-                            'status' => $response_decode['Detail']['success'],
+                            'product_type' => $response_decode['type'],
+                            'status' => $response_decode['status'],
                             'response' => $response,
                         ]);  
 

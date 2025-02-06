@@ -124,7 +124,7 @@ class ProcessPendingAirtimeTransactions extends Command
                                  $user_message = $buy_airtime['user_message'];
                                  $admin_message = $buy_airtime['admin_message'];
                                
-                                 //update to refunded here for now
+                                 //update to sucesss
                                  Transaction::where('id',$pending_transaction->id)->update([
                                      'status' => 1,
                                      'user_screen_message' => $user_message,
