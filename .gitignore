@@ -2,7 +2,13 @@
 /node_modules
 /public/build
 /public/hot
-/public/assets
+/public/assets/css
+/public/assets/iconfonts
+/public/assets/img
+/public/assets/js
+/public/assets/landing_page_assets
+/public/assets/libs
+/public/assets/scss
 /public/storage
 /storage/*.key
 /vendor
