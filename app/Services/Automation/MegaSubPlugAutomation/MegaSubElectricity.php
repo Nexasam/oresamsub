@@ -114,8 +114,9 @@ class MegaSubElectricity{
 
         $response_decode = json_decode($response,true);
 
-        if(isset($response_decode['Status']) && $response_decode['Status'] == 'Success' && isset($response_decode['Detail']['customer']['status']) 
-        &&  $response_decode['Detail']['customer']['status'] == 200  ){
+        // && isset($response_decode['Detail']['customer']['status']) 
+        // &&  $response_decode['Detail']['customer']['status'] == 200 
+        if(isset($response_decode['Status']) && $response_decode['Status'] == 'Success' ){
            //successful transaction
            return [
                'status' => 1,

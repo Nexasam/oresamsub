@@ -18,7 +18,7 @@ return new class extends Migration
             $table->timestamps();
         });
 
-        SiteTemplate::create([]);
+        // SiteTemplate::create([]);
     }
 
     /**
