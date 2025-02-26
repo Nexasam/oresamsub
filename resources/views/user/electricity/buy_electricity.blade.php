@@ -253,12 +253,12 @@
                                                </div>
 
                                                
-                                               <div class="space-y-2">
-                                                <label class="ti-form-label mb-0">No of Slots*
+                                                {{-- <div class="space-y-2"> --}}
+                                                {{-- <label class="ti-form-label mb-0">No of Slots*
                                                   <small>This means you can buy multiple slots of the selected plan e.g Star Times 1 week with 3 slots means you have subscribed for 3 weeks</small>
-                                                </label>
-                                                <input type="number" id="no_of_slots" name="no_of_slots" value="1" readonly class="my-auto ti-form-input" placeholder="e.g 5" /></textarea>
-                                            </div>
+                                                </label> --}}
+                                                <input type="hidden" id="no_of_slots" name="no_of_slots" value="1" readonly class="my-auto ti-form-input" placeholder="e.g 5" /></textarea>
+                                            {{-- </div> --}}
                     
                                         
                                                 <div class="space-y-2">
