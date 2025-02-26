@@ -283,7 +283,6 @@ class ProductsController extends Controller
             'user_id' => 'required',
             'metre_number' => 'required',
             'product_plan_id' => 'required',
-            'pin' => ['required','digits:4'],
         ]);
 
         if ($validator->stopOnFirstFailure()->fails()) {
@@ -293,8 +292,7 @@ class ProductsController extends Controller
         $user_id = $request->user_id; //compute this
         $metre_number = $request->metre_number;
         $plan_id = $request->product_plan_id;
-        $pin = $request->pin;
-       
+
         $plan_details = ProductPlan::where('id',$plan_id)
         ->where('visibility',1)
         ->first();
@@ -308,9 +306,6 @@ class ProductsController extends Controller
             return $this->error('User details not found', code: 404 );    
         }
 
-        if($user_details->pin != $pin){
-            return $this->error('User pin is incorrect', code: 403 );    
-        }
 
         $validate_metre_name = (new MegaSubElectricity(metre_number: $metre_number, plan_id: $plan_id, user_id: $user_id))->validateMetreNumber();
 
@@ -335,8 +330,7 @@ class ProductsController extends Controller
         $validator = Validator::make($request->all(), [
             'user_id' => 'required',
             'smart_card_number' => 'required',
-            'product_plan_id' => 'required',
-            'pin' => ['required','digits:4'],
+            'product_plan_id' => 'required'
         ]);
 
      
@@ -347,7 +341,6 @@ class ProductsController extends Controller
         $user_id = $request->user_id; //compute this
         $smart_card_number = $request->smart_card_number;
         $plan_id = $request->product_plan_id;
-        $pin = $request->pin;
        
         $plan_details = ProductPlan::where('id',$plan_id)
         ->where('visibility',1)
@@ -360,10 +353,6 @@ class ProductsController extends Controller
 
         if(! $user_details){
             return $this->error('User details not found', code: 404 );    
-        }
-
-        if($user_details->pin != $pin){
-            return $this->error('User pin is incorrect', code: 403 );    
         }
 
         $validate_smart_card_number = (new MegaSubCableTV(smart_card_number: $smart_card_number, plan_id: $plan_id, user_id: $user_id))->validateSmartCardNumber();
