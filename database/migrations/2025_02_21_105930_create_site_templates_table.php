@@ -12,11 +12,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('site_templates', function (Blueprint $table) {
-            $table->uuid('id')->primary();
-            $table->string('template_name')->default('template_1');
-            $table->timestamps();
-        });
+        if (!Schema::hasTable('site_templates')) {
+            Schema::create('site_templates', function (Blueprint $table) {
+                $table->uuid('id')->primary();
+                $table->string('template_name')->default('template_1');
+                $table->timestamps();
+            });
+        }
 
         // SiteTemplate::create([]);
     }
