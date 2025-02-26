@@ -1027,7 +1027,7 @@
 
 
          <!-- Footer 1-->
-         <div id="contact" class="w-full -mt-52 md:mt-0 p-6 text-white bg-[linear-gradient(45deg,{{$site_primary_color}}_80%,#CED3FF_20%)] skew-y-4">
+         <div id="contact" class="w-full -mt-52 md:mt-0 p-6 text-white bg-[linear-gradient(45deg,{{$site_primary_color}}_80%,{{$site_secondary_color}}_20%)] skew-y-4">
          <!-- <div class="w-full p-6 text-white bg-gradient-to-r from-[{{$site_primary_color}}] to-[{{$site_secondary_color}}] skew-y-4"> -->
             <div class="w-full md:mx-auto md:max-w-6xl py-12 md:flex items-center justify-between">
                 <div class="w-full md:w-1/2">
