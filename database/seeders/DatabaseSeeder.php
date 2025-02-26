@@ -45,6 +45,15 @@ class DatabaseSeeder extends Seeder
             LandingPagesSetting::create($data);
         }
 
+        $landing_pages2_arr = config('landing_template2_pages');
+        foreach($landing_pages2_arr as $key2=>$value2){
+            $data['field_name'] = $key2;
+            $data['field_details'] = $value2[2];
+            $data['template_type'] = 'template_2';
+            $data['visibility'] = 1;
+            LandingPagesSetting::create($data);
+        }
+
         // FUNDING OPTIONS
         $crystal_pay = FundingOption::create([
             "funding_option_name" => "Crystal Pay",

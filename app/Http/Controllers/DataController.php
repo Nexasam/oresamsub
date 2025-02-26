@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Traits\Dashboard\UserDashboardDataTrait;
 use Exception;
 use App\Models\User;
 use App\Models\Network;
@@ -10,11 +11,13 @@ use App\Models\UserPlan;
 use App\Models\Automation;
 use App\Models\ProductPlan;
 use App\Models\Transaction;
+use App\Models\SiteTemplate;
 use Illuminate\Http\Request;
 use App\Models\ProductCategory;
 use Illuminate\Validation\Rule;
 use Yajra\DataTables\DataTables;
 use App\Models\UserBulkDataWallet;
+use App\Models\UserVirtualAccount;
 use Illuminate\Support\Facades\DB;
 use App\Models\ProductPlanCategory;
 use App\Services\Utils\UtilService;
@@ -29,6 +32,7 @@ use App\Http\Services\Api\v1\VendorUsersApi\Products\ProductsService;
 
 class DataController extends Controller
 {
+    use UserDashboardDataTrait;
     /**
      * Display a listing of the resource.
      */
@@ -298,30 +302,23 @@ class DataController extends Controller
      */
     public function buy_data()
     {
-
+        $dataa = $this->get_user_dashboard_data();
+        $data = [...$dataa];
         $networks = Network::all();
         $product = Product::where('slug','data')->first(); //TODO: have enums that gets the id later
         $data['networks'] = $networks;
         $data['product'] = $product;
-
+        // dd($data);
         $product_plan_categories = ProductPlanCategory::where('product_id',$product->id)->get(); //TODO: have enums that gets the id later
         $data['product_plan_categories'] = $product_plan_categories;
 
-
-        $user_details = auth()->user();
-        $user_id = $user_details->id;
-        // dd($user_id);
-
-        //data txns list
-        $data_transactions = Transaction::with('user')->where('transaction_category','data')
-        ->where('user_id',$user_id)
-        ->latest()
-        ->get();
-        $data['data_transactions'] = $data_transactions;
-        $data['user_details'] = $user_details;
+        $siteTemplate = SiteTemplate::first();
+        if(! $siteTemplate || $siteTemplate->template_name == 'template_1'){
+            return view('user.data.buy_data')->with($data);
+        }
 
         // dd($data);
-        return view('user.data.buy_data')->with($data);
+        return view('template2.user.data.buy_data')->with($data);
     }
 
     public function buy_data_by_plan_category($id){

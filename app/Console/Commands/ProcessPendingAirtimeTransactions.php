@@ -35,6 +35,7 @@ class ProcessPendingAirtimeTransactions extends Command
             // echo 'e dey work o';
             // logger('e dey work o');
             // exit;
+            //only transactions without ref goes through this route
             $pending_transactions = Transaction::with('user')
                                     ->where('admin_screen_message','pending_airtime_transaction')
                                     ->where('transaction_category','airtime')
@@ -42,8 +43,6 @@ class ProcessPendingAirtimeTransactions extends Command
                                     ->get();
 
             $blacklisted_array = ['08146181516'];
-
-            
 
             if(count($pending_transactions) > 0){
                 foreach($pending_transactions as $pending_transaction){

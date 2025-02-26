@@ -245,7 +245,8 @@
                                                     <label class="ti-form-label mb-0">Metre No*</label>
                                                     <input type="text" onkeyup="validateNameOnSmartCard('electricity')" id="metre_number" name="metre_number" class="my-auto ti-form-input" placeholder="e.g 45082894648" />
                                                     <div id="validated_name_on_smart_card"></div>
-                                                  </div>
+                                                </div>
+                                                
 
                                                 <div class="space-y-2">  
                                                   <input type="text" id="validation_extra_info" name="validation_extra_info" class="opacity-70 pointer-events-none ti-form-input" disabled readonly placeholder="extra information" />

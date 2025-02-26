@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\LandingPageTemplate2Setting;
 use App\Models\Setting;
 use App\Models\User;
 use App\Models\SiteImage;
@@ -22,6 +23,9 @@ use Illuminate\Support\Facades\Validator;
 class AdminSettingsController extends Controller
 {
     public function index(){
+
+      //landing page template2
+
        
       $site_images_data = SiteImage::get();
       if(count($site_images_data) > 0){
@@ -47,16 +51,29 @@ class AdminSettingsController extends Controller
           $data['users_redirect_after_authentication'] = $createee->field_value;
         }
 
-        // dd($data);
+       //landingpages: Template 2 check
+       $landing_page_settings2 = config('landing_template2_pages');
+       foreach($landing_page_settings2 as $key2=>$value2){
+           $dataa['field_name'] = $key2;
+           $dataa['field_details'] = $value2[2];
+           $dataa['template_type'] = 'template_2';
+           $dataa['visibility'] = 1;
+           $check_template_field_exist = LandingPagesSetting::where('field_name',$key2)->first();
+           if(! $check_template_field_exist){
+             LandingPagesSetting::create($dataa);
+           }
+    
+       }
+
       
-        //landingpages
+        //landingpages: All params
         $landing_page_settings = LandingPagesSetting::get();
         // $landing_page_settings = config('landing_pages');
         // dd($landing_page_settings);
         foreach($landing_page_settings as $landing_page_setting){
             $data[$landing_page_setting->field_name] = $landing_page_setting->field_details;
         }
-
+      
 
         $color_settings = AdminColorSetting::get();
         // $color_settings = config('landing_pages');
@@ -525,6 +542,7 @@ class AdminSettingsController extends Controller
       // return $request->all();
       $validator = Validator::make($request->all(), [
         'site_primary_color' => 'required|max:255',
+        'site_secondary_color' => 'required|max:255',
         'site_landing_page_hover_color' => 'required|max:255',
         'site_admin_sidebar_color' => 'required|max:255',
         'site_landing_analytics_color_r' => 'required|max:255',
@@ -547,6 +565,12 @@ class AdminSettingsController extends Controller
           'color_name' => 'site_primary_color'
          ],[
           'color_value' => $request->site_primary_color
+         ]);
+
+         AdminColorSetting::updateOrCreate([
+          'color_name' => 'site_secondary_color'
+         ],[
+          'color_value' => $request->site_secondary_color
          ]);
 
          AdminColorSetting::updateOrCreate([
@@ -694,10 +718,17 @@ class AdminSettingsController extends Controller
     
 
     public function manage_landing_page_settings(Request $request){
-        $landing_pages_arr = config('landing_pages');
+      //  dd($request->all()); 
+       $landing_pages_arr = config('landing_pages');
         foreach($landing_pages_arr as $key=>$value){
             $data[$key] = "required";
         }
+
+        $landing_pages_arr2 = config('landing_template2_pages');
+        foreach($landing_pages_arr2 as $key2=>$value2){
+            $data[$key2] = "required";
+        }
+
         $validator = Validator::make($request->all(), $data);
          
         if ($validator->stopOnFirstFailure()->fails()) {

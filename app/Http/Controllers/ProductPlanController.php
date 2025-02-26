@@ -126,16 +126,20 @@ class ProductPlanController extends Controller
           return $data->cost_price;
         })
         ->addColumn('user_level_1_selling_price',function($data){
-          return number_format($data->user_level_1_selling_price,2);
+          // return number_format($data->user_level_1_selling_price,2);
+          return $data->user_level_1_selling_price;
         })
         ->addColumn('user_level_2_selling_price',function($data){
-          return number_format($data->user_level_2_selling_price,2);
+          // return number_format($data->user_level_2_selling_price,2);
+          return $data->user_level_2_selling_price;
         })
         ->addColumn('user_level_3_selling_price',function($data){
-          return number_format($data->user_level_3_selling_price,2);
+          // return number_format($data->user_level_3_selling_price);
+          return $data->user_level_3_selling_price;
         })
         ->addColumn('user_level_4_selling_price',function($data){
-          return number_format($data->user_level_4_selling_price,2);
+          // return number_format($data->user_level_4_selling_price,2);
+          return $data->user_level_4_selling_price;
         })
         ->addColumn('visibility',function($data){
           $escapedUrl = htmlspecialchars(json_encode($data->id));

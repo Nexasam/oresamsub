@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\ProductPlan;
 use App\Models\Transaction;
+use App\Models\SiteTemplate;
 use Illuminate\Http\Request;
 use App\Models\UserBulkDataWallet;
 use App\Models\ProductPlanCategory;
@@ -12,15 +13,25 @@ use App\Mail\WalletFundingNotification;
 use Illuminate\Support\Facades\Session;
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Facades\Validator;
+use App\Traits\Dashboard\UserDashboardDataTrait;
 
 class TransactionController extends Controller
 {
-    //
+    use UserDashboardDataTrait;
 
   public function user_all_transactions(){
+    $dataa = $this->get_user_dashboard_data();
+    $data = [...$dataa];
+
     $data['product_plan_categories'] = ProductPlanCategory::select('id','product_plan_category_name')->get();
 
-    return view('user.transactions.index')->with($data);
+    $siteTemplate = SiteTemplate::first();
+        if(! $siteTemplate || $siteTemplate->template_name == 'template_1'){
+            return view('user.transactions.index')->with($data);
+        }
+
+        $data['hideNav'] = true;
+        return view('template2.user.transactions.index')->with($data);
   } 
   
   public function admin_all_transactions(){

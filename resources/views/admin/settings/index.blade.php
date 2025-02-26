@@ -64,6 +64,9 @@
                     <button type="button" class="hs-tab-active:bg-primary hs-tab-active:text-white py-3 px-4 inline-flex items-center gap-2 bg-transparent text-sm font-medium text-center text-gray-500 rounded-sm hover:text-primary  dark:text-white/70 dark:hover:text-white" id="pills-with-brand-color-item-2" data-hs-tab="#pills-with-brand-color-2" aria-controls="pills-with-brand-color-2">
                       Landing pages
                     </button>
+                    {{-- <button type="button" class="hs-tab-active:bg-primary hs-tab-active:text-white py-3 px-4 inline-flex items-center gap-2 bg-transparent text-sm font-medium text-center text-gray-500 rounded-sm hover:text-primary  dark:text-white/70 dark:hover:text-white" id="pills-with-brand-color-item-7" data-hs-tab="#pills-with-brand-color-7" aria-controls="pills-with-brand-color-7">
+                      Template 2
+                    </button> --}}
                     <button type="button" class="hs-tab-active:bg-primary hs-tab-active:text-white py-3 px-4 inline-flex items-center gap-2 bg-transparent text-sm font-medium text-center text-gray-500 rounded-sm hover:text-primary  dark:text-white/70 dark:hover:text-white" id="pills-with-brand-color-item-3" data-hs-tab="#pills-with-brand-color-3" aria-controls="pills-with-brand-color-3">
                       Site Images & Colors
                     </button>
@@ -136,10 +139,185 @@
                         <form method="POST" action="{{ route('admin.settings.manage_landing_page_settings')  }}">
                           @csrf
                           <p> <b> <a target="_blank" href="{{ url('/') }}">Click to preview your landing page </a> </b> </p>
+                         <br>
+                          <h1><strong>Template 2 Settings Below</strong> 👇👇👇👇👇👇👇👇👇</h1>
+
+                          <div class="grid lg:grid-cols-2 gap-6 space-y-4 lg:space-y-0">
+                            
+                            <div class="space-y-2">
+                            <label class="ti-form-label mb-0">Site Title</label>
+                            <input type="text" value="{{ $site_title_template2 }}"   name="site_title_template2" class="my-auto ti-form-input" placeholder="">
+                            </div>
+                            <div class="space-y-2">
+                              <label class="ti-form-label mb-0">Site Logo Alt</label>
+                              <input type="text" value="{{ $site_logo_alt_template2 }}"   name="site_logo_alt_template2" class="my-auto ti-form-input" placeholder="">
+                            </div>
+
+                            <div class="space-y-2">
+                            <label class="ti-form-label mb-0">Hero Main Text</label>
+                            <input value="{{ $hero_main_text_template2 }}" type="text"  name="hero_main_text_template2" class="my-auto ti-form-input" placeholder="">
+                            </div>
+
+                            <div class="space-y-2">
+                              <label class="ti-form-label mb-0">Hero Main Stylish Word</label>
+                              <input value="{{ $hero_main_text_stylish_template2 }}" type="text"  name="hero_main_text_stylish_template2" class="my-auto ti-form-input" placeholder="">
+                              </div>
+                            
+                            <div class="space-y-2">
+                            <label class="ti-form-label mb-0">Hero Sub Text</label>
+                            <input value="{{ $hero_sub_text_template2 }}" type="text"  name="hero_sub_text_template2" class="my-auto ti-form-input" placeholder="">
+                            </div>
+                            <div class="space-y-2">
+                            <label class="ti-form-label mb-0">Hero Lovers Count</label>
+                            <input value="{{ $hero_lovers_count_template2 }}" type="text"  name="hero_lovers_count_template2" class="my-auto ti-form-input" placeholder="">
+                            </div>  
+                            <div class="space-y-2">
+                              <label class="ti-form-label mb-0">About us description</label>
+                              <input value="{{ $about_us_description_template2 }}" type="text"  name="about_us_description_template2" class="my-auto ti-form-input" placeholder="">
+                              </div>   
+                            <div class="space-y-2">
+                            <label class="ti-form-label mb-0">Data description</label>
+                            <input value="{{ $data_description_template2 }}" type="text" name="data_description_template2" class="my-auto ti-form-input" placeholder="">
+                            </div>
+                   
+                            <div class="space-y-2">
+                              <label class="ti-form-label mb-0">Airtime description</label>
+                              <input value="{{ $airtime_description_template2 }}" type="text" name="airtime_description_template2" class="my-auto ti-form-input" placeholder="">
+                            </div>
+                   
+                            <div class="space-y-2">
+                                <label class="ti-form-label mb-0">Cable description</label>
+                                <input value="{{ $cable_description_template2 }}" type="text" name="cable_description_template2" class="my-auto ti-form-input" placeholder="">
+                            </div>
+                   
+                            <div class="space-y-2">
+                              <label class="ti-form-label mb-0">Electricity description</label>
+                              <input value="{{ $electricity_description_template2 }}" type="text" name="electricity_description_template2" class="my-auto ti-form-input" placeholder="">
+                            </div>
+                   
+                            <div class="space-y-2">
+                              <label class="ti-form-label mb-0">Epins description</label>
+                              <input value="{{ $epins_description_template2 }}" type="text" name="epins_description_template2" class="my-auto ti-form-input" placeholder="">
+                            </div>
+
+                            <div class="space-y-2">
+                              <label class="ti-form-label mb-0">Resultchecker description</label>
+                              <input value="{{ $resultchecker_description_template2 }}" type="text" name="resultchecker_description_template2" class="my-auto ti-form-input" placeholder="">
+                            </div>
+
+                            <div class="space-y-2">
+                              <label class="ti-form-label mb-0">Testimony1</label>
+                              <input value="{{ $testimony1_template2 }}" type="text" name="testimony1_template2" class="my-auto ti-form-input" placeholder="">
+                            </div>
+
+                            <div class="space-y-2">
+                              <label class="ti-form-label mb-0">Testimony1 Position</label>
+                              <input value="{{ $testimony1_position_template2 }}" type="text" name="testimony1_position_template2" class="my-auto ti-form-input" placeholder="">
+                            </div>
+
+                            <div class="space-y-2">
+                              <label class="ti-form-label mb-0">Testimony1 Name</label>
+                              <input value="{{ $testimony1_name_template2 }}" type="text" name="testimony1_name_template2" class="my-auto ti-form-input" placeholder="">
+                            </div>
+
+
+                            <div class="space-y-2">
+                              <label class="ti-form-label mb-0">Testimony2</label>
+                              <input value="{{ $testimony2_template2 }}" type="text" name="testimony2_template2" class="my-auto ti-form-input" placeholder="">
+                            </div>
+
+                            <div class="space-y-2">
+                              <label class="ti-form-label mb-0">Testimony2 Position</label>
+                              <input value="{{ $testimony2_position_template2 }}" type="text" name="testimony2_position_template2" class="my-auto ti-form-input" placeholder="">
+                            </div>
+
+                            <div class="space-y-2">
+                              <label class="ti-form-label mb-0">Testimony2 Name</label>
+                              <input value="{{ $testimony2_name_template2 }}" type="text" name="testimony2_name_template2" class="my-auto ti-form-input" placeholder="">
+                            </div>
+
+                            <div class="space-y-2">
+                              <label class="ti-form-label mb-0">Testimony3</label>
+                              <input value="{{ $testimony3_template2 }}" type="text" name="testimony3_template2" class="my-auto ti-form-input" placeholder="">
+                            </div>
+
+                            <div class="space-y-2">
+                              <label class="ti-form-label mb-0">Testimony3 Position</label>
+                              <input value="{{ $testimony3_position_template2 }}" type="text" name="testimony3_position_template2" class="my-auto ti-form-input" placeholder="">
+                            </div>
+
+                            <div class="space-y-2">
+                              <label class="ti-form-label mb-0">Testimony3 Name</label>
+                              <input value="{{ $testimony3_name_template2 }}" type="text" name="testimony3_name_template2" class="my-auto ti-form-input" placeholder="">
+                            </div>
+
+                            <div class="space-y-2">
+                              <label class="ti-form-label mb-0">Google map link</label>
+                              <input value="{{ $google_map_link }}" type="text" name="google_map_link" class="my-auto ti-form-input" placeholder="">
+                            </div>
+                           
+                            
+
+                            <div class="space-y-2">
+                            <label class="ti-form-label mb-0">Topnav email </label>
+                            <input value="{{ $topnav_email_template2 }}" type="email"  name="topnav_email_template2" class="my-auto ti-form-input" placeholder="">
+                            </div>
+                            <div class="space-y-2">
+                            <label class="ti-form-label mb-0">Phone</label>
+                            <input value="{{ $phone_template2 }}" type="text"  name="phone_template2" class="my-auto ti-form-input" placeholder="">
+                            </div>
+
+                            <div class="space-y-2">
+                              <label class="ti-form-label mb-0">Email Address</label>
+                              <input value="{{ $email_address_template2 }}" type="text"  name="email_address_template2" class="my-auto ti-form-input" placeholder="">
+                            </div>
+
+                            <div class="space-y-2">
+                                <label class="ti-form-label mb-0">Twitter link</label>
+                                <input value="{{ $twitter_link_template2 }}" type="text"  name="twitter_link_template2" class="my-auto ti-form-input" placeholder="">
+                            </div>
+
+                            <div class="space-y-2">
+                            <label class="ti-form-label mb-0">Facebook link</label>
+                            <input value="{{ $facebook_template2 }}" type="text"  name="facebook_template2" class="my-auto ti-form-input" placeholder="">
+                            </div>
+
+                            <div class="space-y-2">
+                              <label class="ti-form-label mb-0">Support Whatsapp number (format: e.g 2348133494364)</label>
+                              <input value="{{ $support_whatsapp_number_template2 }}" type="text"  name="support_whatsapp_number_template2" class="my-auto ti-form-input" placeholder="">
+                            </div>
+                            
+                              <div class="space-y-2">
+                            <label class="ti-form-label mb-0">Instagram link</label>
+                            <input value="{{ $instagram_template2 }}" type="text"  name="instagram_template2" class="my-auto ti-form-input" placeholder="">
+                            </div>
+
+                           
+                            <div class="space-y-2">
+                              <label class="ti-form-label mb-0">Physical Address</label>
+                              <input value="{{ $physical_address_template2 }}" type="text"  name="physical_address_template2" class="my-auto ti-form-input" placeholder="">
+                            </div>
+                            
+
+                            {{-- <div class="space-y-2 mt-5">
+                              <label class="ti-form-label mb-0">About Us </label>
+                                <div cols="10" rows="5" id="editor">
+                                </div>
+                            </div> --}}
+
+                            {{-- <div class="space-y-2">
+                                <button type="submit" class="ti-btn ti-btn-primary w-full">Update landing pages for TEMPLATE 2</button>
+                            </div> --}}
+                          
+                            <br>
+                        </div>
+                          
                           <br>
-                        
+                          <br>
+                          <br>
+                          <h1><strong>Template 1 Settings Below</strong> 👇👇👇👇👇👇👇👇👇</h1>
                           {{-- <div class="grid w-full lg:w-1/2 lg:grid-cols-2 gap-6 space-y-4 lg:space-y-0"> --}}
-                            <div class="grid lg:grid-cols-2 gap-6 space-y-4 lg:space-y-0">
+                          <div class="grid lg:grid-cols-2 gap-6 space-y-4 lg:space-y-0">
                               <div class="space-y-2">
                                 <label class="ti-form-label mb-0">Site logo alternative</label>
                                 <input type="text" value="{{ $site_logo_alt }}"  name="site_logo_alt" class="my-auto ti-form-input" placeholder="">
@@ -382,7 +560,7 @@
                               </div> --}}
 
                               <div class="space-y-2">
-                                  <button type="submit" class="ti-btn ti-btn-primary w-full">Update landing page settings</button>
+                                  <button type="submit" class="ti-btn ti-btn-primary w-full">Update landing page settings[Template 1 and 2]</button>
                               </div>
                             
                               <br>
@@ -435,7 +613,7 @@
                                     No upload found.
                                     <br>  
                                 @endif
-                                <label class="ti-form-label mb-0">Update Slider Image 1</label>
+                                <label class="ti-form-label mb-0">Update Slider Image 1 (This also works for hero image in Template 2)</label>
                                 <input type="file"  class="my-auto ti-form-input" name="hero_image1" max="100" placeholder="update hero image">
                               </div>
                           </div>
@@ -513,8 +691,15 @@
                           <div class="grid w-full lg:w-1/2 lg:grid-cols-1 gap-6 space-y-1 lg:space-y-0">
                               <div class="space-y-2 mt-1">
                                 <div class="box-body">
-                                  <label class="ti-form-label mb-0">Choose Site Primary Color</label>
+                                  <label class="ti-form-label mb-0">Choose Site Primary Color <b>This is main color for both templates</b> </label>
                                   <input type="color" value="{{ isset($site_primary_color) && $site_primary_color != NULL ? $site_primary_color : "#5a66f2"  }}"  class="p-1 h-10 w-10 block bg-white border border-gray-200 cursor-pointer rounded-sm disabled:opacity-50 disabled:pointer-events-none dark:bg-bgdark dark:border-white/10" id="hs-color-input" name="site_primary_color" title="Choose your color">
+                                </div>
+                              </div>
+
+                              <div class="space-y-2 mt-1">
+                                <div class="box-body">
+                                  <label class="ti-form-label mb-0">Choose Site Secondary Color <b>This is secondary color for both templates</b></label>
+                                  <input type="color" value="{{ isset($site_secondary_color) && $site_secondary_color != NULL ? $site_secondary_color : "#5a66f2"  }}"  class="p-1 h-10 w-10 block bg-white border border-gray-200 cursor-pointer rounded-sm disabled:opacity-50 disabled:pointer-events-none dark:bg-bgdark dark:border-white/10" id="hs-color-input" name="site_secondary_color" title="Choose your color">
                                 </div>
                               </div>
 
@@ -1002,6 +1187,16 @@
                         
                       </div>  
                     </div>
+
+                    <div id="pills-with-brand-color-7" class="hidden" role="tabpanel" aria-labelledby="pills-with-brand-color-item-7">
+                      <div class="overflow-auto">
+                        <p>Coming soon...</p>
+                        <hr>
+
+                        
+                      </div>  
+                    </div>
+
                   </div>
                 </div>
                

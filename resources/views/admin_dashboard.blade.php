@@ -311,6 +311,19 @@
         </div>
       
         <div class="col-span-12 xxl:col-span-12">
+
+            <div class="box w-full mb-4">
+                <div class="box-header">
+                    <div class="sm:flex">
+                        <h5 class="box-title my-auto">Recent Transactions</h5>
+                    </div>
+                </div>
+                <livewire:transactions-table />
+
+            </div>
+
+        
+
             <div class="box">
                 <div class="box-header">
                     <div class="sm:flex">
@@ -318,7 +331,7 @@
                         <div class="box-header">
                             <div class="flex">
                              
-                              <div class="hs-dropdown ti-dropdown block ms-auto my-auto s  sm:flex items-center justify-between">
+                              <div class="hs-dropdown ti-dropdown block ms-auto my-auto  sm:flex items-center justify-between">
                                
                                     <div id="hs-slide-down-animation-modal" class="hs-overlay hidden ti-modal">
                                       <div class="hs-overlay-open:mt-7 ti-modal-box mt-0 ease-out">
@@ -405,7 +418,7 @@
                         <div class="overflow-auto">
                             
 
-                            <table  id="admin_transactions_table" class="ti-custom-table ti-custom-table-head">    
+                            <table  id="admin_transactions_table" class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">    
                                 <thead class="bg-gray-50 dark:bg-black/20">
                                 <tr>
                                     

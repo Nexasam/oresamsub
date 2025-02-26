@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Models\AdminColorSetting;
 use App\Models\User;
 use App\Models\SiteImage;
+use App\Models\SiteTemplate;
 use Illuminate\Http\Request;
 use Laravel\Fortify\Fortify;
 use Laravel\Fortify\Features;
@@ -33,13 +35,28 @@ class AuthenticatedSessionController extends Controller
         $landing_data = LandingPagesSetting::where('field_name','support_whatsapp_number')->first();
         $data[$landing_data->field_name] = $landing_data->field_details;
 
+       
         $site_images_data = SiteImage::get();
         if(count($site_images_data) > 0){
             foreach($site_images_data as $site_image){
                 $data[$site_image->image_category] = $site_image->image_name;
             }
         }
-        return view('auth.login')->with($data);
+
+        $site_colors = AdminColorSetting::get();
+        if(count($site_colors) > 0){
+            foreach($site_colors as $site_color){
+                $data[$site_color->color_name] = $site_color->color_value;
+            }
+        }
+
+        $siteTemplate = SiteTemplate::first();
+        if(! $siteTemplate || $siteTemplate->template_name == 'template_1'){
+            return view('auth.login')->with($data);
+        }
+       
+
+        return view('template2.auth.login')->with($data);
     }
 
     /**

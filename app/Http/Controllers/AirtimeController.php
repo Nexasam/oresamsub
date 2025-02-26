@@ -10,6 +10,7 @@ use App\Models\UserPlan;
 use App\Models\Automation;
 use App\Models\ProductPlan;
 use App\Models\Transaction;
+use App\Models\SiteTemplate;
 use Illuminate\Http\Request;
 use App\Models\ProductCategory;
 use Illuminate\Validation\Rule;
@@ -23,6 +24,7 @@ use App\Models\UserBulkDataPurchase;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\WalletFundingNotification;
 use Illuminate\Support\Facades\Validator;
+use App\Traits\Dashboard\UserDashboardDataTrait;
 use App\Services\Automation\MegaSubPlugAutomation\VendData;
 use App\Services\Automation\MegaSubPlugAutomation\MegaSubVendData;
 use App\Http\Services\Api\v1\VendorUsersApi\Products\ProductsService;
@@ -30,6 +32,7 @@ use App\Services\Automation\MegaSubPlugAutomation\MegaSubVendAirtime;
 
 class AirtimeController extends Controller
 {
+    use UserDashboardDataTrait;
     /**
      * Display a listing of the resource.
      */
@@ -44,6 +47,8 @@ class AirtimeController extends Controller
     public function buy_airtime()
     {
 
+        $dataa = $this->get_user_dashboard_data();
+        $data = [...$dataa];
         $networks = Network::all();
         $product = Product::where('slug','airtime')->first(); //TODO: have enums that gets the id later
         $data['networks'] = $networks;
@@ -68,10 +73,14 @@ class AirtimeController extends Controller
         $data['airtime_transactions'] = $airtime_transactions;
         $data['user_details'] = $user_details;
 
+        $siteTemplate = SiteTemplate::first();
+        if(! $siteTemplate || $siteTemplate->template_name == 'template_1'){
+            return view('user.airtime.buy_airtime')->with($data);
+        }
 
+        // dd($airtime);
+        return view('template2.user.airtime.buy_airtime')->with($data);
 
-        // dd($data);
-        return view('user.airtime.buy_airtime')->with($data);
     }
 
 

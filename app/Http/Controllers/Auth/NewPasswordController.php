@@ -6,8 +6,10 @@ use App\Models\User;
 use App\Models\SiteImage;
 use Illuminate\View\View;
 use Illuminate\Support\Str;
+use App\Models\SiteTemplate;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rules;
+use App\Models\AdminColorSetting;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\RedirectResponse;
@@ -28,8 +30,22 @@ class NewPasswordController extends Controller
                 $data[$site_image->image_category] = $site_image->image_name;
             }
         }
+
+        $site_colors = AdminColorSetting::get();
+        if(count($site_colors) > 0){
+            foreach($site_colors as $site_color){
+                $data[$site_color->color_name] = $site_color->color_value;
+            }
+        }
+        
+        $siteTemplate = SiteTemplate::first();
+        if(! $siteTemplate || $siteTemplate->template_name == 'template_1'){
+            return view('auth.reset-password', ['request' => $request])->with($data);
+        }
+
+
         // return view('auth.confirm-password')->with($data);
-        return view('auth.reset-password', ['request' => $request])->with($data);
+        return view('template2.auth.reset-password', ['request' => $request])->with($data);
     }
 
     /**

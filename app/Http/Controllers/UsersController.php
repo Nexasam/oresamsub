@@ -5,10 +5,11 @@ namespace App\Http\Controllers;
 use App\Models\Role;
 use App\Models\User;
 use App\Models\UserPlan;
-use App\Models\UserVirtualAccount;
+use App\Models\SiteTemplate;
 use Illuminate\Http\Request;
 use Yajra\DataTables\DataTables;
 use App\Models\UserBulkDataWallet;
+use App\Models\UserVirtualAccount;
 use App\Models\ProductPlanCategory;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
@@ -22,12 +23,13 @@ use Illuminate\Support\Facades\Session;
 use App\Http\Requests\UpdateUserRequest;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rules\Password;
+use App\Traits\Dashboard\UserDashboardDataTrait;
 
 
 class UsersController extends Controller
 {
 
-    
+    use UserDashboardDataTrait;
 
     /**
      * Display a listing of the resource.
@@ -49,7 +51,15 @@ class UsersController extends Controller
     }
 
     public function api_docs(){
-      return view('user.api_docs.index');
+      $data = $this->get_user_dashboard_data();
+      $data['hideNav'] = true;
+      // dd($data);
+      $siteTemplate = SiteTemplate::first();
+      if(! $siteTemplate || $siteTemplate->template_name == 'template_1'){
+          return view('user.api_docs.index')->with($data);
+      }
+
+      return view('template2.user.api_docs.index')->with($data);
     }
 
 

@@ -6,8 +6,10 @@ use App\Models\User;
 use App\Models\Setting;
 use App\Models\SiteImage;
 use Illuminate\Support\Str;
+use App\Models\SiteTemplate;
 use Illuminate\Http\Request;
 use Laravel\Fortify\Fortify;
+use App\Models\AdminColorSetting;
 use Illuminate\Support\Facades\Hash;
 use App\Actions\Fortify\CreateNewUser;
 use Illuminate\Support\ServiceProvider;
@@ -69,21 +71,34 @@ class FortifyServiceProvider extends ServiceProvider
     {
 
         
+            $siteTemplate = SiteTemplate::first();
+            if(! $siteTemplate || $siteTemplate->template_name == 'template_1'){
+                $templateloginview = 'auth.login';
+                $templateregisterview = 'auth.register';
+                $templateforgotview = 'auth.forgot-password';
+                $templateresetview = 'auth.reset-password';
 
-            Fortify::loginView(function () {
-                return view('auth.login');
+            }else{
+                $templateloginview = 'template2.auth.login';
+                $templateregisterview = 'template2.auth.register';
+                $templateforgotview = 'template2.auth.forgot_password';
+                $templateresetview = 'template2.auth.reset_password';
+            }
+
+            Fortify::loginView(function () use ($templateloginview) {
+                return view($templateloginview);
             });
 
-            Fortify::registerView(function () {
-                return view('auth.register');
+            Fortify::registerView(function () use ($templateregisterview) {
+                return view($templateregisterview);
             });
 
-            Fortify::requestPasswordResetLinkView(function () {
-                return view('auth.forgot-password');
+            Fortify::requestPasswordResetLinkView(function () use ($templateforgotview) {
+                return view($templateforgotview);
             });
 
-            Fortify::resetPasswordView(function () {
-                return view('auth.reset-password');
+            Fortify::resetPasswordView(function () use ($templateresetview) {
+                return view($templateresetview);
             });
 
             $data = [];
@@ -94,6 +109,14 @@ class FortifyServiceProvider extends ServiceProvider
                     $data[$site_image->image_category] = $site_image->image_name;
                 }
             }
+
+            $site_colors = AdminColorSetting::get();
+            if(count($site_colors) > 0){
+                foreach($site_colors as $site_color){
+                    $data[$site_color->color_name] = $site_color->color_value;
+                }
+            }
+            
             Fortify::twoFactorChallengeView(function () use ($data) {
             return view('auth.two-factor-challenge')->with($data);
             });

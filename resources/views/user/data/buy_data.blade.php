@@ -268,8 +268,7 @@
                                                 </div>
 
                                                 @if (env('APP_NAME') == 'Edsub' || env('APP_NAME') == 'OresamSub')
-                                                  <input type="hidden" value="0" class="ti-form-checkbox mt-0.5 pointer-events-none" name="validatephonenetwork" id="validatephonenetwork">
-                                                    
+                                                    <input type="hidden" value="0" class="ti-form-checkbox mt-0.5 pointer-events-none" name="validatephonenetwork" id="validatephonenetwork">       
                                                 @else
                                                     <div class="space-y-2">
                                                       <label class="p-3 flex w-full bg-white border border-gray-200 rounded-sm text-sm focus:border-primary focus:ring-primary dark:bg-bgdark dark:border-white/10 dark:text-white/70">

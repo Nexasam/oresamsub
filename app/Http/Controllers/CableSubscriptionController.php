@@ -10,6 +10,7 @@ use App\Models\UserPlan;
 use App\Models\Automation;
 use App\Models\ProductPlan;
 use App\Models\Transaction;
+use App\Models\SiteTemplate;
 use Illuminate\Http\Request;
 use App\Models\ProductCategory;
 use Illuminate\Validation\Rule;
@@ -20,12 +21,15 @@ use App\Models\ProductPlanCategory;
 use App\Models\BulkDataProductPlans;
 use App\Models\UserBulkDataPurchase;
 use Illuminate\Support\Facades\Validator;
-use App\Services\Products\ProductsService;
+use App\Traits\Dashboard\UserDashboardDataTrait;
 use App\Services\Automation\MegaSubPlugAutomation\VendData;
 use App\Services\Automation\MegaSubPlugAutomation\MegaSubCableTV;
+use App\Http\Services\Api\v1\VendorUsersApi\Products\ProductsService;
 
 class CableSubscriptionController extends Controller
 {
+    use UserDashboardDataTrait;
+
     /**
      * Display a listing of the resource.
      */
@@ -171,6 +175,8 @@ class CableSubscriptionController extends Controller
     public function buy_cable_subscription()
     {
 
+        $dataa = $this->get_user_dashboard_data();
+        $data = [...$dataa];
        
         $product = Product::where('slug','cable_subscription')->first(); //TODO: have enums that gets the id later
         $data['product'] = $product;
@@ -191,8 +197,13 @@ class CableSubscriptionController extends Controller
         $data['cable_transactions'] = $cable_transactions;
         $data['user_details'] = $user_details;
 
+        $siteTemplate = SiteTemplate::first();
+        if(! $siteTemplate || $siteTemplate->template_name == 'template_1'){
+            return view('user.cabletv.buy_cable_tv')->with($data);
+        }
+
         // dd($data);
-        return view('user.cabletv.buy_cable_tv')->with($data);
+        return view('template2.user.cabletv.buy_cable_tv')->with($data);
     }
 
     public function validate_smart_card_number(Request $request){

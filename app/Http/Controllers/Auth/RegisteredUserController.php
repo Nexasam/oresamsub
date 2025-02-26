@@ -7,8 +7,10 @@ use App\Models\User;
 use App\Models\UserPlan;
 use App\Models\SiteImage;
 use Illuminate\View\View;
+use App\Models\SiteTemplate;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rules;
+use App\Models\AdminColorSetting;
 use App\Models\LandingPagesSetting;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
@@ -39,8 +41,20 @@ class RegisteredUserController extends Controller
                 $data[$site_image->image_category] = $site_image->image_name;
             }
         }
+
+        $siteTemplate = SiteTemplate::first();
+        if(! $siteTemplate || $siteTemplate->template_name == 'template_1'){
+            return view('auth.register')->with($data);
+        }
+
+        $site_colors = AdminColorSetting::get();
+        if(count($site_colors) > 0){
+            foreach($site_colors as $site_color){
+                $data[$site_color->color_name] = $site_color->color_value;
+            }
+        }
         // dd($data);
-        return view('auth.register')->with($data);
+        return view('template2.auth.register')->with($data);
     }
 
     /**

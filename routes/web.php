@@ -2,6 +2,7 @@
 
 use App\Models\SiteImage;
 use App\Models\ProductPlan;
+use App\Models\SiteTemplate;
 use App\Models\AdminColorSetting;
 use App\Http\Middleware\RoleAssess;
 use App\Models\LandingPagesSetting;
@@ -18,8 +19,10 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\WalletsController;
 use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\QuickToolController;
+use App\Http\Controllers\Template2Controller;
 use App\Http\Controllers\AutomationController;
 use App\Http\Controllers\CrystalPayController;
+use App\Http\Controllers\NewTemplateController;
 use App\Http\Controllers\ProductPlanController;
 use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\BulkDataPlanController;
@@ -34,7 +37,27 @@ use App\Http\Controllers\CableSubscriptionController;
 use App\Http\Controllers\ProductPlanCategoryController;
 use App\Http\Controllers\ElectricitySubscriptionController;
 
+
+
+
 Route::get('logs', [\Rap2hpoutre\LaravelLogViewer\LogViewerController::class, 'index']);
+
+
+
+// NEW TEMPLATE START: temporal routes
+Route::get('template2', [Template2Controller::class, 'index'])->name('template2.index');
+Route::get('template2/login', [Template2Controller::class, 'login'])->name('template2.login');
+Route::get('template2/signup', [Template2Controller::class, 'signup'])->name('template2.signup');
+Route::get('template2/forgot-password', [Template2Controller::class, 'forgot_password'])->name('template2.forgot_password');
+Route::get('template2/dashboard', [Template2Controller::class, 'dashboard'])->name('template2.dashboard');
+Route::get('template2/buy_data', [Template2Controller::class, 'buy_data'])->name('template2.buy_data');
+Route::get('template2/buy_airtime', [Template2Controller::class, 'buy_airtime'])->name('template2.buy_airtime');
+Route::get('template2/buy_cable', [Template2Controller::class, 'buy_cable'])->name('template2.buy_cable');
+Route::get('template2/buy_electricity', [Template2Controller::class, 'buy_electricity'])->name('template2.buy_electricity');
+Route::get('template2/api_docs', [Template2Controller::class, 'api_docs'])->name('template2.api_docs');
+// NEW TEMPLATE END
+
+
 
 //clear browser cache
 Route::get('/clear-cache', function() {
@@ -43,54 +66,63 @@ Route::get('/clear-cache', function() {
 })->name('artisan.clear_cache');
 
 Route::get('/', function () {
-    // dd('e dey');
+    //get template name:
     $data = [];
-    $site_images_data = SiteImage::get();
-    if(count($site_images_data) > 0){
-        foreach($site_images_data as $site_image){
-            $data[$site_image->image_category] = $site_image->image_name;
+        $site_images_data = SiteImage::get();
+        if(count($site_images_data) > 0){
+            foreach($site_images_data as $site_image){
+                $data[$site_image->image_category] = $site_image->image_name;
+            }
         }
-    }
-
-    // dd($data);
-   
-
-
-    $landing_data = LandingPagesSetting::get();
-    foreach($landing_data as $landing_component){
-        $data[$landing_component->field_name] = $landing_component->field_details;
-    }
-
-   
-
-    $site_colors = AdminColorSetting::get();
-    foreach($site_colors as $site_color){
-        if($site_color->color_name == 'site_landing_analytics_color'){
-            $data['site_landing_analytics_color_r'] = explode(', ',$site_color->color_value)[0];
-            $data['site_landing_analytics_color_g'] = explode(', ',$site_color->color_value)[1];
-            $data['site_landing_analytics_color_b'] = explode(', ',$site_color->color_value)[2];
-        }else if($site_color->color_name == 'admin_site_color'){
-            $data['admin_site_color_r'] = explode(', ',$site_color->color_value)[0];
-            $data['admin_site_color_g'] = explode(', ',$site_color->color_value)[1];
-            $data['admin_site_color_b'] = explode(', ',$site_color->color_value)[2];
-        }else if($site_color->color_name == 'site_landing_review_color'){
-            $data['site_landing_review_color_r'] = explode(', ',$site_color->color_value)[0];
-            $data['site_landing_review_color_g'] = explode(', ',$site_color->color_value)[1];
-            $data['site_landing_review_color_b'] = explode(', ',$site_color->color_value)[2];
-        }     
-        else{
-            $data[$site_color->color_name] = $site_color->color_value;
-
+    
+        // dd($data);
+       
+    
+    
+        $landing_data = LandingPagesSetting::get();
+        foreach($landing_data as $landing_component){
+            $data[$landing_component->field_name] = $landing_component->field_details;
         }
-    }
+    
+       
+    
+        $site_colors = AdminColorSetting::get();
+        foreach($site_colors as $site_color){
+            if($site_color->color_name == 'site_landing_analytics_color'){
+                $data['site_landing_analytics_color_r'] = explode(', ',$site_color->color_value)[0];
+                $data['site_landing_analytics_color_g'] = explode(', ',$site_color->color_value)[1];
+                $data['site_landing_analytics_color_b'] = explode(', ',$site_color->color_value)[2];
+            }else if($site_color->color_name == 'admin_site_color'){
+                $data['admin_site_color_r'] = explode(', ',$site_color->color_value)[0];
+                $data['admin_site_color_g'] = explode(', ',$site_color->color_value)[1];
+                $data['admin_site_color_b'] = explode(', ',$site_color->color_value)[2];
+            }else if($site_color->color_name == 'site_landing_review_color'){
+                $data['site_landing_review_color_r'] = explode(', ',$site_color->color_value)[0];
+                $data['site_landing_review_color_g'] = explode(', ',$site_color->color_value)[1];
+                $data['site_landing_review_color_b'] = explode(', ',$site_color->color_value)[2];
+            }     
+            else{
+                $data[$site_color->color_name] = $site_color->color_value;
+    
+            }
+        }
+    
+        // dd($data);
+    
+        $product_plans = ProductPlan::get();
+        $data['product_plans'] = $product_plans;
+        
 
+
+        $template = SiteTemplate::first();
+        if(!$template || $template->template_name == 'template_1'){
+            return view('landing.index')->with($data);
+        }else{
+            //this is template 2 
+            return view('template2.index')->with($data);
+        }
+  
     // dd($data);
-
-    $product_plans = ProductPlan::get();
-    $data['product_plans'] = $product_plans;
-
-    // dd($data);
-    return view('landing.index')->with($data);
 });
 
 Route::get('/access_denied', function () {

@@ -1,0 +1,36 @@
+<?php
+
+return [
+    'site_title_template2' => ['field_name','field_details','Irecharge Website'],
+    'site_logo_alt_template2' => ['field_name','field_details','Irecharge'],
+    'hero_main_text_template2' => ['field_name','field_details','PAY , STAY CONNECTED'],
+    'hero_main_text_stylish_template2' => ['field_name','field_details','SMART'],
+    'hero_sub_text_template2' => ['field_name','field_details','The best way to providing a convenient, secure, and user-friendly platform for managing all your bill payments in one place.'],
+    'hero_lovers_count_template2' => ['field_name','field_details','200'],
+    'about_us_description_template2' => ['field_name','field_details','IRECHARG is your reliable partner in efficienct and seamless bill payment services, designed with core principles of simplifying financial transactions and user friendly interface to ensure proper management of all your bill payment within your fingertip'],
+    'data_description_template2' => ['field_name','field_details','Get data for all network to ensure uninterrupted connectivity.'],
+    'airtime_description_template2' => ['field_name','field_details','Never experience interrupted calls and messaging, stay active.'],
+    'cable_description_template2' => ['field_name','field_details','Enjoy all your shows with family and friends using our hitch free payment platform'],
+    'electricity_description_template2' => ['field_name','field_details','Settle utility bills, electricity bill, water bill with our simplified user interface.'],
+    'epins_description_template2' => ['field_name','field_details','Enjoy purchase of epins through our secured and reliable platform.'],
+    'resultchecker_description_template2' => ['field_name','field_details','Enjoy purchase of epins for resuthrough our secured and reliable platform.'],
+    'topnav_email_template2' => ['field_name','field_details','info@irecharge.com'],  
+    'phone_template2' => ['field_name','field_details','08106733601'],  
+    'email_address_template2' => ['field_name','field_details','info@irecharge.com'],   
+    'twitter_link_template2' => ['field_name','field_details','https://twitter.com'],  
+    'support_whatsapp_number_template2' => ['field_name','field_details','08106733601'], 
+    'facebook_template2' => ['field_name','field_details','https://facebook.com'], 
+    'instagram_template2' => ['field_name','field_details','https://instagram.com'], 
+    'physical_address_template2' => ['field_name','field_details','No 4 Akingbade street, off admiralty, Ibadan, Oyo State'],
+    'testimony1_template2' => ['field_name','field_details','Reliable and affordable data bundles! My business relies on smooth internet access, and this platform delivers every time. Highly recommended for entrepreneurs'], 
+    'testimony1_position_template2' => ['field_name','field_details','Small Business Owner'], 
+    'testimony1_name_template2' => ['field_name','field_details','James'], 
+    'testimony2_template2' => ['field_name','field_details','Fast, seamless, and affordable! Buying data has never been this easy. I love the instant top-up feature. Definitely my go-to platform for data purchases'], 
+    'testimony2_position_template2' => ['field_name','field_details','Digital Marketer'], 
+    'testimony2_name_template2' => ['field_name','field_details','Chioma'], 
+    'testimony3_template2' => ['field_name','field_details','Great service and competitive prices! I\'ve saved a lot on data costs since switching to this platform. Customer support is also top-notch!'], 
+    'testimony3_position_template2' => ['field_name','field_details','Student & Freelancer'], 
+    'testimony3_name_template2' => ['field_name','field_details','Emmanuel'],
+    'google_map_link' => ['field_name','field_details','https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d15858.94015006726!2d3.411644640424493!3d6.428076669937634!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x103bf53280e7648d%3A0x4d01e5de6b847fe5!2sVictoria%20Island%2C%20Lagos!5e0!3m2!1sen!2sng!4v1739875642699!5m2!1sen!2sng'] 
+
+];

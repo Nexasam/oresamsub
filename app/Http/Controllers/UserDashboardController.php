@@ -6,8 +6,10 @@ use App\Models\User;
 use App\Models\UserPlan;
 use App\Models\ProductPlan;
 use App\Models\Transaction;
+use App\Models\SiteTemplate;
 use Illuminate\Http\Request;
 use App\Models\UserProductPlan;
+use App\Models\AdminColorSetting;
 use App\Models\UserBulkDataWallet;
 use App\Models\UserVirtualAccount;
 use App\Models\LandingPagesSetting;
@@ -97,8 +99,24 @@ class UserDashboardController extends Controller
       $data['bulk_data_wallet_count'] = UserBulkDataWallet::select('bulk_wallet_balance_mb')->where('user_id',$user_id)->count();
       $data['alltime_bulk_wallet_balance_mb'] = UserBulkDataWallet::select('alltime_bulk_wallet_balance_mb')->where('user_id',$user_id)->sum('alltime_bulk_wallet_balance_mb');
       $data['transactions'] = Transaction::with(['user','product_plan'])->where('user_id',$user_id)->latest()->get();
+      $data['transactions_sum'] = Transaction::with(['user','product_plan'])->where('user_id',$user_id)->sum('amount');
+
+      $site_colors = AdminColorSetting::get();
+      if(count($site_colors) > 0){
+          foreach($site_colors as $site_color){
+              $data[$site_color->color_name] = $site_color->color_value;
+          }
+      }
      
-      return view('dashboard')->with($data);
+      $template = SiteTemplate::first();
+      if(!$template || $template->template_name == 'template_1'){
+          return view('dashboard')->with($data);
+      }else{
+          //this is template 2 
+          $templaten = 'template'.explode('_',$template->template_name)[1];
+          return view($templaten.'.user.dashboard')->with($data);
+      }
+
     }else{
       $data['main_wallet_balances'] = User::select('main_wallet')->sum('main_wallet');
       $data['bulk_data_wallet_sum'] = UserBulkDataWallet::select('bulk_wallet_balance_mb')->sum('bulk_wallet_balance_mb');

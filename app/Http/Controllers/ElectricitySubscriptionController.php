@@ -10,6 +10,7 @@ use App\Models\UserPlan;
 use App\Models\Automation;
 use App\Models\ProductPlan;
 use App\Models\Transaction;
+use App\Models\SiteTemplate;
 use Illuminate\Http\Request;
 use App\Models\ProductCategory;
 use Illuminate\Validation\Rule;
@@ -20,13 +21,16 @@ use App\Models\ProductPlanCategory;
 use App\Models\BulkDataProductPlans;
 use App\Models\UserBulkDataPurchase;
 use Illuminate\Support\Facades\Validator;
-use App\Services\Products\ProductsService;
+use App\Traits\Dashboard\UserDashboardDataTrait;
 use App\Services\Automation\MegaSubPlugAutomation\VendData;
+use App\Http\Services\Api\v1\VendorUsersApi\Products\ProductsService;
 use App\Services\Automation\MegaSubPlugAutomation\MegaSubElectricity;
 use App\Services\Automation\MegaSubPlugAutomation\MegaSubelectricityTV;
 
 class ElectricitySubscriptionController extends Controller
 {
+    use UserDashboardDataTrait;
+
     /**
      * Display a listing of the resource.
      */
@@ -173,8 +177,9 @@ class ElectricitySubscriptionController extends Controller
      */
     public function buy_electricity_subscription()
     {
+        $dataa = $this->get_user_dashboard_data();
+        $data = [...$dataa];
 
-       
         $product = Product::where('slug','utility_bills')->first(); //TODO: have enums that gets the id later
         $data['product'] = $product;
 
@@ -194,8 +199,13 @@ class ElectricitySubscriptionController extends Controller
         $data['electricity_transactions'] = $electricity_transactions;
         $data['user_details'] = $user_details;
 
+        $siteTemplate = SiteTemplate::first();
+        if(! $siteTemplate || $siteTemplate->template_name == 'template_1'){
+            return view('user.electricity.buy_electricity')->with($data);
+        }
+
         // dd($data);
-        return view('user.electricity.buy_electricity')->with($data);
+        return view('template2.user.electricity.buy_electricity')->with($data);
     }
 
     public function validate_metre_number(Request $request){
