@@ -23,8 +23,8 @@ class PriceChangeController extends Controller
             $product_plan_name = $product_plan['product_plan_name'];
             $oldcostprice = $product_plan['cost_price'];
             $old_selling_price = $product_plan['default_selling_price'];
-            $size = $product_plan['data_size_in_mb'] / 1024;
-            if($product_plan['data_size_in_mb'] == 512){
+            $size = $product_plan['data_size_in_mb'] / 1000;
+            if($product_plan['data_size_in_mb'] == 500){
                 $size = 0.5;
             }
             $old_user_level_1_selling_price = $product_plan['user_level_1_selling_price'] ;
