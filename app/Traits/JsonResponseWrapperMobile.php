@@ -10,7 +10,7 @@ trait JsonResponseWrapperMobile{
             'code' => 200,
             'message' => $message,
             'data' => $data,
-            'token' => '',
+            'token' => $token,
 
         ]);
     }
