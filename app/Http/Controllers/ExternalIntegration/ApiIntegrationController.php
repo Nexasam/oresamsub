@@ -70,9 +70,9 @@ class ApiIntegrationController extends Controller
         
             event(new Registered($user));
 
-            $user->token = $user->createToken($user->id)->plainTextToken;
+            $token = $user->createToken($user->id)->plainTextToken;
     
-            return $this->success('Registration was successful. Redirecting for phone number verification', data: $user);
+            return $this->success('Registration was successful. Redirecting for phone number verification',token: $token, data: $user);
      }
 
      public function set_transaction_pin(Request $request){
@@ -163,10 +163,10 @@ class ApiIntegrationController extends Controller
              
          }
 
-         $data['token'] = $user->createToken($request->email)->plainTextToken;
-         $data['user'] = $user;
+         $token = $user->createToken($request->email)->plainTextToken;
+      
          
-         return $this->success('Login was successful',data: $data );
+         return $this->success('Login was successful',data: $user, token: $token );
      }
 
    
