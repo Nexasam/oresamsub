@@ -46,14 +46,14 @@ class PriceChangeController extends Controller
             echo "Selling price4: $old_user_level_4_selling_price : $mtnprice44<br>";
             echo "<hr><hr><hr>";
 
-            // ProductPlan::where('id',$product_plan->id)->update([
-            //     'cost_price' => $newmtncostprice,
-            //     'default_selling_price' => $mtnprice11,
-            //     'user_level_1_selling_price' => $mtnprice11,
-            //     'user_level_2_selling_price' => $mtnprice22,
-            //     'user_level_3_selling_price' => $mtnprice33,
-            //     'user_level_4_selling_price' => $mtnprice44,
-            // ]);
+            ProductPlan::where('id',$product_plan->id)->update([
+                'cost_price' => $newmtncostprice,
+                'default_selling_price' => $mtnprice11,
+                'user_level_1_selling_price' => $mtnprice11,
+                'user_level_2_selling_price' => $mtnprice22,
+                'user_level_3_selling_price' => $mtnprice33,
+                'user_level_4_selling_price' => $mtnprice44,
+            ]);
         }
         
         
