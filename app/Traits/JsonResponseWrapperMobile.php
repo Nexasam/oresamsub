@@ -8,9 +8,10 @@ trait JsonResponseWrapperMobile{
         return response()->json([
             'status' => true,
             'code' => 200,
+            'token' => $token,
             'message' => $message,
             'data' => $data,
-            'token' => $token,
+           
 
         ]);
     }
@@ -20,9 +21,9 @@ trait JsonResponseWrapperMobile{
        return  response()->json([
             'status' => false,
             'code' => $code,
+            'token'=>$token,
             'message' => $message,
             'data' => $data,
-            'token'=>$token
         ]);
     }
 }
