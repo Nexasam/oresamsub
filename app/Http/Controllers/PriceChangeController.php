@@ -35,13 +35,23 @@ class PriceChangeController extends Controller
             $mtnprice44 = $mtnsprice4 * $size;
             $newmtncostprice = $mtncostprice * $size;
             // $old_selling_price5 = $product_plan['default_selling_price'];
-            echo "Selling price: $product_plan_name<br>";
-            echo "Selling price: $old_selling_price - $newmtncostprice<br>";
+            echo "Selling plan: $product_plan_name<br>";
+            echo "cost price: $old_selling_price - $newmtncostprice<br>";
+            echo "default selling price: $old_selling_price - $mtnprice11<br>";
             echo "Selling price1: $old_user_level_1_selling_price : $mtnprice11<br>";
             echo "Selling price2: $old_user_level_2_selling_price : $mtnprice22<br>";
             echo "Selling price3: $old_user_level_3_selling_price : $mtnprice33<br>";
             echo "Selling price4: $old_user_level_4_selling_price : $mtnprice44<br>";
             echo "<hr><hr><hr>";
+
+            // ProductPlan::where('id',$product_plan->id)->update([
+            //     'costprice' => $newmtncostprice,
+            //     'default_selling_price' => $mtnprice11,
+            //     'user_level_1_selling_price' => $mtnprice11,
+            //     'user_level_2_selling_price' => $mtnprice22,
+            //     'user_level_3_selling_price' => $mtnprice33,
+            //     'user_level_4_selling_price' => $mtnprice44,
+            // ]);
         }
         
         

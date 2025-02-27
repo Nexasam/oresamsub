@@ -345,7 +345,7 @@ class AdminSettingsController extends Controller
 
     public function manage_site_logo(Request $request){
             $validator = Validator::make($request->all(), [
-              'site_logo' => 'required|image|mimes:png|max:8048',
+              'site_logo' => 'required|image|mimes:png,jpg|max:8048',
             ]);
 
             if ($validator->stopOnFirstFailure()->fails()) {

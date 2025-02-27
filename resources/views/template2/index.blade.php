@@ -202,18 +202,18 @@
                 <div class="hidden  md:flex items-center max-w-7xl mx-auto py-12 justify-between bg-[{{$site_primary_color}}]">
                     <h2 class="md:px-0 max-w-4xl text-white font-bold text-4xl md:text-5xl">Our Partners.</h2>
                     <div class="flex items-center justify-center space-x-6">
-                        <div class="bg-white rounded-xl px-16 py-3">
+                        {{-- <div class="bg-white rounded-xl px-16 py-3"> --}}
                             <img width="80" height="80" src="assets/template2/images/mtn.png" alt="">
-                        </div>    
-                        <div class="bg-white rounded-xl px-16 py-3">
+                        {{-- </div>     --}}
+                        {{-- <div class="bg-white rounded-xl px-16 py-3"> --}}
                             <img width="90" height="90" src="assets/template2/images/glo.png" alt="">
-                        </div>    
-                        <div class="bg-white rounded-xl px-16 py-3">
+                        {{-- </div>     --}}
+                        {{-- <div class="bg-white rounded-xl px-16 py-3"> --}}
                             <img width="100" height="100" src="assets/template2/images/airtel.png" alt="">
-                        </div>    
-                        <div class="bg-white rounded-xl px-16 py-3">
+                        {{-- </div>     --}}
+                        {{-- <div class="bg-white rounded-xl px-16 py-3"> --}}
                             <img width="90" height="90" src="assets/template2/images/ninemobile.png" alt="">
-                        </div>    
+                        {{-- </div>     --}}
                     </div>
                 </div>
 
