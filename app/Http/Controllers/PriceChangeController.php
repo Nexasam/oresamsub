@@ -20,6 +20,7 @@ class PriceChangeController extends Controller
                          ->get();
         foreach($product_plans as $product_plan){
             $product_plan_name = $product_plan['product_plan_name'];
+            $oldcostprice = $product_plan['cost_price'];
             $old_selling_price = $product_plan['default_selling_price'];
             $size = $product_plan['data_size_in_mb'] / 1000;
             if($product_plan['data_size_in_mb'] == 500){
@@ -36,7 +37,7 @@ class PriceChangeController extends Controller
             $newmtncostprice = $mtncostprice * $size;
             // $old_selling_price5 = $product_plan['default_selling_price'];
             echo "Selling plan: $product_plan_name<br>";
-            echo "cost price: $old_selling_price - $newmtncostprice<br>";
+            echo "cost price: $oldcostprice - $newmtncostprice<br>";
             echo "default selling price: $old_selling_price - $mtnprice11<br>";
             echo "Selling price1: $old_user_level_1_selling_price : $mtnprice11<br>";
             echo "Selling price2: $old_user_level_2_selling_price : $mtnprice22<br>";
