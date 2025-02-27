@@ -73,7 +73,7 @@ class ApiIntegrationController extends Controller
 
             $token = $user->createToken($user->id)->plainTextToken;
 
-            $expiration_time = Carbon::now()->addMinutes(10);
+            $expiration_time = Carbon::now()->addMinutes(50);
             $secs = strtotime($expiration_time);
             $access = [
                'token' => $token,
@@ -172,7 +172,7 @@ class ApiIntegrationController extends Controller
          }
 
          $token = $user->createToken($request->email)->plainTextToken;
-         $expiration_time = Carbon::now()->addMinutes(10);
+         $expiration_time = Carbon::now()->addMinutes(50);
          $secs = strtotime($expiration_time);
          $access = [
             'token' => $token,
