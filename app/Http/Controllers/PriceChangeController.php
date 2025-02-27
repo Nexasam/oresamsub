@@ -21,17 +21,21 @@ class PriceChangeController extends Controller
         foreach($product_plans as $product_plan){
             $product_plan_name = $product_plan['product_plan_name'];
             $old_selling_price = $product_plan['default_selling_price'];
-            $old_user_level_1_selling_price = $product_plan['user_level_1_selling_price'];
+            $size = $product_plan['data_size_in_mb'] / 1000;
+            if($product_plan['data_size_in_mb'] == 500){
+                $size = 0.5;
+            }
+            $old_user_level_1_selling_price = $product_plan['user_level_1_selling_price'] ;
             $old_user_level_2_selling_price = $product_plan['user_level_2_selling_price'];
             $old_user_level_3_selling_price = $product_plan['user_level_3_selling_price'];
             $old_user_level_4_selling_price = $product_plan['user_level_4_selling_price'];
             // $old_selling_price5 = $product_plan['default_selling_price'];
             echo "Selling price: $product_plan_name<br>";
             echo "Selling price: $old_selling_price - $mtncostprice<br>";
-            echo "Selling price1: $old_user_level_1_selling_price - $mtnsprice1<br>";
-            echo "Selling price2: $old_user_level_2_selling_price - $mtnsprice2<br>";
-            echo "Selling price3: $old_user_level_3_selling_price - $mtnsprice3<br>";
-            echo "Selling price4: $old_user_level_4_selling_price - $mtnsprice4<br>";
+            echo "Selling price1: $old_user_level_1_selling_price - $mtnsprice1 * ($size)<br>";
+            echo "Selling price2: $old_user_level_2_selling_price - $mtnsprice2 * ($size)<br>";
+            echo "Selling price3: $old_user_level_3_selling_price - $mtnsprice3 * ($size)<br>";
+            echo "Selling price4: $old_user_level_4_selling_price - $mtnsprice4 * ($size)<br>";
             echo "<hr><hr><hr>";
         }
         
