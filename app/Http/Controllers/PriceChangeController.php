@@ -31,11 +31,11 @@ class PriceChangeController extends Controller
             $old_user_level_2_selling_price = $product_plan['user_level_2_selling_price'];
             $old_user_level_3_selling_price = $product_plan['user_level_3_selling_price'];
             $old_user_level_4_selling_price = $product_plan['user_level_4_selling_price'];
-            $mtnprice11 = (int) ($mtnsprice1 * $size);
-            $mtnprice22 = (int) ($mtnsprice2 * $size);
-            $mtnprice33 = (int) ($mtnsprice3 * $size);
-            $mtnprice44 = (int) ($mtnsprice4 * $size);
-            $newmtncostprice = (int) $mtncostprice * $size;
+            $mtnprice11 = ceil($mtnsprice1 * $size);
+            $mtnprice22 = ceil($mtnsprice2 * $size);
+            $mtnprice33 = ceil($mtnsprice3 * $size);
+            $mtnprice44 = ceil($mtnsprice4 * $size);
+            $newmtncostprice = ceil($mtncostprice * $size);
             // $old_selling_price5 = $product_plan['default_selling_price'];
             echo "Selling plan: $product_plan_name<br>";
             echo "cost price: $oldcostprice : $newmtncostprice<br>";
