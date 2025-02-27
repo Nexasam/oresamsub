@@ -33,9 +33,10 @@ class PriceChangeController extends Controller
             $mtnprice22 = $mtnsprice2 * $size;
             $mtnprice33 = $mtnsprice3 * $size;
             $mtnprice44 = $mtnsprice4 * $size;
+            $newmtncostprice = $mtncostprice * $size;
             // $old_selling_price5 = $product_plan['default_selling_price'];
             echo "Selling price: $product_plan_name<br>";
-            echo "Selling price: $old_selling_price - $mtncostprice<br>";
+            echo "Selling price: $old_selling_price - $newmtncostprice<br>";
             echo "Selling price1: $old_user_level_1_selling_price : $mtnprice11<br>";
             echo "Selling price2: $old_user_level_2_selling_price : $mtnprice22<br>";
             echo "Selling price3: $old_user_level_3_selling_price : $mtnprice33<br>";
