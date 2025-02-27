@@ -15,13 +15,14 @@ trait JsonResponseWrapperMobile{
         ]);
     }
 
-    public function error($message, $data = [], $code = 500)
+    public function error($message, $data = [], $code = 500, $token = '')
     {
        return  response()->json([
             'status' => false,
             'code' => $code,
             'message' => $message,
-             'data' => $data
+            'data' => $data,
+            'token'=>$token
         ]);
     }
 }
