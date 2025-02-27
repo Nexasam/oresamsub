@@ -19,12 +19,14 @@ class PriceChangeController extends Controller
                          ->where('automation_id','9c2887ea-55b5-4f19-904e-e490a10682ea')
                          ->get();
         foreach($product_plans as $product_plan){
+            $product_plan_name = $product_plan['product_plan_name'];
             $old_selling_price = $product_plan['default_selling_price'];
             $old_user_level_1_selling_price = $product_plan['user_level_1_selling_price'];
             $old_user_level_2_selling_price = $product_plan['user_level_2_selling_price'];
             $old_user_level_3_selling_price = $product_plan['user_level_3_selling_price'];
             $old_user_level_4_selling_price = $product_plan['user_level_4_selling_price'];
             // $old_selling_price5 = $product_plan['default_selling_price'];
+            echo "Selling price: $product_plan_name<br>";
             echo "Selling price: $old_selling_price - $mtncostprice<br>";
             echo "Selling price1: $old_user_level_1_selling_price - $mtnsprice1<br>";
             echo "Selling price2: $old_user_level_2_selling_price - $mtnsprice2<br>";
