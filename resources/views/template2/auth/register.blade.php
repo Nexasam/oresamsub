@@ -6,26 +6,74 @@
     <form class="max-w-xl mx-auto space-y-2 md:space-y-2 pb-4 px-4"> 
         <div class="mt-4 sm:mt-0">
             <!-- dark:text-white -->
-            <label for="email" class="mb-1 sm:mb-2 text-sm font-medium text-gray-500 ">Fullname</label>
+            <label for="first_name" class="mb-1 sm:mb-2 text-sm font-medium text-gray-500 ">First Name</label>
             
-            <!-- dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-[{{$site_primary_color}}] dark:focus:border-[{{$site_primary_color}}] -->
-            <input type="email" id="email" aria-describedby="helper-text-explanation" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-[{{$site_primary_color}}] focus:border-[{{$site_primary_color}}] block w-full p-2.5  " placeholder="Elizabeth Ajayi">
+            <input type="first_name" id="first_name" aria-describedby="helper-text-explanation" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-[{{$site_primary_color}}] focus:border-[{{$site_primary_color}}] block w-full p-2.5  " placeholder="Elizabeth ">
+            <input type="hidden" name="_token" value="{{ csrf_token() }}" />
+            <x-input-error :messages="$errors->get('first_name')" class="mt-2" />
         </div>
 
         <div class="mt-4 sm:mt-0">
             <!-- dark:text-white -->
-            <label for="email" class="block mb-1 sm:mb-2 text-sm font-medium text-gray-500 ">Email Address</label>
+            <label for="last_name" class="block mb-1 sm:mb-2 text-sm font-medium text-gray-500 ">Last Name</label>
             
-            <!-- dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-[{{$site_primary_color}}] dark:focus:border-[{{$site_primary_color}}] -->
-            <input type="email" id="email" aria-describedby="helper-text-explanation" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-[{{$site_primary_color}}] focus:border-[{{$site_primary_color}}] block w-full p-2.5  " placeholder="pietro.schirano@gmail.com">
+            <input type="text" name="last_name" id="last_name" aria-describedby="helper-text-explanation" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-[{{$site_primary_color}}] focus:border-[{{$site_primary_color}}] block w-full p-2.5  " placeholder="Ajayi">
+            <x-input-error :messages="$errors->get('last_name')" class="mt-2" />
         </div>
+
+        <div class="mt-4 sm:mt-0">
+            <!-- dark:text-white -->
+            <label for="username" class="block mb-1 sm:mb-2 text-sm font-medium text-gray-500 ">Username</label>
+            
+            <input type="text" name="username" id="username" aria-describedby="helper-text-explanation" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-[{{$site_primary_color}}] focus:border-[{{$site_primary_color}}] block w-full p-2.5  " placeholder="samo">
+            <x-input-error :messages="$errors->get('username')" class="mt-2" />
+        </div>
+
+        <div class="mt-4 sm:mt-0">
+            <!-- dark:text-white -->
+            <label for="pin" class="block mb-1 sm:mb-2 text-sm font-medium text-gray-500 ">PIN</label>
+            
+            <input type="text" name="pin" id="pin" aria-describedby="helper-text-explanation" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-[{{$site_primary_color}}] focus:border-[{{$site_primary_color}}] block w-full p-2.5  " placeholder="samo">
+            <x-input-error :messages="$errors->get('pin')" class="mt-2" />
+        </div>
+
+        <div class="mt-4 sm:mt-0">
+            <!-- dark:text-white -->
+            <label for="email" class="block mb-1 sm:mb-2 text-sm font-medium text-gray-500 ">Email</label>
+            
+            <input type="email" name="email" id="email" aria-describedby="helper-text-explanation" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-[{{$site_primary_color}}] focus:border-[{{$site_primary_color}}] block w-full p-2.5  " placeholder="samo">
+            <x-input-error :messages="$errors->get('email')" class="mt-2" />
+        </div>
+
+        <div class="mt-4 sm:mt-0">
+            <!-- dark:text-white -->
+            <label for="phone_number" class="block mb-1 sm:mb-2 text-sm font-medium text-gray-500 ">Phone Number</label>
+            
+            <input type="text" name="phone_number" id="phone_number" aria-describedby="helper-text-explanation" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-[{{$site_primary_color}}] focus:border-[{{$site_primary_color}}] block w-full p-2.5  " placeholder="samo">
+            <x-input-error :messages="$errors->get('phone_number')" class="mt-2" />
+        </div>
+
+        <div class="mt-4 sm:mt-0">
+            <!-- dark:text-white -->
+            <label for="upline_referral_phone_number" class="block mb-1 sm:mb-2 text-sm font-medium text-gray-500 ">Upline Phone Number(optional)</label>
+            
+            <input type="text" name="upline_referral_phone_number" id="upline_referral_phone_number" aria-describedby="helper-text-explanation" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-[{{$site_primary_color}}] focus:border-[{{$site_primary_color}}] block w-full p-2.5  " placeholder="samo">
+            <x-input-error :messages="$errors->get('upline_referral_phone_number')" class="mt-2" />
+        </div>
+
+
+
+
+
+
+
+
 
 
         <div class="mt-4 sm:mt-0">
             <!-- dark:text-white -->
             <label for="email" class="mb-1 sm:mb-2 text-sm font-medium text-gray-500 ">Phone Number</label>
             
-            <!-- dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-[{{$site_primary_color}}] dark:focus:border-[{{$site_primary_color}}] -->
             <input type="email" id="email" aria-describedby="helper-text-explanation" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-[{{$site_primary_color}}] focus:border-[{{$site_primary_color}}] block w-full p-2.5  " placeholder="08141163863">
         </div>
 
@@ -34,7 +82,6 @@
             <!-- dark:text-white -->
             <label for="email" class="mb-1 sm:mb-2 text-sm font-medium text-gray-500 ">Referral Number (optional)</label>
             
-            <!-- dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-[{{$site_primary_color}}] dark:focus:border-[{{$site_primary_color}}] -->
             <input type="email" id="email" aria-describedby="helper-text-explanation" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-[{{$site_primary_color}}] focus:border-[{{$site_primary_color}}] block w-full p-2.5  " placeholder="**********">
         </div>
 
@@ -43,7 +90,6 @@
             <!-- dark:text-white -->
             <label for="password" class="block mb-1 sm:mb-2 text-sm font-medium text-gray-500">Enter password</label>
             <div class="relative">
-            <!-- dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-[{{$site_primary_color}}] dark:focus:border-[{{$site_primary_color}}] -->
             <input type="password" id="password" aria-describedby="helper-text-explanation" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-[{{$site_primary_color}}] focus:border-[{{$site_primary_color}}] block w-full p-2.5  " placeholder="**********" >
             <button type="button" class="absolute inset-y-0 end-0 flex items-center pe-3">
             <svg width="20" height="14" viewBox="0 0 20 14" fill="none" xmlns="http://www.w3.org/2000/svg">

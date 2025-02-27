@@ -91,6 +91,7 @@ trait UserDashboardDataTrait{
         $data['hot_sales'] = $new_hot_sales_array;
         // dd($data);
         $data['user'] = $user_details;
+        $data['user_details'] = $user_details;
         $data['users'] = User::select('id')->get();
         $data['product_plans'] = ProductPlan::select('id')->get();
         $data['product_plan_categories'] = ProductPlanCategory::select('id','product_plan_category_name')->get();

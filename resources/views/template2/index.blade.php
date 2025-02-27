@@ -6,9 +6,13 @@
     <title>{{ env('APP_NAME') }} - Your number 1 subscription platform</title>
     <link href="https://cdn.jsdelivr.net/npm/flowbite@2.5.2/dist/flowbite.min.css" rel="stylesheet" />
     <script src="https://cdn.tailwindcss.com"></script>
+    {{-- <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap" rel="stylesheet"> --}}
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
 
     @php
        $hero1 = isset($hero_image1) ? env('APP_URL').'assets/landing_page_assets/img/hero_image1/'.$hero_image1 : env('APP_URL').'assets/landing_page_assets/img/bg_banner1.jpg';
@@ -44,6 +48,12 @@
             font-weight: 400;
             font-style: normal;
         }
+        .montserrat2 {
+        font-family: "Montserrat", serif;
+        font-optical-sizing: auto;
+        font-weight: 500;
+        font-style: normal;
+        }
 
         body{
             scroll-behavior: smooth;
@@ -52,7 +62,7 @@
     </style>
 
 </head>
-<body  class="inter text-[#333333]">
+<body  class="montserrat2 text-[#333333]">
     <div id="home" class="p-0 m-0 h-screen bg-white">
         <!-- <nav class="flex items-center justify-between  px-24 py-6 bg-white">
             <img src="assets/template2/images/logonew.png" alt="">
