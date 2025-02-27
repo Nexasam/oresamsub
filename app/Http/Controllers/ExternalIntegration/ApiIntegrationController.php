@@ -77,7 +77,7 @@ class ApiIntegrationController extends Controller
             $secs = strtotime($expiration_time);
             $access = [
                'token' => $token,
-               'expired_At' => $secs,
+               'expiredAt' => $secs,
             ];
     
             return $this->success(access: $access, message: 'Registration was successful. Redirecting for phone number verification', data: $user);
@@ -176,7 +176,7 @@ class ApiIntegrationController extends Controller
          $secs = strtotime($expiration_time);
          $access = [
             'token' => $token,
-            'expired_At' => $secs,
+            'expiredAt' => $secs,
          ];
       
          
