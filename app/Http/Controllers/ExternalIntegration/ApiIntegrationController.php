@@ -166,7 +166,7 @@ class ApiIntegrationController extends Controller
          $token = $user->createToken($request->email)->plainTextToken;
       
          
-         return $this->success(token: token: $token,'Login was successful',data: $user);
+         return $this->success(token: $token,message:'Login was successful',data: $user);
      }
 
    
