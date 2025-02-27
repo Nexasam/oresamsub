@@ -29,13 +29,17 @@ class PriceChangeController extends Controller
             $old_user_level_2_selling_price = $product_plan['user_level_2_selling_price'];
             $old_user_level_3_selling_price = $product_plan['user_level_3_selling_price'];
             $old_user_level_4_selling_price = $product_plan['user_level_4_selling_price'];
+            $mtnprice11 = $mtnsprice1 * $size;
+            $mtnprice22 = $mtnsprice2 * $size;
+            $mtnprice33 = $mtnsprice3 * $size;
+            $mtnprice44 = $mtnsprice4 * $size;
             // $old_selling_price5 = $product_plan['default_selling_price'];
             echo "Selling price: $product_plan_name<br>";
             echo "Selling price: $old_selling_price - $mtncostprice<br>";
-            echo "Selling price1: $old_user_level_1_selling_price - $mtnsprice1 * ($size)<br>";
-            echo "Selling price2: $old_user_level_2_selling_price - $mtnsprice2 * ($size)<br>";
-            echo "Selling price3: $old_user_level_3_selling_price - $mtnsprice3 * ($size)<br>";
-            echo "Selling price4: $old_user_level_4_selling_price - $mtnsprice4 * ($size)<br>";
+            echo "Selling price1: $old_user_level_1_selling_price : $mtnprice11<br>";
+            echo "Selling price2: $old_user_level_2_selling_price : $mtnprice22<br>";
+            echo "Selling price3: $old_user_level_3_selling_price : $mtnprice33<br>";
+            echo "Selling price4: $old_user_level_4_selling_price : $mtnprice44<br>";
             echo "<hr><hr><hr>";
         }
         
