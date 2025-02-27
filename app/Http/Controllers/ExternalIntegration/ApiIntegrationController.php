@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\ExternalIntegration;
 
 use Exception;
+use Carbon\Carbon;
 use App\Models\Role;
 use App\Models\User;
 use App\Models\Network;
@@ -16,8 +17,8 @@ use App\Http\Controllers\Controller;
 use App\Models\BulkDataProductPlans;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Auth\Events\Registered;
 // use Illuminate\Support\Facades\Password;
+use Illuminate\Auth\Events\Registered;
 use App\Traits\JsonResponseWrapperMobile;
 use Illuminate\Validation\Rules\Password;
 use Illuminate\Validation\ValidationException;
@@ -71,8 +72,15 @@ class ApiIntegrationController extends Controller
             event(new Registered($user));
 
             $token = $user->createToken($user->id)->plainTextToken;
+
+            $expiration_time = Carbon::now()->addMinutes(10);
+            $secs = strtotime($expiration_time);
+            $access = [
+               'token' => $token,
+               'expired_At' => $secs,
+            ];
     
-            return $this->success('Registration was successful. Redirecting for phone number verification',token: $token, data: $user);
+            return $this->success(access: $access, message: 'Registration was successful. Redirecting for phone number verification', data: $user);
      }
 
      public function set_transaction_pin(Request $request){
@@ -164,9 +172,15 @@ class ApiIntegrationController extends Controller
          }
 
          $token = $user->createToken($request->email)->plainTextToken;
+         $expiration_time = Carbon::now()->addMinutes(10);
+         $secs = strtotime($expiration_time);
+         $access = [
+            'token' => $token,
+            'expired_At' => $secs,
+         ];
       
          
-         return $this->success(token: $token,message:'Login was successful',data: $user);
+         return $this->success(access: $access,message:'Login was successful',data: $user);
      }
 
    
