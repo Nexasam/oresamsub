@@ -44,7 +44,7 @@
     <link rel="stylesheet" href="https://cdn.datatables.net/2.0.8/css/dataTables.dataTables.min.css">
 
 
-    <title>{{ $site_title }} </title>
+    <title>{{ $site_title }}  - data</title>
 
     @php
        $hero1 = isset($hero_image1) ? env('APP_URL').'assets/landing_page_assets/img/hero_image1/'.$hero_image1 : env('APP_URL').'assets/landing_page_assets/img/bg_banner1.jpg';
