@@ -70,61 +70,64 @@ class FortifyServiceProvider extends ServiceProvider
     public function boot(): void
     {
 
+            if(env('APP_NAME') != 'Irecharg'){
+                $siteTemplate = SiteTemplate::first();
+                if(! $siteTemplate || $siteTemplate->template_name == 'template_1'){
+                    $templateloginview = 'auth.login';
+                    $templateregisterview = 'auth.register';
+                    $templateforgotview = 'auth.forgot-password';
+                    $templateresetview = 'auth.reset-password';
+    
+                }else{
+                    $templateloginview = 'template2.auth.login';
+                    $templateregisterview = 'template2.auth.register';
+                    $templateforgotview = 'template2.auth.forgot_password';
+                    $templateresetview = 'template2.auth.reset_password';
+                }
+    
+                Fortify::loginView(function () use ($templateloginview) {
+                    return view($templateloginview);
+                });
+    
+                Fortify::registerView(function () use ($templateregisterview) {
+                    return view($templateregisterview);
+                });
+    
+                Fortify::requestPasswordResetLinkView(function () use ($templateforgotview) {
+                    return view($templateforgotview);
+                });
+    
+                Fortify::resetPasswordView(function () use ($templateresetview) {
+                    return view($templateresetview);
+                });
+    
+                $data = [];
+                $site_images_data = SiteImage::get();
+                
+                if(count($site_images_data) > 0){
+                    foreach($site_images_data as $site_image){
+                        $data[$site_image->image_category] = $site_image->image_name;
+                    }
+                }
+    
+                $site_colors = AdminColorSetting::get();
+                if(count($site_colors) > 0){
+                    foreach($site_colors as $site_color){
+                        $data[$site_color->color_name] = $site_color->color_value;
+                    }
+                }
+                
+                Fortify::twoFactorChallengeView(function () use ($data) {
+                return view('auth.two-factor-challenge')->with($data);
+                });
+    
+                // Fortify::twoFactorChallengeView(function ()  {
+                //     return view('auth.two-factor-challenge');
+                // });
+    
+            }
         
-            $siteTemplate = SiteTemplate::first();
-            if(! $siteTemplate || $siteTemplate->template_name == 'template_1'){
-                $templateloginview = 'auth.login';
-                $templateregisterview = 'auth.register';
-                $templateforgotview = 'auth.forgot-password';
-                $templateresetview = 'auth.reset-password';
-
-            }else{
-                $templateloginview = 'template2.auth.login';
-                $templateregisterview = 'template2.auth.register';
-                $templateforgotview = 'template2.auth.forgot_password';
-                $templateresetview = 'template2.auth.reset_password';
-            }
-
-            Fortify::loginView(function () use ($templateloginview) {
-                return view($templateloginview);
-            });
-
-            Fortify::registerView(function () use ($templateregisterview) {
-                return view($templateregisterview);
-            });
-
-            Fortify::requestPasswordResetLinkView(function () use ($templateforgotview) {
-                return view($templateforgotview);
-            });
-
-            Fortify::resetPasswordView(function () use ($templateresetview) {
-                return view($templateresetview);
-            });
-
-            $data = [];
-            $site_images_data = SiteImage::get();
-            
-            if(count($site_images_data) > 0){
-                foreach($site_images_data as $site_image){
-                    $data[$site_image->image_category] = $site_image->image_name;
-                }
-            }
-
-            $site_colors = AdminColorSetting::get();
-            if(count($site_colors) > 0){
-                foreach($site_colors as $site_color){
-                    $data[$site_color->color_name] = $site_color->color_value;
-                }
-            }
-            
-            Fortify::twoFactorChallengeView(function () use ($data) {
-            return view('auth.two-factor-challenge')->with($data);
-            });
-
-            // Fortify::twoFactorChallengeView(function ()  {
-            //     return view('auth.two-factor-challenge');
-            // });
-
+         
 
             Fortify::authenticateUsing(function(Request $request){
                 $user = User::where('email',$request->email)->first();
