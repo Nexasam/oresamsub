@@ -694,7 +694,7 @@
                               <img width="50" height="50" src="assets/template2/images/prevIcon.png" alt="" >
                              </button> -->
                              <!-- <button type="button" data-carousel-next> -->
-                              <img width="70" height="50" src="assets/template2/images/nextIcon.png" alt="" >
+                              {{-- <img width="70" height="50" src="assets/template2/images/nextIcon.png" alt="" > --}}
                              <!-- </button> -->
                     </div>
                 </div>
