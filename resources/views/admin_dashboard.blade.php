@@ -312,7 +312,7 @@
       
         <div class="col-span-12 xxl:col-span-12">
 
-            <div class="box w-full mb-4">
+            {{-- <div class="box w-full mb-4">
                 <div class="box-header">
                     <div class="sm:flex">
                         <h5 class="box-title my-auto">Recent Transactions</h5>
@@ -320,7 +320,7 @@
                 </div>
                 <livewire:transactions-table />
 
-            </div>
+            </div> --}}
 
         
 
