@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Models\SiteTemplate;
+use App\Traits\Dashboard\UserDashboardDataTrait;
 use Illuminate\Http\Request;
 use App\Models\ReferralSetting;
 use Illuminate\Validation\Rule;
@@ -13,7 +15,12 @@ use Illuminate\Support\Facades\Validator;
 
 class UserSettingsController extends Controller
 {
+    use UserDashboardDataTrait;
+    
     public function index(){
+        
+        $dataa = $this->get_user_dashboard_data();
+        $data = [...$dataa];
         //landingpages
         $user_details = User::where('id',auth()->id())->first();
 
@@ -22,8 +29,17 @@ class UserSettingsController extends Controller
           redirect()->route('login');
         }
         $data['user'] = $user_details;
-        // dd($data);
-        return view('user.settings.index')->with($data);
+        $data['hideNav'] = true;
+
+        $template = SiteTemplate::first();
+        if(!$template || $template->template_name == 'template_1'){
+            return view('user.settings.index')->with($data);
+        }else{
+            //this is template 2 
+            $templaten = 'template'.explode('_',$template->template_name)[1];
+            return view($templaten.'.user.settings.index')->with($data);
+        }
+
     }
 
 
@@ -66,9 +82,12 @@ class UserSettingsController extends Controller
         'current_password' => 'required',
         'pin5' => ['required','digits:4']
       ]);
+      
 
       if ($validator->stopOnFirstFailure()->fails()) {
         return redirect()->back()->withErrors($validator)->withInput();
+        // Session::flash('failure',$validator);
+        // return redirect()->back();
       }
 
       $user_details = User::where('id',auth()->id())->first();

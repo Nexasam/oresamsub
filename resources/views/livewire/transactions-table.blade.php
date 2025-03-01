@@ -46,6 +46,7 @@
                     </div> --}}
                 </div>
                 <div class="overflow-x-auto">
+                    @if (count($transactions) > 0)
                     <table  class="w-full border-collapse border border-gray-300 text-sm text-center text-gray-500">
                         <thead class="text-xs h-12 my-2 text-gray-700 uppercase bg-gray-50 border-collapse border border-gray-300">
                             {{-- <tr>
@@ -156,9 +157,14 @@
                             
 
                         </tbody>
-                    </table>
+                    </table>       
+                    @else
+                        <p class=" text-center p-4">No transactions found</p>
+                    @endif
+                 
                 </div>
 
+                @if (count($transactions) > 0)
                 <div class="py-4 px-3">
                     <div class="flex justify-between ">
                         <div class="flex space-x-4 items-center mb-3">
@@ -179,6 +185,11 @@
                     </div>
 
                 </div>
+                @else
+                    
+                @endif
+              
+
             </div>
         </div>
     </section>

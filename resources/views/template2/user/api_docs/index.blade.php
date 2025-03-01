@@ -15,12 +15,12 @@
 
 
         <div class="mt-2">
-            <label for="wallet" class="block mb-2 text-sm font-medium text-gray-900">Api Key</label>
-            <textarea id="wallet" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-[{{$site_primary_color}}] focus:border-[{{$site_primary_color}}] block w-full p-2.5">vQEHsGArlCL0dNQ3dVBjBWu9O8dKiY8FYWGsdIntyHLsfVzFzKMAjFK4SYQOOsaExsXhwIhfTOcmVWGIOupaq1NCkBp5UUfGVKevLXmipjlmBzbXoms7QCxxxYIh6v0iw8L544ECfpoQDiZb3JDKpZvI863hgvBeQoLrjDa7kNO01lWFaTCtos6urRye9Xji4Kul5Jqu1732619632
+            <label for="apikeyy" class="block mb-2 text-sm font-medium text-gray-900">Api Key</label>
+            <textarea id="apikeyy" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-[{{$site_primary_color}}] focus:border-[{{$site_primary_color}}] block w-full p-2.5">{{$user->api_token}}
             </textarea>    
         </div>
 
-        <div class="mt-2">
+        {{-- <div class="mt-2">
 
         
             <label class="inline-flex items-center cursor-pointer">
@@ -29,11 +29,11 @@
             <span class="ms-3 text-sm font-medium text-[#000000]">Toggle PIN</span>
             </label>
 
-        </div>
+        </div> --}}
 
         <div>
             <div class="flex items-center justify-between">
-                <button type="button" class="w-1/2 text-white bg-[{{$site_primary_color}}] hover:bg-[{{$site_secondary_color}}] focus:ring-4 focus:outline-none focus:ring-[{{$site_primary_color}}] font-medium rounded-lg text-sm px-5 py-2.5 text-center items-center  me-2 mb-2">
+                <button type="button" onclick="copyApikey()" class="w-1/2 text-white bg-[{{$site_primary_color}}] hover:bg-[{{$site_secondary_color}}] focus:ring-4 focus:outline-none focus:ring-[{{$site_primary_color}}] font-medium rounded-lg text-sm px-5 py-2.5 text-center items-center  me-2 mb-2">
                     Copy API Key
                 </button>
 

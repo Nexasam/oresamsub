@@ -152,6 +152,15 @@
             .catch(err => console.error("Error copying text:", err));
     }
 
+
+    function copyApikey() {
+        // alert(acct);
+        var apikeyy = document.getElementById("apikeyy").value;
+        navigator.clipboard.writeText(apikeyy)
+            .then(() => alert("Api Key Successfully Copied"))
+            .catch(err => console.error("Error copying api key:", err));
+    }
+
    
     // @if (session('welcome_message'))
     // @endif

@@ -119,8 +119,13 @@
                
 
             
-                
+                @if (Route::currentRouteName() == 'register')
+                <div class="w-[500px]">
+                    
+                @else
                 <div class="w-[400px]">
+
+                @endif
                 
                     @if ( !isset($site_logo) )
                         <h1 class="block text-2xl font-bold text-gray-800 dark:text-white">{{ env('APP_NAME') }}</h1>
