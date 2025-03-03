@@ -231,7 +231,8 @@ class WalletsController extends Controller
       if( isset($response_dec['requestSuccessful'])
       && $response_dec['requestSuccessful'] 
       && isset($response_dec['responseMessage'])
-      && $response_dec['responseMessage'] == 'success'  ){
+      && $response_dec['responseMessage'] == 'success'
+      ){
           return [
               'status' => 1,
               'message' => $response_dec['responseBody']['accessToken']
@@ -1036,7 +1037,7 @@ class WalletsController extends Controller
         return view('user.wallet.fund_wallet')->with($data);
     }
 
-    //crystalpay accounts generation
+    //CRYSTALPAY accounts generation
     public function generate_virtual_account(Request $request){
         $validator = Validator::make($request->all(), [
             'pin' => 'required|digits:4|exists:users,pin',
