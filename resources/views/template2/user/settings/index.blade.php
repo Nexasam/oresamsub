@@ -74,7 +74,7 @@
 
         </form>
     </div>
-    <div class="max-w-6xl mx-auto hidden p-4 rounded-lg bg-gray-50" id="styled-dashboard" role="tabpanel" aria-labelledby="dashboard-tab">
+    <div class="max-w-3xl mx-2 md:mx-10  hidden px-2 my-6 p-4 rounded-lg shadow-lg bg-gray-50"  id="styled-dashboard" role="tabpanel" aria-labelledby="dashboard-tab">
         <form method="POST" action="{{ route('user.settings.update_pin')  }}">
             @csrf
             <p class="text-gray-500">Note: 4 digits required.</p>

@@ -185,7 +185,7 @@
 
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
     {{-- &text=Hola%21%20Quisiera%20m%C3%A1s%20informaci%C3%B3n%20sobre%20Varela%202. --}}
-    <a href="https://api.whatsapp.com/send?phone={{  $support_whatsapp_number  }}&text=Hello,%20Please%20I%20need%20help" class="float" target="_blank">
+    <a href="https://api.whatsapp.com/send?phone={{  $support_whatsapp_number  }}&text=Hello,%20Please%20I%20need%20help%20on%20your%20website" class="float" target="_blank">
     <i class="fa fa-whatsapp my-float"></i>
     </a>       
 
@@ -838,7 +838,7 @@
                         <h1>Need something else?</h1>
                         <p class="mx-auto">We’re here to help! Reach out to our customer support team through the following channels:</p>
                         <span>Email:  <a href="#">{{ $topnav_email }}</a>  </span> <br>
-                        <span>Reach us on whatsapp by <a href="https://api.whatsapp.com/send?phone={{  $support_whatsapp_number  }}&text=Hello,%20Please%20I%20need%20help">clicking this link</a>  </span> <br>
+                        <span>Reach us on whatsapp by <a href="https://api.whatsapp.com/send?phone={{  $support_whatsapp_number  }}&text=Hello,%20Please%20I%20need%20help%20on%20your%20website">clicking this link</a>  </span> <br>
                         @if ($physical_address != '' && $physical_address != NULL)
                         <span>Office Address: {{ $physical_address }}  </span>                            
                         @endif

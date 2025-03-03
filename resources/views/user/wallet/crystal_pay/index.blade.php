@@ -209,7 +209,7 @@
                                       @endif
                                     
                                 </tbody>
-                        </table>     
+                              </table>     
                       </div>                
                     </div>
                     <div id="pills-with-brand-color-1" class="hidden" role="tabpanel" aria-labelledby="pills-with-brand-color-item-1">

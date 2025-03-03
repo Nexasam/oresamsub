@@ -34,6 +34,10 @@ $site_logo =  App\Models\SiteImage::where('image_category','site_logo')->first()
             <a href="{{ route('user.data.buy_data') }}" class="block py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 {{ Route::currentRouteName() == 'user.data.buy_data' ? 'bg-[$site_primary_color] text-white rounded-lg' : '' }}">Data</a>
           </li>
           <li>
+            <a href="{{ route('user.wallet.index') }}" class="block py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 {{ Route::currentRouteName() == 'user.wallet.index' ? 'bg-[$site_primary_color] text-white rounded-lg' : '' }}">Fund Wallet</a>
+          </li>
+          
+          <li>
             <a href="{{ route('user.airtime.buy_airtime') }}" class="block py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-[{{$site_primary_color}}] md:p-0  {{ Route::currentRouteName() == 'user.airtime.buy_airtime' ? 'bg-[$site_primary_color] text-white rounded-lg' : '' }}">Airtime</a>
           </li>
           <li>

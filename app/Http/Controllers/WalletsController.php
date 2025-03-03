@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\FundingOptionBankCodes;
+use App\Traits\Dashboard\UserDashboardDataTrait;
 use Exception;
 use App\Models\User;
 use App\Models\Setting;
+use App\Models\SiteTemplate;
 use Illuminate\Http\Request;
 use App\Models\FundingOption;
 use Illuminate\Validation\Rule;
@@ -15,6 +16,7 @@ use App\Models\UserVirtualAccount;
 use Illuminate\Support\Facades\DB;
 use App\Models\LandingPagesSetting;
 use App\Models\FundingWebhookPayload;
+use App\Models\FundingOptionBankCodes;
 use Illuminate\Support\Facades\Session;
 use App\Models\UserMonnifyVirtualAccount;
 use Illuminate\Support\Facades\Validator;
@@ -23,7 +25,7 @@ use App\Models\MaxCrystalPaymentsPendingApproval;
 class WalletsController extends Controller
 {
 
-
+    use UserDashboardDataTrait;
     //TODO .... let it from from DB
     // private $monnify_api_key = 'TUtfVEVTVF9QQlFQWUw0VFNDOlpIOFFLRkpYTEo3WFlaVDNFOTNGVDY3Qk04UUVSR1pC'; //sandbox
     // private $contract_code = '8553974224';  //sandbox
@@ -755,12 +757,14 @@ class WalletsController extends Controller
 
     public function fetch_crystal_pay_funding_transactions(Request $request){
 
-          $date_from = $request->date_from ?? date('Y-m-d', strtotime('-10000 days'));
+          $date_from = $request->date_from ?? date('Y-m-d', strtotime('-2 days'));
           $date_to= $request->date_to ?? date('Y-m-d');
 
           $reference = $request->reference ?? '';
         
           $limit = $request->limit ?? 2000;
+
+          
           
           $data = FundingWebhookPayload::when(!empty($date_from) && !empty($date_to) , function ($query) use ($date_from,$date_to){
               $date_to = date('Y-m-d', strtotime('+1 day', strtotime($date_to)));
@@ -989,6 +993,9 @@ class WalletsController extends Controller
 
     public function index(Request $request){
         // dd('good');
+        $dataa = $this->get_user_dashboard_data();
+        $data = [...$dataa];
+        
         $user_id = auth()->id();
         // $funding_option = FundingOption::with('bank_codes.virtual_user_account_with_bank_code')->where('activation_status',1)->first();
         $funding_option = FundingOption::with('bank_codes')->where('activation_status',1)->first();
@@ -1016,12 +1023,13 @@ class WalletsController extends Controller
         $data['generated_user_virtual_accts_funding_option_id'] = $generated_user_virtual_accts_funding_option_id;
         $data['generated_user_virtual_accts_bank_code'] = $generated_user_virtual_accts_bank_code;
         $data['user_virtual_accounts'] = $user_virtual_accounts;
+
+        $siteTemplate = SiteTemplate::first();
+        if(! $siteTemplate || $siteTemplate->template_name == 'template_1'){
+            return view('user.wallet.crystal_pay.index')->with($data);
+        }
         
-       
-     
-      
-        
-        return view('user.wallet.crystal_pay.index')->with($data);
+        return view('template2.user.wallet.crystal_pay.index')->with($data);
     }
 
     public function monnify_verifications(Request $request){
@@ -1119,8 +1127,12 @@ class WalletsController extends Controller
                     "bvn"=>$phone_number
                 ];
 
+
                 // return $arrr;
                 $arrjson = json_encode($arrr);
+
+                // logger("CP data passed: $arrjson");
+
 
                 $curl = curl_init();
                 curl_setopt_array($curl, array(
@@ -1149,7 +1161,7 @@ class WalletsController extends Controller
 
                 $response = curl_exec($curl);
 
-                // return $response;
+                // logger("Account generation crystalpay:  $response");
 
                 $response_dec = json_decode($response,true);
 
@@ -1182,6 +1194,12 @@ class WalletsController extends Controller
                     return redirect()->back();    
 
                 }
+
+
+                Session::flash('failure','Sorry, Virtual account for this bank cannot be generated at this point. Try again later. ');
+                return redirect()->back();  
+
+
                 
         }
 
