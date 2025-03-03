@@ -1254,7 +1254,7 @@
                     </div>
 
                     <div class="flex">
-                        <p>© {{ date('Y') }} {{ $site_logo_alt }}. All rights reserved.</p>
+                        <p>© {{ date('Y') }} {{ $site_logo_alt_template2 }}. All rights reserved.</p>
                     </div>
             </div>
             
