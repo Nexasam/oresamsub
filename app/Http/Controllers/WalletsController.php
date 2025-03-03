@@ -143,6 +143,29 @@ class WalletsController extends Controller
               logger('Cannot fund because user details not found');
             }
 
+            $paid_amount = $response_decode['event_data']['data']['paid'];
+            $package_id = $response_decode['package_id'];
+            $get_charges = FundingOptionBankCodes::where('bank_code',$package_id)->first();
+            if($get_charges){
+              $rate_type = $get_charges->rate_category;
+              if($rate_type == 'Flat'){
+                $charges = $get_charges->bank_charges;
+                $amount_to_fund_user = $paid_amount - $charges;
+              }else{
+                $charges1 = $get_charges->bank_charges;
+                $capped_value = $get_charges->capped_at;
+                $charges = ceil(($charges1/100) * $paid_amount);
+                if($charges > $capped_value){
+                  $charges = $capped_value;
+                }
+                $amount_to_fund_user = $paid_amount - $charges;
+              }
+            }else{
+                //use crystalpay default settings
+                $charges = $response_decode['event_data']['data']['charged'];
+                $amount_to_fund_user = $response_decode['event_data']['data']['settled'];
+            }
+
 
             $created_data['funding_slug'] = 'crystal_pay';
             $created_data['user_id'] = $user_details->id;
@@ -155,8 +178,8 @@ class WalletsController extends Controller
             $created_data['account_number'] = $response_decode['destination']['account_number'];
             $created_data['account_reference'] = $response_decode['destination']['account_reference'];
             $created_data['amount_paid'] = $response_decode['event_data']['data']['paid'];
-            $created_data['amount_charged'] = $response_decode['event_data']['data']['charged'];
-            $created_data['amount_settled'] = $response_decode['event_data']['data']['settled'];
+            $created_data['amount_charged'] = $charges;
+            $created_data['amount_settled'] = $amount_to_fund_user;
             $created_data['currency'] = $response_decode['event_data']['data']['currency'];
             $created_data['collection_reference'] = $response_decode['collection_reference'];
             $created_data['transaction_reference'] = $response_decode['transaction_reference'];
@@ -173,22 +196,15 @@ class WalletsController extends Controller
                 $updated = true;
               }
   
-              $settled_amount = $response_decode['event_data']['data']['settled'];
-              $package_id = $response_decode['package_id'];
-              // $get_charges = FundingOptionBankCodes::where('bank_code',$package_id)->first();
-              // if($get_charges){
-              //   $settled_amountt = $response_decode['event_data']['data']['settled'];
-              // }else{
-              //   $settled_amountt = $response_decode['event_data']['data']['settled'];
-              // }
+         
 
               $walletLog['user_id'] = $user_details->id;
               $walletLog['transaction_category'] = 'CRYSTALPAY_WALLET_FUNDING';
               $walletLog['balance_before'] = $user_details->main_wallet;
-              $walletLog['balance_after'] = $user_details->main_wallet + $response_decode['event_data']['data']['settled'];
+              $walletLog['balance_after'] = $user_details->main_wallet + $amount_to_fund_user;
               $walletLog['transaction_id'] = $response_decode['transaction_reference'];
               $walletLog['action_by'] = 'webhook';           
-              $walletLog['description'] = "Wallet of the user with the email: $email has been credited with $settled_amount via crystal pay";
+              $walletLog['description'] = "Wallet of the user with the email: $email has been credited with $amount_to_fund_user via crystal pay";
               $this->log_wallet_transactions($walletLog);
               
 
@@ -998,7 +1014,9 @@ class WalletsController extends Controller
         
         $user_id = auth()->id();
         // $funding_option = FundingOption::with('bank_codes.virtual_user_account_with_bank_code')->where('activation_status',1)->first();
-        $funding_option = FundingOption::with('bank_codes')->where('activation_status',1)->first();
+        $funding_option = FundingOption::with(['bank_codes' => function($query){
+          $query->where('visibility_status',1);
+        }])->where('activation_status',1)->first();
         $data['funding_option'] = $funding_option;
         $banks = config('banks');
         foreach($banks as $key=>$bank){
@@ -1006,6 +1024,7 @@ class WalletsController extends Controller
         }
         $data['banks'] = $dataa;
         // dd($data);
+        // return $funding_option;
         if($funding_option->slug == 'monnify'){
           if( auth()->user()->is_bvn_verified == 0 && auth()->user()->is_nin_verified == 0 ){
             return redirect()->route('user.wallet.monnify.verifications')->with($data);

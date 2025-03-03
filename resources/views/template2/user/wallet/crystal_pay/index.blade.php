@@ -47,12 +47,17 @@
                       <tr aria-colspan="3">
                       
                         <td class="border border-gray-300 px-2">Bank Name: {{ $bank_code->bank_name }} 
-                          @if (strtolower($bank_code->bank_name) == 'wema bank' || strtolower($bank_code->bank_name) == 'palmpay' )
+                          @if ($bank_code->rate_category == 'Flat')
+                            <br> Charges: 	&#8358;{{ $bank_code->bank_charges }} - (Flat rate)
+                          @else
+                            <br> Charges: {{ $bank_code->bank_charges }} %
+                          @endif
+                          {{-- @if (strtolower($bank_code->bank_name) == 'wema bank' || strtolower($bank_code->bank_name) == 'palmpay' )
                             <br> Charges: 	&#8358;{{ $bank_code->bank_charges }}                                                 
                           @else
                             <br> Charges: {{ $bank_code->bank_charges }} %
                               
-                          @endif
+                          @endif --}}
                         
                           <br>
                         @if ( in_array($bank_code->bank_code,$generated_user_virtual_accts_bank_code) )
