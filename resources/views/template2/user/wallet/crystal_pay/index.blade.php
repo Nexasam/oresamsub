@@ -200,7 +200,7 @@
 
        
     </div>
-    <div class="w-full mx-2 md:mx-10  hidden px-2  rounded-lg shadow-lg bg-gray-50"  id="styled-dashboard" role="tabpanel" aria-labelledby="dashboard-tab">
+    <div class="hidden"  id="styled-dashboard" role="tabpanel" aria-labelledby="dashboard-tab">
        <livewire:user-wallet-transactions />
 
     </div>

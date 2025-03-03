@@ -65,7 +65,7 @@
                                 <th class="border border-gray-300 px-2">Amount Charged</th>
                                 <th class="border border-gray-300 px-2">Amount Settled</th>
                                 <th class="border border-gray-300 px-2">Date Added</th>
-                                <th class="border border-gray-300 px-2">Action</th>
+                                {{-- <th class="border border-gray-300 px-2">Action</th> --}}
                             </tr>
                         </thead>
                         <tbody class="border-collapse border border-gray-300">

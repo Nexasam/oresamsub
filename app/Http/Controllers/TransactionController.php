@@ -42,7 +42,12 @@ class TransactionController extends Controller
 
   public function transaction_details($id){
     $data['data'] = Transaction::with(['user','product_plan'])->where('id',$id)->first();
-    return view('transaction_details')->with($data);
+
+    $siteTemplate = SiteTemplate::first();
+    if(! $siteTemplate || $siteTemplate->template_name == 'template_1'){
+        return view('user.airtime.buy_airtime')->with($data);
+    }
+    return view('template2.transaction_details')->with($data);
   }
 
   public function transaction_refund(Request $request){
