@@ -1055,7 +1055,7 @@
 
                         <div class="md:ml-4">
                             <p>EMAIL US</p>
-                            <p>{{$email_address_template2}}</p>
+                            <p><a href="m">{{$email_address_template2}}</a></p>
                         </div>
                     </div>
 
@@ -1069,14 +1069,14 @@
                     </div>
 
                     <div class="flex mt-8 space-x-4">
-                            <a href="#">
+                            <a href="{{$facebook_template2}}">
                                 <svg width="44" height="44" viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
                                     <rect width="44" height="44" rx="5" fill="white" fill-opacity="0.08"/>
                                     <path d="M23.5489 32V22.8777H26.6096L27.0688 19.3216H23.5489V17.0515C23.5489 16.0222 23.8335 15.3208 25.3112 15.3208L27.1927 15.32V12.1392C26.8673 12.0969 25.7504 12 24.4504 12C21.7358 12 19.8773 13.657 19.8773 16.6993V19.3216H16.8073V22.8777H19.8773V32H23.5489Z" fill="white"/>
                                 </svg>
                             </a>
                            
-                            <a href="#">
+                            <a href="{{$twitter_link_template2}}">
                                 <svg width="44" height="44" viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <rect width="44" height="44" rx="5" fill="white"/>
                                 <g clip-path="url(#clip0_105_20593)">
@@ -1107,7 +1107,7 @@
                                 </svg>
                             </a>
 
-                            <a href="#">
+                            <a href="{{$instagram_template2}}">
                                 <svg width="44" height="44" viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <rect width="44" height="44" rx="5" fill="white" fill-opacity="0.08"/>
                                 <g clip-path="url(#clip0_105_20595)">
@@ -1144,8 +1144,10 @@
         <div class="w-full p-6 bg-white">
             <div class="w-full px-2 mx-auto md:max-w-6xl py-4 md:flex items-center justify-between">
                 @if ($logo != 'nil')
-                <img src="{{$logo}}" style="height: 75px; width: 75px;"  class="h-12" alt="{{ env('APP_NAME') }}">
-                {{-- <img src="assets/template2/images/logonew.png" class="h-12" alt="Logo"> --}}
+                  <a href="home">
+                    <img src="{{$logo}}" style="height: 75px; width: 75px;"  class="h-12" alt="{{ env('APP_NAME') }}">  
+                  </a> 
+               
                 @else
                 <a class="navbar-brand" href="#">{{ $site_logo_alt }}<span class="dot">.</span></a>             
                 @endif
@@ -1232,14 +1234,14 @@
                             <path d="M1.5 9.1691V17.75C1.5 19.4069 2.84315 20.75 4.5 20.75H19.5C21.1569 20.75 22.5 19.4069 22.5 17.75V9.1691L13.5723 14.6631C12.6081 15.2564 11.3919 15.2564 10.4277 14.6631L1.5 9.1691Z" fill="#141BD7"/>
                             <path d="M22.5 7.40783V7.25C22.5 5.59315 21.1569 4.25 19.5 4.25H4.5C2.84315 4.25 1.5 5.59315 1.5 7.25V7.40783L11.2139 13.3856C11.696 13.6823 12.304 13.6823 12.7861 13.3856L22.5 7.40783Z" fill="#141BD7"/>
                             </svg>
-                            <p>{{$email_address_template2}}</p>
+                            <p> <a href="mailto:{{ $email_address_template2 }}"></a> {{$email_address_template2}}</p>
                         </div>
 
                         <div class="flex space-x-2 items-center text-[#333333] text-sm">
                             <svg width="18" height="19" viewBox="0 0 24 25" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path fill-rule="evenodd" clip-rule="evenodd" d="M1.5 5C1.5 3.34315 2.84315 2 4.5 2H5.87163C6.732 2 7.48197 2.58556 7.69064 3.42025L8.79644 7.84343C8.97941 8.5753 8.70594 9.34555 8.10242 9.79818L6.8088 10.7684C6.67447 10.8691 6.64527 11.0167 6.683 11.1197C7.81851 14.2195 10.2805 16.6815 13.3803 17.817C13.4833 17.8547 13.6309 17.8255 13.7316 17.6912L14.7018 16.3976C15.1545 15.7941 15.9247 15.5206 16.6566 15.7036L21.0798 16.8094C21.9144 17.018 22.5 17.768 22.5 18.6284V20C22.5 21.6569 21.1569 23 19.5 23H17.25C8.55151 23 1.5 15.9485 1.5 7.25V5Z" fill="#141BD7"/>
                             </svg>
-                            <p>{{$phone_template2}}</p>
+                            <p><a href="tel:{{ $phone_template2  }}"></a> {{$phone_template2}}</p>
                         </div>
 
                         <div class="flex space-x-2 items-center text-[#333333] text-sm">
@@ -1252,7 +1254,7 @@
                     </div>
 
                     <div class="flex">
-                        <p>© {{ date('Y') }} DataHub. All rights reserved.</p>
+                        <p>© {{ date('Y') }} {{ $site_logo_alt }}. All rights reserved.</p>
                     </div>
             </div>
             

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\FundingOptionBankCodes;
 use Exception;
 use App\Models\User;
 use App\Models\Setting;
@@ -171,6 +172,14 @@ class WalletsController extends Controller
               }
   
               $settled_amount = $response_decode['event_data']['data']['settled'];
+              $package_id = $response_decode['package_id'];
+              // $get_charges = FundingOptionBankCodes::where('bank_code',$package_id)->first();
+              // if($get_charges){
+              //   $settled_amountt = $response_decode['event_data']['data']['settled'];
+              // }else{
+              //   $settled_amountt = $response_decode['event_data']['data']['settled'];
+              // }
+
               $walletLog['user_id'] = $user_details->id;
               $walletLog['transaction_category'] = 'CRYSTALPAY_WALLET_FUNDING';
               $walletLog['balance_before'] = $user_details->main_wallet;
