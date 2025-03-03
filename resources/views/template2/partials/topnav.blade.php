@@ -28,26 +28,26 @@ $site_logo =  App\Models\SiteImage::where('image_category','site_logo')->first()
       <div class="hidden w-full  md:block md:w-auto" id="navbar-default">
         <ul class="font-medium flex flex-col p-4 md:p-0 mt-4 border border-gray-100 rounded-lg bg-white md:flex-row md:space-x-8 rtl:space-x-reverse md:mt-0 md:border-0 md:bg-white ">
           <li>
-            <a href="{{ route('dashboard') }}" class="block py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-[{{$site_primary_color}}] md:p-0 {{ Route::currentRouteName() == 'dashboard' ? 'bg-[$site_primary_color] text-gray-900 rounded-lg' : '' }}">Home</a>
+            <a href="{{ route('dashboard') }}" class="block py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-[{{$site_primary_color}}] md:p-0 {{ Route::currentRouteName() == 'dashboard' ? 'bg-gray-500 text-white  rounded-lg' : '' }}">Home</a>
           </li>
           <li>
-            <a href="{{ route('user.data.buy_data') }}" class="block py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 {{ Route::currentRouteName() == 'user.data.buy_data' ? 'bg-[$site_primary_color] text-gray-900 rounded-lg' : '' }}">Data</a>
+            <a href="{{ route('user.data.buy_data') }}" class="block py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 {{ Route::currentRouteName() == 'user.data.buy_data' ? 'bg-gray-500 text-white  rounded-lg' : '' }}">Data</a>
           </li>
           <li>
-            <a href="{{ route('user.wallet.index') }}" class="block py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 {{ Route::currentRouteName() == 'user.wallet.index' ? 'bg-[$site_primary_color] text-gray-900 rounded-lg' : '' }}">Fund Wallet</a>
+            <a href="{{ route('user.wallet.index') }}" class="block py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 {{ Route::currentRouteName() == 'user.wallet.index' ? 'bg-gray-500 text-white  rounded-lg' : '' }}">Fund Wallet</a>
           </li>
           
           <li>
-            <a href="{{ route('user.airtime.buy_airtime') }}" class="block py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-[{{$site_primary_color}}] md:p-0  {{ Route::currentRouteName() == 'user.airtime.buy_airtime' ? 'bg-[$site_primary_color] text-gray-900 rounded-lg' : '' }}">Airtime</a>
+            <a href="{{ route('user.airtime.buy_airtime') }}" class="block py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-[{{$site_primary_color}}] md:p-0  {{ Route::currentRouteName() == 'user.airtime.buy_airtime' ? 'bg-gray-500 text-white  rounded-lg' : '' }}">Airtime</a>
           </li>
           <li>
-            <a href="{{ route('user.cable_subscription.buy_cable_subscription') }}" class="block py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-[{{$site_primary_color}}] md:p-0  {{ Route::currentRouteName() == 'user.cable_subscription.buy_cable_subscription' ? 'bg-[$site_primary_color] text-gray-900 rounded-lg' : '' }} ">Cable TV</a>
+            <a href="{{ route('user.cable_subscription.buy_cable_subscription') }}" class="block py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-[{{$site_primary_color}}] md:p-0  {{ Route::currentRouteName() == 'user.cable_subscription.buy_cable_subscription' ? 'bg-gray-500 text-white  rounded-lg' : '' }} ">Cable TV</a>
           </li>
           <li>
-            <a href="{{ route('user.electricity.buy_electricity_subscription') }}" class="block py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-[{{$site_primary_color}}] md:p-0 {{ Route::currentRouteName() == 'user.electricity.buy_electricity_subscription' ? 'bg-[$site_primary_color] text-gray-900 rounded-lg' : '' }}  ">Electricity</a>
+            <a href="{{ route('user.electricity.buy_electricity_subscription') }}" class="block py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-[{{$site_primary_color}}] md:p-0 {{ Route::currentRouteName() == 'user.electricity.buy_electricity_subscription' ? 'bg-gray-500 text-white  rounded-lg' : '' }}  ">Electricity</a>
           </li>
           <li>
-            <a href="{{ route('user.transactions.index') }}" class="block py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-[{{$site_primary_color}}] md:p-0  {{ Route::currentRouteName() == 'user.transactions.index' ? 'bg-[$site_primary_color] text-gray-900 rounded-lg' : '' }}">Transactions</a>
+            <a href="{{ route('user.transactions.index') }}" class="block py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-[{{$site_primary_color}}] md:p-0  {{ Route::currentRouteName() == 'user.transactions.index' ? 'bg-gray-500 text-white  rounded-lg' : '' }}">Transactions</a>
           </li>
           
           <form method="POST" action="{{ route('logout') }}">
