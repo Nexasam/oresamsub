@@ -101,7 +101,7 @@
                                           <tr aria-colspan="3">
                                           
                                             <td>Bank Name: {{ $bank_code->bank_name }} 
-                                              @if (strtolower($bank_code->bank_name) == 'wema bank' || strtotime($bank_code->bank_name) == 'palmpay' )
+                                              @if (strtolower($bank_code->bank_name) == 'wema bank' || strtolower($bank_code->bank_name) == 'palmpay' )
                                                 <br> Charges: 	&#8358;{{ $bank_code->bank_charges }}                                                 
                                               @else
                                                 <br> Charges: {{ $bank_code->bank_charges }} %
