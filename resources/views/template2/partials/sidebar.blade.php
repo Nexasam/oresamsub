@@ -152,7 +152,7 @@
                     </svg>
         
                 </a>
-                <a href="#">
+                <a target="_blank" href="https://api.whatsapp.com/send?phone={{  $support_whatsapp_number_template2  }}&text=Hello,%20Please%20I%20need%20help%20on%20your%20website">
                 <span class="ml-3">
                     Customer care
                 </span>
