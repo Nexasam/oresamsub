@@ -41,13 +41,16 @@ class TransactionController extends Controller
   } 
 
   public function transaction_details($id){
+    $dataa = $this->get_user_dashboard_data();
+    $data = [...$dataa];
     $data['data'] = Transaction::with(['user','product_plan'])->where('id',$id)->first();
 
     $siteTemplate = SiteTemplate::first();
     if(! $siteTemplate || $siteTemplate->template_name == 'template_1'){
-        return view('user.airtime.buy_airtime')->with($data);
+        return view('transaction_details')->with($data);
     }
-    return view('template2.transaction_details')->with($data);
+
+    return view('template2.user.transactions.detail')->with($data);
   }
 
   public function transaction_refund(Request $request){
