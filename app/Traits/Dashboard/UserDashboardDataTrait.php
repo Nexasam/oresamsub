@@ -99,13 +99,14 @@ trait UserDashboardDataTrait{
      
         $data['user_selling_variable'] = 'user_level_'.$user_plan_level.'_selling_price';
         // dd($data);
+        $data['transactions_sum'] = Transaction::with(['user','product_plan'])->where('user_id',$user_id)->sum('amount');
+
         if($user_details->role->role_name == 'User'){
           $data['bulk_data_wallet_sum'] = UserBulkDataWallet::select('bulk_wallet_balance_mb')->where('user_id',$user_id)->sum('bulk_wallet_balance_mb');
           $data['bulk_data_wallet_count'] = UserBulkDataWallet::select('bulk_wallet_balance_mb')->where('user_id',$user_id)->count();
           $data['alltime_bulk_wallet_balance_mb'] = UserBulkDataWallet::select('alltime_bulk_wallet_balance_mb')->where('user_id',$user_id)->sum('alltime_bulk_wallet_balance_mb');
           $data['transactions'] = Transaction::with(['user','product_plan'])->where('user_id',$user_id)->latest()->get();
-          $data['transactions_sum'] = Transaction::with(['user','product_plan'])->where('user_id',$user_id)->sum('amount');
-         
+      
          return $data;
         }else{
             $data['main_wallet_balances'] = User::select('main_wallet')->sum('main_wallet');
@@ -114,6 +115,7 @@ trait UserDashboardDataTrait{
             $data['transactions'] = Transaction::with(['user','product_plan'])->latest()->get();
             //no need here
             // return view('admin_dashboard')->with($data);
+          
             return $data;
         }
 

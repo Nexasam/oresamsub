@@ -43,6 +43,7 @@ class TransactionController extends Controller
   public function transaction_details($id){
     $dataa = $this->get_user_dashboard_data();
     $data = [...$dataa];
+    // dd($data);
     $data['data'] = Transaction::with(['user','product_plan'])->where('id',$id)->first();
 
     $siteTemplate = SiteTemplate::first();
