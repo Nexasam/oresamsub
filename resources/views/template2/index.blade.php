@@ -259,9 +259,9 @@
      
 
         <!-- about us -->
-        <div id="about" class="grid grid-cols-1 md:grid-cols-2  w-full md:max-w-7xl md:mx-auto py-0 px-4 md:py-12  md:space-y-6">
+        <div id="about" class="grid md:grid-cols-2  w-full md:max-w-7xl md:mx-auto py-0 px-4 md:py-12  md:space-y-6">
             <!-- text -->
-            <div class="w-full  mx-auto space-y-4 md:space-y-6 mt-8 md:mt-24 mr-24 ">
+            <div class="w-full  mx-auto space-y-4 md:space-y-6 mt-8 md:mt-24 mr-0 md:mr-24 ">
                 <h3 class="w-full md:max-w-4xl font-bold text-3xl md:text-4xl">About Us.</h3>
                 <p class="font-normal pr-5 w-3xl text-md md:text-lg text-[#828282]">{{ $about_us_description_template2 }}</p>
 
