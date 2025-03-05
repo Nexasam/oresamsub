@@ -134,7 +134,7 @@
 </script> --}}
 
     
-<div class="max-w-screen bg-[{{ $site_secondary_color }}]  md:bg-white">
+<div class="max-w-screen bg-white">
      <!-- NAV  -->
      @include('template2.partials.topnav')
 
