@@ -87,7 +87,7 @@
     <a href="https://api.whatsapp.com/send?phone={{  $support_whatsapp_number_template2  }}&text=Hello,%20Please%20I%20need%20help%20on%20your%20website" class="float" target="_blank">
     <i class="fa fa-whatsapp my-float"></i>
     </a>       
-    <div id="home" class="max-w-full p-0 m-0 h-screen bg-white">
+    <div id="home" class="max-w-full overflow-x-hidden p-0 m-0 h-screen bg-white">
         <!-- <nav class="flex items-center justify-between  px-24 py-6 bg-white">
             <img src="assets/template2/images/logonew.png" alt="">
            
