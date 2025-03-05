@@ -24,6 +24,19 @@
     $site_secondary_color = $site_secondary_color->color_value ?? (int) '90, 102, 241'; 
     $support_whatsapp_number_template2 =  App\Models\LandingPagesSetting::where('field_name','support_whatsapp_number_template2')->first();
     $support_whatsapp_number_template2 = $support_whatsapp_number_template2->field_details;
+
+    $site_txn_volume_color =  App\Models\AdminColorSetting::where('color_name','site_txn_volume_color')->first();
+     $site_txn_volume_color = $site_txn_volume_color->color_value ?? '#ffffff'; 
+
+     $site_wallet_balance_color =  App\Models\AdminColorSetting::where('color_name','site_wallet_balance_color')->first();
+     $site_wallet_balance_color = $site_wallet_balance_color->color_value ?? '#ffffff';  
+
+     $site_txns_count_analytics_color =  App\Models\AdminColorSetting::where('color_name','site_txns_count_analytics_color')->first();
+     $site_txns_count_analytics_color = $site_txns_count_analytics_color->color_value ?? '#ffffff';  
+
+     $site_virtual_accounts_color =  App\Models\AdminColorSetting::where('color_name','site_virtual_accounts_color')->first();
+     $site_virtual_accounts_color = $site_virtual_accounts_color->color_value ?? '#ffffff';  
+
     
     //  echo $admin_site_color_value;  p
     @endphp

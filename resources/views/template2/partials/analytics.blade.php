@@ -1,5 +1,5 @@
 <div class="max-w-6xl mx-auto grid grid-cols-2 md:grid-cols-5 items-center px-2 md:px-0 py-6 gap-4 md:gap-3 text-[12px] ">
-    <div class="bg-[{{$site_secondary_color}}] md:flex items-center p-2 md:p-3 rounded-lg border border-gray-300 space-x-1 md:space-x-4">
+    <div class="bg-{{$site_txn_volume_color}} md:bg-white md:flex items-center p-2 md:p-3 rounded-lg border border-gray-300 space-x-1 md:space-x-4">
         <img src="{{asset(env('APP_ASSETS_BASE_URL').'template2/images/total_txns.png') }}" alt="">
 
         <div>
@@ -8,7 +8,7 @@
         </div>
 
     </div>
-   <div class="bg-[{{$site_secondary_color}}] md:flex items-center p-2 md:p-3 rounded-lg border border-gray-300 space-x-1 md:space-x-4">
+   <div class="bg-{{$site_txn_volume_color}} md:bg-white md:flex items-center p-2 md:p-3 rounded-lg border border-gray-300 space-x-1 md:space-x-4">
             <img src="{{asset(env('APP_ASSETS_BASE_URL').'template2/images/wallet_balance.png') }}" alt="">
 
             <div>
@@ -17,7 +17,7 @@
             </div>
 
     </div>
-   <div class="bg-[{{$site_secondary_color}}] md:flex items-center p-2 md:p-3 rounded-lg border border-gray-300 space-x-1 md:space-x-4">
+   <div class="bg-{{$site_txn_volume_color}} md:bg-white md:flex items-center p-2 md:p-3 rounded-lg border border-gray-300 space-x-1 md:space-x-4">
             <img src="{{asset(env('APP_ASSETS_BASE_URL').'template2/images/total_txns_count.png') }}" alt="">
 
             <div>
@@ -28,8 +28,12 @@
     </div>
 
     @foreach ($user_virtual_accounts as $user_virtual_account)
+         {{-- @php
+             $colors_arr = ['yellow','blue','green','red','orange'];
+
+         @endphp --}}
         {{-- <div class="w-full flex-col text-[10px]  rounded-lg border border-gray-300"> --}}
-        <div class="bg-[{{$site_secondary_color}}] md:flex items-center p-2 md:p-3 rounded-lg border border-gray-300 space-x-1 md:space-x-4">
+        <div class="bg-{{$site_virtual_accounts_color}} md:bg-white md:flex items-center p-2 md:p-3 rounded-lg border border-gray-300 space-x-1 md:space-x-4">
         
             <div class="p-1.5 md:pt-0">
                 

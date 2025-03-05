@@ -688,20 +688,60 @@
                       <div class="overflow-auto">
                         <form enctype="multipart/form-data" method="POST" action="{{ route('admin.settings.manage_site_colors')  }}">
                           @csrf
-                          <div class="grid w-full lg:w-1/2 lg:grid-cols-1 gap-6 space-y-1 lg:space-y-0">
+                          <div class="grid w-full lg:w-full lg:grid-cols-1 gap-6 space-y-1 lg:space-y-0">
+                              
+                              <div class="space-y-2 mt-1">
+                                <div class="box-body">
+                                  <label class="ti-form-label mb-0">Choose Site Secondary Color <b>This is secondary color for both templates</b></label>
+                                  <input type="color" value="{{ isset($site_secondary_color) && $site_secondary_color != NULL ? $site_secondary_color : "#5a66f2"  }}"  class="p-1 h-10 w-32 block bg-white border border-gray-200 cursor-pointer rounded-sm disabled:opacity-50 disabled:pointer-events-none dark:bg-bgdark dark:border-white/10" id="hs-color-input" name="site_secondary_color" title="Choose your color">
+                                </div>
+                              </div>
+
                               <div class="space-y-2 mt-1">
                                 <div class="box-body">
                                   <label class="ti-form-label mb-0">Choose Site Primary Color <b>This is main color for both templates</b> </label>
-                                  <input type="color" value="{{ isset($site_primary_color) && $site_primary_color != NULL ? $site_primary_color : "#5a66f2"  }}"  class="p-1 h-10 w-10 block bg-white border border-gray-200 cursor-pointer rounded-sm disabled:opacity-50 disabled:pointer-events-none dark:bg-bgdark dark:border-white/10" id="hs-color-input" name="site_primary_color" title="Choose your color">
+                                  <input type="color" value="{{ isset($site_primary_color) && $site_primary_color != NULL ? $site_primary_color : "#5a66f2"  }}"  class="p-1 h-10 w-32 block bg-white border border-gray-200 cursor-pointer rounded-sm disabled:opacity-50 disabled:pointer-events-none dark:bg-bgdark dark:border-white/10" id="hs-color-input" name="site_primary_color" title="Choose your color">
                                 </div>
                               </div>
 
                               <div class="space-y-2 mt-1">
                                 <div class="box-body">
                                   <label class="ti-form-label mb-0">Choose Site Secondary Color <b>This is secondary color for both templates</b></label>
-                                  <input type="color" value="{{ isset($site_secondary_color) && $site_secondary_color != NULL ? $site_secondary_color : "#5a66f2"  }}"  class="p-1 h-10 w-10 block bg-white border border-gray-200 cursor-pointer rounded-sm disabled:opacity-50 disabled:pointer-events-none dark:bg-bgdark dark:border-white/10" id="hs-color-input" name="site_secondary_color" title="Choose your color">
+                                  <input type="color" value="{{ isset($site_secondary_color) && $site_secondary_color != NULL ? $site_secondary_color : "#5a66f2"  }}"  class="p-1 h-10 w-32 block bg-white border border-gray-200 cursor-pointer rounded-sm disabled:opacity-50 disabled:pointer-events-none dark:bg-bgdark dark:border-white/10" id="hs-color-input" name="site_secondary_color" title="Choose your color">
                                 </div>
                               </div>
+
+                              <div class="space-y-2 mt-1">
+                                <div class="box-body">
+                                  <label class="ti-form-label mb-0">Choose Transaction Volume Analytics Color <b>This is for second template</b></label>
+                                  <input type="text" value="{{ isset($site_txn_volume_color) && $site_txn_volume_color != NULL ? $site_txn_volume_color : "#ffffff"  }}"  class="p-1 h-10 w-32 block bg-white border border-gray-200 cursor-pointer rounded-sm disabled:opacity-50 disabled:pointer-events-none dark:bg-bgdark dark:border-white/10" id="hs-color-input" name="site_txn_volume_color" title="Choose your color">
+                                </div>
+                              </div>
+
+                              <div class="space-y-2 mt-1">
+                                <div class="box-body">
+                                  <label class="ti-form-label mb-0">Choose Wallet Balance Analytics Color <b>This is for second template</b></label>
+                                  <input type="text" value="{{ isset($site_wallet_balance_color) && $site_wallet_balance_color != NULL ? $site_wallet_balance_color : "#ffffff"  }}"  class="p-1 h-10 w-32 block bg-white border border-gray-200 cursor-pointer rounded-sm disabled:opacity-50 disabled:pointer-events-none dark:bg-bgdark dark:border-white/10" id="hs-color-input" name="site_wallet_balance_color" title="Choose your color">
+                                </div>
+                              </div>
+
+
+                              <div class="space-y-2 mt-1">
+                                <div class="box-body">
+                                  <label class="ti-form-label mb-0">Choose Txns Count Analytics Color <b>This is for second template</b></label>
+                                  <input type="text" value="{{ isset($site_txns_count_analytics_color) && $site_txns_count_analytics_color != NULL ? $site_txns_count_analytics_color : "#ffffff"  }}"  class="p-1 h-10 w-32 block bg-white border border-gray-200 cursor-pointer rounded-sm disabled:opacity-50 disabled:pointer-events-none dark:bg-bgdark dark:border-white/10" id="hs-color-input" name="site_txns_count_analytics_color" title="Choose your color">
+                                </div>
+                              </div>
+
+                              <div class="space-y-2 mt-1">
+                                <div class="box-body">
+                                  <label class="ti-form-label mb-0">Choose Virtual Wallets Analytics Color <b>This is for second template</b></label>
+                                  <input type="text" value="{{ isset($site_virtual_accounts_color) && $site_virtual_accounts_color != NULL ? $site_virtual_accounts_color : "#ffffff"  }}"  class="p-1 h-10 w-32 block bg-white border border-gray-200 cursor-pointer rounded-sm disabled:opacity-50 disabled:pointer-events-none dark:bg-bgdark dark:border-white/10" id="hs-color-input" name="site_virtual_accounts_color" title="Choose your color">
+                                </div>
+                              </div>
+
+                             
+                             
 
                               <div class="box-body">
                                 <label class="ti-form-label mb-0">Choose Admin Site Color (In RGB):</label>

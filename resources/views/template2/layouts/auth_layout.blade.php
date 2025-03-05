@@ -56,10 +56,13 @@
 
     @php
      $site_primary_color =  App\Models\AdminColorSetting::where('color_name','site_primary_color')->first();
-     $site_secondary_color =  App\Models\AdminColorSetting::where('color_name','site_secondary_color')->first();
-     $site_secondary_color =  App\Models\AdminColorSetting::where('color_name','site_secondary_color')->first();
      $site_primary_color = $site_primary_color->color_value ?? (int) '90, 102, 241'; 
-     $site_secondary_color = $site_secondary_color->color_value ?? (int) '90, 102, 241'; 
+
+
+     
+   
+     
+     
      $support_whatsapp_number_template2 =  App\Models\LandingPagesSetting::where('field_name','support_whatsapp_number_template2')->first();
      $support_whatsapp_number_template2 = $support_whatsapp_number_template2->field_details;
     //  echo $admin_site_color_value;  

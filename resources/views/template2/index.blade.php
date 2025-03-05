@@ -159,7 +159,7 @@
 
 
         <!-- hero -->
-        <div  class="w-full md:max-w-5xl md:mx-auto md:py-16 mt-40 md:mt-32 bg-white text-center space-y-8">
+        <div  class="w-full max-w-full md:max-w-5xl md:mx-auto md:py-16 mt-40 md:mt-32 bg-white text-center space-y-8">
             <h1 class="w-full md:px-2 md:max-w-4xl md:mx-auto font-bold text-[[#333333]] text-6xl md:text-7xl">{{$hero_main_text_template2}} <span class="relative inline-block px-4 py-1 rounded-lg bg-gradient-to-r from-[{{$site_secondary_color}}] via-[{{$site_primary_color}}] to-[{{$site_primary_color}}] text-white">{{ $hero_main_text_stylish_template2 }}</span></h1>
             {{-- <h1 class="w-full md:px-2 md:max-w-4xl md:mx-auto font-bold text-[[#333333]] text-6xl md:text-7xl">{{ explode(' ',$hero_main_text_template2)[0]}} <span class="relative inline-block px-4 py-1 rounded-lg bg-gradient-to-r from-[{{$site_secondary_color}}] via-[{{$site_primary_color}}] to-[{{$site_primary_color}}] text-white">future</span> of financial services.</h1> --}}
             <p class="font-normal px-4 md:max-w-3xl md:mx-auto text-lg md:text-lg">{{$hero_sub_text_template2}}</p>

@@ -560,6 +560,31 @@ class AdminSettingsController extends Controller
         return redirect()->back()->withErrors($validator)->withInput();
       }
       
+      AdminColorSetting::updateOrCreate([
+        'color_name' => 'site_txn_volume_color'
+       ],[
+        'color_value' => $request->site_txn_volume_color
+       ]);
+
+       AdminColorSetting::updateOrCreate([
+        'color_name' => 'site_wallet_balance_color'
+       ],[
+        'color_value' => $request->site_wallet_balance_color
+       ]);
+
+       AdminColorSetting::updateOrCreate([
+        'color_name' => 'site_txns_count_analytics_color'
+       ],[
+        'color_value' => $request->site_txns_count_analytics_color
+       ]);
+
+       AdminColorSetting::updateOrCreate([
+        'color_name' => 'site_virtual_accounts_color'
+       ],[
+        'color_value' => $request->site_virtual_accounts_color
+       ]);
+
+
      
         AdminColorSetting::updateOrCreate([
           'color_name' => 'site_primary_color'
