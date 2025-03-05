@@ -305,7 +305,7 @@
         <!-- features and services -->
         <div id="services" class="bg-[linear-gradient(-45deg,{{$site_primary_color}}_75%,{{$site_secondary_color}}_25%)] skew-y-4 w-full md:py-16">
                 <div class="md:flex items-center pt-8 md:pt-0 px-4 md:px-0 md:max-w-7xl mx-auto justify-between">
-                    <h2 class="max-w-4xl text-[{{$site_primary_color}}] font-extrabold text-3xl md:text-4xl mr-2">Our Features and Services</h2>
+                    <h2 class="max-w-4xl text-[{{$site_primary_color}}] font-extrabold text-3xl md:text-4xl mr-0 md:mr-2">Our Features and Services</h2>
                     <div class="md:max-w-4xl mt-4 md:mt-0 md:ml-24">
                         <div class="font-normal  w-3xl text-md md:text-lg text-white">We specialize in selling data, airtime, bill payment services, cable TV subscriptions, e-pins, and much more.</p>
                         </div>      
@@ -750,7 +750,7 @@
                                     </p>
                                 
                                     <div class="flex items-center mt-8">
-                                        <img class="rounded-full w-12 h-12 mr-4" src="assets/template2/images/testimonial_avata.png" alt="">
+                                        <img class="rounded-full w-12 h-12 mr-0 md:mr-4" src="assets/template2/images/testimonial_avata.png" alt="">
                                         <div>
                                             <p class="text-lg text-bold"> {{$testimony1_position_template2}}</p>
                                             <p class="text-sm"> {{$testimony1_name_template2}}</p>
@@ -823,7 +823,7 @@
                                          </p>
                                      
                                          <div class="flex items-center mt-8">
-                                             <img class="rounded-full w-12 h-12 mr-4" src="assets/template2/images/testimonial_avata.png" alt="">
+                                             <img class="rounded-full w-12 h-12 mr-0 md:mr-4" src="assets/template2/images/testimonial_avata.png" alt="">
                                              <div>
                                                  <p class="text-lg text-bold"> {{$testimony2_position_template2}}</p>
                                                  <p class="text-sm"> {{$testimony2_name_template2}}</p>
@@ -895,7 +895,7 @@
                                          </p>
                                      
                                          <div class="flex items-center mt-8">
-                                             <img class="rounded-full w-12 h-12 mr-4" src="assets/template2/images/testimonial_avata.png" alt="">
+                                             <img class="rounded-full w-12 h-12 mr-0 md:mr-4" src="assets/template2/images/testimonial_avata.png" alt="">
                                              <div>
                                                  <p class="text-lg text-bold"> {{$testimony3_position_template2}}</p>
                                                  <p class="text-sm"> {{$testimony3_name_template2}}</p>
