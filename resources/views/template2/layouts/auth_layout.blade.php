@@ -83,7 +83,7 @@
          z-index:100;
          }
 
-         .my-float{
+        .my-float{
          margin-top:16px;
          }
             /* // <uniquifier>: Use a unique and descriptive class name
@@ -98,13 +98,13 @@
     </style>
 
 </head>
-<body class="inter text-[#333333]">
+<body class="inter text-[#333333] ">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
     {{-- &text=Hola%21%20Quisiera%20m%C3%A1s%20informaci%C3%B3n%20sobre%20Varela%202. --}}
     <a href="https://api.whatsapp.com/send?phone={{  $support_whatsapp_number_template2  }}&text=Hello,%20Please%20I%20need%20help%20on%20your%20website" class="float" target="_blank">
     <i class="fa fa-whatsapp my-float"></i>
     </a>     
-    <div class="bg-white p-0 m-0 h-screen  overflow-y-hidden bg-[linear-gradient(45deg,{{$site_primary_color}}_60%,{{$site_secondary_color}}_40%)] skew-y-4 md:bg-none">
+    <div class="bg-[{{ $site_secondary_color }}]  md:bg-white  p-0 m-0 h-screen  overflow-y-hidden bg-[linear-gradient(45deg,{{$site_primary_color}}_60%,{{$site_secondary_color}}_40%)] skew-y-4 md:bg-none">
     
         <div class="max-w-4xl mx-auto ">
 
