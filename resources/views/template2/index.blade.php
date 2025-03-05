@@ -160,9 +160,10 @@
 
         <!-- hero -->
         <div  class="w-full max-w-full md:max-w-5xl md:mx-auto md:py-16 mt-40 md:mt-32 bg-white text-center space-y-8">
-            <h1 class="w-full md:px-2 md:max-w-4xl md:mx-auto font-bold text-[[#333333]] text-6xl md:text-7xl">{{$hero_main_text_template2}} <span class="relative inline-block px-4 py-1 rounded-lg bg-gradient-to-r from-[{{$site_secondary_color}}] via-[{{$site_primary_color}}] to-[{{$site_primary_color}}] text-white">{{ $hero_main_text_stylish_template2 }}</span></h1>
-            {{-- <h1 class="w-full md:px-2 md:max-w-4xl md:mx-auto font-bold text-[[#333333]] text-6xl md:text-7xl">{{ explode(' ',$hero_main_text_template2)[0]}} <span class="relative inline-block px-4 py-1 rounded-lg bg-gradient-to-r from-[{{$site_secondary_color}}] via-[{{$site_primary_color}}] to-[{{$site_primary_color}}] text-white">future</span> of financial services.</h1> --}}
-            <p class="font-normal px-4 md:max-w-3xl md:mx-auto text-lg md:text-lg">{{$hero_sub_text_template2}}</p>
+            <h1 class="w-full md:px-2 md:max-w-4xl md:mx-auto font-bold text-[#333333] text-4xl md:text-7xl">{{$hero_main_text_template2}} 
+                <span class="relative inline-block px-4 py-1 rounded-lg bg-gradient-to-r from-[{{$site_secondary_color}}] via-[{{$site_primary_color}}] to-[{{$site_primary_color}}] text-white">{{ $hero_main_text_stylish_template2 }}</span>
+            </h1>
+           <p class="font-normal px-4 md:max-w-3xl md:mx-auto text-lg md:text-lg">{{$hero_sub_text_template2}}</p>
                 
             <a href="{{route('register')}}" class="text-white bg-[{{$site_primary_color}}] hover:bg-[{{$site_primary_color}}] focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center">
                 Get started for free  
@@ -250,9 +251,7 @@
                             <img width="125" height="125" src="assets/template2/images/airtel.png" alt="airtel">
                             <img width="80" height="80" src="assets/template2/images/ninemobile.png" alt="9mobile">
                         </div>
-                        <!-- <div class="flex items-center justify-between px-8">
-                           
-                        </div> -->
+                      
                        
                 </div>
          </div>
@@ -274,15 +273,12 @@
                 </a>
             </div>
 
-            <!-- image -->
             @if (isset($aboutus_image))
-                {{-- {{ asset(env('APP_ASSETS_BASE_URL').'landing_page_assets/img/aboutus_image/'.$aboutus_image) }} --}}
-                <img class="px-4 mt-8 md:mt-0 md:px-0 w-full h-[500px] rounded-lg object-cover" src="{{ asset(env('APP_ASSETS_BASE_URL').'landing_page_assets/img/aboutus_image/'.$aboutus_image) }}"  alt="About us">          
+             <img class="px-4 mt-8 md:mt-0 md:px-0 w-full h-[500px] rounded-lg object-cover" src="{{ asset(env('APP_ASSETS_BASE_URL').'landing_page_assets/img/aboutus_image/'.$aboutus_image) }}"  alt="About us">          
             @else
                 <img src="assets/template2/images/aboutus.png" alt="About us">
             @endif
-            {{-- <img class="px-4 mt-8 md:mt-0 md:px-0" src="assets/template2/images/aboutus.png" alt="About us"> --}}
-            
+         
         </div>
 
         <!-- analytics -->
@@ -302,7 +298,7 @@
                             <h4>REFERRAL BONUSES</h4>
                         </div>
                     </div>
-                <!-- </div> -->
+             
          </div>
         
 
@@ -712,7 +708,7 @@
            <div id="testimonials" class="w-full md:px-2 p-4 md:p-6">
             <div class="md:mx-auto md:max-w-6xl md:py-8 md:py-12 md:flex items-start justify-between">
                 <div class="w-full md:w-1/2 mt-8 md:mt-16">
-                    <h2 class="w-full md:max-w-xl font-bold text-3xl md:text-5xl">What our client says about our services.</h2>
+                    <h2 class="w-full md:max-w-xl font-bold text-3xl md:text-5xl">What our clients say about our services.</h2>
                     <div class="hidden md:block md:flex space-x-4 mt-8 md:mt-16 relative">
                              <!-- <button type="button" data-carousel-prev>
                               <img width="50" height="50" src="assets/template2/images/prevIcon.png" alt="" >
@@ -959,16 +955,16 @@
                         <!-- <button type="button" class="w-3 h-3 rounded-full" aria-current="false" aria-label="Slide 5" data-carousel-slide-to="4"></button> -->
                     </div>
                     <!-- Slider controls -->
-                    <button type="button" class="absolute -top-24 md:-top-5 start-0 z-30 flex items-center justify-center h-full px-4 cursor-pointer group focus:outline-none" data-carousel-prev>
-                        <span class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-[{{$site_secondary_color}}] group-focus:outline-none">
+                    <button type="button" class="absolute -top-40 md:-top-5 start-0 z-30 flex items-center justify-center h-full px-4 cursor-pointer group focus:outline-none" data-carousel-prev>
+                        <span class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-transparent group-focus:outline-none">
                             <svg class="w-4 h-4 text-white dark:text-gray-800 rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
                                 <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 1 1 5l4 4"/>
                             </svg>
                             <span class="sr-only">Previous</span>
                         </span>
                     </button>
-                    <button type="button" class="absolute -top-24 md:-top-5 end-0 z-30 flex items-center justify-center h-full px-4 cursor-pointer group focus:outline-none" data-carousel-next>
-                    <span class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-[{{$site_secondary_color}}] group-focus:outline-none">
+                    <button type="button" class="absolute -top-40 md:-top-5 end-0 z-30 flex items-center justify-center h-full px-4 cursor-pointer group focus:outline-none" data-carousel-next>
+                    <span class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-transparent group-focus:outline-none">
                             <svg class="w-4 h-4 text-white dark:text-gray-800 rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
                                 <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 9 4-4-4-4"/>
                             </svg>
