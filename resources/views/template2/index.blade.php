@@ -284,7 +284,7 @@
         <!-- analytics -->
          <div class="w-full bg-white">
                 <!-- <div class="grid grid-cols-3 mx-auto max-w-7xl py-12 bg-gray-700"> -->
-                    <div class="w-full mx-auto md:max-w-5xl py-8 md:py-12 md:flex items-center justify-between">
+                    <div class="w-full md:mx-auto md:max-w-5xl py-8 md:py-12 md:flex items-center justify-between">
                         <div class="text-center mt-8 md:mt-0">
                             <span class="text-4xl md:text-4xl font-bold text-[{{$site_primary_color}}] pb-4">5k+</span>
                             <h4>HAPPY CLIENTS</h4>
@@ -304,15 +304,15 @@
 
         <!-- features and services -->
         <div id="services" class="bg-[linear-gradient(-45deg,{{$site_primary_color}}_75%,{{$site_secondary_color}}_25%)] skew-y-4 w-full md:py-16">
-                <div class="md:flex items-center pt-8 md:pt-0 px-4 md:px-0 md:max-w-7xl mx-auto justify-between">
+                <div class="w-full md:flex items-center pt-8 md:pt-0 px-4 md:px-0 md:max-w-7xl md:mx-auto justify-between">
                     <h2 class="max-w-4xl text-[{{$site_primary_color}}] font-extrabold text-3xl md:text-4xl mr-0 md:mr-2">Our Features and Services</h2>
-                    <div class="md:max-w-4xl mt-4 md:mt-0 md:ml-24">
+                    <div class="md:max-w-4xl mt-4 md:mt-0 ml-0 md:ml-24">
                         <div class="font-normal  w-3xl text-md md:text-lg text-white">We specialize in selling data, airtime, bill payment services, cable TV subscriptions, e-pins, and much more.</p>
                         </div>      
                     </div>
                 </div>
 
-                <div class="rounded-xl  max-w-6xl mx-auto  mt-8 md:mt-16">
+                <div class="rounded-xl  w-full md:max-w-6xl mx-auto  mt-8 md:mt-16">
                                         <div class="md:mt-4 rounded-xl grid gap-4 px-6 md:grid-cols-3  md:space-x-4">
                                             <div class="bg-white border border-2 shadow-xl rounded-xl">
                                                 <div class="p-6 space-y-6">
@@ -706,7 +706,7 @@
 
            <!-- Testimonials -->
            <div id="testimonials" class="w-full md:px-2 p-4 md:p-6">
-            <div class="md:mx-auto md:max-w-6xl md:py-8 md:py-12 md:flex items-start justify-between">
+            <div class="w-full md:mx-auto md:max-w-6xl py-8 md:py-12 md:flex items-start justify-between">
                 <div class="w-full md:w-1/2 mt-8 md:mt-16">
                     <h2 class="w-full md:max-w-xl font-bold text-3xl md:text-5xl">What our clients say about our services.</h2>
                     <div class="hidden md:block md:flex space-x-4 mt-8 md:mt-16 relative">
