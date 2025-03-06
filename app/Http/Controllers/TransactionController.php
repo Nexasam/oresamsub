@@ -43,11 +43,11 @@ class TransactionController extends Controller
   public function transaction_details($id){
     $dataa = $this->get_user_dashboard_data();
     $data = [...$dataa];
-    // dd($data);
+    // dd($data['user']->role->role_name);
     $data['data'] = Transaction::with(['user','product_plan'])->where('id',$id)->first();
 
     $siteTemplate = SiteTemplate::first();
-    if(! $siteTemplate || $siteTemplate->template_name == 'template_1'){
+    if(! $siteTemplate || $siteTemplate->template_name == 'template_1' || $data['user']->role->role_name == 'Admin' ){
         return view('transaction_details')->with($data);
     }
 
