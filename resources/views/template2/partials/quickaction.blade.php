@@ -3,14 +3,16 @@
     <div class="w-full  md:mx-auto ">
         <h4 class="font-bold text-md md:text-lg">Quick Actions</h4>
         <form class="block md:hidden w-full md:space-y-6">
-            <div class="mt-2">
+            <div class="mt-2" x-data="{ selectedRoute: '' }">
                 <label for="wallet" class="block mb-2 text-sm font-medium text-gray-900"></label>
-                <select id="wallet" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-[{{$site_primary_color}}] focus:border-[{{$site_primary_color}}] block w-full p-2.5">
-                    <option selected>Buy Airtime</option>
-                    <option value="main">Buy Data</option>
-                    <option value="data">Buy Electricity</option>
-                    <option value="data">Buy Cable</option>
-                    <option value="data">Check API Docs</option>
+                <select x-model="selectedRoute" @change="if(selectedRoute) window.location.href = selectedRoute" id="wallet" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-[{{$site_primary_color}}] focus:border-[{{$site_primary_color}}] block w-full p-2.5">
+                    <option value="#">Select Page</option>
+                    <option value="{{ route('user.airtime.buy_airtime') }}">Airtime</option>
+                    <option value="{{ route('user.data.buy_data') }}">Data</option>
+                    <option value="{{ route('user.electricity.buy_electricity_subscription') }}">Electricity</option>
+                    <option value="{{ route('user.cable_subscription.buy_cable_subscription') }}">Cable</option>
+                    <option value="{{ route('user.transactions.index') }}">Transactions</option>
+                    <option value="{{ route('user.api.docs') }}">Check API Docs</option>
                 </select>
                 
             </div>

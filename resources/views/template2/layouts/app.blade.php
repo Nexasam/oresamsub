@@ -166,8 +166,8 @@
 
                 @include('template2.partials.analytics')
 
-                @include('template2.partials.quickaction')
             @endunless
+            @include('template2.partials.quickaction')
          
 
             @yield('template2_content')  
