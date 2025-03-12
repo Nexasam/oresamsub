@@ -12,12 +12,14 @@ use App\Models\Setting;
 use App\Models\UserPlan;
 use App\Models\Transaction;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
+use App\Http\Services\UserService;
 use App\Models\ProductPlanCategory;
 use App\Http\Controllers\Controller;
 use App\Models\BulkDataProductPlans;
+// use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-// use Illuminate\Support\Facades\Password;
 use Illuminate\Auth\Events\Registered;
 use App\Traits\JsonResponseWrapperMobile;
 use Illuminate\Validation\Rules\Password;
@@ -33,6 +35,24 @@ class ApiIntegrationController extends Controller
      public function networks(){
         $data = Network::where('visibility',1)->get();
         $this->success('Network successfully fetched', data: $data);
+     }
+
+     public function update_fingerprint_option(Request $request){
+        $request->validate([
+            'user_id' => ['required', 'string', 'exists:users,id'],
+            'fingerprint_status' => [Rule::in(['0','1'])], 
+        ]);
+
+        $data['fingerprint_status'] = $request->fingerprint_status;
+        $data['user_id'] = $request->user_id;
+
+        $update_fingerprint_status = (new UserService())->update_fingerprint_status($data);
+
+        if($update_fingerprint_status['status'] == 1){
+            return $this->success($update_fingerprint_status['message']);          
+        }
+
+        return $this->error($update_fingerprint_status['message'], data: $update_fingerprint_status['data']);  
      }
   
      public function signup(Request $request){

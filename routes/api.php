@@ -32,12 +32,15 @@ Route::post('v1/external/register', [ApiIntegrationController::class, 'signup'])
 Route::post('v1/external/login', [ApiIntegrationController::class, 'login'])->name('api.login');
 Route::post('v1/external/forgot_password', [ApiIntegrationPasswordResetController::class, 'forgot_password'])->name('api.forgot_password');
 Route::get('v1/external/products', [ApiIntegrationController::class, 'products'])->name('products');
+// Route::put('v1/external/enable_fingerprint', [ApiIntegrationController::class, 'enable_fingerprint'])->name('enable_fingerprint');
 
 // Route::post('v1/external/auth_check', [ApiIntegrationController::class, 'auth_check'])->name('mobile_auth_check');
 
 
 // validate_user tokeng
 Route::group(['prefix'=>'v1/external','as'=>'api.','middleware' =>['auth:sanctum','validate_user']], function(){
+    Route::put('/update_fingerprint_option', [ApiIntegrationController::class, 'update_fingerprint_option'])->name('update_fingerprint_option');
+
     Route::post('/phone_verification', [ApiIntegrationController::class, 'phone_verification'])->name('phone_verification');
     Route::post('/confirm_phone_verification', [ApiIntegrationController::class, 'confirm_phone_verification'])->name('confirm_phone_verification');
     Route::post('/set_transaction_pin', [ApiIntegrationController::class, 'set_transaction_pin'])->name('set_transaction_pin');
