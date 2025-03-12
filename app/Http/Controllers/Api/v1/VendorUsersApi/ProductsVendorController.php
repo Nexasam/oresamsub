@@ -227,7 +227,7 @@ class ProductsVendorController extends Controller
     public function buy_data(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'network_id' => 'required',
+            // 'network_id' => 'required',
             'phone_number' => 'required',
             'product_plan_category_id' => 'required',
             'product_plan_id' => 'required',
@@ -236,7 +236,7 @@ class ProductsVendorController extends Controller
         ]);
         
         if ($validator->stopOnFirstFailure()->fails()) {
-            return $this->error('Validation failed', data: $validator->errors()->first(), code: 403 );    
+            return $this->error('Validation failedvvv', data: $validator->errors()->first(), code: 403 );    
         }
 
         //TODO: revamp to make better
@@ -458,7 +458,7 @@ class ProductsVendorController extends Controller
         $data['electricity_product_plan_category_id'] = $request->electricity_product_plan_category_id;
         $data['electricity_product_plan_id'] = $request->electricity_product_plan_id;
         $data['amount'] = $request->amount;
-        // $data['pin'] = $request->pin;
+        $data['pin'] = $user_details->pin;
         $data['user_id'] = $user_details->id; //this is required
         $data['no_of_slots'] = '1';//this is required
         $data['wallet_category'] = 'main_wallet';//this is required
@@ -482,7 +482,6 @@ class ProductsVendorController extends Controller
        
 
         $validator = Validator::make($request->all(), [
-          
             'smart_card_number' => 'required',
             'validation_customer_name' => 'required',
             'cable_product_plan_category_id' => 'required',
@@ -509,10 +508,9 @@ class ProductsVendorController extends Controller
         $data['cable_product_plan_id'] = $request->cable_product_plan_id;//this is required
         $data['no_of_slots'] = '1';//this is required
         $data['wallet_category'] = 'main_wallet';//this is required
-        $data['pin'] = $request->pin;
+        $data['pin'] = $user_details->pin;
 
   
-     
         $buy_cable = (new ProductsService())->buy_cable_service($data);
 
         $status = $buy_cable['status'];

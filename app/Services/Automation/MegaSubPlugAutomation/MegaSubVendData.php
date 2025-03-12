@@ -121,6 +121,7 @@ class MegaSubVendData{
         ));
         
         $response = curl_exec($curl);
+        // logger($response);
         
         curl_close($curl);
        
@@ -128,10 +129,10 @@ class MegaSubVendData{
 
         if(isset($response_decode['Status']) && $response_decode['Status'] == 'Success' && isset($response_decode['Detail']['info']['Success']) 
          &&  $response_decode['Detail']['info']['Success'] == '1'  ){
-            //successful transaction
+            //successful transaction: initially real_response
             return [
                 'status' => 1,
-                'user_message' => isset($response_decode['Detail']['info']['realresponse']) ? $response_decode['Detail']['info']['realresponse'] :  'Transaction was successful',
+                'user_message' => isset($response_decode['Detail']['info']['Detail']) ? $response_decode['Detail']['info']['Detail'] :  'Transaction was successful',
                 'admin_message' => $response
             ];
         }

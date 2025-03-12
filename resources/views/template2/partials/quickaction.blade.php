@@ -1,4 +1,4 @@
-<div class="max-w-6xl mx-auto px-4 py-2 gap-1 md:rounded-lg text-sm border  border-gray-300 ">
+<div class="max-w-6xl mx-auto px-4 mt-0 md:mt-4 py-2 gap-1 md:rounded-lg text-sm border  border-gray-300 ">
 
     <div class="w-full  md:mx-auto ">
         <h4 class="font-bold text-md md:text-lg">Quick Actions</h4>

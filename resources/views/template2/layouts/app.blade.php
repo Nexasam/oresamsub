@@ -163,10 +163,9 @@
             {{-- dont show for api docs --}}
             @unless(isset($hideNav) && $hideNav)
                 {{-- @include('template2.partials.notification') --}}
-
                 @include('template2.partials.analytics')
-
             @endunless
+            
             @include('template2.partials.quickaction')
             
 

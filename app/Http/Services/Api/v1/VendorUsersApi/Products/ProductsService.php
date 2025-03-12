@@ -195,11 +195,7 @@ class ProductsService{
         $data1['user_id'] = $user_id;
         $data1['product'] = 'data';
         $check_purchase_limit =  ProductsService::check_purchase_limit($data1);
-        if($check_purchase_limit['status'] == -1){
-            return ['status'=>'-1', 'message'=>$check_purchase_limit['message']  ];
-        }
-
-
+    
 
         $plan_details = ProductPlan::where('id',$product_plan_id)->where('visibility',1)->first();
         $automation_id = $plan_details->automation_id;
@@ -225,6 +221,36 @@ class ProductsService{
         $plan_level = $user_level->plan_level;
         $user_plan_selling_price = 'user_level_'.$plan_level.'_selling_price';
         $amount = abs($plan_details->$user_plan_selling_price);
+
+        if($check_purchase_limit['status'] == -1){
+            
+            $description = 'Purchase of data';
+            $creationData['transaction_category'] = 'data';
+            $creationData['user_id'] = $user_id;
+            $creationData['wallet_category'] = $wallet_category;
+            $creationData['product_plan_id'] = $product_plan_id;
+            $creationData['phone_number'] = $phone_number;
+            $creationData['amount'] = $amount;
+            $creationData['discounted_amount'] = $amount;
+            $creationData['status'] = -1;
+            $creationData['balance_before'] = $user_details->main_wallet;
+            $creationData['balance_after'] = $user_details->main_wallet;
+            $creationData['description'] = $description;
+            $creationData['user_screen_message'] = 'Sorry, something went wrong';
+            $creationData['admin_screen_message'] =$check_purchase_limit['message'];
+            $transaction = Transaction::create($creationData);
+
+
+            $walletLog['user_id'] = $user_id;
+            $walletLog['transaction_category'] = 'DATA_FROM_MAIN_WALLET';
+            $walletLog['balance_before'] = $user_details->main_wallet;
+            $walletLog['balance_after'] = $user_details->main_wallet;
+            $walletLog['transaction_id'] = $transaction->id;
+            $walletLog['action_by'] = $user_id;           
+            $walletLog['description'] = 'Data Purchase from main wallet';
+            $this->log_wallet_transactions($walletLog);
+            return ['status'=>'-1', 'message'=>$check_purchase_limit['message']  ];
+        }
 
 
         if($user_details->pin != $pin){
@@ -352,7 +378,7 @@ class ProductsService{
                             DB::commit();
                     
                             if($failure > 0){
-                              return ['status'=>2, 'message'=>" $failure issue(s) found. Check transaction history", 'data' => $display_results];   
+                              return ['status'=>2, 'user_message' => $user_message,'admin_message' => $admin_message,'message'=>" $failure issue(s) found. Check transaction history", 'data' => $display_results];   
                             }
                             return ['status'=>1, 'message'=>'Transaction was successfully processed', 'data' => $display_results ];
                     
@@ -469,8 +495,9 @@ class ProductsService{
 
 
         }catch(Exception $exception){
-            logger($exception->getMessage().' on line: '. $exception->getLine());
             DB::rollBack();
+            logger($exception->getMessage().' on line: '. $exception->getLine());
+
             return ['status'=>'-1', 'message'=>'Something went wrong... Please try again', 'data'=>[]];
         }
 
@@ -1086,9 +1113,9 @@ class ProductsService{
                             DB::commit();
                     
                             if($failure > 0){
-                              return ['status'=>2, 'message'=>" $failure issue(s) found. Check transaction history", 'data' => $display_results  ];   
+                              return ['status'=>2,'user_message' => $user_message,'admin_message','message'=>" $failure issue(s) found. Check transaction history", 'data' => $display_results  ];   
                             }
-                            return ['status'=>1, 'message'=>'Transaction was successfully processed', 'data' => $display_results  ];
+                            return ['status'=>1, 'user_message' => $user_message,'admin_message','message'=>'Transaction was successfully processed', 'data' => $display_results  ];
                     
                         } else{
                             return ['status'=>'-1', 'message'=>'Wrong wallet selection', 'data'=>[]];
@@ -1265,12 +1292,12 @@ class ProductsService{
                             DB::commit();
                     
                             if($failure > 0){
-                              return ['status'=>2, 'message'=>" $failure issue(s) found. Check transaction history", 'data' => $display_results  ];   
+                              return ['status'=>2, 'user_message' => $user_message,'admin_message' => $admin_message,'message'=>" $failure issue(s) found. Check transaction history", 'data' => $display_results  ];   
                             }
-                            return ['status'=>1, 'message'=>'Transaction was successfully processed', 'data' => $display_results  ];
+                            return ['status'=>1,'user_message' => $user_message,'admin_message' => $admin_message, 'message'=>'Transaction was successfully processed', 'data' => $display_results  ];
                     
                         } else{
-                            return ['status'=>'-1', 'message'=>'Wrong wallet selection', 'data'=>[]];
+                            return ['status'=>'-1','admin_message' => 'Sorry transaction failed', 'message'=>'Wrong wallet selection', 'data'=>[]];
                         }
 
 

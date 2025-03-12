@@ -66,7 +66,7 @@ class FundingOptionsController extends Controller
         // return ['ss'];
         $validator = Validator::make($request->all(), [
             'user_id' => 'required|exists:users,id',
-            'pin' => 'required|digits:4|exists:users,pin',
+            // 'pin' => 'required|digits:4|exists:users,pin',
             'bank_code' => 'required|max:255|exists:funding_option_bank_codes,bank_code',
             'funding_option_id' => 'required|exists:funding_options,id',
           ]);
@@ -78,9 +78,9 @@ class FundingOptionsController extends Controller
 
           $user_details = User::select('id','pin')->where('id',$request->user_id)->first();
     
-          if($user_details->pin != $request->pin){
-              return $this->error('Incorrect PIN', data: $request->all(), code: 403 );   
-          }
+        //   if($user_details->pin != $request->pin){
+        //       return $this->error('Incorrect PIN', data: $request->all(), code: 403 );   
+        //   }
 
 
          $fetch_user_acct = UserVirtualAccount::where('user_id',$request->user_id)
@@ -89,9 +89,7 @@ class FundingOptionsController extends Controller
          ->first();
        
          if($fetch_user_acct){
-           
            return $this->error('Sorry you already have an account generated: Account number is '.$fetch_user_acct->account_number, data: $request->all(), code: 403 );    
-
          }
 
 
