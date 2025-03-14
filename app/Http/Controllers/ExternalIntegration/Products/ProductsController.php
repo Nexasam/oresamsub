@@ -50,10 +50,10 @@ class ProductsController extends Controller
         $validator = Validator::make($request->all(), [
             'user_id' => 'required|exists:users,id|max:255',
             'product_slug' => ['nullable',Rule::in(['data', 'airtime', 'utility_bills', 'cable_subscription'])],
-            'network_id' => 'required'
+            'network_id' => 'nullable'
         ]);
 
-        $data['network_id'] = $request->network_id;
+        $data['network_id'] = $request->network_id ?? '';
         $data['product_slug'] = $request->product_slug;
         $data['user_id'] = $request->user_id;
         
