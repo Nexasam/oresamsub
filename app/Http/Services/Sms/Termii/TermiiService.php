@@ -85,8 +85,8 @@ class TermiiService{
 
         //just a quick fix for now::: termii is failing
         User::where('id',$user_id)->update([
-            'termii_pin_id' => $result['pinId']  ?? NULL,
-            'termii_json' => $response  ?? NULL,
+            // 'termii_pin_id' => $result['pinId']  ?? NULL,
+            // 'termii_json' => $response  ?? NULL,
             'phone_number' => $phone_number
         ]);
 
