@@ -123,7 +123,7 @@ class ProductsController extends Controller
             return $this->error('Validation failed', data: $validator->errors()->first(), code: 403 );    
         }
 
-        $date_from = $request->date_from ?? date('Y-m-d', strtotime('-2 days'));
+        $date_from = $request->date_from ?? date('Y-m-d', strtotime('-100 days'));
         
         $date_to= $request->date_to ?? date('Y-m-d');
 
