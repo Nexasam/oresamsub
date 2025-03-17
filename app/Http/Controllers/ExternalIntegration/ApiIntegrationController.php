@@ -54,6 +54,28 @@ class ApiIntegrationController extends Controller
 
         return $this->error($update_fingerprint_status['message'], data: $update_fingerprint_status['data']);  
      }
+
+
+     //discuss this first
+    //  public function update_user_profile(Request $request){
+    //     $request->validate([
+    //         'user_id' => ['required', 'string', 'exists:users,id'],
+    //         'fingerprint_status' => [Rule::in(['0','1'])], 
+    //     ]);
+
+    //     $data['fingerprint_status'] = $request->fingerprint_status;
+    //     $data['user_id'] = $request->user_id;
+
+    //     $update_fingerprint_status = (new UserService())->update_fingerprint_status($data);
+
+    //     if($update_fingerprint_status['status'] == 1){
+    //         return $this->success($update_fingerprint_status['message']);          
+    //     }
+
+    //     return $this->error($update_fingerprint_status['message'], data: $update_fingerprint_status['data']);  
+    //  }
+
+     
   
      public function signup(Request $request){
                 //TODO: candidate for a service: signup service
@@ -215,7 +237,7 @@ class ApiIntegrationController extends Controller
         $data['user'] =  $user;
         $data['products'] = Product::where('visibility',1)->where('active_status',1)->get();
         $data['recent_transactions'] = Transaction::where('user_id',$request->user_id)->orderByDesc('updated_at')->limit(10)->get();
-        $data['hot_sales'] = ProductPlanCategory::where('is_hot_sales',1)->get();
+        $data['hot_sales'] = ProductPlanCategory::with('product')->where('is_hot_sales',1)->get();
         // return response()->json([
         //     'status' => true,
         //     'code' => 200,

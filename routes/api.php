@@ -40,6 +40,8 @@ Route::get('v1/external/products', [ApiIntegrationController::class, 'products']
 // validate_user tokeng
 Route::group(['prefix'=>'v1/external','as'=>'api.','middleware' =>['auth:sanctum','validate_user']], function(){
     Route::put('/update_fingerprint_option', [ApiIntegrationController::class, 'update_fingerprint_option'])->name('update_fingerprint_option');
+    // Route::put('/update_user_profile', [ApiIntegrationController::class, 'update_user_profile'])->name('update_user_profile'); //discuss this first
+    
 
     Route::post('/phone_verification', [ApiIntegrationController::class, 'phone_verification'])->name('phone_verification');
     Route::post('/confirm_phone_verification', [ApiIntegrationController::class, 'confirm_phone_verification'])->name('confirm_phone_verification');
