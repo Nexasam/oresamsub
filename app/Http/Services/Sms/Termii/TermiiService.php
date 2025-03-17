@@ -84,6 +84,12 @@ class TermiiService{
         $result = json_decode($response,true);
 
         //just a quick fix for now::: termii is failing
+        User::where('id',$user_id)->update([
+            'termii_pin_id' => $result['pinId']  ?? NULL,
+            'termii_json' => $response  ?? NULL,
+            'phone_number' => $phone_number
+        ]);
+
         return [
             'status' => 1,
             'message' => 'Successful. OTP has been sent to the phone number: '.$phone_num.' associated with your BVN',
