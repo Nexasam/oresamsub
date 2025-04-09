@@ -21,6 +21,7 @@ class ValidateSanctumUser
     {
     
         $token_id = request()->bearerToken(); // Get the token from the Authorization header
+        
         $token = PersonalAccessToken::findToken($token_id);
 
         if ($token->tokenable_id !== $request->user_id ) {

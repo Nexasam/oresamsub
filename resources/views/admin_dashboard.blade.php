@@ -30,7 +30,7 @@
                 <div class="box-body">
                   <h6 class="text-base font-semibold">Current wallet balance: &#8358; {{ number_format($user->main_wallet,2) }}</h6>
                   <p class="text-[0.813rem] mb-0">Generate a dynamic account below to fund your wallet</p>
-                 <label for="amount">Enter amount to fund:</label><br>
+                 <label for="amount">Enter amount to fund:  </label><br>
                   <input type="number" id="amount" name="amount" value=""><br>
                   <button type="button" class="ti-btn ti-btn-primary"  id="generate_crystalpay_dynamic_account" name="generate_crystalpay_dynamic_account">Generate</button>
                   <div class="crystal_pay_dynamic_account_details">

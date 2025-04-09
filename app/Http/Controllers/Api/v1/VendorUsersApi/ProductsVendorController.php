@@ -278,15 +278,16 @@ class ProductsVendorController extends Controller
         $validator = Validator::make($request->all(), [
             'network_id' => 'required',
             'phone_number' => 'required',
-            'product_plan_category_id' => 'required',
-            // 'product_plan_id' => 'required',
+            // 'product_plan_category_id' => 'required',
+            'product_plan_id' => 'required',
             // 'pin' => ['required','digits:4'],
             'amount' => 'required|numeric|gt:0',
+            'actual_amount' => 'required|numeric|gt:0',
             'validatephonenetwork'=>['required',Rule::in([0,1])],
         ]);
         
         if ($validator->stopOnFirstFailure()->fails()) {
-            return $this->error('Validation failed', data: $validator->errors()->first(), code: 403 );    
+            return $this->error('Validation failed', data: $validator->errors()->first().'asdasdq', code: 403 );    
         }
         
 
@@ -301,8 +302,9 @@ class ProductsVendorController extends Controller
         $data['phone_number'] = $request->phone_number;
         $data['product_plan_category_id'] = $request->product_plan_category_id;
         $data['product_plan_id'] = $request->product_plan_id;
-        $data['pin'] = $request->pin;
+        $data['pin'] = $user_details->pin;
         $data['amount'] = $request->amount;
+        $data['actual_amount'] = $request->actual_amount;
         $data['validatephonenetwork'] = $request->validatephonenetwork;
         $data['user_id'] = $user_details->id;//this is required
 
