@@ -83,11 +83,10 @@
                             <div class="col-span-12">
                                 <div class="box">
                                     
-                                  <div class="box-body">
-                                    <form method="POST" action="{{ route('admin.product_plan_categories.update_details')}}">
-                                      @csrf
-
-                                          <div class="grid w-full lg:w-1/2 lg:grid-cols-1 gap-6 space-y-4 lg:space-y-0">
+                                  <div class="w-full flex gap-2 p-3">
+                                      <form  class="w-1/4 bg-gray-200 p-4" method="POST" action="{{ route('admin.product_plan_categories.update_details')}}">
+                                           @csrf
+                                          <div class="grid w-full lg:grid-cols-1 gap-6 space-y-4 lg:space-y-0">
                                           
                                               <div class="space-y-2">
                                                 <label class="ti-form-label mb-0">Product Plan Category Name</label>
@@ -201,13 +200,72 @@
                                             
                                               <br>
                                           </div>
-                                          {{-- <div class="my-5">
-                                              <button type="submit" class="ti-btn ti-btn-primary w-full">Submit</button>
-                                          </div> --}}
+                                      </form>  
 
-                                      </form>
-                                    
+                                      <form class="my-6 w-3/4 bg-gray-300 p-4" method="POST" action="{{ route('admin.product_plan_categories.update_plan_prices')}}">
+                                            @csrf
+                                            <h2 class="font-bold text-xl">Product Plans</h2>
+                                            @foreach ($product_plans as $key=>$product_plann)
+                                              <div class="grid w-full p-2 bg-gray-100 lg:grid-cols-6 gap-4 my-2">
+                                                  <div class="">
+                                                    <p class="font-bold">{{ $product_plann->product_plan_name }}</p>
+                                                    <input type="hidden" name="product_plan[]" value="{{ $product_plann->id }}">
+                                                    <div class="flex items-center space-x-1">
+                                                      <div class="mr-4">
+                                                        <label for="">Cost Price</label>
+                                                        <input class="w-20" name="cost_price[]" type="text" value="{{ $product_plann->cost_price }}">
+                                                      </div>
+
+                                                      <div class="mr-4">
+                                                        <label for="">Selling Price</label>
+                                                        <input class="w-20" name="default_selling_price[]" type="text" value="{{ $product_plann->default_selling_price }}">
+                                                      </div>
+                                                      <div class="mr-4">
+
+                                                        <label for="">User 1 SP</label>
+                                                        <input class="w-20" name="user_level_1_selling_price[]" type="text" value="{{ $product_plann->user_level_1_selling_price }}">
+                                                      </div>
+                                                      <div class="mr-4">
+
+                                                        <label for="">User 2 SP</label>
+                                                        <input class="w-20" name="user_level_2_selling_price[]" type="text" value="{{ $product_plann->user_level_2_selling_price }}">
+                                                      </div>
+                                                      <div class="mr-4">
+
+                                                        <label for="">User 3 SP</label>
+                                                        <input class="w-20" name="user_level_3_selling_price[]" type="text" value="{{ $product_plann->user_level_3_selling_price }}">
+                                                      </div>
+                                                      <div class="mr-4">
+
+                                                        <label for="">User 4 SP</label>
+                                                        <input class="w-20" name="user_level_4_selling_price[]" type="text" value="{{ $product_plann->user_level_4_selling_price }}">
+                                                      </div>
+                                                      <div class="mr-4">
+
+                                                        <label for="">Visibility Status</label>
+                                                        <select name="visibility[]" id="visibility">
+                                                          <option value="{{ $product_plann->visibility }}">{{ $product_plann->visibility == 1 ? 'Visible':'Hidden'}}</option>
+                                                          <option value="1">Show</option>
+                                                          <option value="0">Hide</option>
+                                                        </select>
+                                                      </div>
+                                               
+                                                    </div>
+                                                  </div>
+                                              </div>
+                                              <hr>
+                                            @endforeach
+                                
+                                            <div class="space-y-2">
+                                              <button type="submit" class="ti-btn ti-btn-primary w-full">Update Product Plans for {{  $product_plan_category->product_plan_category_name }}</button>
+                                            </div>      
+                                            <br>
+                                      </form>  
+
                                   </div>
+
+
+
                                 </div>
                             </div>
                         </div>

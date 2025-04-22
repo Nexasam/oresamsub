@@ -99,9 +99,7 @@ class MegaSubVendData{
         $this->network_api_id = $network_api_id;
         $this->data_api_id = $data_api_id;
 
-
         $curl = curl_init();
-
         $url = 'https://megasubplug.com/API/?action=buy_data&mobile_number='.$this->mobile_number.'&network_api_id='.$this->network_api_id.'&data_api_id='.$this->data_api_id.'&validatephonenetwork='.$this->validatephonenetwork.'&duplication_check='.$this->duplication_check.'';
         curl_setopt_array($curl, array(
           CURLOPT_URL => $url,

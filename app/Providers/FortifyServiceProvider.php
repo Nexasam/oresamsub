@@ -70,7 +70,7 @@ class FortifyServiceProvider extends ServiceProvider
     public function boot(): void
     {
 
-            // if(env('APP_NAME') != 'Irecharg'){
+            if(env('APP_NAME') == 'IRecharge'){
                 $siteTemplate = SiteTemplate::first();
                 if(! $siteTemplate || $siteTemplate->template_name == 'template_1'){
                     $templateloginview = 'auth.login';
@@ -120,12 +120,14 @@ class FortifyServiceProvider extends ServiceProvider
                 Fortify::twoFactorChallengeView(function () use ($data) {
                 return view('auth.two-factor-challenge')->with($data);
                 });
+
+
     
                 // Fortify::twoFactorChallengeView(function ()  {
                 //     return view('auth.two-factor-challenge');
                 // });
     
-            // }
+            }
         
          
 

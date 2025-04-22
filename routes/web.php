@@ -202,6 +202,8 @@ Route::middleware(['auth','verified','admin'])->get('admin/toggle_hot_sales', [P
 Route::middleware(['auth','verified','admin'])->get('admin/product_plan_categories', [ProductPlanCategoryController::class, 'index'])->name('admin.product_plan_categories.index');
 Route::middleware(['auth','verified','admin'])->get('admin/product_plan_categories/view/{id}', [ProductPlanCategoryController::class, 'view_details'])->name('admin.product_plan_categories.view_details');
 Route::middleware(['auth','verified','admin'])->post('admin/product_plan_categories/update', [ProductPlanCategoryController::class, 'update_details'])->name('admin.product_plan_categories.update_details');
+Route::middleware(['auth','verified','admin'])->post('admin/product_plan_categories/update_plan_prices', [ProductPlanCategoryController::class, 'update_plan_prices'])->name('admin.product_plan_categories.update_plan_prices');
+
 Route::middleware(['auth','verified','admin'])->get('admin/product_plan_categories/admin_fetch_product_plan_categories', [ProductPlanCategoryController::class, 'admin_fetch_product_plan_categories'])->name('admin.product_plan_categories.admin_fetch_product_plan_categories');
 Route::middleware(['auth','verified','admin'])->post('admin/product_plan_categories/store', [ProductPlanCategoryController::class, 'store'])->name('admin.product_plan_categories.store');
 Route::middleware(['auth','verified','admin'])->get('admin/product_plan_categories/update_automation', [ProductPlanCategoryController::class, 'updateAutomation'])->name('admin.product_plan_categories.update_automation');

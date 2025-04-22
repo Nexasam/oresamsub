@@ -39,12 +39,16 @@ class ProductPlanCategoryController extends Controller
 
 
     public function view_details($id){
+
       $product_plan_category = ProductPlanCategory::where('id',$id)->first();
       $bulk_data_plans = BulkDataProductPlans::with('product_plan_category')->where('product_plan_category_id',$id)->paginate(50);
       $user_plans = UserPlan::where('plan_level','<=',env('RESELLER_PLAN_COUNT'))->get();
       $products = Product::select('id','product_name')->get();
       $networks = Network::select('id','network_name')->get();
       $automations = Automation::select('id','automation_name')->get();
+      $product_plans = ProductPlan::where('product_plan_category_id',$id)
+      ->where('automation_id',$product_plan_category->automation_id)
+      ->get();
 
       $data['automations'] = $automations;
       $data['products'] = $products;
@@ -52,7 +56,10 @@ class ProductPlanCategoryController extends Controller
       $data['user_plans'] = $user_plans;
       $data['bulk_data_plans'] = $bulk_data_plans;
       $data['product_plan_category'] = $product_plan_category;
+      $data['product_plans'] = $product_plans;
+      
       return view('admin.product_plan_categories.view_details')->with($data);
+
     }
 
     public function update_details(Request $request){
@@ -87,6 +94,36 @@ class ProductPlanCategoryController extends Controller
       }
 
       return redirect()->route('admin.product_plan_categories.index');
+    }
+
+    public function update_plan_prices(Request $request){
+
+      // dd($request->all());
+      foreach($request->product_plan as $key=>$product_plan){
+         
+         $plan_id = $product_plan;
+         $cost_price = $request->cost_price[$key];
+         $visibility = $request->visibility[$key];
+         $default_selling_price =  $request->default_selling_price[$key];
+         $user_level_1_selling_price =  $request->user_level_1_selling_price[$key];
+         $user_level_2_selling_price =  $request->user_level_2_selling_price[$key];
+         $user_level_3_selling_price =  $request->user_level_3_selling_price[$key];
+         $user_level_4_selling_price =  $request->user_level_4_selling_price[$key];
+
+         ProductPlan::where('id',$plan_id)->update([
+          "cost_price" =>  $cost_price,
+          "visibility" =>  $visibility,
+          "default_selling_price" =>  $default_selling_price,
+          "user_level_1_selling_price" =>  $user_level_1_selling_price,
+          "user_level_2_selling_price"=>  $user_level_2_selling_price,
+          "user_level_3_selling_price" =>  $user_level_3_selling_price,
+          "user_level_4_selling_price" =>  $user_level_4_selling_price,
+         ]);
+      }
+
+       Session::flash('success','Product plan category: '.$request->product_plan_category_name.' was successfully updated');
+       return redirect()->back();
+    
     }
 
 
