@@ -202,7 +202,7 @@
                                           </div>
                                       </form>  
 
-                                      <form class="my-6 w-3/4 bg-gray-300 p-4" method="POST" action="{{ route('admin.product_plan_categories.update_plan_prices')}}">
+                                      <form class="w-3/4 bg-gray-300 p-4" method="POST" action="{{ route('admin.product_plan_categories.update_plan_prices')}}">
                                             @csrf
                                             <p class="font-extrabold"><b>Note that the price you set for ELECTRICITY & AIRTIME is in percentage not a fixed value.</b></p>
                                             <h2 class="font-bold text-xl">Product Plans</h2>
