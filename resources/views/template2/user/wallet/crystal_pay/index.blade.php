@@ -31,7 +31,7 @@
     </ul>
 </div>
 <div id="max-w-6xl mx-auto default-styled-tab-content">
-    <div class="max-w-6xl mx-2 md:mx-10  hidden px-2 my-6 p-4 rounded-lg shadow-lg bg-gray-50" id="styled-profile" role="tabpanel" aria-labelledby="profile-tab">
+    <div class="max-w-6xl md:mx-auto   hidden px-2 my-6 p-4 rounded-lg shadow-lg bg-gray-50" id="styled-profile" role="tabpanel" aria-labelledby="profile-tab">
         <table  class="w-full border-collapse border border-gray-300 text-sm text-center text-gray-500">
             <thead class="text-xs h-12 my-2 text-gray-700 uppercase bg-gray-50 border-collapse border border-gray-300">
             <tr>

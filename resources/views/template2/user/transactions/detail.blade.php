@@ -31,7 +31,7 @@
     </ul>
 </div>
 <div id="max-w-6xl mx-auto default-styled-tab-content">
-    <div class="max-w-6xl mx-2 md:mx-10  hidden px-2 my-6 p-4 rounded-lg shadow-lg bg-gray-50" id="styled-profile" role="tabpanel" aria-labelledby="profile-tab">
+    <div class="max-w-6xl md:mx-auto   hidden px-2 my-6 p-4 rounded-lg shadow-lg bg-gray-50" id="styled-profile" role="tabpanel" aria-labelledby="profile-tab">
         <p class="mb-4">
             <a href="{{ url()->previous() }}" class="w-full text-white bg-[{{$site_primary_color}}] hover:bg-[{{$site_primary_color}}]/90 focus:ring-4 focus:outline-none focus:ring-[{{$site_primary_color}}]/50 font-medium rounded-lg text-sm px-2 py-1 text-center items-center dark:focus:ring-[{{$site_primary_color}}]/55 my-2">Return Back</a>
         </p>
