@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Controllers\PriceChangeController;
 use App\Models\SiteImage;
 use App\Models\ProductPlan;
 use App\Models\SiteTemplate;
@@ -24,6 +23,7 @@ use App\Http\Controllers\Template2Controller;
 use App\Http\Controllers\AutomationController;
 use App\Http\Controllers\CrystalPayController;
 use App\Http\Controllers\NewTemplateController;
+use App\Http\Controllers\PriceChangeController;
 use App\Http\Controllers\ProductPlanController;
 use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\BulkDataPlanController;
@@ -35,13 +35,14 @@ use App\Http\Controllers\UserTwoFactorController;
 use App\Http\Controllers\ProductCategoryController;
 use App\Http\Controllers\UserProductPlanController;
 use App\Http\Controllers\CableSubscriptionController;
+use Rap2hpoutre\LaravelLogViewer\LogViewerController;
 use App\Http\Controllers\ProductPlanCategoryController;
 use App\Http\Controllers\ElectricitySubscriptionController;
 
 
 
 
-Route::get('logs', [\Rap2hpoutre\LaravelLogViewer\LogViewerController::class, 'index']);
+Route::get('logs', [LogViewerController::class, 'index']);
 
 
 
