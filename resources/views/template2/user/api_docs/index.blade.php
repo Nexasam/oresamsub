@@ -1,7 +1,7 @@
 @extends('template2.layouts.app')
 @section('template2_content')
 
-<div class="md:max-w-6xl md:mx-16 my-6 p-6 rounded-lg shadow-lg"  >
+<div class="max-w-6xl md:mx-auto  my-6 p-6 rounded-lg shadow-lg"  >
     <form class="w-full space-y-6">
         <div class="mt-2">
             <label for="wallet" class="block mb-2 text-sm font-medium text-gray-900 bg-[{{$site_secondary_color}}] p-4 rounded-lg">You can now use our APIS to create amazing websites for yourself</label>

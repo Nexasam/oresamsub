@@ -13,7 +13,7 @@
     </ul>
 </div>
 <div id="max-w-6xl mx-auto default-styled-tab-content">
-    <div class="max-w-3xl mx-2 md:mx-10  hidden px-2 my-6  p-4 rounded-lg shadow-lg bg-gray-50" id="styled-profile" role="tabpanel" aria-labelledby="profile-tab">
+    <div class="max-w-6xl md:mx-auto   hidden px-2 my-6  p-4 rounded-lg shadow-lg bg-gray-50" id="styled-profile" role="tabpanel" aria-labelledby="profile-tab">
         <form class="w-full space-y-6">
             <input type="hidden" id="_token" name="_token" value="{{ csrf_token() }}" />
             <input type="hidden" id="product_slug" name="product_slug" value="utility_bills" />

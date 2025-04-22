@@ -10,7 +10,7 @@
     </ul>
 </div> --}}
 <div id="max-w-3xl px-4 mx-auto default-styled-tab-content">
-    {{-- <div class="max-w-3xl mx-2 md:mx-10  hidden px-2 my-6  p-4 rounded-lg shadow-lg bg-gray-50" id="styled-profile" role="tabpanel" aria-labelledby="profile-tab"> --}}
+    {{-- <div class="max-w-6xl md:mx-auto   hidden px-2 my-6  p-4 rounded-lg shadow-lg bg-gray-50" id="styled-profile" role="tabpanel" aria-labelledby="profile-tab"> --}}
         {{-- <div class="box w-full px-4 mb-4"> --}}
             {{-- <div class="box-header"> --}}
                 {{-- <div class="sm:flex">
