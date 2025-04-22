@@ -209,7 +209,7 @@
                                             @foreach ($product_plans as $key=>$product_plann)
                                               <div class="grid w-full p-2 bg-gray-100 lg:grid-cols-6 gap-4 my-2">
                                                   <div class="">
-                                                    <p class="font-bold">{{ $product_plann->product_plan_name }}</p>
+                                                    <p class="font-bold">{{ $product_plann->product_plan_name }} &nbsp; API ID: {{ $product_plann->automation_product_plan_id }}</p>
                                                     <input type="hidden" name="product_plan[]" value="{{ $product_plann->id }}">
                                                     <div class="flex items-center space-x-1">
                                                       <div class="mr-4">
