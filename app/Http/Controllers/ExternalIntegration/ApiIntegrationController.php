@@ -20,6 +20,7 @@ use App\Models\BulkDataProductPlans;
 // use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use App\Http\Services\GeneralService;
 use Illuminate\Auth\Events\Registered;
 use App\Traits\JsonResponseWrapperMobile;
 use Illuminate\Validation\Rules\Password;
@@ -55,6 +56,18 @@ class ApiIntegrationController extends Controller
         return $this->error($update_fingerprint_status['message'], data: $update_fingerprint_status['data']);  
      }
 
+     public function support_information(Request $request){
+        
+        $support_information = (new GeneralService())->support_information();
+
+        if($support_information['status'] == 1){
+            return $this->success($support_information['message'], data: $support_information['data']);          
+        }
+
+     }
+
+     
+
 
      //discuss this first
     //  public function update_user_profile(Request $request){
@@ -66,7 +79,7 @@ class ApiIntegrationController extends Controller
     //     $data['fingerprint_status'] = $request->fingerprint_status;
     //     $data['user_id'] = $request->user_id;
 
-    //     $update_fingerprint_status = (new UserService())->update_fingerprint_status($data);
+    //     $update_fingerprint_status = (new UserService())->update_user_profile($data);
 
     //     if($update_fingerprint_status['status'] == 1){
     //         return $this->success($update_fingerprint_status['message']);          
@@ -251,10 +264,6 @@ class ApiIntegrationController extends Controller
      }
 
 
-
-
-
-
      public function mobile_product_plan_category(Request $request){
         $product_plan_categories = ProductPlanCategory::with(['product','network','automation'])->get();
         return response()->json([
@@ -276,9 +285,8 @@ class ApiIntegrationController extends Controller
         // ]);
 
         return $this->success('Products successfully fetched',data: $products );
-
-   
      }
+
      public function mobile_bulk_data_plans(Request $request){
         $bulk_data_product_plans = BulkDataProductPlans::with('product_plan_category')->where('visibility',1)->get();
         return response()->json([

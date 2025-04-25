@@ -32,7 +32,7 @@ Route::post('v1/external/register', [ApiIntegrationController::class, 'signup'])
 Route::post('v1/external/login', [ApiIntegrationController::class, 'login'])->name('api.login');
 Route::post('v1/external/forgot_password', [ApiIntegrationPasswordResetController::class, 'forgot_password'])->name('api.forgot_password');
 Route::get('v1/external/products', [ApiIntegrationController::class, 'products'])->name('products');
-// Route::put('v1/external/enable_fingerprint', [ApiIntegrationController::class, 'enable_fingerprint'])->name('enable_fingerprint');
+Route::get('v1/external/support_information', [ApiIntegrationController::class, 'support_information'])->name('support_information');
 
 // Route::post('v1/external/auth_check', [ApiIntegrationController::class, 'auth_check'])->name('mobile_auth_check');
 
@@ -40,7 +40,7 @@ Route::get('v1/external/products', [ApiIntegrationController::class, 'products']
 // validate_user tokeng
 Route::group(['prefix'=>'v1/external','as'=>'api.','middleware' =>['auth:sanctum','validate_user']], function(){
     Route::put('/update_fingerprint_option', [ApiIntegrationController::class, 'update_fingerprint_option'])->name('update_fingerprint_option');
-    // Route::put('/update_user_profile', [ApiIntegrationController::class, 'update_user_profile'])->name('update_user_profile'); //discuss this first
+    Route::put('/update_user_profile', [ApiIntegrationController::class, 'update_user_profile'])->name('update_user_profile'); //discuss this first
     
 
     Route::post('/phone_verification', [ApiIntegrationController::class, 'phone_verification'])->name('phone_verification');

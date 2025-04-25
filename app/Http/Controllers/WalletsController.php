@@ -1023,6 +1023,7 @@ class WalletsController extends Controller
           $dataa[$key] = $bank;
         }
         $data['banks'] = $dataa;
+        
         // dd($data);
         // return $funding_option;
         if($funding_option->slug == 'monnify'){
