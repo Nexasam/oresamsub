@@ -68,6 +68,51 @@ class ApiIntegrationController extends Controller
 
      
 
+     
+    public function update_user_password(Request $request){
+        $request->validate([
+            'user_id' => ['required', 'string', 'exists:users,id'],
+            'current_password' => 'required', 
+            'new_password' => ['required',Rules\Password::defaults()], 
+            'confirm_new_password' => ['required',Rules\Password::defaults()], 
+        ]);
+
+        $data['current_password'] = $request->current_password;
+        $data['new_password'] = $request->current_password;
+        $data['confirm_new_password'] = $request->confirm_new_password;
+        $data['user_id'] = $request->user_id;
+
+        $update_user_password = (new UserService())->update_user_password($data);
+
+        if($update_user_password['status'] == 1){
+            return $this->success($update_user_password['message']);          
+        }
+
+        return $this->error($update_user_password['message'], data: $update_user_password['data']);  
+    }
+
+    public function update_user_pin(Request $request){
+        $request->validate([
+            'user_id' => ['required', 'string', 'exists:users,id'],
+            'current_pin' => 'required', 
+            'new_pin' => ['required'], 
+            'confirm_new_pin' => ['required'], 
+        ]);
+
+        $data['current_pin'] = $request->current_pin;
+        $data['new_pin'] = $request->current_pin;
+        $data['confirm_new_pin'] = $request->confirm_new_pin;
+        $data['user_id'] = $request->user_id;
+
+        $update_user_pin = (new UserService())->update_user_pin($data);
+
+        if($update_user_pin['status'] == 1){
+            return $this->success($update_user_pin['message']);          
+        }
+
+        return $this->error($update_user_pin['message'], data: $update_user_pin['data']);  
+    }
+
 
      //discuss this first
     //  public function update_user_profile(Request $request){

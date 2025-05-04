@@ -83,42 +83,6 @@ class DatabaseSeeder extends Seeder
             "api_password" =>'xxxxxowo0000@',
         ]);
 
-        //ogdams
-        $ogdams =Automation::create([
-            "id" => "9c2887ea-59c7-471a-9407-1ff44b61a349",
-            "automation_name" => 'OGDAMS',
-            "slug" =>'ogdams',
-            "api_public_key" => 'xxxxx-1ec0-47ea-9593-xxxxx'
-        ]);
-
-         //ogdams - 2
-         $ogdamsv2 =Automation::create([
-            "id" => "9c2887ea-59c7-471a-9407-1ff44b61akj1",
-            "automation_name" => 'OGDAMS v2',
-            "slug" =>'ogdams_v2',
-            "api_public_key" => 'xxxxx-1ec0-47ea-9593-xxxxx'
-        ]);
-
-
-        //autopilot
-        $autopilot = Automation::create([
-            "id" => "9c2887ea-5a69-410a-8d67-a6f62f90d19b",
-            "automation_name" => 'AUTOPILOT',
-            "slug" =>'autopilot',
-        ]);
-
-        //cloudsimhost
-        $cloudsimhost = Automation::create([
-            "id" => "9c2887ea-5b03-4085-99bb-03565b043bc6",
-            "automation_name" => 'CLOUDSIMHOST',
-            "slug" =>'cloudsimhost',
-        ]);
-
-        $smeplug = Automation::create([
-            "id" => "9c2887ea-7c78-4085-99bb-03565b066we5",
-            "automation_name" => 'SMEPLUG',
-            "slug" =>'smeplug',
-        ]);
 
 
         //NETWORKS
@@ -242,6 +206,7 @@ class DatabaseSeeder extends Seeder
             'phone_number' => '08168509044',
             'password' => Hash::make('password'),
         ]); 
+
        $user_ore =  User::factory()->create([
             'username' => 'oreofe'.rand(11,99),
             'first_name' => 'Oreofe',

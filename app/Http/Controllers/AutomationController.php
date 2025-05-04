@@ -8,11 +8,139 @@ use App\Models\UserPlan;
 use App\Models\Automation;
 use App\Models\ProductPlan;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use App\Models\ProductPlanCategory;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Validator;
 
 class AutomationController extends Controller
 {
+
+    // TODO
+    function slugifyWithUnderscore($text) {
+        // Replace non letter or digits by underscore
+        $text = preg_replace('~[^\pL\d]+~u', '_', $text);
+    
+        // Transliterate to ASCII
+        $text = iconv('utf-8', 'us-ascii//TRANSLIT', $text);
+    
+        // Remove unwanted characters
+        $text = preg_replace('~[^_\w]+~', '', $text);
+    
+        // Trim underscores from ends
+        $text = trim($text, '_');
+    
+        // Remove duplicate underscores
+        $text = preg_replace('~_+~', '_', $text);
+    
+        // Lowercase
+        $text = strtolower($text);
+    
+        return $text ?: 'n_a';
+    }
+    
+
+    public function index(Request $request){
+        $automations = Automation::get();
+        $data['automations'] = $automations;
+        return view('admin.automations.index')->with($data);
+        // return $data;
+    }
+
+    public function store(Request $request){
+        $validator = Validator::make($request->all(), [
+            'automation_name' => 'required|unique:automations,automation_name',
+            'api_public_key' => 'required',
+            'api_secret_key' => 'nullable',
+            'api_password' => 'nullable',
+            'data_url' => 'nullable',
+            'airtime_url' => 'nullable',
+            'cable_url' => 'nullable',
+            'electricity_url' => 'nullable',
+            'automation_group' => 'required',
+        ]);
+
+        $automation_slug = $this->slugifyWithUnderscore($request->automation_name);     
+
+        if ($validator->stopOnFirstFailure()->fails()) {
+            Session::flash('failure',$validator->errors()->first());
+            return redirect()->back()->withErrors($validator)->withInput();
+        }
+
+        if(auth()->user()->email != 'adebsholey4real@gmail.com'){
+            //no waay
+            Session::flash('failure','Sorry you do not have access');
+            return redirect()->back();
+        }
+
+        try{
+
+            Automation::create([
+                'automation_name' => $request->automation_name,
+                'api_public_key' => $request->api_public_key,
+                'api_secret_key' => $request->api_secret_key,
+                'api_password' => $request->api_password,
+                'automation_group' => $request->automation_group,
+                'data_url' => $request->data_url,
+                'airtime_url' => $request->airtime_url,
+                'electricity_url' => $request->electricity_url,
+                'cable_url' => $request->cable_url,
+                'slug' => $automation_slug,
+            ]);
+            DB::commit();        
+            Session::flash('success','Automation was successfully created');
+            return redirect()->back();
+
+        }catch(Exception $ex){
+            logger($ex->getMessage().' on line '.$ex->getLine());
+            DB::rollback();
+            Session::flash('failure',$ex->getMessage());
+            return redirect()->back();
+        }
+       
+
+    }
+
+    public function update(Request $request){
+        $validator = Validator::make($request->all(), [
+            'automation_name' => 'required',
+            'api_public_key' => 'required',
+            'api_secret_key' => 'nullable',
+            'api_password' => 'nullable',
+            'automation_group' => 'required',
+        ]);
+
+        $automation_slug = $this->slugifyWithUnderscore($request->automation_name);     
+
+        if ($validator->stopOnFirstFailure()->fails()) {
+            Session::flash('failure',$validator->errors()->first());
+            return redirect()->back()->withErrors($validator)->withInput();
+        }
+
+        try{
+
+            Automation::where('id',$request->id)->update([
+                'automation_name' => $request->automation_name,
+                'api_public_key' => $request->api_public_key,
+                'api_secret_key' => $request->api_secret_key,
+                'api_password' => $request->api_password,
+                'automation_group' => $request->automation_group,
+                'slug' => $automation_slug,
+            ]);
+            DB::commit();        
+            Session::flash('success','Automation was successfully updated');
+            return redirect()->back();
+
+        }catch(Exception $ex){
+            logger($ex->getMessage().' on line '.$ex->getLine());
+            DB::rollback();
+            Session::flash('failure',$ex->getMessage());
+            return redirect()->back();
+        }
+       
+
+    }
+
     public function dashboard($slug){
         $user_plans = UserPlan::orderBy('plan_level')->get();
         // dd($user_plans);

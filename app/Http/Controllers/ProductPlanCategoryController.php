@@ -40,7 +40,7 @@ class ProductPlanCategoryController extends Controller
 
     public function view_details($id){
 
-      $product_plan_category = ProductPlanCategory::where('id',$id)->first();
+      $product_plan_category = ProductPlanCategory::with('automation')->where('id',$id)->first();
       $bulk_data_plans = BulkDataProductPlans::with('product_plan_category')->where('product_plan_category_id',$id)->paginate(50);
       $user_plans = UserPlan::where('plan_level','<=',env('RESELLER_PLAN_COUNT'))->get();
       $products = Product::select('id','product_name')->get();
@@ -90,10 +90,11 @@ class ProductPlanCategoryController extends Controller
       if($create_product_plan_categories){
         Session::flash('success','Product plan category: '.$request->product_plan_category_name.' was successfully updated');
       }else{
-        Session::flash('failure','Error occurred while creating product plan category');
+        Session::flash('failure','Error occurred while updating product plan category');
       }
 
-      return redirect()->route('admin.product_plan_categories.index');
+      return redirect()->back();
+      // return redirect()->route('admin.product_plan_categories.index');
     }
 
     public function update_plan_prices(Request $request){
@@ -109,8 +110,10 @@ class ProductPlanCategoryController extends Controller
          $user_level_2_selling_price =  $request->user_level_2_selling_price[$key];
          $user_level_3_selling_price =  $request->user_level_3_selling_price[$key];
          $user_level_4_selling_price =  $request->user_level_4_selling_price[$key];
-
+         $product_plan_name =  $request->product_plan_name[$key];
+         
          ProductPlan::where('id',$plan_id)->update([
+          "product_plan_name" =>  $product_plan_name,
           "cost_price" =>  $cost_price,
           "visibility" =>  $visibility,
           "default_selling_price" =>  $default_selling_price,
@@ -155,6 +158,44 @@ class ProductPlanCategoryController extends Controller
     
           return redirect()->back();
     }
+
+
+    public function store_plan(Request $request){
+      
+      $validator = Validator::make($request->all(), [
+         'product_plan_name' => 'required|max:255|unique:product_plans,product_plan_name',
+          "product_plan_category_id" => "required|max:255|unique:product_plan_categories,product_plan_category_name",
+          "automation_id" => "exists:automations,id",
+          "automation_product_plan_id" => "required",
+          "cost_price" => "required|integer",
+          "data_size_in_mb" => "required|integer",
+          "validity_in_days" => "required|integer",
+          "default_selling_price" => "required|integer",
+          "user_level_1_selling_price" => "required|integer",
+          "user_level_2_selling_price" => "required|integer",
+          "user_level_3_selling_price" => "required|integer",
+          "user_level_4_selling_price" => "required|integer",
+       ]);
+
+       if ($validator->stopOnFirstFailure()->fails()) {
+         Session::flash('failure',$validator->errors()->first());
+         return redirect()->back()->withErrors($validator)->withInput();
+       }
+
+       $data = $request->all();
+       unset($data['_token']);
+      //  dd($data);
+
+       $create_product_plan = ProductPlan::create($data);
+ 
+       if($create_product_plan){
+         Session::flash('success','Product plan categories successfully created');
+       }else{
+         Session::flash('failure','Error occurred while creating product plan category');
+       }
+ 
+       return redirect()->back();
+ }
 
   
 

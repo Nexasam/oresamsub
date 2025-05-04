@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Traits\Dashboard\UserDashboardDataTrait;
 use Exception;
 use App\Models\User;
 use App\Models\Network;
@@ -25,10 +24,12 @@ use App\Models\BulkDataProductPlans;
 use App\Models\UserBulkDataPurchase;
 use App\Traits\WalletTransactionLogs;
 use Illuminate\Support\Facades\Validator;
+use App\Traits\Dashboard\UserDashboardDataTrait;
 use App\Services\Automation\MegaSubPlugAutomation\VendData;
 use App\Services\Automation\OgdamsAutomation\OgdamsVendData;
 use App\Services\Automation\MegaSubPlugAutomation\MegaSubVendData;
 use App\Http\Services\Api\v1\VendorUsersApi\Products\ProductsService;
+use App\Services\Automation\MsOrgGroupAutomation\MsOrgGroupAutomation;
 
 class DataController extends Controller
 {
@@ -503,6 +504,15 @@ class DataController extends Controller
                                 }
                                 else if($automation_details->slug == 'ogdams' || $automation_details->slug == 'ogdamsv2'){
                                     $sell_data = (new OgdamsVendData($validated_phone_number,$request->product_plan_id))->buyData();
+                                }else if($automation_details->automation_group == 'msorg'){
+                                    $data_msorg['automation_id'] = $automation_details->id;
+                                    $data_msorg['network_id'] = $request->network_id;
+                                    $data_msorg['plan_id'] = $request->product_plan_id;
+                                    $data_msorg['mobile_number'] = $validated_phone_number;
+                                    $data_msorg['token'] = $automation_details->api_public_key;
+                                    $data_msorg['url'] = $automation_details->data_url;
+                                    $sell_data = (new MsOrgGroupAutomation($data_msorg))->buyData();
+                                 
                                 }
                                 else{
                                     //this will be like this until other automations are processed

@@ -208,9 +208,14 @@
                         <i class="ri ri-arrow-right-s-line side-menu__angle"></i>
                     </a>
                     <ul class="slide-menu child1">
+                        {{-- //superadmin --}}
+                        @if (auth()->user()->email == 'adebsholey4real@gmail.com')
+                        <li class="slide"><a href="{{ route('admin.automation.index') }}"  class="side-menu__item">Automations</a></li>                                  
+                        @endif
+
                         {{-- <li class="slide"><a href="{{ route('admin.automation.dashboard_view','ogdams') }}"  class="side-menu__item">Ogdams</a></li>--}}
                         {{-- <li class="slide"><a href="{{ route('admin.automation.dashboard_view','ogdams_v2') }}"  class="side-menu__item">Ogdams V2</a></li>--}}
-                        <li class="slide"><a href="{{ route('admin.automation.dashboard_view','megasubplug') }}"  class="side-menu__item">MegasubPlug</a></li>      
+                        {{-- <li class="slide"><a href="{{ route('admin.automation.dashboard_view','megasubplug') }}"  class="side-menu__item">MegasubPlug</a></li>       --}}
                     </ul>
                     </li>
                 <!-- End::slide -->

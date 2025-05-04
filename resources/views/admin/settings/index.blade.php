@@ -833,7 +833,7 @@
                               </div>
                               <br>
                               <hr> --}}
-                              <p>MEGASUBPLUG AUTOMATION</p>
+                              {{-- <p>MEGASUBPLUG AUTOMATION</p>
                               <div class="space-y-2 mt-5">
                                 <label class="ti-form-label mb-0">Api Password: </label>
                                 <input type="text" required class="my-auto ti-form-input" name="megasub_api_password" value="{{ $megasubplug->api_password != NULL  ? substr($megasubplug->api_password,0,2).str_repeat('X',5).substr($megasubplug->api_password,-3)  : '' }}"  placeholder="">
@@ -846,7 +846,7 @@
                               <hr>      
                               <div class="space-y-2">
                                   <button type="submit" class="ti-btn ti-btn-primary w-full">Update keys</button>
-                              </div>
+                              </div> --}}
                             
                               <br>
                           </div>

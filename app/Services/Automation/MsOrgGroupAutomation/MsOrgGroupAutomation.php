@@ -1,0 +1,145 @@
+<?php
+
+namespace App\Services\Automation\MsOrgGroupAutomation;
+
+use App\Models\Network;
+use App\Models\Automation;
+use App\Models\ProductPlan;
+
+class MsOrgGroupAutomation{
+
+    private $network_id;
+
+    private $automation_id;
+
+    private $api_id;
+
+    private $plan_api_id;
+
+    private $mobile_number;
+
+    private $token;
+
+    private $url;
+
+
+    // private $ported_number;
+
+
+    public function __construct($data){
+        $this->automation_id = $data['automation_id'];
+        $this->network_id = $data['network_id'];
+        $this->plan_id = $data['plan_id'];
+        $this->mobile_number = $data['mobile_number'];
+        $this->token = $data['token'];
+        $this->url = $data['url'];
+    }
+
+
+    public function getNetworkId($network_name){
+        if(strtolower($network_name) == 'mtn'){
+            return 1;
+        }
+
+        if(strtolower($network_name) == 'glo'){
+            return 2;
+        }
+
+        if(strtolower($network_name) == 'airtel'){
+            return 3;
+        }
+
+       if(strtolower($network_name) == '9mobile'){
+            return 4;
+        }
+
+        return -1;
+    }
+
+    public function buyData(){
+        
+        $plan_details = ProductPlan::with('product_plan_category.network')
+        ->where('visibility',1)
+        ->where('id',$this->plan_id)->first();
+        if(! $plan_details){
+            return [
+                'status' => -1,
+                'user_message' => 'An error occurred while processing this transaction. Please try again or reach out to support',
+                'admin_message' => 'Wrong plan Id',
+            ];
+        }
+
+        $network_details = Network::where('visibility',1)->where('id',$this->network_id)->first();
+        if(! $network_details){
+            return [
+                'status' => -1,
+                'user_message' => 'An error occurred while processing this transaction. Please try again or reach out to support',
+                'admin_message' => 'Network ID is likely not available or set to hidden',
+            ];
+        }
+
+
+        $network_name = $network_details->network_name;
+        $api_network_id = $this->getNetworkId($network_name);
+        if($api_network_id == -1){
+            //not found
+            return [
+                'status' => -1,
+                'user_message' => 'An error occurred while processing this transaction. Please try again or reach out to support',
+                'admin_message' => 'Api Network ID is wrong',
+            ];
+        }
+
+
+        $automation_plan_id = $plan_details->automation_product_plan_id; 
+        $array = [
+            "network"=>$api_network_id,
+            "mobile_number"=>$this->mobile_number,
+            "plan"=> $automation_plan_id,
+            "Ported_number"=>true
+        ];
+        $encoded_array = json_encode($array);
+        $header_array = array(
+            'Authorization: Token '.$this->token,
+            'Content-Type: application/json'
+        );
+        $header_json = json_encode($header_array);
+
+        $curl = curl_init();
+        curl_setopt_array(
+        $curl,
+        array(
+            CURLOPT_URL => "$this->url",
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => '',
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 0,
+            CURLOPT_FOLLOWLOCATION => true,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => 'POST',
+            CURLOPT_POSTFIELDS => $encoded_array,
+            CURLOPT_HTTPHEADER => $header_array
+        )
+        );
+        $response = curl_exec($curl);
+        $response_dec = json_decode($response,true);
+        $httpcode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+        logger($response);
+
+        if(isset($response_dec['Status']) && $response_dec['Status'] == 'successful'){
+            //success
+            return [
+                'status' => 1,
+                'user_message' => $response_dec['api_response'],
+                'admin_message' => $response,
+            ];
+        }else{
+            return [
+                'status' => -1,
+                'user_message' => "Sorry, transaction failed. Please try again",
+                'admin_message' => $response,
+            ];
+        }        
+    }
+
+}

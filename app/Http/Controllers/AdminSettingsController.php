@@ -248,7 +248,7 @@ class AdminSettingsController extends Controller
 
       // TODO: make this better later
       if ( env('APP_NAME') == 'FoxDataHub' && auth()->id() != '9cd12bae-541a-4459-af9d-94fc43008435'  ) {
-        Session::flash('failure','Sorryvalue:  you do not have access to make this change');
+        Session::flash('failure','Sorry you do not have access to make this change');
         return redirect()->back();
       }
      
