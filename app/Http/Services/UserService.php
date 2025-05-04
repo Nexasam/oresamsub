@@ -30,7 +30,7 @@ class UserService{
             return [
                 'status' => -1,
                 'message' => 'This user record not found.',
-                // 'data' => $data
+                 'data' => $data
             ];
         }
   
@@ -40,7 +40,7 @@ class UserService{
             return [
                 'status' => -1,
                 'message' => 'Your current password is not correct.',
-                // 'data' => $data
+                'data' => $data
             ];
         }
   
@@ -58,7 +58,7 @@ class UserService{
           return [
             'status' => -1,
             'message' => 'Password confirmation is wrong.',
-            // 'data' => $data
+             'data' => $data
           ];
         }
        
@@ -80,7 +80,7 @@ class UserService{
             return [
                 'status' => -1,
                 'message' => 'This user record was not found.',
-                // 'data' => $data
+                 'data' => $data
             ];
           }
     
@@ -88,7 +88,7 @@ class UserService{
             return [
                 'status' => -1,
                 'message' => 'Wrong PIN entered.',
-                // 'data' => $data
+                 'data' => $data
             ];
           }
     
@@ -96,7 +96,7 @@ class UserService{
             return [
                 'status' => -1,
                 'message' => 'Please ensure New PIN and Confirm New PIN are the same',
-                // 'data' => $data
+                 'data' => $data
             ];
           }
          
@@ -107,7 +107,7 @@ class UserService{
           return [
             'status' => 1,
             'message' => 'A new PIN has been successfully set.',
-            // 'data' => $data
+             'data' => $data
           ];
     
     }
