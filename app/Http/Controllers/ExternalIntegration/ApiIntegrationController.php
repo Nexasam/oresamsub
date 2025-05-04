@@ -78,7 +78,7 @@ class ApiIntegrationController extends Controller
         ]);
 
         $data['current_password'] = $request->current_password;
-        $data['new_password'] = $request->current_password;
+        $data['new_password'] = $request->new_password;
         $data['confirm_new_password'] = $request->confirm_new_password;
         $data['user_id'] = $request->user_id;
 
