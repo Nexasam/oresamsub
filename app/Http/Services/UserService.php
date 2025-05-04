@@ -30,7 +30,7 @@ class UserService{
             return [
                 'status' => -1,
                 'message' => 'This user record not found.',
-                 'data' => $data
+                //  'data' => $data
             ];
         }
   
@@ -40,7 +40,7 @@ class UserService{
             return [
                 'status' => -1,
                 'message' => 'Your current password is not correct.',
-                'data' => $data
+                // 'data' => $data
             ];
         }
   
