@@ -73,8 +73,8 @@ class ApiIntegrationController extends Controller
         $request->validate([
             'user_id' => ['required', 'string', 'exists:users,id'],
             'current_password' => 'required', 
-            'new_password' => ['required',Rules\Password::defaults()], 
-            'confirm_new_password' => ['required',Rules\Password::defaults()], 
+            'new_password' => ['required',Password::defaults()], 
+            'confirm_new_password' => ['required',Password::defaults()], 
         ]);
 
         $data['current_password'] = $request->current_password;
