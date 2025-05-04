@@ -174,7 +174,6 @@
 
                                               <div class="space-y-2">
                                                 <label class="ti-form-label mb-0">Choose Automation</label>
-                                                <input type="text" value="{{  }}">
                                                 <select required id="automation_id" name="automation_id"  class="my-auto ti-form-select">
                                                     <option value="">Select</option>
                                                      @foreach ($automations as $automation)

@@ -95,8 +95,8 @@ class ApiIntegrationController extends Controller
         $request->validate([
             'user_id' => ['required', 'string', 'exists:users,id'],
             'current_pin' => 'required', 
-            'new_pin' => ['required,digits:4'], 
-            'confirm_new_pin' => ['required,digits:4'], 
+            'new_pin' => ['required','digits:4'], 
+            'confirm_new_pin' => ['required','digits:4'], 
         ]);
 
         $data['current_pin'] = $request->current_pin;

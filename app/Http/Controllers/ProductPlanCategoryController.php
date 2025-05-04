@@ -88,22 +88,20 @@ class ProductPlanCategoryController extends Controller
 
       //we should also get all the plans from the previous plan category if not same:
       if($request->old_automation_id != $request->automation_id){
-        dd('different');
         //deactivate product_plans of old automation
-        $product_plans_old_automation = ProductPlan::where('product_plan_category_id',$request->id)
+        ProductPlan::where('product_plan_category_id',$request->id)
                     ->where('automation_id',$request->old_automation_id)
-                    ->get();
-
-        return $product_plans_old_automation;
+                    ->update([
+                      "visibility"=>"0",
+                      "public_visibility"=>"0",
+                      "active_status"=>"0",
+                    ]);
       }
       
       //same so nothing should change
       unset($data['old_automation_id']);
-      dd($data);
       $create_product_plan_categories = ProductPlanCategory::where('id',$request->id)->update($data);
       
-
-
 
       if($create_product_plan_categories){
         Session::flash('success','Product plan category: '.$request->product_plan_category_name.' was successfully updated');
