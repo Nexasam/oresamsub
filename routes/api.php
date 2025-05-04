@@ -42,6 +42,7 @@ Route::group(['prefix'=>'v1/external','as'=>'api.','middleware' =>['auth:sanctum
     Route::put('/update_fingerprint_option', [ApiIntegrationController::class, 'update_fingerprint_option'])->name('update_fingerprint_option');
     Route::put('/update_user_profile', [ApiIntegrationController::class, 'update_user_profile'])->name('update_user_profile'); //discuss this first
     Route::put('/update_user_password', [ApiIntegrationController::class, 'update_user_password'])->name('update_user_password'); //discuss this first
+    Route::put('/update_user_pin', [ApiIntegrationController::class, 'update_user_pin'])->name('update_user_pin'); //discuss this first
     
 
     Route::post('/phone_verification', [ApiIntegrationController::class, 'phone_verification'])->name('phone_verification');
