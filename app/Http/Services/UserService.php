@@ -57,8 +57,7 @@ class UserService{
         if($data['new_password'] != $data['confirm_new_password']){
           return [
             'status' => -1,
-            'message' => 'Password confirmation is wrong.',
-             'data' => $data
+            'message' => 'Password confirmation is wrong.'
           ];
         }
        
@@ -68,8 +67,7 @@ class UserService{
  
         return [
             'status' => 1,
-            'message' => 'Password was succesfully changed.',
-            'data' => $data
+            'message' => 'Password was succesfully changed.'
         ];
     }
 
@@ -80,7 +78,7 @@ class UserService{
             return [
                 'status' => -1,
                 'message' => 'This user record was not found.',
-                 'data' => $data
+                //  'data' => $data
             ];
           }
     
@@ -88,7 +86,7 @@ class UserService{
             return [
                 'status' => -1,
                 'message' => 'Wrong PIN entered.',
-                 'data' => $data
+                //  'data' => $data
             ];
           }
     
@@ -96,7 +94,7 @@ class UserService{
             return [
                 'status' => -1,
                 'message' => 'Please ensure New PIN and Confirm New PIN are the same',
-                 'data' => $data
+                //  'data' => $data
             ];
           }
          
@@ -106,8 +104,7 @@ class UserService{
     
           return [
             'status' => 1,
-            'message' => 'A new PIN has been successfully set.',
-             'data' => $data
+            'message' => 'A new PIN has been successfully set.'
           ];
     
     }
