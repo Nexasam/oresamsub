@@ -88,7 +88,7 @@ class ApiIntegrationController extends Controller
             return $this->success($update_user_password['message']);          
         }
 
-        return $this->error($update_user_password['message'], data: $update_user_password['data']);  
+        return $this->error($update_user_password['message']);  
     }
 
     public function update_user_pin(Request $request){
@@ -110,7 +110,7 @@ class ApiIntegrationController extends Controller
             return $this->success($update_user_pin['message']);          
         }
 
-        return $this->error($update_user_pin['message'], data: $update_user_pin['data']);  
+        return $this->error($update_user_pin['message']);  
     }
 
 
