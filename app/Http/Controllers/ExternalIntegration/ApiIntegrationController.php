@@ -100,7 +100,7 @@ class ApiIntegrationController extends Controller
         ]);
 
         $data['current_pin'] = $request->current_pin;
-        $data['new_pin'] = $request->current_pin;
+        $data['new_pin'] = $request->new_pin;
         $data['confirm_new_pin'] = $request->confirm_new_pin;
         $data['user_id'] = $request->user_id;
 
