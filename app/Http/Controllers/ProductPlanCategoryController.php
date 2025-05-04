@@ -68,6 +68,7 @@ class ProductPlanCategoryController extends Controller
         'product_id' => 'required|exists:products,id',
         'network_id' => 'nullable|exists:networks,id',
         'automation_id' => 'required|exists:automations,id',
+        'old_automation_id' => 'required|exists:automations,id',
         // 'discount_value' => 'required'
       ]);
 
@@ -85,7 +86,24 @@ class ProductPlanCategoryController extends Controller
         
       }
 
+      //we should also get all the plans from the previous plan category if not same:
+      if($request->old_automation_id != $request->automation_id){
+        dd('different');
+        //deactivate product_plans of old automation
+        $product_plans_old_automation = ProductPlan::where('product_plan_category_id',$request->id)
+                    ->where('automation_id',$request->old_automation_id)
+                    ->get();
+
+        return $product_plans_old_automation;
+      }
+      
+      //same so nothing should change
+      unset($data['old_automation_id']);
+      dd($data);
       $create_product_plan_categories = ProductPlanCategory::where('id',$request->id)->update($data);
+      
+
+
 
       if($create_product_plan_categories){
         Session::flash('success','Product plan category: '.$request->product_plan_category_name.' was successfully updated');

@@ -192,7 +192,7 @@
                                           <div class="grid w-full lg:grid-cols-1 gap-6 space-y-4 lg:space-y-0">
                                           
                                               <div class="space-y-2">
-                                                <label class="ti-form-label mb-0">Product Plan Category Name</label>
+                                                <label class="ti-form-label mb-0">Product Plan Category Names</label>
                                                 <input type="text" required class="my-auto ti-form-input" value="{{ $product_plan_category->product_plan_category_name }}"  id="product_plan_category_name" name="product_plan_category_name" placeholder="Enter product plan category name">
                                                 <input type="hidden" required class="my-auto ti-form-input" value="{{ $product_plan_category->id }}"  id="id" name="id">
                                               </div>
@@ -231,6 +231,7 @@
 
                                             <div class="space-y-2">
                                               <label class="ti-form-label mb-0">Automation</label>
+                                              <input type="text" id="old_automation_id" name="old_automation_id" value="{{  $product_plan_category->automation->id }} ">
                                               <select required id="automation_id" name="automation_id"  class="my-auto ti-form-select">
                                                   <option value="">Select</option>
                                                    @foreach ($automations as $automation)

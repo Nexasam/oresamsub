@@ -506,7 +506,7 @@ class ProductsService{
         $phone_number = $data['phone_number'];
         $product_plan_id = $data['product_plan_id'];
         $amount = $data['amount'];
-        $actual_amount = $data['actual_amount'];
+        $actual_amount = $data['amount'];
         $validatephonenetwork = $data['validatephonenetwork'];
         $user_id = $data['user_id'];//this is required
         $wallet_category = 'main_wallet';//this is required
