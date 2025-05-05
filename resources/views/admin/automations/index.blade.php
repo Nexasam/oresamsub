@@ -101,7 +101,21 @@
                                         <label class="ti-form-label mb-0">Electricity Url</label>
                                         <input value="" name="electricity_url" type="text" class="my-auto ti-form-input" min="0" placeholder="electricity url">
                                       </div>
-                                  </div>
+                                    </div>
+
+
+                                    <div class="grid grid-cols-1 gap-2">
+                                      <div class="">
+                                          <label class="ti-form-label mb-0">Domain Url</label>
+                                          <input value="" name="domain_url" type="text" class="my-auto ti-form-input" min="0" placeholder="cable url">
+                                      </div>
+
+                                      <div class="">
+                                        <label class="ti-form-label mb-0">Whatsapp Support Link</label>
+                                        <input value="" name="whatsapp_support_link" type="text" class="my-auto ti-form-input" min="0" placeholder="electricity url">
+                                      </div>
+                                    </div>
+
 
                                     <div class="grid grid-cols-1 gap-2">
                                         <div class="">
