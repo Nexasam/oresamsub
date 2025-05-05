@@ -70,6 +70,8 @@
       //  echo $admin_site_color_value;  
     @endphp
 
+    @livewireStyles
+
     <style>
         :root {
               --color-primary: {{  $admin_site_color_value  }};
@@ -142,7 +144,7 @@
     </style>
 
 
-@livewireStyles
+
 </head>
 
 <body class="">
@@ -2179,7 +2181,7 @@
       });
      </script>
 
-    @livewireScripts
+    {{-- @livewireScripts --}}
 
   
 </body>

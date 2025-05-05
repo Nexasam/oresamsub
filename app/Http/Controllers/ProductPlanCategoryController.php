@@ -89,13 +89,13 @@ class ProductPlanCategoryController extends Controller
       //we should also get all the plans from the previous plan category if not same:
       if($request->old_automation_id != $request->automation_id){
         //deactivate product_plans of old automation
-        ProductPlan::where('product_plan_category_id',$request->id)
-                    ->where('automation_id',$request->old_automation_id)
-                    ->update([
-                      "visibility"=>"0",
-                      "public_visibility"=>"0",
-                      "active_status"=>"0",
-                    ]);
+        // ProductPlan::where('product_plan_category_id',$request->id)
+        //             ->where('automation_id',$request->old_automation_id)
+        //             ->update([
+        //               "visibility"=>"0",
+        //               "public_visibility"=>"0",
+        //               "active_status"=>"0",
+        //             ]);
       }
       
       //same so nothing should change

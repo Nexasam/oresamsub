@@ -107,12 +107,12 @@
                                     <div class="grid grid-cols-1 gap-2">
                                       <div class="">
                                           <label class="ti-form-label mb-0">Domain Url</label>
-                                          <input value="" name="domain_url" type="text" class="my-auto ti-form-input" min="0" placeholder="cable url">
+                                          <input value="" name="domain_url" type="text" class="my-auto ti-form-input" min="0" placeholder="domain url">
                                       </div>
 
                                       <div class="">
                                         <label class="ti-form-label mb-0">Whatsapp Support Link</label>
-                                        <input value="" name="whatsapp_support_link" type="text" class="my-auto ti-form-input" min="0" placeholder="electricity url">
+                                        <input value="" name="whatsapp_support_link" type="text" class="my-auto ti-form-input" min="0" placeholder="whatsapp support url">
                                       </div>
                                     </div>
 
