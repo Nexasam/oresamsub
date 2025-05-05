@@ -80,14 +80,14 @@ class ProductsService{
 
             if($product_slug == 'airtime'){
                 $product_plans = ProductPlan::where('product_plan_category_id',$product_plan_category->id)
-                ->where('automation_id',$product_plan_category->automation_id)
+                // ->where('automation_id',$product_plan_category->automation_id)
                 ->where('visibility',1)
                 ->limit(1)
                 ->get();
             }else{
                 $product_plans = ProductPlan::where('product_plan_category_id',$product_plan_category->id)
                 ->where('visibility',1)
-                ->where('automation_id',$product_plan_category->automation_id)
+                // ->where('automation_id',$product_plan_category->automation_id)
                 ->orderBy('data_size_in_mb')
                 ->get();
             }
@@ -147,11 +147,11 @@ class ProductsService{
             $product_id = Product::where('slug',$product_slug)->where('visibility',1)->where('active_status',1)->first()->id;
            
             if($product_slug == 'airtime' || $product_slug == 'data'){
-                $product_plans_categories = ProductPlanCategory::where('network_id',$network)
+                $product_plans_categories = ProductPlanCategory::with('product')->where('network_id',$network)
                 ->where('visibility',1)
                 ->where('product_id',$product_id)->get();
             }else{
-                $product_plans_categories = ProductPlanCategory::where('visibility',1)
+                $product_plans_categories = ProductPlanCategory::with('product')->where('visibility',1)
                 ->where('product_id',$product_id)->get();
             }
 

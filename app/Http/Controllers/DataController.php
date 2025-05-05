@@ -492,6 +492,10 @@ class DataController extends Controller
                                 //HERE the endpoint of the automation service is called:
                                 //this is for megasubplug
                                 
+                                ///candidate for disposal
+                                // else if($automation_details->slug == 'ogdams' || $automation_details->slug == 'ogdamsv2'){
+                                //     $sell_data = (new OgdamsVendData($validated_phone_number,$request->product_plan_id))->buyData();
+                                // }
 
                                 if($validate_phone['status'] != 1){
                                     //something when wrong
@@ -502,9 +506,7 @@ class DataController extends Controller
                                 else if($automation_details->slug == 'megasubplug'){
                                     $sell_data = (new MegaSubVendData($validated_phone_number,$request->product_plan_id,$request->validatephonenetwork))->buyData();
                                 }
-                                else if($automation_details->slug == 'ogdams' || $automation_details->slug == 'ogdamsv2'){
-                                    $sell_data = (new OgdamsVendData($validated_phone_number,$request->product_plan_id))->buyData();
-                                }else if($automation_details->automation_group == 'msorg'){
+                                else if($automation_details->automation_group == 'msorg'){
                                     $data_msorg['automation_id'] = $automation_details->id;
                                     $data_msorg['network_id'] = $request->network_id;
                                     $data_msorg['plan_id'] = $request->product_plan_id;
@@ -1007,14 +1009,14 @@ class DataController extends Controller
 
             if($product_slug == 'airtime'){
                 $product_plans = ProductPlan::where('product_plan_category_id',$product_plan_category->id)
-                ->where('automation_id',$product_plan_category->automation_id)
+                // ->where('automation_id',$product_plan_category->automation_id)
                 ->where('visibility',1)
                 ->limit(1)
                 ->get();
             }else{
                 $product_plans = ProductPlan::where('product_plan_category_id',$product_plan_category->id)
                 ->where('visibility',1)
-                ->where('automation_id',$product_plan_category->automation_id)
+                // ->where('automation_id',$product_plan_category->automation_id)
                 ->orderBy('data_size_in_mb')
                 ->get();
             }

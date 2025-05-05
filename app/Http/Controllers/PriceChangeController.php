@@ -9,6 +9,7 @@ class PriceChangeController extends Controller
 {
     //currently for megasubplug
     public function changeMegasubPrice(){
+        dd('on hold');
         // $plan_category_id_smemtn = '9c39f216-00a0-42ab-b195-558133f67a15'; //mtn sme
         $plan_category_id_cgmtn = '9c39f216-06d6-48fc-971e-d5778723497e';
         $mtncostprice = 650;

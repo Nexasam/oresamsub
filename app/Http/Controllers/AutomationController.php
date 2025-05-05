@@ -58,6 +58,8 @@ class AutomationController extends Controller
             'cable_url' => 'nullable',
             'electricity_url' => 'nullable',
             'automation_group' => 'required',
+            'domain_url' => 'nullable',
+            'whatsapp_support_link' => 'nullable',
         ]);
 
         $automation_slug = $this->slugifyWithUnderscore($request->automation_name);     
@@ -85,6 +87,8 @@ class AutomationController extends Controller
                 'airtime_url' => $request->airtime_url,
                 'electricity_url' => $request->electricity_url,
                 'cable_url' => $request->cable_url,
+                'whatsapp_support_link' => $request->whatsapp_support_link,
+                'domain_url' => $request->domain_url,
                 'slug' => $automation_slug,
             ]);
             DB::commit();        
@@ -108,6 +112,8 @@ class AutomationController extends Controller
             'api_secret_key' => 'nullable',
             'api_password' => 'nullable',
             'automation_group' => 'required',
+            'domain_url' => 'nullable',
+            'whatsapp_support_link' => 'nullable',
         ]);
 
         $automation_slug = $this->slugifyWithUnderscore($request->automation_name);     
@@ -125,6 +131,8 @@ class AutomationController extends Controller
                 'api_secret_key' => $request->api_secret_key,
                 'api_password' => $request->api_password,
                 'automation_group' => $request->automation_group,
+                'domain_url' => $request->domain_url,
+                'whatsapp_support_link' => $request->whatsapp_support_link,
                 'slug' => $automation_slug,
             ]);
             DB::commit();        

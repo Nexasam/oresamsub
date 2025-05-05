@@ -163,7 +163,7 @@
                                     <th>ID</th>
                                     <th>Automation Name</th>
                                     <th>Date</th>
-                                    <th>action</th>
+                                    {{-- <th>action</th> --}}
                                 </tr>
                             </thead>
                             <tbody>
@@ -182,9 +182,9 @@
                                     {{-- <button class="hs-dropdown-toggle ti-btn ti-btn-warning">Manage Plans</button> --}}
                                     <div>
 
-                                        <button type="button" class="hs-dropdown-toggle ti-btn ti-btn-primary" data-hs-overlay="#hs-vertically-centered-modal{{$automation->id}}">
+                                        {{-- <button type="button" class="hs-dropdown-toggle ti-btn ti-btn-primary" data-hs-overlay="#hs-vertically-centered-modal{{$automation->id}}">
                                             Update
-                                          </button> 
+                                          </button>  --}}
                                            
                                           <div id="hs-vertically-centered-modal{{$automation->id}}" class="hs-overlay ti-modal hidden">
                                             <div class="ti-modal-box">
@@ -211,7 +211,7 @@
                                                       @csrf
                                                        <div class="grid w-full lg:w-full lg:grid-cols-1 gap-6 space-y-4 lg:space-y-0">
                                                            <div class="grid grid-cols-1 gap-2">
-                                                                <input type="text" value="{{ $automation->id }}" name="id">
+                                                                <input type="hidden" value="{{ $automation->id }}" name="id">
                                                                 <div class="">
                                                                   <label class="ti-form-label mb-0">Automation Name</label>
                                                                   <input value="{{ $automation->automation_name }}" name="automation_name" type="text" class="my-auto ti-form-input" min="0" placeholder="">
@@ -233,19 +233,19 @@
                        
                                             
                        
-                                                           {{-- <div class="grid grid-cols-1 gap-2">
+                                                           <div class="grid grid-cols-1 gap-2">
                                                                <div class="">
-                                                                   <label class="ti-form-label mb-0">Data Url</label>
-                                                                   <input value="{{ $automation->data_url }}" name="data_url" type="text" class="my-auto ti-form-input" min="0" placeholder="data url">
+                                                                   <label class="ti-form-label mb-0">Automation Whatsapp Support Url</label>
+                                                                   <input value="{{ $automation->whatsapp_support_link }}" name="whatsapp_support_link" type="text" class="my-auto ti-form-input" min="0" placeholder="whatsapp support url">
                                                                </div>
                        
                                                                <div class="">
-                                                                 <label class="ti-form-label mb-0">Airtime Url</label>
-                                                                 <input value="{{ $automation->airtime_url }}" name="airtime_url" type="text" class="my-auto ti-form-input" min="0" placeholder="airtime url">
+                                                                 <label class="ti-form-label mb-0">Domain</label>
+                                                                 <input value="{{ $automation->domain_url }}" name="domain_url" type="text" class="my-auto ti-form-input" min="0" placeholder="domain url">
                                                                </div>
                                                            </div>
                        
-                       
+                                                     {{-- 
                                                            <div class="grid grid-cols-1 gap-2">
                                                              <div class="">
                                                                  <label class="ti-form-label mb-0">Cable Url</label>

@@ -32,7 +32,7 @@
           
               <div class="box">
                 <div class="box-header">
-                  <h5 class="box-title">Editing Plan Category:  {{  $product_plan_category->product_plan_category_name }} | Automation:  {{  $product_plan_category->automation->automation_name }} 
+                  <h5 class="box-title">Editing Plan Category:  {{  $product_plan_category->product_plan_category_name }} | Main Automation:  {{  $product_plan_category->automation->automation_name }} 
                     | Automation Group:  {{  strtoupper($product_plan_category->automation->automation_group ?? 'Nil') }} 
                   </h5>
                 </div>
@@ -94,7 +94,7 @@
                                           <div class="ti-modal-content">
                                             <div class="ti-modal-header">
                                               <h3 class="ti-modal-title">
-                                                You are adding product plan  <br> Product Category:{{ $product_plan_category->product_plan_category_name }}, Automation: {{ $product_plan_category->automation->automation_name ?? 'Nil' }}
+                                                You are adding product plan  <br> Product Category:{{ $product_plan_category->product_plan_category_name }}
                                               </h3>
                                               <button type="button" class="hs-dropdown-toggle ti-modal-clode-btn"
                                                 data-hs-overlay="#hs-basic-modal">
@@ -113,18 +113,36 @@
                                                 <form method="POST" action="{{ route('admin.product_plan_categories.store_plan')  }}">
                                                   @csrf
                                                     <div class="grid w-full lg:w-full lg:grid-cols-1 gap-6 space-y-4 lg:space-y-0">
-                                                        <div class="grid grid-cols-2 gap-2">
+                                                        <div class="grid grid-cols-1 space-y-2 gap-2">
                                                            <input type="hidden" value="{{ $product_plan_category->id }}" name="product_plan_category_id">
                                                            <input type="hidden" value="{{ $product_plan_category->automation->id }}" name="automation_id">
                                                             <div class="">
                                                                 <label class="ti-form-label mb-0">Product Plan Name</label>
-                                                                <input value="{{ old('name') }}" name="product_plan_name" type="text" required class="my-auto ti-form-input" min="0" placeholder="">
+                                                                <input value="{{ old('product_plan_name') }}" name="product_plan_name" type="text" required class="my-auto ti-form-input" min="0" placeholder="">
                                                             </div>
 
                                                             <div class="">
-                                                                <label class="ti-form-label mb-0">Automation Product Plan ID [ID from the Automation]</label>
-                                                                <input value="{{ old('automation_product_plan_id') }}" name="automation_product_plan_id" type="text" class="my-auto ti-form-input" min="0" placeholder="">
+                                                              <label class="ti-form-label mb-0">Automation</label>
+                                                              <select required id="automation_id" name="automation_id"  class="my-auto ti-form-select">
+                                                                <option value="">Select</option>
+                                                                 @foreach ($automations as $automation)
+                                                                 <option  
+                                                                  {{-- @if ($automation->id == $product_plan_category->automation_id)
+                                                                  selected
+                                                                  @endif  --}}
+                                                                  value="{{ $automation->id }}">{{ $automation->automation_name }}</option>
+                                                                 @endforeach
+                                                              </select>
+
                                                             </div>
+              
+                                                            <div class="">
+                                                              <label class="ti-form-label mb-0">Automation API ID</label>
+                                                              <input value="{{ old('automation_product_plan_id') }}" name="automation_product_plan_id" type="text" class="my-auto ti-form-input" min="0" placeholder="">
+                                                          </div>
+
+
+
                                                         </div>
 
                                                         <div class="grid grid-cols-3 gap-2">
@@ -197,7 +215,7 @@
                                                 <input type="hidden" required class="my-auto ti-form-input" value="{{ $product_plan_category->id }}"  id="id" name="id">
                                               </div>
                                         
-                                              <div class="space-y-2">
+                                              {{-- <div class="space-y-2">
                                                   <label class="ti-form-label mb-0">Product</label>
                                                   <select id="product_id" required name="product_id"  class="my-auto ti-form-select">
                                                       <option value="">select</option>
@@ -211,13 +229,13 @@
                                                        
                                                           @endforeach
                                                     </select>
-                                              </div>
+                                              </div> --}}
 
-                                              <div class="space-y-2">
+                                              {{-- <div class="space-y-2">
                                                 <label class="ti-form-label mb-0">Network (Optional)</label>
                                                 <select id="network_id" name="network_id"  class="my-auto ti-form-select">
                                                     <option value="">Select</option>
-                                                    {{-- <option value="">Nil</option> --}}
+                                                  
                                                      @foreach ($networks as $network)
                                                      <option  
                                                         @if ($network->id == $product_plan_category->network_id)
@@ -227,11 +245,11 @@
                                                      @endforeach
                                                  
                                                     </select>
-                                            </div>
+                                            </div> --}}
 
                                             <div class="space-y-2">
-                                              <label class="ti-form-label mb-0">Automation</label>
-                                              <input type="text" id="old_automation_id" name="old_automation_id" value="{{  $product_plan_category->automation->id }} ">
+                                              <label class="ti-form-label mb-0">Automation Main Switch</label>
+                                              <input type="hidden" id="old_automation_id" name="old_automation_id" value="{{  $product_plan_category->automation->id }} ">
                                               <select required id="automation_id" name="automation_id"  class="my-auto ti-form-select">
                                                   <option value="">Select</option>
                                                    @foreach ($automations as $automation)
@@ -244,7 +262,7 @@
                                                 </select>
                                              </div>
 
-                                             <div class="space-y-2">
+                                             {{-- <div class="space-y-2">
                                               <label class="ti-form-label mb-0">Referral Commission Feature</label>
                                               <select required id="referral_commission_feature" name="referral_commission_feature"  class="my-auto ti-form-select">
                                                   <option value="">Select</option>
@@ -283,12 +301,12 @@
                                                 
                                               </select>
                                             
-                                            </div>
+                                            </div> --}}
 
-                                            <div class="space-y-2">
+                                            {{-- <div class="space-y-2">
                                               <label class="ti-form-label mb-0">Referral Commission Value</label>
                                               <input type="number" class="my-auto ti-form-input" value="{{ $product_plan_category->referral_commission_value }}" id="referral_commission_value" name="referral_commission_value" >
-                                            </div>
+                                            </div> --}}
 
                                             {{-- <div class="space-y-2">
                                               <label class="ti-form-label mb-0">Purchase Discount Value (Percent)</label>
@@ -310,13 +328,16 @@
                                       <form class="w-3/4 bg-gray-300 p-4" method="POST" action="{{ route('admin.product_plan_categories.update_plan_prices')}}">
                                             @csrf
                                             <p class="font-extrabold"><b>Note that the price you set for ELECTRICITY & AIRTIME is in percentage not a fixed value.</b></p>
-                                            <h2 class="font-bold text-xl">Product Plans</h2>
+                                            <h2 class="font-bold text-xl">All Product Plans for {{ $product_plan_category->product_plan_category_name }}</h2>
 
                                               
                                             @foreach ($product_plans as $key=>$product_plann)
                                               <div class="grid w-full p-2 bg-gray-100 lg:grid-cols-6 gap-4 my-2">
                                                   <div class="">
-                                                    <p class="font-bold">{{ $product_plann->product_plan_name }} &nbsp; API ID: {{ $product_plann->automation_product_plan_id }}</p>
+                                                    <p class="font-bold">{{ $product_plann->product_plan_name }} 
+                                                      &nbsp; API ID: {{ $product_plann->automation_product_plan_id }}
+                                                      &nbsp; Automation: {{ $product_plann->automation->automation_name }}
+                                                    </p>
                                                     <input type="hidden" name="product_plan[]" value="{{ $product_plann->id }}">
                                                     <div class="flex items-center space-x-1">
                                                       <div class="mr-4">

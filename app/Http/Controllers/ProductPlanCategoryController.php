@@ -47,7 +47,7 @@ class ProductPlanCategoryController extends Controller
       $networks = Network::select('id','network_name')->get();
       $automations = Automation::select('id','automation_name')->get();
       $product_plans = ProductPlan::where('product_plan_category_id',$id)
-      ->where('automation_id',$product_plan_category->automation_id)
+      // ->where('automation_id',$product_plan_category->automation_id)
       ->get();
 
       $data['automations'] = $automations;
@@ -65,8 +65,8 @@ class ProductPlanCategoryController extends Controller
     public function update_details(Request $request){
       $validator = Validator::make($request->all(), [
         'product_plan_category_name' => 'required|max:255',
-        'product_id' => 'required|exists:products,id',
-        'network_id' => 'nullable|exists:networks,id',
+        // 'product_id' => 'required|exists:products,id',
+        // 'network_id' => 'nullable|exists:networks,id',
         'automation_id' => 'required|exists:automations,id',
         'old_automation_id' => 'required|exists:automations,id',
         // 'discount_value' => 'required'
@@ -101,6 +101,13 @@ class ProductPlanCategoryController extends Controller
       //same so nothing should change
       unset($data['old_automation_id']);
       $create_product_plan_categories = ProductPlanCategory::where('id',$request->id)->update($data);
+      ProductPlan::where('product_plan_category_id',$request->id)
+                    ->where('automation_id',$request->automation_id)
+                    ->update([
+                      "visibility"=>"1",
+                      "public_visibility"=>"1",
+                      "active_status"=>"1",
+                    ]);
       
 
       if($create_product_plan_categories){
@@ -201,11 +208,20 @@ class ProductPlanCategoryController extends Controller
        $data = $request->all();
        unset($data['_token']);
       //  dd($data);
+      $check_automation_plan_id_existence = ProductPlan::where('automation_product_plan_id',$request->automation_product_plan_id)
+                                            ->where('automation_id',$request->automation_id)
+                                            ->first();
+      if($check_automation_plan_id_existence){
+        //this combination exists for the automation
+        Session::flash('failure','Sorry, the Plan ID exists for the automation');
+        return redirect()->back();
+ 
+      }
 
        $create_product_plan = ProductPlan::create($data);
  
        if($create_product_plan){
-         Session::flash('success','Product plan categories successfully created');
+         Session::flash('success','Product plan was successfully created');
        }else{
          Session::flash('failure','Error occurred while creating product plan category');
        }
