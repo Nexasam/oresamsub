@@ -46,7 +46,7 @@
           
               <div class="box">
                 <div class="box-header">
-                   <b>Wallet Balance: {{ number_format(auth()->user()->main_wallet) }}</b>
+                   <p class="text-2xl"><b>Wallet Balance: {{ number_format(auth()->user()->main_wallet) }}</b></p>
                   <h5 class="box-title">Fund wallet using  <b>{{ $funding_option->funding_option_name }}</b></h5>
                   <b>Please note:</b>
                   <p>You can also make a direct payment to our bank account and your wallet will be credited. <br>
