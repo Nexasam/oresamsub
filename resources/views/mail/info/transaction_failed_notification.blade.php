@@ -17,6 +17,7 @@ Transaction ID: {{ $data['id'] }} <br>
 Phone Number: {{ $data['phone_number'] }} <br>
 Reason: {{ $data['admin_message'] }} <br>
 Product: {{ $data['transaction_category'] }} <br>
+Product Plan: {{ $data['product_plan_name'] }} <br>
 Date: {{ date('F d, Y',strtotime($data['created_at']) ) }} <br>
 <br>
 <br>

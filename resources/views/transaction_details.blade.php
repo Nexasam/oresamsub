@@ -12,14 +12,19 @@
                 
 
                 <div class="bg-gray-100 border border-gray-300 text-gray-600 alert" role="alert">
-                  <span class="font-bold"> @if (strtolower(auth()->user()->role->role_name) == 'admin')
+                  <span class="font-bold"> 
+                    @if (strtolower(auth()->user()->role->role_name) == 'admin')
                       User
-                  @endif   Screen Message:</span> {{  $data->user_screen_message  }}
+                    @endif   Screen Message:</span> {{  $data->user_screen_message  }}
                 </div>
 
                 @if (strtolower(auth()->user()->role->role_name) == 'admin')
                   <div class="bg-gray-100 border border-gray-300 text-gray-600 alert" role="alert">
-                    <span class="font-bold">Admin Screen Message</span> {{  $data->admin_screen_message  }}
+                    <span class="font-bold">Admin Screen Message</span> {{  $data->admin_screen_message  }} 
+                    <br>
+                    <br>
+                    <hr>
+                    <a class="underline font-extrabold text-green-700" href="{{ route('admin.product_plan_categories.view_details',$data->product_plan->product_plan_category->id )}}">Manage Plan: {{ $data->product_plan->product_plan_name }}</a>
                   </div>
                 @endif
                

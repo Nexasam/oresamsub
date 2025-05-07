@@ -34,7 +34,7 @@ class SendFailedTransactionEmail extends Command
         if( env('APP_NAME') == 'OresamSub' ){
             // $user = User::where('new_user_alert',0)->where('username','emmanuel80')->first();
             $date_param = '2025-04-04';
-            $transaction = Transaction::with('user')->where('failure_notification',0)
+            $transaction = Transaction::with(['user','product_plan'])->where('failure_notification',0)
             ->where('status',-1)
             ->whereDate('created_at','>=',$date_param)
             ->first();
@@ -64,11 +64,26 @@ class SendFailedTransactionEmail extends Command
                     $dataaa['id'] = $transaction->id;
                     $dataaa['created_at'] = $transaction->created_at;
                     $dataaa['admin_message'] = $transaction->admin_screen_message;
+                    $dataaa['product_plan_name'] = $transaction->product_plan->product_plan_name ?? 'NA';
                     $dataaa['transaction_category'] = strtoupper($transaction->transaction_category);
                     $dataaa['url'] = config('app.url').'transactions/details/'.$transaction->id;
+
+                    //TODO: work on this later
+                    // $turn_off_plan_conditions = ['Insufficient Balance_','Currently Not Available'];
+                    // $affected_plan = Transaction::where(function ($query) use ($turn_off_plan_conditions) {
+                    //     foreach ($turn_off_plan_conditions as $condition) {
+                    //         $query->orWhere('admin_screen_message', 'like', "%$condition%");
+                    //     }
+                    // })->first();
+                    // if($affected_plan){
+                    //     logger('found for '. $transaction->id);
+                    //     // $affected_plan->update([
+                    //     //     'visibility' => 0
+                    //     // ]);
+                    // }
                     
-                    // to(env('MAIL_FROM_ADDRESS'))
-                    //TODO:: this should be dynamic later for all vendors
+                  
+                    // TODO:: this should be dynamic later for all standalones
                     Mail::to(env('MAIL_FROM_ADDRESS'))->cc($recipient_emails)->send(new FailedTransactionNotification($dataaa));
         
                     Transaction::where('id',$transaction->id)->update([
