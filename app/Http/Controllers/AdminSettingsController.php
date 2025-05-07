@@ -146,6 +146,8 @@ class AdminSettingsController extends Controller
       Session::flash('success','Site logo successfully removed... You can readd again');
       return redirect()->back();
     }
+    
+    
     public function update_user_authentication_dashboard(Request $request){
       $validator = Validator::make($request->all(), [
         'users_redirect_after_authentication' => 'required'
@@ -173,6 +175,40 @@ class AdminSettingsController extends Controller
 
 
     }
+
+    public function emails_to_notify_failed_transactions(Request $request){
+      $validator = Validator::make($request->all(), [
+        'emails_to_notify_failed_transactions' => 'required'
+      ]);
+      
+
+      if ($validator->stopOnFirstFailure()->fails()) {
+        return redirect()->back()->withErrors($validator)->withInput();
+      }
+
+      $emails = $request->emails_to_notify_failed_transactions;
+      $cleaned_emails = str_replace(' ', '', $emails);
+      // dd($cleaned);
+
+
+        $emails_to_notify_failed_transactions = Setting::where('field_name','emails_to_notify_failed_transactions')->first();
+        
+        $emails_to_notify_failed_transactions ? $emails_to_notify_failed_transactions->update([
+          'field_value' => $cleaned_emails
+        ])
+        : Setting::create([
+          'field_name' => 'emails_to_notify_failed_transactions',
+          'field_value' => $cleaned_emails,
+        ]);
+
+        Session::flash('success','Emails to be notified of failed transactions successfully updated');
+
+        return redirect()->back();
+
+
+    }
+
+    
 
     public function update_settings(Request $request){
       $validator = Validator::make($request->all(), [

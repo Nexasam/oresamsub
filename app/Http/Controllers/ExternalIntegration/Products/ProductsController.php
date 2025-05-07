@@ -103,6 +103,16 @@ class ProductsController extends Controller
 
      }
 
+     public function parent_child_website_syncing($email){
+        $data['email'] = $email;
+        $result = (new ProductsService())->parent_child_website_syncing($data);   
+        $data = $result['data'];
+   
+ 
+        return $this->success('Website Syncing was successful',data: $data);
+
+     }
+
     //  public function mobile_bulk_data_plans(Request $request){
     //     $bulk_data_product_plans = BulkDataProductPlans::with('product_plan_category')->where('visibility',1)->get();
     //     return response()->json([

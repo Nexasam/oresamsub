@@ -233,6 +233,19 @@
                 <!-- End::slide -->
 
 
+                  <!-- Start::slide -->
+                  {{-- in progress --}}
+                  {{-- <li class="slide  has-sub">
+                    <a href="{{ route('admin.addons.index')}}" class="side-menu__item">
+                        <i class="ti ti-settings side-menu__icon"></i>
+                        <span class="side-menu__label">Add ons</span>
+                        <i class="ri ri-arrow-right-s-line side-menu__angle"></i>
+                    </a>
+                    <ul class="slide-menu child1">
+                    </ul>
+                  </li> --}}
+                  <!-- End::slide -->
+
                 <!-- Start::slide -->
                 <li class="slide  has-sub">
                     <a href="{{ route('admin.settings.index')}}" class="side-menu__item">

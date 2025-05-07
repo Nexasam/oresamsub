@@ -953,6 +953,30 @@
                           </div>
                         </form> --}}
                         
+                        <hr>
+                        <br>
+                        <form enctype="multipart/form-data" method="POST" action="{{ route('admin.settings.emails_to_notify_failed_transactions')  }}">
+                          @csrf
+                          <div class="grid w-full lg:w-1/2 lg:grid-cols-1 gap-2 space-y-4 lg:space-y-0">
+                             
+                                <div class="">
+                                  <label class="ti-form-label mb-2">Add list of emails that should be notified when a transaction fails. separate with a comma</label>
+                                  <input type="text"  required class="my-auto ti-form-input" name="emails_to_notify_failed_transactions" value="{{ $emails_to_notify_failed_transactions  ?? '' }}"  placeholder="">
+                                </div> 
+                               
+                                
+                              <div class="space-y-2">
+                                  <button type="submit" class="ti-btn ti-btn-primary w-full">Update Emails to be notified of a failed transaction</button>
+                              </div>
+                            
+                              <br>
+                          </div>
+                        </form>
+                        
+                      </div>  
+
+
+
                       </div>  
                     </div>
                     <div id="pills-with-brand-color-6" class="hidden" role="tabpanel" aria-labelledby="pills-with-brand-color-item-6">

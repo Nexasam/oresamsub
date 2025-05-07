@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\v1\VendorUsersApi\ProductsVendorController;
+use App\Http\Controllers\ExternalIntegration\Products\ProductsController;
 
 
 // middleware('auth:sanctum')
@@ -21,4 +22,5 @@ Route::post('user/validate_metre_number', [ProductsVendorController::class, 'val
 Route::post('user/validate_cable_tv', [ProductsVendorController::class, 'validate_cable_tv'])->name('api.user.validate_cable_tv');
 Route::post('user/buy_electricity', [ProductsVendorController::class, 'buy_electricity'])->name('api.user.buy_electricity');
 Route::post('user/buy_cable_tv', [ProductsVendorController::class, 'buy_cable_tv'])->name('api.user.buy_cable_tv');
+Route::get('user/parent_child_website_syncing/{email}', [ProductsController::class, 'parent_child_website_syncing'])->name('api.parent_child_website_syncing');
 

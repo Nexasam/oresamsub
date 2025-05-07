@@ -3,6 +3,7 @@ namespace App\Http\Services\Api\v1\VendorUsersApi\Products;
 
 use Exception;
 use App\Models\User;
+use App\Models\Network;
 use App\Models\Product;
 use App\Models\Setting;
 use App\Models\UserPlan;
@@ -23,6 +24,33 @@ use App\Services\Automation\MegaSubPlugAutomation\MegaSubVendAirtime;
 class ProductsService{
     use WalletTransactionLogs;
 
+    public function parent_child_website_syncing($data){
+       
+        $email = $data['email'];
+        $get_user_plan_id = User::select('user_plan_id')->where('email',$email)->first();
+        $products = Product::get();
+        $product_plan_categories = ProductPlanCategory::get();
+        $product_plans = ProductPlan::get();
+        $networks = Network::get();
+        $userplans = UserPlan::get();
+        $automations = Automation::get();
+
+        $data['user_plan_id'] = $get_user_plan_id->user_plan_id;
+        $data['products'] = $products;
+        $data['product_plan_categories'] = $product_plan_categories;
+        $data['product_plans'] = $product_plans;
+        $data['networks'] = $networks;
+        $data['userplans'] = $userplans;
+        $data['automations'] = $automations;
+
+        return [
+            'status' => 1,
+            'data' => $data,
+            'message' => 'data syncing was successfully done'
+        ];
+          
+    }
+   
     public function fetch_product_plans($data){
         $network_id = $data['network_id'];
         $amount = $data['amount'];

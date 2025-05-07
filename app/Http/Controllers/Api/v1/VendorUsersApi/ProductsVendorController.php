@@ -256,6 +256,7 @@ class ProductsVendorController extends Controller
         $data['user_id'] = $user_details->id;//this is required
 
         $buy_data = (new ProductsService())->buy_data_service($data);
+        
        
 
         $status = $buy_data['status'];

@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Artisan;
 use App\Http\Controllers\DataController;
 use App\Http\Controllers\RoleController;
 use App\Http\Middleware\RoleAdminAccess;
+use App\Http\Controllers\AddonController;
 use App\Http\Controllers\UsersController;
 use App\Http\Controllers\AirtimeController;
 use App\Http\Controllers\NetworkController;
@@ -188,6 +189,8 @@ Route::middleware(['auth','verified','admin'])->get('admin/roles/{role_id}/permi
 Route::middleware(['auth','verified','admin'])->post('admin/roles/{role_id}/permission/update', [RoleController::class, 'update_permissions'])->name('admin.roles.permissions.update');
 
 
+Route::middleware(['auth','verified','admin'])->get('admin/addons', [AddonController::class, 'index'])->name('admin.addons.index');
+
 Route::middleware(['auth','verified','admin'])->get('admin/automations/{slug}/view', [AutomationController::class, 'dashboard'])->name('admin.automation.dashboard_view');
 Route::middleware(['auth','verified','admin'])->get('admin/automations/index', [AutomationController::class, 'index'])->name('admin.automation.index');
 Route::middleware(['auth','verified','admin'])->post('admin/automations/store', [AutomationController::class, 'store'])->name('admin.automation.store');
@@ -233,6 +236,7 @@ Route::middleware(['auth','verified','admin'])->get('admin/toggle_product_public
 
 Route::middleware(['auth','verified','admin'])->get('admin/product_categories', [ProductCategoryController::class, 'index'])->name('admin.product_categories.index');
 
+Route::middleware(['auth','verified','admin'])->post('admin/settings/emails_to_notify_failed_transactions', [AdminSettingsController::class, 'emails_to_notify_failed_transactions'])->name('admin.settings.emails_to_notify_failed_transactions');
 Route::middleware(['auth','verified','admin'])->get('admin/settings/remove_logo', [AdminSettingsController::class, 'remove_logo'])->name('admin.settings.remove_logo');
 Route::middleware(['auth','verified','admin'])->get('admin/settings', [AdminSettingsController::class, 'index'])->name('admin.settings.index');
 Route::middleware(['auth','verified','admin'])->post('admin/update_webhook_suffix_string', [AdminSettingsController::class, 'update_webhook_suffix_string'])->name('admin.settings.update_webhook_suffix_string');

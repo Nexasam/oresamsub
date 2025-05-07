@@ -1,14 +1,15 @@
 <?php
 
-use App\Http\Controllers\ProductWebhookController;
 use App\Models\ProductPlan;
 use Illuminate\Http\Request;
 use App\Models\ProductPlanCategory;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\AddonController;
 use App\Http\Controllers\UsersController;
 use App\Http\Controllers\NetworkController;
 use App\Http\Controllers\WalletsController;
 use App\Http\Controllers\UserDashboardController;
+use App\Http\Controllers\ProductWebhookController;
 use App\Http\Controllers\ExternalIntegration\ApiIntegrationController;
 use App\Http\Controllers\ExternalIntegration\Products\ProductsController;
 use App\Http\Controllers\ExternalIntegration\Wallets\FundingOptionsController;
@@ -24,6 +25,7 @@ Route::get('/user', function (Request $request) {
 //FIXED WEBHOOK
 Route::post('admin/wallets/crystal_pay_webhook/{id}', [WalletsController::class, 'webhook'])->name('admin.wallet.crystalpay.webhook');
 Route::post('admin/products/oresamsub', [ProductWebhookController::class, 'product_webhook'])->name('admin.product.webhook');
+Route::get('admin/fetch_addons', [AddonController::class, 'fetch_addons'])->name('admin.addons.fetch_addons');
 //WEBHOOK
 
 
@@ -55,6 +57,7 @@ Route::group(['prefix'=>'v1/external','as'=>'api.','middleware' =>['auth:sanctum
     Route::get('/transactions', [ApiIntegrationController::class, 'transactions'])->name('transactions');
 
 
+    
     Route::middleware('auth:sanctum')->get('fetch_transactions', [ProductsController::class, 'fetch_transactions'])->name('fetch_transactions');
     Route::middleware('auth:sanctum')->get('fetch_networks', [ProductsController::class, 'fetch_networks'])->name('fetch_networks');
     Route::middleware('auth:sanctum')->get('fetch_single_transaction', [ProductsController::class, 'fetch_single_transaction'])->name('fetch_single_transaction');
