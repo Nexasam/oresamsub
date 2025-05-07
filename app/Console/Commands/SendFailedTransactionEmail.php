@@ -65,7 +65,7 @@ class SendFailedTransactionEmail extends Command
                     $dataaa['created_at'] = $transaction->created_at;
                     $dataaa['admin_message'] = $transaction->admin_screen_message;
                     $dataaa['transaction_category'] = strtoupper($transaction->transaction_category);
-                    $dataaa['url'] = config('app.url').'/transactions/details/'.$transaction->id;
+                    $dataaa['url'] = config('app.url').'transactions/details/'.$transaction->id;
                     
                     // to(env('MAIL_FROM_ADDRESS'))
                     //TODO:: this should be dynamic later for all vendors
