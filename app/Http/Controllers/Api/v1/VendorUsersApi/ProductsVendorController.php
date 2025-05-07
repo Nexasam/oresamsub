@@ -288,7 +288,7 @@ class ProductsVendorController extends Controller
         ]);
         
         if ($validator->stopOnFirstFailure()->fails()) {
-            return $this->error('Validation failed', data: $validator->errors()->first().'asdasdq', code: 403 );    
+            return $this->error('Validation failed', data: $validator->errors()->first(), code: 403 );    
         }
         
 
@@ -304,10 +304,11 @@ class ProductsVendorController extends Controller
         $data['product_plan_category_id'] = $request->product_plan_category_id;
         $data['product_plan_id'] = $request->product_plan_id;
         $data['pin'] = $user_details->pin;
-        $data['amount'] = $request->amount;
-        $data['actual_amount'] = $request->actual_amount;
+        $data['amount'] = $request->amount; //the affiliate price
+        $data['actual_amount'] = $request->actual_amount; //the parent price
         $data['validatephonenetwork'] = $request->validatephonenetwork;
         $data['user_id'] = $user_details->id;//this is required
+        logger($data);
 
 
         $buy_airtime = (new ProductsService())->buy_airtime_service($data);

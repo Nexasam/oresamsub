@@ -533,8 +533,8 @@ class ProductsService{
         $pin = $data['pin'];
         $phone_number = $data['phone_number'];
         $product_plan_id = $data['product_plan_id'];
-        $amount = $data['amount'];
-        $actual_amount = $data['amount'];
+        $amount = $data['amount'];//not needed
+        $actual_amount = $data['actual_amount'];
         $validatephonenetwork = $data['validatephonenetwork'];
         $user_id = $data['user_id'];//this is required
         $wallet_category = 'main_wallet';//this is required
@@ -574,7 +574,8 @@ class ProductsService{
         ->where('id',$product_plan_id)->first();
         $automation_id = $plan_details->automation_id;
         $product_plan_category = $plan_details->product_plan_category;
-        $actual_amount = abs($actual_amount);
+        // $actual_amount = abs($actual_amount);
+        logger('parent actual_amount: '.$actual_amount);
 
         $user_level_selling = "user_level_".$plan_level."_selling_price";
         $purchase_discount =  $plan_details->$user_level_selling;

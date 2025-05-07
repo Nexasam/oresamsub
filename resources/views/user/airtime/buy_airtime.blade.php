@@ -224,7 +224,7 @@
 
                                                 <div class="space-y-2">
                                                   <label class="ti-form-label mb-0">Amount:</label>
-                                                  <input type="number" class="my-auto ti-form-input" id="amount" name="amount" value="" placeholder="Enter amount to recharge"> 
+                                                  <input type="text" class="my-auto ti-form-input" id="amount" name="amount" value="" placeholder="Enter amount to recharge"> 
                                                   <div class="display_actual_amount">
                                                         
                                                   </div>

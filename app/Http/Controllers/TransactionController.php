@@ -401,7 +401,7 @@ class TransactionController extends Controller
         return '&#8358;'.(number_format($data->amount,2));
         }) 
         ->addColumn('discounted_amount',function($data){
-            return '&#8358;'.(number_format($data->amount,2));
+            return '&#8358;'.(number_format($data->discounted_amount,2));
         }) 
         ->addColumn('balance_before',function($data){
             return $data->wallet_category == 'main_wallet' ? '₦'.number_format($data->balance_before,2) : number_format($data->balance_before).'MB';
