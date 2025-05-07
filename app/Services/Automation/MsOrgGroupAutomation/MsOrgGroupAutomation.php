@@ -136,7 +136,7 @@ class MsOrgGroupAutomation{
         }else{
             return [
                 'status' => -1,
-                'user_message' => "Sorry, transaction failed. Please try again",
+                'user_message' => isset($response_dec['api_response']) ? $response_dec['api_response'] : "Sorry, transaction failed. Please try again",
                 'admin_message' => $response,
             ];
         }        
