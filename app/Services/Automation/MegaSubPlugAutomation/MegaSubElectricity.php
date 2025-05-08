@@ -205,7 +205,7 @@ class MegaSubElectricity{
             ];
         }
 
-        $error = isset($response_decode['Detail']['error']) ? $response_decode['Detail']['error'] : ''; 
+        $error = isset($response_decode['Detail']['error']) ? $response_decode['Detail']['error'] : 'Sorry something went wrong'; 
         return [
             'status' => -1,
             'user_message' => isset($response_decode['Detail']['message']) ? $response_decode['Detail']['message'].'_'.$error :  'Transaction failed_'.$error,

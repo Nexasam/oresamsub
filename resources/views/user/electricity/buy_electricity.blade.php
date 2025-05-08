@@ -32,7 +32,7 @@
           
               <div class="box">
                 <div class="box-header">
-                  <h5 class="box-title">Utility Bills Transactions</h5>
+                  <h5 class="box-title">{{ auth()->user()->role->role_name == 'Admin' ? 'TEST' : '' }}  Utility Bills Transactions</h5>
                 </div>
 
                 <div class="box-body">

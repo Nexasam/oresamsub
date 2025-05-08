@@ -962,7 +962,8 @@ class ProductsService{
         $electricity_product_plan_category_id = $data['electricity_product_plan_category_id'];
         $electricity_product_plan_id = $data['electricity_product_plan_id'];
         $no_of_slots = $data['no_of_slots'];
-        $amount = $data['amount'];
+        // $amount = $data['amount']; //not needed
+        $amount = $data['actual_amount'];
         $pin = $data['pin'];
         // $pin = $data['pin'];
         $user_id = $data['user_id'];//this is required

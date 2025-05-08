@@ -442,7 +442,8 @@ class ProductsVendorController extends Controller
             'electricity_product_plan_category_id' => 'required',
             'electricity_product_plan_id' => 'required',
             // 'wallet_category' => 'required',
-            'amount' => 'required',
+            'actual_amount' => 'required|numeric|gt:0',
+            'amount' => 'required|numeric|gt:0',
             // 'pin' => ['required','digits:4'],
         ]);
 
@@ -462,6 +463,7 @@ class ProductsVendorController extends Controller
         $data['electricity_product_plan_category_id'] = $request->electricity_product_plan_category_id;
         $data['electricity_product_plan_id'] = $request->electricity_product_plan_id;
         $data['amount'] = $request->amount;
+        $data['actual_amount'] = $request->actual_amount; //this is what is needed
         $data['pin'] = $user_details->pin;
         $data['user_id'] = $user_details->id; //this is required
         $data['no_of_slots'] = '1';//this is required

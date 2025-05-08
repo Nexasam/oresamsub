@@ -1,4 +1,4 @@
-<aside class="app-sidebar id="sidebar">
+<aside class="app-sidebar" id="sidebar">
 
     {{-- style="background-color: {{ 'blue'  }};
     style="background-color: {{ 'blue'  }}; --}}
@@ -45,7 +45,7 @@
                     height="24" viewBox="0 0 24 24">
                     <path d="M13.293 6.293 7.586 12l5.707 5.707 1.414-1.414L10.414 12l4.293-4.293z"></path>
                 </svg></div>
-            <ul class="main-menu ">
+            <ul class="main-menu text-md ">
                 <!-- Start::slide__category -->
                 <li class="slide__category"><span class="category-name">Main</span></li>
                 <!-- End::slide__category -->
@@ -65,13 +65,68 @@
                 </li>
                 <!-- End::slide -->
 
-                 <!-- Start::slide__category -->
-                 <li class="slide__category"><span class="category-name">Modules</span></li>
-                 <!-- End::slide__category -->
-
-
-
                 @if (strtolower(auth()->user()->role->role_name) == 'admin')
+
+                <li class="slide__category"><span class="category-name">Customer Modules</span></li>
+                 <!-- Start::slide -->
+                 <li class="slide  has-sub">
+                    <a href="{{ route('user.data.buy_data') }}" class="side-menu__item">
+                        <i class="ti ti-device-mobile side-menu__icon"></i>
+                        <span class="side-menu__label">Data</span>
+                        <i class="ri ri-arrow-right-s-line side-menu__angle"></i>
+                    </a>
+                    <ul class="slide-menu child1">
+                        {{-- <li class="slide"><a href="#" class="side-menu__item">View Networks</a></li> --}}
+                    </ul>
+                 </li>
+                 <!-- End::slide -->
+
+                <!-- Start::slide -->
+                <li class="slide  has-sub">
+                <a href="{{ route('user.airtime.buy_airtime') }}" class="side-menu__item">
+                    <i class="ti ti-phone-call  side-menu__icon"></i>
+                    <span class="side-menu__label">Airtime</span>
+                    <i class="ri ri-arrow-right-s-line side-menu__angle"></i>
+                </a>
+                <ul class="slide-menu child1">
+                    {{-- <li class="slide"><a href="#" class="side-menu__item">View Networks</a></li> --}}
+                </ul>
+                </li>
+                <!-- End::slide -->
+
+                  <!-- Start::slide -->
+                  <li class="slide  has-sub">
+                    <a href="{{ route('user.cable_subscription.buy_cable_subscription') }}" class="side-menu__item">
+                        <i class="ti ti-device-tv side-menu__icon"></i>
+                        <span class="side-menu__label">Cable</span>
+                        <i class="ri ri-arrow-right-s-line side-menu__angle"></i>
+                    </a>
+                    <ul class="slide-menu child1">
+                        {{-- <li class="slide"><a href="#" class="side-menu__item">View Networks</a></li> --}}
+                    </ul>
+                 </li>
+                 <!-- End::slide -->
+
+                  <!-- Start::slide -->
+                  <li class="slide  has-sub">
+                    <a href="{{ route('user.electricity.buy_electricity_subscription') }}" class="side-menu__item">
+                        <i class="ti ti-recharging side-menu__icon"></i>
+                        <span class="side-menu__label">Electricity</span>
+                        <i class="ri ri-arrow-right-s-line side-menu__angle"></i>
+                    </a>
+                    <ul class="slide-menu child1">
+                        {{-- <li class="slide"><a href="#" class="side-menu__item">View Networks</a></li> --}}
+                    </ul>
+                 </li>
+                 <!-- End::slide -->
+
+             
+                
+
+
+                <!-- Start::slide__category -->
+                 <li class="slide__category"><span class="category-name">Admin Modules</span></li>
+                 <!-- End::slide__category -->
 
                   <!-- Start::slide -->
                   <li class="slide  has-sub">
@@ -83,8 +138,8 @@
                     <ul class="slide-menu child1">
                         {{-- <li class="slide"><a href="#" class="side-menu__item">View Networks</a></li> --}}
                     </ul>
-                </li>
-                <!-- End::slide -->
+                 </li>
+                 <!-- End::slide -->
 
                  <!-- Start::slide: for users -->
                  <li class="slide  has-sub">
@@ -264,6 +319,8 @@
                 @else
 
                 {{-- ///USER PAGES HERE --}}
+
+                <li class="slide__category"><span class="category-name">Modules</span></li>
                 
 
                 <!-- Start::slide -->
@@ -283,18 +340,16 @@
                 
 
                 <!-- Start::slide -->
-                 <li class="slide  has-sub mt-10">
-                    <a href="javascript:void(0);" class="side-menu__item">
+                 <li class="slide  has-sub">
+                    <a href="{{ route('user.data.buy_data') }}" class="side-menu__item">
                         <i class="ti ti-device-mobile side-menu__icon"></i>
                         <span class="side-menu__label">Data</span>
                         <i class="ri ri-arrow-right-s-line side-menu__angle"></i>
                     </a>
                     <ul class="slide-menu child1">
-                        <li class="slide"><a href="{{ route('user.data.buy_data') }}" class="side-menu__item">Buy Data</a></li>
-                        <li class="slide"><a href="{{ route('user.data.buy_bulk_data') }}" class="side-menu__item">Buy Bulk Data</a></li>
-                      
+                        {{-- <li class="slide"><a href="#" class="side-menu__item">View Networks</a></li> --}}
                     </ul>
-                  </li>
+                 </li>
                   <!-- End::slide -->
 
                  
