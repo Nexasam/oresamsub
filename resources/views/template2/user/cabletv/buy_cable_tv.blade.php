@@ -101,7 +101,9 @@
                 <button type="submit" id="buy_cable_btn" class="w-full text-white bg-[{{$site_primary_color}}] hover:bg-[{{$site_primary_color}}]/90 focus:ring-4 focus:outline-none focus:ring-[{{$site_primary_color}}]/50 font-medium rounded-lg text-sm px-5 py-2.5 text-center items-center dark:focus:ring-[{{$site_primary_color}}]/55 me-2 mb-2">
                     Buy Cable
                 </button>
-                <a href="#" id="cancel_disabling" class="hidden">Activate button</a>
+                <p class="text-center mt-2 font-bold underline">
+                                                      <a href="#" id="cancel_disabling" class="hidden">Click to reactivate the button and try again</a>
+                                                    </p>
             </div>
 
 

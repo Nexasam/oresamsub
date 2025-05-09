@@ -1256,13 +1256,15 @@
             alert("Copied to clipboard");
       }
 
-      function debounce(func, timeout = 3000){
+      function debounce(func, timeout = 2500){
         let timer;
         return (...args) => {
         clearTimeout(timer);
         timer = setTimeout(() => { func.apply(this, args); }, timeout);
         };
       }
+
+ 
 
 
       function doValidateNameOnSmartCard(typpe=''){
@@ -1444,7 +1446,117 @@
         
 
         
+        
 
+        $('#phone_number').keyup(debounce(function(){
+
+          $('#mtn_svg').hide();
+          $('#airtel_svg').hide();
+          $('#glo_svg').hide();
+          $('#9mobile_svg').hide();
+
+          // Your logic here
+          //select the network, select the plans
+          let phone_number = $('#phone_number').val();
+          let _token = $('#_token').val();
+
+          if(phone_number.trim() === ''){
+              $('#show_data_details').hide();
+              $('#loading').hide();
+              return;
+          }
+
+          if ( phone_number.length < 11 || phone_number.length > 11 ) {
+              console.log("Phone number is less than 11 digits");
+              $('#loading').hide();
+              $('#show_data_details').hide();
+              return;
+          }
+    
+          let data = {
+            phone_number : phone_number,
+            _token : _token,
+          };
+
+          // console.log(data);return;
+
+
+          $.ajax({
+                  type: 'POST',
+                  url: "{{ route('user.data.fetch_data_plans_by_phone_number') }}",
+                  data: data,
+                  dataType: 'json',
+                  beforeSend: function() {
+                      $('#loading').show(); // Show loading indicator
+                  },
+                  success: function(response) {
+                      $('#loading').hide();
+                      $('#show_data_details').show();
+                    
+                      console.log(response.network_id,response.network_name);
+                      if(response.network_name == 'MTN'){
+                        $('#mtn_svg').show();
+                        $('#airtel_svg').hide();
+                        $('#glo_svg').hide();
+                        $('#9mobile_svg').hide();
+                      }else if(response.network_name == 'GLO'){
+                        $('#mtn_svg').hide();
+                        $('#airtel_svg').hide();
+                        $('#glo_svg').show();
+                        $('#9mobile_svg').hide();
+                      }else if(response.network_name == 'AIRTEL'){
+                        $('#mtn_svg').hide();
+                        $('#airtel_svg').show();
+                        $('#glo_svg').hide();
+                        $('#9mobile_svg').hide();
+                      }else if(response.network_name == '9MOBILE'){
+                        $('#mtn_svg').hide();
+                        $('#airtel_svg').hide();
+                        $('#glo_svg').hide();
+                        $('#9mobile_svg').show();
+                      }else{
+                        $('#mtn_svg').hide();
+                        $('#airtel_svg').hide();
+                        $('#glo_svg').hide();
+                        $('#9mobile_svg').hide();
+                      }
+                      $('#network_id').prepend('<option selected value="'+response.network_id+'">'+response.network_name+'</option>');
+
+                      var network_idd = response.network_id;
+                      var product_slug = $('#product_slug').val();
+                      var amount = '';
+
+                      if(response.network_name == 'Select'){
+                        return;
+                      }
+
+                      getProductPlans(network_idd,'',product_slug,amount);
+
+                      //you fetch this if the network is not NIL
+
+                      // console.log(response.data);
+                      // var result = JSON.stringify(response);
+                      // var dataList = JSON.parse(result);
+                      // if(dataList.status == 1){
+                      //     sweetAlertDisplay(dataList.message,'Success','success');
+                      //     reload(3000);
+                      // }else{
+                      //   sweetAlertDisplay(dataList.message,'Error','error');
+                      // }
+                  },
+                  error: function(xhr, status, error) {
+                      // Handle errors if needed
+                      console.error(xhr.responseText);
+                  },
+                  // complete: function() {
+                  //   $('#loading').hide(); // Always hide after request completes (success or error)
+                  // }
+
+           });
+
+          //ajax to get network and render it
+        }, 500))
+       
 
         $('#product_plan_category_id').change(function(){
           var network_id = $("#network_id").val();

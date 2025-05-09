@@ -18,6 +18,9 @@ trait UserDashboardDataTrait{
     public function get_user_dashboard_data(){
         $data =[];
 
+        $support_whatsapp_number = LandingPagesSetting::where('field_name','support_whatsapp_number')->first();
+        $data['support_whatsapp_number']= $support_whatsapp_number->field_details;
+
         $site_colors = AdminColorSetting::get();
         if(count($site_colors) > 0){
             foreach($site_colors as $site_color){

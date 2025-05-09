@@ -23,9 +23,12 @@
                     <span class="font-bold">Admin Screen Message</span> {{  $data->admin_screen_message  }} 
                     <br>
                     <br>
-                    <hr>
-                    <a class="underline font-extrabold text-green-700" href="{{ route('admin.product_plan_categories.view_details',$data->product_plan->product_plan_category->id )}}">Manage Plan: {{ $data->product_plan->product_plan_name }}</a>
-                  </div>
+              
+                    <a class="underline font-extrabold text-green-700" href="{{ route('admin.product_plan_categories.view_details',$data->product_plan->product_plan_category->id )}}">Plan Name: {{ $data->product_plan->product_plan_name }}</a><br>
+                    <a class="underline font-extrabold text-green-700" href="#">Automation: {{  $data->product_plan->automation->automation_name }}</a>
+                    <br>
+                    {{-- <hr> --}}
+                 </div>
                 @endif
                
                 

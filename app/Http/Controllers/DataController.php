@@ -298,6 +298,32 @@ class DataController extends Controller
 
     }
 
+
+     /**
+     * Show the form for creating a new resource.
+     */
+    public function buy_data_v2()
+    {
+        $dataa = $this->get_user_dashboard_data();
+        $data = [...$dataa];
+        // dd($data);
+        $networks = Network::all();
+        $product = Product::where('slug','data')->first(); //TODO: have enums that gets the id later
+        $data['networks'] = $networks;
+        $data['product'] = $product;
+        // dd($data);
+        $product_plan_categories = ProductPlanCategory::where('product_id',$product->id)->get(); //TODO: have enums that gets the id later
+        $data['product_plan_categories'] = $product_plan_categories;
+
+        $siteTemplate = SiteTemplate::first();
+        if(! $siteTemplate || $siteTemplate->template_name == 'template_1'){
+            return view('user.data.buy_data_v2')->with($data);
+        }
+
+        // dd($data);
+        return view('template2.user.data.buy_data')->with($data);
+    }
+
     /**
      * Show the form for creating a new resource.
      */
@@ -988,9 +1014,6 @@ class DataController extends Controller
         }
 
         // return response()->json(['status'=>'1','user_level'=>3 ,'message'=>'Product plans fetchedddd','counter' =>5,'data' => $network_id ]);
-
-
-
        
         $product_planss = [];
         $counter =0;
@@ -1055,6 +1078,30 @@ class DataController extends Controller
         return response()->json(['status'=>'1','user_level'=>$plan_level ,'message'=>'Product plans fetched','counter' =>count($product_planss),'data' => $product_planss ]);
         // return response()->json(['status'=>'1','user_level'=>$user_plan_id ,'message'=>'Product plans fetched','counter' =>count($product_planss),'data' => $product_planss ]);
 
+    }
+
+
+    /**
+     * Get the network, and product plans based on a phone number
+     */
+    public function fetch_data_plans_by_phone_number(Request $request){
+        $validate_phone = (new UtilService())->phoneNumberNetworkValidation($request->phone_number);
+        $validated_phone_number = $validate_phone['validated_phone_number'];
+        $selected_network = $validate_phone['selected_network'];
+        // $selected_network_caps = strtoupper($selected_network);
+        $get_network_id = Network::where('network_name',$selected_network)->first();
+        if($get_network_id){
+            $network_id = $get_network_id->id;
+            //use the network to fetch productplans for product list
+
+        } else{
+            //network not determined
+            $network_id = '';
+            $selected_network = 'Select';
+        }
+        sleep(1);
+        return response()->json(['status'=>'1','network_id' => $network_id, 'network_name' => $selected_network ]);
+        // return response()->json(['status'=>'1','user_level'=>$plan_level ,'message'=>'Bulk data plans fetched','data' => $bulk_data_product_plan ]);
     }
 
     

@@ -259,7 +259,9 @@
 
                                                 <div class="space-y-2">
                                                     <button type="submit" id="buy_airtime_btn" class="ti-btn ti-btn-primary w-full">Buy Airtime</button><br>
-                                                    <a href="#" id="cancel_disabling" class="hidden">Activate button</a>
+                                                    <p class="text-center mt-2 font-bold underline">
+                                                      <a href="#" id="cancel_disabling" class="hidden">Click to reactivate the button and try again</a>
+                                                    </p>
                                                 </div>
                                                
                                                 <br>

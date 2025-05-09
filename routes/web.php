@@ -298,10 +298,13 @@ Route::middleware(['auth','verified'])->post('transactions/transaction_refund', 
 
 
 //EXEMPTED SO THEY ARE ACCESSIBLE BY BOTH USER AND ADMIN
+Route::middleware(['auth','verified'])->get('user/data/buy_data_v2', [DataController::class, 'buy_data_v2'])->name('user.data.buy_data2');
 Route::middleware(['auth','verified'])->get('user/data/buy_data', [DataController::class, 'buy_data'])->name('user.data.buy_data');
 Route::middleware(['auth','verified'])->get('user/data/store', [DataController::class, 'buy_data_action'])->name('user.data.buy_data_action');
 Route::middleware(['auth','verified'])->get('user/data/fetch_product_plan_categories', [DataController::class, 'fetch_product_plan_categories'])->name('user.fetch_product_plan_categories'); //TODO: you can add this to a helper controller later
 Route::middleware(['auth','verified'])->get('user/data/fetch_product_plans', [DataController::class, 'fetch_product_plans'])->name('user.fetch_product_plans'); //TODO: you can add this to a helper controller later
+Route::middleware(['auth','verified'])->post('user/data/fetch_data_plans_by_phone_number', [DataController::class, 'fetch_data_plans_by_phone_number'])->name('user.data.fetch_data_plans_by_phone_number'); //TODO: you can add this to a helper controller later
+
 
 Route::middleware(['auth','verified'])->get('user/electricity/buy_electricity', [ElectricitySubscriptionController::class, 'buy_electricity_subscription'])->name('user.electricity.buy_electricity_subscription');
 Route::middleware(['auth','verified'])->get('user/electricity/store', [ElectricitySubscriptionController::class, 'buy_electricity_subscription_action'])->name('user.electricity.buy_electricity_subscription_action');
