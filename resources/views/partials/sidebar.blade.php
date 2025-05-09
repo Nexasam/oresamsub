@@ -290,7 +290,7 @@
 
                   <!-- Start::slide -->
                   {{-- in progress --}}
-                  {{-- <li class="slide  has-sub">
+                  <li class="slide  has-sub">
                     <a href="{{ route('admin.addons.index')}}" class="side-menu__item">
                         <i class="ti ti-settings side-menu__icon"></i>
                         <span class="side-menu__label">Add ons</span>
@@ -298,7 +298,7 @@
                     </a>
                     <ul class="slide-menu child1">
                     </ul>
-                  </li> --}}
+                  </li>
                   <!-- End::slide -->
 
                 <!-- Start::slide -->
