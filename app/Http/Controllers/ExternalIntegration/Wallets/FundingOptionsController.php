@@ -41,7 +41,7 @@ class FundingOptionsController extends Controller
               return $this->error('Incorrect PIN', data: $request->all(), code: 403 );   
           }
 
-          $funding_txns = FundingWebhookPayload::where('user_id',$request->user_id)->get();
+          $funding_txns = FundingWebhookPayload::where('user_id',$request->user_id)->latest()->get();
           
           return $this->success('Naira wallet fundings fetched',data: $funding_txns);   
     }
