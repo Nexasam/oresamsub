@@ -138,7 +138,17 @@
                                                             <div class="mb-2">
                                                               <label class="ti-form-label mb-0">Choose Plan Category</label>
                                                               <select required id="product_plan_category_id_{{  $data_plans[$i]['id']  }}" name="product_plan_category_id_{{ $data_plans[$i]['id']  }}"  class="my-auto ti-form-select">
-                                                                <option value="">Select</option>
+                                                                @if ( in_array($data_plans[$i]['id'],$product_plan_ids) )
+                                                                  @php
+                                                                      $plan_info = \App\Models\ProductPlan::where('automation_product_plan_id',$data_plans[$i]['id'])->first();
+
+                                                                      $plan_category_id = $plan_info->product_plan_category->id ?? '';
+                                                                      $plan_category_name = $plan_info->product_plan_category->product_plan_category_name ?? 'Select';
+                                                                  @endphp
+                                                                  <option selected value="{{$plan_category_id}}">{{$plan_category_name}}</option>
+                                                                @endif
+                                                                <option value="">Select  {{ $data_plans[$i]['id']  }} </option>
+
                                                                 @foreach ($product_plan_categories as $product_plan_category)
                                                                 <option
                                                                    

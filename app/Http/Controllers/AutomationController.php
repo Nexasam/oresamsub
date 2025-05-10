@@ -406,6 +406,28 @@ class AutomationController extends Controller
                 $selection = 'selected';
                 //call plans api 
             }
+
+            if($slug == 'affatech'){
+                    $curl = curl_init();        
+                    curl_setopt_array($curl, array(
+                    CURLOPT_URL => 'https://www.affatech.com.ng/api/network/',
+                    CURLOPT_RETURNTRANSFER => true,
+                    CURLOPT_ENCODING => '',
+                    CURLOPT_MAXREDIRS => 10,
+                    CURLOPT_TIMEOUT => 0,
+                    CURLOPT_FOLLOWLOCATION => true,
+                    CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                    CURLOPT_CUSTOMREQUEST => 'GET',
+                    CURLOPT_HTTPHEADER => array(
+                        'Content-Type: application/json',
+                        'Authorization: Token '.$automation->api_public_key
+                    ),
+                    ));
+
+                    $response = curl_exec($curl);
+                    $response_array = json_decode($response,true);  
+                    dd($response_array);                  
+            }
     
             if($selection == ''){
                 return back();

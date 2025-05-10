@@ -304,7 +304,7 @@ class ProductsVendorController extends Controller
         $data['product_plan_category_id'] = $request->product_plan_category_id;
         $data['product_plan_id'] = $request->product_plan_id;
         $data['pin'] = $user_details->pin;
-        $data['amount'] = $request->amount; //the affiliate price
+        $data['amount'] = $request->amount; //the affiliate price: dontuser
         $data['actual_amount'] = $request->actual_amount; //the parent price
         $data['validatephonenetwork'] = $request->validatephonenetwork;
         $data['user_id'] = $user_details->id;//this is required
