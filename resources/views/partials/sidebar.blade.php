@@ -265,7 +265,9 @@
                     <ul class="slide-menu child1">
                         {{-- //superadmin --}}
                         {{-- @if (auth()->user()->email == 'adebsholey4real@gmail.com') --}}
-                        <li class="slide"><a href="{{ route('admin.automation.index') }}"  class="side-menu__item">Automations</a></li>                                  
+                        <li class="slide"><a href="{{ route('admin.automation.index') }}"  class="side-menu__item">Automations</a></li>  
+                        <li class="slide"><a href="{{ route('admin.automation.dashboard_view','megasubplug') }}"  class="side-menu__item">MegasubPlug Plans</a></li>      
+
                         {{-- @endif --}}
 
                         {{-- <li class="slide"><a href="{{ route('admin.automation.dashboard_view','ogdams') }}"  class="side-menu__item">Ogdams</a></li>--}}
