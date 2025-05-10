@@ -255,6 +255,7 @@ class ProductsController extends Controller
             'product_plan_id' => 'required',
             'pin' => ['required','digits:4'],
             'amount' => 'required|numeric|gt:0',
+            'actual_amount' => 'required|numeric|gt:0',
             'validatephonenetwork'=>['required',Rule::in([0,1])],
         ]);
         
@@ -268,6 +269,7 @@ class ProductsController extends Controller
         $data['product_plan_id'] = $request->product_plan_id;
         $data['pin'] = $request->pin;
         $data['amount'] = $request->amount;
+        $data['actual_amount'] = $request->actual_amount;
         $data['validatephonenetwork'] = $request->validatephonenetwork;
         $data['user_id'] = $request->user_id;//this is required
 
