@@ -67,6 +67,13 @@
     <!-- Color Picker Css -->
     {{-- <link rel="stylesheet" href="../assets/libs/@simonwep/pickr/themes/nano.min.css"> --}}
     <link rel="stylesheet" href="{{ asset(env('APP_ASSETS_BASE_URL').'libs/@simonwep/pickr/themes/nano.min.css') }}">
+
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap" rel="stylesheet">
+
+
     @php
     $admin_site_color =  App\Models\AdminColorSetting::where('color_name','admin_site_color')->first();
     $admin_site_color_value = $admin_site_color->color_value ?? (int) '90, 102, 241'; 
@@ -74,6 +81,22 @@
    @endphp
 
    <style>
+
+
+        .nunito2 {
+          font-family: "Nunito", sans-serif;
+          font-optical-sizing: auto;
+          font-weight: 400;
+          font-style: normal;
+        }
+
+
+       .montserrat2 {
+          font-family: "Montserrat", sans-serif;
+          font-optical-sizing: auto;
+          font-weight: 400;
+          font-style: normal;
+        }
    
      :root {
            --color-primary: {{  $admin_site_color_value  }};
@@ -121,7 +144,7 @@
 
 </head>
 
-<body class="flex h-full !py-0 bg-white dark:bg-bgdark">
+<body class="flex h-full !py-0 bg-white dark:bg-bgdark montserrat2">
 
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
     {{-- &text=Hola%21%20Quisiera%20m%C3%A1s%20informaci%C3%B3n%20sobre%20Varela%202. --}}
@@ -151,7 +174,7 @@
                         <img src="../assets/img/brand-logos/desktop-dark.png" alt="logo" class="mx-auto hidden dark:block">
                         </a> --}}
                         <div class="mt-7">
-                            <div class="p-4 sm:p-7">
+                            <div class="p-4 sm:p-12 rounded-2xl border border-2 border-gray-100 shadow-lg">
                                 @if (  isset($site_logo) && $site_logo != '')
                     
                                     <a href="#" class="header-logo ">

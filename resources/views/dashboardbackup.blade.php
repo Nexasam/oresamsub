@@ -13,11 +13,10 @@
     <!-- Page Header Close -->
 
   
-    <div class="grid grid-cols-12 gap-3">
+    <div class="grid grid-cols-12 gap-x-3">
 
-        
-        <div class="col-span-12 xxxl:col-span-2 md:col-span-3">
-            <div class="max-w-sm w-full p-4 rounded-2xl shadow-lg bg-gradient-to-r from-green-500 to-green-700 text-white">
+        <div class="col-span-12 xxxl:col-span-2 md:col-span-4">
+            <div class="max-w-sm w-full p-4 rounded-2xl shadow-lg bg-gradient-to-r from-blue-500 to-blue-800 text-white">
                 <div class="flex items-center space-x-4">
                   <div class="p-3 bg-white/20 rounded-full">
                     <!-- Icon: Heroicon or Lucide -->
@@ -28,235 +27,422 @@
                       
                   </div>
                   <div>
-                    <p class="text-sm uppercase tracking-wider text-white/80">Balance</p>
-                    <p class="text-2xl font-bold">
-                        &#8358; {{ number_format($user->main_wallet,2) ?? 0  }}
-                    </p>
+                    <p class="text-sm uppercase tracking-wider text-white/80">Plans</p>
+                    <p class="text-2xl font-bold">1,245</p>
+                    <p class="text-xs text-white/70">+8% this week</p>
                   </div>
                 </div>
               </div>
               
         </div>
-        
-        <div class="col-span-12 xxxl:col-span-2 md:col-span-3">
-            <div class="max-w-sm w-full p-4 rounded-2xl shadow-lg bg-gradient-to-r from-blue-500 to-blue-700 text-white">
-                <div class="flex items-center space-x-4">
-                  <div class="p-3 bg-white/20 rounded-full">
-                    <!-- Icon: Heroicon or Lucide -->
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
-                              d="M8 7V3m8 4V3M5 11h14M5 19h14M5 15h14M4 5h16a1 1 0 011 1v14a1 1 0 01-1 1H4a1 1 0 01-1-1V6a1 1 0 011-1z" />
-                      </svg>
-                      
-                  </div>
-                  <div>
-                    <p class="text-sm uppercase tracking-wider text-white/80">Plan</p>
-                    <p class="text-2xl font-bold">
-                        {{ $user->user_plan->updated_user_plan_name ?? $user->user_plan->user_plan_name  }}
-                    </p>
-                  </div>
-                </div>
-              </div>
-              
-        </div>
-
-        <div class="col-span-12 xxxl:col-span-2 md:col-span-3">
-            <div class="max-w-sm w-full p-4 rounded-2xl shadow-lg bg-gradient-to-r from-yellow-500 to-yellow-700 text-white">
-                <div class="flex items-center space-x-4">
-                  <div class="p-3 bg-white/20 rounded-full">
-                    <!-- Icon: Heroicon or Lucide -->
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
-                              d="M8 7V3m8 4V3M5 11h14M5 19h14M5 15h14M4 5h16a1 1 0 011 1v14a1 1 0 01-1 1H4a1 1 0 01-1-1V6a1 1 0 011-1z" />
-                      </svg>
-                      
-                  </div>
-                  <div>
-                    <p class="text-sm uppercase tracking-wider text-white/80">Transactions</p>
-                    <p class="text-2xl font-bold">
-                        {{ number_format( count($transactions))  }}
-                    </p>
-                  </div>
-                </div>
-              </div>
-              
-        </div>
-
-        <div class="col-span-12 xxxl:col-span-2 md:col-span-3">
-            <div class="max-w-sm w-full p-6 rounded-2xl shadow-xl bg-gradient-to-r from-indigo-600 to-purple-600 text-white">
-                <div class="flex items-center justify-between">
-                  <!-- Icon (pointing down) -->
-                  <div class="p-3 bg-white/20 rounded-full">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-current" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <!-- Wallet Icon -->
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
-                              d="M3 10h18M3 14h18M3 6h18c.553 0 1 .447 1 1v12c0 .553-.447 1-1 1H3c-.553 0-1-.447-1-1V7c0-.553.447-1 1-1z" />
-                        <!-- Naira Symbol (₦) -->
-                        <text x="12" y="15" font-size="8" font-family="Arial" text-anchor="middle" fill="currentColor">₦</text>
-                      </svg>
-                      
-                  </div>
-              
-                  <!-- Button -->
-                  <button class="bg-white text-indigo-700 text-sm font-medium px-4 py-2 rounded-lg shadow hover:bg-gray-100 transition">
-                    FUND WALLET
-                  </button>
-                </div>
-              </div>
-        </div>
-
-
-        <div class="col-span-12 xxxl:col-span-2 md:col-span-3">
-
-           
-            <div class="max-w-sm w-full p-6 rounded-2xl shadow-xl text-gray-800 relative overflow-hidden bg-white">
-                <!-- Enhanced Pattern Background -->
-                <div class="absolute inset-0 opacity-30 pointer-events-none">
-                  <svg class="w-full h-full" xmlns="http://www.w3.org/2000/svg" fill="none">
-                    <defs>
-                      <pattern id="bigger-dots" width="40" height="40" patternUnits="userSpaceOnUse">
-                        <circle cx="4" cy="4" r="3" fill="#cbd5e0" />
-                      </pattern>
-                    </defs>
-                    <rect width="100%" height="100%" fill="url(#bigger-dots)" />
-                  </svg>
-                </div>
-              
-                <!-- Card Content -->
-                <div class="relative z-10 flex items-center justify-between">
-                  <!-- Icon -->
-                  <div class="p-3 bg-gray-100 rounded-full">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-current" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
-                              d="M5 20h1v-4H5v4zm4 0h1v-7H9v7zm4 0h1v-10h-1v10zm4 0h1v-13h-1v13z" />
-                      </svg>
-                  </div>
-              
-                  <!-- Button -->
-                  <a href="{{route('user.data.buy_data')}}" class="bg-indigo-600 text-white text-sm font-medium px-4 py-2 rounded-lg shadow hover:bg-indigo-700 transition">
-                    BUY DATA
-                  </a>
-                </div>
-            </div>
-              
-              
-
-        </div>
-
-        <div class="col-span-12 xxxl:col-span-2 md:col-span-3">
-
-           
-            <div class="max-w-sm w-full p-6 rounded-2xl shadow-xl text-gray-800 relative overflow-hidden bg-white">
-                <!-- Enhanced Pattern Background -->
-                <div class="absolute inset-0 opacity-30 pointer-events-none">
-                  <svg class="w-full h-full" xmlns="http://www.w3.org/2000/svg" fill="none">
-                    <defs>
-                      <pattern id="bigger-dots" width="40" height="40" patternUnits="userSpaceOnUse">
-                        <circle cx="4" cy="4" r="3" fill="#cbd5e0" />
-                      </pattern>
-                    </defs>
-                    <rect width="100%" height="100%" fill="url(#bigger-dots)" />
-                  </svg>
-                </div>
-              
-                <!-- Card Content -->
-                <div class="relative z-10 flex items-center justify-between">
-                  <!-- Icon -->
-                  <div class="p-3 bg-gray-100 rounded-full">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-current" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
-                          d="M7 4h10a1 1 0 011 1v14a1 1 0 01-1 1H7a1 1 0 01-1-1V5a1 1 0 011-1zm5 7v4m2-2h-4" />
-                      </svg>
-                      
-                  </div>
-              
-                  <!-- Button -->
-                  <a href="{{route('user.airtime.buy_airtime')}}" class="bg-indigo-600 text-white text-sm font-medium px-4 py-2 rounded-lg shadow hover:bg-indigo-700 transition">
-                    BUY AIRTIME
-                  </a>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-span-12 xxxl:col-span-2 md:col-span-3">
-
-           
-            <div class="max-w-sm w-full p-6 rounded-2xl shadow-xl text-gray-800 relative overflow-hidden bg-white">
-                <!-- Enhanced Pattern Background -->
-                <div class="absolute inset-0 opacity-30 pointer-events-none">
-                  <svg class="w-full h-full" xmlns="http://www.w3.org/2000/svg" fill="none">
-                    <defs>
-                      <pattern id="bigger-dots" width="40" height="40" patternUnits="userSpaceOnUse">
-                        <circle cx="4" cy="4" r="3" fill="#cbd5e0" />
-                      </pattern>
-                    </defs>
-                    <rect width="100%" height="100%" fill="url(#bigger-dots)" />
-                  </svg>
-                </div>
-              
-                <!-- Card Content -->
-                <div class="relative z-10 flex items-center justify-between">
-                  <!-- Icon -->
-                  <div class="p-3 bg-gray-100 rounded-full">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-current" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
-                              d="M5 3h14a2 2 0 012 2v12a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2zm0 16v2h14v-2H5zm4-5h6m-3 0v4" />
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
-                              d="M6 17l-2 2m2-2h2" />
-                      </svg>
-                      
-                  </div>
-              
-                  <!-- Button -->
-                  <a href="{{route('user.cable_subscription.buy_cable_subscription')}}" class="bg-indigo-600 text-white text-sm font-medium px-4 py-2 rounded-lg shadow hover:bg-indigo-700 transition">
-                    CABLE SUBSCRIPTION
-                  </a>
-                </div>
-            </div>
-              
-
-        </div>
-
-        <div class="col-span-12 xxxl:col-span-2 md:col-span-3">
-
-           
-            <div class="max-w-sm w-full p-6 rounded-2xl shadow-xl text-gray-800 relative overflow-hidden bg-white">
-                <!-- Enhanced Pattern Background -->
-                <div class="absolute inset-0 opacity-30 pointer-events-none">
-                  <svg class="w-full h-full" xmlns="http://www.w3.org/2000/svg" fill="none">
-                    <defs>
-                      <pattern id="bigger-dots" width="40" height="40" patternUnits="userSpaceOnUse">
-                        <circle cx="4" cy="4" r="3" fill="#cbd5e0" />
-                      </pattern>
-                    </defs>
-                    <rect width="100%" height="100%" fill="url(#bigger-dots)" />
-                  </svg>
-                </div>
-              
-                <!-- Card Content -->
-                <div class="relative z-10 flex items-center justify-between">
-                  <!-- Icon -->
-                  <div class="p-3 bg-gray-100 rounded-full">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-current" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
-                              d="M13 2L10 8h4l-3 6M10 8h4l-3 6m6 2h-4m-2 0H9" />
-                      </svg>
-                      
-                      
-                  </div>
-              
-                  <!-- Button -->
-                  
-                  <a href="{{route('user.electricity.buy_electricity_subscription')}}" class="bg-indigo-600 text-white text-sm font-medium px-4 py-2 rounded-lg shadow hover:bg-indigo-700 transition">
-                    BUY ELECTRICITY
-                  </a>
-                </div>
-            </div>
-              
-              
-
-        </div>        
           
+
+        <div class="col-span-12 xxxl:col-span-2 md:col-span-4">
+            <div class="box">
+                <div class="box-body">
+                    <div class="flex space-x-4 rtl:space-x-reverse">
+                       
+                        {{-- <div class="flex items-center justify-center ecommerce-icon px-0">
+                            <span class="rounded-sm p-4 bg-info/10">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="fill-white svg3" height="24px"
+                                    viewBox="0 0 24 24" width="24px" fill="#000000">
+                                    <path d="M0 0h24v24H0V0z" fill="none" />
+                                    <path
+                                        d="M12 6c1.1 0 2 .9 2 2s-.9 2-2 2-2-.9-2-2 .9-2 2-2m0 10c2.7 0 5.8 1.29 6 2H6c.23-.72 3.31-2 6-2m0-12C9.79 4 8 5.79 8 8s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4zm0 10c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
+                                </svg>
+                            </span>
+                        </div> --}}
+                        <div class="">
+                            <div class="mb-2">Plan</div>
+                            <div class="text-gray-500 dark:text-white/70 mb-1 text-xs">
+                                <span
+                                    class="text-gray-800 font-semibold text-sm leading-none align-bottom dark:text-white">
+                                    {{ $user->user_plan->updated_user_plan_name ?? $user->user_plan->user_plan_name  }}
+                                </span>
+                            </div>
+                            {{-- <div>
+                                <span class="text-xs mb-0">Increased by <span
+                                        class="text-success">+12.2%</span></span>
+                            </div> --}}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {{-- <a href="{{ route('user.transactions.index')}}"> --}}
+        <div class="col-span-12 xxxl:col-span-2 md:col-span-4">
+            <div class="box">
+                <div class="box-body">
+                    <div class="flex space-x-4 rtl:space-x-reverse">
+                        {{-- <div class="flex items-center justify-center ecommerce-icon px-0">
+                            <span class="rounded-sm p-4 bg-secondary/10">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="fill-white svg2"
+                                    enable-background="new 0 0 24 24" height="24px" viewBox="0 0 24 24"
+                                    width="24px" fill="#000000">
+                                    <g>
+                                        <rect fill="none" height="24" width="24"></rect>
+                                        <path
+                                            d="M18,6h-2c0-2.21-1.79-4-4-4S8,3.79,8,6H6C4.9,6,4,6.9,4,8v12c0,1.1,0.9,2,2,2h12c1.1,0,2-0.9,2-2V8C20,6.9,19.1,6,18,6z M12,4c1.1,0,2,0.9,2,2h-4C10,4.9,10.9,4,12,4z M18,20H6V8h2v2c0,0.55,0.45,1,1,1s1-0.45,1-1V8h4v2c0,0.55,0.45,1,1,1s1-0.45,1-1V8 h2V20z">
+                                        </path>
+                                    </g>
+                                </svg>
+                            </span>
+                        </div> --}}
+                        <div class="">
+                            <div class="mb-2">Transactions</div>
+                            <div class="text-gray-500 dark:text-white/70 mb-1 text-xs">
+                                <span
+                                    class="text-gray-800 text-sm leading-none align-bottom dark:text-white">
+                                    {{ number_format( count($transactions))  }}
+                                </span>
+                            </div>
+                            {{-- <div>
+                                <span class="text-xs mb-0">Decreased by
+                                    <span class="text-danger">-1.41%</span>
+                                </span>
+                            </div> --}}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {{-- </a> --}}
+
+      
+        <div class="col-span-12 xxxl:col-span-2 md:col-span-4">
+            <div class="box">
+                <div class="box-body">
+                    <div class="flex space-x-4 rtl:space-x-reverse">
+                        {{-- <div class="flex items-center justify-center ecommerce-icon px-0">
+                            <span class="rounded-sm p-4 bg-info/10">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="fill-white svg5"
+                                    enable-background="new 0 0 24 24" height="24px" viewBox="0 0 24 24"
+                                    width="24px" fill="#000000">
+                                    <path d="M0,0h24v24H0V0z" fill="none" />
+                                    <g>
+                                        <path
+                                            d="M19.5,3.5L18,2l-1.5,1.5L15,2l-1.5,1.5L12,2l-1.5,1.5L9,2L7.5,3.5L6,2v14H3v3c0,1.66,1.34,3,3,3h12c1.66,0,3-1.34,3-3V2 L19.5,3.5z M15,20H6c-0.55,0-1-0.45-1-1v-1h10V20z M19,19c0,0.55-0.45,1-1,1s-1-0.45-1-1v-3H8V5h11V19z" />
+                                        <rect height="2" width="6" x="9" y="7" />
+                                        <rect height="2" width="2" x="16" y="7" />
+                                        <rect height="2" width="6" x="9" y="10" />
+                                        <rect height="2" width="2" x="16" y="10" />
+                                    </g>
+                                </svg>
+                            </span>
+                        </div> --}}
+                        <div class="">
+                            <div class="mb-2 ">
+                             Balance
+                            </div>
+                            <div class="text-gray-500 dark:text-white/70 mb-1 text-xs flex items-center justify-between  space-x-3">
+                                <span
+                                    class="text-gray-800 text-sm leading-none align-bottom dark:text-white">
+                                    &#8358; {{ number_format($user->main_wallet,2) ?? 0  }}
+                                </span>
+                                <div> 
+                                    {{-- data-hs-overlay="#hs-basic-modal" --}}
+                                    {{-- <a href="#" type="button"   aria-label="button" type="button" class="hs-dropdown-toggle ti-btn flex-shrink-0 h-[0.070rem] w-[0.070rem] ti-btn-primary text-sm"> 
+                                        <svg class="w-3.5 h-3.5" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                                          <path d="M5.071 1.243a.5.5 0 0 1 .858.514L3.383 6h9.234L10.07 1.757a.5.5 0 1 1 .858-.514L13.783 6H15.5a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-.5.5H15v5a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V9H.5a.5.5 0 0 1-.5-.5v-2A.5.5 0 0 1 .5 6h1.717L5.07 1.243zM3.5 10.5a.5.5 0 1 0-1 0v3a.5.5 0 0 0 1 0v-3zm2.5 0a.5.5 0 1 0-1 0v3a.5.5 0 0 0 1 0v-3zm2.5 0a.5.5 0 1 0-1 0v3a.5.5 0 0 0 1 0v-3zm2.5 0a.5.5 0 1 0-1 0v3a.5.5 0 0 0 1 0v-3zm2.5 0a.5.5 0 1 0-1 0v3a.5.5 0 0 0 1 0v-3z"/>
+                                        </svg><span style="font-size: 10px">Fund Wallet</span>
+                                    </a> --}}
+                                </div>
+
+                                <div id="hs-basic-modalqqq" class="hs-overlay ti-modal hidden">
+                                    <div class="ti-modal-box">
+                                      <div class="ti-modal-content">
+                                        <div class="ti-modal-header">
+                                          <h3 class="ti-modal-title">
+                                            Fund Wallet
+                                          </h3>
+                                          <button type="button" class="hs-dropdown-toggle ti-modal-clode-btn"
+                                            data-hs-overlay="#hs-basic-modalqqq">
+                                            <span class="sr-only">Close</span>
+                                            <svg class="w-3.5 h-3.5" width="8" height="8" viewBox="0 0 8 8" fill="none"
+                                              xmlns="http://www.w3.org/2000/svg">
+                                              <path
+                                                d="M0.258206 1.00652C0.351976 0.912791 0.479126 0.860131 0.611706 0.860131C0.744296 0.860131 0.871447 0.912791 0.965207 1.00652L3.61171 3.65302L6.25822 1.00652C6.30432 0.958771 6.35952 0.920671 6.42052 0.894471C6.48152 0.868271 6.54712 0.854471 6.61352 0.853901C6.67992 0.853321 6.74572 0.865971 6.80722 0.891111C6.86862 0.916251 6.92442 0.953381 6.97142 1.00032C7.01832 1.04727 7.05552 1.1031 7.08062 1.16454C7.10572 1.22599 7.11842 1.29183 7.11782 1.35822C7.11722 1.42461 7.10342 1.49022 7.07722 1.55122C7.05102 1.61222 7.01292 1.6674 6.96522 1.71352L4.31871 4.36002L6.96522 7.00648C7.05632 7.10078 7.10672 7.22708 7.10552 7.35818C7.10442 7.48928 7.05182 7.61468 6.95912 7.70738C6.86642 7.80018 6.74102 7.85268 6.60992 7.85388C6.47882 7.85498 6.35252 7.80458 6.25822 7.71348L3.61171 5.06702L0.965207 7.71348C0.870907 7.80458 0.744606 7.85498 0.613506 7.85388C0.482406 7.85268 0.357007 7.80018 0.264297 7.70738C0.171597 7.61468 0.119017 7.48928 0.117877 7.35818C0.116737 7.22708 0.167126 7.10078 0.258206 7.00648L2.90471 4.36002L0.258206 1.71352C0.164476 1.61976 0.111816 1.4926 0.111816 1.36002C0.111816 1.22744 0.164476 1.10028 0.258206 1.00652Z"
+                                                fill="currentColor" />
+                                            </svg>
+                                          </button>
+                                        </div>
+                                        <div class="ti-modal-body">
+                                          <p class="mt-1 text-gray-800 dark:text-white/70">
+                                            Generate a dynamic account number you can use in funding your wallet. <br>
+                                          </p>
+                                          <br>
+                                          <label for="amount">Enter Amount to fund:</label>
+                                          <br>
+                                          <input type="text" name="amount" id="amount" value="">
+                                          <br>
+                                          <button id="generate_crystalpay_dynamic_account" class="ti-btn ti-btn-warning">Click to generate</button>
+                                          <div class="crystal_pay_dynamic_account_details p-4">
+
+                                          </div>
+                                        </div>
+                                        <div class="ti-modal-footer">
+                                          <button type="button"
+                                            class="hs-dropdown-toggle ti-btn ti-border font-medium bg-white text-gray-700 shadow-sm align-middle hover:bg-gray-50 focus:ring-offset-white focus:ring-primary dark:bg-bgdark dark:hover:bg-black/20 dark:border-white/10 dark:text-white/70 dark:hover:text-white dark:focus:ring-offset-white/10"
+                                            data-hs-overlay="#hs-basic-modal">
+                                            Close
+                                          </button>
+                                          <a class="ti-btn ti-btn-primary"
+                                            href="javascript:void(0);">
+                                            I have made payment
+                                          </a>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+
+                            </div>
+                            <div>
+                                <span class="text-xs mb-0"> <span
+                                        class="text-danger"></span>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        {{-- <div class="hidden sm:block"> --}}
+            @if (count($user_virtual_accounts) > 0)
+            @foreach ($user_virtual_accounts as $user_virtual_account)
+                    
+                    {{-- <tr>                     
+                        <td>Bank Name: {{ $user_virtual_account->bank_name }}</td>
+                        <td>Bank Code: {{ $user_virtual_account->bank_code }}</td>
+                        <td>Account Name: {{ $user_virtual_account->account_name }}</td>
+                        <td>Account Number: {{ $user_virtual_account->account_number }}</td>
+                    </tr> --}}
+                
+                        <div class="col-span-12 xxxl:col-span-2 md:col-span-3">
+                            <div class="box">
+                                <div class="box-body">
+                                    <div class="flex space-x-4 rtl:space-x-reverse">
+                                    
+                                        <div class="flex items-center justify-center ecommerce-icon px-0">
+                                            <span class="rounded-sm p-4 bg-info/10">
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="fill-white svg5"
+                                                    enable-background="new 0 0 24 24" height="24px" viewBox="0 0 24 24"
+                                                    width="24px" fill="#000000">
+                                                    <path d="M0,0h24v24H0V0z" fill="none" />
+                                                    <g>
+                                                        <path
+                                                            d="M19.5,3.5L18,2l-1.5,1.5L15,2l-1.5,1.5L12,2l-1.5,1.5L9,2L7.5,3.5L6,2v14H3v3c0,1.66,1.34,3,3,3h12c1.66,0,3-1.34,3-3V2 L19.5,3.5z M15,20H6c-0.55,0-1-0.45-1-1v-1h10V20z M19,19c0,0.55-0.45,1-1,1s-1-0.45-1-1v-3H8V5h11V19z" />
+                                                        <rect height="2" width="6" x="9" y="7" />
+                                                        <rect height="2" width="2" x="16" y="7" />
+                                                        <rect height="2" width="6" x="9" y="10" />
+                                                        <rect height="2" width="2" x="16" y="10" />
+                                                    </g>
+                                                </svg>
+                                            </span>
+                                        </div>
+                                        <div class="">
+                                            <div class="mb-2"><strong>{{$user_virtual_account->account_number   }}</strong></div>
+                                            <div class="text-gray-500 dark:text-white/70 mb-1 text-xs" style="6">
+                                                Bank: {{ $user_virtual_account->bank_name }} <br>
+                                                {{-- Account No: {{ $user_virtual_account->account_number }} <br> --}}
+                                                Account Name: {{ $user_virtual_account->account_name }} <br>
+                                            </div>
+                                        
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                  
+                    
+            @endforeach
+        
+            @else
+             
+                    <div class="col-span-12 xxxl:col-span-2 md:col-span-3">
+                    <div class="box">
+                        <div class="box-body">
+                            <div class="flex space-x-4 rtl:space-x-reverse">
+                            
+                                <div class="flex items-center justify-center ecommerce-icon px-0">
+                                    <span class="rounded-sm p-4 bg-danger/10">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="fill-white svg1" height="24px"
+                                                viewBox="0 0 24 24" width="24px" fill="#000000">
+                                                <path d="M0 0h24v24H0V0z" fill="none" />
+                                                <path
+                                                    d="M15.55 13c.75 0 1.41-.41 1.75-1.03l3.58-6.49c.37-.66-.11-1.48-.87-1.48H5.21l-.94-2H1v2h2l3.6 7.59-1.35 2.44C4.52 15.37 5.48 17 7 17h12v-2H7l1.1-2h7.45zM6.16 6h12.15l-2.76 5H8.53L6.16 6zM7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zm10 0c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z" />
+                                        </svg>
+                                    </span>
+                                </div>
+                                <div class="">
+                                    <div class="mb-2">Fund Wallet</div>
+                                    <div class="text-gray-500 dark:text-white/70 mb-1 text-xs">
+                                        <a class="ti-btn ti-btn-primary block" href="{{ route('user.wallet.index')}}">Click Here</a>
+                                    
+                                    </div>
+                                
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+            @endif
+        {{-- </div> --}}
+       
+        
+       
+        
+
+        <div class="col-span-12 xxxl:col-span-2 md:col-span-3">
+            <div class="box">
+                <div class="box-body">
+                    <div class="flex space-x-4 rtl:space-x-reverse">
+                       
+                        <div class="flex items-center justify-center ecommerce-icon px-0">
+                            <div class="avatar rounded-sm text-warning p-2.5 bg-warning/20 "><i
+                                class="ti ti-briefcase text-2xl leading-none"></i>
+                            </div>
+                        </div>
+                        <div class="">
+                            <div class="text-lg">
+                                <a href="{{ route('user.data.buy_data') }}">Data</a>
+                            </div>
+                            {{-- <div class="mt-5 text-lg">Data</div> --}}
+                            {{-- <div class="flex items-center justify-center">Data</div> --}}
+                           
+                            <div class="text-gray-500 dark:text-white/70 mb-1 text-xs">
+                                  <a class="ti-btn ti-btn-primary block" href="{{ route('user.data.buy_data')}}">Click Here</a>
+                               
+                            </div>
+                          
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-span-12 xxxl:col-span-2 md:col-span-3">
+            <div class="box">
+                <div class="box-body">
+                    <div class="flex space-x-4 rtl:space-x-reverse">
+                        
+                            <div class="flex items-center justify-center ecommerce-icon px-0">
+                                {{-- <span class="rounded-sm p-4 bg-success/10">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="fill-white svg5"
+                                        enable-background="new 0 0 24 24" height="24px" viewBox="0 0 24 24"
+                                        width="24px" fill="#000000">
+                                        <path d="M0,0h24v24H0V0z" fill="none" />
+                                        <g>
+                                            <path
+                                                d="M19.5,3.5L18,2l-1.5,1.5L15,2l-1.5,1.5L12,2l-1.5,1.5L9,2L7.5,3.5L6,2v14H3v3c0,1.66,1.34,3,3,3h12c1.66,0,3-1.34,3-3V2 L19.5,3.5z M15,20H6c-0.55,0-1-0.45-1-1v-1h10V20z M19,19c0,0.55-0.45,1-1,1s-1-0.45-1-1v-3H8V5h11V19z" />
+                                            <rect height="2" width="6" x="9" y="7" />
+                                            <rect height="2" width="2" x="16" y="7" />
+                                            <rect height="2" width="6" x="9" y="10" />
+                                            <rect height="2" width="2" x="16" y="10" />
+                                        </g>
+                                    </svg>
+                                </span> --}}
+                                <div class="avatar rounded-sm text-warning p-2.5 bg-warning/20 "><i
+                                    class="ti ti-briefcase text-2xl leading-none"></i>
+                                </div>
+                            </div>
+                            <div class="">
+                                <div class=" text-lg">
+                                    <a href="{{ route('user.airtime.buy_airtime') }}">Airtime</a>
+                                </div>
+                                <div class="text-gray-500 dark:text-white/70 mb-1 text-xs">
+                                       <a class="ti-btn ti-btn-primary block" href="{{ route('user.airtime.buy_airtime') }}">Click Here </a>
+                                </div>
+                            </div>
+                     
+                       
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-span-12 xxxl:col-span-2 md:col-span-3">
+            <div class="box">
+                <div class="box-body">
+                    <div class="flex space-x-4 rtl:space-x-reverse">
+                        
+                            <div class="flex items-center justify-center ecommerce-icon px-0">
+                                {{-- <span class="rounded-sm p-4 bg-danger/10">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="fill-white svg5"
+                                        enable-background="new 0 0 24 24" height="24px" viewBox="0 0 24 24"
+                                        width="24px" fill="#000000">
+                                        <path d="M0,0h24v24H0V0z" fill="none" />
+                                        <g>
+                                            <path
+                                                d="M19.5,3.5L18,2l-1.5,1.5L15,2l-1.5,1.5L12,2l-1.5,1.5L9,2L7.5,3.5L6,2v14H3v3c0,1.66,1.34,3,3,3h12c1.66,0,3-1.34,3-3V2 L19.5,3.5z M15,20H6c-0.55,0-1-0.45-1-1v-1h10V20z M19,19c0,0.55-0.45,1-1,1s-1-0.45-1-1v-3H8V5h11V19z" />
+                                            <rect height="2" width="6" x="9" y="7" />
+                                            <rect height="2" width="2" x="16" y="7" />
+                                            <rect height="2" width="6" x="9" y="10" />
+                                            <rect height="2" width="2" x="16" y="10" />
+                                        </g>
+                                    </svg>
+                                </span> --}}
+                                <div class="avatar rounded-sm text-warning p-2.5 bg-warning/20 "><i
+                                    class="ti ti-briefcase text-2xl leading-none"></i>
+                                </div>
+                            </div>
+                            <div class="">
+                                <div class=" text-lg">
+                                    <a href="{{ route('user.cable_subscription.buy_cable_subscription') }}">Cable</a>
+                                </div>
+                                <div class="text-gray-500 dark:text-white/70 mb-1 text-xs">
+                                       <a class="ti-btn ti-btn-primary block" href="{{ route('user.cable_subscription.buy_cable_subscription') }}">Click Here </a>
+                                </div>
+                            </div>
+                     
+                       
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-span-12 xxxl:col-span-2 md:col-span-3">
+            <div class="box">
+                <div class="box-body">
+                    <div class="flex space-x-4 rtl:space-x-reverse">
+                        
+                            <div class="flex items-center justify-center ecommerce-icon px-0">
+                                {{-- <span class="rounded-sm p-4 bg-info/10">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="fill-white svg5"
+                                        enable-background="new 0 0 24 24" height="24px" viewBox="0 0 24 24"
+                                        width="24px" fill="#000000">
+                                        <path d="M0,0h24v24H0V0z" fill="none" />
+                                        <g>
+                                            <path
+                                                d="M19.5,3.5L18,2l-1.5,1.5L15,2l-1.5,1.5L12,2l-1.5,1.5L9,2L7.5,3.5L6,2v14H3v3c0,1.66,1.34,3,3,3h12c1.66,0,3-1.34,3-3V2 L19.5,3.5z M15,20H6c-0.55,0-1-0.45-1-1v-1h10V20z M19,19c0,0.55-0.45,1-1,1s-1-0.45-1-1v-3H8V5h11V19z" />
+                                            <rect height="2" width="6" x="9" y="7" />
+                                            <rect height="2" width="2" x="16" y="7" />
+                                            <rect height="2" width="6" x="9" y="10" />
+                                            <rect height="2" width="2" x="16" y="10" />
+                                        </g>
+                                    </svg>
+                                </span> --}}
+                                <div class="avatar rounded-sm text-warning p-2.5 bg-warning/20 "><i
+                                    class="ti ti-briefcase text-2xl leading-none"></i>
+                                </div>
+                            </div>
+                            <div class="">
+                                <div class=" text-lg">
+                                    <a href="{{ route('user.electricity.buy_electricity_subscription') }}">Electricity</a>
+                                </div>
+                                <div class="text-gray-500 dark:text-white/70 mb-1 text-xs">
+                                       <a class="ti-btn ti-btn-primary block" href="{{ route('user.electricity.buy_electricity_subscription') }}">Click Here </a>
+                                </div>
+                            </div>
+                     
+                       
+                    </div>
+                </div>
+            </div>
+        </div>
 
 
 

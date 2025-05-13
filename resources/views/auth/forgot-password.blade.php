@@ -63,9 +63,14 @@
     {{-- <link rel="stylesheet" href="../assets/libs/@simonwep/pickr/themes/nano.min.css"> --}}
     <link rel="stylesheet" href="{{ asset(env('APP_ASSETS_BASE_URL').'libs/@simonwep/pickr/themes/nano.min.css') }}">
 
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap" rel="stylesheet">
+
+
 </head>
 
-<body class="error-page flex h-full !py-0 bg-white dark:bg-bgdark">
+<body class="error-page flex h-full !py-0 bg-white dark:bg-bgdark montserrat2">
     @if (env('APP_NAME') == 'FoxDataHub')
     <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-NPMMTFT6"
      height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
@@ -85,7 +90,7 @@
                         <img src="../assets/img/brand-logos/desktop-dark.png" alt="logo" class="mx-auto hidden dark:block">
                     </a> --}}
                     <div class="mt-7">
-                        <div class="p-4 sm:p-7">
+                        <div class="p-4 sm:p-12 rounded-2xl border border-2 border-gray-100 shadow-lg">
                             
                             @if (  isset($site_logo) && $site_logo != '')
                     

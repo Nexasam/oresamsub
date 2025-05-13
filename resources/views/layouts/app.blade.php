@@ -55,15 +55,22 @@
 
     <link rel="stylesheet" href="https://cdn.datatables.net/2.0.8/css/dataTables.dataTables.min.css">
 
+    <script src="https://cdn.tailwindcss.com"></script>
+
+
 
     <link rel="stylesheet" href="">
     {{-- 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&display=swap" rel="stylesheet"> --}}
-
     {{-- <link href="https://cdn.jsdelivr.net/npm/flowbite@2.4.1/dist/flowbite.min.css" rel="stylesheet" /> --}}
       
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap" rel="stylesheet">
+
     @php
        $admin_site_color =  App\Models\AdminColorSetting::where('color_name','admin_site_color')->first();
        $admin_site_color_value = $admin_site_color->color_value ?? (int) '90, 102, 241'; 
@@ -71,6 +78,23 @@
     @endphp
 
     <style>
+
+        .nunito2 {
+          font-family: "Nunito", sans-serif;
+          font-optical-sizing: auto;
+          font-weight: 400;
+          font-style: normal;
+        }
+
+
+       .montserrat2 {
+          font-family: "Montserrat", sans-serif;
+          font-optical-sizing: auto;
+          font-weight: 400;
+          font-style: normal;
+        }
+
+
         :root {
               --color-primary: {{  $admin_site_color_value  }};
               /* --color-primary: 90 102 241; */
@@ -94,6 +118,7 @@
               --dark-bg: 30 41 59;
               --dark-bg2: 249 250 251;
           }
+
          .float{
           position:fixed;
           width:60px;
@@ -145,7 +170,7 @@
 @livewireStyles
 </head>
 
-<body class="">
+<body class="montserrat2">
 
        @if (env('APP_NAME') == 'FoxDataHub')
        <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-NPMMTFT6"

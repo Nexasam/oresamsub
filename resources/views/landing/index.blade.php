@@ -43,6 +43,11 @@
     <link href='https://unpkg.com/boxicons@2.1.1/css/boxicons.min.css' rel='stylesheet'>
     <link rel="stylesheet" href="https://cdn.datatables.net/2.0.8/css/dataTables.dataTables.min.css">
 
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap" rel="stylesheet">
+
+
 
     <title>{{ $site_title }}  - data</title>
 
@@ -54,6 +59,20 @@
     @endphp
 
     <style>
+
+        .nunito2 {
+            font-family: "Nunito", sans-serif;
+            font-optical-sizing: auto;
+            font-weight: 400;
+            font-style: normal;
+        }
+
+        .montserrat2 {
+          font-family: "Montserrat", sans-serif;
+          font-optical-sizing: auto;
+          font-weight: 400;
+          font-style: normal;
+        }
         
         :root {
             --brand:   {{ isset($site_primary_color) && $site_primary_color != NULL ? $site_primary_color : "#5a66f2"  }};
@@ -177,7 +196,7 @@
 
 </head>
 
-<body data-bs-spy="scroll" data-bs-target=".navbar" data-bs-offset="70">
+<body class="montserrat2" data-bs-spy="scroll" data-bs-target=".navbar" data-bs-offset="70">
     @if (env('APP_NAME') == 'FoxDataHub')
     <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-NPMMTFT6"
      height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
