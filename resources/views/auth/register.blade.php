@@ -74,6 +74,7 @@
    @endphp
 
    <style>
+   
      :root {
            --color-primary: {{  $admin_site_color_value  }};
            /* --color-primary: 90 102 241; */
@@ -144,7 +145,7 @@
         <div class="lg:col-span-6 col-span-12">
             <div class="authentication-page w-full">
                 <!-- ========== MAIN CONTENT ========== -->
-                    <main id="content"  class="w-full max-w-md mx-auto p-6">
+                    <main id="content"  class="w-full max-w-2xl mx-auto p-6">
                         {{-- <a href="#" class="header-logo lg:hidden">
                         <img src="../assets/img/brand-logos/desktop-logo.png" alt="logo" class="mx-auto block dark:hidden">
                         <img src="../assets/img/brand-logos/desktop-dark.png" alt="logo" class="mx-auto hidden dark:block">
@@ -208,139 +209,135 @@
                                         {{-- @csrf --}}
                                         <div class="grid gap-y-4">
 
-                                            <!-- Form Group -->
-                                            <div>
-                                                <label for="first_name" class="block text-sm mb-2 dark:text-white">First Name</label>
-                                                <div class="relative">
-                                                    <x-text-input id="first_name" class="block mt-1 w-full" type="text" name="first_name" :value="old('first_name')" required autofocus autocomplete="first_name" />
-                                                    <input type="hidden" name="_token" value="{{ csrf_token() }}" />
-                                                    <x-input-error :messages="$errors->get('first_name')" class="mt-2" />
-                                                </div>
-                                            </div>
-                                            <!-- End Form Group -->
+                                            <div class="grid grid-cols-2 gap-6">
 
-                                            <!-- Form Group -->
-                                            <div>
-                                                <label for="last_name" class="block text-sm mb-2 dark:text-white">Last Name</label>
-                                                <div class="relative">
-                                                    <x-text-input id="last_name" class="block mt-1 w-full" type="text" name="last_name" :value="old('last_name')" required autofocus autocomplete="last_name" />
-                                                    <x-input-error :messages="$errors->get('last_name')" class="mt-2" />
+                                                <!-- Form Group -->
+                                                <div>
+                                                    <label for="first_name" class="block text-sm mb-2 dark:text-white font-bold">First Name</label>
+                                                    <div class="relative">
+                                                        <x-text-input id="first_name" class="block mt-1 w-full" type="text" name="first_name" :value="old('first_name')" required autofocus autocomplete="first_name" />
+                                                        <input type="hidden" name="_token" value="{{ csrf_token() }}" />
+                                                        <x-input-error :messages="$errors->get('first_name')" class="mt-2" />
+                                                    </div>
                                                 </div>
-                                            </div>
-                                            <!-- End Form Group -->
+                                                <!-- End Form Group -->
 
-                                             <!-- Form Group -->
-                                             <div>
-                                                <label for="username" class="block text-sm mb-2 dark:text-white">Username</label>
-                                                <div class="relative">
-                                                    <x-text-input id="username" class="block mt-1 w-full" type="text" name="username" :value="old('username')" required autofocus autocomplete="username" />
-                                                    <x-input-error :messages="$errors->get('username')" class="mt-2" />
+                                                <!-- Form Group -->
+                                                <div>
+                                                    <label for="last_name" class="block text-sm mb-2 dark:text-white font-bold">Last Name</label>
+                                                    <div class="relative">
+                                                        <x-text-input id="last_name" class="block mt-1 w-full" type="text" name="last_name" :value="old('last_name')" required autofocus autocomplete="last_name" />
+                                                        <x-input-error :messages="$errors->get('last_name')" class="mt-2" />
+                                                    </div>
                                                 </div>
-                                            </div>
-                                            <!-- End Form Group -->
+                                                <!-- End Form Group -->
 
-
-                                            <!-- End Form Group -->
-
-                                             <!-- Form Group -->
-                                             {{-- <div>
-                                                <label for="last_name" class="block text-sm mb-2 dark:text-white">Other Names</label>
-                                                <div class="relative">
-                                                    <x-text-input id="other_names" class="block mt-1 w-full" type="text" name="other_names" :value="old('other_names')" required autofocus autocomplete="other_names" />
-                                                    <x-input-error :messages="$errors->get('other_names')" class="mt-2" />
-                                                </div>
-                                            </div> --}}
-                                            <!-- End Form Group -->
-
-                                            <!-- Form Group -->
-                                            <div>
-                                                <label for="last_name" class="block text-sm mb-0 dark:text-white">PIN</label>
-                                                <small>You need to create a 4-digit code so as to ensure a more secure transaction with us</small>
-                                                <div class="relative">
-                                                    <x-text-input id="pin" class="block mt-1 w-full" type="password" name="pin" :value="old('pin')" required autofocus autocomplete="pin" />
-                                                    <x-input-error :messages="$errors->get('pin')" class="mt-2" />
-                                                        
-                                                        
-                                                </div>
-                                                <div class="flex items-center mt-1">
-                                                    <input type="checkbox" id="hs-basic-with-description-unchecked" class="ti-switch show_pin">
-                                                    <label for="hs-basic-with-description-unchecked" class="text-sm text-gray-500 ms-3 dark:text-white/70 ">Show PIN</label>
-                                                </div>
                                             </div>
 
-                                            <!-- Form Group -->
-                                            <div>
-                                                <label for="email" class="block text-sm mb-2 dark:text-white">Email address</label>
-                                                <div class="relative">
-                                                    <x-text-input id="email" name="email" class="block mt-1 w-full" type="email" email="email" :value="old('email')" required autofocus autocomplete="email" />
-                                                    <x-input-error :messages="$errors->get('email')" class="mt-2" />
-                                                </div>
-                                            </div>
-                                            <!-- End Form Group -->
 
-                                            <!-- Form Group -->
-                                            <div>
-                                                <label for="phone_number" class="block text-sm mb-2 dark:text-white">Phone number</label>
-                                                <div class="relative">
-                                                    <x-text-input id="phone_number" class="block mt-1 w-full" type="text" name="phone_number" :value="old('phone_number')" required autofocus autocomplete="phone_number" />
-                                                    <x-input-error :messages="$errors->get('phone_number')" class="mt-2" />
-                                                </div>
-                                            </div>
-                                            <!-- End Form Group -->
+                                            <div class="grid grid-cols-2 gap-6">
 
-                                             <!-- Form Group -->
-                                             <div>
-                                                <label for="upline_referral_phone_number" class="block text-sm mb-2 dark:text-white">Referral phone number (optional)</label>
-                                                <div class="relative">
-                                                    <x-text-input id="upline_referral_phone_number" class="block mt-1 w-full" type="text" name="upline_referral_phone_number" :value="old('upline_referral_phone_number')"  autofocus autocomplete="upline_referral_phone_number" />
-                                                    <x-input-error :messages="$errors->get('upline_referral_phone_number')" class="mt-2" />
+                                                <!-- Form Group -->
+                                                <div>
+                                                    <label for="username" class="block text-sm mb-2 dark:text-white font-bold">Username</label>
+                                                    <div class="relative">
+                                                        <x-text-input id="username" class="block mt-1 w-full" type="text" name="username" :value="old('username')" required autofocus autocomplete="username" />
+                                                        <x-input-error :messages="$errors->get('username')" class="mt-2" />
+                                                    </div>
                                                 </div>
-                                            </div>
-                                            <!-- End Form Group -->
-
-                                            <!-- Form Group -->
-                                            <div>
-                                                <label for="password" class="block text-sm mb-2 dark:text-white">Password</label>
-                                                <div class="relative">
-                                                    <x-text-input id="password" name="password" class="block mt-1 w-full" type="password" password="password" :value="old('password')" required autofocus autocomplete="password" />
-                                                    <x-input-error :messages="$errors->get('password')" class="mt-2" />
-                                                </div>
-                                                <div class="flex items-center mt-1">
-                                                    <input type="checkbox" id="hs-basic-with-description-unchecked" class="ti-switch show_password">
-                                                    <label for="hs-basic-with-description-unchecked" class="text-sm text-gray-500 ms-3 dark:text-white/70 ">Show password</label>
-                                                </div>
-                                            </div>
-                                            <!-- End Form Group -->
 
                                                <!-- Form Group -->
-                                               <div>
-                                                <label for="confirm-password" class="block text-sm mb-2 dark:text-white">Confirm Password</label>
-                                                <div class="relative">
-                                                    <x-text-input id="confirm-password" name="password_confirmation" class="block mt-1 w-full" type="password" password="confirm-password" :value="old('password_confirmation')" required autofocus autocomplete="password_confirmation" />
-                                                    <x-input-error :messages="$errors->get('password_confirmation')" class="mt-2" />
+                                                <div>
+                                                    <label for="email" class="block text-sm mb-2 dark:text-white font-bold">Email address</label>
+                                                    <div class="relative">
+                                                        <x-text-input id="email" name="email" class="block mt-1 w-full" type="email" email="email" :value="old('email')" required autofocus autocomplete="email" />
+                                                        <x-input-error :messages="$errors->get('email')" class="mt-2" />
+                                                    </div>
                                                 </div>
-                                                <div class="flex items-center mt-1">
-                                                    <input type="checkbox" id="hs-basic-with-description-unchecked" class="ti-switch show_confirm_password">
-                                                    <label for="hs-basic-with-description-unchecked" class="text-sm text-gray-500 ms-3 dark:text-white/70 ">Show password</label>
-                                                </div>
+                                                <!-- End Form Group -->
+
                                             </div>
+
+                                          
                                             <!-- End Form Group -->
 
-                                           
 
-                                            <!-- Checkbox -->
-                                            {{-- <div class="flex items-center">
-                                                <div class="flex">
-                                                    <input id="remember-me" name="remember-me" type="checkbox"
-                                                        class="shrink-0 mt-0.5 border-gray-200 rounded text-primary pointer-events-none focus:ring-primary dark:bg-bgdark dark:border-white/10 dark:checked:bg-primary dark:checked:border-primary dark:focus:ring-offset-white/10">
-                                                </div>
-                                                <div class="ms-3">
-                                                    <label for="remember-me" class="text-sm dark:text-white">I accept the <a
-                                                            class="text-primary decoration-2 hover:underline font-medium"
-                                                            href="#">Terms and Conditions</a></label>
-                                                </div>
-                                            </div> --}}
-                                            <!-- End Checkbox -->
+                                        
+                                           
+                                            <div class="grid grid-cols-2 gap-6">
+                                                        <!-- Form Group -->
+                                                        <div>
+                                                            <label for="phone_number" class="block text-sm mb-2 dark:text-white font-bold">Phone number</label>
+                                                            <div class="relative">
+                                                                <x-text-input id="phone_number" class="block mt-1 w-full" type="text" name="phone_number" :value="old('phone_number')" required autofocus autocomplete="phone_number" />
+                                                                <x-input-error :messages="$errors->get('phone_number')" class="mt-2" />
+                                                            </div>
+                                                        </div>
+                                                        <!-- End Form Group -->
+
+                                                        <!-- Form Group -->
+                                                        <div>
+                                                            <label for="upline_referral_phone_number" class="block text-sm mb-2 dark:text-white font-bold">Referral phone number (optional)</label>
+                                                            <div class="relative">
+                                                                <x-text-input id="upline_referral_phone_number" class="block mt-1 w-full" type="text" name="upline_referral_phone_number" :value="old('upline_referral_phone_number')"  autofocus autocomplete="upline_referral_phone_number" />
+                                                                <x-input-error :messages="$errors->get('upline_referral_phone_number')" class="mt-2" />
+                                                            </div>
+                                                        </div>
+                                                        <!-- End Form Group -->
+
+                                            </div>
+
+                                      
+                                            <div class="grid grid-cols-2 gap-6"> 
+                                                <!-- Form Group -->
+                                                        <div>
+                                                            <label for="password" class="block text-sm mb-2 dark:text-white font-bold">Password</label>
+                                                            <div class="relative">
+                                                                <x-text-input id="password" name="password" class="block mt-1 w-full" type="password" password="password" :value="old('password')" required autofocus autocomplete="password" />
+                                                                <x-input-error :messages="$errors->get('password')" class="mt-2" />
+                                                            </div>
+                                                            <div class="flex items-center mt-1">
+                                                                <input type="checkbox" id="hs-basic-with-description-unchecked" class="ti-switch show_password">
+                                                                <label for="hs-basic-with-description-unchecked" class="text-sm text-gray-500 ms-3 dark:text-white/70 ">Show password</label>
+                                                            </div>
+                                                        </div>
+                                                        <!-- End Form Group -->
+            
+                                                        <!-- Form Group -->
+                                                        <div>
+                                                            <label for="confirm-password" class="block text-sm mb-2 dark:text-white font-bold">Confirm Password</label>
+                                                            <div class="relative">
+                                                                <x-text-input id="confirm-password" name="password_confirmation" class="block mt-1 w-full" type="password" password="confirm-password" :value="old('password_confirmation')" required autofocus autocomplete="password_confirmation" />
+                                                                <x-input-error :messages="$errors->get('password_confirmation')" class="mt-2" />
+                                                            </div>
+                                                            <div class="flex items-center mt-1">
+                                                                <input type="checkbox" id="hs-basic-with-description-unchecked" class="ti-switch show_confirm_password">
+                                                                <label for="hs-basic-with-description-unchecked" class="text-sm text-gray-500 ms-3 dark:text-white/70 ">Show password</label>
+                                                            </div>
+                                                        </div>
+                                                        <!-- End Form Group -->
+                                            </div>
+
+                                            <div class="grid grid-cols-1">
+                                                    <!-- Form Group -->
+                                                    <div>
+                                                        <label for="last_name" class="block text-sm mb-0 dark:text-white">PIN</label>
+                                                        <small>You need to create a 4-digit code so as to ensure a more secure transaction with us</small>
+                                                        <div class="relative">
+                                                            <x-text-input id="pin" class="block mt-1 w-full" type="password" name="pin" :value="old('pin')" required autofocus autocomplete="pin" />
+                                                            <x-input-error :messages="$errors->get('pin')" class="mt-2" />
+                                                                
+                                                                
+                                                        </div>
+                                                        <div class="flex items-center mt-1">
+                                                            <input type="checkbox" id="hs-basic-with-description-unchecked" class="ti-switch show_pin">
+                                                            <label for="hs-basic-with-description-unchecked" class="text-sm text-gray-500 ms-3 dark:text-white/70 ">Show PIN</label>
+                                                        </div>
+                                                    </div>
+
+                                            </div>
+
+                                        
 
                                             <button type="submit"
                                                 class="py-2 px-3 inline-flex justify-center items-center gap-2 rounded-sm border border-transparent font-semibold bg-primary text-white hover:bg-primary focus:outline-none focus:ring-0 focus:ring-primary focus:ring-offset-0 transition-all text-sm dark:focus:ring-offset-white/10">Sign
