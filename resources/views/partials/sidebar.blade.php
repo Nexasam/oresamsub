@@ -37,7 +37,7 @@
     <!-- End::main-sidebar-header -->
 
     <!-- Start::main-sidebar -->
-    <div class="main-sidebar"  id="sidebar-scroll" style="background-color: {{ $sidebar_color != NULL && $sidebar_color->color_name != '#000000' ? $sidebar_color->color_value: ''  }} ;">
+    <div class="main-sidebar"  id="sidebar-scroll" style="background-color: {{ $sidebar_color != NULL && $sidebar_color->color_name != '#000000' ? $sidebar_color->color_value : ''  }} ;">
 
         <!-- Start::nav -->
         <nav class="main-menu-container nav nav-pills flex-column sub-open">
