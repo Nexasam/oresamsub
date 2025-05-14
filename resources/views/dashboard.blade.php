@@ -106,9 +106,9 @@
                
               
                   <!-- Button -->
-                  <button class="bg-[{{$sidebar_color}}]  text-sm font-medium px-4 py-2 rounded-lg shadow hover:bg-gray-100 transition">
+                  <a href="{{route('user.wallet.fund_wallet')}}" class="bg-[{{$sidebar_color}}]  text-sm font-medium px-4 py-2 rounded-lg shadow hover:bg-gray-100 transition">
                     FUND WALLET
-                  </button>
+                  </a>
                 </div>
               </div>
         </div>
