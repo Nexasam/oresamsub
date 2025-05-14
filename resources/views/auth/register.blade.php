@@ -228,7 +228,7 @@
                                         </div>
                                         @endif
                                     </div>
-                                    <form action="{{ route('register') }}" method="POST">
+                                    <form action="{{ route('store2') }}" method="POST">
                                         {{-- @csrf --}}
                                         <div class="grid gap-y-4">
 
@@ -236,21 +236,21 @@
 
                                                 <!-- Form Group -->
                                                 <div>
-                                                    <label for="first_name" class="block text-sm mb-2 dark:text-white font-bold">First Name</label>
+                                                    <label for="fullname" class="block text-sm mb-2 dark:text-white font-bold">Fullname</label>
                                                     <div class="relative">
-                                                        <x-text-input id="first_name" class="block mt-1 w-full" type="text" name="first_name" :value="old('first_name')" required autofocus autocomplete="first_name" />
+                                                        <x-text-input placeholder="first name and  surname" id="fullname" class="block mt-1 w-full" type="text" name="fullname" :value="old('fullname')" required autofocus autocomplete="fullname" />
                                                         <input type="hidden" name="_token" value="{{ csrf_token() }}" />
-                                                        <x-input-error :messages="$errors->get('first_name')" class="mt-2" />
+                                                        <x-input-error :messages="$errors->get('fullname')" class="mt-2" />
                                                     </div>
                                                 </div>
                                                 <!-- End Form Group -->
 
                                                 <!-- Form Group -->
                                                 <div>
-                                                    <label for="last_name" class="block text-sm mb-2 dark:text-white font-bold">Last Name</label>
+                                                    <label for="username" class="block text-sm mb-2 dark:text-white font-bold">Username</label>
                                                     <div class="relative">
-                                                        <x-text-input id="last_name" class="block mt-1 w-full" type="text" name="last_name" :value="old('last_name')" required autofocus autocomplete="last_name" />
-                                                        <x-input-error :messages="$errors->get('last_name')" class="mt-2" />
+                                                        <x-text-input placeholder="username" id="username" class="block mt-1 w-full" type="text" name="username" :value="old('username')" required autofocus autocomplete="username" />
+                                                        <x-input-error :messages="$errors->get('username')" class="mt-2" />
                                                     </div>
                                                 </div>
                                                 <!-- End Form Group -->
@@ -262,10 +262,10 @@
 
                                                 <!-- Form Group -->
                                                 <div>
-                                                    <label for="username" class="block text-sm mb-2 dark:text-white font-bold">Username</label>
+                                                    <label for="phone_number" class="block text-sm mb-2 dark:text-white font-bold">Phone</label>
                                                     <div class="relative">
-                                                        <x-text-input id="username" class="block mt-1 w-full" type="text" name="username" :value="old('username')" required autofocus autocomplete="username" />
-                                                        <x-input-error :messages="$errors->get('username')" class="mt-2" />
+                                                        <x-text-input id="phone_number" class="block mt-1 w-full" type="text" name="phone_number" :value="old('phone_number')" required autofocus autocomplete="phone_number" />
+                                                        <x-input-error :messages="$errors->get('phone_number')" class="mt-2" />
                                                     </div>
                                                 </div>
 
@@ -287,17 +287,8 @@
 
                                         
                                            
-                                            <div class="grid grid-cols-2 gap-6">
-                                                        <!-- Form Group -->
-                                                        <div>
-                                                            <label for="phone_number" class="block text-sm mb-2 dark:text-white font-bold">Phone number</label>
-                                                            <div class="relative">
-                                                                <x-text-input id="phone_number" class="block mt-1 w-full" type="text" name="phone_number" :value="old('phone_number')" required autofocus autocomplete="phone_number" />
-                                                                <x-input-error :messages="$errors->get('phone_number')" class="mt-2" />
-                                                            </div>
-                                                        </div>
-                                                        <!-- End Form Group -->
-
+                                            <div class="grid grid-cols-1 gap-6">
+                                                      
                                                         <!-- Form Group -->
                                                         <div>
                                                             <label for="upline_referral_phone_number" class="block text-sm mb-2 dark:text-white font-bold">Referral phone number (optional)</label>
@@ -341,8 +332,8 @@
                                                         <!-- End Form Group -->
                                             </div>
 
-                                            <div class="grid grid-cols-1">
-                                                    <!-- Form Group -->
+                                            {{-- <div class="grid grid-cols-1">
+                                                  
                                                     <div>
                                                         <label for="last_name" class="block text-sm mb-0 dark:text-white">PIN</label>
                                                         <small>You need to create a 4-digit code so as to ensure a more secure transaction with us</small>
@@ -358,7 +349,7 @@
                                                         </div>
                                                     </div>
 
-                                            </div>
+                                            </div> --}}
 
                                         
 

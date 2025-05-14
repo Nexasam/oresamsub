@@ -6,6 +6,7 @@ use Illuminate\Foundation\Application;
 use App\Http\Middleware\RoleUserAccess;
 use App\Http\Middleware\RoleAdminAccess;
 use App\Http\Middleware\TemplateSetting;
+use App\Http\Middleware\SetTransactionPin;
 use App\Http\Middleware\ValidateSanctumUser;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -20,7 +21,13 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware) {
         // $middleware->append(RoleAssess::class);
-        $middleware->alias(['template_setting'=>TemplateSetting::class,'admin' => RoleAdminAccess::class, 'user' => RoleUserAccess::class, 'validate_user' => ValidateSanctumUser::class ]);
+        $middleware->alias([
+            'template_setting'=>TemplateSetting::class,
+            'admin' => RoleAdminAccess::class,
+            'user' => RoleUserAccess::class, 
+            'validate_user' => ValidateSanctumUser::class,
+            'set_transaction_pin' => SetTransactionPin::class,
+         ]);
         // 'api_access' => AuthenticateExternalIntegration::class
         // $middleware->alias(['user' => RoleUserAccess::class]);
         $middleware->statefulApi();

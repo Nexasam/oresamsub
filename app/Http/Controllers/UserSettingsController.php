@@ -16,6 +16,44 @@ use Illuminate\Support\Facades\Validator;
 class UserSettingsController extends Controller
 {
     use UserDashboardDataTrait;
+
+    public function set_pin(Request $request){
+      return view('user.settings.create_pin');
+    }
+
+    public function store_set_pin(Request $request){
+      // dd($request->all());
+
+        $validator = Validator::make($request->all(), [
+          'pin' => 'required|digits:4',
+          'confirm_pin' => 'required|digits:4'
+        ]);
+        
+
+        if ($validator->stopOnFirstFailure()->fails()) {
+          return redirect()->back()->withErrors($validator)->withInput();
+        }
+        
+        if($request->pin != $request->confirm_pin){
+          Session::flash('failure','PIN mismatch found.');
+          return redirect()->back();
+        }
+
+
+        if($request->pin == '1234'){
+          Session::flash('failure','Please use another PIN. It is not a strong PIN.');
+          return redirect()->back();
+        }
+
+        User::where('id',auth()->id())->update([
+          'pin' => $request->pin
+        ]);
+
+
+        Session::flash('success','PIN was successfully set');
+        return redirect()->route('dashboard');
+
+    }
     
     public function index(){
         
