@@ -54,22 +54,24 @@
 
                 <div class="box-body">
                   <nav class="flex space-x-2" aria-label="Tabs" role="tablist">
-                    <button type="button" class="hs-tab-active:bg-primary hs-tab-active:text-white py-3 px-4 inline-flex items-center gap-2 bg-transparent text-sm font-medium text-center text-gray-500 rounded-sm hover:text-primary  dark:text-white/70 dark:hover:text-white active" id="pills-with-brand-color-item-1" data-hs-tab="#pills-with-brand-color-1" aria-controls="pills-with-brand-color-1">
+                    {{-- <button type="button" class="hs-tab-active:bg-primary hs-tab-active:text-white py-3 px-4 inline-flex items-center gap-2 bg-transparent text-sm font-medium text-center text-gray-500 rounded-sm hover:text-primary  dark:text-white/70 dark:hover:text-white active" id="pills-with-brand-color-item-1" data-hs-tab="#pills-with-brand-color-1" aria-controls="pills-with-brand-color-1">
                       Wallet Setting
-                    </button>
+                    </button> --}}
                     {{-- <button type="button" class="hs-tab-active:bg-primary hs-tab-active:text-white py-3 px-4 inline-flex items-center gap-2 bg-transparent text-sm font-medium text-center text-gray-500 rounded-sm hover:text-primary  dark:text-white/70 dark:hover:text-white" id="pills-with-brand-color-item-2" data-hs-tab="#pills-with-brand-color-2" aria-controls="pills-with-brand-color-2">
                       Profile
                     </button> --}}
-                    <button type="button" class="hs-tab-active:bg-primary hs-tab-active:text-white py-3 px-4 inline-flex items-center gap-2 bg-transparent text-sm font-medium text-center text-gray-500 rounded-sm hover:text-primary  dark:text-white/70 dark:hover:text-white" id="pills-with-brand-color-item-3" data-hs-tab="#pills-with-brand-color-3" aria-controls="pills-with-brand-color-3">
+                    
+                    {{-- <button type="button" class="hs-tab-active:bg-primary hs-tab-active:text-white py-3 px-4 inline-flex items-center gap-2 bg-transparent text-sm font-medium text-center text-gray-500 rounded-sm hover:text-primary  dark:text-white/70 dark:hover:text-white active" id="pills-with-brand-color-item-3" data-hs-tab="#pills-with-brand-color-3" aria-controls="pills-with-brand-color-3">
                       Security/2fa Authentication
-                    </button>
+                    </button> --}}
+
                     {{-- <button type="button" class="hs-tab-active:bg-primary hs-tab-active:text-white py-3 px-4 inline-flex items-center gap-2 bg-transparent text-sm font-medium text-center text-gray-500 rounded-sm hover:text-primary  dark:text-white/70 dark:hover:text-white" id="pills-with-brand-color-item-4" data-hs-tab="#pills-with-brand-color-4" aria-controls="pills-with-brand-color-4">
                       2FA Authentication
                     </button> --}}
                   </nav>
 
                   <div class="mt-3">
-                    <div id="pills-with-brand-color-1" role="tabpanel" aria-labelledby="pills-with-brand-color-item-1">
+                    {{-- <div id="pills-with-brand-color-1" role="tabpanel" aria-labelledby="pills-with-brand-color-item-1">
                       <div class="overflow-auto">
 
                             <form method="POST" action="{{ route('user.settings.update_default_wallet')  }}">
@@ -89,7 +91,7 @@
                                             selected
                                            @endif value="bulk_data_wallet">Data Wallet</option>
                                       </select>
-                                          {{-- @if ($referral_setting->product_commission_feature == 1) selected @endif --}}
+                                        
                                     </div>
 
                                     <div class="space-y-2">
@@ -101,16 +103,17 @@
                             </form>
                         
                       </div>                
-                    </div>
+                    </div> --}}
 
-                    <div id="pills-with-brand-color-2" class="hidden" role="tabpanel" aria-labelledby="pills-with-brand-color-item-2">
+                    {{-- class="hidden" --}}
+                    <div id="pills-with-brand-color-2"  role="tabpanel" aria-labelledby="pills-with-brand-color-item-2">
                       <div class="overflow-auto">
                         <form method="POST" action="{{ route('user.settings.update_profile')  }}">
                           @csrf
                           
                           {{-- <div class="grid w-full lg:w-1/2 lg:grid-cols-2 gap-6 space-y-4 lg:space-y-0"> --}}
-                            <div class="grid lg:grid-cols-2 gap-6 space-y-4 lg:space-y-0">
-                              <div class="space-y-2">
+                          <div class="grid lg:grid-cols-2 gap-6 space-y-4 lg:space-y-0">
+                            <div class="space-y-2">
                                 <label class="ti-form-label mb-0">First name</label>
                                 <input type="text" id="first_name" name="first_name" value="{{ $user->first_name }}" class="my-auto ti-form-input" placeholder="Firstname">
                             </div>
@@ -186,7 +189,7 @@
                               </div> --}}
 
                               <div class="space-y-2 mt-5">
-                                  <button type="submit" class="ti-btn ti-btn-primary w-full">Update profile</button>
+                                  <button type="submit" class="ti-btn ti-btn-primary w-full btn-block">Update profile</button>
                               </div>
                             
                               <br>
@@ -195,7 +198,8 @@
                       </div>  
                     </div>
 
-                    <div id="pills-with-brand-color-3" class="hidden" role="tabpanel" aria-labelledby="pills-with-brand-color-item-3">
+                    {{-- class="hidden"  --}}
+                    <div id="pills-with-brand-color-3" role="tabpanel" aria-labelledby="pills-with-brand-color-item-3">
                       <div class="overflow-auto">
                         <form method="POST" action="{{ route('user.settings.update_password')  }}">
                           @csrf

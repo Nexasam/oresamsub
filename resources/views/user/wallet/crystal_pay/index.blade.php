@@ -46,7 +46,8 @@
           
               <div class="box">
                 <div class="box-header">
-                   <p class="text-2xl"><b>Wallet Balance: {{ number_format(auth()->user()->main_wallet) }}</b></p>
+                   <p class="text-xl underline"><b>Wallet Balance: {{ number_format(auth()->user()->main_wallet) }}</b></p>
+                   <br>
                   <h5 class="box-title">Fund wallet using  <b>{{ $funding_option->funding_option_name }}</b></h5>
                   <b>Please note:</b>
                   <p>You can also make a direct payment to our bank account and your wallet will be credited. <br>
@@ -68,7 +69,7 @@
                 <div class="box-body">
                   <nav class="flex space-x-2" aria-label="Tabs" role="tablist">
                     <button type="button" class="hs-tab-active:bg-primary hs-tab-active:text-white py-3 px-4 inline-flex items-center gap-2 bg-transparent text-sm font-medium text-center text-gray-500 rounded-sm hover:text-primary  dark:text-white/70 dark:hover:text-white active" id="pills-with-brand-color-item-2" data-hs-tab="#pills-with-brand-color-2" aria-controls="pills-with-brand-color-2">
-                      Virtual Wallets
+                      Virtual Accounts
                     </button>
                     <button type="button" class="hs-tab-active:bg-primary hs-tab-active:text-white py-3 px-4 inline-flex items-center gap-2 bg-transparent text-sm font-medium text-center text-gray-500 rounded-sm hover:text-primary  dark:text-white/70 dark:hover:text-white " id="pills-with-brand-color-item-1" data-hs-tab="#pills-with-brand-color-1" aria-controls="pills-with-brand-color-1">
                       Wallet Transactions
@@ -83,7 +84,7 @@
                   </nav>
 
                   <div class="mt-3">
-                    <div id="pills-with-brand-color-2" class="" role="tabpanel" aria-labelledby="pills-with-brand-color-item-2">
+                    <div id="pills-with-brand-color-2"  role="tabpanel" aria-labelledby="pills-with-brand-color-item-2">
                       <div class="overflow-auto">
                         {{-- <table  class="ti-custom-table ti-custom-table-head ti-striped-table ti-custom-table-hover ">
                             <thead> --}}
