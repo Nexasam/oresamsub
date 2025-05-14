@@ -220,7 +220,7 @@
                                                 <div class="mb-2">
                                                  
                                                  <label class="ti-form-label mb-0">Phone Number to recharge:</label>
-                                                 <input type="text" value="0" placeholder="e.g 08168509044" class="my-auto ti-form-input" required id="phone_number" name="phone_number">         
+                                                 <input type="text" value="0" placeholder="e.g 08168509044" class="my-auto ti-form-input" required id="phone_numberv2" name="phone_numberv2">         
                                                  <span id="loading" class="text-green-600 hidden">Loading...</span>
                                                  {{-- <div id="loading" style="display: none; text-align: center; padding: 20px;">
                                                     <svg xmlns="http://www.w3.org/2000/svg" style="margin:auto; background: none;" width="50" height="50" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid">

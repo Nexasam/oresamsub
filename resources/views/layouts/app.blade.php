@@ -1477,7 +1477,7 @@
         
         
 
-        $('#phone_number').keyup(debounce(function(){
+        $('#phone_numberv2').keyup(debounce(function(){
 
           $('#mtn_svg').hide();
           $('#airtel_svg').hide();
@@ -1486,7 +1486,7 @@
 
           // Your logic here
           //select the network, select the plans
-          let phone_number = $('#phone_number').val();
+          let phone_number = $('#phone_numberv2').val();
           let _token = $('#_token').val();
 
           if(phone_number.trim() === ''){
