@@ -18,6 +18,29 @@
     </div>
     <!-- Page Header Close -->
 
+    <div class="grid grid-cols-1 mb-4">
+        @if (Session::has('success'))
+          <div class="bg-success/10 border border-success/10 alert text-success" role="alert">
+            {{ Session::get('success') }}
+          </div>
+        @endif
+
+        @if (Session::has('failure'))
+          <div class="bg-danger/10 border border-danger/10 alert text-danger" role="alert">
+            {{ Session::get('failure') }}
+          </div>
+        @endif
+        
+        @if ($errors->any())
+          <div class="bg-danger/10 border border-danger/10 alert text-danger" role="alert">
+            <ul>
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+          </div>
+        @endif
+      </div>
   
     <div class="grid grid-cols-12 gap-3">
 

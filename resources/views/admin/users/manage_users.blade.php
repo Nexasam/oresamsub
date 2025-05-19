@@ -82,6 +82,7 @@
                   <button type="button" class="hs-tab-active:bg-primary hs-tab-active:border-primary hs-tab-active:text-white dark:hs-tab-active:bg-primary dark:hs-tab-active:border-primary dark:hs-tab-active:text-white -me-px py-3 px-3 inline-flex items-center gap-2 bg-gray-50 text-sm font-medium text-center border text-gray-500 rounded-sm hover:text-gray-700 dark:bg-bodybg dark:border-white/10 dark:text-white/70 dark:hover:text-gray-300" id="profile-settings-item-3" data-hs-tab="#profile-settings-3" aria-controls="profile-settings-3" role="tab">
                     <i class="ri ri-global-line"></i> Reset 2FA
                   </button>
+              
                   {{-- <button type="button" class="hs-tab-active:bg-primary hs-tab-active:border-primary hs-tab-active:text-white dark:hs-tab-active:bg-primary dark:hs-tab-active:border-primary dark:hs-tab-active:text-white -me-px py-3 px-3 inline-flex items-center gap-2 bg-gray-50 text-sm font-medium text-center border text-gray-500 rounded-sm hover:text-gray-700 dark:bg-bodybg dark:border-white/10 dark:text-white/70 dark:hover:text-gray-300" id="profile-settings-item-3" data-hs-tab="#profile-settings-3" aria-controls="profile-settings-3" role="tab">
                     <i class="ri ri-lock-line"></i> Password Settings
                   </button>
@@ -236,6 +237,34 @@
                             </div>
                         </div> --}}
                       </div>
+
+                      <div class="py-4">
+                        <hr>
+
+                        <div class="grid mt-3">
+                          <h5 class="text-base font-semibold">Update User Plan</h5>
+                          <form method="POST" action="{{ route('admin.users.update_user_plan')  }}">
+                               @csrf    
+                               <div class="space-y-2">
+                                {{-- <label class="ti-form-label mb-0">Update User Plan</label> --}}
+                                <select required id="user_plan_id" name="user_plan_id"  class="my-auto ti-form-select w-1/2">
+                                  <option value="">Select</option>   
+                                  @foreach ($user_plans as $user_plan)
+                                      <option  
+                                      @if ($user_plan->id == $user->user_plan_id)
+                                      selected
+                                      @endif 
+                                      value="{{ $user_plan->id  }}">{{ $user_plan->user_plan_name ?? $user_plan->default_user_plan_name  }}</option>
+                                  @endforeach
+                                </select> 
+                                <input type="hidden" id="user_id" name="user_id" value="{{$user->id}}">
+                
+                                <input type="submit" class="ti-btn ti-btn-primary w-1/2" value="Update plan for this user">           
+                              </div>
+
+                          </form>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -294,6 +323,7 @@
                     </div>
                   </div>
                 </div>
+              
                 {{-- <div id="profile-settings-3" class="hidden" role="tabpanel" aria-labelledby="profile-settings-item-3">
                   <div class="box border-0 shadow-none mb-0">
                     <div class="box-header">

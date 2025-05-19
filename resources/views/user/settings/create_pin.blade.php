@@ -65,17 +65,17 @@
                           @csrf
                           
                           {{-- <div class="grid w-full lg:w-1/2 lg:grid-cols-2 gap-6 space-y-4 lg:space-y-0"> --}}
-                          <div class="grid lg:grid-cols-2 gap-6 space-y-4 lg:space-y-0">
-                            <div class="space-y-2">
+                          <div class="grid lg:grid-cols-1 gap-6 space-y-4 lg:space-y-0">
+                            <div class="space-y-2 max-w-lg">
                                 <label class="ti-form-label mb-0">PIN</label>
                                 <input type="text" id="pin" name="pin" value="" class="my-auto ti-form-input" placeholder="PIN">
                             </div>
-                            <div class="space-y-2">
+                            <div class="space-y-2 max-w-lg">
                                 <label class="ti-form-label mb-0">Reenter PIN</label>
                                 <input type="text" id="confirm_pin" name="confirm_pin" value="" class="my-auto ti-form-input" placeholder="Reenter PIN">
                             </div>
                       
-                              <div class="space-y-2 mt-5">
+                              <div class="space-y-2 mt-5 max-w-lg">
                                   <button type="submit" class="ti-btn ti-btn-primary w-full btn-block">Set Transaction PIN</button>
                               </div>
                             

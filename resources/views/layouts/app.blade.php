@@ -842,7 +842,10 @@
                                     option = "<option value="+idd+">"+product_plan_name+'- &#8358;'+selling_price+"</option>";
                                   }
                                   else if(product_slug == 'airtime' && amount != ''){
-                                    option = "<option value="+idd+">"+product_plan_name+'- You are buying for: &#8358;'+selling_price+"</option>";
+
+                                    // $('.display_actual_amount').html("<b>You are buying for: &#8358;"+selling_price+"</b>");
+                                    // $('#product_plan_id').val(idd);
+                                    option = "<option selected value="+idd+">"+product_plan_name+'- You are buying for: &#8358;'+selling_price+"</option>";
                                   }
                                   else if(product_slug == 'airtime' && amount == ''){
                                     option = "<option value="+idd+">"+product_plan_name+"</option>";
@@ -1477,7 +1480,7 @@
         
         
 
-        $('#phone_numberv2').keyup(debounce(function(){
+        $('#phone_number').keyup(debounce(function(){
 
           $('#mtn_svg').hide();
           $('#airtel_svg').hide();
@@ -1486,7 +1489,7 @@
 
           // Your logic here
           //select the network, select the plans
-          let phone_number = $('#phone_numberv2').val();
+          let phone_number = $('#phone_number').val();
           let _token = $('#_token').val();
 
           if(phone_number.trim() === ''){
@@ -1796,6 +1799,40 @@
           $('#filter_by_plan_category').prop('checked',false)
           var network_id = $(this).val();
           var product_slug = $('#product_slug').val();
+
+          let selectedNetwork = $('#network_id option:selected').text();
+
+          // alert(selectedNetwork);return;
+
+
+          if(selectedNetwork == 'MTN'){
+            $('#mtn_svg').show();
+            $('#airtel_svg').hide();
+            $('#glo_svg').hide();
+            $('#9mobile_svg').hide();
+          }else if(selectedNetwork == 'GLO'){
+            $('#mtn_svg').hide();
+            $('#airtel_svg').hide();
+            $('#glo_svg').show();
+            $('#9mobile_svg').hide();
+          }else if(selectedNetwork == 'AIRTEL'){
+            $('#mtn_svg').hide();
+            $('#airtel_svg').show();
+            $('#glo_svg').hide();
+            $('#9mobile_svg').hide();
+          }else if(selectedNetwork == '9MOBILE'){
+            $('#mtn_svg').hide();
+            $('#airtel_svg').hide();
+            $('#glo_svg').hide();
+            $('#9mobile_svg').show();
+          }else{
+            $('#mtn_svg').hide();
+            $('#airtel_svg').hide();
+            $('#glo_svg').hide();
+            $('#9mobile_svg').hide();
+          }
+          // $('#network_id').prepend('<option selected value="'+response.network_id+'">'+selectedNetwork+'</option>');
+
           
           // alert(network_id)
           //here you have to display all plans that are tied to this network but only where tied to the automation tied to each product plan category
@@ -2105,11 +2142,18 @@
                       else if(dataList.status == 2){
                           //@least 1 tranaction had an issue
                           sweetAlertDisplay(dataList.message,'Info','warning');
+                          $("#buy_data_btn").text('Buy Data');
+                          $("#buy_data_btn").prop('disabled',false);
+                          $('#cancel_disabling').addClass('hidden')
                           reload(6000);
+
                       }
                       else{
                         sweetAlertDisplay(dataList.message,'Error','error');
-                        $(this).prop('disabled',false);
+                          $("#buy_data_btn").text('Buy Data');
+                          $("#buy_data_btn").prop('disabled',false);
+                          $('#cancel_disabling').addClass('hidden')
+                          // reload(6000);
                       }
                   },
                   error: function(xhr, status, error) {

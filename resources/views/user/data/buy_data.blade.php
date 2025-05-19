@@ -35,6 +35,32 @@
                   <h5 class="box-title">{{ auth()->user()->role->role_name == 'Admin' ? 'TEST' : '' }}  Data Transactions</h5>
                 </div>
 
+                <div class="grid grid-cols-1">
+                  <div class="col-span-12">
+                    @if (Session::has('success'))
+                    <div class="bg-success/10 border border-success/10 alert text-success" role="alert">
+                      Great! {{ Session::get('success') }}
+                      </div>
+                    @endif
+    
+                    @if (Session::has('failure'))
+                      <div class="bg-danger/10 border border-danger/10 alert text-danger" role="alert">
+                       Ops! {{ Session::get('failure') }}
+                      </div>
+                    @endif
+                    
+                    @if ($errors->any())
+                      <div class="bg-danger/10 border border-danger/10 alert text-danger" role="alert">
+                        <ul>
+                            @foreach ($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                      </div>
+                    @endif
+                  </div>
+                </div>
+
                 <div class="box-body">
                   <nav class="flex space-x-2" aria-label="Tabs" role="tablist">
                     <button type="button" class="hs-tab-active:bg-primary hs-tab-active:text-white py-3 px-4 inline-flex items-center gap-2 bg-transparent text-sm font-medium text-center text-gray-500 rounded-sm hover:text-primary  dark:text-white/70 dark:hover:text-white active" id="pills-with-brand-color-item-2" data-hs-tab="#pills-with-brand-color-2" aria-controls="pills-with-brand-color-2">
@@ -164,29 +190,7 @@
                             <!-- Start::row-3 -->
                           <div class="grid grid-cols-12 gap-x-6">
                               
-                            <div class="col-span-12">
-                              @if (Session::has('success'))
-                              <div class="bg-success/10 border border-success/10 alert text-success" role="alert">
-                                Great! {{ Session::get('success') }}
-                                </div>
-                              @endif
-              
-                              @if (Session::has('failure'))
-                                <div class="bg-danger/10 border border-danger/10 alert text-danger" role="alert">
-                                 Ops! {{ Session::get('failure') }}
-                                </div>
-                              @endif
-                              
-                              @if ($errors->any())
-                                <div class="bg-danger/10 border border-danger/10 alert text-danger" role="alert">
-                                  <ul>
-                                      @foreach ($errors->all() as $error)
-                                          <li>{{ $error }}</li>
-                                      @endforeach
-                                  </ul>
-                                </div>
-                              @endif
-                            </div>
+                       
 
                             <div class="col-span-12">
                                 <div class="box">
@@ -313,11 +317,8 @@
                         <!-- End::row-3 -->   
                       </div>  
                     </div>
-                    <div id="pills-with-brand-color-3" class="hidden" role="tabpanel" aria-labelledby="pills-with-brand-color-item-3">
-                      <p class="text-gray-500 dark:text-white/70 p-5 border rounded-sm dark:border-white/10 border-gray-200">
-                        Unbelievable healthy snack success stories. 12 facts about safe food handling tips that will impress your friends. Restaurant weeks by the numbers. Will mexican food ever rule the world? The 10 best thai restaurant youtube videos. How restaurant weeks can make you sick. The complete beginner's guide to cooking healthy food. Unbelievable food stamp success stories. How whole foods markets are making the world a better place. 16 things that won't happen in dish reviews.
-                      </p>
-                    </div>
+                
+
                   </div>
                 </div>
                

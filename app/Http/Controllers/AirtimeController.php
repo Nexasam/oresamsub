@@ -83,6 +83,49 @@ class AirtimeController extends Controller
 
     }
 
+       
+    /**
+     * Show the form for creating a new resource.
+     */
+    public function buy_airtime_v2()
+    {
+
+            // dd('ss');
+            $dataa = $this->get_user_dashboard_data();
+            $data = [...$dataa];
+            $networks = Network::all();
+            $product = Product::where('slug','airtime')->first(); //TODO: have enums that gets the id later
+            $data['networks'] = $networks;
+            $data['product'] = $product;
+
+
+            $product_plan_categories = ProductPlanCategory::where('product_id',$product->id)
+            ->where('visibility',1)
+            ->get(); //TODO: have enums that gets the id later
+        
+            $data['product_plan_categories'] = $product_plan_categories;
+
+            $user_details = auth()->user();
+            $user_id = $user_details->id;
+            // dd($user_id);
+
+            //data txns list
+            $airtime_transactions = Transaction::with('user')->where('transaction_category','airtime')
+            ->where('user_id',$user_id)
+            ->latest()
+            ->get();
+            $data['airtime_transactions'] = $airtime_transactions;
+            $data['user_details'] = $user_details;
+
+            $siteTemplate = SiteTemplate::first();
+            if(! $siteTemplate || $siteTemplate->template_name == 'template_1'){
+                return view('user.airtime.buy_airtime_v2')->with($data);
+            }
+
+            // dd($airtime);
+            return view('template2.user.airtime.buy_airtime')->with($data);
+
+    }
 
         /**
      * Show the form for creating a new resource.

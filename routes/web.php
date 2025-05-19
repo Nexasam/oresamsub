@@ -176,6 +176,7 @@ Route::middleware(['auth','verified','admin'])->get('admin/users/create', [Users
 Route::middleware(['auth','verified','admin'])->get('admin/users/{id}/manage_user', [UsersController::class, 'manage_user'])->name('admin.users.manage_user');
 Route::middleware(['auth','verified','admin'])->post('admin/users/fund_user_wallet', [UsersController::class, 'fund_user_wallet'])->name('admin.users.fund_user_wallet');
 Route::middleware(['auth','verified','admin'])->post('admin/users/reset_2fa', [UsersController::class, 'reset_2fa'])->name('admin.users.reset_2fa');
+Route::middleware(['auth','verified','admin'])->post('admin/users/update_user_plan', [UsersController::class, 'update_user_plan'])->name('admin.users.update_user_plan');
 Route::middleware(['auth','verified','admin'])->post('admin/users/store', [UsersController::class, 'store'])->name('admin.users.store');
 Route::middleware(['auth','verified','admin'])->get('admin/users/fetch_users', [UsersController::class, 'fetch_users'])->name('admin.users.fetch_users');
 Route::middleware(['auth','verified','admin'])->get('admin/users/toggle_verification_status', [UsersController::class, 'toggle_verification_status'])->name('admin.users.toggle_verification_status');
@@ -318,6 +319,8 @@ Route::middleware(['auth','verified','set_transaction_pin'])->get('user/cable_su
 Route::middleware(['auth','verified','set_transaction_pin'])->get('user/cable_subscription/buy_cable_subscription_by_plan_category/{id}', [CableSubscriptionController::class, 'buy_cable_subscription_by_plan_category'])->name('user.cable_subscription.buy_cable_subscription_by_plan_category');
 Route::middleware(['auth','verified','set_transaction_pin'])->get('user/cable_subscription/validate_smart_card_number', [CableSubscriptionController::class, 'validate_smart_card_number'])->name('user.cable_subscription.validate_smart_card_number');
 
+
+Route::middleware(['auth','verified','set_transaction_pin'])->get('user/airtime/buy_airtime_v2', [AirtimeController::class, 'buy_airtime_v2'])->name('user.airtime.buy_artime2');
 Route::middleware(['auth','verified','set_transaction_pin'])->get('user/airtime/buy_airtime', [AirtimeController::class, 'buy_airtime'])->name('user.airtime.buy_airtime');
 Route::middleware(['auth','verified','set_transaction_pin'])->get('user/airtime/store', [AirtimeController::class, 'buy_airtime_action'])->name('user.airtime.buy_airtime_action');
 Route::middleware(['auth','verified','set_transaction_pin'])->get('user/airtime/buy_airtime_by_plan_category/{id}', [AirtimeController::class, 'buy_airtime_by_plan_category'])->name('user.airtime.buy_airtime_by_plan_category');

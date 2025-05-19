@@ -220,6 +220,41 @@ class UsersController extends Controller
       return redirect()->route('admin.users.index');
     }
 
+
+    /** 
+    * Update user plan. by ADMIN
+    */
+   public function update_user_plan(Request $request)
+   {
+     //  Gate::authorize('viewAny', User::class);
+
+     $validator = Validator::make($request->all(), [
+       'user_id' => 'required|exists:users,id',
+       'user_plan_id' => 'required|exists:user_plans,id',
+     ]);
+     
+
+     if ($validator->stopOnFirstFailure()->fails()) {
+       return redirect()->back()->withErrors($validator)->withInput();
+     }
+
+     
+     $user_plan_id = $request->user_plan_id;
+     $user_id = $request->user_id;
+     User::where('id',$user_id)->update([
+        'user_plan_id' => $user_plan_id
+     ]);
+
+     Session::flash('success','User plan was successfully updated');
+
+
+   
+    return redirect()->route('admin.users.index');
+  
+  }
+
+    
+
     
 
     public function toggle_verification_status(Request $request){
