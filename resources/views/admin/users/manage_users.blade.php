@@ -157,7 +157,7 @@
                                   @if ($user_plan->id == $user->user_plan_id)
                                   selected
                                   @endif 
-                                  value="{{ $user_plan->id  }}">{{ $user_plan->user_plan_name ?? $user_plan->default_user_plan_name  }}</option>
+                                  value="{{ $user_plan->id  }}">{{ $user_plan->updated_user_plan_name ?? $user_plan->user_plan_name  }}</option>
                               @endforeach
                 
                             </select>
@@ -254,7 +254,7 @@
                                       @if ($user_plan->id == $user->user_plan_id)
                                       selected
                                       @endif 
-                                      value="{{ $user_plan->id  }}">{{ $user_plan->user_plan_name ?? $user_plan->default_user_plan_name  }}</option>
+                                      value="{{ $user_plan->id  }}">{{ $user_plan->updated_user_plan_name ?? $user_plan->user_plan_name  }}</option>
                                   @endforeach
                                 </select> 
                                 <input type="hidden" id="user_id" name="user_id" value="{{$user->id}}">
