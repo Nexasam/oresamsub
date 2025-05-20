@@ -45,6 +45,29 @@
             </div>
         </div>
     </div> --}}
+
+
+
+    {{-- <div class="grid grid-cols-1">
+        <div class="overflow-x-auto whitespace-nowrap w-full bg-blue-100 mx-auto text-blue-800 px-4 py-1 rounded-sm font-semibold">
+            <div class="text-sm inline-block animate-marquee hover:[animation-play-state:paused]">
+                @php
+                   
+                        $futureDate = new DateTime('2025-12-31'); // Replace with your desired future date
+                        $today = new DateTime();
+
+                        $interval = $today->diff($futureDate);
+
+                        // Get total number of days
+                        $daysRemaining = $interval->days;
+
+                        // echo "Number of days remaining: $daysRemaining";
+                @endphp     
+                Next renewal of your domain and hosting is {!! $futureDate }}. You have {!! $daysRemaining !!} remaining. 
+            </div>
+          </div>
+    </div> --}}
+
     <div class="grid grid-cols-12 gap-x-5">
         
         <div class="col-span-12 xxxl:col-span-2 md:col-span-4">

@@ -54,7 +54,7 @@
                                <td>{!! $each_feature->description .'<br> Payment is <b>'.$each_feature->payment_condition.'</b>' !!}</td>
                                <td>&#8358;{{ number_format($each_feature->purchase_amount) }}</td>
                                {{-- <td>{{ $each_feature->payment_condition }}</td> --}}
-                               <td>{!! $each_feature->purchase_status == 1 ? '<span class="text-green-500">ACTIVE</span>':'<span class="text-blue-500">PENDING</span>' !!}</td>
+                               <td>{!! $each_feature->purchase_status == 1 ? '<span class="text-blue-500">ACTIVE</span>':'<span class="text-blue-500">PENDING</span>' !!}</td>
                                <td>{{ $each_feature->created_at }}</td>
                                <td>
                                  <button type="button" class="hs-dropdown-toggle ti-btn ti-btn-primary" data-hs-overlay="#hs-vertically-centered-modal{{$each_feature->id}}">

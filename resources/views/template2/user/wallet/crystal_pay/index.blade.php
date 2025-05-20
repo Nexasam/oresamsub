@@ -4,7 +4,7 @@
 <div class="grid grid-cols-1">
     <div class="max-w-5xl text-center m-4">
         @if (Session::has('success')) 
-        <div class="text-black bg-green-400 p-1 rounded-lg">
+        <div class="text-black bg-blue-400 p-1 rounded-lg">
         {{ Session::get('success') }} 
         </div>
         @endif

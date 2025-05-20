@@ -165,6 +165,19 @@
           font-size: 10.5px;
           text-transform: capitalize;
       }
+
+
+      /* marquee css */
+      @keyframes marquee {
+        0%   { transform: translateX(20%); }
+        100% { transform: translateX(-100%); }
+      }
+
+      .animate-marquee {
+        animation: marquee 40s linear infinite;
+      }
+
+      
           
     </style>
 

@@ -3,7 +3,7 @@
 @section('content')
 <div class="bg-white rounded-xl px-2 py-4  mt-2">
     @if (session('status') == 'verification-link-sent')
-    <div class="mb-4 font-medium text-sm text-green-600 dark:text-green-400">
+    <div class="mb-4 font-medium text-sm text-blue-600 dark:text-blue-400">
     {{ __('A new verification link has been sent to the email address you provided during registration.') }}
     </div>
     @endif

@@ -41,12 +41,14 @@
           </div>
         @endif
       </div>
+
+
   
     <div class="grid grid-cols-12 gap-3">
 
         
         <div class="col-span-12 xxxl:col-span-2 md:col-span-3">
-            <div class="max-w-sm w-full p-4 rounded-2xl shadow-lg bg-gradient-to-r from-green-500 to-green-700 text-white">
+            <div class="max-w-sm w-full p-4 rounded-2xl shadow-lg bg-gradient-to-r from-blue-500 to-blue-700 text-white">
                 <div class="flex items-center space-x-4">
                   <div class="p-3 bg-white/20 rounded-full">
                     <!-- Icon: Heroicon or Lucide -->
@@ -556,7 +558,7 @@
                                                             src="../assets/img/users/7.jpg"
                                                             alt="Image Description">
                                                         <span
-                                                            class="absolute bottom-0 end-0 block h-1.5 w-1.5 rounded-full ring-2 ring-white bg-green-400"></span>
+                                                            class="absolute bottom-0 end-0 block h-1.5 w-1.5 rounded-full ring-2 ring-white bg-blue-400"></span>
                                                     </div>
                                                 </div>
                                                 <div class="items-center">
@@ -604,7 +606,7 @@
                                                             src="../assets/img/users/12.jpg"
                                                             alt="Image Description">
                                                         <span
-                                                            class="absolute bottom-0 end-0 block h-1.5 w-1.5 rounded-full ring-2 ring-white bg-green-400"></span>
+                                                            class="absolute bottom-0 end-0 block h-1.5 w-1.5 rounded-full ring-2 ring-white bg-blue-400"></span>
                                                     </div>
                                                 </div>
                                                 <div class="items-center">
@@ -652,7 +654,7 @@
                                                             src="../assets/img/users/15.jpg"
                                                             alt="Image Description">
                                                         <span
-                                                            class="absolute bottom-0 end-0 block h-1.5 w-1.5 rounded-full ring-2 ring-white bg-green-400"></span>
+                                                            class="absolute bottom-0 end-0 block h-1.5 w-1.5 rounded-full ring-2 ring-white bg-blue-400"></span>
                                                     </div>
                                                 </div>
                                                 <div class="items-center">
@@ -708,7 +710,7 @@
                                                             src="../assets/img/users/6.jpg"
                                                             alt="Image Description">
                                                         <span
-                                                            class="absolute bottom-0 end-0 block h-1.5 w-1.5 rounded-full ring-2 ring-white bg-green-400"></span>
+                                                            class="absolute bottom-0 end-0 block h-1.5 w-1.5 rounded-full ring-2 ring-white bg-blue-400"></span>
                                                     </div>
                                                 </div>
                                                 <div class="items-center">
@@ -804,7 +806,7 @@
                                                             src="../assets/img/users/16.jpg"
                                                             alt="Image Description">
                                                         <span
-                                                            class="absolute bottom-0 end-0 block h-1.5 w-1.5 rounded-full ring-2 ring-white bg-green-400"></span>
+                                                            class="absolute bottom-0 end-0 block h-1.5 w-1.5 rounded-full ring-2 ring-white bg-blue-400"></span>
                                                     </div>
                                                 </div>
                                                 <div class="items-center">
@@ -852,7 +854,7 @@
                                                             src="../assets/img/users/3.jpg"
                                                             alt="Image Description">
                                                         <span
-                                                            class="absolute bottom-0 end-0 block h-1.5 w-1.5 rounded-full ring-2 ring-white bg-green-400"></span>
+                                                            class="absolute bottom-0 end-0 block h-1.5 w-1.5 rounded-full ring-2 ring-white bg-blue-400"></span>
                                                     </div>
                                                 </div>
                                                 <div class="items-center">

@@ -184,7 +184,7 @@
                             
                             {{--                            
                                 @if ($status)
-                                        <div class= 'font-medium text-sm text-green-600 dark:text-green-400'>
+                                        <div class= 'font-medium text-sm text-blue-600 dark:text-blue-400'>
                                             {{ $status }}
                                         </div>
                                 @endif 

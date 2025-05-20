@@ -4,7 +4,7 @@
 <div class="grid grid-cols-1">
     <div class="max-w-5xl text-center m-4">
         @if (Session::has('success')) 
-        <div class="text-black bg-green-400 p-1 rounded-lg">
+        <div class="text-black bg-blue-400 p-1 rounded-lg">
         {{ Session::get('success') }} 
         </div>
         @endif
@@ -69,7 +69,7 @@
                 <td class="border border-gray-300 p-4">
                    @switch($data->status)
                        @case($data->status == 1)
-                           <span class="text-green-600  font-bold rounded-lg">Success</span>
+                           <span class="text-blue-600  font-bold rounded-lg">Success</span>
                            @break
                         @case($data->status == -1)
                           <span class="text-red-600 font-bold rounded-lg">Failed</span>

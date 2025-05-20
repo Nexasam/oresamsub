@@ -24,8 +24,8 @@
                     <br>
                     <br>
               
-                    <a class="underline font-extrabold text-green-700" href="{{ route('admin.product_plan_categories.view_details',$data->product_plan->product_plan_category->id )}}">Plan Name: {{ $data->product_plan->product_plan_name }}</a><br>
-                    <a class="underline font-extrabold text-green-700" href="#">Automation: {{  $data->product_plan->automation->automation_name }}</a>
+                    <a class="underline font-extrabold text-blue-700" href="{{ route('admin.product_plan_categories.view_details',$data->product_plan->product_plan_category->id )}}">Plan Name: {{ $data->product_plan->product_plan_name }}</a><br>
+                    <a class="underline font-extrabold text-blue-700" href="#">Automation: {{  $data->product_plan->automation->automation_name }}</a>
                     <br>
                     {{-- <hr> --}}
                  </div>

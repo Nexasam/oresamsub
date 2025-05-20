@@ -122,7 +122,7 @@
                                     </td>
                                     {{-- <td class="border border-gray-300 px-1">{{ $txn->transaction_category }}</td> --}}
                                     <td class="border border-gray-300 px-1">{{ $txn->phone_number }}</td>
-                                    <td class="border border-gray-300 px-1 text-green-500">
+                                    <td class="border border-gray-300 px-1 text-blue-500">
                                         {{ $txn->amount. "[" .$txn->discounted_amount. "]" }}</td>
                                     {{-- <td class="border border-gray-300 px-1">{{ $txn->discounted_amount }}</td> --}}
                                     <td class="border border-gray-300 px-1">{{$txn->balance_before}}</td>
@@ -130,7 +130,7 @@
                                     <td class="border border-gray-300 px-1">
                                         @switch($txn->status)
                                             @case(1)
-                                                <span class="px-2 mx-1 rounded-lg py-1 bg-green-500 text-white">Success</span>
+                                                <span class="px-2 mx-1 rounded-lg py-1 bg-blue-500 text-white">Success</span>
                                                 @break
                                             @case(-1)
                                                 <span class="px-2 mx-1 rounded-lg py-1 bg-red-500 text-white">Failed</span>

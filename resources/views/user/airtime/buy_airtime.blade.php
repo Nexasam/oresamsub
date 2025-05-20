@@ -226,7 +226,7 @@
                                                  
                                                   <label class="ti-form-label mb-0">Phone Number to recharge:</label>
                                                   <input type="text" value="0" placeholder="e.g 08168509044" class="my-auto ti-form-input" required id="phone_number" name="phone_number">         
-                                                  <span id="loading" class="text-green-600 hidden">Loading...</span>
+                                                  <span id="loading" class="text-blue-600 hidden">Loading...</span>
                                                   {{-- <div id="loading" style="display: none; text-align: center; padding: 20px;">
                                                      <svg xmlns="http://www.w3.org/2000/svg" style="margin:auto; background: none;" width="50" height="50" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid">
                                                          <circle cx="50" cy="50" fill="none" stroke="#4B9CD3" stroke-width="10" r="35" stroke-dasharray="164.93361431346415 56.97787143782138">
