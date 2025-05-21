@@ -32,7 +32,7 @@
           
               <div class="box">
                 <div class="box-header">
-                  <h5 class="box-title">{{ auth()->user()->role->role_name == 'Admin' ? 'TEST' : '' }}  Data Transactions</h5>
+                  <h5 class="box-title">{{ auth()->user()->role->role_name == 'Admin' ? 'ADMIN TEST>>>' : '' }} Data Purchase (Single or Bulk)</h5>
                 </div>
 
                 <div class="grid grid-cols-1">
@@ -253,6 +253,12 @@
                     
                                                       </select>
                                                 </div>
+
+                                                <div class="space-y-2">
+                                                  <label class="ti-form-label mb-0">Phone Number(s) to recharge</label>
+                                                  <textarea id="phone_number" name="phone_number" class="my-auto ti-form-input"
+                                                      placeholder="e.g 08168509044, 09011988807"></textarea>
+                                              </div>
                     
                                                 <div class="space-y-2">
                                                     <label class="ti-form-label mb-0">Product Plans List</label>
@@ -265,11 +271,7 @@
                                                       </div>
                                                 </div>
                                               
-                                                <div class="space-y-2">
-                                                    <label class="ti-form-label mb-0">Phone Number(s) to recharge</label>
-                                                    <textarea id="phone_number" name="phone_number" class="my-auto ti-form-input"
-                                                        placeholder="e.g 08168509044, 09011988807"></textarea>
-                                                </div>
+                                               
 
                                                 @if (env('APP_NAME') == 'Edsub' || env('APP_NAME') == 'OresamSub')
                                                     <input type="hidden" value="0" class="ti-form-checkbox mt-0.5 pointer-events-none" name="validatephonenetwork" id="validatephonenetwork">       

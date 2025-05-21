@@ -32,7 +32,7 @@
           
               <div class="box">
                 <div class="box-header">
-                  <h5 class="box-title">{{ auth()->user()->role->role_name == 'Admin' ? 'TEST' : '' }}  Data Transactions v2</h5>
+                  <h5 class="box-title">{{ auth()->user()->role->role_name == 'Admin' ? 'ADMIN TEST>>>' : '' }} Quick Data Purchase</h5> 
                 </div>
 
                 <div class="box-body">
@@ -40,9 +40,7 @@
                     <button type="button" class="hs-tab-active:bg-primary hs-tab-active:text-white py-3 px-4 inline-flex items-center gap-2 bg-transparent text-sm font-medium text-center text-gray-500 rounded-sm hover:text-primary  dark:text-white/70 dark:hover:text-white active" id="pills-with-brand-color-item-2" data-hs-tab="#pills-with-brand-color-2" aria-controls="pills-with-brand-color-2">
                       Buy Data
                     </button>
-                    <button type="button" class="hs-tab-active:bg-primary hs-tab-active:text-white py-3 px-4 inline-flex items-center gap-2 bg-transparent text-sm font-medium text-center text-gray-500 rounded-sm hover:text-primary  dark:text-white/70 dark:hover:text-white" id="pills-with-brand-color-item-3" data-hs-tab="#pills-with-brand-color-3" aria-controls="pills-with-brand-color-3">
-                      Buy Data (Bulk)
-                    </button>
+                 
                     <button type="button" class="hs-tab-active:bg-primary hs-tab-active:text-white py-3 px-4 inline-flex items-center gap-2 bg-transparent text-sm font-medium text-center text-gray-500 rounded-sm hover:text-primary  dark:text-white/70 dark:hover:text-white " id="pills-with-brand-color-item-1" data-hs-tab="#pills-with-brand-color-1" aria-controls="pills-with-brand-color-1">
                       View Data Transactions
                     </button>        
@@ -361,136 +359,7 @@
                         <!-- End::row-3 -->   
                       </div>  
                     </div>
-                    <div id="pills-with-brand-color-3" class="hidden"  role="tabpanel" aria-labelledby="pills-with-brand-color-item-3">
-                      <div class="overflow-auto">
-                            <!-- Start::row-3 -->
-                          <div class="grid grid-cols-12 gap-x-6">
-                              
-                            <div class="col-span-12">
-                                <div class="box">
-                                    
-                                    <div class="box-body">
-                                      <h3><strong> Wallet balance: &#8358;{{  number_format($user_details->main_wallet,2) }}</strong></h3>
-                                        <br>
-                                        <br>
-                                        <form>
-                                           
-                                            <input type="hidden" id="_token" name="_token" value="{{ csrf_token() }}" />
-                                            <input type="hidden" id="product_slug" name="product_slug" value="data" />
-                                            
-                                            <div class="grid w-full lg:w-1/2 lg:grid-cols-1 gap-6 space-y-4 lg:space-y-0">
-                                                
-                                              @if (env('APP_NAME') == 'Edsub' || env('APP_NAME') == 'OresamSub')
-                                               <input type="hidden" class="my-auto ti-form-input" value="main_wallet" required id="wallet_category" name="wallet_category">         
-                                              @else
-                                                  <div class="space-y-2">
-                                                      <label class="ti-form-label mb-0">Choose Wallet</label>
-                                                      <select required id="wallet_category" name="wallet_category" class="my-auto ti-form-select">
-                                                          <option value="">Select</option>
-                                                          <option value="main_wallet">Main Wallet - &#8358;{{  number_format($user_details->main_wallet) }}</option>                                        
-                                                          <option value="data_wallet">Data Wallet</option>                                        
-                                                      
-                                                      </select>
-                                                  </div>
-                                              @endif
-                                               
-
-
-                                                <div class="space-y-2">
-                                                    <label class="ti-form-label mb-0">Network</label>
-                                                    {{-- single_select --}}
-                                                    <select required id="network_id" name="network_id" class="my-auto ti-form-select">
-                                                        <option value="">Select</option>
-                                                        @foreach ($networks as $network)
-                                                         <option value="{{  $network->id }}">{{ $network->network_name }}</option>                                        
-                                                        @endforeach
-                                                      </select>
-                                                </div>
-
-                                                @if (env('APP_NAME') != 'Edsub' && env('APP_NAME') != 'OresamSub')
-                                                  <div class="space-y-2">
-                                                    <label class="p-3 flex w-full bg-white border border-gray-200 rounded-sm text-sm focus:border-primary focus:ring-primary dark:bg-bgdark dark:border-white/10 dark:text-white/70">
-                                                          <input type="checkbox" class="ti-form-checkbox mt-0.5 pointer-events-none" id="filter_by_plan_category">
-                                                          <span class="text-sm text-gray-500 ms-2 dark:text-white/70">Filter by plan categories</span>
-                                                        </label>
-                                                  </div>
-                                                @endif
-                                            
-
-                                             
-                    
-                                                {{-- single_select --}}
-                                                <div id="product_plan_category_div" class="space-y-2 hidden">
-                                                    <label class="ti-form-label mb-0">Product Plan Category</label>
-                                                    <select data-trigger required name="product_plan_category_id" id="product_plan_category_id" class="my-auto ti-form-select">
-                                                        <option value="all">Select</option>
-                    
-                                                      </select>
-                                                </div>
-                    
-                                                <div class="space-y-2">
-                                                    <label class="ti-form-label mb-0">Product Plans List</label>
-                                                    <select required name="product_plan_id" id="product_plan_id" class="my-auto ti-form-select">
-                                                        <option value="all">Select</option>
-                    
-                                                      </select>
-                                                      <div class="display_wallet_details">
-                                                        
-                                                      </div>
-                                                </div>
-                                              
-                                                <div class="space-y-2">
-                                                    <label class="ti-form-label mb-0">Phone Number(s) to recharge</label>
-                                                    <textarea id="phone_number" name="phone_number" class="my-auto ti-form-input"
-                                                        placeholder="e.g 08168509044, 09011988807"></textarea>
-                                                </div>
-
-                                                @if (env('APP_NAME') == 'Edsub' || env('APP_NAME') == 'OresamSub')
-                                                    <input type="hidden" value="0" class="ti-form-checkbox mt-0.5 pointer-events-none" name="validatephonenetwork" id="validatephonenetwork">       
-                                                @else
-                                                    <div class="space-y-2">
-                                                      <label class="p-3 flex w-full bg-white border border-gray-200 rounded-sm text-sm focus:border-primary focus:ring-primary dark:bg-bgdark dark:border-white/10 dark:text-white/70">
-                                                            <input type="checkbox" class="ti-form-checkbox mt-0.5 pointer-events-none" id="validatephonenetwork">
-                                                            <span class="text-sm text-gray-500 ms-2 dark:text-white/70">Validate phone network</span>
-                                                          </label>
-                                                    </div>
-                                                @endif
-                                               
-                    
-                                                <div class="space-y-2">
-                                                  <label class="ti-form-label mb-0">PIN:</label>
-                                                  <input type="password" class="my-auto ti-form-input" id="pin" name="pin" value="" placeholder="Enter your pin to secure transaction">
-                                                  <div class="flex items-center">
-                                                    <input type="checkbox" id="hs-basic-with-description-unchecked" class="ti-switch show_pin1">
-                                                    <label for="hs-basic-with-description-unchecked" class="text-sm text-gray-500 ms-3 dark:text-white/70 ">Show PIN</label>
-                                                  </div>  
-                                                </div>
-
-                                            
-
-                                                <div class="">
-                                                    <button type="submit" id="buy_data_btn" class="ti-btn ti-btn-primary w-full">Buy Data</button><br>
-                                                    <p class="text-center mt-2 font-bold underline">
-                                                      <a href="#" id="cancel_disabling" class="hidden">Click to reactivate the button and try again</a>
-                                                    </p>
-
-                                                </div>
-                                               
-                                                <br>
-                                            </div>
-                                            {{-- <div class="my-5">
-                                                <button type="submit" class="ti-btn ti-btn-primary w-full">Submit</button>
-                                            </div> --}}
-                    
-                                        </form>
-                                       
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- End::row-3 -->   
-                      </div>  
-                    </div>
+                  
                   </div>
                 </div>
                
