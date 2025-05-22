@@ -35,7 +35,10 @@ class SendFailedTransactionEmail extends Command
             // $user = User::where('new_user_alert',0)->where('username','emmanuel80')->first();
             $date_param = '2025-04-04';
             $transaction = Transaction::with(['user','product_plan'])->where('failure_notification',0)
-            ->where('status',-1)
+            ->where(function($query){
+                $query->where('status',-1)
+                      ->orWhere('status',0);
+            })
             ->whereDate('created_at','>=',$date_param)
             ->first();
             // logger($transaction);
@@ -44,7 +47,7 @@ class SendFailedTransactionEmail extends Command
          
             $get_emails_to_notify_failed_transactions = Setting::where('field_name','emails_to_notify_failed_transactions')->first();
             if(! $get_emails_to_notify_failed_transactions){
-                logger('no email to notify yet for failed transaction');
+                logger('no email to notify yet for failed/pending transaction');
                 exit;
             }
           

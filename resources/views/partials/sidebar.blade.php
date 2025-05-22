@@ -70,7 +70,7 @@
                 <li class="slide__category"><span class="category-name">Customer Modules</span></li>
                  <!-- Start::slide -->
                  <li class="slide  has-sub">
-                    <a href="{{ route('user.data.buy_data') }}" class="side-menu__item">
+                    <a href="{{ route('user.data.buy_data2') }}" class="side-menu__item">
                         <i class="ti ti-device-mobile side-menu__icon"></i>
                         <span class="side-menu__label">Quick Data Purchase</span>
                         <i class="ri ri-arrow-right-s-line side-menu__angle"></i>

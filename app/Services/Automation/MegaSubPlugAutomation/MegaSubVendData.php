@@ -4,6 +4,7 @@ namespace App\Services\Automation\MegaSubPlugAutomation;
 
 use App\Models\Automation;
 use App\Models\ProductPlan;
+use App\Models\FailedMessagePattern;
 
 class MegaSubVendData{
 
@@ -60,7 +61,8 @@ class MegaSubVendData{
         
         $plan_details = ProductPlan::with('product_plan_category.network')
         ->where('visibility',1)
-        ->where('id',$this->plan_id)->first();
+        ->where('id',$this->plan_id)
+        ->first();
       
         //debugging/testing
         // return [
@@ -136,6 +138,32 @@ class MegaSubVendData{
         }
  
         $error = isset($response_decode['Detail']['error']) ? $response_decode['Detail']['error'] : ''; 
+
+       
+     
+
+      
+        if(env('APP_NAME') == 'OresamSub'){
+            $status = 0;
+            //ORESAMSUB ONLY FOR NOW
+            $user_message_to_check_with_pattern = isset($response_decode['Detail']['message']) ? $response_decode['Detail']['message'].'_'.$error :  'Transaction failed_'.$error;
+            $check_if_response_matches = FailedMessagePattern::where('message','like','%'.$user_message_to_check_with_pattern.'%')->first();
+            if($check_if_response_matches){
+                // option 1
+                $plan_details->update([
+                    'visibility' => 0
+                ]);
+
+                // option 2
+                // //it means the response exists, so PEND.
+                // return [
+                //     'status' => 0,
+                //     'user_message' => 'Transaction is being processed',
+                //     'admin_message' => $response,
+                // ];
+            }
+        }
+        
         return [
             'status' => -1,
             'user_message' => isset($response_decode['Detail']['message']) ? $response_decode['Detail']['message'].'_'.$error :  'Transaction failed_'.$error,

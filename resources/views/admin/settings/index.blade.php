@@ -955,24 +955,27 @@
                         
                         <hr>
                         <br>
-                        <form enctype="multipart/form-data" method="POST" action="{{ route('admin.settings.emails_to_notify_failed_transactions')  }}">
-                          @csrf
-                          <div class="grid w-full lg:w-1/2 lg:grid-cols-1 gap-2 space-y-4 lg:space-y-0">
-                             
-                                <div class="">
-                                  <label class="ti-form-label mb-2">Add list of emails that should be notified when a transaction fails. separate with a comma</label>
-                                  <input type="text"  required class="my-auto ti-form-input" name="emails_to_notify_failed_transactions" value="{{ $emails_to_notify_failed_transactions  ?? '' }}"  placeholder="">
-                                </div> 
-                               
+                        @if (env('APP_NAME') == 'OresamSub')
+                            <form enctype="multipart/form-data" method="POST" action="{{ route('admin.settings.emails_to_notify_failed_transactions')  }}">
+                              @csrf
+                              <div class="grid w-full lg:w-1/2 lg:grid-cols-1 gap-2 space-y-4 lg:space-y-0">
                                 
-                              <div class="space-y-2">
-                                  <button type="submit" class="ti-btn ti-btn-primary w-full">Update Emails to be notified of a failed transaction</button>
+                                    <div class="">
+                                      <label class="ti-form-label mb-2">Add list of emails that should be notified when a transaction fails or set to pending. separate with a comma</label>
+                                      <input type="text"  required class="my-auto ti-form-input" name="emails_to_notify_failed_transactions" value="{{ $emails_to_notify_failed_transactions  ?? '' }}"  placeholder="">
+                                    </div> 
+                                  
+                                    
+                                  <div class="space-y-2">
+                                      <button type="submit" class="ti-btn ti-btn-primary w-full">Update Emails to be notified of a failed transaction</button>
+                                  </div>
+                                
+                                  <br>
                               </div>
-                            
-                              <br>
-                          </div>
-                        </form>
-                        
+                            </form>
+                                
+                        @endif
+                       
                       </div>  
 
 

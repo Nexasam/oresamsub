@@ -450,6 +450,7 @@ class DataController extends Controller
 
 
 
+        $pending = 0;
         $success = 0;
         $failure = 0;
         $status = 0;
@@ -531,6 +532,7 @@ class DataController extends Controller
                                 }
                                 else if($automation_details->slug == 'megasubplug'){
                                     $sell_data = (new MegaSubVendData($validated_phone_number,$request->product_plan_id,$request->validatephonenetwork))->buyData();
+                                    logger($sell_data);
                                 }
                                 else if($automation_details->automation_group == 'msorg'){
                                     $data_msorg['automation_id'] = $automation_details->id;
@@ -556,7 +558,15 @@ class DataController extends Controller
                                     $status = 1;
                                     $wallet_before = User::where('id',$user_id)->first()->main_wallet;
                                     $wallet_after = $wallet_before - $amount;
-                                }else{
+                                }else if($sell_data['status'] == 0){
+                                    //SET TO PENDING , but user was debited
+                                    $pending++;
+                                    $status = 0;
+                                    $wallet_before = User::where('id',$user_id)->first()->main_wallet;
+                                    $wallet_after = $wallet_before - $amount;
+                                   
+                                }
+                                else{
                                     //it might be processing or it failed
                                     $status = -1;
                                     $failure++;
@@ -624,8 +634,13 @@ class DataController extends Controller
                     
                             if($failure > 0){
                               return response()->json(['status'=>2, 'message'=>" $failure issue(s) found. Check transaction history", 'data' => $display_results  ]);   
+                            }else{
+                                if($pending > 0){
+                                    return response()->json(['status'=>1, 'message'=>'Transaction is being processed.', 'data' => $display_results  ]);
+                                }else{
+                                    return response()->json(['status'=>1, 'message'=>'Transaction was successfully processed', 'data' => $display_results  ]);
+                                }
                             }
-                            return response()->json(['status'=>1, 'message'=>'Transaction was successfully processed', 'data' => $display_results  ]);
                     
                         } 
 

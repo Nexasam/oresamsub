@@ -450,4 +450,118 @@ class TransactionController extends Controller
 
 
   }
+
+
+  public function manually_mark_transaction_as_successful(Request $request){
+       $validator = Validator::make($request->all(), [
+        'pin' => 'required|digits:4',
+        'transaction_id' => 'required|exists:transactions,id',
+      ]);
+
+  
+      
+
+      if ($validator->stopOnFirstFailure()->fails()) {
+        return redirect()->back()->withErrors($validator)->withInput();
+      }
+
+      if(auth()->user()->pin != $request->pin){
+        //end session and redirect to login
+        Session::flash('failure','Incorrect PIN entered'); 
+        return redirect()->back();
+      }
+
+      //steps to refund::: put in a service class later: put in a separation fxn temporaritly
+      //get the amount of txn, get the balance of the user, then add the funds back, next log what has happened
+      $transaction_details = Transaction::with('user')->where('id',$request->transaction_id)->first();
+    //   return $transaction_details;
+      if(! $transaction_details){
+        Session::flash('failure','Transaction not found'); 
+        return redirect()->back();
+      }
+
+      $amount = $transaction_details->amount;
+      $amount_deducted = $transaction_details->discounted_amount;
+      $wallet_category = $transaction_details->wallet_category;
+      $transaction_category = $transaction_details->transaction_category;
+      $status = $transaction_details->status;
+      $user_id = $transaction_details->user_id;
+      if($transaction_details->status == 2){
+        Session::flash('failure','This is a refunded transaction'); 
+        return redirect()->back();
+      }
+
+      if($wallet_category == 'main_wallet'){
+        $former_wallet_balance =  $transaction_details->user->main_wallet;
+        $new_wallet_balance = $transaction_details->user->main_wallet + $amount_deducted;
+
+        //update user wallet
+         $transaction_details->user->update([
+            'main_wallet' => $new_wallet_balance
+         ]); 
+
+
+         $transaction_details->update([
+            'status' => 2 //i.e refunded
+         ]); 
+
+         $walletLog['user_id'] = $user_id;
+         $walletLog['transaction_category'] = 'REFUND_TRANSACTION';
+         $walletLog['balance_before'] = $former_wallet_balance;
+         $walletLog['balance_after'] = $new_wallet_balance;
+         $walletLog['transaction_id'] = $transaction_details->id;
+         $walletLog['action_by'] = auth()->user()->id;
+         $walletLog['description'] = 'Transaction was refunded for the ID: '. $transaction_details->id;
+         $this->log_wallet_transactions($walletLog);
+        //log: refund
+
+        Session::flash('success','Refund was successful'); 
+        return redirect()->back();
+
+      }else{
+
+            // return [
+            //     'status' => 'refund of transaction from data wallet in progress'
+            // ];
+
+            $product_plan_details = ProductPlan::select('product_plan_category_id')->where('id',$transaction_details->product_plan_id)->first();
+
+            $get_bulk_data_wallet_details = UserBulkDataWallet::where('user_id',$user_id)->where('product_plan_category_id',$product_plan_details->product_plan_category_id)->first();
+                            
+            if(! $get_bulk_data_wallet_details ){
+                 Session::flash('failure','No bulk data wallet found'); 
+                 return redirect()->back();
+            }
+            $current_bulk_wallet_balance = $get_bulk_data_wallet_details->bulk_wallet_balance_mb;
+            $data_size_bought = $transaction_details->balance_before - $transaction_details->balance_after;
+            $new_bulk_wallet_balance = $current_bulk_wallet_balance + $data_size_bought;
+        
+            //update user wallet
+            UserBulkDataWallet::where('user_id',$user_id)->where('product_plan_category_id',$product_plan_details->product_plan_category_id)
+            ->update([
+                'bulk_wallet_balance_mb' => $new_bulk_wallet_balance
+            ]); 
+
+            $transaction_details->update([
+              'status' => 2 //i.e refunded
+            ]); 
+        
+             $walletLog['user_id'] = $user_id;
+             $walletLog['transaction_category'] = 'REFUND_DATA_WALLET_TRANSACTION';
+             $walletLog['balance_before'] = $current_bulk_wallet_balance;
+             $walletLog['balance_after'] = $new_bulk_wallet_balance;
+             $walletLog['transaction_id'] = $transaction_details->id;
+             $walletLog['action_by'] = auth()->user()->id;
+             $walletLog['description'] = 'Data wallet transaction was refunded for the ID: '. $transaction_details->id;
+             $this->log_wallet_transactions($walletLog);
+
+             Session::flash('success','Refund was successful.'); 
+             return redirect()->back();
+      }
+
+ }
+
+
+
+
 }
