@@ -440,7 +440,7 @@ class AutomationController extends Controller
 
                     $response = curl_exec($curl);
                     $response_array = json_decode($response,true); 
-                    dd($response_array); 
+                    // dd($response_array); 
                     $data['response_array'] = $response_array;
                     return view('admin.automations.affatech_dashboard')->with($data);              
             }
