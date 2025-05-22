@@ -88,13 +88,13 @@
                                                   $cost_price = $plan_info->cost_price;
                                                   $default_selling_price = $plan_info->default_selling_price;
                                                   $plan_name = $plan_info->product_plan_name;
-                                                  $size_in_mb = $plan_info->data_size_in_mb;
+                                                  $size_in_mb = intval($plan_info->data_size_in_mb);
 
                                                 }else{
                                                   
                                                   $plan_name = $mtn_plan['month_validate'];
                                                   $cost_price = $mtn_plan['plan_amount'];
-                                                  $size_in_mb = $mtn_plan['plan'];
+                                                  $size_in_mb = intval($mtn_plan['plan']);
                                                   $default_selling_price = $mtn_plan['plan_amount'] + 50;
                                                   $validity = "";
                                                 
