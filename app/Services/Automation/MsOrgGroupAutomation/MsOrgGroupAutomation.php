@@ -47,11 +47,11 @@ class MsOrgGroupAutomation{
         }
 
         if(strtolower($network_name) == 'airtel'){
-            return 3;
+            return 4;
         }
 
        if(strtolower($network_name) == '9mobile'){
-            return 4;
+            return 3;
         }
 
         return -1;
