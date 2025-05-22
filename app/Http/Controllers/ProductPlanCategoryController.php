@@ -25,7 +25,7 @@ class ProductPlanCategoryController extends Controller
 
         $automations = Automation::select('id','automation_name')->get();
         $networks = Network::select('id','network_name')->get();
-        $products = Product::select('id','product_name')->get();
+        $products = Product::select('id','product_name')->where('visibility',1)->get();
         
         $data['automations'] = $automations;
         $data['products'] = $products;
@@ -36,8 +36,32 @@ class ProductPlanCategoryController extends Controller
         return view('admin.product_plan_categories.index')->with($data);
     }
 
+    
+    public function view_details_by_automation($id,$automation_id){
+      $product_plan_category = ProductPlanCategory::with('automation')->where('id',$id)->first();
+      $bulk_data_plans = BulkDataProductPlans::with('product_plan_category')->where('product_plan_category_id',$id)->paginate(50);
+      $user_plans = UserPlan::where('plan_level','<=',env('RESELLER_PLAN_COUNT'))->get();
+      $products = Product::select('id','product_name')->get();
+      $networks = Network::select('id','network_name')->get();
+      $automation = Automation::select('id','automation_name')->where('id',$automation_id)->first();
+      $automations = Automation::select('id','automation_name')->get();
+      $product_plans = ProductPlan::where('product_plan_category_id',$id)
+      ->where('automation_id',$automation_id)
+      ->get();
 
+      $data['automation'] = $automation;
+      $data['automations'] = $automations;
+      $data['products'] = $products;
+      $data['networks'] = $networks;
+      $data['user_plans'] = $user_plans;
+      $data['bulk_data_plans'] = $bulk_data_plans;
+      $data['product_plan_category'] = $product_plan_category;
+      $data['product_plans'] = $product_plans;
+      
+      return view('admin.product_plan_categories.view_details_by_automation')->with($data);
 
+    }
+ 
     public function view_details($id){
 
       $product_plan_category = ProductPlanCategory::with('automation')->where('id',$id)->first();
@@ -314,8 +338,8 @@ class ProductPlanCategoryController extends Controller
         ->addColumn('product_id',function($data){
             return $data->product->product_name;
         }) 
-        ->addColumn('automation_id',function($data){
-          return $data->automation->automation_name;
+        // ->addColumn('automation_id',function($data){
+        //   return $data->automation->automation_name;
           // $automations = Automation::all();
           
           // $options =  '';
@@ -337,7 +361,7 @@ class ProductPlanCategoryController extends Controller
           // // $automation_display .= ' </div>';
           
           // return $automation_display;
-      }) 
+      // }) 
     
       ->addColumn('network_id',function($data){
             return $data->network->network_name ?? 'nil';
@@ -379,14 +403,14 @@ class ProductPlanCategoryController extends Controller
             // $actionBtn = ' ';
             $route = route('admin.bulk_data_plans.index',$data->id);
             $view_route = route('admin.product_plan_categories.view_details',$data->id);
-            if ($data->product != NULL ){
-              $action = '<a href="'.$route.'" class="hs-dropdown-toggle ti-btn ti-btn-primary">Manage Bulk Plans</a>';
-             }else{
-              $action = '<i>Not applicable</i>';
-            }
+            // if ($data->product != NULL ){
+            //   $action = '<a href="'.$route.'" class="hs-dropdown-toggle ti-btn ti-btn-primary">Manage Bulk Plans</a>';
+            //  }else{
+            //   $action = '<i>Not applicable</i>';
+            // }
             $escapedUrl = htmlspecialchars(json_encode($data->id));
             // $action .= '<a href="#" data-modal-target="default-modal'.$data->id.'" data-modal-toggle="default-modal'.$data->id.'"  onclick="testingFunction('.$escapedUrl.')"  class="ti-btn ti-btn-success">Edit</a>';
-            $action .= '<a href="'.$view_route.'" class="hs-dropdown-toggle ti-btn ti-btn-success">Details</a>';
+            $action = '<a href="'.$view_route.'" class="hs-dropdown-toggle ti-btn ti-btn-success">Details</a>';
             return $action;
           
         })

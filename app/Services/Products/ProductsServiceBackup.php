@@ -16,7 +16,7 @@ class   ProductsServiceBackup{
         $product_slug = $data['product_slug'];//this is required
         
         $product_id = Product::where('slug',$product_slug)->first()->id;
-        logger($plan_category_id);
+        // logger($plan_category_id);
          
         if($plan_category_id == ''){
             $product_plan_categories = ProductPlanCategory::select('id','automation_id')

@@ -58,8 +58,11 @@ class ProductsService{
         $product_slug = $data['product_slug'];//this is required
         $user_id = $data['user_id'];//this is required
         
-        $product_id = Product::where('slug',$product_slug)->first()->id;
-        logger($plan_category_id);
+        $product_id = Product::where('slug',$product_slug)
+        ->where('visibility',1)
+        ->where('active_status',1)
+        ->first()->id;
+        // logger($plan_category_id);
          
         if($plan_category_id == ''){
             if($product_slug == 'airtime' || $product_slug == 'data'){

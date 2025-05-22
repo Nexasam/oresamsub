@@ -163,6 +163,13 @@ class AutomationController extends Controller
         $sme_network_glo = 4;
         // dd($automation->id);
 
+        $product_plan_categories = ProductPlanCategory::select('id','product_plan_category_name')->get();
+        $data['product_plan_ids'] = $product_plan_ids;
+        $data['product_plan_categories'] = $product_plan_categories; 
+        $data['slug'] = $slug;
+        $data['automation'] = $automation;
+        $data['user_plans'] = $user_plans;
+
         $selection = '';
         //move this hardcoded values later into an enum
         if($slug == 'autopilot'){
@@ -389,13 +396,13 @@ class AutomationController extends Controller
                 // exit;
                
     
-                $product_plan_categories = ProductPlanCategory::select('id','product_plan_category_name')->get();
+               
+                $data['data_plans'] = json_decode($response,true)['Detail'];
+                $data['automation'] = $automation;
                 $data['product_plan_ids'] = $product_plan_ids;
                 $data['product_plan_categories'] = $product_plan_categories; 
                 $data['slug'] = $slug;
-                $data['automation'] = $automation;
                 $data['user_plans'] = $user_plans;
-                $data['data_plans'] = json_decode($response,true)['Detail'];
                 // dd(json_decode($response,true)['Detail'][0]['id']);
     
                 return view('admin.automations.megasubplug_dashboard')->with($data);
@@ -408,6 +415,13 @@ class AutomationController extends Controller
             }
 
             if($slug == 'affatech'){
+
+                    if($automation == NULL || $automation->api_public_key == NULL){
+                        Session::flash('failure','Please ensure your automation api keys are set');
+                        return redirect()->route('admin.settings.index');
+                        // return back()->with('status' , 'Please check your settings and ensure keys are set');
+                    }
+
                     $curl = curl_init();        
                     curl_setopt_array($curl, array(
                     CURLOPT_URL => 'https://www.affatech.com.ng/api/network/',
@@ -425,8 +439,10 @@ class AutomationController extends Controller
                     ));
 
                     $response = curl_exec($curl);
-                    $response_array = json_decode($response,true);  
-                    dd($response_array);                  
+                    $response_array = json_decode($response,true); 
+                    // dd($response_array); 
+                    $data['response_array'] = $response_array;
+                    return view('admin.automations.affatech_dashboard')->with($data);              
             }
     
             if($selection == ''){
@@ -440,9 +456,6 @@ class AutomationController extends Controller
             Session::flash('failure','Please ensure your automation api keys are set');
             return redirect()->route('admin.settings.index');
         }
-
-        
-
        
     }
         

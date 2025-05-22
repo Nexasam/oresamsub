@@ -4,7 +4,7 @@ namespace App\Services\Automation\MegaSubPlugAutomation;
 
 use App\Models\Automation;
 use App\Models\ProductPlan;
-use App\Models\FailedMessagePattern;
+use App\Models\RecurringFailedMessagePattern;
 
 class MegaSubVendData{
 
@@ -139,22 +139,25 @@ class MegaSubVendData{
  
         $error = isset($response_decode['Detail']['error']) ? $response_decode['Detail']['error'] : ''; 
 
-       
-     
 
-      
+        $usermsg = isset($response_decode['Detail']['message']) ? $response_decode['Detail']['message'].'_'.$error :  'Transaction failed_'.$error;
+
         if(env('APP_NAME') == 'OresamSub'){
             $status = 0;
             //ORESAMSUB ONLY FOR NOW
-            $user_message_to_check_with_pattern = isset($response_decode['Detail']['message']) ? $response_decode['Detail']['message'].'_'.$error :  'Transaction failed_'.$error;
-            $check_if_response_matches = FailedMessagePattern::where('message','like','%'.$user_message_to_check_with_pattern.'%')->first();
+            $user_message_to_check_with_pattern = $usermsg;
+            $check_if_response_matches = RecurringFailedMessagePattern::where('message','like','%'.$user_message_to_check_with_pattern.'%')->first();
             if($check_if_response_matches){
                 // option 1
                 $plan_details->update([
-                    'visibility' => 0
+                    'visibility' => 0,
+                    'public_visibility' => 0,
+                    'active_status' => 0,
                 ]);
 
-                // option 2
+                $usermsg = 'Sorry, transaction failed. Please try again.';
+
+                // option 2 - LATER
                 // //it means the response exists, so PEND.
                 // return [
                 //     'status' => 0,
@@ -166,7 +169,7 @@ class MegaSubVendData{
         
         return [
             'status' => -1,
-            'user_message' => isset($response_decode['Detail']['message']) ? $response_decode['Detail']['message'].'_'.$error :  'Transaction failed_'.$error,
+            'user_message' => $usermsg,
             'admin_message' => $response,
         ];
         

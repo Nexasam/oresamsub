@@ -74,13 +74,14 @@
                                     <th>ID</th>
                                     <th>Category name</th>
                                     <th>Product</th>
-                                    <th>Automation</th>
+                                    {{-- <th>Automation</th> --}}
                                     {{-- <th>Purchase discount (%)</th> --}}
                                     <th>Network</th>
                                     <th>Date added</th>
                                     <th>Hot sales</th>
                                     <th>Visibility</th>
-                                    <th>Bulk data plans</th>
+                                    {{-- bulk data plans here --}}
+                                    <th>Action</th>
                                 </tr>
                                </thead>
                             <tbody>

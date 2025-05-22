@@ -5,6 +5,7 @@ namespace App\Services\Automation\MsOrgGroupAutomation;
 use App\Models\Network;
 use App\Models\Automation;
 use App\Models\ProductPlan;
+use App\Models\RecurringFailedMessagePattern;
 
 class MsOrgGroupAutomation{
 
@@ -134,9 +135,35 @@ class MsOrgGroupAutomation{
                 'admin_message' => $response,
             ];
         }else{
+
+            $usermsg = isset($response_dec['api_response']) ? $response_dec['api_response'] : "Sorry, transaction failed. Please try again";
+            if(env('APP_NAME') == 'OresamSub'){
+             
+                //ORESAMSUB ONLY FOR NOW
+                $user_message_to_check_with_pattern = $usermsg;
+                $check_if_response_matches = RecurringFailedMessagePattern::where('message','like','%'.$user_message_to_check_with_pattern.'%')->first();
+                if($check_if_response_matches){
+                    // option 1
+                    $plan_details->update([
+                        'visibility' => 0,
+                        'public_visibility' => 0,
+                        'active_status' => 0,
+                    ]);
+                    $usermsg = 'Sorry, transaction failed. Please try again.';
+                    
+                    // option 2 - LATER
+                    // //it means the response exists, so PEND.
+                    // return [
+                    //     'status' => 0,
+                    //     'user_message' => 'Transaction is being processed',
+                    //     'admin_message' => $response,
+                    // ];
+                }
+            }
+
             return [
                 'status' => -1,
-                'user_message' => isset($response_dec['api_response']) ? $response_dec['api_response'] : "Sorry, transaction failed. Please try again",
+                'user_message' =>$usermsg,
                 'admin_message' => $response,
             ];
         }        

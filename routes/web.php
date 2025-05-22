@@ -210,6 +210,7 @@ Route::middleware(['auth','verified','admin'])->get('admin/toggle_plan_category_
 Route::middleware(['auth','verified','admin'])->get('admin/toggle_hot_sales', [ProductPlanCategoryController::class, 'toggle_hot_sales'])->name('admin.product_plan_categories.toggle_hot_sales');
 Route::middleware(['auth','verified','admin'])->get('admin/product_plan_categories', [ProductPlanCategoryController::class, 'index'])->name('admin.product_plan_categories.index');
 Route::middleware(['auth','verified','admin'])->get('admin/product_plan_categories/view/{id}', [ProductPlanCategoryController::class, 'view_details'])->name('admin.product_plan_categories.view_details');
+Route::middleware(['auth','verified','admin'])->get('admin/product_plan_categories/view_by_automation/{id}/{automation_id}', [ProductPlanCategoryController::class, 'view_details_by_automation'])->name('admin.product_plan_categories.view_details_by_automation');
 Route::middleware(['auth','verified','admin'])->post('admin/product_plan_categories/update', [ProductPlanCategoryController::class, 'update_details'])->name('admin.product_plan_categories.update_details');
 Route::middleware(['auth','verified','admin'])->post('admin/product_plan_categories/update_plan_prices', [ProductPlanCategoryController::class, 'update_plan_prices'])->name('admin.product_plan_categories.update_plan_prices');
 

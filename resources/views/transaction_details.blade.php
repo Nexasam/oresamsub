@@ -24,9 +24,12 @@
                     <br>
                     <br>
               
-                    <a class="underline font-extrabold text-blue-700" href="{{ route('admin.product_plan_categories.view_details',$data->product_plan->product_plan_category->id )}}">Plan Name: {{ $data->product_plan->product_plan_name }}</a><br>
-                    <a class="underline font-extrabold text-blue-700" href="#">Automation: {{  $data->product_plan->automation->automation_name }}</a>
-                    <br>
+                    <a class="underline font-extrabold text-blue-700" target="_blank" href="{{ route('admin.product_plan_categories.view_details',$data->product_plan->product_plan_category->id )}}">Go to Plan Category: {{ $data->product_plan->product_plan_name }}</a><br><br>
+                    {{-- <a class="underline font-extrabold text-blue-700" target="_blank" href="{{ route('admin.product_plans.product_plan_details',$data->product_plan->id) }}">Go to Plan Details: {{ $data->product_plan->product_plan_name }}</a> <br><br> --}}
+                    <a class="underline font-extrabold text-blue-700" href="{{ route('admin.product_plan_categories.view_details_by_automation',['id' => $data->product_plan->product_plan_category->id, 'automation_id' =>$data->product_plan->automation->id]); }}">See the Automation: {{  $data->product_plan->automation->automation_name }}</a> <br><br>
+              
+                    <a class="underline font-extrabold text-blue-700" target="_blank" href="{{ route('admin.product_plans.index') }}">Go to All Plans & Prices</a><br><br>
+
                     {{-- <hr> --}}
                  </div>
                 @endif
@@ -106,7 +109,7 @@
                                            <span class="badge bg-success text-white">Successsss</span>
                                            @break
                                         @case(-1)
-                                          <span class="badge bg-danger text-white">Failed</span>
+                                          <span class="badge bg-red-300 text-white">Unsuccessful</span>
                                           @break
                                         @case(0)
                                           <span class="badge bg-warning text-white">Pending</span>
@@ -197,7 +200,7 @@
                               </tr>
 
                               @if (strtolower(auth()->user()->role->role_name) == 'admin')
-                              <tr>
+                              {{-- <tr>
                                 <td class=""></td>
                                 <td class="">
                                   @if ($data->status == 0)
@@ -272,9 +275,6 @@
                                     </div>
                                   </div>
 
-                                  {{-- <button type="button" class="hs-dropdown-toggle ti-btn ti-btn-danger" data-hs-overlay="#hs-vertically-centered-modal">
-                                    Change status
-                                  </button>   --}}
                                   
                                   <div id="hs-vertically-centered-modal" class="hs-overlay ti-modal hidden">
                                     <div class="ti-modal-box">
@@ -331,7 +331,7 @@
 
                                   </div>
                                 </td>  
-                              </tr>
+                              </tr> --}}
 
                               <tr>
                                 <td class=""></td>

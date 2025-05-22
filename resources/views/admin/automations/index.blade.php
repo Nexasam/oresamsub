@@ -14,6 +14,29 @@
         <!-- Start::row-1 -->
         <div class="grid grid-cols-12 gap-1">
 
+          <div class="col-span-12">
+            @if (Session::has('success'))
+            <div class="bg-success/10 border border-success/10 alert text-success" role="alert">
+              Great! {{ Session::get('success') }}
+              </div>
+            @endif
+
+            @if (Session::has('failure'))
+              <div class="bg-danger/10 border border-danger/10 alert text-danger" role="alert">
+              Ops! {{ Session::get('failure') }}
+              </div>
+            @endif
+            
+            @if ($errors->any())
+              <div class="bg-danger/10 border border-danger/10 alert text-danger" role="alert">
+                <ul>
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+              </div>
+            @endif
+          </div>
           
          
           <div class="col-span-12">
@@ -177,7 +200,7 @@
                                     <th>ID</th>
                                     <th>Automation Name</th>
                                     <th>Date</th>
-                                    {{-- <th>action</th> --}}
+                                    <th>action</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -193,7 +216,8 @@
                                   <td>{{ $automation->automation_name }}</td>
                                   <td>{{ $automation->created_at }}</td>
                                   <td class="flex items-center"> 
-                                    {{-- <button class="hs-dropdown-toggle ti-btn ti-btn-warning">Manage Plans</button> --}}
+                                    <a href="{{ route('admin.automation.dashboard_view',$automation->slug) }}" class="hs-dropdown-toggle ti-btn ti-btn-info">Manage Plans</a> &nbsp;
+                                    {{-- <button class="hs-dropdown-toggle ti-btn ti-btn-warning">Manage Plans</button> &nbsp; --}}
                                     <div>
 
                                         {{-- <button type="button" class="hs-dropdown-toggle ti-btn ti-btn-primary" data-hs-overlay="#hs-vertically-centered-modal{{$automation->id}}">

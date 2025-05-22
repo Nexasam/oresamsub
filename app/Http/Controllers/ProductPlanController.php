@@ -266,13 +266,16 @@ class ProductPlanController extends Controller
           $data['user_level_4_selling_price'] = $request->user_plan_4;
           $data['user_level_5_selling_price'] = NULL;
           $data['user_level_6_selling_price'] = NULL;
-          $data['visibility'] = 1;
-          $data['active_status'] = 1;
+          $data['visibility'] = 0;
+          $data['active_status'] = 0;
+        
+          if($request->validity_in_day == NULL || $request->validity_in_day == ''){
+            return response()->json(['status'=>'-1', 'message'=> 'Error: Validity in days not set'  ]);
+          }
           
           $fetch_product_plan_category = ProductPlanCategory::with('product')->where('id',$request->product_plan_category_id)->first();
           if(! $fetch_product_plan_category){
             return response()->json(['status'=>'-1', 'message'=> 'Error: Product category not set'  ]);
-        
           }
           if($fetch_product_plan_category && ($fetch_product_plan_category->product->slug == 'airtime' || $fetch_product_plan_category->product->slug == 'utility_bills' ) ){
              if($request->user_plan_1 > 100 || $request->user_plan_2 > 100 || $request->user_plan_3 > 100 || $request->user_plan_4 > 100 ){

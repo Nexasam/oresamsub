@@ -140,7 +140,7 @@ class DataController extends Controller
                 $status_display = '<span class="badge bg-success text-white">Success</span>';
             }
             elseif($data->status == -1){
-                $status_display = '<span class="badge bg-danger text-white">Failed</span>';
+                $status_display = '<span class="badge bg-red-300 text-white">Unsuccessful</span>';
             }
             elseif($data->status == 0){
                 $status_display = '<span class="badge bg-warning text-white">Pending</span>';
@@ -267,7 +267,7 @@ class DataController extends Controller
                 $status_display = '<span class="badge bg-success text-white">Success</span>';
             }
             elseif($data->status == -1){
-                $status_display = '<span class="badge bg-danger text-white">Failed</span>';
+                $status_display = '<span class="badge bg-red-300 text-white">Unsuccessful</span>';
             }
             elseif($data->status == 0){
                 $status_display = '<span class="badge bg-warning text-white">Pending</span>';
@@ -632,9 +632,13 @@ class DataController extends Controller
 
                             DB::commit();
                     
-                            if($failure > 0){
+                            if($failure > 1){
                               return response()->json(['status'=>2, 'message'=>" $failure issue(s) found. Check transaction history", 'data' => $display_results  ]);   
-                            }else{
+                            }
+                            else if(count($phone_numbers_array) == 1 && $failure == 1){
+                                return response()->json(['status'=>2, 'message'=>"Ops, Transaction was not successful, please try again", 'data' => $display_results  ]);   
+                            }
+                            else{
                                 if($pending > 0){
                                     return response()->json(['status'=>1, 'message'=>'Transaction is being processed.', 'data' => $display_results  ]);
                                 }else{

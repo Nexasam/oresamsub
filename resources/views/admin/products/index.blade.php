@@ -63,12 +63,12 @@
                                     <th>Product Name</th>
                                     <th>Activation Status</th>
                                     <th>Visibility</th>
-                                    <th>First Downline Crediting</th>
+                                    {{-- <th>First Downline Crediting</th>
                                     <th>First Downline Crediting Flat</th>
                                     <th>First Downline Crediting Percentage(%)</th>
-                                    <th>First Downline Crediting Cap</th>
+                                    <th>First Downline Crediting Cap</th> --}}
                                     <th>Date Added</th>
-                                    <th>action</th>
+                                    {{-- <th>action</th> --}}
                                 </tr>
                             </thead>
                             <tbody>
@@ -104,14 +104,15 @@
                                   <td>{{ $product->product_name }}</td>
                                   <td>{{ $product->active_status == 1 ? 'ACTIVE' : 'INACTIVE' }}</td>
                                   <td>{{ $product->visibility == 1 ? 'PUBLIC': 'PRIVATE' }}</td>
-                                  <td>{{ $first_downline_crediting_feature }}</td>
+                                  {{-- <td>{{ $first_downline_crediting_feature }}</td>
                                   <td>{{ $product->set_first_downline_crediting_flat_rate }}</td>
                                   <td>{{ $product->set_first_downline_crediting_percentage_rate }}</td>
-                                  <td>{{ $product->set_first_downline_crediting_cap }}</td>
+                                  <td>{{ $product->set_first_downline_crediting_cap }}</td> --}}
                                   <td>{{ $product->created_at }}</td>
-                                  <td> <button type="button" class="hs-dropdown-toggle ti-btn ti-btn-primary" data-hs-overlay="#hs-vertically-centered-modal{{$product->id}}">
+                                  <td> 
+                                  {{-- <button type="button" class="hs-dropdown-toggle ti-btn ti-btn-primary" data-hs-overlay="#hs-vertically-centered-modal{{$product->id}}">
                                     Details
-                                  </button> 
+                                  </button>  --}}
                                    
                                   <div id="hs-vertically-centered-modal{{$product->id}}" class="hs-overlay ti-modal hidden">
                                     <div class="ti-modal-box">

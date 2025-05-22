@@ -66,6 +66,8 @@
 {{-- <link rel="stylesheet" href="../../../assets/libs/choices.js/public/assets/styles/choices.min.css"> --}}
 <link rel="stylesheet" href="{{ asset(env('APP_ASSETS_BASE_URL').'libs/choices.js/public/assets/styles/choices.min.css') }}">
 
+<script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+
 
 {{-- 
 <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.0.1/css/bootstrap.min.css" rel="stylesheet">
@@ -83,6 +85,12 @@
     <link href="https://cdn.datatables.net/1.10.21/css/dataTables.bootstrap4.min.css" rel="stylesheet">
     {{-- <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"/> --}}
 
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap" rel="stylesheet">
+
+
   
     @php
        $admin_site_color =  App\Models\AdminColorSetting::where('color_name','admin_site_color')->first();
@@ -91,6 +99,21 @@
     @endphp
 
     <style>
+
+        .nunito2 {
+          font-family: "Nunito", sans-serif;
+          font-optical-sizing: auto;
+          font-weight: 400;
+          font-style: normal;
+        }
+
+
+       .montserrat2 {
+          font-family: "Montserrat", sans-serif;
+          font-optical-sizing: auto;
+          font-weight: 400;
+          font-style: normal;
+        }
         :root {
               --color-primary: {{  $admin_site_color_value  }};
               /* --color-primary: 90 102 241; */
@@ -118,7 +141,7 @@
 
 </head>
 
-<body class="">
+<body class="montserrat2">
 
   @if (env('APP_NAME') == 'FoxDataHub')
   <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-NPMMTFT6"

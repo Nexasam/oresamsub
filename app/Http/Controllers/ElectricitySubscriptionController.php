@@ -139,7 +139,7 @@ class ElectricitySubscriptionController extends Controller
                 $status_display = '<span class="badge bg-success text-white">Success</span>';
             }
             elseif($data->status == -1){
-                $status_display = '<span class="badge bg-danger text-white">Failed</span>';
+                $status_display = '<span class="badge bg-red-300 text-white">Unsuccessful</span>';
             }
             elseif($data->status == 0){
                 $status_display = '<span class="badge bg-warning text-white">Pending</span>';

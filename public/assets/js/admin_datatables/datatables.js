@@ -108,7 +108,7 @@ $(document).ready(function(){
                     {data: 'DT_RowIndex', name: 'DT_RowIndex'},
                     {data: 'product_plan_category_name', name: 'product_plan_category_name'},
                     {data: 'product_id', name: 'product_id'},
-                    {data: 'automation_id', name: 'automation_id'},
+                    // {data: 'automation_id', name: 'automation_id'},
                    
                     {data: 'network_id', name: 'network_id'},
                     {data: 'created_at', name: 'created_at'},

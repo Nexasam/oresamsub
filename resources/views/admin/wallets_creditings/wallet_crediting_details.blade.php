@@ -88,7 +88,7 @@
                                   @endif
 
                                   @if ($data->status == -1)
-                                    <span class="badge bg-danger text-white">Failed</span>     
+                                    <span class="badge bg-red-300 text-white">Unsuccessful</span>     
                                   @endif
 
                                   @if ($data->status == 0)
