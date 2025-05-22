@@ -266,8 +266,8 @@ class ProductPlanController extends Controller
           $data['user_level_4_selling_price'] = $request->user_plan_4;
           $data['user_level_5_selling_price'] = NULL;
           $data['user_level_6_selling_price'] = NULL;
-          $data['visibility'] = 0;
-          $data['active_status'] = 0;
+          $data['visibility'] = 1;
+          $data['active_status'] = 1;
         
           if($request->validity_in_day == NULL || $request->validity_in_day == ''){
             return response()->json(['status'=>'-1', 'message'=> 'Error: Validity in days not set'  ]);
