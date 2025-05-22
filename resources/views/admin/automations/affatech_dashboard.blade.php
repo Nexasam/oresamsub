@@ -95,7 +95,7 @@
                                                   $plan_name = $mtn_plan['month_validate'];
                                                   $cost_price = $mtn_plan['plan_amount'];
                                                   $size_in_mb = $mtn_plan['plan'];
-                                                  $default_selling_price = $mtn_plan['plan_amount'] + 100;
+                                                  $default_selling_price = $mtn_plan['plan_amount'] + 50;
                                                   $validity = "";
                                                 
                                                 }
@@ -163,7 +163,7 @@
                                                                           $userlevel = 'user_level_'.$user_plan->plan_level.'_selling_price';
                                                                           $user_plan_sell_price =   $plan_info->$userlevel;   
                                                                         }else{
-                                                                          $user_plan_sell_price = $mtn_plan['plan_amount'] + floor(100 / $user_plan->plan_level );
+                                                                          $user_plan_sell_price = $mtn_plan['plan_amount'] + floor(50 / $user_plan->plan_level );
                                                                         }
                                                                     @endphp
                                                                     <input type="text" id="user_plan_{{  $mtn_plan['id'] }}_{{  $user_plan->plan_level }}"  name="user_plan_{{  $user_plan->plan_level }}" value="{{ $user_plan_sell_price }}" class="my-auto ti-form-input">   
@@ -276,7 +276,7 @@
                                                 $plan_name = $glo_plan['month_validate'];
                                                 $cost_price = $glo_plan['plan_amount'];
                                                 $size_in_mb = $glo_plan['plan'];
-                                                $default_selling_price = $glo_plan['plan_amount'] + 100;
+                                                $default_selling_price = $glo_plan['plan_amount'] + 50;
                                                 $validity = "";
                                               
                                               }
@@ -344,7 +344,7 @@
                                                                         $userlevel = 'user_level_'.$user_plan->plan_level.'_selling_price';
                                                                         $user_plan_sell_price =   $plan_info->$userlevel;   
                                                                       }else{
-                                                                        $user_plan_sell_price = $glo_plan['plan_amount'] + floor(100 / $user_plan->plan_level );
+                                                                        $user_plan_sell_price = $glo_plan['plan_amount'] + floor(50 / $user_plan->plan_level );
                                                                       }
                                                                   @endphp
                                                                   <input type="text" id="user_plan_{{  $glo_plan['id'] }}_{{  $user_plan->plan_level }}"  name="user_plan_{{  $user_plan->plan_level }}" value="{{ $user_plan_sell_price }}" class="my-auto ti-form-input">   
@@ -453,7 +453,7 @@
                                                 $plan_name = $airtel_plan['month_validate'];
                                                 $cost_price = $airtel_plan['plan_amount'];
                                                 $size_in_mb = $airtel_plan['plan'];
-                                                $default_selling_price = $airtel_plan['plan_amount'] + 100;
+                                                $default_selling_price = $airtel_plan['plan_amount'] + 50;
                                                 $validity = "";
                                               
                                               }
@@ -521,7 +521,7 @@
                                                                         $userlevel = 'user_level_'.$user_plan->plan_level.'_selling_price';
                                                                         $user_plan_sell_price =   $plan_info->$userlevel;   
                                                                       }else{
-                                                                        $user_plan_sell_price = $airtel_plan['plan_amount'] + floor(100 / $user_plan->plan_level );
+                                                                        $user_plan_sell_price = $airtel_plan['plan_amount'] + floor(50 / $user_plan->plan_level );
                                                                       }
                                                                   @endphp
                                                                   <input type="text" id="user_plan_{{  $airtel_plan['id'] }}_{{  $user_plan->plan_level }}"  name="user_plan_{{  $user_plan->plan_level }}" value="{{ $user_plan_sell_price }}" class="my-auto ti-form-input">   
@@ -629,7 +629,7 @@
                                                 $plan_name = $_9mobile_plan['month_validate'];
                                                 $cost_price = $_9mobile_plan['plan_amount'];
                                                 $size_in_mb = $_9mobile_plan['plan'];
-                                                $default_selling_price = $_9mobile_plan['plan_amount'] + 100;
+                                                $default_selling_price = $_9mobile_plan['plan_amount'] + 50;
                                                 $validity = "";
                                               
                                               }
@@ -697,7 +697,7 @@
                                                                         $userlevel = 'user_level_'.$user_plan->plan_level.'_selling_price';
                                                                         $user_plan_sell_price =   $plan_info->$userlevel;   
                                                                       }else{
-                                                                        $user_plan_sell_price = $_9mobile_plan['plan_amount'] + floor(100 / $user_plan->plan_level );
+                                                                        $user_plan_sell_price = $_9mobile_plan['plan_amount'] + floor(50 / $user_plan->plan_level );
                                                                       }
                                                                   @endphp
                                                                   <input type="text" id="user_plan_{{  $_9mobile_plan['id'] }}_{{  $user_plan->plan_level }}"  name="user_plan_{{  $user_plan->plan_level }}" value="{{ $user_plan_sell_price }}" class="my-auto ti-form-input">   
