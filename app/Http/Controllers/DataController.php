@@ -1059,7 +1059,8 @@ class DataController extends Controller
                 $product_plans = ProductPlan::where('product_plan_category_id',$product_plan_category->id)
                 ->where('visibility',1)
                 // ->where('automation_id',$product_plan_category->automation_id)
-                ->orderBy('data_size_in_mb')
+                // ->orderBy('data_size_in_mb')
+                ->orderByRaw('CAST(data_size_in_mb AS UNSIGNED)')
                 ->get();
             }
 

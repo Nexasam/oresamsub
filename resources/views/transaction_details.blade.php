@@ -106,7 +106,7 @@
                                 <td class="">
                                    @switch($data->status)
                                        @case(1)
-                                           <span class="badge bg-success text-white">Successsss</span>
+                                           <span class="badge bg-success text-white">Success</span>
                                            @break
                                         @case(-1)
                                           <span class="badge bg-red-300 text-white">Unsuccessful</span>

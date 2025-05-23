@@ -30,7 +30,5 @@ class ApiIntegrationPasswordResetController extends Controller
         }
 
         return $this->error('Password reset action failed');          
-
-
     }
 }
