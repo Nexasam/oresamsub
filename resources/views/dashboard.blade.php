@@ -148,18 +148,12 @@
                 @endif
             </div>
 
-            <div>
+            <div
+             class="max-w-sm w-full p-4 rounded-2xl shadow-lg bg-gradient-to-r from-blue-500 to-blue-700 text-white relative space-y-4"
+            >
 
                 @foreach ($user_virtual_accounts as $vaccount)
                         <div class="flex items-center space-x-4">
-                            <div class="p-3 bg-white/20 rounded-full">
-                                <!-- Icon -->
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none"
-                                    viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M8 7V3m8 4V3M5 11h14M5 19h14M5 15h14M4 5h16a1 1 0 011 1v14a1 1 0 01-1 1H4a1 1 0 01-1-1V6a1 1 0 011-1z" />
-                                </svg>
-                            </div>
                             <div>
                                 <p class="text-sm uppercase tracking-wider text-white/80">Plan</p>
                                 <p class="text-2xl font-bold">
