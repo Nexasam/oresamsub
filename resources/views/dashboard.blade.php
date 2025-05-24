@@ -149,13 +149,13 @@
             </div>
 
             <div
-             class="max-w-sm w-full p-4 mt-2 rounded-2xl shadow-lg bg-yellow-500  text-white relative space-y-4"
+             class="max-w-sm w-full p-4 mt-2 rounded-2xl shadow-lg bg-white border border-2 border-green-700  text-white relative space-y-4"
             >
 
                 @foreach ($user_virtual_accounts as $vaccount)
                         <div class="flex items-center space-x-4">
                             <div>
-                                <p class="text-sm uppercase tracking-wider text-white/80">{{$vaccount->bank_name }} &nbsp; | &nbsp; {{ $vaccount->account_name }}</p>
+                                <p class="text-sm uppercase tracking-wider text-gray-900">{{$vaccount->bank_name }} &nbsp; | &nbsp; {{ $vaccount->account_name }}</p>
                                 <p class="text-2xl font-bold">
                                     {{ $vaccount->account_number }} 
                                 </p>
