@@ -157,7 +157,7 @@
                             <div>
                                 <p class="text-sm uppercase tracking-wider text-white/80">{{$vaccount->bank_name }}</p>
                                 <p class="text-2xl font-bold">
-                                    {{ $vaccount->account_number }} &nbsp;
+                                    {{ $vaccount->account_number }} &nbsp; | &nbsp; {{ $vaccount->account_name }}
                                 </p>
                             </div>
                         </div>
