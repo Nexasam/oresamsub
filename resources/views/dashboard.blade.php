@@ -162,14 +162,16 @@
                                     </p>
                                 </div>
                             </div> --}}
-                                         
-                        <div class="max-w-sm w-full p-4 rounded-2xl shadow-xl bg-[{{$sidebar_color}}] text-white">
-                        
-                            <p>
-                                <span class="text-md font-bold">{{$vaccount->bank_name }}</span> &nbsp; | &nbsp; {{ $vaccount->account_name }} | &nbsp; <span class="text-xl font-bold">{{ $vaccount->account_number }}</span>
-                            </p>
-                        
-                        </div>
+                        @if (in_array($vaccount->bank_code,$active_bankcodes))
+                            <div class="max-w-sm w-full p-4 rounded-2xl shadow-xl bg-[{{$sidebar_color}}] text-white">
+                            
+                                <p>
+                                    <span class="text-md font-bold">{{$vaccount->bank_name }}</span> &nbsp; | &nbsp; {{ $vaccount->account_name }} | &nbsp; <span class="text-xl font-bold">{{ $vaccount->account_number }}</span>
+                                </p>
+                            
+                            </div>     
+                        @endif  
+                       
                     @endforeach
                 @else
                                     

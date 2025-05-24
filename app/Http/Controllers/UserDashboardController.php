@@ -16,6 +16,7 @@ use App\Models\LandingPagesSetting;
 use App\Models\ProductPlanCategory;
 use App\Http\Controllers\Controller;
 use App\Models\BulkDataProductPlans;
+use App\Models\FundingOptionBankCodes;
 
 class UserDashboardController extends Controller
 {
@@ -23,10 +24,13 @@ class UserDashboardController extends Controller
   public function index(){
     $hot_sales = ProductPlanCategory::with('product')->where('is_hot_sales',1)->get();
     $user_virtual_accounts = UserVirtualAccount::where('user_id',auth()->id())->get();
+
+    $active_bankcodes = FundingOptionBankCodes::where('visibility_status',1)->pluck('bank_code')->toArray();
     // dd($user_virtual_accounts);
     $new_hot_sales_array = [];
 
     $data['user_virtual_accounts'] = $user_virtual_accounts;
+    $data['active_bankcodes'] = $active_bankcodes;
 
     foreach($hot_sales as $key=>$hot_sale){
       $new_hot_sales_array[$key]['product_slug'] = $hot_sale->product->slug;
