@@ -164,7 +164,7 @@
                             </div> --}}
 
                                          
-                        <div class="max-w-sm w-full p-3 rounded-2xl shadow-xl bg-indigo-800 text-white">
+                        <div class="max-w-sm w-full p-4 rounded-2xl shadow-xl bg-[{{$sidebar_color}}] text-white">
                         
                             <p>
                                 <span class="text-md font-bold">{{$vaccount->bank_name }}</span> &nbsp; | &nbsp; {{ $vaccount->account_name }} | &nbsp; <span class="text-xl font-bold">{{ $vaccount->account_number }}</span>
