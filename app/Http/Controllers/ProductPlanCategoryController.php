@@ -157,6 +157,15 @@ class ProductPlanCategoryController extends Controller
          $user_level_2_selling_price =  $request->user_level_2_selling_price[$key];
          $user_level_3_selling_price =  $request->user_level_3_selling_price[$key];
          $user_level_4_selling_price =  $request->user_level_4_selling_price[$key];
+
+         $user_level_1_commission =  $request->user_level_1_commission[$key];
+         $user_level_2_commission =  $request->user_level_2_commission[$key];
+         $user_level_3_commission =  $request->user_level_3_commission[$key];
+         $user_level_4_commission =  $request->user_level_4_commission[$key];
+         $commission_feature =  $request->commission_feature[$key];
+
+         $data_size_in_mb =  $request->data_size_in_mb[$key];
+
          $product_plan_name =  $request->product_plan_name[$key];
          
          ProductPlan::where('id',$plan_id)->update([
@@ -168,6 +177,12 @@ class ProductPlanCategoryController extends Controller
           "user_level_2_selling_price"=>  $user_level_2_selling_price,
           "user_level_3_selling_price" =>  $user_level_3_selling_price,
           "user_level_4_selling_price" =>  $user_level_4_selling_price,
+          "user_level_1_commission" =>  $user_level_1_commission,
+          "user_level_2_commission"=>  $user_level_2_commission,
+          "user_level_3_commission" =>  $user_level_3_commission,
+          "user_level_4_commission" =>  $user_level_4_commission,
+          "commission_feature" =>  $commission_feature,
+          "data_size_in_mb" =>  $data_size_in_mb,
          ]);
       }
 

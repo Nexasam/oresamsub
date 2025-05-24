@@ -29,8 +29,9 @@ class AuthenticatedSessionController extends Controller
      *
      * @return \Illuminate\View\View
      */
-    public function create()
+    public function create(Request $request)
     {
+       
         $data = [];
         $landing_data = LandingPagesSetting::where('field_name','support_whatsapp_number')->first();
         $data[$landing_data->field_name] = $landing_data->field_details;

@@ -188,6 +188,10 @@
                                                                 </div>
                                                             </div>
 
+
+                                                           
+
+
                                                             <div class="space-y-2">
                                                                 <button type="submit" class="ti-btn ti-btn-primary w-full">Add product plan</button>
                                                             </div>
@@ -257,7 +261,7 @@
 
                                                   
                                                 @foreach ($product_plans as $key=>$product_plann)
-                                                  <div class="grid w-full p-2 bg-gray-100 lg:grid-cols-6 gap-4 my-2">
+                                                  <div class="grid w-full p-1.5 bg-gray-100 lg:grid-cols-1 gap-2 my-2 text-sm">
                                                       <div class="">
                                                         <p class="font-bold">{{ $product_plann->product_plan_name }} 
                                                           &nbsp; API ID: {{ $product_plann->automation_product_plan_id }}
@@ -267,47 +271,92 @@
                                                         <div class="flex items-center space-x-1">
                                                           <div class="mr-4">
                                                             <label for="">Name</label>
-                                                            <input class="w-52" name="product_plan_name[]" type="text" value="{{ $product_plann->product_plan_name }}">
+                                                            <input class="w-60 text-sm " name="product_plan_name[]" type="text" value="{{ $product_plann->product_plan_name }}">
                                                           </div>
                                                           <div class="mr-4">
                                                             <label for="">Cost Price</label>
-                                                            <input class="w-20" name="cost_price[]" type="text" value="{{ $product_plann->cost_price }}">
+                                                            <input class="w-20 text-sm" name="cost_price[]" type="text" value="{{ $product_plann->cost_price }}">
                                                           </div>
 
                                                           <div class="mr-4">
                                                             <label for="">Selling Price</label>
-                                                            <input class="w-20" name="default_selling_price[]" type="text" value="{{ $product_plann->default_selling_price }}">
+                                                            <input class="w-20 text-sm" name="default_selling_price[]" type="text" value="{{ $product_plann->default_selling_price }}">
                                                           </div>
                                                           <div class="mr-4">
 
                                                             <label for="">User 1 SP</label>
-                                                            <input class="w-20" name="user_level_1_selling_price[]" type="text" value="{{ $product_plann->user_level_1_selling_price }}">
+                                                            <input class="w-20 text-sm" name="user_level_1_selling_price[]" type="text" value="{{ $product_plann->user_level_1_selling_price }}">
                                                           </div>
                                                           <div class="mr-4">
 
                                                             <label for="">User 2 SP</label>
-                                                            <input class="w-20" name="user_level_2_selling_price[]" type="text" value="{{ $product_plann->user_level_2_selling_price }}">
+                                                            <input class="w-20 text-sm" name="user_level_2_selling_price[]" type="text" value="{{ $product_plann->user_level_2_selling_price }}">
                                                           </div>
                                                           <div class="mr-4">
 
                                                             <label for="">User 3 SP</label>
-                                                            <input class="w-20" name="user_level_3_selling_price[]" type="text" value="{{ $product_plann->user_level_3_selling_price }}">
+                                                            <input class="w-20 text-sm" name="user_level_3_selling_price[]" type="text" value="{{ $product_plann->user_level_3_selling_price }}">
                                                           </div>
                                                           <div class="mr-4">
 
                                                             <label for="">User 4 SP</label>
-                                                            <input class="w-20" name="user_level_4_selling_price[]" type="text" value="{{ $product_plann->user_level_4_selling_price }}">
+                                                            <input class="w-20 text-sm" name="user_level_4_selling_price[]" type="text" value="{{ $product_plann->user_level_4_selling_price }}">
+                                                          </div>
+                                                          <div class="mr-4">
+                                                            <label for="">Turn on/off</label>
+                                                            <select class="p-1" name="visibility[]" id="visibility">
+                                                              <option value="{{ $product_plann->visibility }}">{{ $product_plann->visibility == 1 ? 'Enabled':'Disabled'}}</option>
+                                                              <option value="1">Enable</option>
+                                                              <option value="0">Disable</option>
+                                                            </select>
+                                                          </div>
+
+                                                        </div>
+                                                      </div>
+
+                                                      {{-- //commission --}}
+                                                      <hr>
+
+                                                      <div class="">
+                                                        
+                                                        <div class="flex items-center space-x-1">
+                                                          <div class="mr-2">
+
+                                                            <label for="">Datasize in MB:</label>
+                                                            <input class="w-20 text-sm" name="data_size_in_mb[]" type="text" value="{{ $product_plann->data_size_in_mb }}">
+                                                          </div>
+                                                          <p class="font-bold mr-4">Commissions:
+                                                           </p>
+                                                         
+                                                          <div class="mr-4">
+
+                                                            <label for="">User 1:</label>
+                                                            <input class="w-20 text-sm" name="user_level_1_commission[]" type="text" value="{{ $product_plann->user_level_1_commission }}">
                                                           </div>
                                                           <div class="mr-4">
 
-                                                            <label for="">Visibility Status</label>
-                                                            <select name="visibility[]" id="visibility">
-                                                              <option value="{{ $product_plann->visibility }}">{{ $product_plann->visibility == 1 ? 'Visible':'Hidden'}}</option>
-                                                              <option value="1">Show</option>
-                                                              <option value="0">Hide</option>
+                                                            <label for="">User 2:</label>
+                                                            <input class="w-20 text-sm" name="user_level_2_commission[]" type="text" value="{{ $product_plann->user_level_2_commission }}">
+                                                          </div>
+                                                          <div class="mr-4">
+
+                                                            <label for="">User 3:</label>
+                                                            <input class="w-20 text-sm" name="user_level_3_commission[]" type="text" value="{{ $product_plann->user_level_3_commission }}">
+                                                          </div>
+                                                          <div class="mr-4">
+
+                                                            <label for="">User 4:</label>
+                                                            <input class="w-20 text-sm" name="user_level_4_commission[]" type="text" value="{{ $product_plann->user_level_4_commission }}">
+                                                          </div>
+                                                          <div class="mr-4">
+                                                            <label for="">Turn commision on/off</label>
+                                                            <select class="p-1" name="commission_feature[]" id="commission_feature">
+                                                              <option value="{{ $product_plann->commission_feature }}">{{ $product_plann->commission_feature == 1 ? 'Enabled':'Disabled'}}</option>
+                                                              <option value="1">Enable</option>
+                                                              <option value="0">Disable</option>
                                                             </select>
                                                           </div>
-                                                  
+
                                                         </div>
                                                       </div>
                                                   </div>

@@ -27,10 +27,15 @@ class RegisteredUserController extends Controller
     /**
      * Display the registration view.
      */
-    public function create(): View
+    public function create(Request $request): View
     {
-        // dd('sss');
+        $upline = $request->ref ?? '';
+        // dd($upline);
+
+
         $data = [];
+        $data['upline'] = $upline;
+        // dd($data);
         $landing_data = LandingPagesSetting::where('field_name','support_whatsapp_number')->first();
         $data[$landing_data->field_name] = $landing_data->field_details;
         
@@ -147,6 +152,7 @@ class RegisteredUserController extends Controller
     public function store2(Request $request): RedirectResponse
     {
    
+       
         
         $request->validate([
             'username' => ['required', 'string', 'unique:users,username'],
