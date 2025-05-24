@@ -164,7 +164,7 @@
                             </div> --}}
 
                                          
-                        <div class="max-w-sm w-full p-3 rounded-2xl shadow-xl bg-gradient-to-r from-indigo-600 to-gray-900 text-white">
+                        <div class="max-w-sm w-full p-3 rounded-2xl shadow-xl bg-gradient-to-r from-indigo-600 to-gray-600 text-white">
                         
                             <p>
                                 <span class="text-md font-bold">{{$vaccount->bank_name }}</span> &nbsp; | &nbsp; {{ $vaccount->account_name }} | &nbsp; <span class="text-xl font-bold">{{ $vaccount->account_number }}</span>
