@@ -85,7 +85,7 @@
         
                 <!-- Referral Link + Copy/Share -->
                 @if (env('APP_NAME') == 'OresamSub')
-                    <div class="bg-white/10 backdrop-blur-sm p-3 rounded-lg">
+                    {{-- <div class="bg-white/10 backdrop-blur-sm p-3 rounded-lg">
                         <p class="text-sm text-white/80 mb-1">Enjoy commission using your link:</p>
             
                         <div class="flex items-center space-x-2">
@@ -108,7 +108,7 @@
                         </template>
             
                         <div class="mt-3 flex flex-wrap gap-2">
-                            <!-- WhatsApp Share -->
+                     
                             <a 
                                 :href="`https://wa.me/?text=Enjoy cheap and affordable data, airtime, cable subscription and electricity bills with {{env('APP_NAME')}} using this link: ${referral}`" 
                                 target="_blank" 
@@ -117,7 +117,7 @@
                                 WhatsApp
                             </a>
             
-                            <!-- Twitter Share -->
+                           
                             <a 
                                 :href="`https://twitter.com/intent/tweet?text=Enjoy cheap and affordable data, airtime, cable subscription and electricity bills with {{env('APP_NAME')}} using this link&url=${referral}`" 
                                 target="_blank" 
@@ -126,7 +126,7 @@
                                 Twitter
                             </a>
             
-                            <!-- Native Share (Mobile) -->
+                         
                             <button 
                                 @click="
                                     if (navigator.share) {
@@ -144,7 +144,7 @@
                                 Share
                             </button>
                         </div>
-                    </div>
+                    </div> --}}
                 @endif
             </div>
 
