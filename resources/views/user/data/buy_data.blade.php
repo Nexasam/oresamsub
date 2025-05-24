@@ -219,6 +219,13 @@
                                                       </select>
                                                   </div>
                                               @endif
+
+
+                                              <div class="space-y-2">
+                                                <label class="ti-form-label mb-0">Phone Number(s) to recharge</label>
+                                                <textarea id="phone_number" name="phone_number" class="my-auto ti-form-input"
+                                                    placeholder="e.g 08168509044, 09011988807"></textarea>
+                                               </div>
                                                
 
 
@@ -254,11 +261,7 @@
                                                       </select>
                                                 </div>
 
-                                                <div class="space-y-2">
-                                                  <label class="ti-form-label mb-0">Phone Number(s) to recharge</label>
-                                                  <textarea id="phone_number" name="phone_number" class="my-auto ti-form-input"
-                                                      placeholder="e.g 08168509044, 09011988807"></textarea>
-                                              </div>
+                                          
                     
                                                 <div class="space-y-2">
                                                     <label class="ti-form-label mb-0">Product Plans List</label>

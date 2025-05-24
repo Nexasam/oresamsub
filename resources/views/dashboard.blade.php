@@ -162,7 +162,6 @@
                                     </p>
                                 </div>
                             </div> --}}
-
                                          
                         <div class="max-w-sm w-full p-4 rounded-2xl shadow-xl bg-[{{$sidebar_color}}] text-white">
                         
