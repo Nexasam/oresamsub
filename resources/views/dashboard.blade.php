@@ -43,6 +43,17 @@
       </div>
 
 
+    {{-- <div class="grid grid-cols-12">
+        <div class="col-span-4 h-56 bg-green-500">
+
+        </div>
+
+        <div class="w-3/4 h-56 bg-blue-500">
+            
+        </div>
+    </div> --}}
+
+
   
     <div class="grid grid-cols-12 gap-3">
 
