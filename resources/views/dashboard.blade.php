@@ -149,7 +149,7 @@
             </div>
 
             <div
-             class="max-w-sm w-full p-4 mt-2 rounded-2xl shadow-lg bg-{{ ['blue','yellow','red','green'][rand(0,3)] }}-500  text-white relative space-y-4"
+             class="max-w-sm w-full p-4 mt-2 rounded-2xl shadow-lg bg-yellow-500  text-white relative space-y-4"
             >
 
                 @foreach ($user_virtual_accounts as $vaccount)
