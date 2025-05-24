@@ -155,9 +155,9 @@
                 @foreach ($user_virtual_accounts as $vaccount)
                         <div class="flex items-center space-x-4">
                             <div>
-                                <p class="text-sm uppercase tracking-wider text-white/80">{{$vaccount->bank_name }}</p>
+                                <p class="text-sm uppercase tracking-wider text-white/80">{{$vaccount->bank_name }} &nbsp; | &nbsp; {{ $vaccount->account_name }}</p>
                                 <p class="text-2xl font-bold">
-                                    {{ $vaccount->account_number }} &nbsp; | &nbsp; {{ $vaccount->account_name }}
+                                    {{ $vaccount->account_number }} 
                                 </p>
                             </div>
                         </div>
