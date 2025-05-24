@@ -223,7 +223,7 @@
                 </div>
             </div>
 
-            <div class="max-w-sm w-full p-6 mt-2 rounded-2xl shadow-lg bg-gradient-to-r from-purple-500 to-purple-700 text-white">
+            <div class="max-w-sm w-full p-6 mt-2 rounded-2xl shadow-lg bg-gradient-to-r from-indigo-500 to-indigo-700 text-white">
                 <div class="flex items-center space-x-4">
                   <div class="p-3 bg-white/20 rounded-full">
                     <!-- Icon: Heroicon or Lucide -->
