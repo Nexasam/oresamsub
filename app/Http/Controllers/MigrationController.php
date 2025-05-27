@@ -96,7 +96,7 @@ class MigrationController extends Controller
     public function migrate_accounts(){
         set_time_limit(0);
         $bank_accounts = DB::table('members_bank_account')
-        ->where('bank_id',1)
+        // ->where('bank_id',1) //access:3 , safehav: 7, wema:1
         ->where('migrated',0)
         // ->limit(10)
         ->get();
@@ -140,10 +140,10 @@ class MigrationController extends Controller
                     $useriddd = $checkonusertbl->id;
 
                     //only at this point can you create
-                    if($bank_id == 1){
+                    if($bank_id == 1 || $bank_id == 3 || $bank_id == 7){
 
                         $checkva = UserVirtualAccount::where('user_id',$useriddd)->where('bank_code',$bank_id)->first();
-                        if(! $checkva){
+                        if(! $checkva ){
 
                             $datacreate['funding_option_id'] = $id;
                             $datacreate['user_id'] = $useriddd;
