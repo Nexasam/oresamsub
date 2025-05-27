@@ -309,7 +309,7 @@ class ElectricitySubscriptionController extends Controller
             'wallet_category' => 'required',
             'no_of_slots' => 'required',
             'amount' => 'required',
-            'pin' => ['required','digits:4'],
+            'pin' => ['required','string','regex:/^\d{4,5}$/'],
         ]);
         
         // return response()->json(['status'=>'-1', 'message'=>$validator->errors()->first(),'data' => $request->electricity_product_plan_category_id ]);

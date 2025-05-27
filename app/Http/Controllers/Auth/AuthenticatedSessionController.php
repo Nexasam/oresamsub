@@ -73,8 +73,11 @@ class AuthenticatedSessionController extends Controller
         if($user_check){
             
             if( $user_check->api_token == NULL){
-                // $api_token = bcrypt('password').'_'.rand(1111,9999).'_'.time();
-                $api_token = str()->random(200).time();
+                $user_idd = $user_check->id;
+                $cleaned_userid = str_replace('-', '', $user_idd);
+                $randomLetters = substr(str_shuffle('abcdefghijklmnopqrstuvwxyz'), 0, 3);
+                $api_token = rand(11111,99999).$cleaned_userid.time().$randomLetters;
+                // $api_token = str()->random(200).time();
                 $user_check->update([
                     'api_token' => $api_token
                 ]);

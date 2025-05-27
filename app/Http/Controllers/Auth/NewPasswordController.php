@@ -59,8 +59,8 @@ class NewPasswordController extends Controller
             'token' => ['required'],
             'email' => ['required', 'email'],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
-            'new_pin' => ['required','digits:4'],
-            'new_pin_confirmation' => ['required','digits:4'],
+            'new_pin' => ['required','string','regex:/^\d{4,5}$/'],
+            'new_pin_confirmation' => ['required','string','regex:/^\d{4,5}$/'],
         ]);
 
         if($request->new_pin != $request->new_pin_confirmation){

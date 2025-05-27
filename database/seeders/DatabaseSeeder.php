@@ -71,6 +71,7 @@ class DatabaseSeeder extends Seeder
             "api_public_key" => 'xxxxxxxx',
             "api_secret_key" =>'xxxxxxxx',
             "activation_status" =>0,
+            
         ]);
 
         //AUTOMATIONS
@@ -81,6 +82,7 @@ class DatabaseSeeder extends Seeder
             "slug" =>'megasubplug',
             "api_public_key" =>'xxxx246266435f47e344bxxxx',
             "api_password" =>'xxxxxowo0000@',
+            "domain_url" =>'https://test',
         ]);
 
 

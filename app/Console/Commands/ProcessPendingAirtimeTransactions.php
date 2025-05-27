@@ -154,7 +154,8 @@ class ProcessPendingAirtimeTransactions extends Command
                                 logger('Transaction FAILED for txn: '. $pending_transaction->id);
 
                             }                                      
-                        }else{
+                        }
+                        else{
                               //this will be like this until other automations are processed
                               $user_message = 'Airtime transaction refunded.';
                               $admin_message = 'Airtime transaction refunded... Automation not yet implemented';

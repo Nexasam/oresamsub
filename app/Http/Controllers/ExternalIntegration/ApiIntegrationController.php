@@ -95,8 +95,8 @@ class ApiIntegrationController extends Controller
         $request->validate([
             'user_id' => ['required', 'string', 'exists:users,id'],
             'current_pin' => 'required', 
-            'new_pin' => ['required','digits:4'], 
-            'confirm_new_pin' => ['required','digits:4'], 
+            'new_pin' => ['required','string','regex:/^\d{4,5}$/'], 
+            'confirm_new_pin' => ['required','string','regex:/^\d{4,5}$/'], 
         ]);
 
         $data['current_pin'] = $request->current_pin;
@@ -187,8 +187,8 @@ class ApiIntegrationController extends Controller
             
         $request->validate([
             'user_id' => ['required', 'string', 'exists:users,id'],
-            'pin' => ['required', 'string','digits:4'], 
-            'confirm_pin' => ['required', 'string','digits:4'], 
+            'pin' => ['required', 'string','string','regex:/^\d{4,5}$/'], 
+            'confirm_pin' => ['required', 'string','string','regex:/^\d{4,5}$/'], 
         ]);
 
         $data['pin'] = $request->pin;

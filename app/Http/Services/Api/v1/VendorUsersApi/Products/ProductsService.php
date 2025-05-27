@@ -20,6 +20,7 @@ use App\Services\Automation\MegaSubPlugAutomation\MegaSubCableTV;
 use App\Services\Automation\MegaSubPlugAutomation\MegaSubVendData;
 use App\Services\Automation\MegaSubPlugAutomation\MegaSubElectricity;
 use App\Services\Automation\MegaSubPlugAutomation\MegaSubVendAirtime;
+use App\Services\Automation\MsOrgGroupAutomation\MsOrgGroupAutomation;
 
 class ProductsService{
     use WalletTransactionLogs;
@@ -319,9 +320,15 @@ class ProductsService{
                                 if($automation_details->slug == 'megasubplug'){
                                     $sell_data = (new MegaSubVendData($phone_numbers_array[$i],$product_plan_id,$validatephonenetwork))->buyData();
                                 }
-                                // else if($automation_details->slug == 'ogdams' || $automation_details->slug == 'ogdamsv2'){
-                                //     $sell_data = (new OgdamsVendData($phone_numbers_array[$i],$product_plan_id))->buyData();
-                                // }
+                                else if($automation_details->automation_group == 'msorg'){
+                                    $data_msorg['automation_id'] = $automation_details->id;
+                                    $data_msorg['network_id'] = $network_id;
+                                    $data_msorg['plan_id'] = $product_plan_id;
+                                    $data_msorg['mobile_number'] = $phone_numbers_array[$i];
+                                    $data_msorg['token'] = $automation_details->api_public_key;
+                                    $data_msorg['url'] = $automation_details->data_url;
+                                    $sell_data = (new MsOrgGroupAutomation($data_msorg))->buyData();     
+                                }
                                 else{
                                     //this will be like this until other automations are processed
                                     $sell_data['status'] = -1;
@@ -433,6 +440,16 @@ class ProductsService{
                                 //HERE the endpoint of the automation service is called
                                 if($automation_details->slug == 'megasubplug'){
                                     $sell_data = (new MegaSubVendData($phone_numbers_array[$i],$product_plan_id,$validatephonenetwork))->buyData();
+                                } 
+                                else if($automation_details->automation_group == 'msorg'){
+                                    $data_msorg['automation_id'] = $automation_details->id;
+                                    $data_msorg['network_id'] = $network_id;
+                                    $data_msorg['plan_id'] = $product_plan_id;
+                                    $data_msorg['mobile_number'] = $phone_numbers_array[$i];
+                                    $data_msorg['token'] = $automation_details->api_public_key;
+                                    $data_msorg['url'] = $automation_details->data_url;
+                                    $sell_data = (new MsOrgGroupAutomation($data_msorg))->buyData();
+                                 
                                 }
                                 // else if($automation_details->slug == 'ogdams' || $automation_details->slug == 'ogdamsv2'){
                                 //     $sell_data = (new OgdamsVendData($phone_numbers_array[$i],$product_plan_id))->buyData();

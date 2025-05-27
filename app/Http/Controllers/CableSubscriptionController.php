@@ -226,7 +226,6 @@ class CableSubscriptionController extends Controller
          if($automation_slug == 'megasubplug'){
              $validate_metre_number = (new MegaSubCableTV(smart_card_number: $request->smart_card_number, plan_id: $request->plan_id, user_id: $user_id))->validateSmartCardNumber();
              return $validate_metre_number;
-       
          }
          return 'Nil';
 
@@ -305,7 +304,7 @@ class CableSubscriptionController extends Controller
             'cable_product_plan_id' => 'required',
             'wallet_category' => 'required',
             'no_of_slots' => 'required',
-            'pin' => ['required','digits:4'],
+            'pin' => ['required','string','regex:/^\d{4,5}$/'],
         ]);
         
         // return response()->json(['status'=>'-1', 'message'=>$validator->errors()->first(),'data' => $request->all() ]);

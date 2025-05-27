@@ -66,7 +66,7 @@ class FundingOptionsController extends Controller
         // return ['ss'];
         $validator = Validator::make($request->all(), [
             'user_id' => 'required|exists:users,id',
-            // 'pin' => 'required|digits:4|exists:users,pin',
+            // 'pin' => 'required|'string','regex:/^\d{4,5}$/|exists:users,pin',
             'bank_code' => 'required|max:255|exists:funding_option_bank_codes,bank_code',
             'funding_option_id' => 'required|exists:funding_options,id',
           ]);

@@ -56,7 +56,7 @@ class TransactionController extends Controller
 
   public function transaction_refund(Request $request){
     $validator = Validator::make($request->all(), [
-        'pin' => 'required|digits:4',
+        'pin' => ['required','string','regex:/^\d{4,5}$/'],
         'transaction_id' => 'required|exists:transactions,id',
       ]);
 
@@ -454,7 +454,7 @@ class TransactionController extends Controller
 
   public function manually_mark_transaction_as_successful(Request $request){
        $validator = Validator::make($request->all(), [
-        'pin' => 'required|digits:4',
+        'pin' => 'required','string','regex:/^\d{4,5}$/',
         'transaction_id' => 'required|exists:transactions,id',
       ]);
 

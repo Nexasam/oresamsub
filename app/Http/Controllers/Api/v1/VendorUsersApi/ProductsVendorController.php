@@ -281,7 +281,7 @@ class ProductsVendorController extends Controller
             'phone_number' => 'required',
             // 'product_plan_category_id' => 'required',
             'product_plan_id' => 'required',
-            // 'pin' => ['required','digits:4'],
+            // 'pin' => ['required','string','regex:/^\d{4,5}$/'],
             'amount' => 'required|numeric|gt:0',
             'actual_amount' => 'required|numeric|gt:0',
             'validatephonenetwork'=>['required',Rule::in([0,1])],
@@ -444,7 +444,7 @@ class ProductsVendorController extends Controller
             // 'wallet_category' => 'required',
             'actual_amount' => 'required|numeric|gt:0',
             'amount' => 'required|numeric|gt:0',
-            // 'pin' => ['required','digits:4'],
+            // 'pin' => ['required','string','regex:/^\d{4,5}$/'],
         ]);
 
         if ($validator->stopOnFirstFailure()->fails()) {

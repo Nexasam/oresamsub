@@ -19,6 +19,7 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\WalletsController;
 use App\Http\Controllers\SettingsController;
+use App\Http\Controllers\MigrationController;
 use App\Http\Controllers\QuickToolController;
 use App\Http\Controllers\Template2Controller;
 use App\Http\Controllers\AutomationController;
@@ -41,6 +42,10 @@ use App\Http\Controllers\ProductPlanCategoryController;
 use App\Http\Controllers\ElectricitySubscriptionController;
 
 
+
+// migration tools
+Route::get('migrate_users', [MigrationController::class, 'migrate_users']);
+Route::get('migrate_accounts', [MigrationController::class, 'migrate_accounts']);
 
 
 Route::get('logs', [LogViewerController::class, 'index']);
@@ -300,7 +305,6 @@ Route::middleware(['auth','verified'])->get('transactions/details/{id}', [Transa
 //ELECTRICITY: electricity
 
 //ELECTRICITY
-
 
 //EXEMPTED SO THEY ARE ACCESSIBLE BY BOTH USER AND ADMIN
 Route::middleware(['auth','verified','set_transaction_pin'])->get('user/data/buy_data_single', [DataController::class, 'buy_data_v2'])->name('user.data.buy_data2');

@@ -280,7 +280,7 @@ class WalletsController extends Controller
         'nin' => 'required',
         'nin_fullname' => 'required',
         'nin_phone_number' => 'required',
-        'pin' => ['required','digits:4'],
+        'pin' => ['required','string','regex:/^\d{4,5}$/'],
     ]);
     
     if ($validator->stopOnFirstFailure()->fails()) {
@@ -507,7 +507,7 @@ class WalletsController extends Controller
         'bank_code' => 'required',
         'bvn' => 'required',
         'account_number' => 'required',
-        'pin' => ['required','digits:4'],
+        'pin' => ['required','string','regex:/^\d{4,5}$/'],
       ]);
     
       if ($validator->stopOnFirstFailure()->fails()) {
@@ -609,7 +609,7 @@ class WalletsController extends Controller
 
     public function generate_monnify_virtual_accounts(Request $request){
       // $validator = Validator::make($request->all(), [
-      //   'pin' => 'required|digits:4|exists:users,pin'
+      //   'pin' => 'required|'string','regex:/^\d{4,5}$/|exists:users,pin'
       // ]);
       
       // if ($validator->stopOnFirstFailure()->fails()) {
@@ -929,7 +929,7 @@ class WalletsController extends Controller
 
     public function complete_pending_wallet_crediting(Request $request){
         $validator = Validator::make($request->all(), [
-          'pin' => 'required|digits:4|exists:users,pin',
+          'pin' => ['required','string','regex:/^\d{4,5}$/','exists:users,pin'],
           'user_id' => 'required|exists:users,id',
           'transaction_id' => 'required|max:255|exists:max_crystal_payments_pending_approvals,id',
           'action' => ['required',Rule::in([-1,1])],
@@ -1077,7 +1077,7 @@ class WalletsController extends Controller
     //CRYSTALPAY accounts generation
     public function generate_virtual_account(Request $request){
         $validator = Validator::make($request->all(), [
-            'pin' => 'required|digits:4|exists:users,pin',
+            'pin' => ['required','string','regex:/^\d{4,5}$/','exists:users,pin'],
             // 'bvn' => 'required|max:255',
             // 'first_name' => 'required|max:255',
             // 'last_name' => 'required|max:255',

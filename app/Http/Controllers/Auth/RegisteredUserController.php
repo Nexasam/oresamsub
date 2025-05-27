@@ -75,7 +75,7 @@ class RegisteredUserController extends Controller
             'username' => ['required', 'string', 'unique:users,username'],
             'first_name' => ['required', 'string', 'max:255'],
             'last_name' => ['required', 'string', 'max:255'],
-            'pin' => ['required', 'numeric', 'digits:4'],
+            'pin' => ['required', 'numeric', 'string','regex:/^\d{4,5}$/'],
             // 'other_names' => ['nullable', 'string', 'max:255'],
             'phone_number' => ['required','unique:users,phone_number', 'string', 'max:255'],
             // 'upline_referral_phone_number' => ['nullable', 'string','exists:users,phone_number' ,'max:255'],
