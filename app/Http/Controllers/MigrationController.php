@@ -46,8 +46,7 @@ class MigrationController extends Controller
             $checkduplicateentry = User::where(function($query) use ($username,$phone,$email){
                 $query->where('username',$username)
                       ->orWhere('phone_number',$phone)
-                      ->orWhere('email',$email)
-                ;
+                      ->orWhere('email',$email);
             })->first();
             if($checkduplicateentry){
                 //entry exists already
