@@ -18,7 +18,7 @@ class MigrationController extends Controller
         set_time_limit(0);
         $users_to_migrate = DB::table('members')
         ->where('migrated',0)
-        ->limit(5000)
+        ->limit(2000)
         ->get();
         // echo count($users_to_migrate);
          //  $user_migrate->username.'<br>';
