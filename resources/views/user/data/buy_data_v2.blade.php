@@ -203,7 +203,7 @@
                                             
                                             <div class="grid w-full lg:w-1/2 lg:grid-cols-1 space-y-4 lg:space-y-0">
                                                 
-                                              {{-- @if (env('APP_NAME') == 'ABC' || env('APP_NAME') == 'OresamSub') --}}
+                                              {{-- @if (env('APP_NAME') == 'Mega-sub' || env('APP_NAME') == 'OresamSub') --}}
                                               <input type="hidden" class="my-auto ti-form-input" value="main_wallet" required id="wallet_category" name="wallet_category">         
                                               {{-- @else
                                                   <div class="space-y-2">
@@ -274,7 +274,7 @@
 
                                               
     
-                                                    @if (env('APP_NAME') != 'ABC' && env('APP_NAME') != 'OresamSubbb')
+                                                    @if (env('APP_NAME') != 'Mega-sub' && env('APP_NAME') != 'OresamSubbb')
                                                       <div class="my-2">
                                                         <label class="p-3 flex w-full bg-white border border-gray-200 rounded-sm text-sm focus:border-primary focus:ring-primary dark:bg-bgdark dark:border-white/10 dark:text-white/70">
                                                               <input type="checkbox" class="ti-form-checkbox mt-0.5 pointer-events-none" id="filter_by_plan_category">
@@ -304,7 +304,7 @@
                                                     </div>
                                                 
     
-                                                    @if (env('APP_NAME') == 'ABC' || env('APP_NAME') == 'OresamSub')
+                                                    @if (env('APP_NAME') == 'Mega-sub' || env('APP_NAME') == 'OresamSub')
                                                         <input type="hidden" value="0" class="ti-form-checkbox mt-0.5 pointer-events-none" name="validatephonenetwork" id="validatephonenetwork">       
                                                     @else
                                                         <div class="my-2">
