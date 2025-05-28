@@ -35,7 +35,6 @@ class UserDashboardController extends Controller
     foreach($hot_sales as $key=>$hot_sale){
       $new_hot_sales_array[$key]['product_slug'] = $hot_sale->product->slug;
       switch($hot_sale->product->slug){
-        //
         case 'utility_bills':
           $route_name = 'user.electricity.buy_electricity_subscription_by_plan_category';
           break;

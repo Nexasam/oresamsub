@@ -24,6 +24,7 @@ use App\Http\Controllers\QuickToolController;
 use App\Http\Controllers\Template2Controller;
 use App\Http\Controllers\AutomationController;
 use App\Http\Controllers\CrystalPayController;
+use App\Http\Controllers\CommissionsController;
 use App\Http\Controllers\NewTemplateController;
 use App\Http\Controllers\PriceChangeController;
 use App\Http\Controllers\ProductPlanController;
@@ -171,6 +172,11 @@ Route::middleware(['auth','verified'])->get('/dashboard', [UserDashboardControll
 Route::get('product_plans/fetch_public_product_plans', [ProductPlanController::class, 'fetch_public_product_plans'])->name('fetch_public_product_plans');
 
 
+
+
+
+// COMMISSIONS
+Route::middleware(['auth','verified'])->get('commissions/index', [CommissionsController::class, 'index'])->name('commissions.index');
 
 
 

@@ -99,7 +99,7 @@ class SendFailedTransactionEmail extends Command
                 logger('No pending failed transaction notification...');
             }
         }   else{
-            logger('na this place dey run');
+            // logger('na this place dey run');
         }
     }
 }

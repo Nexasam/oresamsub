@@ -83,7 +83,7 @@ class TransactionController extends Controller
       }
 
       $amount = $transaction_details->amount;
-      $amount_deducted = $transaction_details->discounted_amount;
+      $amount_deducted = $transaction_details->discounted_amount ?? $transaction_details->amount;
       $wallet_category = $transaction_details->wallet_category;
       $transaction_category = $transaction_details->transaction_category;
       $status = $transaction_details->status;
