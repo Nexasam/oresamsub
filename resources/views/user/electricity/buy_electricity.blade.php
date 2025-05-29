@@ -250,6 +250,7 @@
 
                                                 <div class="space-y-2">  
                                                   <input type="text" id="validation_extra_info" name="validation_extra_info" class="opacity-70 pointer-events-none ti-form-input" disabled readonly placeholder="extra information" />
+                                                  <input type="text" id="validation_address" name="validation_address" class="opacity-70 pointer-events-none ti-form-input" disabled readonly placeholder="extra address information" />
                                                </div>
 
                                                

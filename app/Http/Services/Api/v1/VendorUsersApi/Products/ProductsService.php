@@ -621,7 +621,6 @@ class ProductsService{
 
         DB::beginTransaction();
         try{
-
                         // ////validate wallet
                         if($wallet_category == 'main_wallet'){
                             $wallet_before = $user_details->main_wallet;
@@ -1121,7 +1120,14 @@ class ProductsService{
                                         'status' => $status
                                     );
                                 }
-                        
+
+                                
+
+                                $validate_metre_name = (new MegaSubElectricity(metre_number: $metre_number, plan_id: $electricity_product_plan_id, user_id: $user_id))->validateMetreNumber();
+                                $validated_name = $validate_metre_name['name'] ?? '';
+                                $validated_address = $validate_metre_name['address'] ?? 'Nil';
+                               
+    
                                 $description = 'Purchase of electricity subscription';
                                 $creationData['transaction_category'] = 'utility_bills';
                                 $creationData['user_id'] = $user_id;
@@ -1129,6 +1135,7 @@ class ProductsService{
                                 $creationData['product_plan_id'] = $electricity_product_plan_id;
                                 $creationData['phone_number'] =  NULL;
                                 $creationData['metre_number'] = $metre_number;
+                                $creationData['validation_address'] = $validated_address;
                                 // $creationData['electricity_tv_slots'] = 1;
                                 $creationData['amount'] = $actual_amount;
                                 $creationData['discounted_amount'] = $amount;
@@ -1159,9 +1166,9 @@ class ProductsService{
                             DB::commit();
                     
                             if($failure > 0){
-                              return ['status'=>2,'user_message' => $user_message,'admin_message','message'=>" $failure issue(s) found. Check transaction history", 'data' => $display_results  ];   
+                              return ['status'=>2,'user_message' => $user_message,'admin_message','validation_address' => $validated_address,'message'=>" $failure issue(s) found. Check transaction history", 'data' => $display_results  ];   
                             }
-                            return ['status'=>1, 'user_message' => $user_message,'admin_message','message'=>'Transaction was successfully processed', 'data' => $display_results  ];
+                            return ['status'=>1, 'user_message' => $user_message,'admin_message','validation_address' => $validated_address,'message'=>'Transaction was successfully processed', 'data' => $display_results  ];
                     
                         } else{
                             return ['status'=>'-1', 'message'=>'Wrong wallet selection', 'data'=>[]];

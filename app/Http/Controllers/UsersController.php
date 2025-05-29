@@ -291,7 +291,7 @@ class UsersController extends Controller
 
 
         $email = $request->email ?? '';
-        $limit = $request->limit ?? 50000;
+        $limit = $request->limit ?? 500;
 
 
         // $date_from = date('Y-m-d',strtotime($date_from));

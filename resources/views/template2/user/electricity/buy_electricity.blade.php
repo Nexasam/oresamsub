@@ -62,6 +62,8 @@
                 <input type="hidden" id="no_of_slots" name="no_of_slots" value="1" readonly class="my-auto ti-form-input" placeholder="e.g 5" /></textarea>
 
                 <input type="text" id="validation_extra_info" name="validation_extra_info" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-[{{$site_primary_color}}] focus:border-[{{$site_primary_color}}] block w-full p-2.5  " disabled readonly placeholder="extra information" />
+                <input type="text" id="validation_address" name="validation_address" class="opacity-70 pointer-events-none ti-form-input" disabled readonly placeholder="extra address information" />
+
              </div>
 
             <div class="mt-2">

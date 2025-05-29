@@ -304,6 +304,7 @@ class ElectricitySubscriptionController extends Controller
         $validator = Validator::make($request->all(), [
             'metre_number' => 'required',
             'validation_extra_info' => 'required',
+            'validation_address' => 'nullable',
             'electricity_product_plan_category_id' => 'required',
             'electricity_product_plan_id' => 'required',
             'wallet_category' => 'required',
@@ -412,7 +413,6 @@ class ElectricitySubscriptionController extends Controller
                                 
                                 if($automation_details->slug == 'megasubplug'){
                                     $duplication_check = 1;
-                                 
                                     $buy_electricity_subscription = (new MegaSubElectricity($metre_number,$request->electricity_product_plan_id,$total_amount,$request->validation_extra_info,1,$plan_category_details->product_plan_category_name,$user_details->phone_number))->buyElectricity();
                                     // return response()->json(['status'=>'-1', 'message'=>$buy_electricity_subscription ]);
                                
@@ -469,6 +469,7 @@ class ElectricitySubscriptionController extends Controller
                                 $creationData['product_plan_id'] = $request->electricity_product_plan_id;
                                 $creationData['phone_number'] =  NULL;
                                 $creationData['metre_number'] = $request->metre_number;
+                                $creationData['validation_address'] = $request->validation_address;
                                 // $creationData['electricity_tv_slots'] = 1;
                                 $creationData['amount'] = $actual_amount;
                                 $creationData['discounted_amount'] = $amount;

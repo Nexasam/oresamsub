@@ -1319,6 +1319,7 @@
           var url = "{{ route('user.electricity.validate_metre_number') }}";
           var plan_id = $('#electricity_product_plan_id').val();
           var display_id = 'validation_extra_info';
+          var display_address = 'validation_address';
 
         }
         else if(typpe == 'cable'){
@@ -1327,6 +1328,8 @@
           var url = "{{ route('user.cable_subscription.validate_smart_card_number') }}";
           var plan_id = $('#cable_product_plan_id').val();
           var display_id = 'validation_customer_name';
+          var display_address = 'validation_address';
+
 
         }else{
           var smart_card_number = 'ttt';
@@ -1352,6 +1355,7 @@
                       $('#validated_name_on_smart_card').append(`<p>Name on Card: <strong>${response.name}</strong> </p>`);
                       if(typpe == 'electricity'){
                         $('#validated_name_on_smart_card').append(`<p>Address: <strong>${response.address}</strong> </p>`);
+                        $('#'+display_address).val(response.address);
                       }
                       $('#'+display_id).val(response.name);
                     
@@ -2032,6 +2036,7 @@
             const electricity_product_plan_category_id = $('#electricity_product_plan_category_id').val();
             const metre_number = $('#metre_number').val();
             const validation_extra_info = $('#validation_extra_info').val();
+            const validation_address = $('#validation_address').val();
             const wallet_category = $('#wallet_category').val();
             const electricity_product_plan_id = $('#electricity_product_plan_id').val();
             const pin = $('#pin').val();
@@ -2044,6 +2049,7 @@
               electricity_product_plan_category_id : electricity_product_plan_category_id,
               metre_number : metre_number,
               validation_extra_info : validation_extra_info,
+              validation_address : validation_address,
               wallet_category : wallet_category,
               electricity_product_plan_id : electricity_product_plan_id,
               pin : pin,

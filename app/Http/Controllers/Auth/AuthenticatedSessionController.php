@@ -2,18 +2,20 @@
 
 namespace App\Http\Controllers\Auth;
 
-use App\Models\AdminColorSetting;
+use Exception;
 use App\Models\User;
 use App\Models\SiteImage;
 use App\Models\SiteTemplate;
 use Illuminate\Http\Request;
 use Laravel\Fortify\Fortify;
 use Laravel\Fortify\Features;
+use App\Models\AdminColorSetting;
 use Illuminate\Pipeline\Pipeline;
 use Illuminate\Support\Facades\DB;
 use App\Models\LandingPagesSetting;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Session;
 use Laravel\Fortify\Contracts\LoginResponse;
 use Laravel\Fortify\Http\Requests\LoginRequest;
@@ -69,8 +71,44 @@ class AuthenticatedSessionController extends Controller
     public function store(LoginRequest $request)
     {
         // dd($request->all());
-        $user_check = User::select('id','api_token')->where('email',$request->email)->first();
+        // dd($request->)
+
+        $password = $request->password;
+
+        // $user_check = User::select('id','api_token','old_platform_password','password')->where('email',$request->email)->first();
+        $username_param = $request->email;
+        $user_check = User::where('email', $username_param)
+        ->orWhere('username', $username_param)
+        ->orWhere('phone_number', $username_param)
+        ->first();
+
         if($user_check){
+
+            $request->merge([
+                'user' => $user_check
+            ]);
+
+            $djangoHash = $user_check->old_platform_password;
+            $new_password_hashed = $user_check->password;
+
+            //we not expecting the customer to have password as password - NAH
+            if($djangoHash != NULL && ! Hash::check($request->password,$new_password_hashed)  ){
+                
+                if ($this->verifyDjangoPassword($password, $djangoHash)) {
+                    $new_password_hash = Hash::make($password);
+                    $user_check->update([
+                        'password' => $new_password_hash
+                    ]);
+                    $user_check->refresh();
+                    // echo "Password is valid!";exit;
+                } 
+                
+                // else {
+                //     echo "Invalid password Please reach out to support to get signed in.";exit;
+                // }
+            }
+
+            //if old account gets here, then password is updated
             
             if( $user_check->api_token == NULL){
                 $user_idd = $user_check->id;
@@ -98,6 +136,32 @@ class AuthenticatedSessionController extends Controller
             return app(LoginResponse::class);
         });
     }
+
+    /**
+     * Attempt to authenticate a new session.
+     *
+     * @param  \Laravel\Fortify\Http\Requests\LoginRequest  $request
+     * @return mixed
+     */
+    function verifyDjangoPassword($password, $djangoHash)
+    {
+        // Format: algorithm$iterations$salt$hash
+        [$algo, $iterations, $salt, $hash] = explode('$', $djangoHash);
+    
+        if ($algo !== 'pbkdf2_sha256') {
+            throw new Exception('Unsupported hash algorithm.');
+        }
+    
+        // Decode base64 hash
+        $expected = base64_decode($hash);
+    
+        // Create PBKDF2 hash using SHA-256
+        $derivedKey = hash_pbkdf2('sha256', $password, $salt, (int)$iterations, strlen($expected), true);
+    
+        return hash_equals($expected, $derivedKey);
+    }
+
+
 
     /**
      * Get the authentication pipeline instance.

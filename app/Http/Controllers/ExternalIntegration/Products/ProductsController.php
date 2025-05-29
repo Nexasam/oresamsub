@@ -318,7 +318,6 @@ class ProductsController extends Controller
             return $this->error('User details not found', code: 404 );    
         }
 
-
         $validate_metre_name = (new MegaSubElectricity(metre_number: $metre_number, plan_id: $plan_id, user_id: $user_id))->validateMetreNumber();
 
         $status = $validate_metre_name['status'] ?? -1;

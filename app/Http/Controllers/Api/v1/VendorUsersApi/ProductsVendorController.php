@@ -470,6 +470,7 @@ class ProductsVendorController extends Controller
         $data['wallet_category'] = 'main_wallet';//this is required
      
         $buy_electricity = (new ProductsService())->buy_electricity_service($data);
+        $data['validation_address'] = $buy_electricity->validation_address ??  'nil';
 
         $status = $buy_electricity['status'];
         $message = $buy_electricity['message'];

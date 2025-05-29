@@ -149,9 +149,11 @@
                                       @if ($data->transaction_category == 'utility_bills')
                                           @php
                                               $response_decode = json_decode($data->admin_screen_message,true);
+                                              $validated_address = $data->validation_address ?? 'NIL';
                                               $token_details = isset($response_decode['Detail']['info']['realresponse']) ? $response_decode['Detail']['info']['realresponse'] :  '-';
                                               $prefix = $token_details == '-' ? 'Token details: ' : '';
                                               $dataa =  'Metre No: '.$data->metre_number.'<br>';
+                                              $dataa .=  'Address No:<b> '.$validated_address.'</b><br>';
                                               $dataa .=  '<b>'.$prefix.':  '.$token_details.'</b><br>';
                                               echo $dataa;
                                           @endphp

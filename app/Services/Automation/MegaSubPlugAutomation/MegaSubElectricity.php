@@ -89,7 +89,6 @@ class MegaSubElectricity{
 
         
         $curl = curl_init();
-
         curl_setopt_array($curl, array(
         CURLOPT_URL => 'https://megasubplug.com/API/?action=validate_metre&metre_number='.$metre_number.'&electricity_plan_api_id='.$automation_product_plan_id.'',
         CURLOPT_RETURNTRANSFER => true,

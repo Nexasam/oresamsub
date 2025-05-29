@@ -25,16 +25,8 @@ class MigrationController extends Controller
          $role_details = Role::where('role_name','User')->first();
          $default_reseller_plan = UserPlan::where('is_default',1)->first();
 
-   
-         //check if that referby is not null or empty and it has a record
-         // $checkUplineExists = DB::table('members')->where('username',$referby)->first();
-         // if($checkUplineExists){
-
-         // }else{
-         //     $upline_id = null;
-         // }
-
-        foreach($users_to_migrate as $user_migrate){
+         //FIRST TO MIGRATE USERS
+         foreach($users_to_migrate as $user_migrate){
             $fullname = $user_migrate->name;
             $username = $user_migrate->username;
             $pin = $user_migrate->pin;
@@ -50,9 +42,9 @@ class MigrationController extends Controller
             })->first();
             if($checkduplicateentry){
                 //entry exists already
-                $checkduplicateentry->username.' imported already <br>'; 
+                echo $checkduplicateentry->username.' imported already <br>'; 
             }else if($user_migrate->phone == '' || $user_migrate->username == '' || $user_migrate->email == ''){
-                $user_migrate->username.' is likely with some empty fields <br>'; 
+                echo $user_migrate->username.' is likely with some empty fields <br>'; 
                 DB::table('members')->where('username',$user_migrate->username)->update(['migrated'=> -1]); //indicate issue
 
             } else{
@@ -86,17 +78,66 @@ class MigrationController extends Controller
                 $user = User::create($data);
 
                 DB::table('members')->where('username',$username)->update(['migrated'=> 1]);
-                $username.' successfully migrated <br>'; 
+                echo $username.' successfully migrated <br>'; 
 
             }
         }
+
+   
+        //SECOND TO MIGRATE REFERR.
+        //check if that referby is not null or empty and it has a record
+        //  $getRowsWithUplines = DB::table('members')->get();
+        //  if( count($getRowsWithUplines) > 0 ){
+        //     foreach($getRowsWithUplines as $each_member){
+
+        //         $referby = $each_member->referby;
+        //         $email = $each_member->email;
+
+        //         if($referby != '' && $referby != NULL && $referby != 0){
+        //             $useruplinecheck = User::where('username',$referby)->first();
+        //             if($useruplinecheck){
+        //                 //update here
+        //                 $userdownline_to_update = User::where('email',$email)->update([
+        //                     'upline_id' => $useruplinecheck->id
+        //                 ]);
+        //                 echo 'Record:  '.$referby.' ===> '.$email.'<br>';
+
+        //             }
+        //         }
+               
+        //     }
+        //  }else{
+        //         echo 'No record found';
+        //  }
+
+
+        //THIRD TO MIGRATE REFERR.
+        //MIGRATE JUST balances
+        //  $getRowsWithUplines = DB::table('members')->get();
+        //  if( count($getRowsWithUplines) > 0 ){
+        //     foreach($getRowsWithUplines as $each_member){
+
+        //         $wallet_balance = $each_member->wallet;
+        //         $referby = $each_member->referby;
+        //         $email = $each_member->email;
+
+        //         User::where('email',$email)->update([
+        //             'main_wallet' => $wallet_balance
+        //         ]);
+        //         echo 'Record:  '.$email.' => '.$wallet_balance.'<br>';
+
+        //     }
+        //  }else{
+        //         echo 'No record found';
+        //  }
+
+       
     }
 
     //migrate virtual accounts
     public function migrate_accounts(){
         set_time_limit(0);
         $bank_accounts = DB::table('members_bank_account')
-        // ->where('bank_id',1) //access:3 , safehav: 7, wema:1
         ->where('migrated',0)
         // ->limit(10)
         ->get();
