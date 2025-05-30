@@ -360,6 +360,7 @@ class AutomationController extends Controller
                 }
         
     
+                dd($automation->api_password.' '.$automation->api_public_key);
                 $curl = curl_init();
                 curl_setopt_array($curl, array(
                 CURLOPT_URL => 'https://megasubplug.com/API/?action=product_prices',
@@ -372,8 +373,7 @@ class AutomationController extends Controller
                 CURLOPT_CUSTOMREQUEST => 'GET',
                 CURLOPT_HTTPHEADER => array(
                     'Password: '.$automation->api_password,
-                    'Authorization: '.$automation->api_public_key,
-                    'Cookie: PHPSESSID=67up5cp8mc52aqqu08dkoetd04'
+                    'Authorization: '.$automation->api_public_key
                 ),
                 ));
     
