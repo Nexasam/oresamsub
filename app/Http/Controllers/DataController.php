@@ -1013,10 +1013,11 @@ class DataController extends Controller
         $amount = $request->amount ?? '';
         $plan_category_id = $request->plan_category_id ?? '';
         $product_slug = $request->product_slug ?? ''; //this is required
+        logger('ProductSlug display in fetch product plans fxn: '.$product_slug.' <== display here.');
         
         
         $product_id = Product::where('slug',$product_slug)->first()->id;
-        logger($plan_category_id);
+        // logger($plan_category_id);
          
         if($plan_category_id == ''){
             $product_plan_categories = ProductPlanCategory::select('id','automation_id')
