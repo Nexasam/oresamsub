@@ -453,7 +453,7 @@ class AutomationController extends Controller
             $errormessage = $exception->getMessage();
             $errorline = $exception->getLine();
             logger("Error occured in fetching plans: $errormessage on $errorline");
-            Session::flash('failure','Please ensure your automation api keys are set');
+            Session::flash('failure','Please ensure your automation api keys are setss..');
             return redirect()->route('admin.settings.index');
         }
        
