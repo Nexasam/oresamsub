@@ -23,6 +23,8 @@ Route::get('/user', function (Request $request) {
 })->middleware('auth:sanctum');
 
 //FIXED WEBHOOK
+
+Route::post('webhook/megasub', [WalletsController::class, 'webhook22'])->name('admin.wallet.crystalpay.webhook');
 Route::post('admin/wallets/crystal_pay_webhook/{id}', [WalletsController::class, 'webhook'])->name('admin.wallet.crystalpay.webhook');
 Route::post('admin/products/oresamsub', [ProductWebhookController::class, 'product_webhook'])->name('admin.product.webhook');
 Route::get('admin/fetch_addons', [AddonController::class, 'fetch_addons'])->name('admin.addons.fetch_addons');
