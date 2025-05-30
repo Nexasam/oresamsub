@@ -360,7 +360,7 @@ class AutomationController extends Controller
                 }
         
     
-                dd($automation->api_password.' '.$automation->api_public_key);
+                // dd($automation->api_password.' '.$automation->api_public_key);
                 $curl = curl_init();
                 curl_setopt_array($curl, array(
                 CURLOPT_URL => 'https://megasubplug.com/API/?action=product_prices',
