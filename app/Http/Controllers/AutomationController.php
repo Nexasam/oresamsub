@@ -373,7 +373,8 @@ class AutomationController extends Controller
                 CURLOPT_CUSTOMREQUEST => 'GET',
                 CURLOPT_HTTPHEADER => array(
                     'Password: '.$automation->api_password,
-                    'Authorization: '.$automation->api_public_key
+                    'Authorization: '.$automation->api_public_key,
+                    "Accept: application/json"
                 ),
                 ));
     
