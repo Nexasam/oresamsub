@@ -381,6 +381,7 @@ class AutomationController extends Controller
     
                 curl_close($curl);
                 // echo $response;
+                dd($response);
 
                 $response_decoded = json_decode($response,true);
                 if(isset($response_decoded['Status']) && $response_decoded['Status'] == 'Error'){
@@ -397,7 +398,9 @@ class AutomationController extends Controller
                
     
                
-                $data['data_plans'] = json_decode($response,true)['Detail'];
+                
+                $data['data_plans'] = $response_decoded['Detail'];
+                // $data['data_plans'] = json_decode($response,true)['Detail'];
                 $data['automation'] = $automation;
                 $data['product_plan_ids'] = $product_plan_ids;
                 $data['product_plan_categories'] = $product_plan_categories; 
