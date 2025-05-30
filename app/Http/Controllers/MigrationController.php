@@ -181,7 +181,8 @@ class MigrationController extends Controller
                     $useriddd = $checkonusertbl->id;
 
                     //only at this point can you create
-                    if($bank_id == 1 || $bank_id == 3 || $bank_id == 7){
+                    // if($bank_id == 1 || $bank_id == 3 || $bank_id == 7){
+                    if($bank_id == 6){
 
                         $checkva = UserVirtualAccount::where('user_id',$useriddd)->where('bank_code',$bank_id)->first();
                         if(! $checkva ){
