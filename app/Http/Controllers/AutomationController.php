@@ -383,7 +383,7 @@ class AutomationController extends Controller
     
                 curl_close($curl);
                 // echo $response;
-                dd($response);
+                // dd($response);
 
                 $response_decoded = json_decode($response,true);
                 if(isset($response_decoded['Status']) && $response_decoded['Status'] == 'Error'){
