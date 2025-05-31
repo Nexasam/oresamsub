@@ -244,7 +244,7 @@
                             </span>
                         </div>
                         <div class="">
-                            <div class="mb-2">User Balance</div>
+                            <div class="mb-2">Your Balance</div>
                             <div class="text-gray-500 dark:text-white/70 mb-1 text-xs">
                                 <span
                                     class="text-gray-800 font-semibold text-xl leading-none align-bottom dark:text-white">
