@@ -63,79 +63,11 @@
                         
                     </ul>
                 </li>
-                <!-- End::slide -->
+          
+
+            
 
                 @if (strtolower(auth()->user()->role->role_name) == 'admin')
-
-                <li class="slide__category"><span class="category-name">Customer Modules</span></li>
-                 <!-- Start::slide -->
-                 <li class="slide  has-sub">
-                    <a href="{{ route('user.data.buy_data2') }}" class="side-menu__item">
-                        <i class="ti ti-device-mobile side-menu__icon"></i>
-                        <span class="side-menu__label">Quick Data Purchase</span>
-                        <i class="ri ri-arrow-right-s-line side-menu__angle"></i>
-                    </a>
-                    <ul class="slide-menu child1">
-                        {{-- <li class="slide"><a href="#" class="side-menu__item">View Networks</a></li> --}}
-                    </ul>
-                 </li>
-                 <!-- End::slide -->
-
-                   <!-- Start::slide -->
-                   <li class="slide  has-sub">
-                    <a href="{{ route('user.data.buy_data') }}" class="side-menu__item">
-                        <i class="ti ti-device-mobile side-menu__icon"></i>
-                        <span class="side-menu__label">Data Purchase</span>
-                        <i class="ri ri-arrow-right-s-line side-menu__angle"></i>
-                    </a>
-                    <ul class="slide-menu child1">
-                        {{-- <li class="slide"><a href="#" class="side-menu__item">View Networks</a></li> --}}
-                    </ul>
-                 </li>
-                 <!-- End::slide -->
-
-                <!-- Start::slide -->
-                <li class="slide  has-sub">
-                <a href="{{ route('user.airtime.buy_airtime') }}" class="side-menu__item">
-                    <i class="ti ti-phone-call  side-menu__icon"></i>
-                    <span class="side-menu__label">Airtime</span>
-                    <i class="ri ri-arrow-right-s-line side-menu__angle"></i>
-                </a>
-                <ul class="slide-menu child1">
-                    {{-- <li class="slide"><a href="#" class="side-menu__item">View Networks</a></li> --}}
-                </ul>
-                </li>
-                <!-- End::slide -->
-
-                  <!-- Start::slide -->
-                  <li class="slide  has-sub">
-                    <a href="{{ route('user.cable_subscription.buy_cable_subscription') }}" class="side-menu__item">
-                        <i class="ti ti-device-tv side-menu__icon"></i>
-                        <span class="side-menu__label">Cable</span>
-                        <i class="ri ri-arrow-right-s-line side-menu__angle"></i>
-                    </a>
-                    <ul class="slide-menu child1">
-                        {{-- <li class="slide"><a href="#" class="side-menu__item">View Networks</a></li> --}}
-                    </ul>
-                 </li>
-                 <!-- End::slide -->
-
-                  <!-- Start::slide -->
-                  <li class="slide  has-sub">
-                    <a href="{{ route('user.electricity.buy_electricity_subscription') }}" class="side-menu__item">
-                        <i class="ti ti-recharging side-menu__icon"></i>
-                        <span class="side-menu__label">Electricity</span>
-                        <i class="ri ri-arrow-right-s-line side-menu__angle"></i>
-                    </a>
-                    <ul class="slide-menu child1">
-                        {{-- <li class="slide"><a href="#" class="side-menu__item">View Networks</a></li> --}}
-                    </ul>
-                 </li>
-                 <!-- End::slide -->
-
-             
-                
-
 
                 <!-- Start::slide__category -->
                  <li class="slide__category"><span class="category-name">Admin Modules</span></li>
@@ -328,29 +260,14 @@
                     </ul>
                 </li>
                 <!-- End::slide -->
-             
+                @endif
 
 
-                @else
-
+                <li class="slide__category"><span class="category-name">{{ strtolower(auth()->user()->role->role_name) == 'admin' ? 'User' : '' }}  Modules</span></li>
                 {{-- ///USER PAGES HERE --}}
-
-                <li class="slide__category"><span class="category-name">Modules</span></li>
-
-                    <!-- Start::slide -->
-                    {{-- <li class="slide  has-sub">
-                        <a href="{{ route('commissions.index')}}" class="side-menu__item">
-                            <i class="ti ti-recharging  side-menu__icon"></i>
-                            <span class="side-menu__label">Commissions</span>
-                            <i class="ri ri-arrow-right-s-line side-menu__angle"></i>
-                        </a>
-                      
-                    </li> --}}
-                    <!-- End::slide -->
-                
-
+        
                 <!-- Start::slide -->
-                 <li class="slide  has-sub">
+                <li class="slide  has-sub">
                     <a href="{{ route('user.wallet.index')}}" class="side-menu__item">
                         <i class="ti ti-report-money  side-menu__icon"></i>
                         <span class="side-menu__label">Fund Wallet</span>
@@ -359,10 +276,8 @@
                     <ul class="slide-menu child1">
                         {{-- <li class="slide"><a href="#" class="side-menu__item">View Networks</a></li> --}}
                     </ul>
-                  </li>
+                </li>
                 <!-- End::slide -->
-
-
                 
 
                 <!-- Start::slide -->
@@ -434,18 +349,38 @@
                 <!-- End::slide -->
     
 
-                 <!-- Start::slide -->
-                 <li class="slide  has-sub">
-                    <a href="{{ route('user.transactions.index')}}" class="side-menu__item">
-                        <i class="ti ti-exchange side-menu__icon"></i>
-                        <span class="side-menu__label">Transactions</span>
+
+                @if (strtolower(auth()->user()->role->role_name) == 'user')
+                       
+
+                <!-- Start::slide -->
+                {{-- <li class="slide  has-sub">
+                    <a href="{{ route('commissions.index')}}" class="side-menu__item">
+                        <i class="ti ti-recharging  side-menu__icon"></i>
+                        <span class="side-menu__label">Commissions</span>
                         <i class="ri ri-arrow-right-s-line side-menu__angle"></i>
                     </a>
-                    <ul class="slide-menu child1">
-                        {{-- <li class="slide"><a href="#" class="side-menu__item">View Networks</a></li> --}}
-                    </ul>
-                  </li>
+                
+                </li> --}}
                 <!-- End::slide -->
+
+                <!-- Start::slide -->
+                <li class="slide  has-sub">
+                <a href="{{ route('user.transactions.index')}}" class="side-menu__item">
+                    <i class="ti ti-exchange side-menu__icon"></i>
+                    <span class="side-menu__label">Transactions</span>
+                    <i class="ri ri-arrow-right-s-line side-menu__angle"></i>
+                </a>
+                <ul class="slide-menu child1">
+                    {{-- <li class="slide"><a href="#" class="side-menu__item">View Networks</a></li> --}}
+                </ul>
+                </li>
+                <!-- End::slide -->
+            
+
+                @endif
+              
+
 
                 @if (env('APP_NAME') == 'FoxDataHub' || env('APP_NAME') == 'OresamSub')
                      <!-- Start::slide -->
@@ -479,7 +414,7 @@
 
 
                     
-                @endif
+                {{-- @endif --}}
 
                 
                
