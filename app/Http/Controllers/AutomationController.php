@@ -419,6 +419,8 @@ class AutomationController extends Controller
                 //call plans api 
             }
 
+
+            // FIX THIS: MAKE DRY FOR ALL MSORGS
             else if($slug == 'affatech'){
 
                     if($automation == NULL || $automation->api_public_key == NULL){
@@ -448,8 +450,39 @@ class AutomationController extends Controller
                     // dd($response_array); 
                     $data['response_array'] = $response_array;
                     return view('admin.automations.affatech_dashboard')->with($data);   
-
             }
+            else if($slug == 'gongozconcept'){
+
+                if($automation == NULL || $automation->api_public_key == NULL){
+                    Session::flash('failure','Please ensure your automation api keys are set');
+                    return redirect()->route('admin.settings.index');
+                    // return back()->with('status' , 'Please check your settings and ensure keys are set');
+                }
+
+                $curl = curl_init();        
+                curl_setopt_array($curl, array(
+                CURLOPT_URL => 'https://www.gongozeconcept.com/api/network/',
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_ENCODING => '',
+                CURLOPT_MAXREDIRS => 10,
+                CURLOPT_TIMEOUT => 0,
+                CURLOPT_FOLLOWLOCATION => true,
+                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                CURLOPT_CUSTOMREQUEST => 'GET',
+                CURLOPT_HTTPHEADER => array(
+                    'Content-Type: application/json',
+                    'Authorization: Token '.$automation->api_public_key
+                ),
+                ));
+
+                $response = curl_exec($curl);
+                $response_array = json_decode($response,true); 
+                // dd($response_array); 
+                $data['response_array'] = $response_array;
+                return view('admin.automations.gongozconcept_dashboard')->with($data);   
+            }
+            // FIX THIS: MAKE DRY FOR ALL MSORGS ENDS HERE
+
 
             else{
                 return back();
