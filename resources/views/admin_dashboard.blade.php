@@ -244,6 +244,38 @@
                             </span>
                         </div>
                         <div class="">
+                            <div class="mb-2">User Balance</div>
+                            <div class="text-gray-500 dark:text-white/70 mb-1 text-xs">
+                                <span
+                                    class="text-gray-800 font-semibold text-xl leading-none align-bottom dark:text-white">
+                                    &#8358;{{  number_format(auth()->user()->main_wallet,2) ?? 0  }}
+                                </span>
+                            </div>
+                            {{-- <div>
+                                <span class="text-xs mb-0">Increased by <span
+                                        class="text-success">+2.58%</span></span>
+                            </div> --}}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-span-12 xxxl:col-span-2 md:col-span-4">
+            <div class="box">
+                <div class="box-body">
+                    <div class="flex space-x-4 rtl:space-x-reverse">
+                        <div class="flex items-center justify-center ecommerce-icon px-0">
+                            <span class="rounded-sm p-4 bg-warning/10">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="fill-white svg4" height="24px"
+                                    viewBox="0 0 24 24" width="24px" fill="#000000">
+                                    <path d="M0 0h24v24H0V0z" fill="none" />
+                                    <path
+                                        d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm.31-8.86c-1.77-.45-2.34-.94-2.34-1.67 0-.84.79-1.43 2.1-1.43 1.38 0 1.9.66 1.94 1.64h1.71c-.05-1.34-.87-2.57-2.49-2.97V5H10.9v1.69c-1.51.32-2.72 1.3-2.72 2.81 0 1.79 1.49 2.69 3.66 3.21 1.95.46 2.34 1.15 2.34 1.87 0 .53-.39 1.39-2.1 1.39-1.6 0-2.23-.72-2.32-1.64H8.04c.1 1.7 1.36 2.66 2.86 2.97V19h2.34v-1.67c1.52-.29 2.72-1.16 2.73-2.77-.01-2.2-1.9-2.96-3.66-3.42z" />
+                                </svg>
+                            </span>
+                        </div>
+                        <div class="">
                             <div class="mb-2">Total User Main Balances</div>
                             <div class="text-gray-500 dark:text-white/70 mb-1 text-xs">
                                 <span
