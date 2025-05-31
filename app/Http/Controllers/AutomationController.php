@@ -461,7 +461,7 @@ class AutomationController extends Controller
 
                 $curl = curl_init();        
                 curl_setopt_array($curl, array(
-                CURLOPT_URL => 'https://www.gongozeconcept.com/api/network/',
+                CURLOPT_URL => 'https://www.gongozconcept.com/api/network/',
                 CURLOPT_RETURNTRANSFER => true,
                 CURLOPT_ENCODING => '',
                 CURLOPT_MAXREDIRS => 10,
@@ -477,7 +477,7 @@ class AutomationController extends Controller
 
                 $response = curl_exec($curl);
                 $response_array = json_decode($response,true); 
-                dd($response_array); 
+                // dd($response_array); 
                 $data['response_array'] = $response_array;
                 return view('admin.automations.gongozconcept_dashboard')->with($data);   
             }

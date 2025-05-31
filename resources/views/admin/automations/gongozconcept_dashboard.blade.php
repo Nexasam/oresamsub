@@ -78,7 +78,7 @@
                                     <p>Plans from Automation Source & Option to set up</p>
                                     {{-- {{ json_encode($response_array) }} --}}
                                     <ul>
-                                        @foreach ($response_array['MTN_PLAN'] as $key=>$mtn_plan)    
+                                        @foreach ($response_array['MTN_PLAN']['ALL']  as $key=>$mtn_plan)    
 
                                             @php
                                                 if ( in_array($mtn_plan['id'],$product_plan_ids) ){
@@ -259,7 +259,7 @@
                                   <p>Plans from Automation Source & Option to set up</p>
                                   {{-- {{ json_encode($response_array) }} --}}
                                   <ul>
-                                      @foreach ($response_array['GLO_PLAN'] as $key=>$glo_plan)    
+                                      @foreach ($response_array['GLO_PLAN']['ALL'] as $key=>$glo_plan)    
 
                                           @php
                                               if ( in_array($glo_plan['id'],$product_plan_ids) ){
@@ -436,7 +436,7 @@
                                   <p>Plans from Automation Source & Option to set up</p>
                                   {{-- {{ json_encode($response_array) }} --}}
                                   <ul>
-                                      @foreach ($response_array['AIRTEL_PLAN'] as $key=>$airtel_plan)    
+                                      @foreach ($response_array['AIRTEL_PLAN']['ALL'] as $key=>$airtel_plan)    
 
                                           @php
                                               if ( in_array($airtel_plan['id'],$product_plan_ids) ){
@@ -612,7 +612,7 @@
                                   <p>Plans from Automation Source & Option to set up</p>
                                   {{-- {{ json_encode($response_array) }} --}}
                                   <ul>
-                                      @foreach ($response_array['9MOBILE_PLAN'] as $key=>$_9mobile_plan)    
+                                      @foreach ($response_array['9MOBILE_PLAN']['ALL'] as $key=>$_9mobile_plan)    
 
                                           @php
                                               if ( in_array($_9mobile_plan['id'],$product_plan_ids) ){
