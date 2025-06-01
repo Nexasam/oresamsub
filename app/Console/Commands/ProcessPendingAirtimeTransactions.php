@@ -9,6 +9,7 @@ use App\Models\Transaction;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Hash;
 use App\Services\Automation\MegaSubPlugAutomation\MegaSubVendAirtime;
+use App\Services\Automation\MsOrgGroupAutomation\MsOrgGroupAutomation;
 
 class ProcessPendingAirtimeTransactions extends Command
 {
@@ -154,6 +155,53 @@ class ProcessPendingAirtimeTransactions extends Command
                                 logger('Transaction FAILED for txn: '. $pending_transaction->id);
 
                             }                                      
+                        }else if($automation_details->automation_group == 'msorg'){
+                            $msorg['automation_id'] = $automation_details->id;
+                            $msorg['network_id'] = $request->network_id;
+                            $msorg['plan_id'] = $request->product_plan_id;
+                            $msorg['mobile_number'] = $validated_phone_number;
+                            $msorg['token'] = $automation_details->api_public_key;
+                            $msorg['url'] = $automation_details->airtime_url;
+                            $msorg['amount'] = $pending_transaction->amount;
+                            $sell_data = (new MsOrgGroupAutomation($msorg))->buyAirtime();
+
+                            if($buy_airtime['status'] == 1){
+                                //this will be like this until other automations are processed
+                                $user_message = $buy_airtime['user_message'];
+                                $admin_message = $buy_airtime['admin_message'];
+                              
+                                //update to sucesss
+                                Transaction::where('id',$pending_transaction->id)->update([
+                                    'status' => 1,
+                                    'user_screen_message' => $user_message,
+                                    'admin_screen_message' => $admin_message,
+                                ]);
+
+                                logger('Transaction successfully processed for txn: '. $pending_transaction->id);
+                           
+                           }else{
+                               //Transaction failed
+                               $user_message = $buy_airtime['user_message'];
+                               $admin_message = $buy_airtime['admin_message'];
+                               $new_amount = $user_balance + $discounted_amount;
+                               
+                               //transaction failed... return the users amount
+                               User::where('id',$user_id)->update([
+                                   'main_wallet' => $new_amount
+                               ]);
+
+                               //update to refunded here for now
+                               Transaction::where('id',$pending_transaction->id)->update([
+                                   'status' => -1,
+                                   'user_screen_message' => $user_message,
+                                   'admin_screen_message' => $admin_message,
+                                   'balance_after' => $balance_before,
+
+                               ]);
+                               logger('Transaction FAILED for txn: '. $pending_transaction->id);
+
+                           }       
+                         
                         }
                         else{
                               //this will be like this until other automations are processed
