@@ -163,7 +163,7 @@ class ProcessPendingAirtimeTransactions extends Command
                             $msorg['token'] = $automation_details->api_public_key;
                             $msorg['url'] = $automation_details->airtime_url;
                             $msorg['amount'] = $pending_transaction->amount;
-                            $sell_data = (new MsOrgGroupAutomation($msorg))->buyAirtime();
+                            $buy_airtime = (new MsOrgGroupAutomation($msorg))->buyAirtime();
 
                             if($buy_airtime['status'] == 1){
                                 //this will be like this until other automations are processed
