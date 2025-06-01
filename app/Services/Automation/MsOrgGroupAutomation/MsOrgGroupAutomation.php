@@ -213,7 +213,7 @@ class MsOrgGroupAutomation{
             "amount"=>$this->amount,
             "mobile_number"=>$this->mobile_number,
             "airtime_type"=> $automation_plan_id,
-            "Ported_number"=>true
+            "Ported_number"=>false
         ];
 
         $encoded_array = json_encode($array);
