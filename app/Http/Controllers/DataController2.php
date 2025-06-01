@@ -24,7 +24,6 @@ use App\Models\BulkDataProductPlans;
 use App\Models\UserBulkDataPurchase;
 use App\Traits\WalletTransactionLogs;
 use Illuminate\Support\Facades\Validator;
-use App\Services\Automation\AutomationLogic;
 use App\Traits\Dashboard\UserDashboardDataTrait;
 use App\Services\Automation\MegaSubPlugAutomation\VendData;
 use App\Services\Automation\OgdamsAutomation\OgdamsVendData;
@@ -509,19 +508,50 @@ class DataController extends Controller
                     
                             //calling the actual vending via the automation:
                             $automation_details = Automation::where('id',$automation_id)->first();
+                    
                             //TODO: candidate for separation:
                             for($i = 0; $i < count($phone_numbers_array); $i++ ){
-
                                 $phone_number = $phone_numbers_array[$i];
-                                $dataa['phone_number'] = $phone_number;
-                                $dataa['automation_details'] = $automation_details;
-                                $dataa['automation_id'] = $automation_details->id;
-                                $dataa['network_id'] = $request->network_id;
-                                $dataa['plan_id'] = $request->product_plan_id;
-                                $dataa['token'] = $automation_details->api_public_key;
-                                $dataa['url'] = $automation_details->data_url;
-                                $dataa['validatephonenetwork'] = $request->validatephonenetwork;
-                                $sell_data = AutomationLogic::initiateDataPurchase($dataa);
+                                $validate_phone = (new UtilService())->phoneNumberValidation($phone_number);
+                                $validated_phone_number = $validate_phone['validated_phone_number'];
+                                
+                                //vend data
+                                //HERE the endpoint of the automation service is called:
+                                //this is for megasubplug
+                                
+                                ///candidate for disposal
+                                // else if($automation_details->slug == 'ogdams' || $automation_details->slug == 'ogdamsv2'){
+                                //     $sell_data = (new OgdamsVendData($validated_phone_number,$request->product_plan_id))->buyData();
+                                // }
+
+                                if($validate_phone['status'] != 1){
+                                    //something when wrong
+                                    $sell_data['status'] = -1;
+                                    $sell_data['user_message'] = 'This number is not a valid number: '.$phone_number;
+                                    $sell_data['admin_message'] = 'This number is not a valid number: '.$phone_number;
+                                }
+                                else if($automation_details->slug == 'megasubplug'){
+                                    $sell_data = (new MegaSubVendData($validated_phone_number,$request->product_plan_id,$request->validatephonenetwork))->buyData();
+                                    logger($sell_data);
+                                }
+                                else if($automation_details->automation_group == 'msorg'){
+                                    $data_msorg['automation_id'] = $automation_details->id;
+                                    $data_msorg['network_id'] = $request->network_id;
+                                    $data_msorg['plan_id'] = $request->product_plan_id;
+                                    $data_msorg['mobile_number'] = $validated_phone_number;
+                                    $data_msorg['token'] = $automation_details->api_public_key;
+                                    $data_msorg['url'] = $automation_details->data_url;
+                                    $sell_data = (new MsOrgGroupAutomation($data_msorg))->buyData();
+                                 
+                                }
+                                else{
+                                    //this will be like this until other automations are processed
+                                    $sell_data['status'] = -1;
+                                    $sell_data['user_message'] = 'Data processing failed.';
+                                    $sell_data['admin_message'] = 'Data processing failed.';
+                                }
+                                // logger(json_encode($sell_data_megasub));
+                                // dd($sell_data_megasub);
 
                                 if($sell_data['status'] == 1){
                                     $success++;

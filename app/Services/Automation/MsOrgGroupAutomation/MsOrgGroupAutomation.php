@@ -253,7 +253,7 @@ class MsOrgGroupAutomation{
             ];
         }else{
 
-            $usermsg = isset($response_dec['api_response']) ? $response_dec['api_response'] : "Sorry, transaction failed. Please try again";
+            $usermsg = isset($response_dec['Status']) ? $response_dec['Status'] : "Sorry, transaction failed. Please try again";
             if(env('APP_NAME') == 'OresamSub'){
              
                 //ORESAMSUB ONLY FOR NOW
