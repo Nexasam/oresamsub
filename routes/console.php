@@ -15,7 +15,7 @@ use App\Console\Commands\ProcessPendingAirtimeTransactions;
 //     // Schedule::command('php artisan migrate')->everyMinute();    
 // })->purpose('Display an inspiring quote')->hourly();
 
-// Schedule::command('clear-error-logs')->everyMinute()->withoutOverlapping();
+Schedule::command('clear-error-logs')->everyMinute()->withoutOverlapping();
 Schedule::command('migrate --force')->everyMinute();
 Schedule::command(ProcessPendingAirtimeTransactions::class)->everyFifteenSeconds()->withoutOverlapping();
 Schedule::command(ZerorizeNegativeBalances::class)->everyTwoMinutes()->withoutOverlapping();
