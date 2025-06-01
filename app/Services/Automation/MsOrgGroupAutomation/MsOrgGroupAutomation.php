@@ -134,7 +134,7 @@ class MsOrgGroupAutomation{
             //success
             return [
                 'status' => 1,
-                'user_message' => $response_dec['api_response'],
+                'user_message' => $response_dec['api_response'] ?? 'Successful',
                 'admin_message' => $response,
             ];
         }else{
