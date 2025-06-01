@@ -37,7 +37,7 @@ class ProcessPendingAirtimeTransactions extends Command
             // logger('e dey work o');
             // exit;
             //only transactions without ref goes through this route
-            $pending_transactions = Transaction::with('user')
+            $pending_transactions = Transaction::with('user','product_plan.product_plan_category.network')
                                     ->where('admin_screen_message','pending_airtime_transaction')
                                     ->where('transaction_category','airtime')
                                     ->where('status',0) 
@@ -157,9 +157,9 @@ class ProcessPendingAirtimeTransactions extends Command
                             }                                      
                         }else if($automation_details->automation_group == 'msorg'){
                             $msorg['automation_id'] = $automation_details->id;
-                            $msorg['network_id'] = $request->network_id;
-                            $msorg['plan_id'] = $request->product_plan_id;
-                            $msorg['mobile_number'] = $validated_phone_number;
+                            $msorg['network_id'] = $pending_transaction->product_plan->product_plan_category->network->id;
+                            $msorg['plan_id'] = $pending_transaction->product_plan_id;
+                            $msorg['mobile_number'] = $pending_transaction->phone_number;
                             $msorg['token'] = $automation_details->api_public_key;
                             $msorg['url'] = $automation_details->airtime_url;
                             $msorg['amount'] = $pending_transaction->amount;
