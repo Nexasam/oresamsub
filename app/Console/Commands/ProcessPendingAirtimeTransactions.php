@@ -8,6 +8,7 @@ use App\Models\ProductPlan;
 use App\Models\Transaction;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Hash;
+use App\Services\Automation\AutomationLogic;
 use App\Services\Automation\MegaSubPlugAutomation\MegaSubVendAirtime;
 use App\Services\Automation\MsOrgGroupAutomation\MsOrgGroupAutomation;
 
@@ -112,129 +113,20 @@ class ProcessPendingAirtimeTransactions extends Command
                         //carry out the transaction flow now
                         $plan_details = ProductPlan::where('id',$product_plan_id)->first();
                         $automation_id = $plan_details->automation_id ?? NULL;
-                        $automation_details = Automation::where('id',$automation_id)->first();            
-                        
+                        $automation_details = Automation::where('id',$automation_id)->first();   
+                                
                         if($plan_details == NULL || $automation_id == NULL || $automation_details == NULL){
                             logger('This should never run actually... something is wrong with plan and or automation setting on txn: '. $pending_transaction->id);
+                        }else{
+                            $dataa['phone_number'] = $pending_transaction->phone_number;
+                            $dataa['automation_details'] = $automation_details;
+                            $dataa['network_id'] = $pending_transaction->product_plan->product_plan_category->network->id;
+                            $dataa['plan_id'] = $pending_transaction->product_plan_id;
+                            $dataa['validatephonenetwork'] = 0;
+                            $dataa['amount'] = $amount;
+                            $buy_airtime = AutomationLogic::initiateAirtimePurchase($dataa);
+                            // logger('AIRTIME SERVICE: '.json_encode($buy_airtime));
                         }
-                        else if($automation_details->slug == 'megasubplug'){
-                            $buy_airtime = (new MegaSubVendAirtime($phone_number,$product_plan_id,$amount,0))->buyAirtime();
-                            if($buy_airtime['status'] == 1){
-                                 //this will be like this until other automations are processed
-                                 $user_message = $buy_airtime['user_message'];
-                                 $admin_message = $buy_airtime['admin_message'];
-                               
-                                 //update to sucesss
-                                 Transaction::where('id',$pending_transaction->id)->update([
-                                     'status' => 1,
-                                     'user_screen_message' => $user_message,
-                                     'admin_screen_message' => $admin_message,
-                                 ]);
-
-                                 logger('Transaction successfully processed for txn: '. $pending_transaction->id);
-                            
-                            }else{
-                                //Transaction failed
-                                $user_message = $buy_airtime['user_message'];
-                                $admin_message = $buy_airtime['admin_message'];
-                                $new_amount = $user_balance + $discounted_amount;
-                                
-                                //transaction failed... return the users amount
-                                User::where('id',$user_id)->update([
-                                    'main_wallet' => $new_amount
-                                ]);
-
-                                //update to refunded here for now
-                                Transaction::where('id',$pending_transaction->id)->update([
-                                    'status' => -1,
-                                    'user_screen_message' => $user_message,
-                                    'admin_screen_message' => $admin_message,
-                                    'balance_after' => $balance_before,
-
-                                ]);
-                                logger('Transaction FAILED for txn: '. $pending_transaction->id);
-
-                            }                                      
-                        }else if($automation_details->automation_group == 'msorg'){
-                            $msorg['automation_id'] = $automation_details->id;
-                            $msorg['network_id'] = $pending_transaction->product_plan->product_plan_category->network->id;
-                            $msorg['plan_id'] = $pending_transaction->product_plan_id;
-                            $msorg['mobile_number'] = $pending_transaction->phone_number;
-                            $msorg['token'] = $automation_details->api_public_key;
-                            $msorg['url'] = $automation_details->airtime_url;
-                            $msorg['amount'] = $pending_transaction->amount;
-                            $buy_airtime = (new MsOrgGroupAutomation($msorg))->buyAirtime();
-
-                            if($buy_airtime['status'] == 1){
-                                //this will be like this until other automations are processed
-                                $user_message = $buy_airtime['user_message'];
-                                $admin_message = $buy_airtime['admin_message'];
-                              
-                                //update to sucesss
-                                Transaction::where('id',$pending_transaction->id)->update([
-                                    'status' => 1,
-                                    'user_screen_message' => $user_message,
-                                    'admin_screen_message' => $admin_message,
-                                ]);
-
-                                logger('Transaction successfully processed for txn: '. $pending_transaction->id);
-                           
-                           }else{
-                               //Transaction failed
-                               $user_message = $buy_airtime['user_message'];
-                               $admin_message = $buy_airtime['admin_message'];
-                               $new_amount = $user_balance + $discounted_amount;
-                               
-                               //transaction failed... return the users amount
-                               User::where('id',$user_id)->update([
-                                   'main_wallet' => $new_amount
-                               ]);
-
-                               //update to refunded here for now
-                               Transaction::where('id',$pending_transaction->id)->update([
-                                   'status' => -1,
-                                   'user_screen_message' => $user_message,
-                                   'admin_screen_message' => $admin_message,
-                                   'balance_after' => $balance_before,
-
-                               ]);
-                               logger('Transaction FAILED for txn: '. $pending_transaction->id);
-
-                           }       
-                         
-                        }
-                        else{
-                              //this will be like this until other automations are processed
-                              $user_message = 'Airtime transaction refunded.';
-                              $admin_message = 'Airtime transaction refunded... Automation not yet implemented';
-                              $new_amount = $user_balance + $discounted_amount;
-                              
-                              //refund the users amount
-                              User::where('id',$user_id)->update([
-                                'main_wallet' => $new_amount
-                              ]);
-
-                              //update to refunded here for now
-                              Transaction::where('id',$pending_transaction->id)->update([
-                                'status' => 2,
-                                'user_screen_message' => $user_message,
-                                'admin_screen_message' => $admin_message,
-                                'balance_after' => $balance_before,
-                              ]);
-
-                              $walletLog['user_id'] = $user_id;
-                              $walletLog['transaction_category'] = 'AIRTIME';
-                              $walletLog['balance_before'] = $balance_before;
-                              $walletLog['balance_after'] = $balance_before;
-                              $walletLog['transaction_id'] = $pending_transaction->id;
-                              $walletLog['action_by'] = 'cron';
-                              $walletLog['description'] = 'Airtime Purchase from main wallet';
-                              $this->log_wallet_transactions($walletLog);  
-
-                              logger('Transaction REFUNDED because the automation has not been implemented for txn: '. $pending_transaction->id);
-
-                        }
-
                     }
 
                 }

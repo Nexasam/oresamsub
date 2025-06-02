@@ -515,13 +515,12 @@ class DataController extends Controller
                                 $phone_number = $phone_numbers_array[$i];
                                 $dataa['phone_number'] = $phone_number;
                                 $dataa['automation_details'] = $automation_details;
-                                $dataa['automation_id'] = $automation_details->id;
                                 $dataa['network_id'] = $request->network_id;
                                 $dataa['plan_id'] = $request->product_plan_id;
-                                $dataa['token'] = $automation_details->api_public_key;
-                                $dataa['url'] = $automation_details->data_url;
                                 $dataa['validatephonenetwork'] = $request->validatephonenetwork;
                                 $sell_data = AutomationLogic::initiateDataPurchase($dataa);
+                                logger('DATAAA: '.json_encode($sell_data));
+
 
                                 if($sell_data['status'] == 1){
                                     $success++;

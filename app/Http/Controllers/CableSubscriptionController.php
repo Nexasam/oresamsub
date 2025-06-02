@@ -21,6 +21,7 @@ use App\Models\ProductPlanCategory;
 use App\Models\BulkDataProductPlans;
 use App\Models\UserBulkDataPurchase;
 use Illuminate\Support\Facades\Validator;
+use App\Services\Automation\AutomationLogic;
 use App\Traits\Dashboard\UserDashboardDataTrait;
 use App\Services\Automation\MegaSubPlugAutomation\VendData;
 use App\Services\Automation\MegaSubPlugAutomation\MegaSubCableTV;
@@ -386,18 +387,35 @@ class CableSubscriptionController extends Controller
                                 //HERE the endpoint of the automation service is called:
                                 //this is for megasubplug: vend for Airtime
                                 
-                                if($automation_details->slug == 'megasubplug'){
-                                    $duplication_check = 1;
-                                    // $smart_card_number,$plan_id,$amount,$validation_customer_name,$no_of_slots,$product_plan_category_name
-                                    // return response()->json(['status'=>'-1', 'message'=>$smart_card_number ]);
+                                $dataa['automation_details'] = $automation_details;
+                                $dataa['smart_card_number'] = $smart_card_number;
+                                $dataa['plan_id'] = $request->cable_product_plan_id;
+                                $dataa['total_amount'] = $total_amount;
+                                $dataa['slots'] = 1;
+                                $dataa['validation_customer_name'] = $request->validation_customer_name;
+                                $dataa['product_plan_category_name'] = $plan_category_details->product_plan_category_name;
+                                $dataa['user_id'] = $user_id;
+                                $buy_cable_subscription = AutomationLogic::initiateCablePurchase($dataa);
+                                logger('CABLEEE: '.json_encode($buy_cable_subscription));
 
-                                    $buy_cable_subscription = (new MegaSubCableTV($smart_card_number,$request->cable_product_plan_id,$total_amount,$request->validation_customer_name,1,$plan_category_details->product_plan_category_name, user_id: $user_id))->buyCable();
-                                }else{
-                                    //this will be like this until other automations are processed
-                                    $buy_cable_subscription['status'] = -1;
-                                    $buy_cable_subscription['user_message'] = 'Cable subscription failed.';
-                                    $buy_cable_subscription['admin_message'] = 'Cable subscription failed.';
-                                }
+                              
+                              
+                                //WE MOVED THIS: this:
+                                // if($automation_details->slug == 'megasubplug'){
+                                //     $duplication_check = 1;
+                                //     // $smart_card_number,$plan_id,$amount,$validation_customer_name,$no_of_slots,$product_plan_category_name
+                                //     // return response()->json(['status'=>'-1', 'message'=>$smart_card_number ]);
+
+                                //     $buy_cable_subscription = (new MegaSubCableTV($smart_card_number,$request->cable_product_plan_id,$total_amount,$request->validation_customer_name,1,$plan_category_details->product_plan_category_name, user_id: $user_id))->buyCable();
+                                // }else{
+                                //     //this will be like this until other automations are processed
+                                //     $buy_cable_subscription['status'] = -1;
+                                //     $buy_cable_subscription['user_message'] = 'Cable subscription failed.';
+                                //     $buy_cable_subscription['admin_message'] = 'Cable subscription failed.';
+                                // }
+
+
+
                                 // logger(json_encode($buy_cable_subscription_megasub));
                                 // dd($buy_cable_subscription_megasub);
 

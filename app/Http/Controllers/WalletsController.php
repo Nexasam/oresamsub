@@ -92,8 +92,7 @@ class WalletsController extends Controller
         header('Content-Type: application/json');
         $response = file_get_contents('php://input');
         $response_decode = json_decode($response,true);
-        logger('testing webhook start');
-        // logger($response);
+        // logger('testing webhook start');
       
         $can_fund = '';
 
@@ -184,9 +183,7 @@ class WalletsController extends Controller
             $created_data['collection_reference'] = $response_decode['collection_reference'];
             $created_data['transaction_reference'] = $response_decode['transaction_reference'];
             $created_data['payload_content'] = $response;
-
-          
-              $created = FundingWebhookPayload::create($created_data);
+            $created = FundingWebhookPayload::create($created_data);
 
               if($can_fund == 'yes'){
                 $updated = $user_details->update([

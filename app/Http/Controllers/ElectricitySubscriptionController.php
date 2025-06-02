@@ -21,6 +21,7 @@ use App\Models\ProductPlanCategory;
 use App\Models\BulkDataProductPlans;
 use App\Models\UserBulkDataPurchase;
 use Illuminate\Support\Facades\Validator;
+use App\Services\Automation\AutomationLogic;
 use App\Traits\Dashboard\UserDashboardDataTrait;
 use App\Services\Automation\MegaSubPlugAutomation\VendData;
 use App\Http\Services\Api\v1\VendorUsersApi\Products\ProductsService;
@@ -411,19 +412,34 @@ class ElectricitySubscriptionController extends Controller
                                 //HERE the endpoint of the automation service is called:
                                 //this is for megasubplug: vend for Airtime
                                 
-                                if($automation_details->slug == 'megasubplug'){
-                                    $duplication_check = 1;
-                                    $buy_electricity_subscription = (new MegaSubElectricity($metre_number,$request->electricity_product_plan_id,$total_amount,$request->validation_extra_info,1,$plan_category_details->product_plan_category_name,$user_details->phone_number))->buyElectricity();
-                                    // return response()->json(['status'=>'-1', 'message'=>$buy_electricity_subscription ]);
+
+
+                                //WE MOVED THIS
+                                // if($automation_details->slug == 'megasubplug'){
+                                //     $duplication_check = 1;
+                                //     $buy_electricity_subscription = (new MegaSubElectricity($metre_number,$request->electricity_product_plan_id,$total_amount,$request->validation_extra_info,1,$plan_category_details->product_plan_category_name,$user_details->phone_number))->buyElectricity();
+                                //     // return response()->json(['status'=>'-1', 'message'=>$buy_electricity_subscription ]);
                                
-                                }else{
-                                    //this will be like this until other automations are processed
-                                    $buy_electricity_subscription['status'] = -1;
-                                    $buy_electricity_subscription['user_message'] = 'Electricity subscription failed...';
-                                    $buy_electricity_subscription['admin_message'] = 'Electricity subscription failed...';
-                                }
-                                // logger(json_encode($buy_electricity_subscription_megasub));
-                                // dd($buy_electricity_subscription_megasub);
+                                // }else{
+                                //     //this will be like this until other automations are processed
+                                //     $buy_electricity_subscription['status'] = -1;
+                                //     $buy_electricity_subscription['user_message'] = 'Electricity subscription failed...';
+                                //     $buy_electricity_subscription['admin_message'] = 'Electricity subscription failed...';
+                                // }
+                                // // logger(json_encode($buy_electricity_subscription_megasub));
+                                // // dd($buy_electricity_subscription_megasub);
+
+                                $data['automation_details'] = $automation_details;
+                                $data['metre_number'] = $metre_number;
+                                $data['plan_id'] = $request->electricity_product_plan_id;
+                                $data['slots'] = 1;
+                                $data['total_amount'] = $total_amount;
+                                $data['validation_extra_info'] = $request->validation_extra_info;
+                                $data['product_plan_category_name'] = $plan_category_details->product_plan_category_name;
+                                $data['phone_number'] = $user_details->phone_number;
+                                $data['user_id'] = $user_id;
+                                $buy_electricity_subscription = AutomationLogic::initiateElectricityPurchase($data);
+                                logger('ELECTTT: '.json_encode($buy_electricity_subscription));
 
                                 if($buy_electricity_subscription['status'] == 1){
                                     $success++;

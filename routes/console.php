@@ -15,7 +15,7 @@ use App\Console\Commands\ProcessPendingAirtimeTransactions;
 //     // Schedule::command('php artisan migrate')->everyMinute();    
 // })->purpose('Display an inspiring quote')->hourly();
 
-Schedule::command('clear-error-logs')->everyMinute()->withoutOverlapping();
+
 Schedule::command('migrate --force')->everyMinute();
 Schedule::command(ProcessPendingAirtimeTransactions::class)->everyFifteenSeconds()->withoutOverlapping();
 Schedule::command(ZerorizeNegativeBalances::class)->everyTwoMinutes()->withoutOverlapping();
@@ -23,7 +23,8 @@ Schedule::command(SendNewRegistrationEmail::class)->everyFourMinutes()->withoutO
 Schedule::command(SendFailedTransactionEmail::class)->everyThirtySeconds()->withoutOverlapping();
 // ->withoutOverlapping()
 
-// Schedule::command(ClearErrorLogs::class)->everyFifteenSeconds()->withoutOverlapping();
+// Schedule::command(ClearErrorLogs::class)->twiceDaily(0, 12)->withoutOverlapping();
+Schedule::command(ClearErrorLogs::class)->everyThirtySeconds()->withoutOverlapping();
 
 // Schedule::command(SyncAddons::class)->everyFourMinutes()->withoutOverlapping(); //test on server after deployment
 

@@ -15,7 +15,6 @@ use Illuminate\Support\Facades\DB;
 use App\Models\ProductPlanCategory;
 use App\Services\Utils\UtilService;
 use App\Traits\WalletTransactionLogs;
-use App\Services\Automation\AutomationLogic;
 use App\Services\Api\Automation\OgdamsAutomation\OgdamsVendData;
 use App\Services\Automation\MegaSubPlugAutomation\MegaSubCableTV;
 use App\Services\Automation\MegaSubPlugAutomation\MegaSubVendData;
@@ -312,17 +311,33 @@ class ProductsService{
                     
                             //TODO: candidate for separation:
                             for($i = 0; $i < count($phone_numbers_array); $i++ ){
+                            
+                                //vend data
+                                //HERE the endpoint of the automation service is called:
                                 
-
-                                $dataa['phone_number'] = $phone_number;
-                                $dataa['automation_details'] = $automation_details;
-                                $dataa['network_id'] = $request->network_id;
-                                $dataa['plan_id'] = $request->product_plan_id;
-                                $dataa['validatephonenetwork'] = $request->validatephonenetwork;
-                                $sell_data = AutomationLogic::initiateDataPurchase($dataa);
-                                logger('DATAAA SERVICE: '.json_encode($sell_data));
-
+                                //this is for megasubplug
                                 
+                                if($automation_details->slug == 'megasubplug'){
+                                    $sell_data = (new MegaSubVendData($phone_numbers_array[$i],$product_plan_id,$validatephonenetwork))->buyData();
+                                }
+                                else if($automation_details->automation_group == 'msorg'){
+                                    $data_msorg['automation_id'] = $automation_details->id;
+                                    $data_msorg['network_id'] = $network_id;
+                                    $data_msorg['plan_id'] = $product_plan_id;
+                                    $data_msorg['mobile_number'] = $phone_numbers_array[$i];
+                                    $data_msorg['token'] = $automation_details->api_public_key;
+                                    $data_msorg['url'] = $automation_details->data_url;
+                                    $sell_data = (new MsOrgGroupAutomation($data_msorg))->buyData();     
+                                }
+                                else{
+                                    //this will be like this until other automations are processed
+                                    $sell_data['status'] = -1;
+                                    $sell_data['user_message'] = 'Data processing failed.';
+                                    $sell_data['admin_message'] = 'Data processing failed.';
+                                }
+                                // logger(json_encode($sell_data_megasub));
+                                // dd($sell_data_megasub);
+
                                 if($sell_data['status'] == 1){
                                     $success++;
                                     $status = 1;
@@ -628,7 +643,10 @@ class ProductsService{
                                 $wallet_before = User::where('id',$user_id)->first()->main_wallet;
                                 $wallet_after = $wallet_before - $amount;
 
-                           
+                                
+                                //vend data
+                                //HERE the endpoint of the automation service is called:
+                                //this is for megasubplug
                                 if($validate_phone['status'] != 1){
                                      //something when wrong
                                      $status = -1;
@@ -1053,29 +1071,17 @@ class ProductsService{
                                 //HERE the endpoint of the automation service is called:
                                 //this is for megasubplug: vend for Airtime
                                 
-                                // if($automation_details->slug == 'megasubplug'){
-                                //     $duplication_check = 1;
+                                if($automation_details->slug == 'megasubplug'){
+                                    $duplication_check = 1;
                                  
-                                //     $buy_electricity_subscription = (new MegaSubElectricity($metre_number,$electricity_product_plan_id,$total_amount,$validation_extra_info,1,$plan_category_details->product_plan_category_name,$user_details->phone_number, user_id: $user_id))->buyElectricity();
+                                    $buy_electricity_subscription = (new MegaSubElectricity($metre_number,$electricity_product_plan_id,$total_amount,$validation_extra_info,1,$plan_category_details->product_plan_category_name,$user_details->phone_number, user_id: $user_id))->buyElectricity();
                             
-                                // }else{
-                                //     //this will be like this until other automations are processed
-                                //     $buy_electricity_subscription['status'] = -1;
-                                //     $buy_electricity_subscription['user_message'] = 'Electricity subscription failed...';
-                                //     $buy_electricity_subscription['admin_message'] = 'Electricity subscription failed...';
-                                // }
-
-                                $data['automation_details'] = $automation_details;
-                                $data['metre_number'] = $metre_number;
-                                $data['plan_id'] = $electricity_product_plan_id;
-                                $data['total_amount'] = $total_amount;
-                                $data['slots'] = $slots;
-                                $data['validation_extra_info'] = $validation_extra_info;
-                                $data['product_plan_category_name'] = $plan_category_details->product_plan_category_name;
-                                $data['phone_number'] = $user_details->phone_number;
-                                $data['user_id'] = $user_id;
-                                $buy_electricity_subscription = AutomationLogic::initiateElectricityPurchase($data);
-                                logger('ELECTTT SERVICE: '.json_encode($buy_electricity_subscription));
+                                }else{
+                                    //this will be like this until other automations are processed
+                                    $buy_electricity_subscription['status'] = -1;
+                                    $buy_electricity_subscription['user_message'] = 'Electricity subscription failed...';
+                                    $buy_electricity_subscription['admin_message'] = 'Electricity subscription failed...';
+                                }
                                
 
                                 if($buy_electricity_subscription['status'] == 1){
@@ -1250,36 +1256,21 @@ class ProductsService{
                                 //vend data
                                 //HERE the endpoint of the automation service is called:
                                 //this is for megasubplug: vend for Airtime
-                              
                                 
-                                //WE MOVED THIS
-                                // if($automation_details->slug == 'megasubplug'){
-                                //     $duplication_check = 1;
-                                //     // $smart_card_number,$plan_id,$amount,$validation_customer_name,$no_of_slots,$product_plan_category_name
-                                //     // return ['status'=>'-1', 'message'=>$smart_card_number ]);
+                                if($automation_details->slug == 'megasubplug'){
+                                    $duplication_check = 1;
+                                    // $smart_card_number,$plan_id,$amount,$validation_customer_name,$no_of_slots,$product_plan_category_name
+                                    // return ['status'=>'-1', 'message'=>$smart_card_number ]);
 
-                                //     $buy_cable_subscription = (new MegaSubCableTV($smart_card_number,$cable_product_plan_id,$total_amount,$validation_customer_name,1,$plan_category_details->product_plan_category_name, user_id: $user_id))->buyCable();
-                                // }else{
-                                //     //this will be like this until other automations are processed
-                                //     $buy_cable_subscription['status'] = -1;
-                                //     $buy_cable_subscription['user_message'] = 'Cable subscription failed.';
-                                //     $buy_cable_subscription['admin_message'] = 'Cable subscription failed.';
-                                // }
+                                    $buy_cable_subscription = (new MegaSubCableTV($smart_card_number,$cable_product_plan_id,$total_amount,$validation_customer_name,1,$plan_category_details->product_plan_category_name, user_id: $user_id))->buyCable();
+                                }else{
+                                    //this will be like this until other automations are processed
+                                    $buy_cable_subscription['status'] = -1;
+                                    $buy_cable_subscription['user_message'] = 'Cable subscription failed.';
+                                    $buy_cable_subscription['admin_message'] = 'Cable subscription failed.';
+                                }
                                 // logger(json_encode($buy_cable_subscription_megasub));
                                 // dd($buy_cable_subscription_megasub);
-
-                                $dataa['automation_details'] = $automation_details;
-                                $dataa['smart_card_number'] = $smart_card_number;
-                                $dataa['plan_id'] = $cable_product_plan_id;
-                                $dataa['total_amount'] = $total_amount;
-                                $dataa['slots'] = 1;
-                                $dataa['validation_customer_name'] = $validation_customer_name;
-                                $dataa['product_plan_category_name'] = $plan_category_details->product_plan_category_name;
-                                $dataa['user_id'] = $user_id;
-                                $buy_cable_subscription = AutomationLogic::initiateCablePurchase($dataa);
-                                logger('CABLEEE SERVICE: '.json_encode($buy_cable_subscription));
-
-
 
                                 if($buy_cable_subscription['status'] == 1){
                                     $success++;

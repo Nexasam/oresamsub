@@ -92,11 +92,11 @@ class SendFailedTransactionEmail extends Command
                     Transaction::where('id',$transaction->id)->update([
                         'failure_notification' => 1
                     ]);
-                    logger('Email sent to notify of failed transactions');
+                    // logger('Email sent to notify of failed transactions');
 
                 // }
             }else{
-                logger('No pending failed transaction notification...');
+                // logger('No pending failed transaction notification...');
             }
         }   else{
             // logger('na this place dey run');
