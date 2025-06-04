@@ -143,8 +143,6 @@ Route::get('users_listing/{category}', [QuickToolController::class, 'users_listi
 Route::get('users_listing_date/{date}', [QuickToolController::class, 'users_listing_date'])->name('quicktool.users_listing_date');
 
 
-
-
 // ADMIN STARTS HERE
 // ADMIN STARTS HERE
 // ADMIN STARTS HERE
