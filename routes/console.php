@@ -18,13 +18,11 @@ use App\Console\Commands\ProcessPendingAirtimeTransactions;
 
 Schedule::command('migrate --force')->everyMinute();
 Schedule::command(ZerorizeNegativeBalances::class)->everyTwoMinutes()->withoutOverlapping();
-Schedule::command(SendNewRegistrationEmail::class)->everyFourMinutes()->withoutOverlapping();
 
+// Schedule::command(SendNewRegistrationEmail::class)->everyFourMinutes()->withoutOverlapping();
 // Schedule::command(SendFailedTransactionEmail::class)->everyThirtySeconds();
 
 Schedule::command(ClearErrorLogs::class)->everyThirtyMinutes()->withoutOverlapping();
 Schedule::command(ProcessPendingAirtimeTransactions::class)->everyFifteenSeconds()->withoutOverlapping();
-
-// Schedule::command(SyncAddons::class)->everyFourMinutes()->withoutOverlapping(); //test on server after deployment
 
 
