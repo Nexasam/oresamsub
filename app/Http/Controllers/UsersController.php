@@ -332,7 +332,7 @@ class UsersController extends Controller
               $actual_value = htmlspecialchars(json_encode($actual_value));
               $toggle_btn = '<div class="flex items-center mb-2">';
               $toggle_btn .=  '<input onchange="toggleUserStatus('.$escapedUrl.','.$token.','.$actual_value.')" type="checkbox" id="hs-basic-with-description-checked'.$data->id.'" class="ti-switch" '.$checked.'>';
-              $toggle_btn .=  '<label for="hs-basic-with-description-checked" class="text-sm text-gray-500 ms-3 dark:text-gray-500 "></label>';
+              $toggle_btn .=  '<label for="hs-basic-with-description-checked" class="text-sm text-gray-500 ms-3 dark:text-white/70 "></label>';
               $toggle_btn .=  ' <span class="badge rounded-sm bg-success/10 text-success hidden" id="user_verification_notification'.$data->id.'"></span>  </div>';
 
               $toggle_btn .=  $data->email_verified_at == NULL ? '<span class="badge bg-danger text-white">Unverified</span>' : '<span class="badge bg-success text-white">Verified</span>';
@@ -379,28 +379,28 @@ class UsersController extends Controller
                   //         <div class="space-y-4">
                   //           <div>
                   //             <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-900">Be bold</h3>
-                  //             <p class="mt-1 text-gray-800 dark:text-gray-500">
+                  //             <p class="mt-1 text-gray-800 dark:text-white/70">
                   //               Motivate teams to do their best work. Offer best practices to get users going in the right direction. Be bold and offer just enough help to get the work started, and then get out of the way. Give accurate information so users can make educated decisions. Know your user\'s struggles and desired outcomes and give just enough information to let them get where they need to go.
                   //             </p>
                   //           </div>
 
                   //           <div>
                   //             <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-900">Be optimistic</h3>
-                  //             <p class="mt-1 text-gray-800 dark:text-gray-500">
+                  //             <p class="mt-1 text-gray-800 dark:text-white/70">
                   //               Focusing on the details gives people confidence in our products. Weave a consistent story across our fabric and be diligent about vocabulary across all messaging by being brand conscious across products to create a seamless flow across all the things. Let people know that they can jump in and start working expecting to find a dependable experience across all the things. Keep teams in the loop about what is happening by informing them of relevant features, products and opportunities for success. Be on the journey with them and highlight the key points that will help them the most - right now. Be in the moment by focusing attention on the important bits first.
                   //             </p>
                   //           </div>
 
                   //           <div>
                   //             <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-900">Be practical, with a wink</h3>
-                  //             <p class="mt-1 text-gray-800 dark:text-gray-500">
+                  //             <p class="mt-1 text-gray-800 dark:text-white/70">
                   //               Keep our own story short and give teams just enough to get moving. Get to the point and be direct. Be concise - we tell the story of how we can help, but we do it directly and with purpose. Be on the lookout for opportunities and be quick to offer a helping hand. At the same time realize that novbody likes a nosy neighbor. Give the user just enough to know that something awesome is around the corner and then get out of the way. Write clear, accurate, and concise text that makes interusers more usable and consistent - and builds trust. We strive to write text that is understandable by anyone, anywhere, regardless of their culture or language so that everyone feels they are part of the team.
                   //             </p>
                   //           </div>
                   //         </div>
                   //       </div>
                   //       <div class="ti-modal-footer">
-                  //         <button type="button" class="hs-dropdown-toggle ti-btn ti-border font-medium bg-white text-gray-700 shadow-sm align-middle hover:bg-gray-50 focus:ring-offset-white focus:ring-primary dark:bg-bgdark dark:hover:bg-black/20 dark:border-white/10 dark:text-gray-500 dark:hover:text-white dark:focus:ring-offset-white/10" data-hs-overlay="#hs-vertically-centered-scrollable-modal">
+                  //         <button type="button" class="hs-dropdown-toggle ti-btn ti-border font-medium bg-white text-gray-700 shadow-sm align-middle hover:bg-gray-50 focus:ring-offset-white focus:ring-primary dark:bg-bgdark dark:hover:bg-black/20 dark:border-white/10 dark:text-white/70 dark:hover:text-white dark:focus:ring-offset-white/10" data-hs-overlay="#hs-vertically-centered-scrollable-modal">
                   //           Close
                   //         </button>
                   //         <a class="ti-btn ti-btn-primary" href="javascript:void(0);">

@@ -34,7 +34,7 @@
             <div class="p-4 sm:p-7">
                 <div class="text-center">
                     <h1 class="block text-2xl font-bold text-gray-800 dark:text-gray-900">Sign in</h1>
-                    <p class="mt-3 text-sm text-gray-600 dark:text-gray-500">
+                    <p class="mt-3 text-sm text-gray-600 dark:text-white/70">
                         Don't have an account yet?
                         <a class="text-primary decoration-2 hover:underline font-medium"
                             href="{{route('register')}}">
@@ -45,12 +45,12 @@
 
                 <div class="mt-5">
                     {{-- <button type="button"
-                        class="w-full py-2 px-3 inline-flex justify-center items-center gap-2 rounded-sm border font-medium bg-white text-gray-700 shadow-sm align-middle hover:bg-gray-50 focus:outline-none focus:ring-0 focus:ring-offset-0 focus:ring-offset-white focus:ring-primary transition-all text-sm dark:bg-bgdark dark:hover:bg-black/20 dark:border-white/10 dark:text-gray-500 dark:hover:text-white dark:focus:ring-offset-white/10">
+                        class="w-full py-2 px-3 inline-flex justify-center items-center gap-2 rounded-sm border font-medium bg-white text-gray-700 shadow-sm align-middle hover:bg-gray-50 focus:outline-none focus:ring-0 focus:ring-offset-0 focus:ring-offset-white focus:ring-primary transition-all text-sm dark:bg-bgdark dark:hover:bg-black/20 dark:border-white/10 dark:text-white/70 dark:hover:text-white dark:focus:ring-offset-white/10">
                         <img src="../assets/img/authentication/social/1.png" class="w-4 h-4" alt="google-img">Sign in with Google
                     </button> --}}
 
                     {{-- <div
-                        class="py-3 flex items-center text-xs text-gray-400 uppercase before:flex-[1_1_0%] before:border-t before:border-gray-200 before:me-6 after:flex-[1_1_0%] after:border-t after:border-gray-200 after:ms-6 dark:text-gray-500 dark:before:border-white/10 dark:after:border-white/10">
+                        class="py-3 flex items-center text-xs text-gray-400 uppercase before:flex-[1_1_0%] before:border-t before:border-gray-200 before:me-6 after:flex-[1_1_0%] after:border-t after:border-gray-200 after:ms-6 dark:text-white/70 dark:before:border-white/10 dark:after:border-white/10">
                         Or
                     </div> --}}
 
@@ -65,9 +65,9 @@
                                 <label for="email" class="block text-sm mb-2 dark:text-gray-900">Email address</label>
                                 <div class="relative">
                                     {{-- <input type="email" id="email" name="email"
-                                        class="py-2 px-3 block w-full border-gray-200 rounded-sm text-sm focus:border-primary focus:ring-primary dark:bg-bgdark dark:border-white/10 dark:text-gray-500"
+                                        class="py-2 px-3 block w-full border-gray-200 rounded-sm text-sm focus:border-primary focus:ring-primary dark:bg-bgdark dark:border-white/10 dark:text-white/70"
                                         required> --}}
-                                    <input required type="email" id="email" name="email" class="py-2 px-3 block w-full border-gray-200 rounded-sm text-sm focus:border-primary focus:ring-primary dark:bg-bgdark dark:border-white/10 dark:text-gray-500" :value="old('email')" required autofocus autocomplete="email">
+                                    <input required type="email" id="email" name="email" class="py-2 px-3 block w-full border-gray-200 rounded-sm text-sm focus:border-primary focus:ring-primary dark:bg-bgdark dark:border-white/10 dark:text-white/70" :value="old('email')" required autofocus autocomplete="email">
                                 </div>
                             </div>
                             <!-- End Form Group -->
@@ -81,9 +81,9 @@
                                 </div>
                                 <div class="relative">
                                     {{-- <input type="password" id="password" name="password"
-                                        class="py-2 px-3 block w-full border-gray-200 rounded-sm text-sm focus:border-primary focus:ring-primary dark:bg-bgdark dark:border-white/10 dark:text-gray-500"
+                                        class="py-2 px-3 block w-full border-gray-200 rounded-sm text-sm focus:border-primary focus:ring-primary dark:bg-bgdark dark:border-white/10 dark:text-white/70"
                                         required> --}}
-                                    <input required type="password" id="password" name="password" class="py-2 px-3 block w-full border-gray-200 rounded-sm text-sm focus:border-primary focus:ring-primary dark:bg-bgdark dark:border-white/10 dark:text-gray-500" :value="old('password')" required autofocus autocomplete="password">
+                                    <input required type="password" id="password" name="password" class="py-2 px-3 block w-full border-gray-200 rounded-sm text-sm focus:border-primary focus:ring-primary dark:bg-bgdark dark:border-white/10 dark:text-white/70" :value="old('password')" required autofocus autocomplete="password">
                                     
                                 </div>
                             </div>

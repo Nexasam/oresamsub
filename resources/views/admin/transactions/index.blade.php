@@ -11,7 +11,7 @@
             </div>
             <ol class="flex items-center whitespace-nowrap min-w-0">
               
-                <li class="text-sm text-gray-500 hover:text-primary dark:text-gray-500 " aria-current="page">
+                <li class="text-sm text-gray-500 hover:text-primary dark:text-white/70 " aria-current="page">
                     Networks
                 </li>
             </ol> --}}
@@ -66,11 +66,11 @@
                                     </button>
                                   </div>
                                   <div class="ti-modal-body">
-                                    <p class="mt-1 text-gray-800 dark:text-gray-500">Phone recharged:</p>
+                                    <p class="mt-1 text-gray-800 dark:text-white/70">Phone recharged:</p>
                                     <input type="text" value="" id="phone_recharged" name="phone_recharged"> <br>
                                     <hr>
                                     <br>
-                                    <p class="mt-1 text-gray-800 dark:text-gray-500">Filter by Plan Category:</p>
+                                    <p class="mt-1 text-gray-800 dark:text-white/70">Filter by Plan Category:</p>
                                     <select name="product_plan_category_filter" id="product_plan_category_filter">
                                         <option value="">Select</option>
                                         @foreach ($product_plan_categories as $plan_category)
@@ -80,7 +80,7 @@
                                     <br>
                                     <hr>
                                     <br>
-                                    <p class="mt-1 text-gray-800 dark:text-gray-500">Date range:</p><br>
+                                    <p class="mt-1 text-gray-800 dark:text-white/70">Date range:</p><br>
                                     <div class="flex items-center justify-between">
                                       <div class="flex items-center justify-start space-x-5">
                                           <div>

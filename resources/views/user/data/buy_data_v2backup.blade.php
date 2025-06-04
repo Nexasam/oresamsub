@@ -16,7 +16,7 @@
                     <i class="ti ti-chevrons-right flex-shrink-0 mx-3 overflow-visible text-gray-300 dark:text-gray-300 rtl:rotate-180"></i>
                     </a>
                 </li>
-                <li class="text-sm text-gray-500 hover:text-primary dark:text-gray-500 " aria-current="page">
+                <li class="text-sm text-gray-500 hover:text-primary dark:text-white/70 " aria-current="page">
                     Buy Data
                 </li>
             </ol>    --}}
@@ -37,13 +37,13 @@
 
                 <div class="box-body">
                   <nav class="flex space-x-2" aria-label="Tabs" role="tablist">
-                    <button type="button" class="hs-tab-active:bg-primary hs-tab-active:text-white py-3 px-4 inline-flex items-center gap-2 bg-transparent text-sm font-medium text-center text-gray-500 rounded-sm hover:text-primary  dark:text-gray-500 dark:hover:text-white active" id="pills-with-brand-color-item-2" data-hs-tab="#pills-with-brand-color-2" aria-controls="pills-with-brand-color-2">
+                    <button type="button" class="hs-tab-active:bg-primary hs-tab-active:text-white py-3 px-4 inline-flex items-center gap-2 bg-transparent text-sm font-medium text-center text-gray-500 rounded-sm hover:text-primary  dark:text-white/70 dark:hover:text-white active" id="pills-with-brand-color-item-2" data-hs-tab="#pills-with-brand-color-2" aria-controls="pills-with-brand-color-2">
                       Buy Data
                     </button>
-                    <button type="button" class="hs-tab-active:bg-primary hs-tab-active:text-white py-3 px-4 inline-flex items-center gap-2 bg-transparent text-sm font-medium text-center text-gray-500 rounded-sm hover:text-primary  dark:text-gray-500 dark:hover:text-white" id="pills-with-brand-color-item-3" data-hs-tab="#pills-with-brand-color-3" aria-controls="pills-with-brand-color-3">
+                    <button type="button" class="hs-tab-active:bg-primary hs-tab-active:text-white py-3 px-4 inline-flex items-center gap-2 bg-transparent text-sm font-medium text-center text-gray-500 rounded-sm hover:text-primary  dark:text-white/70 dark:hover:text-white" id="pills-with-brand-color-item-3" data-hs-tab="#pills-with-brand-color-3" aria-controls="pills-with-brand-color-3">
                       Buy Data (Bulk)
                     </button>
-                    <button type="button" class="hs-tab-active:bg-primary hs-tab-active:text-white py-3 px-4 inline-flex items-center gap-2 bg-transparent text-sm font-medium text-center text-gray-500 rounded-sm hover:text-primary  dark:text-gray-500 dark:hover:text-white " id="pills-with-brand-color-item-1" data-hs-tab="#pills-with-brand-color-1" aria-controls="pills-with-brand-color-1">
+                    <button type="button" class="hs-tab-active:bg-primary hs-tab-active:text-white py-3 px-4 inline-flex items-center gap-2 bg-transparent text-sm font-medium text-center text-gray-500 rounded-sm hover:text-primary  dark:text-white/70 dark:hover:text-white " id="pills-with-brand-color-item-1" data-hs-tab="#pills-with-brand-color-1" aria-controls="pills-with-brand-color-1">
                       View Data Transactions
                     </button>        
                   </nav>
@@ -89,11 +89,11 @@
                                     </button>
                                   </div>
                                   <div class="ti-modal-body">
-                                    <p class="mt-1 text-gray-800 dark:text-gray-500">Phone recharged:</p>
+                                    <p class="mt-1 text-gray-800 dark:text-white/70">Phone recharged:</p>
                                     <input type="text" value="" id="phone_recharged" name="phone_recharged"> <br>
                                     <hr>
                                     <br>
-                                    <p class="mt-1 text-gray-800 dark:text-gray-500">Filter by Plan Category:</p>
+                                    <p class="mt-1 text-gray-800 dark:text-white/70">Filter by Plan Category:</p>
                                     <select name="product_plan_category_filter" id="product_plan_category_filter">
                                         <option value="">Select</option>
                                         @foreach ($product_plan_categories as $plan_category)
@@ -103,7 +103,7 @@
                                     <br>
                                     <hr>
                                     <br>
-                                    <p class="mt-1 text-gray-800 dark:text-gray-500">Date range:</p><br>
+                                    <p class="mt-1 text-gray-800 dark:text-white/70">Date range:</p><br>
                                     <div class="flex items-center justify-between">
                                       <div class="flex items-center justify-start space-x-5">
                                           <div>
@@ -278,9 +278,9 @@
     
                                                     @if (env('APP_NAME') != 'EgcData' && env('APP_NAME') != 'OresamSub')
                                                       <div class="space-y-2">
-                                                        <label class="p-3 flex w-full bg-white border border-gray-200 rounded-sm text-sm focus:border-primary focus:ring-primary dark:bg-bgdark dark:border-white/10 dark:text-gray-500">
+                                                        <label class="p-3 flex w-full bg-white border border-gray-200 rounded-sm text-sm focus:border-primary focus:ring-primary dark:bg-bgdark dark:border-white/10 dark:text-white/70">
                                                               <input type="checkbox" class="ti-form-checkbox mt-0.5 pointer-events-none" id="filter_by_plan_category">
-                                                              <span class="text-sm text-gray-500 ms-2 dark:text-gray-500">Filter by plan categories</span>
+                                                              <span class="text-sm text-gray-500 ms-2 dark:text-white/70">Filter by plan categories</span>
                                                             </label>
                                                       </div>
                                                     @endif
@@ -310,9 +310,9 @@
                                                         <input type="hidden" value="0" class="ti-form-checkbox mt-0.5 pointer-events-none" name="validatephonenetwork" id="validatephonenetwork">       
                                                     @else
                                                         <div class="my-2">
-                                                          <label class="p-3 flex w-full bg-white border border-gray-200 rounded-sm text-sm focus:border-primary focus:ring-primary dark:bg-bgdark dark:border-white/10 dark:text-gray-500">
+                                                          <label class="p-3 flex w-full bg-white border border-gray-200 rounded-sm text-sm focus:border-primary focus:ring-primary dark:bg-bgdark dark:border-white/10 dark:text-white/70">
                                                                 <input type="checkbox" class="ti-form-checkbox mt-0.5 pointer-events-none" id="validatephonenetwork">
-                                                                <span class="text-sm text-gray-500 ms-2 dark:text-gray-500">Validate phone network</span>
+                                                                <span class="text-sm text-gray-500 ms-2 dark:text-white/70">Validate phone network</span>
                                                               </label>
                                                         </div>
                                                     @endif
@@ -324,7 +324,7 @@
                                                         <input type="password" class="my-auto ti-form-input" id="pin" name="pin" value="" placeholder="Enter your pin to secure transaction">
                                                         <div class="flex items-center space-x-4">
                                                         <input type="checkbox" id="hs-basic-with-description-unchecked" class="ti-switch show_pin1">
-                                                        <label for="hs-basic-with-description-unchecked" class="text-sm text-gray-500 ms-3 dark:text-gray-500 ">Show PIN         
+                                                        <label for="hs-basic-with-description-unchecked" class="text-sm text-gray-500 ms-3 dark:text-white/70 ">Show PIN         
                                                         </label>
 
                                                         <a href="https://api.whatsapp.com/send?phone={{ $support_whatsapp_number }}&text=Hello%2C%20Please%20I%20forgot%20my%20transaction%20pin."
@@ -409,9 +409,9 @@
 
                                                 @if (env('APP_NAME') != 'EgcData' && env('APP_NAME') != 'OresamSub')
                                                   <div class="space-y-2">
-                                                    <label class="p-3 flex w-full bg-white border border-gray-200 rounded-sm text-sm focus:border-primary focus:ring-primary dark:bg-bgdark dark:border-white/10 dark:text-gray-500">
+                                                    <label class="p-3 flex w-full bg-white border border-gray-200 rounded-sm text-sm focus:border-primary focus:ring-primary dark:bg-bgdark dark:border-white/10 dark:text-white/70">
                                                           <input type="checkbox" class="ti-form-checkbox mt-0.5 pointer-events-none" id="filter_by_plan_category">
-                                                          <span class="text-sm text-gray-500 ms-2 dark:text-gray-500">Filter by plan categories</span>
+                                                          <span class="text-sm text-gray-500 ms-2 dark:text-white/70">Filter by plan categories</span>
                                                         </label>
                                                   </div>
                                                 @endif
@@ -449,9 +449,9 @@
                                                     <input type="hidden" value="0" class="ti-form-checkbox mt-0.5 pointer-events-none" name="validatephonenetwork" id="validatephonenetwork">       
                                                 @else
                                                     <div class="space-y-2">
-                                                      <label class="p-3 flex w-full bg-white border border-gray-200 rounded-sm text-sm focus:border-primary focus:ring-primary dark:bg-bgdark dark:border-white/10 dark:text-gray-500">
+                                                      <label class="p-3 flex w-full bg-white border border-gray-200 rounded-sm text-sm focus:border-primary focus:ring-primary dark:bg-bgdark dark:border-white/10 dark:text-white/70">
                                                             <input type="checkbox" class="ti-form-checkbox mt-0.5 pointer-events-none" id="validatephonenetwork">
-                                                            <span class="text-sm text-gray-500 ms-2 dark:text-gray-500">Validate phone network</span>
+                                                            <span class="text-sm text-gray-500 ms-2 dark:text-white/70">Validate phone network</span>
                                                           </label>
                                                     </div>
                                                 @endif
@@ -462,7 +462,7 @@
                                                   <input type="password" class="my-auto ti-form-input" id="pin" name="pin" value="" placeholder="Enter your pin to secure transaction">
                                                   <div class="flex items-center">
                                                     <input type="checkbox" id="hs-basic-with-description-unchecked" class="ti-switch show_pin1">
-                                                    <label for="hs-basic-with-description-unchecked" class="text-sm text-gray-500 ms-3 dark:text-gray-500 ">Show PIN</label>
+                                                    <label for="hs-basic-with-description-unchecked" class="text-sm text-gray-500 ms-3 dark:text-white/70 ">Show PIN</label>
                                                   </div>  
                                                 </div>
 

@@ -16,7 +16,7 @@
                 <i class="ti ti-chevrons-right flex-shrink-0 mx-3 overflow-visible text-gray-300 dark:text-gray-300 rtl:rotate-180"></i>
                 </a>
             </li>
-            <li class="text-sm text-gray-500 hover:text-primary dark:text-gray-500 " aria-current="page">
+            <li class="text-sm text-gray-500 hover:text-primary dark:text-white/70 " aria-current="page">
                 Create User
             </li>
         </ol>
@@ -73,7 +73,7 @@
                                                     class="ti-form-radio" checked>
                                             </div>
                                             <label for="hs-horizontal-list-group-item-radio-1"
-                                                class="ms-3 block w-full text-sm text-gray-600 dark:text-gray-500">
+                                                class="ms-3 block w-full text-sm text-gray-600 dark:text-white/70">
                                                 Female
                                             </label>
                                         </div>
@@ -88,7 +88,7 @@
                                                     class="ti-form-radio">
                                             </div>
                                             <label for="hs-horizontal-list-group-item-radio-2"
-                                                class="ms-3 block w-full text-sm text-gray-600 dark:text-gray-500">
+                                                class="ms-3 block w-full text-sm text-gray-600 dark:text-white/70">
                                                 Male
                                             </label>
                                         </div>

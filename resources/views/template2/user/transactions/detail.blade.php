@@ -48,7 +48,7 @@
               <tr>
                 <td class="">User:</td>
                 <td class="">
-                      <p class="text-gray-500 dark:text-gray-500">
+                      <p class="text-gray-500 dark:text-white/70">
                         {{  $data->user->first_name  ?? 'nil' }} <br>
                         {{  $data->user->last_name  ?? 'nil' }} <br>
                         {{  $data->user->phone_number  ?? 'nil' }} 
@@ -211,7 +211,7 @@
                            
                             
                           <button type="button"
-                            class="hs-dropdown-toggle ti-btn ti-border font-medium bg-white text-gray-700 shadow-sm align-middle hover:bg-gray-50 focus:ring-offset-white focus:ring-primary dark:bg-bgdark dark:hover:bg-black/20 dark:border-white/10 dark:text-gray-500 dark:hover:text-white dark:focus:ring-offset-white/10"
+                            class="hs-dropdown-toggle ti-btn ti-border font-medium bg-white text-gray-700 shadow-sm align-middle hover:bg-gray-50 focus:ring-offset-white focus:ring-primary dark:bg-bgdark dark:hover:bg-black/20 dark:border-white/10 dark:text-white/70 dark:hover:text-white dark:focus:ring-offset-white/10"
                             data-hs-overlay="#hs-basic-modal">
                             Close
                           </button>
@@ -267,7 +267,7 @@
                               <button type="submit" class="ti-btn ti-btn-danger w-full">Change status</button>
                             </div>
                           <button type="button"
-                            class="hs-dropdown-toggle ti-btn ti-border font-medium bg-white text-gray-700 shadow-sm align-middle hover:bg-gray-50 focus:ring-offset-white focus:ring-primary dark:bg-bgdark dark:hover:bg-black/20 dark:border-white/10 dark:text-gray-500 dark:hover:text-white dark:focus:ring-offset-white/10"
+                            class="hs-dropdown-toggle ti-btn ti-border font-medium bg-white text-gray-700 shadow-sm align-middle hover:bg-gray-50 focus:ring-offset-white focus:ring-primary dark:bg-bgdark dark:hover:bg-black/20 dark:border-white/10 dark:text-white/70 dark:hover:text-white dark:focus:ring-offset-white/10"
                             data-hs-overlay="#hs-basic-modal">
                             Close
                           </button>

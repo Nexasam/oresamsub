@@ -146,7 +146,7 @@
                         </div>
                         <div class="">
                             <div class="mb-2">Total Users</div>
-                            <div class="text-gray-500 dark:text-gray-500 mb-1 text-xs">
+                            <div class="text-gray-500 dark:text-white/70 mb-1 text-xs">
                                 <span
                                     class="text-gray-800 font-semibold text-xl leading-none align-bottom dark:text-gray-900">
                                     {{-- {{ number_format( count($users))  }} --}}
@@ -182,7 +182,7 @@
                         </div>
                         <div class="">
                             <div class="mb-2">Total Transactions</div>
-                            <div class="text-gray-500 dark:text-gray-500 mb-1 text-xs">
+                            <div class="text-gray-500 dark:text-white/70 mb-1 text-xs">
                                 <span
                                     class="text-gray-800 font-semibold text-xl leading-none align-bottom dark:text-gray-900">
                                     {{ number_format( count($transactions))  }}
@@ -214,7 +214,7 @@
                         </div>
                         <div class="">
                             <div class="mb-2">Product Plans</div>
-                            <div class="text-gray-500 dark:text-gray-500 mb-1 text-xs">
+                            <div class="text-gray-500 dark:text-white/70 mb-1 text-xs">
                                 <span
                                     class="text-gray-800 font-semibold text-xl leading-none align-bottom dark:text-gray-900">
                                     {{ number_format( count($product_plans))  }}
@@ -245,7 +245,7 @@
                         </div>
                         <div class="">
                             <div class="mb-2">Your Balance</div>
-                            <div class="text-gray-500 dark:text-gray-500 mb-1 text-xs">
+                            <div class="text-gray-500 dark:text-white/70 mb-1 text-xs">
                                 <span
                                     class="text-gray-800 font-semibold text-xl leading-none align-bottom dark:text-gray-900">
                                     &#8358;{{  number_format(auth()->user()->main_wallet,2) ?? 0  }}
@@ -277,7 +277,7 @@
                         </div>
                         <div class="">
                             <div class="mb-2">Total User Main Balances</div>
-                            <div class="text-gray-500 dark:text-gray-500 mb-1 text-xs">
+                            <div class="text-gray-500 dark:text-white/70 mb-1 text-xs">
                                 <span
                                     class="text-gray-800 font-semibold text-xl leading-none align-bottom dark:text-gray-900">
                                     &#8358;{{  number_format($main_wallet_balances,2) ?? 0  }}
@@ -320,7 +320,7 @@
                             <div class="mb-2 ">
                                Product Plan Categories
                             </div>
-                            <div class="text-gray-500 dark:text-gray-500 mb-1 text-xs flex items-center justify-between  space-x-3">
+                            <div class="text-gray-500 dark:text-white/70 mb-1 text-xs flex items-center justify-between  space-x-3">
                                 <span
                                     class="text-gray-800 font-semibold text-xl leading-none align-bottom dark:text-gray-900">
                                     {{ number_format(count($product_plan_categories))  ?? 0  }}
@@ -353,7 +353,7 @@
                                           </button>
                                         </div>
                                         <div class="ti-modal-body">
-                                          <p class="mt-1 text-gray-800 dark:text-gray-500">
+                                          <p class="mt-1 text-gray-800 dark:text-white/70">
                                             Generate a dynamic account number you can use in funding your wallet. <br>
                                           </p>
                                           <br>
@@ -368,7 +368,7 @@
                                         </div>
                                         <div class="ti-modal-footer">
                                           <button type="button"
-                                            class="hs-dropdown-toggle ti-btn ti-border font-medium bg-white text-gray-700 shadow-sm align-middle hover:bg-gray-50 focus:ring-offset-white focus:ring-primary dark:bg-bgdark dark:hover:bg-black/20 dark:border-white/10 dark:text-gray-500 dark:hover:text-white dark:focus:ring-offset-white/10"
+                                            class="hs-dropdown-toggle ti-btn ti-border font-medium bg-white text-gray-700 shadow-sm align-middle hover:bg-gray-50 focus:ring-offset-white focus:ring-primary dark:bg-bgdark dark:hover:bg-black/20 dark:border-white/10 dark:text-white/70 dark:hover:text-white dark:focus:ring-offset-white/10"
                                             data-hs-overlay="#hs-basic-modal">
                                             Close
                                           </button>
@@ -408,7 +408,7 @@
                         </div>
                         <div class="">
                             <div class="mb-2">Total Bulk Data Balances</div>
-                            <div class="text-gray-500 dark:text-gray-500 mb-1 text-xs">
+                            <div class="text-gray-500 dark:text-white/70 mb-1 text-xs">
                                 <span
                                     class="text-gray-800 font-semibold text-xl leading-none align-bottom dark:text-gray-900">
                                     {{ number_format($bulk_data_wallet_sum)  }}MB
@@ -466,11 +466,11 @@
                                             </button>
                                           </div>
                                           <div class="ti-modal-body">
-                                            <p class="mt-1 text-gray-800 dark:text-gray-500">Phone recharged:</p>
+                                            <p class="mt-1 text-gray-800 dark:text-white/70">Phone recharged:</p>
                                             <input type="text" value="" id="phone_recharged" name="phone_recharged"> <br>
                                             <hr>
                                             <br>
-                                            <p class="mt-1 text-gray-800 dark:text-gray-500">Filter by Plan Category:</p>
+                                            <p class="mt-1 text-gray-800 dark:text-white/70">Filter by Plan Category:</p>
                                             <select name="product_plan_category_filter" id="product_plan_category_filter">
                                                 <option value="">Select</option>
                                                 @foreach ($product_plan_categories as $plan_category)
@@ -480,7 +480,7 @@
                                             <br>
                                             <hr>
                                             <br>
-                                            <p class="mt-1 text-gray-800 dark:text-gray-500">Date range:</p><br>
+                                            <p class="mt-1 text-gray-800 dark:text-white/70">Date range:</p><br>
                                             <div class="flex items-center justify-between">
                                               <div class="flex items-center justify-start space-x-5">
                                                   <div>

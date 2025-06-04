@@ -81,7 +81,7 @@
                 </label>
 
             <!-- <input type="checkbox" id="hs-basic-with-description-unchecked" class="ti-switch show_password">
-            <label for="hs-basic-with-description-unchecked" class="text-sm text-gray-500 ms-3 dark:text-gray-500 ">Show password</label> -->
+            <label for="hs-basic-with-description-unchecked" class="text-sm text-gray-500 ms-3 dark:text-white/70 ">Show password</label> -->
 
             </div>
 

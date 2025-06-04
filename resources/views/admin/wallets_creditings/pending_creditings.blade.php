@@ -11,7 +11,7 @@
             </div>
             <ol class="flex items-center whitespace-nowrap min-w-0">
               
-                <li class="text-sm text-gray-500 hover:text-primary dark:text-gray-500 " aria-current="page">
+                <li class="text-sm text-gray-500 hover:text-primary dark:text-white/70 " aria-current="page">
                     Networks
                 </li>
             </ol> --}}
@@ -66,11 +66,11 @@
                                   </button>
                                 </div>
                                 <div class="ti-modal-body">
-                                  <p class="mt-1 text-gray-800 dark:text-gray-500">Txn Reference:</p>
+                                  <p class="mt-1 text-gray-800 dark:text-white/70">Txn Reference:</p>
                                   <input type="text" value="" id="txn_reference" name="txn_reference"> <br>
                                   <hr>
                                   <br>
-                                  <p class="mt-1 text-gray-800 dark:text-gray-500">Date range:</p><br>
+                                  <p class="mt-1 text-gray-800 dark:text-white/70">Date range:</p><br>
                                   <div class="flex items-center justify-between">
                                     <div class="flex items-center justify-start space-x-5">
                                         <div>

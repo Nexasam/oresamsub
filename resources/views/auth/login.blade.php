@@ -213,7 +213,7 @@
                                     <hr>
                                 @endif
                                 <h3 class="block text-xl text-gray-800 dark:text-gray-900">Welcome Back</h3>
-                                <p class="mt-3 text-sm text-gray-600 dark:text-gray-500">
+                                <p class="mt-3 text-sm text-gray-600 dark:text-white/70">
                                     Don't have an account yet?
                                     <a class="text-primary decoration-2 hover:underline font-medium"  href="{{route('register')}}">
                                         Sign up here
@@ -261,7 +261,7 @@
                                                 </div>
                                                 <div class="relative">
                                                         {{-- <input type="password" id="password" name="password"
-                                                        class="py-2 px-3 block w-full border-gray-200 rounded-sm text-sm focus:border-primary focus:ring-primary dark:bg-bgdark dark:border-white/10 dark:text-gray-500"
+                                                        class="py-2 px-3 block w-full border-gray-200 rounded-sm text-sm focus:border-primary focus:ring-primary dark:bg-bgdark dark:border-white/10 dark:text-white/70"
                                                         required> --}}
                                                         <x-text-input id="password" class="block mt-1 w-full"
                                                         type="password"
@@ -276,7 +276,7 @@
 
                                             <div class="flex items-center">
                                                 <input type="checkbox" id="hs-basic-with-description-unchecked" class="ti-switch show_password">
-                                                <label for="hs-basic-with-description-unchecked" class="text-sm text-gray-500 ms-3 dark:text-gray-500 ">Show password</label>
+                                                <label for="hs-basic-with-description-unchecked" class="text-sm text-gray-500 ms-3 dark:text-white/70 ">Show password</label>
                                             </div>
                                             <hr>
 

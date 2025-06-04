@@ -16,7 +16,7 @@
                     <i class="ti ti-chevrons-right flex-shrink-0 mx-3 overflow-visible text-gray-300 dark:text-gray-300 rtl:rotate-180"></i>
                     </a>
                 </li>
-                <li class="text-sm text-gray-500 hover:text-primary dark:text-gray-500 " aria-current="page">
+                <li class="text-sm text-gray-500 hover:text-primary dark:text-white/70 " aria-current="page">
                     Buy Airtime
                 </li>
             </ol>    --}}
@@ -37,10 +37,10 @@
 
                 <div class="box-body">
                   <nav class="flex space-x-2" aria-label="Tabs" role="tablist">
-                    <button type="button" class="hs-tab-active:bg-primary hs-tab-active:text-white py-3 px-4 inline-flex items-center gap-2 bg-transparent text-sm font-medium text-center text-gray-500 rounded-sm hover:text-primary  dark:text-gray-500 dark:hover:text-white active" id="pills-with-brand-color-item-2" data-hs-tab="#pills-with-brand-color-2" aria-controls="pills-with-brand-color-2">
+                    <button type="button" class="hs-tab-active:bg-primary hs-tab-active:text-white py-3 px-4 inline-flex items-center gap-2 bg-transparent text-sm font-medium text-center text-gray-500 rounded-sm hover:text-primary  dark:text-white/70 dark:hover:text-white active" id="pills-with-brand-color-item-2" data-hs-tab="#pills-with-brand-color-2" aria-controls="pills-with-brand-color-2">
                       Buy Airtime
                     </button>
-                    <button type="button" class="hs-tab-active:bg-primary hs-tab-active:text-white py-3 px-4 inline-flex items-center gap-2 bg-transparent text-sm font-medium text-center text-gray-500 rounded-sm hover:text-primary  dark:text-gray-500 dark:hover:text-white " id="pills-with-brand-color-item-1" data-hs-tab="#pills-with-brand-color-1" aria-controls="pills-with-brand-color-1">
+                    <button type="button" class="hs-tab-active:bg-primary hs-tab-active:text-white py-3 px-4 inline-flex items-center gap-2 bg-transparent text-sm font-medium text-center text-gray-500 rounded-sm hover:text-primary  dark:text-white/70 dark:hover:text-white " id="pills-with-brand-color-item-1" data-hs-tab="#pills-with-brand-color-1" aria-controls="pills-with-brand-color-1">
                       View Airtime Transactions
                     </button>
                   
@@ -87,11 +87,11 @@
                                     </button>
                                   </div>
                                   <div class="ti-modal-body">
-                                    <p class="mt-1 text-gray-800 dark:text-gray-500">Phone recharged:</p>
+                                    <p class="mt-1 text-gray-800 dark:text-white/70">Phone recharged:</p>
                                     <input type="text" value="" id="phone_recharged" name="phone_recharged"> <br>
                                     <hr>
                                     <br>
-                                    <p class="mt-1 text-gray-800 dark:text-gray-500">Filter by Plan Category:</p>
+                                    <p class="mt-1 text-gray-800 dark:text-white/70">Filter by Plan Category:</p>
                                     <select name="product_plan_category_filter" id="product_plan_category_filter">
                                         <option value="">Select</option>
                                         @foreach ($product_plan_categories as $plan_categoryy)
@@ -101,7 +101,7 @@
                                     <br>
                                     <hr>
                                     <br>
-                                    <p class="mt-1 text-gray-800 dark:text-gray-500">Date range:</p><br>
+                                    <p class="mt-1 text-gray-800 dark:text-white/70">Date range:</p><br>
                                     <div class="flex items-center justify-between">
                                       <div class="flex items-center justify-start space-x-5">
                                           <div>
@@ -240,9 +240,9 @@
                                                 </div>
 
                                                 <div class="space-y-2">
-                                                  <label class="p-3 flex w-full bg-white border border-gray-200 rounded-sm text-sm focus:border-primary focus:ring-primary dark:bg-bgdark dark:border-white/10 dark:text-gray-500">
+                                                  <label class="p-3 flex w-full bg-white border border-gray-200 rounded-sm text-sm focus:border-primary focus:ring-primary dark:bg-bgdark dark:border-white/10 dark:text-white/70">
                                                        <input type="checkbox" class="ti-form-checkbox mt-0.5 pointer-events-none" id="validatephonenetwork">
-                                                       <span class="text-sm text-gray-500 ms-2 dark:text-gray-500">Validate phone network</span>
+                                                       <span class="text-sm text-gray-500 ms-2 dark:text-white/70">Validate phone network</span>
                                                      </label>
                                                 </div>
                     
@@ -253,7 +253,7 @@
                                                   <input type="password" class="my-auto ti-form-input" id="pin" name="pin" value="" placeholder="Enter your pin to secure transaction">
                                                   <div class="flex items-center">
                                                     <input type="checkbox" id="hs-basic-with-description-unchecked" class="ti-switch show_pin1">
-                                                    <label for="hs-basic-with-description-unchecked" class="text-sm text-gray-500 ms-3 dark:text-gray-500 ">Show PIN</label>
+                                                    <label for="hs-basic-with-description-unchecked" class="text-sm text-gray-500 ms-3 dark:text-white/70 ">Show PIN</label>
                                                   </div>  
                                                 </div>
 
@@ -280,7 +280,7 @@
                       </div>  
                     </div>
                     <div id="pills-with-brand-color-3" class="hidden" role="tabpanel" aria-labelledby="pills-with-brand-color-item-3">
-                      <p class="text-gray-500 dark:text-gray-500 p-5 border rounded-sm dark:border-white/10 border-gray-200">
+                      <p class="text-gray-500 dark:text-white/70 p-5 border rounded-sm dark:border-white/10 border-gray-200">
                         Unbelievable healthy snack success stories. 12 facts about safe food handling tips that will impress your friends. Restaurant weeks by the numbers. Will mexican food ever rule the world? The 10 best thai restaurant youtube videos. How restaurant weeks can make you sick. The complete beginner's guide to cooking healthy food. Unbelievable food stamp success stories. How whole foods markets are making the world a better place. 16 things that won't happen in dish reviews.
                       </p>
                     </div>

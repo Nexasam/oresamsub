@@ -149,7 +149,7 @@ class ProductPlanController extends Controller
           $checkedd = htmlspecialchars(json_encode($actual_value));
           $toggle_btn = '<div class="flex items-center">';
           $toggle_btn .=  '<input onchange="toggleProductPlanVisibility('.$escapedUrl.','.$token.','.$checkedd.')" type="checkbox" id="hs-basic-with-description-checked'.$data->id.'" class="ti-switch" '.$checked.'>';
-          $toggle_btn .=  '<label for="hs-basic-with-description-checked" class="text-sm text-gray-500 ms-3 dark:text-gray-500 "></label>';
+          $toggle_btn .=  '<label for="hs-basic-with-description-checked" class="text-sm text-gray-500 ms-3 dark:text-white/70 "></label>';
           $toggle_btn .=  ' <span class="badge rounded-sm bg-success/10 text-success hidden" id="nnotification'.$data->id.'"></span>  </div>';
           
           return $toggle_btn;
@@ -164,7 +164,7 @@ class ProductPlanController extends Controller
           $checkedd = htmlspecialchars(json_encode($actual_value));
           $toggle_btn = '<div class="flex items-center">';
           $toggle_btn .=  '<input onchange="toggleProductPlanPublicVisibility('.$escapedUrl.','.$token.','.$checkedd.')" type="checkbox" id="hs-basic-with-description-checked'.$data->id.'" class="ti-switch" '.$checked.'>';
-          $toggle_btn .=  '<label for="hs-basic-with-description-checked" class="text-sm text-gray-500 ms-3 dark:text-gray-500 "></label>';
+          $toggle_btn .=  '<label for="hs-basic-with-description-checked" class="text-sm text-gray-500 ms-3 dark:text-white/70 "></label>';
           $toggle_btn .=  ' <span class="badge rounded-sm bg-success/10 text-success hidden" id="nnotification2'.$data->id.'"></span>  </div>';
           
           return $toggle_btn;

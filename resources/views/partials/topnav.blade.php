@@ -35,24 +35,24 @@
             
               {{-- <div class="header-search">
                 <button aria-label="button" type="button" data-hs-overlay="#search-modal"
-                  class="inline-flex flex-shrink-0 justify-center items-center gap-2 h-[2.375rem] w-[2.375rem] rounded-full font-medium bg-gray-100 hover:bg-gray-200 text-gray-500 align-middle focus:outline-none focus:ring-0 focus:ring-gray-400 focus:ring-offset-0 focus:ring-offset-white transition-all text-xs dark:bg-bgdark dark:hover:bg-black/20 dark:text-gray-500 dark:hover:text-white dark:focus:ring-white/10 dark:focus:ring-offset-white/10">
+                  class="inline-flex flex-shrink-0 justify-center items-center gap-2 h-[2.375rem] w-[2.375rem] rounded-full font-medium bg-gray-100 hover:bg-gray-200 text-gray-500 align-middle focus:outline-none focus:ring-0 focus:ring-gray-400 focus:ring-offset-0 focus:ring-offset-white transition-all text-xs dark:bg-bgdark dark:hover:bg-black/20 dark:text-white/70 dark:hover:text-white dark:focus:ring-white/10 dark:focus:ring-offset-white/10">
                   <i class="ri-search-2-line header-icon"></i>
                 </button>
               </div> --}}
               {{-- <div class="header-theme-mode hidden lg:block"> --}}
               <div class="header-theme-mode block">
-                <a aria-label="anchor" class="hs-dark-mode-active:hidden flex hs-dark-mode group flex-shrink-0 justify-center items-center gap-2 h-[2.375rem] w-[2.375rem] rounded-full font-medium bg-gray-100 hover:bg-gray-200 text-gray-500 align-middle focus:outline-none focus:ring-0 focus:ring-gray-400 focus:ring-offset-0 focus:ring-offset-white transition-all text-xs dark:bg-bgdark dark:hover:bg-black/20 dark:text-gray-500 dark:hover:text-white dark:focus:ring-white/10 dark:focus:ring-offset-white/10"
+                <a aria-label="anchor" class="hs-dark-mode-active:hidden flex hs-dark-mode group flex-shrink-0 justify-center items-center gap-2 h-[2.375rem] w-[2.375rem] rounded-full font-medium bg-gray-100 hover:bg-gray-200 text-gray-500 align-middle focus:outline-none focus:ring-0 focus:ring-gray-400 focus:ring-offset-0 focus:ring-offset-white transition-all text-xs dark:bg-bgdark dark:hover:bg-black/20 dark:text-white/70 dark:hover:text-white dark:focus:ring-white/10 dark:focus:ring-offset-white/10"
                   href="javascript:;" data-hs-theme-click-value="dark">
                   <i class="ri-moon-line header-icon"></i>
                 </a>
-                <a aria-label="anchor" class="hs-dark-mode-active:flex hidden hs-dark-mode group flex-shrink-0 justify-center items-center gap-2 h-[2.375rem] w-[2.375rem] rounded-full font-medium bg-gray-100 hover:bg-gray-200 text-gray-500 align-middle focus:outline-none focus:ring-0 focus:ring-gray-400 focus:ring-offset-0 focus:ring-offset-white transition-all text-xs dark:bg-bgdark dark:hover:bg-black/20 dark:text-gray-500 dark:hover:text-white dark:focus:ring-white/10 dark:focus:ring-offset-white/10"
+                <a aria-label="anchor" class="hs-dark-mode-active:flex hidden hs-dark-mode group flex-shrink-0 justify-center items-center gap-2 h-[2.375rem] w-[2.375rem] rounded-full font-medium bg-gray-100 hover:bg-gray-200 text-gray-500 align-middle focus:outline-none focus:ring-0 focus:ring-gray-400 focus:ring-offset-0 focus:ring-offset-white transition-all text-xs dark:bg-bgdark dark:hover:bg-black/20 dark:text-white/70 dark:hover:text-white dark:focus:ring-white/10 dark:focus:ring-offset-white/10"
                   href="javascript:;" data-hs-theme-click-value="light">
                   <i class="ri-sun-line header-icon"></i>
                 </a>
               </div>
               <div class="header-fullscreen hidden lg:block">
                 <a aria-label="anchor" href="javascript:void(0);" onclick="openFullscreen();"
-                  class="inline-flex flex-shrink-0 justify-center items-center gap-2 h-[2.375rem] w-[2.375rem] rounded-full font-medium bg-gray-100 hover:bg-gray-200 text-gray-500 align-middle focus:outline-none focus:ring-0 focus:ring-gray-400 focus:ring-offset-0 focus:ring-offset-white transition-all text-xs dark:bg-bgdark dark:hover:bg-black/20 dark:text-gray-500 dark:hover:text-white dark:focus:ring-white/10 dark:focus:ring-offset-white/10">
+                  class="inline-flex flex-shrink-0 justify-center items-center gap-2 h-[2.375rem] w-[2.375rem] rounded-full font-medium bg-gray-100 hover:bg-gray-200 text-gray-500 align-middle focus:outline-none focus:ring-0 focus:ring-gray-400 focus:ring-offset-0 focus:ring-offset-white transition-all text-xs dark:bg-bgdark dark:hover:bg-black/20 dark:text-white/70 dark:hover:text-white dark:focus:ring-white/10 dark:focus:ring-offset-white/10">
                   <i class="ri-fullscreen-line header-icon full-screen-open"></i>
                   <i class="ri-fullscreen-line header-icon fullscreen-exit-line full-screen-close hidden"></i>
                 </a>
@@ -84,7 +84,7 @@
                           <div class="relative w-full">
                             <h5 class="text-sm text-gray-800 dark:text-gray-900 font-semibold mb-1">Elon Isk</h5>
                             <p class="text-xs mb-1 max-w-[200px] truncate">Hello there! How are you doing? Call me when...</p>
-                            <p class="text-xs text-gray-400 dark:text-gray-500">2 min</p>
+                            <p class="text-xs text-gray-400 dark:text-white/70">2 min</p>
                           </div>
                         </a>
                         <a aria-label="anchor" href="javascript:void(0);" class="header-remove-btn ms-auto text-lg text-gray-500/20 dark:text-gray-900/20 hover:text-gray-800 dark:hover:text-white">
@@ -99,7 +99,7 @@
                           <div class="relative w-full">
                             <h5 class="text-sm text-gray-800 dark:text-gray-900 font-semibold mb-1">Shakira Sen</h5>
                             <p class="text-xs mb-1 max-w-[200px] truncate">I would like to discuss about that assets...</p>
-                            <p class="text-xs text-gray-400 dark:text-gray-500">09:43</p>
+                            <p class="text-xs text-gray-400 dark:text-white/70">09:43</p>
                           </div>
                         </a>
                         <a aria-label="anchor" href="javascript:void(0);" class="header-remove-btn ms-auto text-lg text-gray-500/20 dark:text-gray-900/20 hover:text-gray-800 dark:hover:text-white">
@@ -114,7 +114,7 @@
                           <div class="relative w-full">
                             <h5 class="text-sm text-gray-800 dark:text-gray-900 font-semibold mb-1">Sebastian</h5>
                             <p class="text-xs mb-1 max-w-[200px] truncate">Shall we go to the cafe at downtown...</p>
-                            <p class="text-xs text-gray-400 dark:text-gray-500">yesterday</p>
+                            <p class="text-xs text-gray-400 dark:text-white/70">yesterday</p>
                           </div>
                         </a>
                         <a aria-label="anchor" href="javascript:void(0);" class="header-remove-btn ms-auto text-lg text-gray-500/20 dark:text-gray-900/20 hover:text-gray-800 dark:hover:text-white">
@@ -129,7 +129,7 @@
                           <div class="relative w-full">
                             <h5 class="text-sm text-gray-800 dark:text-gray-900 font-semibold mb-1">Charlie Davieson</h5>
                             <p class="text-xs mb-1 max-w-[200px] truncate">Lorem ipsum dolor sit amet, consectetur</p>
-                            <p class="text-xs text-gray-400 dark:text-gray-500">yesterday</p>
+                            <p class="text-xs text-gray-400 dark:text-white/70">yesterday</p>
                           </div>
                         </a>
                         <a aria-label="anchor" href="javascript:void(0);" class="header-remove-btn ms-auto text-lg text-gray-500/20 dark:text-gray-900/20 hover:text-gray-800 dark:hover:text-white">
@@ -272,7 +272,7 @@
               </div>
               {{-- <div class="switcher-icon">
                 <button aria-label="button" type="button"
-                  class="hs-dropdown-toggle inline-flex flex-shrink-0 justify-center items-center gap-2 h-[2.375rem] w-[2.375rem] rounded-full font-medium bg-gray-100 hover:bg-gray-200 text-gray-500 align-middle focus:outline-none focus-visible:outline-none focus:ring-0 focus:ring-gray-400 focus:ring-offset-0 focus:ring-offset-white transition-all text-xs dark:bg-bgdark dark:hover:bg-black/20 dark:text-gray-500 dark:hover:text-white dark:focus:ring-white/10 dark:focus:ring-offset-white/10"
+                  class="hs-dropdown-toggle inline-flex flex-shrink-0 justify-center items-center gap-2 h-[2.375rem] w-[2.375rem] rounded-full font-medium bg-gray-100 hover:bg-gray-200 text-gray-500 align-middle focus:outline-none focus-visible:outline-none focus:ring-0 focus:ring-gray-400 focus:ring-offset-0 focus:ring-offset-white transition-all text-xs dark:bg-bgdark dark:hover:bg-black/20 dark:text-white/70 dark:hover:text-white dark:focus:ring-white/10 dark:focus:ring-offset-white/10"
                   data-hs-overlay="#hs-overlay-switcher">
                   <i class="ri-settings-5-line header-icon animate-spin"></i>
                 </button>
