@@ -112,23 +112,23 @@ class MigrationController extends Controller
 
         //THIRD TO MIGRATE REFERR.
         //MIGRATE JUST balances
-         $getRowsWithUplines = DB::table('members')->get();
-         if( count($getRowsWithUplines) > 0 ){
-            foreach($getRowsWithUplines as $each_member){
+        //  $getRowsWithUplines = DB::table('members')->get();
+        //  if( count($getRowsWithUplines) > 0 ){
+        //     foreach($getRowsWithUplines as $each_member){
 
-                $wallet_balance = $each_member->wallet;
-                $referby = $each_member->referby;
-                $email = $each_member->email;
+        //         $wallet_balance = $each_member->wallet;
+        //         $referby = $each_member->referby;
+        //         $email = $each_member->email;
 
-                User::where('email',$email)->update([
-                    'main_wallet' => $wallet_balance
-                ]);
-                echo 'Record:  '.$email.' => '.$wallet_balance.'<br>';
+        //         User::where('email',$email)->update([
+        //             'main_wallet' => $wallet_balance
+        //         ]);
+        //         echo 'Record:  '.$email.' => '.$wallet_balance.'<br>';
 
-            }
-         }else{
-                echo 'No record found';
-         }
+        //     }
+        //  }else{
+        //         echo 'No record found';
+        //  }
 
        
     }
