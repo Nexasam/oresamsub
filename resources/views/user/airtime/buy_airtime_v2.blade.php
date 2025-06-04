@@ -311,7 +311,7 @@
                                                         </div>
                                                     
                                                     
-                                                        @if (env('APP_NAME') == 'Mega-sub' || env('APP_NAME') == 'OresamSub')
+                                                        @if (env('APP_NAME') == 'EgcData' || env('APP_NAME') == 'OresamSub')
                                                         <input type="hidden" value="0" class="ti-form-checkbox mt-0.5 pointer-events-none" name="validatephonenetwork" id="validatephonenetwork">
                                                             
                                                         @else

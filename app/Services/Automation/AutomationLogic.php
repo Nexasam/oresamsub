@@ -4,6 +4,7 @@ namespace App\Services\Automation;
 
 use App\Models\ProductPlan;
 use App\Services\Utils\UtilService;
+use App\Services\Automation\Twins10Automation;
 use App\Services\Automation\DirectCouponAutomation;
 use App\Services\Automation\MegaSubPlugAutomation\MegaSubCableTV;
 use App\Services\Automation\MegaSubPlugAutomation\MegaSubVendData;
@@ -45,7 +46,11 @@ class AutomationLogic{
         } 
         else if($automation_details->slug == 'directcoupon'){
             //logic stays here...
-            $buy_data = (new DirectCouponAutomation($data))->buyData();
+            $buy_data = (new DirectCouponAutomation($data))->buyData();   
+        }
+        else if($automation_details->slug == 'twins10'){
+            //logic stays here...
+            $buy_data = (new Twins10Automation($data))->buyData();
             
         }
         else{

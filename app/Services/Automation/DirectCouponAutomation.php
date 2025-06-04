@@ -37,29 +37,6 @@ class DirectCouponAutomation{
         $this->amount = $data['amount'] ?? 0;
     }
 
-
-    public function getNetworkId($network_name){
-        if(strtolower($network_name) == 'mtn'){
-            return 1;
-        }
-
-        if(strtolower($network_name) == 'glo'){
-            return 2;
-        }
-
-        if(strtolower($network_name) == 'airtel'){
-            return 4;
-        }
-
-       if(strtolower($network_name) == '9mobile'){
-            return 3;
-        }
-
-        return -1;
-    }
-
-    
-
     public function buyData(){
         
         $plan_details = ProductPlan::with('product_plan_category.network')
@@ -81,19 +58,6 @@ class DirectCouponAutomation{
                 'admin_message' => 'Network ID is likely not available or set to hidden',
             ];
         }
-
-
-        $network_name = $network_details->network_name;
-        $api_network_id = $this->getNetworkId($network_name);
-        if($api_network_id == -1){
-            //not found
-            return [
-                'status' => -1,
-                'user_message' => 'An error occurred while processing this transaction. Please try again or reach out to support',
-                'admin_message' => 'Api Network ID is wrong',
-            ];
-        }
-
 
         $automation_plan_id = $plan_details->automation_product_plan_id; 
         $custom_ref = substr(uniqid(rand(), true), 0, 15);
@@ -129,7 +93,7 @@ class DirectCouponAutomation{
         $response = curl_exec($curl);
         $response_dec = json_decode($response,true);
         $httpcode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
-        logger('DirectCoupon:'.$response);
+        // logger('DirectCoupon:'.$response);
 
         if(isset($response_dec['code']) && $response_dec['code'] == 'X000'){
             //success

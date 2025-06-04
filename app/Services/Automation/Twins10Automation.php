@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Services\Automation\MsOrgGroupAutomation;
+namespace App\Services\Automation;
 
 use App\Models\Network;
 use App\Models\Automation;
 use App\Models\ProductPlan;
 use App\Models\RecurringFailedMessagePattern;
 
-class MsOrgGroupAutomation{
+class Twins10Automation{
 
     private $network_id;
 
@@ -37,6 +37,34 @@ class MsOrgGroupAutomation{
         $this->amount = $data['amount'] ?? 0;
     }
 
+    public function generateAccessToken(){
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL,  $this->url);
+        curl_setopt($ch, CURLOPT_POST, 1);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt(
+           $ch, CURLOPT_HTTPHEADER, [
+                "Authorization: Basic ".$this->token,
+            ]
+        );
+        $json = curl_exec($ch);
+        curl_close($ch); 
+
+        logger('TOKENACCESS:  '. $json);
+
+        if(isset($json['status']) && $json['status'] == 'success'){
+            return [
+                'status' => 1,
+                // 'access_token' => $json['AccessToken'],
+                'access_token' => '8c97bfd15a0e49f0a8d56587531fb634ea0730a1086c111445dffc7ac0b3',
+            ];
+        }else{
+            return [
+                'status' => -1,
+                'access_token' => 'NIL',
+            ];
+        }
+    }
 
     public function getNetworkId($network_name){
         if(strtolower($network_name) == 'mtn'){
@@ -44,21 +72,19 @@ class MsOrgGroupAutomation{
         }
 
         if(strtolower($network_name) == 'glo'){
-            return 2;
+            return 3;
         }
 
         if(strtolower($network_name) == 'airtel'){
-            return 4;
+            return 2;
         }
 
        if(strtolower($network_name) == '9mobile'){
-            return 3;
+            return 4;
         }
 
         return -1;
     }
-
-    
 
     public function buyData(){
         
@@ -94,17 +120,31 @@ class MsOrgGroupAutomation{
             ];
         }
 
+        $get_token = $this->generateAccessToken();
+        if($get_token['status'] != 1){
+            return [
+                'status' => -1,
+                'user_message' => 'An error occurred while processing this transaction. Please try again or reach out to support',
+                'admin_message' => 'This transaction failed because access token could not be detected.',
+            ];
+        }
+
+        $access_token = $get_token['access_token'];
 
         $automation_plan_id = $plan_details->automation_product_plan_id; 
+
+        $custom_ref = substr(uniqid(rand(), true), 0, 15);
+
         $array = [
             "network"=>$api_network_id,
-            "mobile_number"=>$this->mobile_number,
-            "plan"=> $automation_plan_id,
-            "Ported_number"=>true
+            "phone"=>$this->mobile_number,
+            "data_plan"=> $automation_plan_id,
+            "bypass"=>true,
+            "request-id"=>$custom_ref,
         ];
         $encoded_array = json_encode($array);
         $header_array = array(
-            'Authorization: Token '.$this->token,
+            'Authorization: Token '.$access_token,
             'Content-Type: application/json'
         );
         $header_json = json_encode($header_array);
@@ -128,18 +168,18 @@ class MsOrgGroupAutomation{
         $response = curl_exec($curl);
         $response_dec = json_decode($response,true);
         $httpcode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
-        // logger($response);
+        logger($response);
 
-        if(isset($response_dec['Status']) && $response_dec['Status'] == 'successful'){
+        if(isset($response_dec['status']) && $response_dec['status'] == 'success'){
             //success
             return [
                 'status' => 1,
-                'user_message' => $response_dec['api_response'] ?? 'Successful',
+                'user_message' => $response_dec['message'] ?? 'Congratulations, your transaction was successfully processed',
                 'admin_message' => $response,
             ];
         }else{
 
-            $usermsg = isset($response_dec['api_response']) ? $response_dec['api_response'] : "Sorry, transaction failed. Please try again";
+            $usermsg = isset($response_dec['message']) ? $response_dec['message'].'sss' : "Sorry, transaction failed. Please try again";
             if(env('APP_NAME') == 'OresamSub'){
              
                 //ORESAMSUB ONLY FOR NOW
@@ -172,118 +212,5 @@ class MsOrgGroupAutomation{
         }        
     }
 
-    public function buyAirtime(){
-        
-        $plan_details = ProductPlan::with('product_plan_category.network')
-        ->where('visibility',1)
-        ->where('id',$this->plan_id)->first();
-        if(! $plan_details){
-            return [
-                'status' => -1,
-                'user_message' => 'An error occurred while processing this transaction. Please try again or reach out to support',
-                'admin_message' => 'Wrong plan Id',
-            ];
-        }
-
-        $network_details = Network::where('visibility',1)->where('id',$this->network_id)->first();
-        if(! $network_details){
-            return [
-                'status' => -1,
-                'user_message' => 'An error occurred while processing this transaction. Please try again or reach out to support',
-                'admin_message' => 'Network ID is likely not available or set to hidden',
-            ];
-        }
-
-
-        $network_name = $network_details->network_name;
-        $api_network_id = $this->getNetworkId($network_name);
-        if($api_network_id == -1){
-            //not found
-            return [
-                'status' => -1,
-                'user_message' => 'An error occurred while processing this transaction. Please try again or reach out to support',
-                'admin_message' => 'Api Network ID is wrong',
-            ];
-        }
-
-
-        $automation_plan_id = $plan_details->automation_product_plan_id; 
-        $array = [
-            "network"=>$api_network_id,
-            "amount"=>$this->amount,
-            "mobile_number"=>$this->mobile_number,
-            "airtime_type"=> $automation_plan_id,
-            "Ported_number"=>false
-        ];
-
-        $encoded_array = json_encode($array);
-        $header_array = array(
-            'Authorization: Token '.$this->token,
-            'Content-Type: application/json'
-        );
-        $header_json = json_encode($header_array);
-
-        $curl = curl_init();
-        curl_setopt_array(
-        $curl,
-        array(
-            CURLOPT_URL => "$this->url",
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_ENCODING => '',
-            CURLOPT_MAXREDIRS => 10,
-            CURLOPT_TIMEOUT => 0,
-            CURLOPT_FOLLOWLOCATION => true,
-            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-            CURLOPT_CUSTOMREQUEST => 'POST',
-            CURLOPT_POSTFIELDS => $encoded_array,
-            CURLOPT_HTTPHEADER => $header_array
-        )
-        );
-        $response = curl_exec($curl);
-        $response_dec = json_decode($response,true);
-        $httpcode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
-        // logger($response);
-
-        if(isset($response_dec['Status']) && $response_dec['Status'] == 'successful'){
-            //success
-            return [
-                'status' => 1,
-                'user_message' => $response_dec['api_response'],
-                'admin_message' => $response,
-            ];
-        }else{
-
-            $usermsg = isset($response_dec['Status']) ? $response_dec['Status'] : "Sorry, transaction failed. Please try again";
-            if(env('APP_NAME') == 'OresamSub'){
-             
-                //ORESAMSUB ONLY FOR NOW
-                $user_message_to_check_with_pattern = $usermsg;
-                $check_if_response_matches = RecurringFailedMessagePattern::where('message','like','%'.$user_message_to_check_with_pattern.'%')->first();
-                if($check_if_response_matches){
-                    // option 1
-                    $plan_details->update([
-                        'visibility' => 0,
-                        'public_visibility' => 0,
-                        'active_status' => 0,
-                    ]);
-                    $usermsg = 'Sorry, transaction failed. Please try again.';
-                    
-                    // option 2 - LATER
-                    // //it means the response exists, so PEND.
-                    // return [
-                    //     'status' => 0,
-                    //     'user_message' => 'Transaction is being processed',
-                    //     'admin_message' => $response,
-                    // ];
-                }
-            }
-
-            return [
-                'status' => -1,
-                'user_message' =>$usermsg,
-                'admin_message' => $response,
-            ];
-        }        
-    }
 
 }

@@ -16,7 +16,7 @@ class CommissionsController extends Controller
         // dd('commissions here');
         $userid = auth()->id();
         // $start_date = ;
-        $end_date = auth()->id();
+        // $end_date = ;
         $limit = $request->limit ?? 500;
         $data['commissions'] = Commissions::when(auth()->user()->role->role_name == 'Admin',function($query) use ($userid){
             $query->where('beneficiary',$userid);

@@ -25,7 +25,7 @@
           
               <div class="box">
                 <div class="box-header">
-                  <h5 class="box-title">All Transactions</h5>
+                  <h5 class="box-title">All Transactionssss</h5>
                 </div>
                
                 <div class="box-body">

@@ -1077,7 +1077,7 @@ class DataController extends Controller
     public function fetch_data_plans_by_phone_number(Request $request){
         $validate_phone = (new UtilService())->phoneNumberNetworkValidation($request->phone_number);
         $validated_phone_number = $validate_phone['validated_phone_number'];
-        $selected_network = $validate_phone['selected_network'];
+        $selected_network = $validate_phone['selected_network'] ?? 'NIL';
         // $selected_network_caps = strtoupper($selected_network);
         $get_network_id = Network::where('network_name',$selected_network)->first();
         if($get_network_id){

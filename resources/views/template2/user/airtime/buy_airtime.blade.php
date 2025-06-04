@@ -77,7 +77,7 @@
 
             </div>
 
-            @if (env('APP_NAME') == 'Mega-sub' || env('APP_NAME') == 'OresamSub')
+            @if (env('APP_NAME') == 'EgcData' || env('APP_NAME') == 'OresamSub')
             <input type="hidden" value="0" class="w-4 h-4 text-[{{$site_primary_color}}] bg-gray-100 border-gray-300 rounded focus:ring-[{{$site_primary_color}}] "" name="validatephonenetwork" id="validatephonenetwork">            
             @else
                 <div class="mt-2">
