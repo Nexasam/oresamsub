@@ -78,7 +78,7 @@ class DatabaseSeeder extends Seeder
         //megasub
         $megasub = Automation::create([
             "id" => "9c2887ea-55b5-4f19-904e-e490a10682ea",
-            "automation_name" => 'MEGASUBPLUB',
+            "automation_name" => 'MEGASUBPLUG',
             "slug" =>'megasubplug',
             "api_public_key" =>'xxxx246266435f47e344bxxxx',
             "api_password" =>'xxxxxowo0000@',

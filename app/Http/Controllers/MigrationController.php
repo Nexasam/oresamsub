@@ -26,88 +26,88 @@ class MigrationController extends Controller
          $default_reseller_plan = UserPlan::where('is_default',1)->first();
 
          //FIRST TO MIGRATE USERS
-         foreach($users_to_migrate as $user_migrate){
-            $fullname = $user_migrate->name;
-            $username = $user_migrate->username;
-            $pin = $user_migrate->pin;
-            $phone = $user_migrate->phone;
-            $email = $user_migrate->email;
-            $referby = $user_migrate->referby; //username
-            $main_wallet_bal = $user_migrate->wallet;
-            $old_platform_password = $user_migrate->password; //
-            $checkduplicateentry = User::where(function($query) use ($username,$phone,$email){
-                $query->where('username',$username)
-                      ->orWhere('phone_number',$phone)
-                      ->orWhere('email',$email);
-            })->first();
-            if($checkduplicateentry){
-                //entry exists already
-                echo $checkduplicateentry->username.' imported already <br>'; 
-            }else if($user_migrate->phone == '' || $user_migrate->username == '' || $user_migrate->email == ''){
-                echo $user_migrate->username.' is likely with some empty fields <br>'; 
-                DB::table('members')->where('username',$user_migrate->username)->update(['migrated'=> -1]); //indicate issue
+        //  foreach($users_to_migrate as $user_migrate){
+        //     $fullname = $user_migrate->name;
+        //     $username = $user_migrate->username;
+        //     $pin = $user_migrate->pin;
+        //     $phone = $user_migrate->phone;
+        //     $email = $user_migrate->email;
+        //     $referby = $user_migrate->referby; //username
+        //     $main_wallet_bal = $user_migrate->wallet;
+        //     $old_platform_password = $user_migrate->password; //
+        //     $checkduplicateentry = User::where(function($query) use ($username,$phone,$email){
+        //         $query->where('username',$username)
+        //               ->orWhere('phone_number',$phone)
+        //               ->orWhere('email',$email);
+        //     })->first();
+        //     if($checkduplicateentry){
+        //         //entry exists already
+        //         echo $checkduplicateentry->username.' imported already <br>'; 
+        //     }else if($user_migrate->phone == '' || $user_migrate->username == '' || $user_migrate->email == ''){
+        //         echo $user_migrate->username.' is likely with some empty fields <br>'; 
+        //         DB::table('members')->where('username',$user_migrate->username)->update(['migrated'=> -1]); //indicate issue
 
-            } else{
+        //     } else{
 
 
-                $fullname_arr = explode(' ',$fullname);
-                if(count($fullname_arr) == 1){
-                    $new_first_name = $fullname_arr[0];
-                    $new_last_name = $fullname_arr[0];
-                }else if(count($fullname_arr) > 1){
-                    $new_first_name = $fullname_arr[0];
-                    $new_last_name = $fullname_arr[1];
-                }
+        //         $fullname_arr = explode(' ',$fullname);
+        //         if(count($fullname_arr) == 1){
+        //             $new_first_name = $fullname_arr[0];
+        //             $new_last_name = $fullname_arr[0];
+        //         }else if(count($fullname_arr) > 1){
+        //             $new_first_name = $fullname_arr[0];
+        //             $new_last_name = $fullname_arr[1];
+        //         }
                
-                $data['first_name'] = $new_first_name;
-                $data['last_name'] = $new_last_name;
-                // $data['other_names'] = $request->other_names;
-                $data['pin'] = $pin;
-                $data['phone_number'] = $phone;
-                $data['email'] = $email;
-                $data['main_wallet'] = $main_wallet_bal;
-                $data['username'] = $username;
-                $data['upline_id'] = NULL;
-                // $data['upline_id'] = $upline_id;
-                $data['role_id'] = $role_details->id;
-                $data['user_plan_id'] = $default_reseller_plan->id;
-                $data['password'] = Hash::make('password'); //defaulted to just password
-                $data['old_platform_password'] = $old_platform_password; //old platform password
-                $data['email_verified_at'] = date('Y-m-d H:i:s');
-                $user = User::create($data);
+        //         $data['first_name'] = $new_first_name;
+        //         $data['last_name'] = $new_last_name;
+        //         // $data['other_names'] = $request->other_names;
+        //         $data['pin'] = $pin;
+        //         $data['phone_number'] = $phone;
+        //         $data['email'] = $email;
+        //         $data['main_wallet'] = $main_wallet_bal;
+        //         $data['username'] = $username;
+        //         $data['upline_id'] = NULL;
+        //         // $data['upline_id'] = $upline_id;
+        //         $data['role_id'] = $role_details->id;
+        //         $data['user_plan_id'] = $default_reseller_plan->id;
+        //         $data['password'] = Hash::make('password'); //defaulted to just password
+        //         $data['old_platform_password'] = $old_platform_password; //old platform password
+        //         $data['email_verified_at'] = date('Y-m-d H:i:s');
+        //         $user = User::create($data);
 
-                DB::table('members')->where('username',$username)->update(['migrated'=> 1]);
-                echo $username.' successfully migrated <br>'; 
+        //         DB::table('members')->where('username',$username)->update(['migrated'=> 1]);
+        //         echo $username.' successfully migrated <br>'; 
 
-            }
-        }
+        //     }
+        // }
 
    
         //SECOND TO MIGRATE REFERR.
         // check if that referby is not null or empty and it has a record
-        //  $getRowsWithUplines = DB::table('members')->get();
-        //  if( count($getRowsWithUplines) > 0 ){
-        //     foreach($getRowsWithUplines as $each_member){
+         $getRowsWithUplines = DB::table('members')->get();
+         if( count($getRowsWithUplines) > 0 ){
+            foreach($getRowsWithUplines as $each_member){
 
-        //         $referby = $each_member->referby;
-        //         $email = $each_member->email;
+                $referby = $each_member->referby;
+                $email = $each_member->email;
 
-        //         if($referby != '' && $referby != NULL && $referby != 0){
-        //             $useruplinecheck = User::where('username',$referby)->first();
-        //             if($useruplinecheck){
-        //                 //update here
-        //                 $userdownline_to_update = User::where('email',$email)->update([
-        //                     'upline_id' => $useruplinecheck->id
-        //                 ]);
-        //                 echo 'Record:  '.$referby.' ===> '.$email.'<br>';
+                if($referby != '' && $referby != NULL && $referby != 0){
+                    $useruplinecheck = User::where('username',$referby)->first();
+                    if($useruplinecheck){
+                        //update here
+                        $userdownline_to_update = User::where('email',$email)->update([
+                            'upline_id' => $useruplinecheck->id
+                        ]);
+                        echo 'Record:  '.$referby.' ===> '.$email.'<br>';
 
-        //             }
-        //         }
+                    }
+                }
                
-        //     }
-        //  }else{
-        //         echo 'No record found';
-        //  }
+            }
+         }else{
+                echo 'No record found';
+         }
 
 
         //THIRD TO MIGRATE REFERR.
