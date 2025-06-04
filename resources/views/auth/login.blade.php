@@ -209,10 +209,10 @@
                             <div class="text-center mb-4">
                                 
                                 @if ( !isset($site_logo) )
-                                    <h1 class="block text-2xl font-bold text-gray-800 dark:text-white">{{ env('APP_NAME') }}</h1>
+                                    <h1 class="block text-2xl font-bold text-gray-800 dark:text-gray-900">{{ env('APP_NAME') }}</h1>
                                     <hr>
                                 @endif
-                                <h3 class="block text-xl text-gray-800 dark:text-white">Welcome Back</h3>
+                                <h3 class="block text-xl text-gray-800 dark:text-gray-900">Welcome Back</h3>
                                 <p class="mt-3 text-sm text-gray-600 dark:text-gray-500">
                                     Don't have an account yet?
                                     <a class="text-primary decoration-2 hover:underline font-medium"  href="{{route('register')}}">
@@ -243,7 +243,7 @@
                                         <div class="grid gap-y-4">
                                             <!-- Form Group -->
                                             <div>
-                                                <label for="email" class="block text-sm mb-2 dark:text-white">Email or Username or Phone</label>
+                                                <label for="email" class="block text-sm mb-2 dark:text-gray-900">Email or Username or Phone</label>
                                                 <div class="relative">
                                                     <x-text-input id="email" class="block mt-1 w-full" type="text" name="email" :value="old('email')" required autofocus autocomplete="username" />
                                                     <x-input-error :messages="$errors->get('email')" class="mt-2" />
@@ -255,7 +255,7 @@
                                             <div>
                                                 <div class="flex justify-between items-center">
                                                     <label for="password"
-                                                        class="block text-sm mb-2 dark:text-white">Password</label>
+                                                        class="block text-sm mb-2 dark:text-gray-900">Password</label>
                                                     <a class="text-sm text-primary decoration-2 hover:underline font-medium"
                                                         href="{{  route('password.email') }}">Forgot password?</a>
                                                 </div>
@@ -287,7 +287,7 @@
                                                         class="shrink-0 mt-0.5 border-gray-200 rounded text-primary pointer-events-none focus:ring-primary dark:bg-bgdark dark:border-white/10 dark:checked:bg-primary dark:checked:border-primary dark:focus:ring-offset-white/10">
                                                 </div>
                                                 <div class="ms-3">
-                                                    <label for="remember-me" class="text-sm dark:text-white">Remember
+                                                    <label for="remember-me" class="text-sm dark:text-gray-900">Remember
                                                         me</label>
                                                 </div>
                                             </div>

@@ -24,7 +24,7 @@
        
         <div class="flex items-center justify-between space-x-4" >
                 <div class="mt-4 sm:mt-0  w-1/2">
-                    <!-- dark:text-white -->
+                    <!-- dark:text-gray-900 -->
                     <label for="first_name" class="mb-1 sm:mb-2 text-sm font-medium text-gray-500 ">First Name</label>
                     
                     <input type="first_name" name="first_name" id="first_name" aria-describedby="helper-text-explanation" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-[{{$site_primary_color}}] focus:border-[{{$site_primary_color}}] block w-full p-2.5  " placeholder="Elizabeth ">
@@ -33,7 +33,7 @@
                 </div>
         
                 <div class="mt-4 sm:mt-0  w-1/2">
-                    <!-- dark:text-white -->
+                    <!-- dark:text-gray-900 -->
                     <label for="first_name" class="mb-1 sm:mb-2 text-sm font-medium text-gray-500 ">Last Name</label>
                     
                     <input type="text" name="last_name" id="last_name" aria-describedby="helper-text-explanation" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-[{{$site_primary_color}}] focus:border-[{{$site_primary_color}}] block w-full p-2.5  " placeholder="Ajayi">
@@ -43,7 +43,7 @@
 
         <div class="flex items-center justify-between space-x-4">
             <div class="mt-4 sm:mt-0  w-1/2">
-                <!-- dark:text-white -->
+                <!-- dark:text-gray-900 -->
                 <label for="username" class="block mb-1 sm:mb-2 text-sm font-medium text-gray-500 ">Username</label>
                 
                 <input type="text" name="username" id="username" aria-describedby="helper-text-explanation" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-[{{$site_primary_color}}] focus:border-[{{$site_primary_color}}] block w-full p-2.5  " placeholder="samo">
@@ -51,7 +51,7 @@
             </div>
     
             <div class="mt-4 sm:mt-0  w-1/2">
-                <!-- dark:text-white -->
+                <!-- dark:text-gray-900 -->
                 <label for="email" class="block mb-1 sm:mb-2 text-sm font-medium text-gray-500 ">Email</label>
                 
                 <input type="email" name="email" id="email" aria-describedby="helper-text-explanation" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-[{{$site_primary_color}}] focus:border-[{{$site_primary_color}}] block w-full p-2.5  " placeholder="samo@gmail.com">
@@ -62,7 +62,7 @@
         
         <div class="flex items-center justify-between space-x-4">
             <div class="mt-4 sm:mt-0  w-1/2">
-                <!-- dark:text-white -->
+                <!-- dark:text-gray-900 -->
                 <label for="phone_number" class="block mb-1 sm:mb-2 text-sm font-medium text-gray-500 ">Phone Number</label>
                 
                 <input type="text" name="phone_number" id="phone_number" aria-describedby="helper-text-explanation" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-[{{$site_primary_color}}] focus:border-[{{$site_primary_color}}] block w-full p-2.5  " placeholder="2348168509033">
@@ -70,7 +70,7 @@
             </div>
     
             <div class="mt-4 sm:mt-0  w-1/2">
-                <!-- dark:text-white -->
+                <!-- dark:text-gray-900 -->
                 <label for="upline_referral_phone_number" class="block mb-1 sm:mb-2 text-sm font-medium text-gray-500 ">Upline Phone Number(optional)</label>
                 
                 <input type="text" name="upline_referral_phone_number" id="upline_referral_phone_number" aria-describedby="helper-text-explanation" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-[{{$site_primary_color}}] focus:border-[{{$site_primary_color}}] block w-full p-2.5  " placeholder="07012121212">
@@ -80,7 +80,7 @@
 
         <div class="flex items-center justify-between space-x-4">
             <div class="mt-4 sm:mt-0  w-1/2">
-                <!-- dark:text-white -->
+                <!-- dark:text-gray-900 -->
                 <label for="password" class="mb-1 sm:mb-2 text-sm font-medium text-gray-500 ">Password</label>
                 
                 <input type="password" id="password" name="password" aria-describedby="helper-text-explanation" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-[{{$site_primary_color}}] focus:border-[{{$site_primary_color}}] block w-full p-2.5  " placeholder="***********">
@@ -90,7 +90,7 @@
     
     
             <div class="mt-4 sm:mt-0  w-1/2">
-                <!-- dark:text-white -->
+                <!-- dark:text-gray-900 -->
                 <label for="password_confirmation" class="mb-1 sm:mb-2 text-sm font-medium text-gray-500 ">Confirm Password</label>
                 
                 <input type="password"  name="password_confirmation"  id="password_confirmation" aria-describedby="helper-text-explanation" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-[{{$site_primary_color}}] focus:border-[{{$site_primary_color}}] block w-full p-2.5  " placeholder="**********">
@@ -104,7 +104,7 @@
         {{-- [#3D63DD] --}}
 
         <div class="mt-4 sm:mt-0  w-full">
-            <!-- dark:text-white -->
+            <!-- dark:text-gray-900 -->
             <label for="pin" class="block mb-1 sm:mb-2 text-sm font-medium text-gray-500 ">PIN</label>
             
             <input type="password" name="pin" id="pin" aria-describedby="helper-text-explanation" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-[{{$site_primary_color}}] focus:border-[{{$site_primary_color}}] block w-full p-2.5  " placeholder="1234">

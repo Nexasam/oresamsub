@@ -12,7 +12,7 @@
     <!-- Page Header -->
     <div class="block justify-between page-header md:flex">
         <div>
-            <h3 class="text-gray-700 hover:text-gray-900 dark:text-white dark:hover:text-white text-2xl font-medium"> <small style=" font-size: 14px;">Welcome <strong>{{ $user->first_name. ' '. $user->last_name }}</strong></small> </h3>
+            <h3 class="text-gray-700 hover:text-gray-900 dark:text-gray-900 dark:hover:text-white text-2xl font-medium"> <small style=" font-size: 14px;">Welcome <strong>{{ $user->first_name. ' '. $user->last_name }}</strong></small> </h3>
         </div>
         
     </div>
@@ -148,7 +148,7 @@
                             <div class="mb-2">Total Users</div>
                             <div class="text-gray-500 dark:text-gray-500 mb-1 text-xs">
                                 <span
-                                    class="text-gray-800 font-semibold text-xl leading-none align-bottom dark:text-white">
+                                    class="text-gray-800 font-semibold text-xl leading-none align-bottom dark:text-gray-900">
                                     {{-- {{ number_format( count($users))  }} --}}
                                     {{ number_format( count($users ?? 0))  }}
                                 </span>
@@ -184,7 +184,7 @@
                             <div class="mb-2">Total Transactions</div>
                             <div class="text-gray-500 dark:text-gray-500 mb-1 text-xs">
                                 <span
-                                    class="text-gray-800 font-semibold text-xl leading-none align-bottom dark:text-white">
+                                    class="text-gray-800 font-semibold text-xl leading-none align-bottom dark:text-gray-900">
                                     {{ number_format( count($transactions))  }}
                                 </span>
                             </div>
@@ -216,7 +216,7 @@
                             <div class="mb-2">Product Plans</div>
                             <div class="text-gray-500 dark:text-gray-500 mb-1 text-xs">
                                 <span
-                                    class="text-gray-800 font-semibold text-xl leading-none align-bottom dark:text-white">
+                                    class="text-gray-800 font-semibold text-xl leading-none align-bottom dark:text-gray-900">
                                     {{ number_format( count($product_plans))  }}
                                 </span>
                             </div>
@@ -247,7 +247,7 @@
                             <div class="mb-2">Your Balance</div>
                             <div class="text-gray-500 dark:text-gray-500 mb-1 text-xs">
                                 <span
-                                    class="text-gray-800 font-semibold text-xl leading-none align-bottom dark:text-white">
+                                    class="text-gray-800 font-semibold text-xl leading-none align-bottom dark:text-gray-900">
                                     &#8358;{{  number_format(auth()->user()->main_wallet,2) ?? 0  }}
                                 </span>
                             </div>
@@ -279,7 +279,7 @@
                             <div class="mb-2">Total User Main Balances</div>
                             <div class="text-gray-500 dark:text-gray-500 mb-1 text-xs">
                                 <span
-                                    class="text-gray-800 font-semibold text-xl leading-none align-bottom dark:text-white">
+                                    class="text-gray-800 font-semibold text-xl leading-none align-bottom dark:text-gray-900">
                                     &#8358;{{  number_format($main_wallet_balances,2) ?? 0  }}
                                 </span>
                             </div>
@@ -322,7 +322,7 @@
                             </div>
                             <div class="text-gray-500 dark:text-gray-500 mb-1 text-xs flex items-center justify-between  space-x-3">
                                 <span
-                                    class="text-gray-800 font-semibold text-xl leading-none align-bottom dark:text-white">
+                                    class="text-gray-800 font-semibold text-xl leading-none align-bottom dark:text-gray-900">
                                     {{ number_format(count($product_plan_categories))  ?? 0  }}
                                 </span>
                                 <div> 
@@ -410,7 +410,7 @@
                             <div class="mb-2">Total Bulk Data Balances</div>
                             <div class="text-gray-500 dark:text-gray-500 mb-1 text-xs">
                                 <span
-                                    class="text-gray-800 font-semibold text-xl leading-none align-bottom dark:text-white">
+                                    class="text-gray-800 font-semibold text-xl leading-none align-bottom dark:text-gray-900">
                                     {{ number_format($bulk_data_wallet_sum)  }}MB
                                 </span>
                             </div>

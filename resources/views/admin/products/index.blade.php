@@ -7,7 +7,7 @@
         <!-- Page Header -->
         <div class="block justify-between page-header md:flex">
             {{-- <div>
-                <h3 class="text-gray-700 hover:text-gray-900 dark:text-white dark:hover:text-white text-2xl font-medium"> Products</h3>
+                <h3 class="text-gray-700 hover:text-gray-900 dark:text-gray-900 dark:hover:text-white text-2xl font-medium"> Products</h3>
             </div>
             <ol class="flex items-center whitespace-nowrap min-w-0">
               
@@ -255,7 +255,7 @@
                                                 <label class="ti-form-label mb-0">Activation Status</label>
                                                 <ul class="flex flex-col sm:flex-row">
                                                     <li
-                                                        class="ti-list-group gap-x-2.5 bg-white border text-gray-800 sm:-ms-px sm:mt-0 sm:first:rounded-se-none sm:first:rounded-ss-none sm:first:rounded-es-sm sm:last:rounded-es-none sm:last:rounded-ee-none sm:last:rounded-se-sm dark:bg-bgdark dark:border-white/10 dark:text-white">
+                                                        class="ti-list-group gap-x-2.5 bg-white border text-gray-800 sm:-ms-px sm:mt-0 sm:first:rounded-se-none sm:first:rounded-ss-none sm:first:rounded-es-sm sm:last:rounded-es-none sm:last:rounded-ee-none sm:last:rounded-se-sm dark:bg-bgdark dark:border-white/10 dark:text-gray-900">
                                                         <div class="relative flex items-start w-full">
                                                             <div class="flex items-center h-5">
                                                                 <input  id="hs-horizontal-list-group-item-radio-1"
@@ -270,7 +270,7 @@
                                                     </li>
             
                                                     <li
-                                                    class="ti-list-group gap-x-2.5 bg-white border text-gray-800 sm:-ms-px sm:mt-0 sm:first:rounded-se-none sm:first:rounded-ss-none sm:first:rounded-es-sm sm:last:rounded-es-none sm:last:rounded-ee-none sm:last:rounded-se-sm dark:bg-bgdark dark:border-white/10 dark:text-white">
+                                                    class="ti-list-group gap-x-2.5 bg-white border text-gray-800 sm:-ms-px sm:mt-0 sm:first:rounded-se-none sm:first:rounded-ss-none sm:first:rounded-es-sm sm:last:rounded-es-none sm:last:rounded-ee-none sm:last:rounded-se-sm dark:bg-bgdark dark:border-white/10 dark:text-gray-900">
                                                     <div class="relative flex items-start w-full">
                                                             <div class="flex items-center h-5">
                                                                 <input name="active_status" value="1" id="hs-horizontal-list-group-item-radio-2"

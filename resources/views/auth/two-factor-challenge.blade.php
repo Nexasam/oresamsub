@@ -130,9 +130,9 @@
                             <br>
 
                             <div class="text-center">
-                                <h1 class="block text-2xl font-bold text-gray-800 dark:text-white">{{ env('APP_NAME') }}</h1>
+                                <h1 class="block text-2xl font-bold text-gray-800 dark:text-gray-900">{{ env('APP_NAME') }}</h1>
                                 <hr>
-                                <h3 class="block mt-2 text-xl text-gray-800 dark:text-white">2-Factor Authentication</h3>
+                                <h3 class="block mt-2 text-xl text-gray-800 dark:text-gray-900">2-Factor Authentication</h3>
                                 <small>Access your chosen authenticator app (Google Authenticator, Authy or any other) and input the 6-digit code provided to complete the login flow.</small>
                             </div>
 
@@ -145,7 +145,7 @@
                                     <div>
                                         <div class="grid gap-y-4">
                                             <div>
-                                                <label for="code" class="block text-sm mb-2 dark:text-white">Please enter code:</label>
+                                                <label for="code" class="block text-sm mb-2 dark:text-gray-900">Please enter code:</label>
                                                 <div class="relative">
                                                     <x-text-input id="code" class="block mt-1 w-full" type="number" name="code" :value="old('code')" required autofocus autocomplete="username" />
                                                     <x-input-error :messages="$errors->get('code')" class="mt-2" />

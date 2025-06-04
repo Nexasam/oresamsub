@@ -8,10 +8,10 @@
         @csrf
         <p class="max-w-lg">Please enter the email address associated with this account</p>
         <div class="mb-2">
-            <!-- dark:text-white -->
+            <!-- dark:text-gray-900 -->
             {{-- <label for="email" class="block mb-2 text-sm font-medium text-gray-500 ">Enter your email address</label> --}}
             
-            <!-- dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-[{{$site_primary_color}}] dark:focus:border-[{{$site_primary_color}}] -->
+            <!-- dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-900 dark:focus:ring-[{{$site_primary_color}}] dark:focus:border-[{{$site_primary_color}}] -->
             <input type="email" id="email" name="email" :value="old('email')" aria-describedby="helper-text-explanation" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-[{{$site_primary_color}}] focus:border-[{{$site_primary_color}}] block w-full p-2.5  " placeholder="pietro.schirano@gmail.com">
             <x-input-error :messages="$errors->get('email')" class="mt-2" />
 

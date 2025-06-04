@@ -26,7 +26,7 @@
             @endif
 
             @if (! $site_logo)
-            <h1 class="block text-2xl font-bold text-white dark:text-white">{{ env('APP_NAME') }}</h1>                
+            <h1 class="block text-2xl font-bold text-white dark:text-gray-900">{{ env('APP_NAME') }}</h1>                
             @endif
 
             

@@ -25,7 +25,7 @@
           @endif
 
           @if (! $site_logo)
-           <h1 class="block text-2xl font-bold text-gray-800 dark:text-white">{{ env('APP_NAME') }}</h1>
+           <h1 class="block text-2xl font-bold text-gray-800 dark:text-gray-900">{{ env('APP_NAME') }}</h1>
           @endif
         </div>
 
@@ -82,12 +82,12 @@
                             <img src="../assets/img/users/17.jpg" alt="img" class="rounded-sm">
                           </div>
                           <div class="relative w-full">
-                            <h5 class="text-sm text-gray-800 dark:text-white font-semibold mb-1">Elon Isk</h5>
+                            <h5 class="text-sm text-gray-800 dark:text-gray-900 font-semibold mb-1">Elon Isk</h5>
                             <p class="text-xs mb-1 max-w-[200px] truncate">Hello there! How are you doing? Call me when...</p>
                             <p class="text-xs text-gray-400 dark:text-gray-500">2 min</p>
                           </div>
                         </a>
-                        <a aria-label="anchor" href="javascript:void(0);" class="header-remove-btn ms-auto text-lg text-gray-500/20 dark:text-white/20 hover:text-gray-800 dark:hover:text-white">
+                        <a aria-label="anchor" href="javascript:void(0);" class="header-remove-btn ms-auto text-lg text-gray-500/20 dark:text-gray-900/20 hover:text-gray-800 dark:hover:text-white">
                           <i class="ri-close-circle-line"></i>
                         </a>
                       </div>
@@ -97,12 +97,12 @@
                             <img src="../assets/img/users/2.jpg" alt="img" class="rounded-sm">
                           </div>
                           <div class="relative w-full">
-                            <h5 class="text-sm text-gray-800 dark:text-white font-semibold mb-1">Shakira Sen</h5>
+                            <h5 class="text-sm text-gray-800 dark:text-gray-900 font-semibold mb-1">Shakira Sen</h5>
                             <p class="text-xs mb-1 max-w-[200px] truncate">I would like to discuss about that assets...</p>
                             <p class="text-xs text-gray-400 dark:text-gray-500">09:43</p>
                           </div>
                         </a>
-                        <a aria-label="anchor" href="javascript:void(0);" class="header-remove-btn ms-auto text-lg text-gray-500/20 dark:text-white/20 hover:text-gray-800 dark:hover:text-white">
+                        <a aria-label="anchor" href="javascript:void(0);" class="header-remove-btn ms-auto text-lg text-gray-500/20 dark:text-gray-900/20 hover:text-gray-800 dark:hover:text-white">
                           <i class="ri-close-circle-line"></i>
                         </a>
                       </div>
@@ -112,12 +112,12 @@
                             <img src="../assets/img/users/21.jpg" alt="img" class="rounded-sm">
                           </div>
                           <div class="relative w-full">
-                            <h5 class="text-sm text-gray-800 dark:text-white font-semibold mb-1">Sebastian</h5>
+                            <h5 class="text-sm text-gray-800 dark:text-gray-900 font-semibold mb-1">Sebastian</h5>
                             <p class="text-xs mb-1 max-w-[200px] truncate">Shall we go to the cafe at downtown...</p>
                             <p class="text-xs text-gray-400 dark:text-gray-500">yesterday</p>
                           </div>
                         </a>
-                        <a aria-label="anchor" href="javascript:void(0);" class="header-remove-btn ms-auto text-lg text-gray-500/20 dark:text-white/20 hover:text-gray-800 dark:hover:text-white">
+                        <a aria-label="anchor" href="javascript:void(0);" class="header-remove-btn ms-auto text-lg text-gray-500/20 dark:text-gray-900/20 hover:text-gray-800 dark:hover:text-white">
                           <i class="ri-close-circle-line"></i>
                         </a>
                       </div>
@@ -127,12 +127,12 @@
                             <img src="../assets/img/users/11.jpg" alt="img" class="rounded-sm">
                           </div>
                           <div class="relative w-full">
-                            <h5 class="text-sm text-gray-800 dark:text-white font-semibold mb-1">Charlie Davieson</h5>
+                            <h5 class="text-sm text-gray-800 dark:text-gray-900 font-semibold mb-1">Charlie Davieson</h5>
                             <p class="text-xs mb-1 max-w-[200px] truncate">Lorem ipsum dolor sit amet, consectetur</p>
                             <p class="text-xs text-gray-400 dark:text-gray-500">yesterday</p>
                           </div>
                         </a>
-                        <a aria-label="anchor" href="javascript:void(0);" class="header-remove-btn ms-auto text-lg text-gray-500/20 dark:text-white/20 hover:text-gray-800 dark:hover:text-white">
+                        <a aria-label="anchor" href="javascript:void(0);" class="header-remove-btn ms-auto text-lg text-gray-500/20 dark:text-gray-900/20 hover:text-gray-800 dark:hover:text-white">
                           <i class="ri-close-circle-line"></i>
                         </a>
                       </div>
@@ -159,27 +159,27 @@
                     <div class="grid grid-cols-3 gap-0 p-4 pt-2">
                       <a href="mail-inbox.html" class="block pt-0 p-2 text-center rounded-sm hover:bg-gray-50 dark:hover:bg-black/20">
                         <i class="ri ri-mail-line leading-none text-2xl avatar ring-0 bg-primary/20 text-primary rounded-sm p-3 my-3 align-middle flex justify-center mx-auto"></i>
-                        <div class="text-xs font-semibold text-gray-800 dark:text-white">Mail Inbox</div>
+                        <div class="text-xs font-semibold text-gray-800 dark:text-gray-900">Mail Inbox</div>
                       </a>
                       <a href="chat.html" class="block pt-0 p-2 text-center rounded-sm hover:bg-gray-50 dark:hover:bg-black/20">
                         <i class="ri ri-chat-2-line leading-none text-2xl avatar ring-0 bg-secondary/20 text-secondary rounded-sm p-3 my-3 align-middle flex justify-center mx-auto"></i>
-                        <div class="text-xs font-semibold text-gray-800 dark:text-white">Chat</div>
+                        <div class="text-xs font-semibold text-gray-800 dark:text-gray-900">Chat</div>
                       </a>
                       <a href="tasks.html" class="block pt-0 p-2 text-center rounded-sm hover:bg-gray-50 dark:hover:bg-black/20">
                         <i class="ri ri-task-line leading-none text-2xl avatar ring-0 bg-warning/20 text-warning rounded-sm p-3 my-3 align-middle flex justify-center mx-auto"></i>
-                        <div class="text-xs font-semibold text-gray-800 dark:text-white">Task</div>
+                        <div class="text-xs font-semibold text-gray-800 dark:text-gray-900">Task</div>
                       </a>
                       <a href="calendar.html" class="block pt-0 p-2 text-center rounded-sm hover:bg-gray-50 dark:hover:bg-black/20">
                         <i class="ri ri-calendar-event-line leading-none text-2xl avatar ring-0 bg-danger/20 text-danger rounded-sm p-3 my-3 align-middle flex justify-center mx-auto"></i>
-                        <div class="text-xs font-semibold text-gray-800 dark:text-white">Calendar</div>
+                        <div class="text-xs font-semibold text-gray-800 dark:text-gray-900">Calendar</div>
                       </a>
                       <a href="filemanager.html" class="block pt-0 p-2 text-center rounded-sm hover:bg-gray-50 dark:hover:bg-black/20">
                         <i class="ri ri-file-copy-2-line leading-none text-2xl avatar ring-0 bg-info/20 text-info rounded-sm p-3 my-3 align-middle flex justify-center mx-auto"></i>
-                        <div class="text-xs font-semibold text-gray-800 dark:text-white">FileManager</div>
+                        <div class="text-xs font-semibold text-gray-800 dark:text-gray-900">FileManager</div>
                       </a>
                       <a href="contacts.html" class="block pt-0 p-2 text-center rounded-sm hover:bg-gray-50 dark:hover:bg-black/20">
                         <i class="ri ri-group-line leading-none text-2xl avatar ring-0 bg-success/20 text-success rounded-sm p-3 my-3 align-middle flex justify-center mx-auto"></i>
-                        <div class="text-xs font-semibold text-gray-800 dark:text-white">Contacts</div>
+                        <div class="text-xs font-semibold text-gray-800 dark:text-gray-900">Contacts</div>
                       </a>
                     </div>
                     <div class="py-2 first:pt-0 px-5">

@@ -6,20 +6,20 @@
         <form method="POST" action="{{ route('login') }}" class="md:max-w-xl mx-auto space-y-6 pb-4 px-4"> 
             @csrf
             <div>
-                <!-- dark:text-white -->
+                <!-- dark:text-gray-900 -->
                 <label for="email" class="block mb-2 text-sm font-medium text-gray-500 ">Email Address</label>
                 
-                <!-- dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-[{{$site_primary_color}}] dark:focus:border-[{{$site_primary_color}}] -->
+                <!-- dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-900 dark:focus:ring-[{{$site_primary_color}}] dark:focus:border-[{{$site_primary_color}}] -->
                 <input type="email"  required name="email" :value="old('email')" aria-describedby="helper-text-explanation" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-[{{$site_primary_color}}] focus:border-[{{$site_primary_color}}] block w-full p-2.5  " placeholder="pietro.schirano@gmail.com">
                 <x-input-error :messages="$errors->get('email')" class="mt-2" />
 
             </div>
 
             <div  x-data="{ show: false }">
-                <!-- dark:text-white -->
+                <!-- dark:text-gray-900 -->
                 <label for="password" class="block mb-1 sm:mb-2 text-sm font-medium text-gray-500">Password</label>
                 <div class="relative">
-                <!-- dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-[{{$site_primary_color}}] dark:focus:border-[{{$site_primary_color}}] -->
+                <!-- dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-900 dark:focus:ring-[{{$site_primary_color}}] dark:focus:border-[{{$site_primary_color}}] -->
                 <input  :type="show ? 'text' : 'password'" id="password" required name="password" aria-describedby="helper-text-explanation" class="pr-8 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-[{{$site_primary_color}}] focus:border-[{{$site_primary_color}}] block w-full p-2.5  " placeholder="**********" >
                 <button @click="show = !show" type="button" class="absolute inset-y-0 end-0 flex items-center pe-3">
                 

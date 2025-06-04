@@ -140,11 +140,11 @@
                                 @endif
                                 
                                 @if ( ! isset($site_logo) )
-                                    <h1 class="block text-2xl font-bold text-gray-800 dark:text-white">{{ env('APP_NAME') }}</h1>
+                                    <h1 class="block text-2xl font-bold text-gray-800 dark:text-gray-900">{{ env('APP_NAME') }}</h1>
                                     <hr>
                                 @endif
                                 
-                                <h3 class="block mt-2 text-xl text-gray-800 dark:text-white">Email Verification</h3>
+                                <h3 class="block mt-2 text-xl text-gray-800 dark:text-gray-900">Email Verification</h3>
                                 <p class="mt-3 text-sm text-gray-600 dark:text-gray-500">
                                     Thanks for your interest in our platform! <br> Before getting started, could you verify your email address by clicking on the link we just emailed to you? If you didn't receive the email, we will gladly send you another. <br>
                                     If you having issues getting the email, you can also check your spam folder.

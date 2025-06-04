@@ -12,7 +12,7 @@
     <!-- Page Header -->
     <div class="block justify-between page-header md:flex">
         <div>
-            <h3 class="text-gray-700 hover:text-gray-900 dark:text-white dark:hover:text-white text-2xl font-medium"> <small style=" font-size: 14px;">Welcome <strong>{{ $user->first_name. ' '. $user->last_name }}</strong></small> </h3>
+            <h3 class="text-gray-700 hover:text-gray-900 dark:text-gray-900 dark:hover:text-white text-2xl font-medium"> <small style=" font-size: 14px;">Welcome <strong>{{ $user->first_name. ' '. $user->last_name }}</strong></small> </h3>
         </div>
        
     </div>
@@ -383,7 +383,7 @@
                             <div class="mb-2">Total Bulk Wallets ({{ number_format($bulk_data_wallet_count)  }})</div>
                             <div class="text-gray-500 dark:text-gray-500 mb-1 text-xs">
                                 <span
-                                    class="text-gray-800 font-semibold text-xl leading-none align-bottom dark:text-white">
+                                    class="text-gray-800 font-semibold text-xl leading-none align-bottom dark:text-gray-900">
                                     {{ number_format($bulk_data_wallet_sum)  }} MB
                                 </span>
                                
@@ -538,7 +538,7 @@
                                                 <div class="items-center">
                                                     <span
                                                         class="text-xs text-gray-500 dark:text-gray-500">Name</span>
-                                                    <p class="text-sm mb-0 text-gray-800 dark:text-white">
+                                                    <p class="text-sm mb-0 text-gray-800 dark:text-gray-900">
                                                         Lisa Rebecca</p>
                                                 </div>
                                             </div>
@@ -548,14 +548,14 @@
                                                 <span
                                                     class="text-xs text-gray-500 dark:text-gray-500">Price</span>
                                                 <p
-                                                    class="text-sm mb-0 font-semibold text-gray-800 dark:text-white">
+                                                    class="text-sm mb-0 font-semibold text-gray-800 dark:text-gray-900">
                                                     $1,199.99</p>
                                             </div>
                                         </td>
                                         <td>
                                             <div class="items-center">
                                                 <span class="text-xs text-success">Delivery Date</span>
-                                                <p class="text-sm mb-0 text-gray-800 dark:text-white">24 Dec
+                                                <p class="text-sm mb-0 text-gray-800 dark:text-gray-900">24 Dec
                                                     2022</p>
                                             </div>
                                         </td>
@@ -586,7 +586,7 @@
                                                 <div class="items-center">
                                                     <span
                                                         class="text-xs text-gray-500 dark:text-gray-500">Name</span>
-                                                    <p class="text-sm mb-0 text-gray-800 dark:text-white">
+                                                    <p class="text-sm mb-0 text-gray-800 dark:text-gray-900">
                                                         Matt Martin</p>
                                                 </div>
                                             </div>
@@ -596,14 +596,14 @@
                                                 <span
                                                     class="text-xs text-gray-500 dark:text-gray-500">Price</span>
                                                 <p
-                                                    class="text-sm mb-0 font-semibold text-gray-800 dark:text-white">
+                                                    class="text-sm mb-0 font-semibold text-gray-800 dark:text-gray-900">
                                                     $799.99</p>
                                             </div>
                                         </td>
                                         <td>
                                             <div class="items-center">
                                                 <span class="text-xs text-success">Delivered On</span>
-                                                <p class="text-sm mb-0 text-gray-800 dark:text-white">18 Nov
+                                                <p class="text-sm mb-0 text-gray-800 dark:text-gray-900">18 Nov
                                                     2022</p>
                                             </div>
                                         </td>
@@ -634,7 +634,7 @@
                                                 <div class="items-center">
                                                     <span
                                                         class="text-xs text-gray-500 dark:text-gray-500">Name</span>
-                                                    <p class="text-sm mb-0 text-gray-800 dark:text-white">
+                                                    <p class="text-sm mb-0 text-gray-800 dark:text-gray-900">
                                                         Mitchell Osama</p>
                                                 </div>
                                             </div>
@@ -644,14 +644,14 @@
                                                 <span
                                                     class="text-xs text-gray-500 dark:text-gray-500">Price</span>
                                                 <p
-                                                    class="text-sm mb-0 font-semibold text-gray-800 dark:text-white">
+                                                    class="text-sm mb-0 font-semibold text-gray-800 dark:text-gray-900">
                                                     $279.00</p>
                                             </div>
                                         </td>
                                         <td>
                                             <div class="items-center">
                                                 <span class="text-xs text-success">Delivery Date</span>
-                                                <p class="text-sm mb-0 text-gray-800 dark:text-white">29 Dec
+                                                <p class="text-sm mb-0 text-gray-800 dark:text-gray-900">29 Dec
                                                     2022</p>
                                             </div>
                                         </td>
@@ -682,7 +682,7 @@
                                                 <div class="items-center">
                                                     <span
                                                         class="text-xs text-gray-500 dark:text-gray-500">Name</span>
-                                                    <p class="text-sm mb-0 text-gray-800 dark:text-white">
+                                                    <p class="text-sm mb-0 text-gray-800 dark:text-gray-900">
                                                         Cornor Mcgood</p>
                                                 </div>
                                             </div>
@@ -692,14 +692,14 @@
                                                 <span
                                                     class="text-xs text-gray-500 dark:text-gray-500">Price</span>
                                                 <p
-                                                    class="text-sm mb-0 font-semibold text-gray-800 dark:text-white">
+                                                    class="text-sm mb-0 font-semibold text-gray-800 dark:text-gray-900">
                                                     $79.99</p>
                                             </div>
                                         </td>
                                         <td>
                                             <div class="items-center">
                                                 <span class="text-xs text-success">Delivered On</span>
-                                                <p class="text-sm mb-0 text-gray-800 dark:text-white">05 Dec
+                                                <p class="text-sm mb-0 text-gray-800 dark:text-gray-900">05 Dec
                                                     2022</p>
                                             </div>
                                         </td>
@@ -730,7 +730,7 @@
                                                 <div class="items-center">
                                                     <span
                                                         class="text-xs text-gray-500 dark:text-gray-500">Name</span>
-                                                    <p class="text-sm mb-0 text-gray-800 dark:text-white">
+                                                    <p class="text-sm mb-0 text-gray-800 dark:text-gray-900">
                                                         Kishan Patel</p>
                                                 </div>
                                             </div>
@@ -740,14 +740,14 @@
                                                 <span
                                                     class="text-xs text-gray-500 dark:text-gray-500">Price</span>
                                                 <p
-                                                    class="text-sm mb-0 font-semibold text-gray-800 dark:text-white">
+                                                    class="text-sm mb-0 font-semibold text-gray-800 dark:text-gray-900">
                                                     $1449.29</p>
                                             </div>
                                         </td>
                                         <td>
                                             <div class="items-center">
                                                 <span class="text-xs text-success">Delivered On</span>
-                                                <p class="text-sm mb-0 text-gray-800 dark:text-white">20 Nov
+                                                <p class="text-sm mb-0 text-gray-800 dark:text-gray-900">20 Nov
                                                     2022</p>
                                             </div>
                                         </td>
@@ -786,7 +786,7 @@
                                                 <div class="items-center">
                                                     <span
                                                         class="text-xs text-gray-500 dark:text-gray-500">Name</span>
-                                                    <p class="text-sm mb-0 text-gray-800 dark:text-white">
+                                                    <p class="text-sm mb-0 text-gray-800 dark:text-gray-900">
                                                         Hailey Bobber</p>
                                                 </div>
                                             </div>
@@ -796,14 +796,14 @@
                                                 <span
                                                     class="text-xs text-gray-500 dark:text-gray-500">Price</span>
                                                 <p
-                                                    class="text-sm mb-0 font-semibold text-gray-800 dark:text-white">
+                                                    class="text-sm mb-0 font-semibold text-gray-800 dark:text-gray-900">
                                                     $199.99</p>
                                             </div>
                                         </td>
                                         <td>
                                             <div class="items-center">
                                                 <span class="text-xs text-danger">Cancelled Date</span>
-                                                <p class="text-sm mb-0 text-gray-800 dark:text-white">09 Dec
+                                                <p class="text-sm mb-0 text-gray-800 dark:text-gray-900">09 Dec
                                                     2022</p>
                                             </div>
                                         </td>
@@ -834,7 +834,7 @@
                                                 <div class="items-center">
                                                     <span
                                                         class="text-xs text-gray-500 dark:text-gray-500">Name</span>
-                                                    <p class="text-sm mb-0 text-gray-800 dark:text-white">
+                                                    <p class="text-sm mb-0 text-gray-800 dark:text-gray-900">
                                                         Anthony Mansion</p>
                                                 </div>
                                             </div>
@@ -844,14 +844,14 @@
                                                 <span
                                                     class="text-xs text-gray-500 dark:text-gray-500">Price</span>
                                                 <p
-                                                    class="text-sm mb-0 font-semibold text-gray-800 dark:text-white">
+                                                    class="text-sm mb-0 font-semibold text-gray-800 dark:text-gray-900">
                                                     $179.99</p>
                                             </div>
                                         </td>
                                         <td>
                                             <div class="items-center">
                                                 <span class="text-xs text-danger">Cancelled Date</span>
-                                                <p class="text-sm mb-0 text-gray-800 dark:text-white">28 Dec
+                                                <p class="text-sm mb-0 text-gray-800 dark:text-gray-900">28 Dec
                                                     2022</p>
                                             </div>
                                         </td>
@@ -882,7 +882,7 @@
                                                 <div class="items-center">
                                                     <span
                                                         class="text-xs text-gray-500 dark:text-gray-500">Name</span>
-                                                    <p class="text-sm mb-0 text-gray-800 dark:text-white">
+                                                    <p class="text-sm mb-0 text-gray-800 dark:text-gray-900">
                                                         Simon Carter</p>
                                                 </div>
                                             </div>
@@ -892,14 +892,14 @@
                                                 <span
                                                     class="text-xs text-gray-500 dark:text-gray-500">Price</span>
                                                 <p
-                                                    class="text-sm mb-0 font-semibold text-gray-800 dark:text-white">
+                                                    class="text-sm mb-0 font-semibold text-gray-800 dark:text-gray-900">
                                                     $149.99</p>
                                             </div>
                                         </td>
                                         <td>
                                             <div class="items-center">
                                                 <span class="text-xs text-danger">Cancelled Date</span>
-                                                <p class="text-sm mb-0 text-gray-800 dark:text-white">30 Dec
+                                                <p class="text-sm mb-0 text-gray-800 dark:text-gray-900">30 Dec
                                                     2022</p>
                                             </div>
                                         </td>
@@ -930,7 +930,7 @@
                                                 <div class="items-center">
                                                     <span
                                                         class="text-xs text-gray-500 dark:text-gray-500">Name</span>
-                                                    <p class="text-sm mb-0 text-gray-800 dark:text-white">
+                                                    <p class="text-sm mb-0 text-gray-800 dark:text-gray-900">
                                                         Sofia Sekh</p>
                                                 </div>
                                             </div>
@@ -940,14 +940,14 @@
                                                 <span
                                                     class="text-xs text-gray-500 dark:text-gray-500">Price</span>
                                                 <p
-                                                    class="text-sm mb-0 font-semibold text-gray-800 dark:text-white">
+                                                    class="text-sm mb-0 font-semibold text-gray-800 dark:text-gray-900">
                                                     $1439.99</p>
                                             </div>
                                         </td>
                                         <td>
                                             <div class="items-center">
                                                 <span class="text-xs text-danger">Cancelled Date</span>
-                                                <p class="text-sm mb-0 text-gray-800 dark:text-white">03 Dec
+                                                <p class="text-sm mb-0 text-gray-800 dark:text-gray-900">03 Dec
                                                     2022</p>
                                             </div>
                                         </td>
@@ -978,7 +978,7 @@
                                                 <div class="items-center">
                                                     <span
                                                         class="text-xs text-gray-500 dark:text-gray-500">Name</span>
-                                                    <p class="text-sm mb-0 text-gray-800 dark:text-white">
+                                                    <p class="text-sm mb-0 text-gray-800 dark:text-gray-900">
                                                         Kimura Kai</p>
                                                 </div>
                                             </div>
@@ -988,14 +988,14 @@
                                                 <span
                                                     class="text-xs text-gray-500 dark:text-gray-500">Price</span>
                                                 <p
-                                                    class="text-sm mb-0 font-semibold text-gray-800 dark:text-white">
+                                                    class="text-sm mb-0 font-semibold text-gray-800 dark:text-gray-900">
                                                     $1092.99</p>
                                             </div>
                                         </td>
                                         <td>
                                             <div class="items-center">
                                                 <span class="text-xs text-danger">Cancelled Date</span>
-                                                <p class="text-sm mb-0 text-gray-800 dark:text-white">02 Dec
+                                                <p class="text-sm mb-0 text-gray-800 dark:text-gray-900">02 Dec
                                                     2022</p>
                                             </div>
                                         </td>

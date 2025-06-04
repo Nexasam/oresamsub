@@ -160,10 +160,10 @@
                                 @endif
                                 
                                 @if ( ! isset($site_logo) )
-                                <h1 class="block text-2xl font-bold text-gray-800 dark:text-white">{{ env('APP_NAME') }}</h1>
+                                <h1 class="block text-2xl font-bold text-gray-800 dark:text-gray-900">{{ env('APP_NAME') }}</h1>
                                 <hr>
                                  @endif
-                                <h3 class="block mt-2 text-xl text-gray-800 dark:text-white">Complete Password Reset</h3>
+                                <h3 class="block mt-2 text-xl text-gray-800 dark:text-gray-900">Complete Password Reset</h3>
                                 {{-- <p class="mt-3 text-sm text-gray-600 dark:text-gray-500">
                                     Forgot your password? No problem. Just let us know your email address and we will email you a password reset link that will allow you to choose a new one.
                                 </p> --}}
@@ -191,7 +191,7 @@
                                     <div>
                                         <div class="grid gap-y-4">
                                             <div>
-                                                <label for="email" class="block text-sm mb-2 dark:text-white">Email address</label>
+                                                <label for="email" class="block text-sm mb-2 dark:text-gray-900">Email address</label>
                                                 <div class="relative">
                                                     <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email', $request->email)" required autofocus autocomplete="username" />
                                                     <x-input-error :messages="$errors->get('email')" class="mt-2" />
@@ -199,7 +199,7 @@
                                             </div>
 
                                             <div>
-                                                <label for="password" class="block text-sm mb-2 dark:text-white">Password</label>
+                                                <label for="password" class="block text-sm mb-2 dark:text-gray-900">Password</label>
                                                 <div class="relative">
                                                     <x-text-input id="password" class="block mt-1 w-full" type="password" name="password"  required autocomplete="new-password" />
                                                     <x-input-error :messages="$errors->get('password')" class="mt-2" />
@@ -207,7 +207,7 @@
                                             </div>
 
                                             <div>
-                                                <label for="password_confirmation" class="block text-sm mb-2 dark:text-white">Confirm password</label>
+                                                <label for="password_confirmation" class="block text-sm mb-2 dark:text-gray-900">Confirm password</label>
                                                 <div class="relative">
                                                     <x-text-input id="password_confirmation" class="block mt-1 w-full"
                                                     type="password"
@@ -217,7 +217,7 @@
                                             </div>
 
                                             <div>
-                                                <label for="new_pin" class="block text-sm mb-2 dark:text-white">New PIN</label>
+                                                <label for="new_pin" class="block text-sm mb-2 dark:text-gray-900">New PIN</label>
                                                 <div class="relative">
                                                     <x-text-input id="new_pin" class="block mt-1 w-full"
                                                     type="password"
@@ -227,7 +227,7 @@
                                             </div>
 
                                             <div>
-                                                <label for="new_pin_confirmation" class="block text-sm mb-2 dark:text-white">Confirm New PIN</label>
+                                                <label for="new_pin_confirmation" class="block text-sm mb-2 dark:text-gray-900">Confirm New PIN</label>
                                                 <div class="relative">
                                                     <x-text-input id="new_pin_confirmation" class="block mt-1 w-full"
                                                     type="password"

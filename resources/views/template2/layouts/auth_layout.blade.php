@@ -141,7 +141,7 @@
                 @endif
                 
                     @if ( !isset($site_logo) )
-                        <h1 class="block text-2xl font-bold text-gray-800 dark:text-white">{{ env('APP_NAME') }}</h1>
+                        <h1 class="block text-2xl font-bold text-gray-800 dark:text-gray-900">{{ env('APP_NAME') }}</h1>
                         <hr>
                     @else
                         {{-- <img src="{{asset(env('APP_ASSETS_BASE_URL').'template2/images/logonew.png') }}" alt="datahub" class="w-44 mx-auto"> --}}

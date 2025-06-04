@@ -8,7 +8,7 @@
              <!-- Page Header -->
         <div class="block justify-between page-header md:flex">
             <div>
-                <h3 class="text-gray-700 hover:text-gray-900 dark:text-white dark:hover:text-white text-2xl font-medium"> Transaction details with ID:  <strong>{{ 'transaction details' }}</strong></h3>
+                <h3 class="text-gray-700 hover:text-gray-900 dark:text-gray-900 dark:hover:text-white text-2xl font-medium"> Transaction details with ID:  <strong>{{ 'transaction details' }}</strong></h3>
             </div>
             <ol class="flex items-center whitespace-nowrap min-w-0">
                 <li class="text-sm">
@@ -170,7 +170,7 @@
                             {{-- <div class="space-y-2">
                                 <label class="ti-form-label mb-0">Gender</label>
                                 <ul class="flex flex-col sm:flex-row">
-                                    <li class="ti-list-group gap-x-2.5 bg-white border text-gray-800 sm:-ms-px sm:mt-0 sm:first:rounded-se-none  sm:first:rounded-es-sm sm:last:rounded-es-none  sm:last:rounded-se-sm dark:bg-bgdark dark:border-white/10 dark:text-white">
+                                    <li class="ti-list-group gap-x-2.5 bg-white border text-gray-800 sm:-ms-px sm:mt-0 sm:first:rounded-se-none  sm:first:rounded-es-sm sm:last:rounded-es-none  sm:last:rounded-se-sm dark:bg-bgdark dark:border-white/10 dark:text-gray-900">
                                       <div class="relative flex items-start w-full">
                                         <div class="flex items-center h-5">
                                           <input id="hs-horizontal-list-group-item-radio-1" name="hs-horizontal-list-group-item-radio" type="radio" class="ti-form-radio" checked>
@@ -181,7 +181,7 @@
                                       </div>
                                     </li>
 
-                                    <li class="ti-list-group gap-x-2.5 bg-white border text-gray-800 sm:-ms-px sm:mt-0 sm:first:rounded-se-none  sm:first:rounded-es-sm sm:last:rounded-es-none  sm:last:rounded-se-sm dark:bg-bgdark dark:border-white/10 dark:text-white">
+                                    <li class="ti-list-group gap-x-2.5 bg-white border text-gray-800 sm:-ms-px sm:mt-0 sm:first:rounded-se-none  sm:first:rounded-es-sm sm:last:rounded-es-none  sm:last:rounded-se-sm dark:bg-bgdark dark:border-white/10 dark:text-gray-900">
                                       <div class="relative flex items-start w-full">
                                         <div class="flex items-center h-5">
                                           <input id="hs-horizontal-list-group-item-radio-2" name="hs-horizontal-list-group-item-radio" type="radio" class="ti-form-radio">
@@ -192,7 +192,7 @@
                                       </div>
                                     </li>
 
-                                    <li class="ti-list-group gap-x-2.5 bg-white border text-gray-800 sm:-ms-px sm:mt-0 sm:first:rounded-se-none  sm:first:rounded-es-sm sm:last:rounded-es-none  sm:last:rounded-se-sm dark:bg-bgdark dark:border-white/10 dark:text-white">
+                                    <li class="ti-list-group gap-x-2.5 bg-white border text-gray-800 sm:-ms-px sm:mt-0 sm:first:rounded-se-none  sm:first:rounded-es-sm sm:last:rounded-es-none  sm:last:rounded-se-sm dark:bg-bgdark dark:border-white/10 dark:text-gray-900">
                                       <div class="relative flex items-start w-full">
                                         <div class="flex items-center h-5">
                                           <input id="hs-horizontal-list-group-item-radio-3" name="hs-horizontal-list-group-item-radio" type="radio" class="ti-form-radio">
@@ -332,7 +332,7 @@
                               </div>
                               <div class="box-body">
                                   <ul class="flex flex-col">
-                                      <li class="ti-list-group bg-white text-gray-800 dark:bg-bgdark dark:border-white/10 dark:text-white">
+                                      <li class="ti-list-group bg-white text-gray-800 dark:bg-bgdark dark:border-white/10 dark:text-gray-900">
                                         <div class="sm:flex w-full space-y-2">
                                           <div class="flex space-x-3 rtl:space-x-reverse">
                                             <div class="avatar rounded-sm avatar-sm bg-gray-100 dark:bg-bodybg p-2.5">
@@ -349,7 +349,7 @@
                                           </div>
                                         </div>
                                       </li>
-                                      <li class="ti-list-group bg-white text-gray-800 dark:bg-bgdark dark:border-white/10 dark:text-white">
+                                      <li class="ti-list-group bg-white text-gray-800 dark:bg-bgdark dark:border-white/10 dark:text-gray-900">
                                         <div class="sm:flex w-full space-y-2">
                                           <div class="flex space-x-3 rtl:space-x-reverse">
                                             <div class="avatar rounded-sm avatar-sm bg-gray-100 dark:bg-bodybg p-2.5">
@@ -366,7 +366,7 @@
                                           </div>
                                         </div>
                                       </li>
-                                      <li class="ti-list-group bg-white text-gray-800 dark:bg-bgdark dark:border-white/10 dark:text-white">
+                                      <li class="ti-list-group bg-white text-gray-800 dark:bg-bgdark dark:border-white/10 dark:text-gray-900">
                                         <div class="sm:flex w-full space-y-2">
                                           <div class="flex space-x-3 rtl:space-x-reverse">
                                             <div class="avatar rounded-sm avatar-sm bg-gray-100 dark:bg-bodybg p-2.5">
@@ -383,7 +383,7 @@
                                           </div>
                                         </div>
                                       </li>
-                                      <li class="ti-list-group bg-white text-gray-800 dark:bg-bgdark dark:border-white/10 dark:text-white">
+                                      <li class="ti-list-group bg-white text-gray-800 dark:bg-bgdark dark:border-white/10 dark:text-gray-900">
                                         <div class="sm:flex w-full space-y-2">
                                           <div class="flex space-x-3 rtl:space-x-reverse">
                                             <div class="avatar rounded-sm avatar-sm bg-gray-100 dark:bg-bodybg p-2.5">
