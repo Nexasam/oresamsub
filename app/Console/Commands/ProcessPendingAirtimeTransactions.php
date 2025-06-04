@@ -125,7 +125,39 @@ class ProcessPendingAirtimeTransactions extends Command
                             $dataa['validatephonenetwork'] = 0;
                             $dataa['amount'] = $amount;
                             $buy_airtime = AutomationLogic::initiateAirtimePurchase($dataa);
-                            // logger('AIRTIME SERVICE: '.json_encode($buy_airtime));
+
+                            if($buy_airtime['status'] == 1){
+                                  //update to sucesss
+                                  Transaction::where('id',$pending_transaction->id)->update([
+                                    'status' => 1,
+                                    'user_screen_message' => $buy_airtime['user_message'],
+                                    'admin_screen_message' => $buy_airtime['admin_message'],
+                                ]);
+                                logger('AIRTIME SUCCESS '.json_encode($buy_airtime));
+                            }else{
+                                //failed, so refund
+
+                                $user_message = $buy_airtime['user_message'];
+                                $admin_message = $buy_airtime['admin_message'];
+                                $new_amount = $user_balance + $discounted_amount;
+                                
+                                //transaction failed... return the users amount
+                                User::where('id',$user_id)->update([
+                                    'main_wallet' => $new_amount
+                                ]);
+
+                                //update to refunded here for now
+                                Transaction::where('id',$pending_transaction->id)->update([
+                                    'status' => -1,
+                                    'user_screen_message' => $user_message,
+                                    'admin_screen_message' => $admin_message,
+                                    'balance_after' => $balance_before,
+
+                                ]);
+                                logger('Airtime Transaction FAILED & REVERSED for txn: '. $pending_transaction->id);
+
+                            }
+                            
                         }
                     }
 
