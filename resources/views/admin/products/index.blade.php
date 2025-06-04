@@ -11,7 +11,7 @@
             </div>
             <ol class="flex items-center whitespace-nowrap min-w-0">
               
-                <li class="text-sm text-gray-500 hover:text-primary dark:text-white/70 " aria-current="page">
+                <li class="text-sm text-gray-500 hover:text-primary dark:text-gray-500 " aria-current="page">
                     Products
                 </li>
             </ol> --}}
@@ -32,10 +32,10 @@
 
                 <div class="box-body">
                   <nav class="flex space-x-2" aria-label="Tabs" role="tablist">
-                    {{-- <button type="button" class="hs-tab-active:bg-primary hs-tab-active:text-white py-3 px-4 inline-flex items-center gap-2 bg-transparent text-sm font-medium text-center text-gray-500 rounded-sm hover:text-primary  dark:text-white/70 dark:hover:text-white active" id="pills-with-brand-color-item-2" data-hs-tab="#pills-with-brand-color-2" aria-controls="pills-with-brand-color-2">
+                    {{-- <button type="button" class="hs-tab-active:bg-primary hs-tab-active:text-white py-3 px-4 inline-flex items-center gap-2 bg-transparent text-sm font-medium text-center text-gray-500 rounded-sm hover:text-primary  dark:text-gray-500 dark:hover:text-white active" id="pills-with-brand-color-item-2" data-hs-tab="#pills-with-brand-color-2" aria-controls="pills-with-brand-color-2">
                       Create Product
                     </button> --}}
-                    {{-- <button type="button" class="hs-tab-active:bg-primary hs-tab-active:text-white py-3 px-4 inline-flex items-center gap-2 bg-transparent text-sm font-medium text-center text-gray-500 rounded-sm hover:text-primary  dark:text-white/70 dark:hover:text-white " id="pills-with-brand-color-item-1" data-hs-tab="#pills-with-brand-color-1" aria-controls="pills-with-brand-color-1">
+                    {{-- <button type="button" class="hs-tab-active:bg-primary hs-tab-active:text-white py-3 px-4 inline-flex items-center gap-2 bg-transparent text-sm font-medium text-center text-gray-500 rounded-sm hover:text-primary  dark:text-gray-500 dark:hover:text-white " id="pills-with-brand-color-item-1" data-hs-tab="#pills-with-brand-color-1" aria-controls="pills-with-brand-color-1">
                       Products
                     </button> --}}
                   
@@ -263,7 +263,7 @@
                                                                     class="ti-form-radio" checked>
                                                             </div>
                                                             <label for="hs-horizontal-list-group-item-radio-1"
-                                                                class="ms-3 block w-full text-sm text-gray-600 dark:text-white/70">
+                                                                class="ms-3 block w-full text-sm text-gray-600 dark:text-gray-500">
                                                                 YES
                                                             </label>
                                                         </div>
@@ -278,7 +278,7 @@
                                                                     class="ti-form-radio">
                                                             </div>
                                                             <label for="hs-horizontal-list-group-item-radio-2"
-                                                                class="ms-3 block w-full text-sm text-gray-600 dark:text-white/70">
+                                                                class="ms-3 block w-full text-sm text-gray-600 dark:text-gray-500">
                                                                 NO
                                                             </label>
                                                         </div>
@@ -308,7 +308,7 @@
                       </div>  
                     </div>
                     <div id="pills-with-brand-color-3" class="hidden" role="tabpanel" aria-labelledby="pills-with-brand-color-item-3">
-                      <p class="text-gray-500 dark:text-white/70 p-5 border rounded-sm dark:border-white/10 border-gray-200">
+                      <p class="text-gray-500 dark:text-gray-500 p-5 border rounded-sm dark:border-white/10 border-gray-200">
                         Unbelievable healthy snack success stories. 12 facts about safe food handling tips that will impress your friends. Restaurant weeks by the numbers. Will mexican food ever rule the world? The 10 best thai restaurant youtube videos. How restaurant weeks can make you sick. The complete beginner's guide to cooking healthy food. Unbelievable food stamp success stories. How whole foods markets are making the world a better place. 16 things that won't happen in dish reviews.
                       </p>
                     </div>

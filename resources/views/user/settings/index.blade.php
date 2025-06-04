@@ -11,7 +11,7 @@
             </div>  
             <ol class="flex items-center whitespace-nowrap min-w-0">
               
-                <li class="text-sm text-gray-500 hover:text-primary dark:text-white/70 " aria-current="page">
+                <li class="text-sm text-gray-500 hover:text-primary dark:text-gray-500 " aria-current="page">
                     Home
                 </li> 
             </ol> --}}
@@ -54,18 +54,18 @@
 
                 <div class="box-body">
                   <nav class="flex space-x-2" aria-label="Tabs" role="tablist">
-                    {{-- <button type="button" class="hs-tab-active:bg-primary hs-tab-active:text-white py-3 px-4 inline-flex items-center gap-2 bg-transparent text-sm font-medium text-center text-gray-500 rounded-sm hover:text-primary  dark:text-white/70 dark:hover:text-white active" id="pills-with-brand-color-item-1" data-hs-tab="#pills-with-brand-color-1" aria-controls="pills-with-brand-color-1">
+                    {{-- <button type="button" class="hs-tab-active:bg-primary hs-tab-active:text-white py-3 px-4 inline-flex items-center gap-2 bg-transparent text-sm font-medium text-center text-gray-500 rounded-sm hover:text-primary  dark:text-gray-500 dark:hover:text-white active" id="pills-with-brand-color-item-1" data-hs-tab="#pills-with-brand-color-1" aria-controls="pills-with-brand-color-1">
                       Wallet Setting
                     </button> --}}
-                    {{-- <button type="button" class="hs-tab-active:bg-primary hs-tab-active:text-white py-3 px-4 inline-flex items-center gap-2 bg-transparent text-sm font-medium text-center text-gray-500 rounded-sm hover:text-primary  dark:text-white/70 dark:hover:text-white" id="pills-with-brand-color-item-2" data-hs-tab="#pills-with-brand-color-2" aria-controls="pills-with-brand-color-2">
+                    {{-- <button type="button" class="hs-tab-active:bg-primary hs-tab-active:text-white py-3 px-4 inline-flex items-center gap-2 bg-transparent text-sm font-medium text-center text-gray-500 rounded-sm hover:text-primary  dark:text-gray-500 dark:hover:text-white" id="pills-with-brand-color-item-2" data-hs-tab="#pills-with-brand-color-2" aria-controls="pills-with-brand-color-2">
                       Profile
                     </button> --}}
                     
-                    {{-- <button type="button" class="hs-tab-active:bg-primary hs-tab-active:text-white py-3 px-4 inline-flex items-center gap-2 bg-transparent text-sm font-medium text-center text-gray-500 rounded-sm hover:text-primary  dark:text-white/70 dark:hover:text-white active" id="pills-with-brand-color-item-3" data-hs-tab="#pills-with-brand-color-3" aria-controls="pills-with-brand-color-3">
+                    {{-- <button type="button" class="hs-tab-active:bg-primary hs-tab-active:text-white py-3 px-4 inline-flex items-center gap-2 bg-transparent text-sm font-medium text-center text-gray-500 rounded-sm hover:text-primary  dark:text-gray-500 dark:hover:text-white active" id="pills-with-brand-color-item-3" data-hs-tab="#pills-with-brand-color-3" aria-controls="pills-with-brand-color-3">
                       Security/2fa Authentication
                     </button> --}}
 
-                    {{-- <button type="button" class="hs-tab-active:bg-primary hs-tab-active:text-white py-3 px-4 inline-flex items-center gap-2 bg-transparent text-sm font-medium text-center text-gray-500 rounded-sm hover:text-primary  dark:text-white/70 dark:hover:text-white" id="pills-with-brand-color-item-4" data-hs-tab="#pills-with-brand-color-4" aria-controls="pills-with-brand-color-4">
+                    {{-- <button type="button" class="hs-tab-active:bg-primary hs-tab-active:text-white py-3 px-4 inline-flex items-center gap-2 bg-transparent text-sm font-medium text-center text-gray-500 rounded-sm hover:text-primary  dark:text-gray-500 dark:hover:text-white" id="pills-with-brand-color-item-4" data-hs-tab="#pills-with-brand-color-4" aria-controls="pills-with-brand-color-4">
                       2FA Authentication
                     </button> --}}
                   </nav>
@@ -131,7 +131,7 @@
                                     placeholder="Enter pin to confirm update">
                                 <div class="flex items-center">
                                   <input type="checkbox" id="hs-basic-with-description-unchecked" class="ti-switch show_pin1">
-                                  <label for="hs-basic-with-description-unchecked" class="text-sm text-gray-500 ms-3 dark:text-white/70 ">Show PIN</label>
+                                  <label for="hs-basic-with-description-unchecked" class="text-sm text-gray-500 ms-3 dark:text-gray-500 ">Show PIN</label>
                                 </div> 
                             </div>
                             {{-- <div class="space-y-2">
@@ -155,7 +155,7 @@
                                                     @endif>
                                             </div>
                                             <label for="hs-horizontal-list-group-item-radio-1"
-                                                class="ms-3 block w-full text-sm text-gray-600 dark:text-white/70">
+                                                class="ms-3 block w-full text-sm text-gray-600 dark:text-gray-500">
                                                 Female
                                             </label>
                                         </div>
@@ -172,7 +172,7 @@
                                                 @endif>
                                             </div>
                                             <label for="hs-horizontal-list-group-item-radio-2"
-                                                class="ms-3 block w-full text-sm text-gray-600 dark:text-white/70">
+                                                class="ms-3 block w-full text-sm text-gray-600 dark:text-gray-500">
                                                 Male
                                             </label>
                                         </div>
@@ -209,7 +209,7 @@
                                 <input type="password" id="current_password" name="current_password" class="my-auto ti-form-input" placeholder="enter current password">    
                                 <div class="flex items-center">
                                   <input type="checkbox" id="hs-basic-with-description-unchecked" class="ti-switch show_password_current">
-                                  <label for="hs-basic-with-description-unchecked" class="text-sm text-gray-500 ms-3 dark:text-white/70 ">Show password</label>
+                                  <label for="hs-basic-with-description-unchecked" class="text-sm text-gray-500 ms-3 dark:text-gray-500 ">Show password</label>
                                 </div>                        
                               </div>
 
@@ -218,7 +218,7 @@
                                 <input type="password" id="new_password" name="new_password" class="my-auto ti-form-input" placeholder="enter new password">                            
                                 <div class="flex items-center">
                                   <input type="checkbox" id="hs-basic-with-description-unchecked" class="ti-switch show_password">
-                                  <label for="hs-basic-with-description-unchecked" class="text-sm text-gray-500 ms-3 dark:text-white/70 ">Show password</label>
+                                  <label for="hs-basic-with-description-unchecked" class="text-sm text-gray-500 ms-3 dark:text-gray-500 ">Show password</label>
                                 </div>
                               </div>
 
@@ -228,7 +228,7 @@
                                 <input type="password" id="confirm_new_password" name="confirm_new_password" class="my-auto ti-form-input" placeholder="confirm new password"> 
                                 <div class="flex items-center">
                                   <input type="checkbox" id="hs-basic-with-description-unchecked" class="ti-switch show_password2">
-                                  <label for="hs-basic-with-description-unchecked" class="text-sm text-gray-500 ms-3 dark:text-white/70 ">Show confirm password</label>
+                                  <label for="hs-basic-with-description-unchecked" class="text-sm text-gray-500 ms-3 dark:text-gray-500 ">Show confirm password</label>
                                 </div>                           
                               </div>
                              
@@ -238,7 +238,7 @@
                                 <input type="password" id="pin5" name="pin5" class="my-auto ti-form-input" placeholder="confirm action with your PIN"> 
                                 <div class="flex items-center">
                                   <input type="checkbox" id="hs-basic-with-description-unchecked" class="ti-switch show_pin5">
-                                  <label for="hs-basic-with-description-unchecked" class="text-sm text-gray-500 ms-3 dark:text-white/70 ">Show PIN</label>
+                                  <label for="hs-basic-with-description-unchecked" class="text-sm text-gray-500 ms-3 dark:text-gray-500 ">Show PIN</label>
                                 </div>                                
                               </div>
 
@@ -264,7 +264,7 @@
                                 <input type="password" id="current_pin" name="current_pin" class="my-auto ti-form-input" placeholder="enter current pin">   
                                 <div class="flex items-center">
                                   <input type="checkbox" id="hs-basic-with-description-unchecked" class="ti-switch show_pin2">
-                                  <label for="hs-basic-with-description-unchecked" class="text-sm text-gray-500 ms-3 dark:text-white/70 ">Show PIN</label>
+                                  <label for="hs-basic-with-description-unchecked" class="text-sm text-gray-500 ms-3 dark:text-gray-500 ">Show PIN</label>
                                 </div>                          
                               </div>
 
@@ -273,7 +273,7 @@
                                 <input type="password" id="new_pin" name="new_pin" class="my-auto ti-form-input" placeholder="confirm new pin"> 
                                 <div class="flex items-center">
                                   <input type="checkbox" id="hs-basic-with-description-unchecked" class="ti-switch show_pin3">
-                                  <label for="hs-basic-with-description-unchecked" class="text-sm text-gray-500 ms-3 dark:text-white/70 ">Show PIN</label>
+                                  <label for="hs-basic-with-description-unchecked" class="text-sm text-gray-500 ms-3 dark:text-gray-500 ">Show PIN</label>
                                 </div>                            
                               </div>
 
@@ -282,7 +282,7 @@
                                 <input type="password" id="confirm_new_pin" name="confirm_new_pin" class="my-auto ti-form-input" placeholder="confirm new pin"> 
                                 <div class="flex items-center">
                                   <input type="checkbox" id="hs-basic-with-description-unchecked" class="ti-switch show_pin4">
-                                  <label for="hs-basic-with-description-unchecked" class="text-sm text-gray-500 ms-3 dark:text-white/70 ">Show PIN</label>
+                                  <label for="hs-basic-with-description-unchecked" class="text-sm text-gray-500 ms-3 dark:text-gray-500 ">Show PIN</label>
                                 </div>                            
                               </div>
 

@@ -366,7 +366,7 @@
                         </div>
                         <div class="">
                             <div class="mb-2">Total Bulk Wallets ({{ number_format($bulk_data_wallet_count)  }})</div>
-                            <div class="text-gray-500 dark:text-white/70 mb-1 text-xs">
+                            <div class="text-gray-500 dark:text-gray-500 mb-1 text-xs">
                                 <span
                                     class="text-gray-800 font-semibold text-xl leading-none align-bottom dark:text-white">
                                     {{ number_format($bulk_data_wallet_sum)  }} MB
@@ -412,11 +412,11 @@
                                             </button>
                                           </div>
                                           <div class="ti-modal-body">
-                                            <p class="mt-1 text-gray-800 dark:text-white/70">Phone recharged:</p>
+                                            <p class="mt-1 text-gray-800 dark:text-gray-500">Phone recharged:</p>
                                             <input type="text" value="" id="phone_recharged" name="phone_recharged"> <br>
                                             <hr>
                                             <br>
-                                            <p class="mt-1 text-gray-800 dark:text-white/70">Filter by Plan Category:</p>
+                                            <p class="mt-1 text-gray-800 dark:text-gray-500">Filter by Plan Category:</p>
                                             <select name="product_plan_category_filter" id="product_plan_category_filter">
                                                 <option value="">Select</option>
                                                 @foreach ($product_plan_categories as $plan_category)
@@ -426,7 +426,7 @@
                                             <br>
                                             <hr>
                                             <br>
-                                            <p class="mt-1 text-gray-800 dark:text-white/70">Date range:</p><br>
+                                            <p class="mt-1 text-gray-800 dark:text-gray-500">Date range:</p><br>
                                             <div class="flex items-center justify-between">
                                               <div class="flex items-center justify-start space-x-5">
                                                   <div>
@@ -522,7 +522,7 @@
                                                 </div>
                                                 <div class="items-center">
                                                     <span
-                                                        class="text-xs text-gray-500 dark:text-white/70">Name</span>
+                                                        class="text-xs text-gray-500 dark:text-gray-500">Name</span>
                                                     <p class="text-sm mb-0 text-gray-800 dark:text-white">
                                                         Lisa Rebecca</p>
                                                 </div>
@@ -531,7 +531,7 @@
                                         <td>
                                             <div class="items-center">
                                                 <span
-                                                    class="text-xs text-gray-500 dark:text-white/70">Price</span>
+                                                    class="text-xs text-gray-500 dark:text-gray-500">Price</span>
                                                 <p
                                                     class="text-sm mb-0 font-semibold text-gray-800 dark:text-white">
                                                     $1,199.99</p>
@@ -570,7 +570,7 @@
                                                 </div>
                                                 <div class="items-center">
                                                     <span
-                                                        class="text-xs text-gray-500 dark:text-white/70">Name</span>
+                                                        class="text-xs text-gray-500 dark:text-gray-500">Name</span>
                                                     <p class="text-sm mb-0 text-gray-800 dark:text-white">
                                                         Matt Martin</p>
                                                 </div>
@@ -579,7 +579,7 @@
                                         <td>
                                             <div class="items-center">
                                                 <span
-                                                    class="text-xs text-gray-500 dark:text-white/70">Price</span>
+                                                    class="text-xs text-gray-500 dark:text-gray-500">Price</span>
                                                 <p
                                                     class="text-sm mb-0 font-semibold text-gray-800 dark:text-white">
                                                     $799.99</p>
@@ -618,7 +618,7 @@
                                                 </div>
                                                 <div class="items-center">
                                                     <span
-                                                        class="text-xs text-gray-500 dark:text-white/70">Name</span>
+                                                        class="text-xs text-gray-500 dark:text-gray-500">Name</span>
                                                     <p class="text-sm mb-0 text-gray-800 dark:text-white">
                                                         Mitchell Osama</p>
                                                 </div>
@@ -627,7 +627,7 @@
                                         <td>
                                             <div class="items-center">
                                                 <span
-                                                    class="text-xs text-gray-500 dark:text-white/70">Price</span>
+                                                    class="text-xs text-gray-500 dark:text-gray-500">Price</span>
                                                 <p
                                                     class="text-sm mb-0 font-semibold text-gray-800 dark:text-white">
                                                     $279.00</p>
@@ -666,7 +666,7 @@
                                                 </div>
                                                 <div class="items-center">
                                                     <span
-                                                        class="text-xs text-gray-500 dark:text-white/70">Name</span>
+                                                        class="text-xs text-gray-500 dark:text-gray-500">Name</span>
                                                     <p class="text-sm mb-0 text-gray-800 dark:text-white">
                                                         Cornor Mcgood</p>
                                                 </div>
@@ -675,7 +675,7 @@
                                         <td>
                                             <div class="items-center">
                                                 <span
-                                                    class="text-xs text-gray-500 dark:text-white/70">Price</span>
+                                                    class="text-xs text-gray-500 dark:text-gray-500">Price</span>
                                                 <p
                                                     class="text-sm mb-0 font-semibold text-gray-800 dark:text-white">
                                                     $79.99</p>
@@ -714,7 +714,7 @@
                                                 </div>
                                                 <div class="items-center">
                                                     <span
-                                                        class="text-xs text-gray-500 dark:text-white/70">Name</span>
+                                                        class="text-xs text-gray-500 dark:text-gray-500">Name</span>
                                                     <p class="text-sm mb-0 text-gray-800 dark:text-white">
                                                         Kishan Patel</p>
                                                 </div>
@@ -723,7 +723,7 @@
                                         <td>
                                             <div class="items-center">
                                                 <span
-                                                    class="text-xs text-gray-500 dark:text-white/70">Price</span>
+                                                    class="text-xs text-gray-500 dark:text-gray-500">Price</span>
                                                 <p
                                                     class="text-sm mb-0 font-semibold text-gray-800 dark:text-white">
                                                     $1449.29</p>
@@ -770,7 +770,7 @@
                                                 </div>
                                                 <div class="items-center">
                                                     <span
-                                                        class="text-xs text-gray-500 dark:text-white/70">Name</span>
+                                                        class="text-xs text-gray-500 dark:text-gray-500">Name</span>
                                                     <p class="text-sm mb-0 text-gray-800 dark:text-white">
                                                         Hailey Bobber</p>
                                                 </div>
@@ -779,7 +779,7 @@
                                         <td>
                                             <div class="items-center">
                                                 <span
-                                                    class="text-xs text-gray-500 dark:text-white/70">Price</span>
+                                                    class="text-xs text-gray-500 dark:text-gray-500">Price</span>
                                                 <p
                                                     class="text-sm mb-0 font-semibold text-gray-800 dark:text-white">
                                                     $199.99</p>
@@ -818,7 +818,7 @@
                                                 </div>
                                                 <div class="items-center">
                                                     <span
-                                                        class="text-xs text-gray-500 dark:text-white/70">Name</span>
+                                                        class="text-xs text-gray-500 dark:text-gray-500">Name</span>
                                                     <p class="text-sm mb-0 text-gray-800 dark:text-white">
                                                         Anthony Mansion</p>
                                                 </div>
@@ -827,7 +827,7 @@
                                         <td>
                                             <div class="items-center">
                                                 <span
-                                                    class="text-xs text-gray-500 dark:text-white/70">Price</span>
+                                                    class="text-xs text-gray-500 dark:text-gray-500">Price</span>
                                                 <p
                                                     class="text-sm mb-0 font-semibold text-gray-800 dark:text-white">
                                                     $179.99</p>
@@ -866,7 +866,7 @@
                                                 </div>
                                                 <div class="items-center">
                                                     <span
-                                                        class="text-xs text-gray-500 dark:text-white/70">Name</span>
+                                                        class="text-xs text-gray-500 dark:text-gray-500">Name</span>
                                                     <p class="text-sm mb-0 text-gray-800 dark:text-white">
                                                         Simon Carter</p>
                                                 </div>
@@ -875,7 +875,7 @@
                                         <td>
                                             <div class="items-center">
                                                 <span
-                                                    class="text-xs text-gray-500 dark:text-white/70">Price</span>
+                                                    class="text-xs text-gray-500 dark:text-gray-500">Price</span>
                                                 <p
                                                     class="text-sm mb-0 font-semibold text-gray-800 dark:text-white">
                                                     $149.99</p>
@@ -914,7 +914,7 @@
                                                 </div>
                                                 <div class="items-center">
                                                     <span
-                                                        class="text-xs text-gray-500 dark:text-white/70">Name</span>
+                                                        class="text-xs text-gray-500 dark:text-gray-500">Name</span>
                                                     <p class="text-sm mb-0 text-gray-800 dark:text-white">
                                                         Sofia Sekh</p>
                                                 </div>
@@ -923,7 +923,7 @@
                                         <td>
                                             <div class="items-center">
                                                 <span
-                                                    class="text-xs text-gray-500 dark:text-white/70">Price</span>
+                                                    class="text-xs text-gray-500 dark:text-gray-500">Price</span>
                                                 <p
                                                     class="text-sm mb-0 font-semibold text-gray-800 dark:text-white">
                                                     $1439.99</p>
@@ -962,7 +962,7 @@
                                                 </div>
                                                 <div class="items-center">
                                                     <span
-                                                        class="text-xs text-gray-500 dark:text-white/70">Name</span>
+                                                        class="text-xs text-gray-500 dark:text-gray-500">Name</span>
                                                     <p class="text-sm mb-0 text-gray-800 dark:text-white">
                                                         Kimura Kai</p>
                                                 </div>
@@ -971,7 +971,7 @@
                                         <td>
                                             <div class="items-center">
                                                 <span
-                                                    class="text-xs text-gray-500 dark:text-white/70">Price</span>
+                                                    class="text-xs text-gray-500 dark:text-gray-500">Price</span>
                                                 <p
                                                     class="text-sm mb-0 font-semibold text-gray-800 dark:text-white">
                                                     $1092.99</p>
@@ -1006,7 +1006,7 @@
         <div class="col-span-12 xxl:col-span-8">
             <div class="box">
                 <div class="box-header flex">
-                    <h5 class="box-title my-auto">Available Bulk Data Plans &nbsp;&nbsp;  <small> <a class="hs-tab-active:bg-primary hs-tab-active:text-white py-1 px-2 inline-flex items-center gap-1 bg-transparent text-sm font-medium text-center text-gray-500 rounded-sm hover:text-primary  dark:text-white/70 dark:hover:text-white active" id="pills-with-brand-color-item-2" data-hs-tab="#pills-with-brand-color-2" aria-controls="pills-with-brand-color-2" href="{{ route('user.data.buy_bulk_data') }}">Buy bulk plans</a> </small> </h5>
+                    <h5 class="box-title my-auto">Available Bulk Data Plans &nbsp;&nbsp;  <small> <a class="hs-tab-active:bg-primary hs-tab-active:text-white py-1 px-2 inline-flex items-center gap-1 bg-transparent text-sm font-medium text-center text-gray-500 rounded-sm hover:text-primary  dark:text-gray-500 dark:hover:text-white active" id="pills-with-brand-color-item-2" data-hs-tab="#pills-with-brand-color-2" aria-controls="pills-with-brand-color-2" href="{{ route('user.data.buy_bulk_data') }}">Buy bulk plans</a> </small> </h5>
                     <div class="hs-dropdown ti-dropdown block ms-auto my-auto">
                         <button aria-label="button" id="hs-dropdown-custom-icon-trigger3" type="button"
                             class="hs-dropdown-toggle ti-dropdown-toggle rounded-sm p-2 bg-white !border border-gray-200 text-gray-500 hover:bg-gray-100  focus:ring-gray-200 dark:bg-bodybg dark:hover:bg-black/30 dark:border-white/10 dark:hover:border-white/20 dark:focus:ring-white/10 dark:focus:ring-offset-white/10">
@@ -1192,7 +1192,7 @@
                     </div>
                     <div class=" block ms-auto my-auto mt-4">
                             <button type="button"
-                                class="ti-btn m-0 rounded-sm p-1 px-3 !border border-gray-200 text-gray-400 hover:text-gray-500 hover:bg-gray-200 hover:border-gray-200 focus:ring-gray-200 dark:text-white/70 dark:hover:text-white dark:hover:bg-bodybg dark:border-white/10 dark:hover:border-white/20 dark:focus:ring-white/10 dark:focus:ring-offset-white/10">
+                                class="ti-btn m-0 rounded-sm p-1 px-3 !border border-gray-200 text-gray-400 hover:text-gray-500 hover:bg-gray-200 hover:border-gray-200 focus:ring-gray-200 dark:text-gray-500 dark:hover:text-white dark:hover:bg-bodybg dark:border-white/10 dark:hover:border-white/20 dark:focus:ring-white/10 dark:focus:ring-offset-white/10">
                                 Buy</button>
                     </div> --}}
                     
@@ -1247,7 +1247,7 @@
                             </table>
                         </div>
                         <a type="button"
-                        class="hs-dropdown-toggle ti-btn ti-border font-medium bg-white px-5 ml-2 text-gray-700 shadow-sm align-middle hover:bg-gray-50 focus:ring-offset-white focus:ring-primary dark:bg-bgdark dark:hover:bg-black/20 dark:border-white/10 dark:text-white/70 dark:hover:text-white dark:focus:ring-offset-white/10"
+                        class="hs-dropdown-toggle ti-btn ti-border font-medium bg-white px-5 ml-2 text-gray-700 shadow-sm align-middle hover:bg-gray-50 focus:ring-offset-white focus:ring-primary dark:bg-bgdark dark:hover:bg-black/20 dark:border-white/10 dark:text-gray-500 dark:hover:text-white dark:focus:ring-offset-white/10"
                         data-hs-overlay="#hs-basic-modal" class="block" data-close>
                         Close
                         </a>
