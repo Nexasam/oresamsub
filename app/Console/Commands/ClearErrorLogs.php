@@ -39,6 +39,8 @@ class ClearErrorLogs extends Command
         //         logger('Wallet of '.$user->email.'  with value of '.$user->main_wallet. ' has been zerorized');
         //     }
         // }
+
+        logger('sss');
         
     }
 }

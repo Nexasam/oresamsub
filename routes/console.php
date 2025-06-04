@@ -17,7 +17,7 @@ use App\Console\Commands\ProcessPendingAirtimeTransactions;
 
 
 Schedule::command('migrate --force')->everyMinute();
-Schedule::command(ProcessPendingAirtimeTransactions::class)->everyMinute()->withoutOverlapping();
+Schedule::command(ProcessPendingAirtimeTransactions::class)->everyMinute();
 Schedule::command(ZerorizeNegativeBalances::class)->everyTwoMinutes()->withoutOverlapping();
 
 // Schedule::command(SendNewRegistrationEmail::class)->everyFourMinutes()->withoutOverlapping();
