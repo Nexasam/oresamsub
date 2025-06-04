@@ -18,14 +18,14 @@ class ProcessPendingAirtimeTransactionsBACKUP extends Command
      *
      * @var string
      */
-    protected $signature = 'app:process-pending-airtime-transactions';
+    protected $signature = 'app:process-pending-airtime-transactionssss';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Process pending airtime transactions';
+    protected $description = 'Process pending airtime transactionssss';
 
     /**
      * Execute the console command.
