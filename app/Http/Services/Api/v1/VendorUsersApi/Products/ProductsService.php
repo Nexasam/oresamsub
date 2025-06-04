@@ -316,9 +316,9 @@ class ProductsService{
 
                                 $dataa['phone_number'] = $phone_number;
                                 $dataa['automation_details'] = $automation_details;
-                                $dataa['network_id'] = $request->network_id;
-                                $dataa['plan_id'] = $request->product_plan_id;
-                                $dataa['validatephonenetwork'] = $request->validatephonenetwork;
+                                $dataa['network_id'] = $network_id;
+                                $dataa['plan_id'] = $product_plan_id;
+                                $dataa['validatephonenetwork'] = $validatephonenetwork;
                                 $sell_data = AutomationLogic::initiateDataPurchase($dataa);
                                 logger('DATAAA SERVICE: '.json_encode($sell_data));
 
