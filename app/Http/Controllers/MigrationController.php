@@ -85,29 +85,29 @@ class MigrationController extends Controller
    
         //SECOND TO MIGRATE REFERR.
         // check if that referby is not null or empty and it has a record
-         $getRowsWithUplines = DB::table('members')->get();
-         if( count($getRowsWithUplines) > 0 ){
-            foreach($getRowsWithUplines as $each_member){
+        //  $getRowsWithUplines = DB::table('members')->get();
+        //  if( count($getRowsWithUplines) > 0 ){
+        //     foreach($getRowsWithUplines as $each_member){
 
-                $referby = $each_member->referby;
-                $email = $each_member->email;
+        //         $referby = $each_member->referby;
+        //         $email = $each_member->email;
 
-                if($referby != '' && $referby != NULL && $referby != 0){
-                    $useruplinecheck = User::where('username',$referby)->first();
-                    if($useruplinecheck){
-                        //update here
-                        $userdownline_to_update = User::where('email',$email)->update([
-                            'upline_id' => $useruplinecheck->id
-                        ]);
-                        echo 'Record:  '.$referby.' ===> '.$email.'<br>';
+        //         if($referby != '' && $referby != NULL && $referby != 0){
+        //             $useruplinecheck = User::where('username',$referby)->first();
+        //             if($useruplinecheck){
+        //                 //update here
+        //                 $userdownline_to_update = User::where('email',$email)->update([
+        //                     'upline_id' => $useruplinecheck->id
+        //                 ]);
+        //                 echo 'Record:  '.$referby.' ===> '.$email.'<br>';
 
-                    }
-                }
+        //             }
+        //         }
                
-            }
-         }else{
-                echo 'No record found';
-         }
+        //     }
+        //  }else{
+        //         echo 'No record found';
+        //  }
 
 
         //THIRD TO MIGRATE REFERR.
