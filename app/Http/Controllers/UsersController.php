@@ -301,7 +301,8 @@ class UsersController extends Controller
           $query->where('phone_number',$phone);
         })
         ->when( !empty($email) , function ($query) use ($email){
-          $query->where('email',$email);
+          $query->where('email',$email)
+                ->orWhere('username',$email);
         })
         ->when( !empty($date_from) && !empty($date_to) , function ($query) use ($date_from,$date_to){
           $query->where('created_at','>=',$date_from)->where('created_at','<=',$date_to);
@@ -420,9 +421,6 @@ class UsersController extends Controller
      */
     public function create()
     {
-
-      
-  
        return view('admin.users.create'); 
     }
 

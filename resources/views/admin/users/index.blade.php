@@ -106,7 +106,7 @@
                                                   <p class="mt-1 text-gray-800 dark:text-white/70">Phone:</p>
                                                   <input type="text" value="" id="phone_filter"> <br><br>
                                                   <hr>
-                                                  <p class="mt-1 text-gray-800 dark:text-white/70">Email:</p>
+                                                  <p class="mt-1 text-gray-800 dark:text-white/70">Email or Username:</p>
                                                   <input type="email" value="" id="email_filter"> <br><br>
                                                   <hr>
                                                   <p class="mt-1 text-gray-800 dark:text-white/70">Date range:</p><br>
