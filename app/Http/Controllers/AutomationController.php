@@ -449,7 +449,7 @@ class AutomationController extends Controller
                     $response_array = json_decode($response,true); 
                     // dd($response_array); 
                     $data['response_array'] = $response_array;
-                    return view('admin.automations.affatech_dashboard')->with($data);   
+                    return view('admin.automations.msorg_dashboard')->with($data);   
             }
             else if($slug == 'dancity'){
 
@@ -479,7 +479,7 @@ class AutomationController extends Controller
                     $response_array = json_decode($response,true); 
                     // dd($response_array); 
                     $data['response_array'] = $response_array;
-                    return view('admin.automations.affatech_dashboard')->with($data);   
+                    return view('admin.automations.msorg_dashboard')->with($data);   
             }
             else if($slug == 'gongozconcept'){
 
