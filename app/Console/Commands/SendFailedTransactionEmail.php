@@ -39,6 +39,7 @@ class SendFailedTransactionEmail extends Command
                 $query->where('status',-1)
                       ->orWhere('status',0);
             })
+            ->where('transaction_category','airtime')
             ->whereDate('created_at','>=',$date_param)
             ->first();
             // logger($transaction);

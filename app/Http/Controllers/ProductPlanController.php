@@ -223,6 +223,7 @@ class ProductPlanController extends Controller
         if($data->product_plan_category->product->slug == 'airtime' || $data->product_plan_category->product->slug == 'utility_bills'){
           return number_format($data->user_level_1_selling_price,2). ' (% Discount)';
         }else{
+          // return number_format($data->user_level_1_selling_price,2);
           return number_format($data->user_level_1_selling_price,2);
 
         }
