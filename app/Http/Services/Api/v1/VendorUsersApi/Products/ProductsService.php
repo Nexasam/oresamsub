@@ -1069,7 +1069,7 @@ class ProductsService{
                                 $data['metre_number'] = $metre_number;
                                 $data['plan_id'] = $electricity_product_plan_id;
                                 $data['total_amount'] = $total_amount;
-                                $data['slots'] = $slots;
+                                $data['slots'] = $no_of_slots;
                                 $data['validation_extra_info'] = $validation_extra_info;
                                 $data['product_plan_category_name'] = $plan_category_details->product_plan_category_name;
                                 $data['phone_number'] = $user_details->phone_number;
