@@ -203,7 +203,7 @@ class MegaSubElectricity{
              //successful transaction
             $message_token =  $response_decode['Detail']['message'] ?? 'nil';
             if($message_token != 'nil'){
-                if (preg_match('/TOKEN:\s+(.*?)\s+UNIT:/', $string, $matches)) {
+                if (preg_match('/TOKEN:\s+(.*?)\s+UNIT:/', $message_token, $matches)) {
                     $token = trim($matches[1]);
                 }else{
                     $token = 'nil';
