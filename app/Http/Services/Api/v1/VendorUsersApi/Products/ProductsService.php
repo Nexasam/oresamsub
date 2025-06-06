@@ -1080,8 +1080,8 @@ class ProductsService{
                                 $data['user_id'] = $user_id;
                                 $buy_electricity_subscription = AutomationLogic::initiateElectricityPurchase($data);
                                 logger('ELECTTT SERVICE: '.json_encode($buy_electricity_subscription));
-                                $extra_info = $buy_electricity_subscription['extra_info'];
-                                $token = $buy_electricity_subscription['token'];
+                                $extra_info = $buy_electricity_subscription['extra_info'] ?? 'nil';
+                                $token = $buy_electricity_subscription['token'] ?? 'nil';
                                
 
                                 if($buy_electricity_subscription['status'] == 1){

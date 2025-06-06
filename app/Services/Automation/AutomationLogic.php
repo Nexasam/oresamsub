@@ -109,6 +109,8 @@ class AutomationLogic{
             $buy_electricity_subscription['status'] = -1;
             $buy_electricity_subscription['user_message'] = 'Electricity subscription failed.';
             $buy_electricity_subscription['admin_message'] = 'Electricity subscription failed.';
+            $buy_electricity_subscription['extra_info'] = 'nil';
+            $buy_electricity_subscription['token'] = 'nil';
         }
         return $buy_electricity_subscription;
     }
