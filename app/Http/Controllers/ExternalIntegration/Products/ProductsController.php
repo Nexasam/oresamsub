@@ -418,8 +418,11 @@ class ProductsController extends Controller
      
         $buy_electricity = (new ProductsService())->buy_electricity_service($data);
 
+        logger('sssss: '.json_encode($buy_electricity));
+
         $status = $buy_electricity['status'];
         $message = $buy_electricity['message'];
+
         $data['data'] = $buy_electricity['data'] ?? [];
         $data['token'] = $buy_electricity['token'] ?? 'nil';
         $data['extra_info'] = $buy_electricity['extra_info'] ?? 'nil';
