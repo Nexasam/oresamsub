@@ -230,6 +230,10 @@ class ProductsService{
     
 
         $plan_details = ProductPlan::where('id',$product_plan_id)->where('visibility',1)->first();
+        if(! $plan_details){
+            //end session and redirect to login
+            return ['status'=>'-1', 'message'=>'Invalid Plan ID' ];
+        }
         $automation_id = $plan_details->automation_id;
         $data_value_mb = $plan_details->data_size_in_mb ?? 0;
 
