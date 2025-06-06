@@ -86,7 +86,7 @@
                 <textarea id="phone_number" name="phone_number" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-[{{$site_primary_color}}] focus:border-[{{$site_primary_color}}] block w-full p-2.5   " placeholder="e.g 08168509044, 09011988807"></textarea>
             </div>
 
-            @if (env('APP_NAME') == 'Megasub'  || env('APP_NAME') == 'EgcData' || env('APP_NAME') == 'OresamSub')
+            @if (env('APP_NAME') == 'Megasub'  || env('APP_NAME') == 'CrystaltechData' || env('APP_NAME') == 'OresamSub')
                 <input type="hidden" value="0" class="w-4 h-4 text-[{{$site_primary_color}}] bg-gray-100 border-gray-300 rounded focus:ring-[{{$site_primary_color}}] "" name="validatephonenetwork" id="validatephonenetwork">            
             @else
                 <div class="mt-2">
