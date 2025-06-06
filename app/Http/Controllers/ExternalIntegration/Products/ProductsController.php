@@ -237,7 +237,7 @@ class ProductsController extends Controller
             return $this->success('Data was successfully processed',data: $data);    
         }
 
-        return $this->error( $message, data: $buy_data['data'], code: 500);   
+        return $this->error( $message, data: $data['data'], code: 500);   
     
     }
 
