@@ -210,7 +210,7 @@ class ApiIntegrationController extends Controller
             
             $request->validate([
                 'user_id' => ['required', 'string', 'exists:users,id'],
-                'phone_number' => ['required', 'string','exists:users,phone_number'], //unique:users,phone_number
+                'phone_number' => ['required', 'string'], //unique:users,phone_number
             ]);
 
             $data['phone_number'] = $request->phone_number;
