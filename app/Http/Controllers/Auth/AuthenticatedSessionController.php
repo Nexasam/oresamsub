@@ -91,6 +91,17 @@ class AuthenticatedSessionController extends Controller
             $djangoHash = $user_check->old_platform_password;
             $new_password_hashed = $user_check->password;
 
+            if(env('APP_NAME') == 'CrystaltechData'){
+                if(Hash::check($request->password,$djangoHash)){
+                    //correct
+                    echo 'correct'; exit;
+    
+                }else{
+                    echo 'wrong'; exit;
+                }
+            }
+            
+
             //we not expecting the customer to have password as password - NAH
             if($djangoHash != NULL && ! Hash::check($request->password,$new_password_hashed)  ){
                 
