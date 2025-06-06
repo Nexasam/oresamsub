@@ -240,13 +240,13 @@ class ProductsService{
         $user_details = User::where('id',$user_id)->first();
         if(! $user_details){
             //end session and redirect to login
-            return ['status'=>'-1', 'message'=>'User record not found' ];
+            return ['status'=>'-1', 'message'=>'User record not found', 'data' => $data ];
         }
 
         $user_plan_id = $user_details->user_plan_id;
         if($user_plan_id == NULL){
             //end session and redirect to login
-            return ['status'=>'-1', 'message'=>'User plan ID is null' ];
+            return ['status'=>'-1', 'message'=>'User plan ID is null', 'data' => $data];
         }
 
         $user_level = UserPlan::select('plan_level')->where('id',$user_plan_id)->first();
