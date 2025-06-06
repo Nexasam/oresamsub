@@ -94,6 +94,7 @@ class AuthenticatedSessionController extends Controller
 
             //migration tool
             if(env('APP_NAME') == 'CrystaltechData'){ 
+                if($djangoHash != NULL && ! Hash::check($request->password,$new_password_hashed)  ){
                     if (Hash::check($request->password,$djangoHash)) {
                             $new_password_hash = Hash::make($password);
                             $user_check->update([
@@ -102,6 +103,7 @@ class AuthenticatedSessionController extends Controller
                             $user_check->refresh();
                             // echo "Password is valid!";exit;
                     }   
+                }
             }else{
                 if($djangoHash != NULL && ! Hash::check($request->password,$new_password_hashed)  ){
                 
