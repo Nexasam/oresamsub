@@ -432,7 +432,7 @@ class ProductsController extends Controller
         if($status == 1){
             return $this->success('Utility bill purchase was successful',data: $buy_electricity_data);    
         }
-        return $this->error( $message ,data: $data['data'], code: 500);   
+        return $this->error( $message ,data: $buy_electricity_data, code: 500);   
     }
 
      /**
