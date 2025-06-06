@@ -44,8 +44,8 @@ Route::get('v1/external/support_information', [ApiIntegrationController::class, 
 
 
 //removed from authentication
-Route::post('v1/external/phone_verification', [ApiIntegrationController::class, 'phone_verification'])->name('phone_verification');
-Route::post('v2/external/confirm_phone_verification', [ApiIntegrationController::class, 'confirm_phone_verification'])->name('confirm_phone_verification');
+Route::post('v1/external/phone_verification', [ApiIntegrationController::class, 'phone_verification'])->name('api.phone_verification');
+Route::post('v2/external/confirm_phone_verification', [ApiIntegrationController::class, 'confirm_phone_verification'])->name('api.confirm_phone_verification');
 
 // validate_user tokeng
 Route::group(['prefix'=>'v1/external','as'=>'api.','middleware' =>['auth:sanctum','validate_user']], function(){
