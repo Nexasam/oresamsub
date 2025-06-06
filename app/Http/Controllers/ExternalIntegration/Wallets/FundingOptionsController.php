@@ -106,10 +106,9 @@ class FundingOptionsController extends Controller
                 $user_details = User::where('id',$request->user_id)->first();
                 $pin = $request->pin;
 
-                if($user_details->pin != $pin){
-                    return $this->error('Incorrect PIN', data: $request->all(), code: 403 );    
-                    
-                }
+                // if($user_details->pin != $pin){
+                //     return $this->error('Incorrect PIN', data: $request->all(), code: 403 );          
+                // }
 
 
                 $first_name = $user_details->first_name;

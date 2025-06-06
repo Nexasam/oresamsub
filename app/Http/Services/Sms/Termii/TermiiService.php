@@ -150,8 +150,6 @@ class TermiiService{
             'data' => $data
         ];
 
-
-
         $post_fields = [
                 "api_key"=>env('TERMII_API_KEY'),
                 "pin_id"=>$pin_id,
