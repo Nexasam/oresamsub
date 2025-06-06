@@ -208,13 +208,18 @@ class ApiIntegrationController extends Controller
 
     public function phone_verification(Request $request){
             
-            $request->validate([
+            $validator = Validator::make($request->all(), [
                 'user_id' => ['required', 'string', 'exists:users,id'],
                 'phone_number' => ['required', 'string', 'unique:users,phone_number'], //unique:users,phone_number
             ]);
 
+            // $request->validate([
+            //     'user_id' => ['required', 'string', 'exists:users,id'],
+            //     'phone_number' => ['required', 'string', 'unique:users,phone_number'], //unique:users,phone_number
+            // ]);
+
             if ($validator->stopOnFirstFailure()->fails()) {
-                return $this->error('Validation failed', data: request()->errors()->first() );    
+                return $this->error('Validation failed', data: $validator->errors()->first() );    
             }
 
             $data['phone_number'] = $request->phone_number;
@@ -264,7 +269,6 @@ class ApiIntegrationController extends Controller
              'device_name' => 'required',
          ]);
   
-         $email = strip_tags($request->email);
          $user = User::where('email', $request->email)->first();
   
          if (! $user || ! Hash::check($request->password, $user->password)) {
