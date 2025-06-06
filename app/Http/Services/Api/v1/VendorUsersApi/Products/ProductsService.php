@@ -1083,7 +1083,6 @@ class ProductsService{
                                 $extra_info = $buy_electricity_subscription['extra_info'] ?? 'nil';
                                 $token = $buy_electricity_subscription['token'] ?? 'nil';
                                
-
                                 if($buy_electricity_subscription['status'] == 1){
                                     $success++;
                                     $status = 1;
@@ -1120,8 +1119,6 @@ class ProductsService{
                                         'status' => $status
                                     );
                                 }
-
-                                
 
                                 $validate_metre_name = (new MegaSubElectricity(metre_number: $metre_number, plan_id: $electricity_product_plan_id, user_id: $user_id))->validateMetreNumber();
                                 $validated_name = $validate_metre_name['name'] ?? '';
@@ -1160,7 +1157,7 @@ class ProductsService{
                                 User::where('id',$user_id)->update([
                                     'main_wallet' => $wallet_after
                                 ]);
-                    
+
                             }
 
                             DB::commit();
@@ -1168,6 +1165,7 @@ class ProductsService{
                             if($failure > 0){
                               return ['status'=>2,'user_message' => $user_message,'admin_message', 'extra_info' => $extra_info, 'token' => $token,'validation_address' => $validated_address,'message'=>" $failure issue(s) found. Check transaction history", 'data' => $display_results  ];   
                             }
+                            
                             return ['status'=>1, 'user_message' => $user_message,'admin_message','extra_info' => $extra_info, 'token' => $token,'validation_address' => $validated_address,'message'=>'Transaction was successfully processed', 'data' => $display_results  ];
                     
                         } else{
