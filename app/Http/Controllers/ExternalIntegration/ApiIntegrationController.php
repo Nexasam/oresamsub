@@ -214,7 +214,7 @@ class ApiIntegrationController extends Controller
             ]);
 
             if ($validator->stopOnFirstFailure()->fails()) {
-                return $this->error('Validation failed', data: $validator->errors()->first() );    
+                return $this->error('Validation failed', data: request()->errors()->first() );    
             }
 
             $data['phone_number'] = $request->phone_number;
