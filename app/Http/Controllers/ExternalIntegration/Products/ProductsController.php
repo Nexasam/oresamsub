@@ -421,8 +421,8 @@ class ProductsController extends Controller
         $status = $buy_electricity['status'];
         $message = $buy_electricity['message'];
         $data['data'] = $buy_electricity['data'] ?? [];
-        $data['token'] = $buy_electricity['token'] ?? [];
-        $data['extra_info'] = $buy_electricity['extra_info'] ?? [];
+        $data['token'] = $buy_electricity['token'] ?? 'nil';
+        $data['extra_info'] = $buy_electricity['extra_info'] ?? 'nil';
         if($status == 1){
             return $this->success('Utility bill purchase was successful',data: $data);    
         }
