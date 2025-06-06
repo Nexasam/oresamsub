@@ -91,21 +91,24 @@ class AuthenticatedSessionController extends Controller
             $djangoHash = $user_check->old_platform_password;
             $new_password_hashed = $user_check->password;
 
-            if(env('APP_NAME') == 'CrystaltechData'){
-                if(Hash::check($request->password,$djangoHash)){
-                    //correct
-                    echo 'correct'; exit;
+
+            //migration tool
+            // if(env('APP_NAME') == 'CrystaltechData'){
+            //     if(Hash::check($request->password,$djangoHash)){
+            //         //correct
+            //         echo 'correct'; exit;
     
-                }else{
-                    echo 'wrong'; exit;
-                }
-            }
+            //     }else{
+            //         echo 'wrong'; exit;
+            //     }
+            // }
             
 
             //we not expecting the customer to have password as password - NAH
             if($djangoHash != NULL && ! Hash::check($request->password,$new_password_hashed)  ){
                 
-                if ($this->verifyDjangoPassword($password, $djangoHash)) {
+                // if ($this->verifyDjangoPassword($password, $djangoHash)) {
+                if (Hash::check($request->password,$djangoHash)) {
                     $new_password_hash = Hash::make($password);
                     $user_check->update([
                         'password' => $new_password_hash
@@ -113,10 +116,8 @@ class AuthenticatedSessionController extends Controller
                     $user_check->refresh();
                     // echo "Password is valid!";exit;
                 } 
+
                 
-                // else {
-                //     echo "Invalid password Please reach out to support to get signed in.";exit;
-                // }
             }
 
             //if old account gets here, then password is updated
