@@ -1163,10 +1163,10 @@ class ProductsService{
                             DB::commit();
                     
                             if($failure > 0){
-                              return ['status'=>2,'user_message' => $user_message,'admin_message', 'extra_info' => $extra_info, 'token' => $token,'validation_address' => $validated_address,'message'=>" $failure issue(s) found. Check transaction history", 'data' => $display_results  ];   
+                              return ['status'=>2,'user_message' => $user_message,'admin_message' => $admin_message, 'extra_info' => $extra_info, 'token' => $token,'validation_address' => $validated_address,'message'=>" $failure issue(s) found. Check transaction history", 'data' => $display_results  ];   
                             }
-                            
-                            return ['status'=>1, 'user_message' => $user_message,'admin_message','extra_info' => $extra_info, 'token' => $token,'validation_address' => $validated_address,'message'=>'Transaction was successfully processed', 'data' => $display_results  ];
+
+                            return ['status'=>1, 'user_message' => $user_message,'admin_message' => $admin_message,'extra_info' => $extra_info, 'token' => $token,'validation_address' => $validated_address,'message'=>'Transaction was successfully processed', 'data' => $display_results  ];
                     
                         } else{
                             return ['status'=>'-1', 'message'=>'Wrong wallet selection', 'data'=>[]];
