@@ -425,7 +425,7 @@ class ProductsController extends Controller
         $buy_electricity_data['token'] = $buy_electricity['token'] ?? 'nil';
         $buy_electricity_data['validation_address'] = $buy_electricity['validation_address'] ?? 'nil';
         $buy_electricity_data['extra_info'] = $buy_electricity['extra_info'] ?? 'nil';
-        $buy_electricity_data['data'] = $buy_electricity['data']['user_message'] ?? [];
+        $buy_electricity_data['data'] = $buy_electricity['data']['message'] ?? [];
 
         // $data['data'] = $buy_electricity['data'] ?? [];
         // $data['token'] = $buy_electricity['token'] ?? 'nil';
