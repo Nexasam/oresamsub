@@ -210,8 +210,12 @@ class ApiIntegrationController extends Controller
             
             $request->validate([
                 'user_id' => ['required', 'string', 'exists:users,id'],
-                'phone_number' => ['required', 'string'], //unique:users,phone_number
+                'phone_number' => ['required', 'string', 'unique:users,phone_number'], //unique:users,phone_number
             ]);
+
+            if ($validator->stopOnFirstFailure()->fails()) {
+                return $this->error('Validation failed', data: $validator->errors()->first() );    
+            }
 
             $data['phone_number'] = $request->phone_number;
             $data['user_id'] = $request->user_id;
