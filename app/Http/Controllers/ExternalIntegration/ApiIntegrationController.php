@@ -264,6 +264,7 @@ class ApiIntegrationController extends Controller
              'device_name' => 'required',
          ]);
   
+         $email = strip_tags($request->email);
          $user = User::where('email', $request->email)->first();
   
          if (! $user || ! Hash::check($request->password, $user->password)) {

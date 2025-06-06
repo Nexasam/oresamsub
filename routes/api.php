@@ -41,6 +41,12 @@ Route::get('v1/external/support_information', [ApiIntegrationController::class, 
 // Route::post('v1/external/auth_check', [ApiIntegrationController::class, 'auth_check'])->name('mobile_auth_check');
 
 
+
+
+//removed from authentication
+Route::post('/phone_verification', [ApiIntegrationController::class, 'phone_verification'])->name('phone_verification');
+Route::post('/confirm_phone_verification', [ApiIntegrationController::class, 'confirm_phone_verification'])->name('confirm_phone_verification');
+
 // validate_user tokeng
 Route::group(['prefix'=>'v1/external','as'=>'api.','middleware' =>['auth:sanctum','validate_user']], function(){
     Route::put('/update_fingerprint_option', [ApiIntegrationController::class, 'update_fingerprint_option'])->name('update_fingerprint_option');
@@ -49,8 +55,7 @@ Route::group(['prefix'=>'v1/external','as'=>'api.','middleware' =>['auth:sanctum
     Route::put('/update_user_pin', [ApiIntegrationController::class, 'update_user_pin'])->name('update_user_pin'); //discuss this first
     
 
-    Route::post('/phone_verification', [ApiIntegrationController::class, 'phone_verification'])->name('phone_verification');
-    Route::post('/confirm_phone_verification', [ApiIntegrationController::class, 'confirm_phone_verification'])->name('confirm_phone_verification');
+
     Route::post('/set_transaction_pin', [ApiIntegrationController::class, 'set_transaction_pin'])->name('set_transaction_pin');
     Route::post('/dashboard', [ApiIntegrationController::class, 'dashboard'])->name('dashboard');
     Route::get('/networks', [ApiIntegrationController::class, 'networks'])->name('networks');
