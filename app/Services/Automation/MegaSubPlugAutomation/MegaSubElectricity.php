@@ -189,18 +189,32 @@ class MegaSubElectricity{
         
         logger($response.'pppppppps');
 
+
         curl_close($curl);
     
         $response_decode = json_decode($response,true);
-        
+
+
+        $token = 'nil';
+        $extra_info = $extra_info ?? 'nil';
 
         if(isset($response_decode['Status']) && $response_decode['Status'] == 'Success' && isset($response_decode['Detail']['info']['Success']) 
          &&  $response_decode['Detail']['info']['Success'] == '1'  ){
-            //successful transaction
+             //successful transaction
+            $message_token =  $response_decode['Detail']['message'] ?? 'nil';
+            if($message_token != 'nil'){
+                if (preg_match('/TOKEN:\s+(.*?)\s+UNIT:/', $string, $matches)) {
+                    $token = trim($matches[1]);
+                }else{
+                    $token = 'nil';
+                }
+            }
             return [
                 'status' => 1,
                 'user_message' => isset($response_decode['Detail']['info']['Detail']) ? 'Transaction was successfully processed'  :  'Transaction was successful',
-                'admin_message' => $response
+                'admin_message' => $response,
+                'token' => $token,
+                'extra_info' => $extra_info,
             ];
         }
 
@@ -208,7 +222,9 @@ class MegaSubElectricity{
         return [
             'status' => -1,
             'user_message' => isset($response_decode['Detail']['message']) ? $response_decode['Detail']['message'].'_'.$error :  'Transaction failed_'.$error,
-            'admin_message' => $response
+            'admin_message' => $response,
+            'token' => $token,
+            'extra_info' => $extra_info,
         ];
 
         //REAL

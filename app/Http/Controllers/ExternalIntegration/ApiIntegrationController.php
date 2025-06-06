@@ -271,6 +271,9 @@ class ApiIntegrationController extends Controller
          ]);
   
          $user = User::where('email', $request->email)->first();
+        //  $user = User::where(function(){
+
+        //  })->first();
   
          if (! $user || ! Hash::check($request->password, $user->password)) {
              logger('oga o'); 
