@@ -60,7 +60,7 @@
         <div class="col-span-12 xxxl:col-span-2 md:col-span-3">
             <div 
                 x-data="{ 
-                    referral: '{{ url("/register?username=" . $user->phone_number) }}', 
+                    referral: '{{ url("/register?ref=" . $user->phone_number) }}', 
                     copied: false 
                 }" 
                 class="max-w-sm w-full p-4 rounded-2xl shadow-lg bg-gradient-to-r from-green-500 to-green-700 text-white relative space-y-4"
