@@ -85,7 +85,7 @@
         
                 <!-- Referral Link + Copy/Share -->
                 @if (env('APP_NAME') == 'OresamSub')
-                    {{-- <div class="bg-white/10 backdrop-blur-sm p-3 rounded-lg">
+                    <div class="bg-white/10 backdrop-blur-sm p-3 rounded-lg">
                         <p class="text-sm text-white/80 mb-1">Enjoy commission using your link:</p>
             
                         <div class="flex items-center space-x-2">
@@ -144,7 +144,7 @@
                                 Share
                             </button>
                         </div>
-                    </div> --}}
+                    </div>
                 @endif
             </div>
 
