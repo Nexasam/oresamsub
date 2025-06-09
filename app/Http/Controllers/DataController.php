@@ -1007,7 +1007,7 @@ class DataController extends Controller
             }
 
             else{
-                $product_slug = '';
+                // $product_slug = '';
             }
             
         }
@@ -1016,10 +1016,9 @@ class DataController extends Controller
         logger('TESTING SLUG: '.$product_slug);
 
         $product_id = Product::where('slug',$product_slug)->first()->id;
-        
-        
 
         $product_planss = [];
+
         $counter =0;
 
        //TODO: 
