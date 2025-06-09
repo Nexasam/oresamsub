@@ -44,6 +44,7 @@ class ComputeReferralCommission extends Command
                 if(count($fetch_yest_successful_txns) > 0){
                     foreach($fetch_yest_successful_txns as $yest_successful_txn){
                         $txn_id = $yest_successful_txn->id;
+                        $user = $yest_successful_txn->user;
                         $plan_level = $yest_successful_txn->user->user_plan->plan_level;
                         $commission_field = 'user_level_'.$plan_level.'_commission';
                         $expected_commission = $yest_successful_txn->product_plan->$commission_field;//continue here
