@@ -38,7 +38,7 @@ class CommissionsController extends Controller
         })
         ->whereDate('created_at','>=',$start_date)
         ->whereDate('created_at','<=',$end_date)
-        ->paginate(100);
+        ->get();
 
         $data['pending_commissions_balance'] = Commissions::when(auth()->user()->role->role_name == 'User',function($query) use ($userid){
             $query->where('beneficiary',$userid);
