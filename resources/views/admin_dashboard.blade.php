@@ -77,11 +77,9 @@
     <div class="grid grid-cols-12 gap-x-5">
         <div class="col-span-12 xxxl:col-span-2 md:col-span-4">
             <div
-            class="max-w-sm w-full p-2 mt-2 rounded-2xl shadow-lg bg-green-900 border border-2 border-gray-700  text-white relative space-y-4"
+            class="max-w-sm w-full p-2 mt-2 rounded-2xl shadow-lg bg-white border border-2 border-gray-700  text-white relative space-y-4"
            >
 
-         
-        
                @if (count($user_virtual_accounts) > 0)
                    @foreach ($user_virtual_accounts as $vaccount)
                            {{-- <div class="flex items-center space-x-4">
