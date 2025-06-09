@@ -60,7 +60,7 @@ class CommissionsController extends Controller
 
     public function fetch_commissions(Request $request){
         
-        $date_from = $request->date_from ?? date('Y-m-d', strtotime('-2 days'));
+        $date_from = $request->date_from ?? date('Y-m-01', strtotime('-2 days'));
         
         $date_to= $request->date_to ?? date('Y-m-t');
  
