@@ -109,7 +109,7 @@
                       <div class="mt-3 flex flex-wrap gap-2">
                     
                           <a 
-                              :href="`https://wa.me/?text=Enjoy cheap and affordable data, airtime, cable subscription and electricity bills with {{env('APP_NAME')}} using this link: ${referral}`" 
+                              :href="`https://wa.me/?text=Enjoy cheap and affordable data, airtime, cable subscription and electricity bills with {{env('APP_NAME')}} using my referral link: ${referral}`" 
                               target="_blank" 
                               class="bg-green-500 hover:bg-green-600 px-3 py-1 rounded text-xs"
                           >
@@ -118,7 +118,7 @@
           
                           
                           <a 
-                              :href="`https://twitter.com/intent/tweet?text=Enjoy cheap and affordable data, airtime, cable subscription and electricity bills with {{env('APP_NAME')}} using this link&url=${referral}`" 
+                              :href="`https://twitter.com/intent/tweet?text=Enjoy cheap and affordable data, airtime, cable subscription and electricity bills with {{env('APP_NAME')}} using my referral link&url=${referral}`" 
                               target="_blank" 
                               class="bg-blue-400 hover:bg-blue-500 px-3 py-1 rounded text-xs"
                           >
