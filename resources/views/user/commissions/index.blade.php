@@ -12,6 +12,7 @@
     <!-- Page Header -->
         <div class="box-header">
             <h5 class="box-title">Commissions</h5>
+            <p>Your commission will be converted to your main wallet at the start of the next month for purchase of airtime, data etc</p>
         </div>  
     <!-- Page Header Close -->
 

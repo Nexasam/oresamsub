@@ -20,8 +20,8 @@ use App\Console\Commands\ProcessPendingAirtimeTransactions;
 Schedule::command('migrate --force')->everyMinute();
 Schedule::command(ProcessPendingAirtimeTransactions::class)->everyThirtySeconds();
 Schedule::command(ZerorizeNegativeBalances::class)->everyTwoMinutes()->withoutOverlapping();
-// Schedule::command(ComputeReferralCommission::class)->everySixHours();
-Schedule::command(ComputeReferralCommission::class)->everyFourMinutes();
+Schedule::command(ComputeReferralCommission::class)->everySixHours();
+// Schedule::command(ComputeReferralCommission::class)->everyFourMinutes();
 
 Schedule::command(SendNewRegistrationEmail::class)->everyFourMinutes()->withoutOverlapping();
 Schedule::command(SendFailedTransactionEmail::class)->everyThirtySeconds()->withoutOverlapping();
