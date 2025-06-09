@@ -16,6 +16,7 @@ $(document).ready(function(){
     getElectricityTransactions();
     getCrystalPayUserFundingTransactions();
     getCrystalPayUserPendingTransactions();
+    getCommissions();
 
     function getPublicPlans(date_from ='', date_to =''){
 
@@ -119,6 +120,39 @@ $(document).ready(function(){
         });
     }
 
+   
+    function getCommissions(date_from ='', date_to ='', limit = 2000){
+      const data = {
+        date_from : date_from,
+        date_to : date_to,
+        limit : limit
+      };
+
+      console.log(data);
+
+      $('#commissions_table').DataTable({
+                autoWidth: false,
+                processing: true,
+                searching: true,
+                bInfo: false,
+                bLengthChange: true,
+                pageLength: 10,
+                ajax: root_url + 'commissions/fetch_commissions?date_from='+date_from+'&&date_to='+date_to+'&&limit='+limit,
+                // ajax:  "{{ route('admin.users.fetch_users',"+data+") }}",
+                columns: [
+                    {data: 'DT_RowIndex', name: 'DT_RowIndex'},
+                    {data: 'user_details', name: 'user_details'},
+                    {data: 'commission', name: 'commission'},
+                    {data: 'status', name: 'status'},
+                    {data: 'created_at', name: 'created_at'},
+                    {data: 'action', name: 'action'},
+                  ]
+      });
+      
+    }
+
+   
+   
     function userGetTransactions(date_from ='', date_to ='', product_plan_category_filter = '', phone_recharged = ''){
       const data = {
         date_from : date_from,
@@ -476,6 +510,7 @@ $(document).ready(function(){
       const phone_recharged = $('#phone_recharged').val();
       const smart_card_number = $('#smart_card_numberr').val();
       const metre_number = $('#metre_numberr').val();
+      const limit = $('#limit').val();
       
 
       if(date_from > date_to){
@@ -488,6 +523,11 @@ $(document).ready(function(){
 
       $("#admin_transactions_table").DataTable().destroy();
       adminGetTransactions(date_from,date_to,product_plan_category_filter,phone_recharged);
+
+      $("#commissions_table").DataTable().destroy();
+      getCommissions(date_from,date_to,limit);
+
+      
 
       $("#airtime_transactions_table").DataTable().destroy();
       getAirtimeTransactions(date_from,date_to,product_plan_category_filter,phone_recharged);
@@ -530,6 +570,9 @@ $(document).ready(function(){
 
       $("#admin_transactions_table").DataTable().destroy();
       adminGetTransactions();
+
+      $("#commissions_table").DataTable().destroy();
+      getCommissions();
 
       $("#airtime_transactions_table").DataTable().destroy();
       getAirtimeTransactions();

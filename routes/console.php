@@ -7,6 +7,7 @@ use App\Console\Commands\ClearErrorLogs;
 use Illuminate\Support\Facades\Schedule;
 use App\Console\Commands\SendNewRegistrationEmail;
 use App\Console\Commands\ZerorizeNegativeBalances;
+use App\Console\Commands\ComputeReferralCommission;
 use App\Console\Commands\SendFailedTransactionEmail;
 use App\Console\Commands\ProcessPendingAirtimeTransactions;
 
@@ -19,6 +20,8 @@ use App\Console\Commands\ProcessPendingAirtimeTransactions;
 Schedule::command('migrate --force')->everyMinute();
 Schedule::command(ProcessPendingAirtimeTransactions::class)->everyThirtySeconds();
 Schedule::command(ZerorizeNegativeBalances::class)->everyTwoMinutes()->withoutOverlapping();
+// Schedule::command(ComputeReferralCommission::class)->everySixHours();
+Schedule::command(ComputeReferralCommission::class)->everyFifteenSeconds();
 
 Schedule::command(SendNewRegistrationEmail::class)->everyFourMinutes()->withoutOverlapping();
 Schedule::command(SendFailedTransactionEmail::class)->everyThirtySeconds()->withoutOverlapping();

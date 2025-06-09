@@ -3,6 +3,8 @@
 namespace App\Console\Commands;
 
 use App\Models\User;
+use App\Models\Commissions;
+use App\Models\Transaction;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Artisan;
 
@@ -28,19 +30,59 @@ class ComputeReferralCommission extends Command
     public function handle()
     {
         //start adding commission from this date:
-        // $start_from_this_date = date('2025-04-01');
-        // $today = date('Y-m-d');
-        // $yesterday = date('Y-m-d', strtotime('-1 day'));
-        // $fetch_yest_successful_txns = Transaction::with('product_plan')->whereDate('created_at','>=',$start_from_this_date)
-        //                         ->whereDate('created_at','like','%'.$yesterday.'%')
-        //                         ->whereStatus(1)
-        //                         ->get();
-        // if(count($fetch_yest_successful_txns) > 0){
-        //     foreach($fetch_yest_successful_txns as $yest_successful_txn){
-        //         $product_plan_comm_feature = //continue here
-        //     }
-        // }else{
-        //     logger('no commissions');
-        // }
+       if(env('APP_NAME') == 'OresamSub'){
+                $start_from_this_date = date('2025-06-09');
+                $today = date('Y-m-d');
+                $yesterday = date('Y-m-d', strtotime('-1 day'));
+
+                $fetch_yest_successful_txns = Transaction::with(['user.user_plan','product_plan'])
+                                        ->whereDate('created_at','>=',$start_from_this_date)
+                                        ->whereDate('created_at','like','%'.$today.'%') #use yesterday after testing
+                                        ->whereStatus(1)
+                                        ->get();
+
+                if(count($fetch_yest_successful_txns) > 0){
+                    foreach($fetch_yest_successful_txns as $yest_successful_txn){
+                        $txn_id = $yest_successful_txn->id;
+                        $plan_level = $yest_successful_txn->user->user_plan->plan_level;
+                        $commission_field = 'user_level_'.$plan_level.'_commission';
+                        $expected_commission = $yest_successful_txn->product_plan->$commission_field;//continue here
+                        $upline_id = $yest_successful_txn->user->upline_id;
+
+                        if($expected_commission != 0 && $upline_id != NULL){
+                            //insert
+                            //check if the user has an upline:
+                            $user_upline_check = User::where('id',$upline_id)->first();
+                            if($user_upline_check){
+                                    //upline exists
+                                    if(! Commissions::where('transaction_id',$txn_id)->first() ){
+                                        $commissionssss = Commissions::create([
+                                            'transaction_id' => $yest_successful_txn->id,
+                                            'commission' => $expected_commission,
+                                            'beneficiary' => $user_upline_check->id,
+                                            'transaction_by' => $yest_successful_txn->user_id,
+                                        ]);
+                                    }
+                                    
+
+                                    logger('Commission added for:'.json_encode([
+                                        'transaction_id' => $yest_successful_txn->id,
+                                        'commission' => $expected_commission,
+                                        'beneficiary' => $user_upline_check->id,
+                                        'transaction_by' => $yest_successful_txn->user_id,
+                                    ]));
+                            }else{
+                                logger('upline not found for user: '.$user->username.' with txn id: '.$txn_id);
+                            }
+                            
+                        }else{
+                            logger('commission is likely 0 or no upline for user: '.$user->username.' with txn id: '.$txn_id);
+                        }
+                    }
+                }else{
+                    logger('no commissions recorded');
+                }
+       }
+
     }
 }

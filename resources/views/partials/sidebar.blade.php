@@ -353,31 +353,32 @@
                 @if (strtolower(auth()->user()->role->role_name) == 'user')
                        
 
-                <!-- Start::slide -->
-                {{-- <li class="slide  has-sub">
-                    <a href="{{ route('commissions.index')}}" class="side-menu__item">
-                        <i class="ti ti-recharging  side-menu__icon"></i>
-                        <span class="side-menu__label">Commissions</span>
+                <li class="slide  has-sub">
+                    <a href="{{ route('user.transactions.index')}}" class="side-menu__item">
+                        <i class="ti ti-exchange side-menu__icon"></i>
+                        <span class="side-menu__label">Transactions </span>
                         <i class="ri ri-arrow-right-s-line side-menu__angle"></i>
                     </a>
-                
-                </li> --}}
-                <!-- End::slide -->
-
-                <!-- Start::slide -->
-                <li class="slide  has-sub">
-                <a href="{{ route('user.transactions.index')}}" class="side-menu__item">
-                    <i class="ti ti-exchange side-menu__icon"></i>
-                    <span class="side-menu__label">Transactions</span>
-                    <i class="ri ri-arrow-right-s-line side-menu__angle"></i>
-                </a>
-                <ul class="slide-menu child1">
-                    {{-- <li class="slide"><a href="#" class="side-menu__item">View Networks</a></li> --}}
-                </ul>
+                    <ul class="slide-menu child1">
+                        {{-- <li class="slide"><a href="#" class="side-menu__item">View Networks</a></li> --}}
+                    </ul>
                 </li>
-                <!-- End::slide -->
-            
+                @endif
 
+
+
+                @if (env('APP_NAME') == 'OresamSub')
+                            <!-- End::slide -->
+                        <li class="slide  has-sub">
+                            <a href="{{ route('commissions.index')}}" class="side-menu__item">
+                                <i class="ti ti-exchange side-menu__icon"></i>
+                                <span class="side-menu__label">Commissions </span>
+                                <i class="ri ri-arrow-right-s-line side-menu__angle"></i>
+                            </a>
+                            <ul class="slide-menu child1">
+                                {{-- <li class="slide"><a href="#" class="side-menu__item">View Networks</a></li> --}}
+                            </ul>
+                        </li>
                 @endif
               
 
@@ -387,7 +388,7 @@
                     <li class="slide  has-sub">
                         <a href="{{ route('user.api.docs')}}" class="side-menu__item">
                             <i class="ti ti-briefcase  side-menu__icon"></i>
-                            <span class="side-menu__label">API Docs</span>
+                            <span class="side-menu__label">API Docs  {{  strtolower(auth()->user()->role->role_name) }}</span>
                             <i class="ri ri-arrow-right-s-line side-menu__angle"></i>
                         </a>
                         <ul class="slide-menu child1">

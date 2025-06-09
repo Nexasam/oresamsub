@@ -176,6 +176,8 @@ Route::get('product_plans/fetch_public_product_plans', [ProductPlanController::c
 
 // COMMISSIONS
 Route::middleware(['auth','verified'])->get('commissions/index', [CommissionsController::class, 'index'])->name('commissions.index');
+Route::middleware(['auth','verified'])->get('commissions/index', [CommissionsController::class, 'index'])->name('commissions.index');
+Route::middleware(['auth','verified'])->get('commissions/fetch_commissions', [CommissionsController::class, 'fetch_commissions'])->name('user.commissions.fetch_commissions');
 
 
 
