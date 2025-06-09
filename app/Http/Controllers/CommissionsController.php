@@ -93,7 +93,7 @@ class CommissionsController extends Controller
                     $transaction_category = $data->transaction->transaction_category;
                     $dataa =  'Transaction By: '.$data->transaction->user->username.'<br>';
                     $dataa .=  'Beneficiary: '.$data->transaction->user->username.'<br>';
-                    // $dataa .=  'Product Name By: '.$data->transaction->product_plan->product_plan_name.'<br>';
+                    $dataa .=  'Product Name By: '.$data->transaction->product_plan->product_plan_name.'<br>';
                     $dataa .=  'Transaction Category: '.$transaction_category.'<br>';
                     return '<span style="white-space: normal;word-wrap: break-word;word-break: normal;width:auto">'.$dataa.'</span>';
             })
