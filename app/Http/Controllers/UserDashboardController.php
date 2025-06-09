@@ -16,12 +16,14 @@ use App\Models\LandingPagesSetting;
 use App\Models\ProductPlanCategory;
 use App\Http\Controllers\Controller;
 use App\Models\BulkDataProductPlans;
+use Illuminate\Support\Facades\Route;
 use App\Models\FundingOptionBankCodes;
 
 class UserDashboardController extends Controller
 {
  
   public function index(){
+   
     $hot_sales = ProductPlanCategory::with('product')->where('is_hot_sales',1)->get();
     $user_virtual_accounts = UserVirtualAccount::where('user_id',auth()->id())->get();
 

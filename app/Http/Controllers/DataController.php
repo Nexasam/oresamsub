@@ -23,6 +23,7 @@ use App\Services\Utils\UtilService;
 use App\Models\BulkDataProductPlans;
 use App\Models\UserBulkDataPurchase;
 use App\Traits\WalletTransactionLogs;
+use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Validator;
 use App\Services\Automation\AutomationLogic;
 use App\Traits\Dashboard\UserDashboardDataTrait;
@@ -330,6 +331,7 @@ class DataController extends Controller
      */
     public function buy_data()
     {
+       
         $dataa = $this->get_user_dashboard_data();
         $data = [...$dataa];
         $networks = Network::all();
@@ -983,7 +985,39 @@ class DataController extends Controller
         $amount = $request->amount ?? '';
         $plan_category_id = $request->plan_category_id ?? '';
         $product_slug = $request->product_slug ?? ''; //this is required
+        $slug_array = ['data','airtime','cable_subscription','utility_bills'];
+        if(! in_array($product_slug,$slug_array)){
+            //get it by route:
+            $current_route = Route::currentRouteName();
+
+            if($current_route == 'user.data.buy_data' || $current_route == 'user.data.buy_data2'){
+                $product_slug = 'data';
+            }
+
+            else if($current_route == 'user.airtime.buy_airtime' || $current_route == 'user.airtime.buy_airtime2'){
+                $product_slug = 'airtime';
+            }
+
+            else if($current_route == 'user.cable_subscription.buy_cable_subscription'){
+                $product_slug = 'cable_subscription';
+            }
+
+            else if($current_route == 'user.electricity.buy_electricity_subscription'){
+                $product_slug = 'utility_bills';
+            }
+
+            else{
+                $product_slug = '';
+            }
+            
+        }
+
+
+        logger('TESTING SLUG: '.$product_slug);
+
         $product_id = Product::where('slug',$product_slug)->first()->id;
+        
+        
 
         $product_planss = [];
         $counter =0;

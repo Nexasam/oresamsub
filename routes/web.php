@@ -75,6 +75,7 @@ Route::get('/clear-cache', function() {
 })->name('artisan.clear_cache');
 
 Route::get('/', function () {
+   
     //get template name:
     $data = [];
         $site_images_data = SiteImage::get();
