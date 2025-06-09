@@ -77,71 +77,10 @@
     <div class="grid grid-cols-12 gap-x-5">
         <div class="col-span-12 xxxl:col-span-2 md:col-span-4">
             <div
-            class="max-w-sm w-full p-2 mt-2 rounded-2xl shadow-lg bg-white border border-2 border-gray-700  text-white relative space-y-4"
+            class="max-w-sm w-full p-2 mt-2 rounded-2xl shadow-lg bg-green-900 border border-2 border-gray-700  text-white relative space-y-4"
            >
 
-            @if (env('APP_NAME') == 'OresamSub')
-            <div class="bg-white/10 backdrop-blur-sm p-3 rounded-lg">
-                <p class="text-sm text-white/80 mb-1">Enjoy commission using your link:</p>
-    
-                <div class="flex items-center space-x-2">
-                    <input 
-                        type="text" 
-                        x-model="referral" 
-                        readonly 
-                        class="bg-transparent text-white text-sm flex-1 px-2 py-1 border border-white/30 rounded focus:outline-none"
-                    >
-                    <button 
-                        @click="navigator.clipboard.writeText(referral); copied = true; setTimeout(() => copied = false, 2000)" 
-                        class="text-sm bg-white/20 hover:bg-white/30 px-3 py-1 rounded transition"
-                    >
-                        Copy
-                    </button>
-                </div>
-    
-                <template x-if="copied">
-                    <p class="text-green-200 text-xs mt-1">Copied!</p>
-                </template>
-    
-                <div class="mt-3 flex flex-wrap gap-2">
-                
-                    <a 
-                        :href="`https://wa.me/?text=Enjoy cheap and affordable data, airtime, cable subscription and electricity bills with {{env('APP_NAME')}} using this link: ${referral}`" 
-                        target="_blank" 
-                        class="bg-green-500 hover:bg-green-600 px-3 py-1 rounded text-xs"
-                    >
-                        WhatsApp
-                    </a>
-    
-                    
-                    <a 
-                        :href="`https://twitter.com/intent/tweet?text=Enjoy cheap and affordable data, airtime, cable subscription and electricity bills with {{env('APP_NAME')}} using this link&url=${referral}`" 
-                        target="_blank" 
-                        class="bg-blue-400 hover:bg-blue-500 px-3 py-1 rounded text-xs"
-                    >
-                        Twitter
-                    </a>
-    
-                    
-                    <button 
-                        @click="
-                            if (navigator.share) {
-                                navigator.share({
-                                    title: 'Referral',
-                                    text: 'Get cheap data here:',
-                                    url: referral
-                                })
-                            } else {
-                                alert('Sharing not supported on this device.');
-                            }
-                        " 
-                        class="bg-white/20 hover:bg-white/30 px-3 py-1 rounded text-xs"
-                    >
-                        Share
-                    </button>
-                </div>
-            </div>
-        @endif
+         
         
                @if (count($user_virtual_accounts) > 0)
                    @foreach ($user_virtual_accounts as $vaccount)

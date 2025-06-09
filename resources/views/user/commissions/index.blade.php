@@ -78,10 +78,98 @@
                 </div>
             </div>
         </div>
+
+        <div 
+        x-data="{ 
+            referral: '{{ url("/register?username=" . $user->phone_number) }}', 
+            copied: false 
+        }" 
+        class="max-w-sm w-full p-4 rounded-2xl shadow-lg bg-gradient-to-r from-green-500 to-green-700 text-white relative space-y-4"
+    >
+        <!-- Plan Info -->
+        <div class="flex items-center space-x-4">
+            <div class="p-3 bg-white/20 rounded-full">
+                <!-- Icon -->
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none"
+                    viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M8 7V3m8 4V3M5 11h14M5 19h14M5 15h14M4 5h16a1 1 0 011 1v14a1 1 0 01-1 1H4a1 1 0 01-1-1V6a1 1 0 011-1z" />
+                </svg>
+            </div>
+            <div>
+                <p class="text-sm uppercase tracking-wider text-white/80">Plan</p>
+                <p class="text-2xl font-bold">
+                    {{ $user->user_plan->updated_user_plan_name ?? $user->user_plan->user_plan_name }}
+                </p>
+            </div>
+        </div>
+
+        <!-- Referral Link + Copy/Share -->
+        @if (env('APP_NAME') == 'OresamSub')
+            <div class="bg-white/10 backdrop-blur-sm p-3 rounded-lg">
+                <p class="text-sm text-white/80 mb-1">Enjoy commission using your link:</p>
+    
+                <div class="flex items-center space-x-2">
+                    <input 
+                        type="text" 
+                        x-model="referral" 
+                        readonly 
+                        class="bg-transparent text-white text-sm flex-1 px-2 py-1 border border-white/30 rounded focus:outline-none"
+                    >
+                    <button 
+                        @click="navigator.clipboard.writeText(referral); copied = true; setTimeout(() => copied = false, 2000)" 
+                        class="text-sm bg-white/20 hover:bg-white/30 px-3 py-1 rounded transition"
+                    >
+                        Copy
+                    </button>
+                </div>
+    
+                <template x-if="copied">
+                    <p class="text-green-200 text-xs mt-1">Copied!</p>
+                </template>
+    
+                <div class="mt-3 flex flex-wrap gap-2">
+             
+                    <a 
+                        :href="`https://wa.me/?text=Enjoy cheap and affordable data, airtime, cable subscription and electricity bills with {{env('APP_NAME')}} using this link: ${referral}`" 
+                        target="_blank" 
+                        class="bg-green-500 hover:bg-green-600 px-3 py-1 rounded text-xs"
+                    >
+                        WhatsApp
+                    </a>
+    
+                   
+                    <a 
+                        :href="`https://twitter.com/intent/tweet?text=Enjoy cheap and affordable data, airtime, cable subscription and electricity bills with {{env('APP_NAME')}} using this link&url=${referral}`" 
+                        target="_blank" 
+                        class="bg-blue-400 hover:bg-blue-500 px-3 py-1 rounded text-xs"
+                    >
+                        Twitter
+                    </a>
+    
+                 
+                    <button 
+                        @click="
+                            if (navigator.share) {
+                                navigator.share({
+                                    title: 'Referral',
+                                    text: 'Get cheap data here:',
+                                    url: referral
+                                })
+                            } else {
+                                alert('Sharing not supported on this device.');
+                            }
+                        " 
+                        class="bg-white/20 hover:bg-white/30 px-3 py-1 rounded text-xs"
+                    >
+                        Share
+                    </button>
+                </div>
+            </div>
+        @endif
+    </div>
         
         <div class="col-span-12 xxxl:col-span-2 md:col-span-3">
-           
-
             <div class="max-w-sm w-full p-6 rounded-2xl shadow-lg bg-gradient-to-r from-green-500 to-green-700 text-white">
                 <div class="flex items-center space-x-4">
                   <div class="p-3 bg-white/20 rounded-full">
