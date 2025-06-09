@@ -54,7 +54,7 @@ class ComputeReferralCommission extends Command
                             //insert
                             //check if the user has an upline:
                             $user_upline_check = User::where('id',$upline_id)->first();
-                            if($user_upline_check){
+                            if($user_upline_check && $user_upline_check->id != $user->id){
                                     //upline exists
                                     if(! Commissions::where('transaction_id',$txn_id)->first() ){
                                         $commissionssss = Commissions::create([
@@ -73,7 +73,7 @@ class ComputeReferralCommission extends Command
                                         'transaction_by' => $yest_successful_txn->user_id,
                                     ]));
                             }else{
-                                logger('upline not found for user: '.$user->username.' with txn id: '.$txn_id);
+                                logger('upline not found for user or user is found as upline of self: '.$user->username.' with txn id: '.$txn_id);
                             }
                             
                         }else{
