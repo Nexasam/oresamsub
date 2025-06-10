@@ -1120,6 +1120,8 @@ class DataController extends Controller
                     
                     if( ( $product_slug == 'airtime' || $product_slug == 'utility_bills' ) && $amount != ''){
                           $purchase_discount = $product_plan->$user_level_selling;
+                          logger('purchase discount:',$purchase_discount);
+                          logger('purchase amount:',$amount);
                           $actual_discount_value = ceil(($purchase_discount/100) * $amount);  
                           $discounted_selling_price = $amount - abs($actual_discount_value);
                           $selling_price = 0; //this is from the system, not applicable for airtime
