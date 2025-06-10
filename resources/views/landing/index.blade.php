@@ -53,7 +53,7 @@
 
     @php
        $hero1 = isset($hero_image1) ? env('APP_URL').'assets/landing_page_assets/img/hero_image1/'.$hero_image1 : env('APP_URL').'assets/landing_page_assets/img/bg_banner1.jpg';
-       $hero2 = isset($hero_image1) ? env('APP_URL').'assets/landing_page_assets/img/hero_image2/'.$hero_image2 : env('APP_URL').'assets/landing_page_assets/img/bg_banner2.jpg';
+       $hero2 = isset($hero_image2) ? env('APP_URL').'assets/landing_page_assets/img/hero_image2/'.$hero_image2 : env('APP_URL').'assets/landing_page_assets/img/bg_banner2.jpg';
        $logo = isset($site_logo) ? env('APP_URL').'assets/landing_page_assets/img/site_logo/'.$site_logo : 'nil';
        
     @endphp
@@ -987,7 +987,7 @@
         </div> --}}
         <div class="footer-bottom text-center">
             {{-- <p class="mb-0" style="color: white">Copyright Crystalpay 2024. All rights Reserved</p> --}}
-            <p class="mb-0" style="color: white">Developed  with ❤️ by <a href="https://api.whatsapp.com/send?phone={{  '2347073459839'  }}&text=Hello,%20Please%20I%20want%20to%20own%20a%20data%20website" style="color: white;">Subutility</a> 	&#169; {{ date('Y') }} . Owned by <a href="https://api.whatsapp.com/send?phone={{  '2347073459839'  }}&text=Hello,%20Please%20I%20want%20to%20own%20a%20data%20website" style="color: white;">{{ $site_title }}</a>. All rights Reserved</p>
+            <p class="mb-0" style="color: white">Developed   with ❤️ by <a href="https://api.whatsapp.com/send?phone={{  '2347073459839'  }}&text=Hello,%20Please%20I%20want%20to%20own%20a%20data%20website" style="color: white;">Subutility</a> 	&#169; {{ date('Y') }} . Owned by <a href="https://api.whatsapp.com/send?phone={{  '2347073459839'  }}&text=Hello,%20Please%20I%20want%20to%20own%20a%20data%20website" style="color: white;">{{ $site_title }}</a>. All rights Reserved</p>
         </div>
     </footer>
 
