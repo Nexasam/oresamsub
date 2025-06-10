@@ -63,6 +63,7 @@ class FundingOptionsController extends Controller
     
 
     public function generate_naira_virtual_accounts(Request $request){
+
         // return ['ss'];
         $validator = Validator::make($request->all(), [
             'user_id' => 'required|exists:users,id',
@@ -71,130 +72,135 @@ class FundingOptionsController extends Controller
             'funding_option_id' => 'required|exists:funding_options,id',
           ]);
           
-    
-          if ($validator->stopOnFirstFailure()->fails()) {
-            return $this->error($validator->errors()->first(), data: $request->all(), code: 403 );    
+          try{
+
+            if ($validator->stopOnFirstFailure()->fails()) {
+              return $this->error($validator->errors()->first(), data: $request->all(), code: 403 );    
+            }
+  
+            $user_details = User::select('id','pin')->where('id',$request->user_id)->first();
+      
+            //   if($user_details->pin != $request->pin){
+            //       return $this->error('Incorrect PIN', data: $request->all(), code: 403 );   
+            //   }
+  
+  
+           $fetch_user_acct = UserVirtualAccount::where('user_id',$request->user_id)
+           ->where('funding_option_id',$request->funding_option_id)
+           ->where('bank_code',$request->bank_code)
+           ->first();
+         
+           if($fetch_user_acct){
+             return $this->error('Sorry you already have an account generated: Account number is '.$fetch_user_acct->account_number, data: $request->all(), code: 403 );    
+           }
+  
+  
+           $check_bank_code_of_funding = FundingOptionBankCodes::where('funding_option_id',$request->funding_option_id)
+           ->where('bank_code',$request->bank_code)
+           ->first();
+         
+           if(! $check_bank_code_of_funding){
+             return $this->error('This bank code does not exist', data: $request->all(), code: 403 );    
+           }
+  
+            $user_details = User::where('id',$request->user_id)->first();
+            $pin = $request->pin;
+  
+            // if($user_details->pin != $pin){
+            //     return $this->error('Incorrect PIN', data: $request->all(), code: 403 );          
+            // }
+  
+  
+            $first_name = $user_details->first_name;
+            $last_name = $user_details->last_name;
+            $email = $user_details->email;
+            $phone_number = $user_details->phone_number;
+            $bvn = $user_details->bvn ?? NULL;
+            // $bvn = $request->bvn;
+            $bank_code = $request->bank_code;
+            $funding_option_id = $request->funding_option_id;      
+  
+  
+            //call crystalpay generate endpoint: revamp later
+            $wallet_funding = FundingOption::where('id',$funding_option_id)->first();
+            $api_key = $wallet_funding->api_secret_key;
+            // $api_key = '1417307778664652904fd25';
+        
+  
+            if($wallet_funding->slug != 'crystal_pay'){
+                return $this->error('Only Crystal pay is currently being activated', data: $request->all(), code: 403 );    
+            }
+  
+            //  if($bvn == NULL){
+            //   return $this->error('BVN record not found', data: $request->all(), code: 403 );    
+            //  }
+  
+            $curl = curl_init();
+            curl_setopt_array($curl, array(
+            CURLOPT_URL => 'https://api.crystalpay.finance/business/v1/virtual-account',
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => '',
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 0,
+            CURLOPT_FOLLOWLOCATION => true,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => 'POST',
+            CURLOPT_POSTFIELDS =>'{
+            "firstname": "'.$first_name.'",
+            "lastname": "'.$last_name.'",
+            "email": "'.$email.'",
+            "virtual_account_package": "'.$bank_code.'",  
+            "bvn": "'.$phone_number.'"
+            }',
+            CURLOPT_HTTPHEADER => array(
+                'secret_key: '.$api_key,
+                'Content-Type: application/json',
+                'Accept: application/json'
+            ),
+            ));
+  
+            $response = curl_exec($curl);
+            logger('Wallet generation');
+            logger($response);
+            logger('Wallet generation');
+  
+            $response_dec = json_decode($response,true);
+  
+            //   return $response;
+            if(  isset($response_dec['success']) 
+                && $response_dec['success'] == true
+                &&  isset($response_dec['status']) 
+                &&  $response_dec['status'] == 'Success' 
+                && isset($response_dec['data']['account_number'])
+                &&  $response_dec['data']['account_number'] != ''
+                  ){
+                //success
+              
+                UserVirtualAccount::create([
+                    'user_id' => $user_details->id,
+                    'funding_option_id' => $funding_option_id,
+                    'funding_slug' => $wallet_funding->slug,
+                    'response_status' =>$response_dec['status'],
+                    'bank_name' =>$response_dec['data']['bank_name'],
+                    'bank_code' =>$bank_code,
+                    'account_name' =>$response_dec['data']['account_name'],
+                    'account_email' =>$response_dec['data']['account_email'],
+                    'account_number' =>$response_dec['data']['account_number'],
+                    'account_reference' => $response_dec['data']['account_reference'],
+                    'bvn' => $phone_number
+                ]);
+  
+                return $this->success('Wallet virtual accounts generated',data: $response_dec); 
+            }
+
+          }catch(Exception $exception){
+             logger('Exception:' . $exception->getMessage().' on line '.$exception->getLine());  
+             return $this->error('Issues generating virtual accounts');   
           }
 
-          $user_details = User::select('id','pin')->where('id',$request->user_id)->first();
-    
-        //   if($user_details->pin != $request->pin){
-        //       return $this->error('Incorrect PIN', data: $request->all(), code: 403 );   
-        //   }
 
+          //    return $response_dec;
+          return $this->success('Wallet virtual accounts generated.',data: $response_dec); 
 
-         $fetch_user_acct = UserVirtualAccount::where('user_id',$request->user_id)
-         ->where('funding_option_id',$request->funding_option_id)
-         ->where('bank_code',$request->bank_code)
-         ->first();
-       
-         if($fetch_user_acct){
-           return $this->error('Sorry you already have an account generated: Account number is '.$fetch_user_acct->account_number, data: $request->all(), code: 403 );    
-         }
-
-
-         $check_bank_code_of_funding = FundingOptionBankCodes::where('funding_option_id',$request->funding_option_id)
-         ->where('bank_code',$request->bank_code)
-         ->first();
-       
-         if(! $check_bank_code_of_funding){
-           
-           return $this->error('This bank code does not exist', data: $request->all(), code: 403 );    
-
-         }
-
-                $user_details = User::where('id',$request->user_id)->first();
-                $pin = $request->pin;
-
-                // if($user_details->pin != $pin){
-                //     return $this->error('Incorrect PIN', data: $request->all(), code: 403 );          
-                // }
-
-
-                $first_name = $user_details->first_name;
-                $last_name = $user_details->last_name;
-                $email = $user_details->email;
-                $phone_number = $user_details->phone_number;
-                $bvn = $user_details->bvn ?? NULL;
-                // $bvn = $request->bvn;
-                $bank_code = $request->bank_code;
-                $funding_option_id = $request->funding_option_id;      
-
-
-                //call crystalpay generate endpoint: revamp later
-                $wallet_funding = FundingOption::where('id',$funding_option_id)->first();
-                $api_key = $wallet_funding->api_secret_key;
-                // $api_key = '1417307778664652904fd25';
-           
-
-               if($wallet_funding->slug != 'crystal_pay'){
-                   return $this->error('Only Crystal pay is currently being activated', data: $request->all(), code: 403 );    
-               }
-
-              //  if($bvn == NULL){
-              //   return $this->error('BVN record not found', data: $request->all(), code: 403 );    
-              //  }
-
-               $curl = curl_init();
-               curl_setopt_array($curl, array(
-               CURLOPT_URL => 'https://api.crystalpay.finance/business/v1/virtual-account',
-               CURLOPT_RETURNTRANSFER => true,
-               CURLOPT_ENCODING => '',
-               CURLOPT_MAXREDIRS => 10,
-               CURLOPT_TIMEOUT => 0,
-               CURLOPT_FOLLOWLOCATION => true,
-               CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-               CURLOPT_CUSTOMREQUEST => 'POST',
-               CURLOPT_POSTFIELDS =>'{
-               "firstname": "'.$first_name.'",
-               "lastname": "'.$last_name.'",
-               "email": "'.$email.'",
-               "virtual_account_package": "'.$bank_code.'",  
-               "bvn": "'.$phone_number.'"
-               }',
-               CURLOPT_HTTPHEADER => array(
-                   'secret_key: '.$api_key,
-                   'Content-Type: application/json',
-                   'Accept: application/json'
-               ),
-               ));
-
-               $response = curl_exec($curl);
-               logger('Wallet generation');
-               logger($response);
-               logger('Wallet generation');
-
-
-               $response_dec = json_decode($response,true);
-
-            //   return $response;
-               
-               if(  isset($response_dec['success']) 
-                    && $response_dec['success'] == true
-                    &&  isset($response_dec['status']) 
-                    &&  $response_dec['status'] == 'Success' 
-                    && isset($response_dec['data']['account_number'])
-                    &&  $response_dec['data']['account_number'] != ''
-                      ){
-                   //success
-                  
-                   UserVirtualAccount::create([
-                       'user_id' => $user_details->id,
-                       'funding_option_id' => $funding_option_id,
-                       'funding_slug' => $wallet_funding->slug,
-                       'response_status' =>$response_dec['status'],
-                       'bank_name' =>$response_dec['data']['bank_name'],
-                       'bank_code' =>$bank_code,
-                       'account_name' =>$response_dec['data']['account_name'],
-                       'account_email' =>$response_dec['data']['account_email'],
-                       'account_number' =>$response_dec['data']['account_number'],
-                       'account_reference' => $response_dec['data']['account_reference'],
-                       'bvn' => $phone_number
-                   ]);
-
-                   return $this->success('Wallet virtual accounts generated',data: $response_dec);   
-               }
-              //    return $response_dec;
-              return $this->success('Wallet virtual accounts generated.',data: $response_dec);   
     }
 }
