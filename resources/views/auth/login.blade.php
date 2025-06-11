@@ -293,7 +293,7 @@
                                             </div>
                                             <!-- End Checkbox -->
                                             <x-primary-button class="ms-3">
-                                                {{ __('Log in') }}
+                                                Log in
                                             </x-primary-button>
                                         </div>
                                     </div>

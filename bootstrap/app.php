@@ -27,6 +27,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'user' => RoleUserAccess::class, 
             'validate_user' => ValidateSanctumUser::class,
             'set_transaction_pin' => SetTransactionPin::class,
+            'set_locale' => \App\Http\Middleware\SetLocale::class,
          ]);
         // 'api_access' => AuthenticateExternalIntegration::class
         // $middleware->alias(['user' => RoleUserAccess::class]);

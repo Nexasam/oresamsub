@@ -12,7 +12,8 @@
     <!-- Page Header -->
     <div class="block justify-between page-header md:flex">
         <div>
-            <h3 class="text-gray-700 hover:text-gray-900 dark:text-gray-900 dark:hover:text-white text-2xl font-medium"> <small style=" font-size: 14px;">Welcome <strong>{{ $user->first_name. ' '. $user->last_name }}</strong></small> </h3>
+            <p>Current locale: {{ app()->getLocale() }}</p>
+            <h3 class="text-gray-700 hover:text-gray-900 dark:text-gray-900 dark:hover:text-white text-2xl font-medium"> <small style=" font-size: 14px;">{{ __('messages.Welcome') }} <strong>{{ $user->first_name. ' '. $user->last_name }}</strong></small> </h3>
         </div>
         
     </div>
@@ -118,7 +119,7 @@
                            </div>
            
                            <a href="{{route('user.wallet.index')}}" class="bg-[{{$sidebar_color}}]  text-sm font-medium px-4 py-2 rounded-lg shadow hover:bg-indigo-700 transition">
-                               FUND WALLET
+                               {{ __('messages.Fund Wallet') }}
                            </a>
                            </div>
                        </div>

@@ -1081,7 +1081,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-span-12 xxl:col-span-8">
+        {{-- <div class="col-span-12 xxl:col-span-8">
             <div class="box">
                 <div class="box-header flex">
                     <h5 class="box-title my-auto">Available Bulk Data Plans &nbsp;&nbsp;  <small> <a class="hs-tab-active:bg-primary hs-tab-active:text-white py-1 px-2 inline-flex items-center gap-1 bg-transparent text-sm font-medium text-center text-gray-500 rounded-sm hover:text-primary  dark:text-white/70 dark:hover:text-white active" id="pills-with-brand-color-item-2" data-hs-tab="#pills-with-brand-color-2" aria-controls="pills-with-brand-color-2" href="{{ route('user.data.buy_bulk_data') }}">Buy bulk plans</a> </small> </h5>
@@ -1100,15 +1100,7 @@
                 </div>
                 <div class="box-body p-0 selling-table">
                     <div class="overflow-auto">
-                        {{-- <table class="ti-custom-table ti-custom-table-head">
-                            <thead>
-                                <tr>
-                                    <th scope="col">Product</th>
-                                    <th scope="col">Stock</th>
-                                    <th scope="col">TotalSales</th>
-                                </tr>
-                            </thead>
-                            <tbody> --}}
+                      
                         <table class="ti-custom-table ti-custom-table-head">    
                                     <thead>
                                     <tr>
@@ -1118,7 +1110,7 @@
                                         <th><small>Data value</small></th>
                                         <th><small>Unit(MB)</small></th>
                                         <th><small>Selling price (&#8358;)</small></th>
-                                        {{-- <th>Action</th> --}}
+                                     
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -1193,12 +1185,14 @@
                                     <td>
                                         <span class="text-sm font-semibold">10,234</span>
                                     </td>
-                                </tr> --}}
+                                </tr> 
                           
                     </div>
                 </div>
             </div>
-        </div>
+        </div> --}}
+
+
         <div class="col-span-12 xxl:col-span-4">
             <div class="box">
                 <div class="box-header">
@@ -1227,53 +1221,14 @@
                                              <a href="{{ route($hot_sale['route_name'],$hot_sale['id']) }}" class="text-primary hover:text-primary" href="javascript:void(0);">Buy</a>
                                         </td>
                                     </tr>
-                            {{-- <p>{{ $hot_sale->product_plan_category_name  }}  :  <a href="{{ route('user.data.buy_data') }}">explore</a> </p> --}}
-                        @endforeach
+                         @endforeach
                             </tbody>
                         </table>
 
                         @else
                           <p>No hot sales at the moment.</p>
-
-                        @endif
-                        
+                        @endif              
                     </div>
-                    {{-- <div class="mt-4">
-                        <div class="flex items-center justify-between mb-1 text-sm">
-                            <p class="mb-0">Plan 1</p>
-                            <span>65%</span>
-                        </div>
-                        <div class="ti-main-progress h-2 bg-gray-200 dark:bg-bodybg">
-                            <div class="ti-main-progress-bar bg-primary text-xs text-white text-center" role="progressbar" style="width: 65%" aria-valuenow="65" aria-valuemin="0"
-                                aria-valuemax="100"></div>
-                        </div>
-                    </div>
-                    <div class="mt-4">
-                        <div class="flex items-center justify-between mb-1 text-sm">
-                            <p class="mb-0">Plan 2</p>
-                            <span>75%</span>
-                        </div>
-                        <div class="ti-main-progress h-2 bg-gray-200 dark:bg-bodybg">
-                            <div class="ti-main-progress-bar bg-primary text-xs text-white text-center" role="progressbar" style="width: 65%" aria-valuenow="65" aria-valuemin="0"
-                                aria-valuemax="100"></div>
-                        </div>
-                    </div>
-                    <div class="mt-4">
-                        <div class="flex items-center justify-between mb-1 text-sm">
-                            <p class="mb-0">Plan 3</p>
-                            <span>85%</span>
-                        </div>
-                        <div class="ti-main-progress h-2 bg-gray-200 dark:bg-bodybg">
-                            <div class="ti-main-progress-bar bg-primary text-xs text-white text-center" role="progressbar" style="width: 65%" aria-valuenow="65" aria-valuemin="0"
-                                aria-valuemax="100"></div>
-                        </div>
-                    </div>
-                    <div class=" block ms-auto my-auto mt-4">
-                            <button type="button"
-                                class="ti-btn m-0 rounded-sm p-1 px-3 !border border-gray-200 text-gray-400 hover:text-gray-500 hover:bg-gray-200 hover:border-gray-200 focus:ring-gray-200 dark:text-white/70 dark:hover:text-white dark:hover:bg-bodybg dark:border-white/10 dark:hover:border-white/20 dark:focus:ring-white/10 dark:focus:ring-offset-white/10">
-                                Buy</button>
-                    </div> --}}
-                    
                    
                 </div>
             </div>
@@ -1311,16 +1266,15 @@
                                     @php
                                         $count = 0;
                                     @endphp
-                            @foreach ($hot_sales as $hot_sale)
-                                        <tr>
-                                            {{-- text-[#17171d] --}}
-                                            <td class="font-small "> <h4 class=" dark:text-bgdark">{{ $hot_sale['plan_category_name']  }}</h4>  </td>
-                                            <td>
-                                                <a href="{{ route($hot_sale['route_name'],$hot_sale['id']) }}" class="text-primary hover:text-primary" href="javascript:void(0);">Buy</a>
-                                            </td>
-                                        </tr>
-                                {{-- <p>{{ $hot_sale->product_plan_category_name  }}  :  <a href="{{ route('user.data.buy_data') }}">explore</a> </p> --}}
-                            @endforeach
+                                    @foreach ($hot_sales as $hot_sale)
+                                                <tr>
+                                                    {{-- text-[#17171d] --}}
+                                                    <td class="font-small "> <h4 class=" dark:text-bgdark">{{ $hot_sale['plan_category_name']  }}</h4>  </td>
+                                                    <td>
+                                                        <a href="{{ route($hot_sale['route_name'],$hot_sale['id']) }}" class="text-primary hover:text-primary" href="javascript:void(0);">Buy</a>
+                                                    </td>
+                                                </tr>
+                                    @endforeach
                                 </tbody>
                             </table>
                         </div>
@@ -1333,7 +1287,5 @@
                 </div>
             </div> 
          @endif
-  
-
-</div>
+    </div>
 @endsection
