@@ -481,6 +481,524 @@ class MultilanguageController extends Controller
                 'ig' => 'Mmemme',
                 'ha' => 'Shiri',
             ],
+            
+                "Discounted Amount" => [
+                  "en" => "Discounted Amount",
+                  "yo" => "Iye ti a din kuro",
+                  "ig" => "Ego ebelatara",
+                  "ha" => "Adadin rangwame"
+                ],
+                "Balance Before" => [
+                  "en" => "Balance Before",
+                  "yo" => "Iwontunwonsi Ṣaaju",
+                  "ig" => "Ego tupu",
+                  "ha" => "Adadin kafin"
+                ],
+                "Balance After" => [
+                  "en" => "Balance After",
+                  "yo" => "Iwontunwonsi Lẹ́yìnna",
+                  "ig" => "Ego mgbe e mesịrị",
+                  "ha" => "Adadin bayan haka"
+                ],
+                "Status" => [
+                  "en" => "Status",
+                  "yo" => "Ipo",
+                  "ig" => "Ogo",
+                  "ha" => "Matsayi"
+                ],
+                "Date Added" => [
+                  "en" => "Date Added",
+                  "yo" => "Ọjọ tí a fi kun",
+                  "ig" => "Ụbọchị agbakwunyere",
+                  "ha" => "Ranar da aka ƙara"
+                ],
+                "Action" => [
+                  "en" => "Action",
+                  "yo" => "Ìṣe",
+                  "ig" => "Omume",
+                  "ha" => "Aiki"
+                ],
+                "Commissions" => [
+                  "en" => "Commissions",
+                  "yo" => "Ẹ̀san",
+                  "ig" => "Uru",
+                  "ha" => "Kwamitoci"
+                ],
+                "Your commission will be converted to your main wallet at the start of the next month for purchase of airtime, data etc" => [
+                  "en" => "Your commission will be converted to your main wallet at the start of the next month for purchase of airtime, data etc",
+                  "yo" => "Ẹsan rẹ yóò yipada sí apamọwọ àkọ́kọ́ rẹ níbẹ̀rẹ̀ oṣù tó ń bọ̀ fún rira afẹ́fẹ́, data, bẹ́ẹ̀ bẹ́ẹ̀ lọ.",
+                  "ig" => "A ga-agbanwe uru gị gaa na akpa ego isi n’mbido ọnwa ọzọ maka ịzụta ekwentị, data wdg.",
+                  "ha" => "Za a canza kuɗin kwamiti zuwa babban walat ɗinka a farkon watan gaba don siyan katin waya, bayanai da sauransu."
+                ],
+                "Alltime Commissions" => [
+                  "en" => "Alltime Commissions",
+                  "yo" => "Gbogbo Ẹ̀san",
+                  "ig" => "Uru niile",
+                  "ha" => "Dukkanin kwamitoci"
+                ],
+                "Pending Commissions" => [
+                  "en" => "Pending Commissions",
+                  "yo" => "Ẹ̀san tí ń dúró de fífi sílẹ̀",
+                  "ig" => "Uru dị n’echiche",
+                  "ha" => "Kwamitoci masu jiran lokaci"
+                ],
+                "Details" => [
+                  "en" => "Details",
+                  "yo" => "Alaye",
+                  "ig" => "Nkọwa",
+                  "ha" => "Cikakkun bayanai"
+                ],
+                "Commission" => [
+                  "en" => "Commission",
+                  "yo" => "Ẹ̀san",
+                  "ig" => "Uru",
+                  "ha" => "Kwamitin"
+                ],
+                "Redemption Status" => [
+                  "en" => "Redemption Status",
+                  "yo" => "Ipo Ìdápadà",
+                  "ig" => "Ogo mgbaputa",
+                  "ha" => "Matsayin fansa"
+                ],
+                "You can now use our apis to create amazing websites for yourself" => [
+                  "en" => "You can now use our apis to create amazing websites for yourself",
+                  "yo" => "O le lo API wa bayi lati ṣẹda awọn oju opo wẹẹbu alaragbayida fun ara rẹ",
+                  "ig" => "Ị nwere ike iji API anyị ugbu a mepụta weebụsaịtị magburu onwe ya maka onwe gị",
+                  "ha" => "Zaka iya amfani da API ɗinmu yanzu don ƙirƙirar shafukan yanar gizo masu ban mamaki don kanka"
+                ],
+                "API Key" => [
+                  "en" => "API Key",
+                  "yo" => "Bọtini API",
+                  "ig" => "Igodo API",
+                  "ha" => "Mabudin API"
+                ],
+                "PLEASE PROTECT THIS KEY AND SHARE ONLY WITH A TRUSTED PERSON" => [
+                  "en" => "PLEASE PROTECT THIS KEY AND SHARE ONLY WITH A TRUSTED PERSON",
+                  "yo" => "JỌ̀WỌ́, ṢẸ́DÁ BỌ́TÍNÍ YÌI MÚLẸ̀ KÍ O MÁ ṢE PÍN ÀFÍ PẸ̀LÚ ENI TÓ DÁ LÓRÍ",
+                  "ig" => "Biko, chekwaa igodo a ma kesaa ya naanị onye a tụkwasịrị obi",
+                  "ha" => "Don Allah, kare wannan mabudi kuma ka raba shi kawai da wanda ka yarda da shi"
+                ],
+                "Copy Api Key" => [
+                  "en" => "Copy Api Key",
+                  "yo" => "Daakọ Bọtini API",
+                  "ig" => "Detuo Igodo API",
+                  "ha" => "Kwafi Mabudin API"
+                ],
+                "Click to see documentation" => [
+                  "en" => "Click to see documentation",
+                  "yo" => "Tẹ lati wo iwe itọnisọna",
+                  "ig" => "Pịa ịhụ akwụkwọ nduzi",
+                  "ha" => "Danna don ganin bayanan aiki"
+                ],
+                "Copyright © 2025 Developed with" => [
+                  "en" => "Copyright © 2025 Developed with",
+                  "yo" => "Aṣẹ-lẹta © 2025 Ṣe pẹlu",
+                  "ig" => "Ikike © 2025 Meputara ya na",
+                  "ha" => "Hakkin mallaka © 2025 An ƙirƙira tare da"
+                ],
+                "All rights reserved" => [
+                  "en" => "All rights reserved",
+                  "yo" => "Gbogbo ẹtọ wa ni idaabobo",
+                  "ig" => "Ejiri ikike niile chebe",
+                  "ha" => "Dukkan haƙƙi an tanada"
+                ],
+                "Profile" => [
+                  "en" => "Profile",
+                  "yo" => "Profaili",
+                  "ig" => "Nkọwa Onwe",
+                  "ha" => "Bayanan Kai"
+                ],
+                "Settings" => [
+                  "en" => "Settings",
+                  "yo" => "Eto",
+                  "ig" => "Ntọala",
+                  "ha" => "Saituna"
+                ],
+        
+            "Main Wallet" => [
+                "en" => "Main Wallet",
+                "yo" => "Apamọwọ Àkọ́kọ́",
+                "ig" => "Akpa Ego Isi",
+                "ha" => "Babban Walat"
+            ],
+            "Logout" => [
+                "en" => "Logout",
+                "yo" => "Jade",
+                "ig" => "Pụọ",
+                "ha" => "Fita"
+            ],
+            "First name" => [
+                "en" => "First name",
+                "yo" => "Orukọ Àkọ́kọ́",
+                "ig" => "Aha Mbụ",
+                "ha" => "Sunan Farko"
+            ],
+            "Last name" => [
+                "en" => "Last name",
+                "yo" => "Orukọ Ikẹyìn",
+                "ig" => "Aha Ikpeazụ",
+                "ha" => "Sunan Ƙarshe"
+            ],
+            "Other names" => [
+                "en" => "Other names",
+                "yo" => "Àwọn Orúkọ Míì",
+                "ig" => "Aha ndị ọzọ",
+                "ha" => "Sauran Sunaye"
+            ],
+            "Current password" => [
+                "en" => "Current password",
+                "yo" => "Ọrọ aṣínà Lọwọlọwọ",
+                "ig" => "Okwuntughe dị ugbu a",
+                "ha" => "Kalmar sirri ta yanzu"
+            ],
+            "New password" => [
+                "en" => "New password",
+                "yo" => "Ọrọ aṣínà Tuntun",
+                "ig" => "Okwuntughe ọhụrụ",
+                "ha" => "Sabuwar kalmar sirri"
+            ],
+            "Confirm new password" => [
+                "en" => "Confirm new password",
+                "yo" => "Jẹrisi Ọrọ aṣínà Tuntun",
+                "ig" => "Kwenye okwuntughe ọhụrụ",
+                "ha" => "Tabbatar da sabuwar kalmar sirri"
+            ],
+            "Confirm action with your PIN" => [
+                "en" => "Confirm action with your PIN",
+                "yo" => "Jẹ́risi ìṣe pẹ̀lú PIN rẹ",
+                "ig" => "Kwenye omume a site na PIN gị",
+                "ha" => "Tabbatar da aiki tare da PIN ɗinka"
+            ],
+            "Available Bulk Data Plans" => [
+                "en" => "Available Bulk Data Plans",
+                "yo" => "Àwọn Ètò Data Àpọ̀pọ̀ Tó Wà",
+                "ig" => "Nhazi data obosara dị",
+                "ha" => "Tsare-tsaren bayanai na jumla da ake da su"
+            ],
+            "Personal Information" => [
+                "en" => "Personal Information",
+                "yo" => "Alaye Ti Ara ẹni",
+                "ig" => "Ozi nke Onwe",
+                "ha" => "Bayanan Kai"
+            ],
+            "View Details" => [
+                "en" => "View Details",
+                "yo" => "Wo Alaye",
+                "ig" => "Lee Nkọwa",
+                "ha" => "Duba cikakkun bayanai"
+            ],
+            "Username" => [
+                "en" => "Username",
+                "yo" => "Orukọ Olumulo",
+                "ig" => "Aha Ojiji",
+                "ha" => "Sunan mai amfani"
+            ],
+            "Main" => [
+                "en" => "Main",
+                "yo" => "Àkọ́kọ́",
+                "ig" => "Isi",
+                "ha" => "Babba"
+            ],
+            "Modules" => [
+                "en" => "Modules",
+                "yo" => "Àwọn Module",
+                "ig" => "Ngwugwu ọrụ",
+                "ha" => "Modyuloli"
+            ],
+            "Home" => [
+                "en" => "Home",
+                "yo" => "Ilé",
+                "ig" => "Ụlọ",
+                "ha" => "Gida"
+            ],
+            "About" => [
+                "en" => "About",
+                "yo" => "Nipa",
+                "ig" => "Banyere",
+                "ha" => "Game da"
+            ],
+            "Services" => [
+                "en" => "Services",
+                "yo" => "Àwọn iṣẹ́",
+                "ig" => "Ọrụ",
+                "ha" => "Ayyuka"
+            ],
+            "Testimonials" => [
+                "en" => "Testimonials",
+                "yo" => "Ẹlẹ́ri",
+                "ig" => "Akwukwo nkwupụta",
+                "ha" => "Shaidun Bayani"
+            ],
+            "Signup" => [
+                "en" => "Signup",
+                "yo" => "Forukọsilẹ",
+                "ig" => "Debanye",
+                "ha" => "Yi rajista"
+            ],
+            "Login" => [
+                "en" => "Login",
+                "yo" => "Wọlé",
+                "ig" => "Banye",
+                "ha" => "Shiga"
+            ],
+            "Get Started" => [
+                "en" => "Get Started",
+                "yo" => "Bẹrẹ",
+                "ig" => "Malite",
+                "ha" => "Fara"
+            ],
+            "About Us" => [
+                "en" => "About Us",
+                "yo" => "Nipa Wa",
+                "ig" => "Banyere Anyị",
+                "ha" => "Game da Mu"
+            ],
+            "Who we are" => [
+                "en" => "Who we are",
+                "yo" => "Tani awa jẹ́",
+                "ig" => "Onye anyị bụ",
+                "ha" => "Mu su waye"
+            ],
+            "Get to know us more" => [
+                "en" => "Get to know us more",
+                "yo" => "Mọ̀ sí i nípa wa",
+                "ig" => "Mụta ihe gbasara anyị karịa",
+                "ha" => "Kara fahimtar mu"
+              ],
+              "Our Features and Services" => [
+                "en" => "Our Features and Services",
+                "yo" => "Àwọn Àmúyẹ àti Ìṣẹ́ Wa",
+                "ig" => "Njirimara na Ọrụ anyị",
+                "ha" => "Abubuwan da muke da su da ayyuka"
+              ],
+              "Our Partners" => [
+                "en" => "Our Partners",
+                "yo" => "Àwọn Alábàápàdé Wa",
+                "ig" => "Ụmụ mmekọrịta anyị",
+                "ha" => "Abokan hulɗarmu"
+              ],
+              "Product plans and prices" => [
+                "en" => "Product plans and prices",
+                "yo" => "Ètò àti Ọ̀nà Ọ̀jà",
+                "ig" => "Nhazi ngwaahịa na ọnụahịa",
+                "ha" => "Shirye-shiryen samfur da farashi"
+              ],
+              "Here’s a list of our pricing" => [
+                "en" => "Here’s a list of our pricing",
+                "yo" => "Ìyẹn ni àkójọ owó wa",
+                "ig" => "Nke a bụ ndepụta ọnụahịa anyị",
+                "ha" => "Ga jerin farashinmu"
+              ],
+              "Product name" => [
+                "en" => "Product name",
+                "yo" => "Orukọ Ọja",
+                "ig" => "Aha Ngwaahịa",
+                "ha" => "Sunan samfur"
+              ],
+              "Network" => [
+                "en" => "Network",
+                "yo" => "Nẹ́tíwọ́ọ̀kì",
+                "ig" => "Netwọk",
+                "ha" => "Sadarwa"
+              ],
+              "Plan name" => [
+                "en" => "Plan name",
+                "yo" => "Orukọ Ètò",
+                "ig" => "Aha Mmemme",
+                "ha" => "Sunan shiri"
+              ],
+              "Plan Category" => [
+                "en" => "Plan Category",
+                "yo" => "Ẹ̀ka Ètò",
+                "ig" => "Udi Mmemme",
+                "ha" => "Rukunin shiri"
+              ],
+              "Data Size" => [
+                "en" => "Data Size",
+                "yo" => "Iwọn Data",
+                "ig" => "Nha Data",
+                "ha" => "Girman bayanai"
+              ],
+              "Selling Price" => [
+                "en" => "Selling Price",
+                "yo" => "Iye Tita",
+                "ig" => "Ọnụahịa",
+                "ha" => "Farashin sayarwa"
+              ],
+              "Validity (Days)" => [
+                "en" => "Validity (Days)",
+                "yo" => "Ìfaramọ́ (Ọjọ́)",
+                "ig" => "Oge ọrụ (Ụbọchị)",
+                "ha" => "Inganci (Kwana)"
+              ],
+              "Developed with ❤️ by Subutility © 2025" => [
+                "en" => "Developed with ❤️ by Subutility © 2025",
+                "yo" => "Ti dá sílẹ̀ pẹ̀lú ❤️ nipasẹ Subutility © 2025",
+                "ig" => "E mepụtara ya na ❤️ site na Subutility © 2025",
+                "ha" => "An kirkireshi da ❤️ daga Subutility © 2025"
+              ],
+              "Owned by" => [
+                "en" => "Owned by",
+                "yo" => "Ti ẹni",
+                "ig" => "Nke onye nwe ya",
+                "ha" => "Mallakar"
+              ],
+              "We’re here to help! Reach out to our customer support team through the following channels" => [
+                "en" => "We’re here to help! Reach out to our customer support team through the following channels",
+                "yo" => "A wà níbí láti ràn ẹ́ lọ́wọ́! Kan sí ẹgbẹ́ ìtẹ́wọ́gbà oníbàárà wa nípasẹ̀ àwọn ọ̀nà yìí",
+                "ig" => "Anyị nọ ebe a iji nyere gị aka! Kpọtụrụ ndị nkwado ahịa anyị site na ụzọ ndị a",
+                "ha" => "Muna nan don taimako! Tuntubi ƙungiyar tallafin abokin cinikinmu ta hanyoyin da ke ƙasa"
+              ],
+              "Reach us on whatsapp by clicking this link" => [
+                "en" => "Reach us on whatsapp by clicking this link",
+                "yo" => "Kan sí wa lórí WhatsApp nípasẹ̀ líńkì yìí",
+                "ig" => "Kpọtụrụ anyị na WhatsApp site na pịa njikọ a",
+                "ha" => "Tuntube mu ta WhatsApp ta danna wannan mahada"
+              ],
+              "All rights Reserved" => [
+                "en" => "All rights Reserved",
+                "yo" => "Gbogbo ẹtọ wa ni idaabobo",
+                "ig" => "Ejiri ikike niile chebe",
+                "ha" => "Dukkan haƙƙi an tanada"
+              ],
+              "Prev" => [
+                "en" => "Prev",
+                "yo" => "Tẹlẹ̀",
+                "ig" => "Gara aga",
+                "ha" => "Na baya"
+              ],
+              "Next" => [
+                "en" => "Next",
+                "yo" => "Tó Kàn",
+                "ig" => "Osote",
+                "ha" => "Na gaba"
+              ],
+              "Already have an account" => [
+                "en" => "Already have an account",
+                "yo" => "Tí o bá ti ní àkọọlẹ̀",
+                "ig" => "Ị nwere akaụntụ?",
+                "ha" => "Kana da asusu tuni?"
+              ],
+              "Fullname" => [
+                "en" => "Fullname",
+                "yo" => "Orukọ Kikun",
+                "ig" => "Aha zuru ezu",
+                "ha" => "Cikakken suna"
+              ],
+              "Email Address" => [
+                "en" => "Email Address",
+                "yo" => "Àdírẹ́sì Ímẹ́lì",
+                "ig" => "Adreesị Email",
+                "ha" => "Adireshin Imel"
+              ],
+              "Referral phone number (optional)" => [
+                "en" => "Referral phone number (optional)",
+                "yo" => "Nọ́mbà foonu ìtọ́kasí (aṣayan)",
+                "ig" => "Ekwentị ntụaka (nhọrọ)",
+                "ha" => "Lambar wayar da ta turo ka (zabi)"
+              ],
+              "Password" => [
+                "en" => "Password",
+                "yo" => "Ọrọ aṣínà",
+                "ig" => "Okwuntughe",
+                "ha" => "Kalmar sirri"
+              ],
+              "Confirm Password" => [
+                "en" => "Confirm Password",
+                "yo" => "Jẹ́risi Ọrọ aṣínà",
+                "ig" => "Kwenye okwuntughe",
+                "ha" => "Tabbatar da kalmar sirri"
+              ],
+              "Show password" => [
+                "en" => "Show password",
+                "yo" => "Fi Ọrọ aṣínà hàn",
+                "ig" => "Gosi okwuntughe",
+                "ha" => "Nuna kalmar sirri"
+              ],
+              "Welcome back" => [
+                "en" => "Welcome back",
+                "yo" => "Kaabọ padà",
+                "ig" => "Nnọọ ọzọ",
+                "ha" => "Barka da dawowa"
+              ],
+                        "Email or Username or Phone" => [
+            "en" => "Email or Username or Phone",
+            "yo" => "Ímẹ́lì tàbí Orúkọ Olùgbani tàbí Foonu",
+            "ig" => "Email ma ọ bụ Aha ojii ma ọ bụ Ekwentị",
+            "ha" => "Imel ko Sunan mai amfani ko Lambar waya"
+            ],
+            "Don't have an account yet" => [
+            "en" => "Don't have an account yet",
+            "yo" => "Ṣé o kò tíì ní àkọọlẹ̀?",
+            "ig" => "Ị nweghị akaụntụ?",
+            "ha" => "Bakada asusu tukuna?"
+            ],
+            "Signup here" => [
+            "en" => "Signup here",
+            "yo" => "Forukọsilẹ níbí",
+            "ig" => "Debanye aha ebe a",
+            "ha" => "Yi rijista anan"
+            ],
+            "Signin here" => [
+            "en" => "Signin here",
+            "yo" => "Wọlé níbí",
+            "ig" => "Banye ebe a",
+            "ha" => "Shiga anan"
+            ],
+            "Forgot password" => [
+            "en" => "Forgot password",
+            "yo" => "Gbagbe Ọrọ aṣínà",
+            "ig" => "Chefuo okwuntughe",
+            "ha" => "Manta kalmar sirri"
+            ],
+            "Forgot your password? No problem. Just let us know your email address and we will email you a password reset link that will allow you to choose a new one." => [
+            "en" => "Forgot your password? No problem. Just let us know your email address and we will email you a password reset link that will allow you to choose a new one.",
+            "yo" => "Gbagbe ọrọ aṣínà rẹ? Kò sí ìṣòro. Kan sọ àdírẹ́sì imeeli rẹ fún wa, a ó sì rán ọ ní líńkì ìtunṣètò.",
+            "ig" => "Chefuru okwuntughe gị? Ọ dịghị nsogbu. Nye anyị adreesị email gị, anyị ga-eziga gị njikọ ịtọgharịa ya.",
+            "ha" => "Ka manta kalmar sirrinka? Babu matsala. Kawai ba mu adireshin imel ɗinka, za mu aiko maka da hanyar sake saitawa."
+            ],
+            "Please check your spam folder too in case you dont find the email notification sent to you in your inbox." => [
+            "en" => "Please check your spam folder too in case you dont find the email notification sent to you in your inbox.",
+            "yo" => "Jọ̀wọ́, ṣàyẹ̀wò apamọ̀ àwúrúju rẹ pẹ̀lú bí o bá kò rí ìkìlọ̀ imeeli náà nínú àpótíwọlé rẹ.",
+            "ig" => "Biko, lelee folda spam gị ma ọ bụrụ na ị chọtaghị ozi email ahụ na igbe mbata gị.",
+            "ha" => "Don Allah, duba babban fayil ɗin banza idan baka ga saƙon imel ɗin a akwatin saƙonka ba."
+            ],
+            "Email Password Reset Link" => [
+            "en" => "Email Password Reset Link",
+            "yo" => "Rán Líńkì Ìtunṣètò Ọrọ aṣínà",
+            "ig" => "Zipu njikọ mgbanwe okwuntughe",
+            "ha" => "Aika hanyar sake saita kalmar sirri"
+            ],
+            "Return to login" => [
+            "en" => "Return to login",
+            "yo" => "Pada sí ìwọlé",
+            "ig" => "Laghachi na nbanye",
+            "ha" => "Koma zuwa shiga"
+            ],
+            "Complete Password Reset" => [
+            "en" => "Complete Password Reset",
+            "yo" => "Pari Ìtunṣètò Ọrọ aṣínà",
+            "ig" => "Mechie mgbanwe okwuntughe",
+            "ha" => "Kammala sake saita kalmar sirri"
+            ],
+            "New PIN" => [
+            "en" => "New PIN",
+            "yo" => "PIN Tuntun",
+            "ig" => "PIN ọhụrụ",
+            "ha" => "Sabon PIN"
+            ],
+            "Confirm New PIN" => [
+            "en" => "Confirm New PIN",
+            "yo" => "Jẹ́risi PIN Tuntun",
+            "ig" => "Kwenye PIN ọhụrụ",
+            "ha" => "Tabbatar da sabon PIN"
+            ],
+            "Need something else" => [
+            "en" => "Need something else",
+            "yo" => "Nilo nkankan mìíràn?",
+            "ig" => "Chọrọ ihe ọzọ?",
+            "ha" => "Kana buƙatar wani abu dabam?"
+            ]            
           ];
 
           $merged = array_merge($arr1, $arr2);
