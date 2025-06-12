@@ -270,13 +270,14 @@ class ApiIntegrationController extends Controller
              'device_name' => 'required',
          ]);
   
-        //  $user = User::where('email', $request->email)->first();
-        $email = $request->email;
+         //  $user = User::where('email', $request->email)->first();
+         $email = $request->email;
          $user = User::where(function($query) use ($email){
              $query->where('email',$email)
-                   ->orWhere('username',$email)
+                   ->orWhere('username','like','%'.$email.'%')
                    ->orWhere('phone_number',$email);
          })->first();
+         logger('User: '.$user);
   
          if (! $user || ! Hash::check($request->password, $user->password)) {
              logger('oga o'); 
