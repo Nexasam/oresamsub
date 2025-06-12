@@ -75,7 +75,7 @@ class FundingOptionsController extends Controller
           try{
 
             if ($validator->stopOnFirstFailure()->fails()) {
-              return $this->error($validator->errors()->first(), data: $request->all(), code: 403 );    
+              return $this->error($validator->errors()->first().'ooo', data: $request->all(), code: 403 );    
             }
   
             $user_details = User::select('id','pin')->where('id',$request->user_id)->first();
