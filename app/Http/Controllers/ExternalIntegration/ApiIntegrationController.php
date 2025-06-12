@@ -188,8 +188,8 @@ class ApiIntegrationController extends Controller
             
         $request->validate([
             'user_id' => ['required', 'string', 'exists:users,id'],
-            'pin' => ['required', 'string','string','regex:/^\d{4,5}$/'], 
-            'confirm_pin' => ['required', 'string','string','regex:/^\d{4,5}$/'], 
+            'pin' => ['required','integer','regex:/^\d{4,5}$/'], 
+            'confirm_pin' => ['required','integer','regex:/^\d{4,5}$/'], 
         ]);
 
         $data['pin'] = $request->pin;
@@ -265,7 +265,7 @@ class ApiIntegrationController extends Controller
      public function login(Request $request)
      {
         $request->validate([
-             'email' => 'required',
+             'email' => ['required','string','max:255'],
              'password' => 'required',
              'device_name' => 'required',
          ]);
