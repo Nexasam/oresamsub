@@ -272,7 +272,7 @@ class ApiIntegrationController extends Controller
   
         //  $user = User::where('email', $request->email)->first();
         $email = $request->email;
-         $user = User::where(function($query){
+         $user = User::where(function($query) use ($email){
              $query->where('email',$email)
                    ->orWhere('username',$email)
                    ->orWhere('phone_number',$email);
@@ -283,8 +283,7 @@ class ApiIntegrationController extends Controller
             //  throw ValidationException::withMessages([
             //      'email' => ['The provided credentials are incorrect.'],
             //  ]);  
-            return $this->error('The provided credentials are incorrect.',data:$request->all());
-             
+            return $this->error('The provided credentials are incorrect.',data:$request->all());      
          }
 
          $token = $user->createToken($request->email)->plainTextToken;
