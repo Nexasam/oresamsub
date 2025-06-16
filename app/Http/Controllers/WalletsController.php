@@ -1253,7 +1253,7 @@ class WalletsController extends Controller
     //CRYSTALPAY accounts generation
     public function generate_virtual_account(Request $request){
         $validator = Validator::make($request->all(), [
-            'pin' => ['required','string','regex:/^\d{4,5}$/','exists:users,pin'],
+            'pin' => ['required','string','regex:/^\d{4,5}$/'],
             // 'bvn' => 'required|max:255',
             // 'first_name' => 'required|max:255',
             // 'last_name' => 'required|max:255',
