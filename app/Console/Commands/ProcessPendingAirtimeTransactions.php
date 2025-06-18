@@ -133,7 +133,7 @@ class ProcessPendingAirtimeTransactions extends Command
                             $get_network_id = Network::where('network_name',$selected_network)->first();
                             if(! $get_network_id){
                                 $network_id = $get_network_id->id;
-                                logger('Airtime should not run based on this exception');
+                                logger('Airtime should not run based on this exception');exit;
                                 return ['status'=>'-1', 'message'=>'The phone number does not seem to match the network'];
                             }
                     
