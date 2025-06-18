@@ -131,11 +131,11 @@ class ProcessPendingAirtimeTransactions extends Command
                             $validated_phone_number = $validate_phone['validated_phone_number'];
                             $selected_network = $validate_phone['selected_network'] ?? 'NIL';
                             $get_network_id = Network::where('network_name',$selected_network)->first();
-                            if(! $get_network_id){
-                                $network_id = $get_network_id->id;
-                                logger('Airtime should not run based on this exception');exit;
-                                return ['status'=>'-1', 'message'=>'The phone number does not seem to match the network'];
-                            }
+                            // if(! $get_network_id){
+                            //     $network_id = $get_network_id->id;
+                            //     logger('Airtime should not run based on this exception');exit;
+                            //     return ['status'=>'-1', 'message'=>'The phone number does not seem to match the network'];
+                            // }
                     
 
                             $buy_airtime = AutomationLogic::initiateAirtimePurchase($dataa);
