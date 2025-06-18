@@ -130,12 +130,14 @@ class ProcessPendingAirtimeTransactions extends Command
                             $validate_phone = (new UtilService())->phoneNumberNetworkValidation($pending_transaction->phone_number);
                             $validated_phone_number = $validate_phone['validated_phone_number'];
                             $selected_network = $validate_phone['selected_network'] ?? 'NIL';
-                            $get_network_id = Network::where('network_name',$selected_network)->first();
-                            // if(! $get_network_id){
-                            //     $network_id = $get_network_id->id;
-                            //     logger('Airtime should not run based on this exception');exit;
-                            //     return ['status'=>'-1', 'message'=>'The phone number does not seem to match the network'];
-                            // }
+                            $get_network_id = Network::where('network_name',strtolower($selected_network))->first();
+                            if(!$get_network_id || $get_network_id->id != $pending_transaction->product_plan->product_plan_category->network->id){
+                                $network_id = $get_network_id->id;
+                                $buy_airtime['status'] = -1;
+                                $buy_airtime['user_message'] = 'Airtime should not run based on network difference';
+                                $buy_airtime['admin_message'] = 'Airtime should not run based on network difference';
+                                logger('Airtime should not run based on network difference');
+                            }
                     
 
                             $buy_airtime = AutomationLogic::initiateAirtimePurchase($dataa);
