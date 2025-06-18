@@ -143,8 +143,8 @@ class ProcessPendingAirtimeTransactions extends Command
                                 $buy_airtime = AutomationLogic::initiateAirtimePurchase($dataa);
                             }else{
                                 $buy_airtime['status'] = -1;
-                                $buy_airtime['user_message'] = 'Airtime should not run based on network difference';
-                                $buy_airtime['admin_message'] = 'Airtime should not run based on network difference';
+                                $buy_airtime['user_message'] = 'Phone number and network does not align';
+                                $buy_airtime['admin_message'] = 'Phone number and network does not align';
                             }
 
                             if($buy_airtime['status'] == 1){
