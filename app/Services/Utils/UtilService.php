@@ -56,7 +56,7 @@ class UtilService{
         $strippedString = str_replace(' ', '', $phone_number); //remove space
         $phone_number  = str_replace('+','',$strippedString); //remove plus to generate new number
 
-       if(strlen($phone_number) != 11 && strlen($phone_number) != 13 ){
+       if(strlen($phone_number) != 11 && strlen($phone_number) != 13 && strlen($phone_number != 14) ){
         return [
             'status' => -1,
             'message' => 'Please check your number again',

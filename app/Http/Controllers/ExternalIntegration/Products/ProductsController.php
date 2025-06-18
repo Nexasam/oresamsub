@@ -227,6 +227,8 @@ class ProductsController extends Controller
         $data['validatephonenetwork'] = $request->validatephonenetwork;
         $data['user_id'] = $request->user_id;//this is required
 
+        
+
         $buy_data = (new ProductsService())->buy_data_service($data);
         // return $buy_data;
 
