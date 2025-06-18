@@ -49,9 +49,9 @@ class FundingOptionsController extends Controller
     public function fetch_naira_virtual_accounts(Request $request){
         $user_details = User::select('id','pin')->where('id',$request->user_id)->first();
     
-        // if($user_details->pin != $request->pin){
-        //     return $this->error('Incorrect PIN', data: $request->all(), code: 403 );   
-        // }
+        if($user_details->pin != $request->pin){
+            return $this->error('Incorrect PIN', data: $request->all(), code: 403 );   
+        }
 
         $funding_options = UserVirtualAccount::with('funding_option:id,funding_option_name')
         ->where('user_id',$request->user_id)
