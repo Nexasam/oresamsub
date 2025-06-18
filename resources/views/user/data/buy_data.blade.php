@@ -32,14 +32,14 @@
           
               <div class="box">
                 <div class="box-header">
-                  <h5 class="box-title">{{ auth()->user()->role->role_name == 'Admin' ? 'ADMIN TEST>>>' : '' }} Data Purchase (Single or Bulk)</h5>
+                  <h5 class="box-title">{{ auth()->user()->role->role_name == 'Admin' ? 'ADMIN TEST>>>' : '' }} {{ __('messages.Data Purchase') }} </h5>
                 </div>
 
                 <div class="grid grid-cols-1">
                   <div class="col-span-12">
                     @if (Session::has('success'))
                     <div class="bg-success/10 border border-success/10 alert text-success" role="alert">
-                      Great! {{ Session::get('success') }}
+                      {{__('messages.Great')}}! {{ Session::get('success') }}
                       </div>
                     @endif
     
@@ -64,10 +64,10 @@
                 <div class="box-body">
                   <nav class="flex space-x-2" aria-label="Tabs" role="tablist">
                     <button type="button" class="hs-tab-active:bg-primary hs-tab-active:text-white py-3 px-4 inline-flex items-center gap-2 bg-transparent text-sm font-medium text-center text-gray-500 rounded-sm hover:text-primary  dark:text-white/70 dark:hover:text-white active" id="pills-with-brand-color-item-2" data-hs-tab="#pills-with-brand-color-2" aria-controls="pills-with-brand-color-2">
-                      Buy Data
+                      {{ __('messages.Buy Data') }}
                     </button>
                     <button type="button" class="hs-tab-active:bg-primary hs-tab-active:text-white py-3 px-4 inline-flex items-center gap-2 bg-transparent text-sm font-medium text-center text-gray-500 rounded-sm hover:text-primary  dark:text-white/70 dark:hover:text-white " id="pills-with-brand-color-item-1" data-hs-tab="#pills-with-brand-color-1" aria-controls="pills-with-brand-color-1">
-                      View Data Transactions
+                      {{ __('messages.View data transactions') }}
                     </button>        
                   </nav>
 
@@ -78,7 +78,7 @@
                       <div class="box-body">     
                         <div class="box-header">
                           <div class="flex">
-                            <h5 class="box-title my-auto">Filter options</h5>
+                            <h5 class="box-title my-auto">{{ __('messages.Filter Options') }}</h5>
                             <div class="hs-dropdown ti-dropdown block ms-auto my-auto s  sm:flex items-center justify-between">
                             
                                   <button type="button"
@@ -87,9 +87,9 @@
                             </button>
                             <div class="hs-dropdown-menu ti-dropdown-menu ">
                               <a href="javascript:void(0)" class="ti-dropdown-item hs-dropdown-toggle"
-                              data-hs-overlay="#hs-slide-down-animation-modal">Basic filter</a>
+                              data-hs-overlay="#hs-slide-down-animation-modal">{{ __('messages.Basic filter')  }}</a>
                               {{-- <a href="javascript:void(0)" data-target="#testing" data-toggle="modal">Basic filter</a> --}}
-                              <a id="reload_txns_tbl" class="ti-dropdown-item" href="javascript:void(0)">Refresh</a>
+                              <a id="reload_txns_tbl" class="ti-dropdown-item" href="javascript:void(0)">{{ __('messages.Refresh')  }}</a>
                               {{-- <a class="ti-dropdown-item" href="javascript:void(0)">Export</a> --}}
                             </div>
 
@@ -196,7 +196,7 @@
                                 <div class="box">
                                     
                                     <div class="box-body">
-                                      <h3><strong> Wallet balance: &#8358;{{  number_format($user_details->main_wallet,2) }}</strong></h3>
+                                      <h3><strong> {{ __('messages.Wallet Balance') }}: &#8358;{{  number_format($user_details->main_wallet,2) }}</strong></h3>
                                         <br>
                                         <br>
                                         <form>
@@ -213,7 +213,7 @@
                                                       <label class="ti-form-label mb-0">Choose Wallet</label>
                                                       <select required id="wallet_category" name="wallet_category" class="my-auto ti-form-select">
                                                           <option value="">Select</option>
-                                                          <option value="main_wallet">Main Wallet - &#8358;{{  number_format($user_details->main_wallet) }}</option>                                        
+                                                          <option value="main_wallet"> {{ __('messages.Main Wallet') }} - &#8358;{{  number_format($user_details->main_wallet) }}</option>                                        
                                                           <option value="data_wallet">Data Wallet</option>                                        
                                                       
                                                       </select>
@@ -222,7 +222,7 @@
 
 
                                               <div class="space-y-2">
-                                                <label class="ti-form-label mb-0">Phone Number(s) to recharge</label>
+                                                <label class="ti-form-label mb-0">{{ __('messages.Phone Number(s) to recharge') }}</label>
                                                 <textarea id="phone_number" name="phone_number" class="my-auto ti-form-input"
                                                     placeholder="e.g 08168509044, 09011988807"></textarea>
                                                </div>
@@ -230,7 +230,7 @@
 
 
                                                 <div class="space-y-2">
-                                                    <label class="ti-form-label mb-0">Network</label>
+                                                    <label class="ti-form-label mb-0">{{ __('messages.Network') }}</label>
                                                     {{-- single_select --}}
                                                     <select required id="network_id" name="network_id" class="my-auto ti-form-select">
                                                         <option value="">Select</option>
@@ -254,7 +254,7 @@
                     
                                                 {{-- single_select --}}
                                                 <div id="product_plan_category_div" class="space-y-2 hidden">
-                                                    <label class="ti-form-label mb-0">Product Plan Category</label>
+                                                    <label class="ti-form-label mb-0">{{ __('messages.Product Plan Category') }}</label>
                                                     <select data-trigger required name="product_plan_category_id" id="product_plan_category_id" class="my-auto ti-form-select">
                                                         <option value="all">Select</option>
                     
@@ -264,7 +264,7 @@
                                           
                     
                                                 <div class="space-y-2">
-                                                    <label class="ti-form-label mb-0">Product Plans List</label>
+                                                    <label class="ti-form-label mb-0">{{ __('messages.Product Plans List') }}</label>
                                                     <select required name="product_plan_id" id="product_plan_id" class="my-auto ti-form-select">
                                                         <option value="all">Select</option>
                     
@@ -290,19 +290,19 @@
                     
                                                 <div class="space-y-2">
                                                   <label class="ti-form-label mb-0">PIN:</label>
-                                                  <input type="password" class="my-auto ti-form-input" id="pin" name="pin" value="" placeholder="Enter your pin to secure transaction">
+                                                  <input type="password" class="my-auto ti-form-input" id="pin" name="pin" value="" placeholder="{{ __('messages.Enter your pin to secure transaction') }}">
                                                   <div class="flex items-center">
                                                     <input type="checkbox" id="hs-basic-with-description-unchecked" class="ti-switch show_pin1">
-                                                    <label for="hs-basic-with-description-unchecked" class="text-sm text-gray-500 ms-3 dark:text-white/70 ">Show PIN</label>
+                                                    <label for="hs-basic-with-description-unchecked" class="text-sm text-gray-500 ms-3 dark:text-white/70 ">{{__('messages.Show PIN')}}</label>
                                                   </div>  
                                                 </div>
 
                                             
 
                                                 <div class="">
-                                                    <button type="submit" id="buy_data_btn" class="ti-btn ti-btn-primary w-full">Buy Data</button><br>
+                                                    <button type="submit" id="buy_data_btn" class="ti-btn ti-btn-primary w-full">{{ __('messages.Buy Data') }}</button><br>
                                                     <p class="text-center mt-2 font-bold underline">
-                                                      <a href="#" id="cancel_disabling" class="hidden">Click to reactivate the button and try again</a>
+                                                      <a href="#" id="cancel_disabling" class="hidden">{{ __('messages.Click to reactivate the button and try again') }}</a>
                                                     </p>
 
                                                 </div>

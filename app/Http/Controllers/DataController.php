@@ -434,7 +434,7 @@ class DataController extends Controller
             'phone_number' => 'required',
             'product_plan_category_id' => 'required',
             'product_plan_id' => 'required',
-            'pin' => ['required','string','regex:/^\d{4,5}$/'],
+            'pin' => ['required','regex:/^\d{4,5}$/'],
             'wallet_category'=>['required',Rule::in(['main_wallet','data_wallet'])],
             'validatephonenetwork'=>['required',Rule::in([0,1])],
         ]);
@@ -479,7 +479,7 @@ class DataController extends Controller
 
         if($user_details->pin != $request->pin){
             //end session and redirect to login
-            return response()->json(['status'=>'-1', 'message'=>'Incorrect PIN' ]);
+            return response()->json(['status'=>'-1', 'message'=>__('messages.Incorrect PIN') ]);
         }
 
         $user_id = $user_details->id;

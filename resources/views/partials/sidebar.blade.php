@@ -54,11 +54,11 @@
                 <li class="slide  has-sub ">
                     <a href="{{ route('dashboard') }}" class="side-menu__item">
                         <i class="ri-home-8-line side-menu__icon"></i>
-                        <span class="side-menu__label">Dashboard </span>
+                        <span class="side-menu__label">{{ __('messages.Dashboard') }} </span>
                         {{-- <i class="ri ri-arrow-right-s-line side-menu__angle"></i> --}}
                     </a>
                     <ul class="slide-menu child1">
-                        <li class="slide side-menu__label1"><a href="#">Dashboard</a></li>
+                        <li class="slide side-menu__label1"><a href="#">{{ __('messages.Dashboard') }}</a></li>
                         {{-- <li class="slide"><a href="index.html" class="side-menu__item">Sales</a></li> --}}
                         
                     </ul>
@@ -270,7 +270,7 @@
                 <li class="slide  has-sub">
                     <a href="{{ route('user.wallet.index')}}" class="side-menu__item">
                         <i class="ti ti-report-money  side-menu__icon"></i>
-                        <span class="side-menu__label">Fund Wallet</span>
+                        <span class="side-menu__label">{{ __('messages.Fund Wallet') }}</span>
                         <i class="ri ri-arrow-right-s-line side-menu__angle"></i>
                     </a>
                     <ul class="slide-menu child1">
@@ -284,7 +284,7 @@
                  <li class="slide  has-sub">
                     <a href="{{ route('user.data.buy_data2') }}" class="side-menu__item">
                         <i class="ti ti-device-mobile side-menu__icon"></i>
-                        <span class="side-menu__label">Quick Data Purchase</span>
+                        <span class="side-menu__label">{{ __('messages.Quick Data Purchase') }}</span>
                         <i class="ri ri-arrow-right-s-line side-menu__angle"></i>
                     </a>
                     <ul class="slide-menu child1">
@@ -297,7 +297,7 @@
                  <li class="slide  has-sub">
                     <a href="{{ route('user.data.buy_data') }}" class="side-menu__item">
                         <i class="ti ti-device-mobile side-menu__icon"></i>
-                        <span class="side-menu__label">Data(Bulk)</span>
+                        <span class="side-menu__label">{{ __('messages.Data(Bulk)') }}</span>
                         <i class="ri ri-arrow-right-s-line side-menu__angle"></i>
                     </a>
                     <ul class="slide-menu child1">
@@ -312,7 +312,7 @@
                    <li class="slide  has-sub">
                     <a href="{{ route('user.airtime.buy_airtime')}}" class="side-menu__item">
                         <i class="ti ti-phone-call  side-menu__icon"></i>
-                        <span class="side-menu__label">Airtime</span>
+                        <span class="side-menu__label">{{ __('messages.Airtime') }}</span>
                         <i class="ri ri-arrow-right-s-line side-menu__angle"></i>
                     </a>
                     <ul class="slide-menu child1">
@@ -325,7 +325,7 @@
                   <li class="slide  has-sub">
                     <a href="{{ route('user.cable_subscription.buy_cable_subscription')}}" class="side-menu__item">
                         <i class="ti ti-device-tv  side-menu__icon"></i>
-                        <span class="side-menu__label">Cable Subscription</span>
+                        <span class="side-menu__label">{{ __('messages.Cable Subscription') }}</span>
                         <i class="ri ri-arrow-right-s-line side-menu__angle"></i>
                     </a>
                     <ul class="slide-menu child1">
@@ -339,7 +339,7 @@
                 <li class="slide  has-sub">
                     <a href="{{ route('user.electricity.buy_electricity_subscription')}}" class="side-menu__item">
                         <i class="ti ti-recharging  side-menu__icon"></i>
-                        <span class="side-menu__label">Electricity Subscription</span>
+                        <span class="side-menu__label">{{ __('messages.Electricity Subscription') }}</span>
                         <i class="ri ri-arrow-right-s-line side-menu__angle"></i>
                     </a>
                     <ul class="slide-menu child1">
@@ -356,7 +356,7 @@
                 <li class="slide  has-sub">
                     <a href="{{ route('user.transactions.index')}}" class="side-menu__item">
                         <i class="ti ti-exchange side-menu__icon"></i>
-                        <span class="side-menu__label">Transactions </span>
+                        <span class="side-menu__label">{{ __('messages.Transactions') }} </span>
                         <i class="ri ri-arrow-right-s-line side-menu__angle"></i>
                     </a>
                     <ul class="slide-menu child1">
@@ -372,7 +372,7 @@
                         <li class="slide  has-sub">
                             <a href="{{ route('commissions.index')}}" class="side-menu__item">
                                 <i class="ti ti-exchange side-menu__icon"></i>
-                                <span class="side-menu__label">Commissions </span>
+                                <span class="side-menu__label">{{ __('messages.Commissions') }} </span>
                                 <i class="ri ri-arrow-right-s-line side-menu__angle"></i>
                             </a>
                             <ul class="slide-menu child1">
@@ -388,7 +388,7 @@
                     <li class="slide  has-sub">
                         <a href="{{ route('user.api.docs')}}" class="side-menu__item">
                             <i class="ti ti-briefcase  side-menu__icon"></i>
-                            <span class="side-menu__label">API Docs  {{  strtolower(auth()->user()->role->role_name) }}</span>
+                            <span class="side-menu__label">{{ __('messages.API Docs') }} </span>
                             <i class="ri ri-arrow-right-s-line side-menu__angle"></i>
                         </a>
                         <ul class="slide-menu child1">
@@ -403,7 +403,7 @@
                  <li class="slide  has-sub">
                     <a href="{{ route('user.settings.index') }}" class="side-menu__item">
                         <i class="ti ti-settings side-menu__icon"></i>
-                        <span class="side-menu__label">User Settings</span>
+                        <span class="side-menu__label">{{ __('messages.User Settings') }}</span>
                         <i class="ri ri-arrow-right-s-line side-menu__angle"></i>
                     </a>
                     <ul class="slide-menu child1">
@@ -447,7 +447,7 @@
                         <a type="button" href="" onclick="event.preventDefault();
                                             this.closest('form').submit();">
                             
-                             <span class="side-menu__label text-white">Logout</span>
+                             <span class="side-menu__label text-white">{{ __('messages.Logout') }}</span>
                         </a>
                        </div>
                     </form>

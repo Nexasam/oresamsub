@@ -46,13 +46,13 @@
           
               <div class="box">
                 <div class="box-header">
-                   <p class="text-xl underline"><b>Wallet Balance: {{ number_format(auth()->user()->main_wallet) }}</b></p>
+                   <p class="text-xl underline"><b>{{ __('messages.Wallet Balance')}} {{ number_format(auth()->user()->main_wallet) }}</b></p>
                    <br>
-                  <h5 class="box-title">Fund wallet using  <b>{{ $funding_option->funding_option_name }}</b></h5>
-                  <b>Please note:</b>
-                  <p>You can also make a direct payment to our bank account and your wallet will be credited. <br>
+                  <h5 class="box-title">{{  __('messages.Fund wallet using') }} <b>{{ $funding_option->funding_option_name }}</b></h5>
+                  <b>{{  __('messages.Please note') }}:</b>
+                  <p>{{  __('messages.You can also make a direct payment to our bank account and your wallet will be credited.') }} <br>
                     @if (env('APP_NAME') == 'OresamSub')
-                        <b>Here's the details:</b> <br>
+                        <b>{{ __("messages.Here’s the details") }}:</b> <br>
                         {{-- 9163128718 <br>
                         Moniepoint  <br> --}}
                         <b>Account Number:</b> 3069976671 <br>
@@ -61,7 +61,7 @@
                     @else
                         
                     @endif
-                     <a class="ti-btn ti-btn-primary w-full md:w-1/3" href="https://api.whatsapp.com/send?phone={{ session()->get('whatsapp_support_number') }}&text=Hello,%20Please%20I%20want%20to%20fund%20my%20wallet%20on%20your%20platform">Click here to reach us on whatsapp</a>
+                     <a class="ti-btn ti-btn-primary w-full md:w-1/3" href="https://api.whatsapp.com/send?phone={{ session()->get('whatsapp_support_number') }}&text=Hello,%20Please%20I%20want%20to%20fund%20my%20wallet%20on%20your%20platform">{{ __('messages.Click here to reach us on whatsapp') }}</a>
 
                   </p>
                 </div>
@@ -69,10 +69,10 @@
                 <div class="box-body">
                   <nav class="flex space-x-2" aria-label="Tabs" role="tablist">
                     <button type="button" class="hs-tab-active:bg-primary hs-tab-active:text-white py-3 px-4 inline-flex items-center gap-2 bg-transparent text-sm font-medium text-center text-gray-500 rounded-sm hover:text-primary  dark:text-white/70 dark:hover:text-white active" id="pills-with-brand-color-item-2" data-hs-tab="#pills-with-brand-color-2" aria-controls="pills-with-brand-color-2">
-                      Virtual Accounts
+                      {{ __('messages.Virtual Accounts') }}
                     </button>
                     <button type="button" class="hs-tab-active:bg-primary hs-tab-active:text-white py-3 px-4 inline-flex items-center gap-2 bg-transparent text-sm font-medium text-center text-gray-500 rounded-sm hover:text-primary  dark:text-white/70 dark:hover:text-white " id="pills-with-brand-color-item-1" data-hs-tab="#pills-with-brand-color-1" aria-controls="pills-with-brand-color-1">
-                      Wallet Transactions
+                      {{ __('messages.Wallet Transactions') }}
                     </button> 
                     {{-- <button type="button" class="hs-tab-active:bg-primary hs-tab-active:text-white py-3 px-4 inline-flex items-center gap-2 bg-transparent text-sm font-medium text-center text-gray-500 rounded-sm hover:text-primary  dark:text-white/70 dark:hover:text-white " id="pills-with-brand-color-item-1" data-hs-tab="#pills-with-brand-color-1" aria-controls="pills-with-brand-color-1">
                       Dynamic Wallets
@@ -92,8 +92,8 @@
                                 <thead class="bg-gray-50 dark:bg-black/20">
                                 <tr>
                                     {{-- <th>ID</th> --}}
-                                    <th>Bank Name </th>
-                                    <th>Account Details</th>
+                                    <th>{{ __('messages.Bank Name') }} </th>
+                                    <th>{{ __('messages.Account Details') }}</th>
                                     <th></th>
                                 </tr>
                                </thead>
@@ -102,11 +102,11 @@
                                           @foreach ($funding_option->bank_codes as $key=>$bank_code)
                                           <tr aria-colspan="3">
                                           
-                                            <td>Bank Name: {{ $bank_code->bank_name }} 
+                                            <td>{{ __('messages.Bank Name') }}: {{ $bank_code->bank_name }} 
                                               @if ($bank_code->rate_category == 'Flat')
-                                              <br> Charges: 	&#8358;{{ $bank_code->bank_charges }} - (Flat rate)
+                                              <br>{{ __('messages.Charges') }}: 	&#8358;{{ $bank_code->bank_charges }} - (Flat rate)
                                               @else
-                                                <br> Charges: {{ $bank_code->bank_charges }} %
+                                                <br> {{ __('messages.Charges') }}: {{ $bank_code->bank_charges }} %
                                               @endif
                                               {{-- @if (strtolower($bank_code->bank_name) == 'wema bank' || strtolower($bank_code->bank_name) == 'palmpay' )
                                                 <br> Charges: 	&#8358;{{ $bank_code->bank_charges }}                                                 
@@ -123,14 +123,14 @@
                                             @else
 
                                             <button type="button" class="hs-dropdown-toggle ti-btn ti-btn-primary" data-hs-overlay="#hs-vertically-centered-modal{{$bank_code->id}}">
-                                              Generate
+                                              {{ __('messages.Generate') }}
                                             </button> 
                                             <div id="hs-vertically-centered-modal{{$bank_code->id}}" class="hs-overlay ti-modal hidden">
                                               <div class="ti-modal-box">
                                                 <div class="ti-modal-content">
                                                   <div class="ti-modal-header">
                                                     <h3 class="ti-modal-title">
-                                                      Generate Virtual Account for the bank code:  {{ $bank_code->bank_code }}
+                                                      {{  __('messages.Generate Virtual Account for the bank code') }}:  {{ $bank_code->bank_code }}
                                                     </h3>
                                                     <button type="button" class="hs-dropdown-toggle ti-modal-clode-btn"
                                                       data-hs-overlay="#hs-basic-modal">
@@ -165,11 +165,11 @@
             
                                                             <div class="space-y-2">
                                                               <label class="ti-form-label mb-0">PIN:</label>
-                                                              <input type="password" required class="my-auto ti-form-input" id="pin" name="pin" value="" placeholder="Enter your pin to secure transaction">
+                                                              <input type="password" required class="my-auto ti-form-input" id="pin" name="pin" value="" placeholder="{{ __('messages.Enter your pin to secure transaction') }}">
                                                             </div>
             
                                                             <div class="space-y-2">
-                                                                <button type="submit" id="generate_virtual_account" class="ti-btn ti-btn-primary w-full">Generate Virtual Account</button><br>
+                                                                <button type="submit" id="generate_virtual_account" class="ti-btn ti-btn-primary w-full">{{ __('messages.Generate') }}</button><br>
                                                                 
                                                             </div>
                                                            
@@ -198,14 +198,14 @@
                                                     @foreach ($user_virtual_accounts as $user_virtual_account)
                                                         @if ($user_virtual_account->bank_code == $bank_code->bank_code)
                                                           <span class="badge bg-success text-white">Generated</span><br>
-                                                          <p>Account number:  {{  $user_virtual_account->account_number  }}</p>
-                                                          <p>Bank name:  {{  $user_virtual_account->bank_name  }}</p>
-                                                          <p>Account name:  {{  $user_virtual_account->account_name  }}</p>
-                                                          <p>Account email:  {{  $user_virtual_account->account_email  }}</p>
+                                                          <p>{{ __('messages.Account number')  }}:  {{  $user_virtual_account->account_number  }}</p>
+                                                          <p>{{ __('messages.Bank Name')  }}:  {{  $user_virtual_account->bank_name  }}</p>
+                                                          <p>{{ __('messages.Account Name')  }}:  {{  $user_virtual_account->account_name  }}</p>
+                                                          <p>{{ __('messages.Account Email')  }}:  {{  $user_virtual_account->account_email  }}</p>
                                                         @endif
                                                     @endforeach
                                               @else
-                                                  <span class="badge bg-warning text-white">Pending</span>
+                                                  <span class="badge bg-warning text-white">{{__('messages.Pending')}}</span>
                                               @endif
                                             </td>
                                           </tr>

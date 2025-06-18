@@ -32,16 +32,16 @@
           
               <div class="box">
                 <div class="box-header">
-                  <h5 class="box-title">{{ auth()->user()->role->role_name == 'Admin' ? 'TEST' : '' }}  Cable TV Transactions</h5>
+                  <h5 class="box-title">{{ auth()->user()->role->role_name == 'Admin' ? 'TEST' : '' }}  {{__('messages.Cable TV Transactions')}}</h5>
                 </div>
 
                 <div class="box-body">
                   <nav class="flex space-x-2" aria-label="Tabs" role="tablist">
                     <button type="button" class="hs-tab-active:bg-primary hs-tab-active:text-white py-3 px-4 inline-flex items-center gap-2 bg-transparent text-sm font-medium text-center text-gray-500 rounded-sm hover:text-primary  dark:text-white/70 dark:hover:text-white active" id="pills-with-brand-color-item-2" data-hs-tab="#pills-with-brand-color-2" aria-controls="pills-with-brand-color-2">
-                      Buy Cable TV
+                      {{ __('messages.Buy Cable TV')}}
                     </button>
                     <button type="button" class="hs-tab-active:bg-primary hs-tab-active:text-white py-3 px-4 inline-flex items-center gap-2 bg-transparent text-sm font-medium text-center text-gray-500 rounded-sm hover:text-primary  dark:text-white/70 dark:hover:text-white " id="pills-with-brand-color-item-1" data-hs-tab="#pills-with-brand-color-1" aria-controls="pills-with-brand-color-1">
-                      View Cable TV Transactions
+                      {{__('messages.View Cable TV Transactions')}}
                     </button>
                   
                   </nav>
@@ -192,7 +192,7 @@
                                 <div class="box">
                                     
                                     <div class="box-body">
-                                        <h3><strong> Wallet balance: &#8358;{{  number_format($user_details->main_wallet,2) }}</strong></h3>
+                                        <h3><strong> {{ __('messages.Wallet Balance') }}: &#8358;{{  number_format($user_details->main_wallet,2) }}</strong></h3>
                                         <br>
                                         <br>
                                         <form>
@@ -213,7 +213,7 @@
                     
                                                 {{-- single_select --}}
                                                 <div  class="space-y-2">
-                                                    <label class="ti-form-label mb-0">Product Plan Category</label>
+                                                    <label class="ti-form-label mb-0">{{ __('messages.Product Plan Category') }}</label>
                                                     <select data-trigger required name="cable_product_plan_category_id" id="cable_product_plan_category_id" class="my-auto ti-form-select">
                                                         <option value="">Select</option>
                                                         @foreach ($product_plan_categories as $product_plan_category)
@@ -224,7 +224,7 @@
                                                 </div>
                     
                                                 <div class="space-y-2">
-                                                    <label class="ti-form-label mb-0">Product Plans List</label>
+                                                    <label class="ti-form-label mb-0">{{  __('messages.Product Plans List') }}</label>
                                                     <select required name="cable_product_plan_id" id="cable_product_plan_id" class="my-auto ti-form-select">
                                                         <option value="all">Select</option>
                     
@@ -232,7 +232,7 @@
                                                 </div>
                                               
                                                 <div class="space-y-2">
-                                                    <label class="ti-form-label mb-0">Smart Card number / IUC number*</label>
+                                                    <label class="ti-form-label mb-0">{{ __('messages.Smart Card number / IUC number')}}*</label>
                                                     <input type="text" onkeyup="validateNameOnSmartCard('cable')" id="smart_card_number" name="smart_card_number" class="my-auto ti-form-input" placeholder="e.g 02724993783" />
                                                     <div id="validated_name_on_smart_card"></div>
                                            

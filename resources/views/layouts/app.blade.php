@@ -1484,7 +1484,7 @@
             var plan_category_id = $('#product_plan_category_id').val();
               
             if(network_id == ''){
-              sweetAlertDisplay('Network is required','Network required','error');
+              sweetAlertDisplay('Network is requiredddd','Network required','error');
               return;
             }
             var amount = product_slug == 'airtime' ? $(this).val() : '';
@@ -2222,7 +2222,7 @@
             }
 
             if( parseInt(amount) < 50){
-              sweetAlertDisplay('You need to buy atleast N50 worth of airtime','Airtime purchase error','error');
+              sweetAlertDisplay("{{ __('messages.You need to buy at least N50 worth of airtime.') }}",'Airtime purchase error','error');
               // sweetAlertDisplay('You need to buy atleast &#8358;50 worth of airtime','Airtime purchase error','error');
               return;
             
@@ -2257,6 +2257,7 @@
                       // console.log(response.data);
                       var result = JSON.stringify(response);
                       var dataList = JSON.parse(result);
+                      console.log(dataList);
                       if( parseInt(dataList.status) == 1){
                           sweetAlertDisplay(dataList.message,'Success','success');
                           reload(3000);

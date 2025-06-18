@@ -536,6 +536,11 @@
                                 <label class="ti-form-label mb-0">Support Whatsapp number (format: e.g 2348133494364)</label>
                                 <input value="{{ $support_whatsapp_number }}" type="text"  name="support_whatsapp_number" class="my-auto ti-form-input" placeholder="">
                               </div>
+
+                              {{-- <div class="space-y-2">
+                                <label class="ti-form-label mb-0">Support Whatsapp Community Link</label>
+                                <input value="{{ $support_whatsapp_number_community ?? '' }}" type="text"  name="support_whatsapp_number_community" class="my-auto ti-form-input" placeholder="">
+                              </div> --}}
                               
                                 <div class="space-y-2">
                               <label class="ti-form-label mb-0">Instagram link</label>

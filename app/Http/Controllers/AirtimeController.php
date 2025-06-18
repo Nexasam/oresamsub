@@ -366,19 +366,37 @@ class AirtimeController extends Controller
      */
     public function buy_airtime_action(Request $request)
     {
+        // $validator = Validator::make($request->all(), [
+        //     'network_id' => 'required',
+        //     'phone_number' => 'required',
+        //     'product_plan_category_id' => 'nullable',
+        //     'product_plan_id' => 'required',
+        //     'pin' => ['required','regex:/^\d{4,5}$/'],
+        //     'amount' => 'required|numeric|gt:0',
+        //     'validatephonenetwork'=>['required',Rule::in([0,1])],
+        // ]);
+
+        
+        // if ($validator->stopOnFirstFailure()->fails()) {
+        //     return response()->json(['status'=>'-1', 'message'=>$validator->errors()->first(),'data' => $request->all() ]);
+        // }
+
         $validator = Validator::make($request->all(), [
             'network_id' => 'required',
             'phone_number' => 'required',
             'product_plan_category_id' => 'nullable',
             'product_plan_id' => 'required',
-            'pin' => ['required','string','regex:/^\d{4,5}$/'],
+            'pin' => ['required', 'regex:/^\d{4,5}$/'],
             'amount' => 'required|numeric|gt:0',
-            'validatephonenetwork'=>['required',Rule::in([0,1])],
+            'validatephonenetwork' => ['required', Rule::in([0, 1])],
         ]);
-
         
         if ($validator->stopOnFirstFailure()->fails()) {
-            return response()->json(['status'=>'-1', 'message'=>$validator->errors()->first(),'data' => $request->all() ]);
+            return response()->json([
+                'status' => '-1',
+                'message' =>  $validator->errors()->first(),
+                'data' => $request->all()
+            ]);
         }
 
         $data1['days_count'] = [1,7,30];
@@ -432,7 +450,9 @@ class AirtimeController extends Controller
         if($user_details->pin != $request->pin){
             //end session and redirect to login
            
-            return response()->json(['status'=>'-1', 'message'=>'Incorrect PIN' ]);
+            // return response()->json(['status'=>'-1', 'message'=>'Incorrect PIN' ]);
+            return response()->json(['status'=>'-1', 'message'=>__('messages.Incorrect PIN') ]);
+
         }
 
         $user_id = $user_details->id;

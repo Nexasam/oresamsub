@@ -32,17 +32,18 @@
           
               <div class="box">
                 <div class="box-header">
-                  <h5 class="box-title">{{ auth()->user()->role->role_name == 'Admin' ? 'ADMIN TEST>>>' : '' }} Quick Data Purchase</h5> 
+                  <h5 class="box-title">{{ auth()->user()->role->role_name == 'Admin' ? 'ADMIN TEST>>>' : '' }} {{ __('messages.Quick Data Purchase')}}</h5> 
                 </div>
 
                 <div class="box-body">
                   <nav class="flex space-x-2" aria-label="Tabs" role="tablist">
                     <button type="button" class="hs-tab-active:bg-primary hs-tab-active:text-white py-3 px-4 inline-flex items-center gap-2 bg-transparent text-sm font-medium text-center text-gray-500 rounded-sm hover:text-primary  dark:text-white/70 dark:hover:text-white active" id="pills-with-brand-color-item-2" data-hs-tab="#pills-with-brand-color-2" aria-controls="pills-with-brand-color-2">
-                      Buy Data
+                     {{ __('messages.Buy Data')}}
                     </button>
                  
                     <button type="button" class="hs-tab-active:bg-primary hs-tab-active:text-white py-3 px-4 inline-flex items-center gap-2 bg-transparent text-sm font-medium text-center text-gray-500 rounded-sm hover:text-primary  dark:text-white/70 dark:hover:text-white " id="pills-with-brand-color-item-1" data-hs-tab="#pills-with-brand-color-1" aria-controls="pills-with-brand-color-1">
-                      View Data Transactions
+                     {{ __('messages.View data transactions')}}
+
                     </button>        
                   </nav>
 
@@ -193,7 +194,7 @@
                                 <div class="box">
                                     
                                     <div class="box-body">
-                                      <h3><strong> Wallet balance: &#8358;{{  number_format($user_details->main_wallet,2) }}</strong></h3>
+                                      <h3><strong> {{ __('messages.Wallet Balance')}}: &#8358;{{  number_format($user_details->main_wallet,2) }}</strong></h3>
                                         <br>
                                         <br>
                                         <form>
@@ -220,7 +221,7 @@
 
                                                 <div class="mb-2">
                                                  
-                                                 <label class="ti-form-label mb-0">Phone Number to recharge:</label>
+                                                 <label class="ti-form-label mb-0">{{ __('messages.Phone number to recharge') }}:</label>
                                                  <input type="text" value="0" placeholder="e.g 08168509044" class="my-auto ti-form-input" required id="phone_number" name="phone_number">         
                                                  <span id="loading" class="text-blue-600 hidden">Loading...</span>
                                                  {{-- <div id="loading" style="display: none; text-align: center; padding: 20px;">
@@ -326,7 +327,7 @@
                                                         </label>
 
                                                         <a href="https://api.whatsapp.com/send?phone={{ $support_whatsapp_number }}&text=Hello%2C%20Please%20I%20forgot%20my%20transaction%20pin."
-                                                        class="text-red-800 font-extrabold underline">YOUR PIN IS REQUIRED TO ENSURE YOUR TRANSACTION IS SECURE. IF YOU HAVE FORGOTTEN YOUR PIN, KINDLY CLICK HERE TO REACH OUT TO SUPPORT</a>
+                                                        class="text-red-800 font-extrabold underline">{{ __('messages.YOUR PIN IS REQUIRED TO ENSURE YOUR TRANSACTION IS SECURE. IF YOU HAVE FORGOTTEN YOUR PIN, KINDLY CLICK HERE TO REACH OUT TO SUPPORT') }}</a>
                                                         
 
                                                         </div>  
@@ -338,9 +339,9 @@
                                             
 
                                                 <div class="space-y-2">
-                                                    <button type="submit" id="buy_data_btn" class="ti-btn ti-btn-primary w-full">Buy Data</button><br>
+                                                    <button type="submit" id="buy_data_btn" class="ti-btn ti-btn-primary w-full">{{ __('messages.Buy Data') }}</button><br>
                                                     <p class="text-center mt-2 font-bold underline">
-                                                      <a href="#" id="cancel_disabling" class="hidden">Click to reactivate the button and try again</a>
+                                                      <a href="#" id="cancel_disabling" class="hidden">{{ __('messages.Click to reactivate the button and try again') }}</a>
                                                     </p>
                                                 </div>
                                                

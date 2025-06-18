@@ -1,6 +1,9 @@
 @extends('layouts.app')
 
 @section('content')
+
+@include('partials.announcements')
+
 <div class="main-content">
 
     @php
@@ -12,7 +15,7 @@
     <!-- Page Header -->
     <div class="block justify-between page-header md:flex">
         <div>
-            <h3 class="text-gray-700 hover:text-gray-900 dark:text-gray-900 dark:hover:text-white text-2xl font-medium"> <small style=" font-size: 14px;">Welcome <strong>{{ $user->first_name. ' '. $user->last_name }}</strong></small> </h3>
+            <h3 class="text-gray-700 hover:text-gray-900 dark:text-gray-900 dark:hover:text-white text-2xl font-medium"> <small style=" font-size: 14px;">{{ __('messages.Welcome') }} <strong>{{ $user->first_name. ' '. $user->last_name }}</strong></small> </h3>
         </div>
        
     </div>
@@ -76,7 +79,7 @@
                         </svg>
                     </div>
                     <div>
-                        <p class="text-sm uppercase tracking-wider text-white/80">Plan</p>
+                        <p class="text-sm uppercase tracking-wider text-white/80">{{ __('messages.Plan') }}</p>
                         <p class="text-2xl font-bold">
                             {{ $user->user_plan->updated_user_plan_name ?? $user->user_plan->user_plan_name }}
                         </p>
@@ -86,7 +89,7 @@
                 <!-- Referral Link + Copy/Share -->
                 @if (env('APP_NAME') == 'OresamSub')
                     <div class="bg-white/10 backdrop-blur-sm p-3 rounded-lg">
-                        <p class="text-sm text-white/80 mb-1">Enjoy commission using your link:</p>
+                        <p class="text-sm text-white/80 mb-1">{{ __('messages.Enjoy commission using your link') }}:</p>
             
                         <div class="flex items-center space-x-2">
                             <input 
@@ -99,7 +102,7 @@
                                 @click="navigator.clipboard.writeText(referral); copied = true; setTimeout(() => copied = false, 2000)" 
                                 class="text-sm bg-white/20 hover:bg-white/30 px-3 py-1 rounded transition"
                             >
-                                Copy
+                                {{ __('messages.Copy') }}
                             </button>
                         </div>
             
@@ -190,7 +193,7 @@
                             </div>
             
                             <a href="{{route('user.wallet.index')}}" class="bg-[{{$sidebar_color}}]  text-sm font-medium px-4 py-2 rounded-lg shadow hover:bg-indigo-700 transition">
-                                FUND WALLET
+                                {{ __('messages.Fund Wallet')  }}
                             </a>
                             </div>
                         </div>
@@ -216,7 +219,7 @@
                       
                   </div>
                   <div>
-                    <p class="text-sm uppercase tracking-wider text-white/80">Balance</p>
+                    <p class="text-sm uppercase tracking-wider text-white/80"> {{ __('messages.Balance') }}</p>
                     <p class="text-2xl font-bold">
                         &#8358; {{ number_format($user->main_wallet,2) ?? 0  }}
                     </p>
@@ -235,7 +238,7 @@
                       
                   </div>
                   <div>
-                    <p class="text-sm uppercase tracking-wider text-white/80">Transactions</p>
+                    <p class="text-sm uppercase tracking-wider text-white/80">{{  __('messages.Transactions')  }}</p>
                     <p class="text-2xl font-bold">
                         {{ number_format( count($transactions))  }}
                     </p>
@@ -272,7 +275,7 @@
               
                   <!-- Button -->
                   <a href="{{route('user.data.buy_data')}}" class=" bg-[{{$sidebar_color}}] text-white text-sm font-medium px-4 py-2 rounded-lg shadow hover:bg-indigo-700 transition">
-                    BUY DATA
+                    {{ __('messages.Buy Data') }}
                   </a>
                 </div>
             </div>
@@ -303,7 +306,7 @@
               
                   <!-- Button -->
                   <a href="{{route('user.airtime.buy_airtime')}}" class="bg-[{{$sidebar_color}}]  text-white text-sm font-medium px-4 py-2 rounded-lg shadow hover:bg-indigo-700 transition">
-                    BUY AIRTIME
+                    {{ __('messages.Buy Airtime') }}
                   </a>
                 </div>
             </div>
@@ -373,7 +376,7 @@
               
                   <!-- Button -->
                   <a href="{{route('user.cable_subscription.buy_cable_subscription')}}" class="bg-[{{$sidebar_color}}]  text-white text-sm font-medium px-4 py-2 rounded-lg shadow hover:bg-indigo-700 transition">
-                    CABLE SUBSCRIPTION
+                    {{ __('messages.Cable Subscription') }}
                   </a>
                 </div>
             </div>
@@ -406,7 +409,7 @@
                   <!-- Button -->
                   
                   <a href="{{route('user.electricity.buy_electricity_subscription')}}" class="bg-[{{$sidebar_color}}]  text-white text-sm font-medium px-4 py-2 rounded-lg shadow hover:bg-indigo-700 transition">
-                    BUY ELECTRICITY
+                    {{ __('messages.Buy Electricity') }}
                   </a>
                 </div>
             </div>
@@ -465,7 +468,7 @@
             <div class="box">
                 <div class="box-header">
                     <div class="sm:flex">
-                        <h5 class="box-title my-auto">Recent Transactions</h5>
+                        <h5 class="box-title my-auto">{{ __('messages.Recent Transactions') }}</h5>
                         <div class="box-header">
                             <div class="flex">
                              
@@ -476,7 +479,7 @@
                                         <div class="ti-modal-content">
                                           <div class="ti-modal-header">
                                             <h3 class="ti-modal-title">
-                                              Filter Options
+                                              {{ __('messages.Filter Options') }}
                                             </h3>
                                             <button type="button" class="hs-dropdown-toggle ti-modal-close-btn"
                                               data-hs-overlay="#hs-slide-down-animation-modal">
@@ -490,11 +493,11 @@
                                             </button>
                                           </div>
                                           <div class="ti-modal-body">
-                                            <p class="mt-1 text-gray-800 dark:text-white/70">Phone recharged:</p>
+                                            <p class="mt-1 text-gray-800 dark:text-white/70">  {{ __('messages.Phone recharged') }}:</p>
                                             <input type="text" value="" id="phone_recharged" name="phone_recharged"> <br>
                                             <hr>
                                             <br>
-                                            <p class="mt-1 text-gray-800 dark:text-white/70">Filter by Plan Category:</p>
+                                            <p class="mt-1 text-gray-800 dark:text-white/70">{{  __('messages.Filter by Plan Category') }}:</p>
                                             <select name="product_plan_category_filter" id="product_plan_category_filter">
                                                 <option value="">Select</option>
                                                 @foreach ($product_plan_categories as $plan_category)
@@ -504,15 +507,15 @@
                                             <br>
                                             <hr>
                                             <br>
-                                            <p class="mt-1 text-gray-800 dark:text-white/70">Date range:</p><br>
+                                            <p class="mt-1 text-gray-800 dark:text-white/70">{{  __('messages.Date Range') }}:</p><br>
                                             <div class="flex items-center justify-between">
                                               <div class="flex items-center justify-start space-x-5">
                                                   <div>
-                                                    <p>Date from:</p>
+                                                    <p>{{  __('messages.Date from') }}:</p>
                                                     <input type="date" value="" id="date_from_filter">
                                                   </div>
                                                   <div>
-                                                    <p>Date to:</p>
+                                                    <p>{{  __('messages.Date to') }}:</p>
                                                     <input type="date" value="" id="date_to_filter">
                                                   </div>
                                               </div>
@@ -522,7 +525,7 @@
                                          
                                             <a id="filter_user_txn_table" class="ti-btn ti-btn-primary" data-hs-overlay="#hs-slide-down-animation-modal"
                                               href="javascript:void(0);">
-                                              Save changes
+                                               {{  __('messages.Save changes') }}
                                             </a>
                                           </div>
                                         </div>
@@ -543,7 +546,7 @@
                             <div class="hs-dropdown-menu ti-dropdown-menu"
                                 aria-labelledby="hs-dropdown-custom-icon-trigger3">
                                 <a href="javascript:void(0)" class="ti-dropdown-item hs-dropdown-toggle"
-                                data-hs-overlay="#hs-slide-down-animation-modal">Basic filter</a>
+                                data-hs-overlay="#hs-slide-down-animation-modal">{{ __('messages.Basic filter')  }}</a>
                                 {{-- <a class="ti-dropdown-item"  href="javascript:void(0)">Filter by phone number</a> --}}
                               
                             </div>
@@ -558,20 +561,17 @@
                                 <thead class="bg-gray-50 dark:bg-black/20">
                                 <tr>
                                     <th>ID</th>
-                                    {{-- <th>User</th> --}}
-                                    <th>Wallet</th>
-                                    <th>Product Details</th>
-                                    <th>Category</th>
-                                    {{-- <th>Response</th> --}}
-                                    <th>Phone</th>
-                                    <th>Amount</th>
-                                    <th>Deducted Amount</th>
-                                    <th>Balance Before</th>
-                                    {{-- <th>Data size</th> --}}
-                                    <th>Balance After</th>
-                                    <th>Status</th>
-                                    <th>Date Added</th>
-                                    <th>Action</th>
+                                    <th>{{ __('messages.Wallet')  }}</th>
+                                    <th>{{ __('messages.Product Details')  }}</th>
+                                    <th>{{ __('messages.Category')  }}</th>
+                                    <th>{{ __('messages.Phone')  }}</th>
+                                    <th>{{ __('messages.Amount')  }}</th>
+                                    <th>{{ __('messages.Discounted Amount')  }}</th>
+                                    <th>{{ __('messages.Balance Before')  }}</th>
+                                    <th>{{ __('messages.Balance After')  }}</th>
+                                    <th>{{ __('messages.Status')  }}</th>
+                                    <th>{{ __('messages.Date Added')  }}</th>
+                                    <th>{{ __('messages.Action')  }}</th>
                                 </tr>
                             </thead>
                            

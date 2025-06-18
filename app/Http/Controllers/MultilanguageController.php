@@ -16,6 +16,12 @@ class MultilanguageController extends Controller
               'ig' => 'Ntanụgharị',
               'ha' => 'Allon Kulawa',
             ],
+            'Copy' => [
+              'en' => 'Copy',
+              'yo' => 'Daakọ',
+              'ig' => 'Detuo',
+              'ha' => 'Kwafi',
+            ],
             'Welcome' => [
               'en' => 'Welcome',
               'yo' => 'Kaabọ',
@@ -76,6 +82,12 @@ class MultilanguageController extends Controller
               'ig' => 'Zụta data ngwa ngwa',
               'ha' => 'Sayi bayanai da sauri',
             ],
+            "Data Purchase" => [
+                "en" => "Data Purchase",
+                "yo" => "Rà Ìnítànẹ́tì",
+                "ig" => "Zụta Data",
+                "ha" => "Sayi Bayanai"
+            ],
             'Data(Bulk)' => [
               'en' => 'Data(Bulk)',
               'yo' => 'Data (apo)',
@@ -93,6 +105,12 @@ class MultilanguageController extends Controller
               'yo' => 'Iforukọ Ina',
               'ig' => 'Debanye ọkụ',
               'ha' => 'Biyan wuta',
+            ],
+            "Airtime Transactions" => [
+              "en" => "Airtime Transactions",
+              "yo" => "Ìṣèpọ̀ Rẹ́lùféònù",
+              "ig" => "Ụgwọ Ugboelu",
+              "ha" => "Ma'amaloli na Katin Waya"
             ],
             'Commissions' => [
               'en' => 'Commissions',
@@ -154,6 +172,18 @@ class MultilanguageController extends Controller
               'ig' => 'Aha Akaụntụ',
               'ha' => 'Sunan Asusun',
             ],
+           "Account Details" => [
+                "en" => "Account Details",
+                "yo" => "Alaye Àkọọlẹ",
+                "ig" => "Nkọwa Akaụntụ",
+                "ha" => "Cikakken Bayanin Asusun"
+            ],
+            "Charges" => [
+                "en" => "Charges",
+                "yo" => "Owó ìsanwó",
+                "ig" => "Ụgwọ",
+                "ha" => "Kudade"
+            ],
             'Click here to reach us on whatsapp' => [
               'en' => 'Click here to reach us on whatsapp',
               'yo' => 'Tẹ nibi lati kan si wa lori WhatsApp',
@@ -177,6 +207,12 @@ class MultilanguageController extends Controller
               'yo' => 'Nduro',
               'ig' => 'Na-echere',
               'ha' => 'A jiran',
+            ],
+            "Generate" => [
+              "en" => "Generate",
+              "yo" => "Ṣẹda",
+              "ig" => "Mepụta",
+              "ha" => "Ƙirƙira"
             ],
             'Wallet Balance' => [
               'en' => 'Wallet Balance',
@@ -207,6 +243,12 @@ class MultilanguageController extends Controller
               'yo' => 'Wo awọn iṣowo data',
               'ig' => 'Lee ego data',
               'ha' => 'Duba ma\'amaloli na bayanai',
+            ],
+            "View Airtime Transactions" => [
+              "en" => "View Airtime Transactions",
+              "yo" => "Wo Ìṣèpọ̀ Rẹ́lùféònù",
+              "ig" => "Lee Ụgwọ Ugboelu",
+              "ha" => "Duba Ma'amalolin Katin Waya"
             ],
             'Phone number to recharge' => [
               'en' => 'Phone number to recharge',
@@ -411,7 +453,7 @@ class MultilanguageController extends Controller
             ],
             'Phone recharged' => [
               'en' => 'Phone recharged',
-              'yo' => 'Foonu ti gba agbara',
+              'yo' => 'Foonu to gba agbara',
               'ig' => 'Ekekọrịta agbadoghị',
               'ha' => 'An caje waya',
             ],
@@ -998,7 +1040,46 @@ class MultilanguageController extends Controller
             "yo" => "Nilo nkankan mìíràn?",
             "ig" => "Chọrọ ihe ọzọ?",
             "ha" => "Kana buƙatar wani abu dabam?"
-            ]            
+            ],
+            "Category" => [
+                "en" => "Category",
+                "yo" => "Ẹ̀ka",
+                "ig" => "Ngalaba",
+                "ha" => "Rukuni"
+            ],
+            "Incorrect PIN" => [
+              "en" => "Incorrect PIN",
+              "yo" => "PIN tí kò tọ́",
+              "ig" => "PIN ezighi ezi",
+              "ha" => "PIN mara kyau"
+            ],
+           'You need to buy at least N50 worth of airtime.' =>  [
+                  'en' => 'You need to buy at least N50 worth of airtime.',
+                  'yo' => 'O ní láti rà tẹ́lẹ̀ N50 tó kéré jùlọ ti airtime.',
+                  'ig' => 'Ị ga-azụta opekata mpe N50 nke airtime.',
+                  'ha' => 'Dole ne ka saya aƙalla N50 na layin waya.'
+           ],
+           "Show PIN" => [
+                "en" => "Show PIN",
+                "yo" => "Fi PIN hàn",
+                "ig" => "Gosi PIN",
+                "ha" => "Nuna Lambar PIN"
+            ],
+
+            "Phone Number to recharge" => [
+                "en" => "Phone Number to recharge",
+                "yo" => "Nọ́mbà fónù láti tun ra ẹ̀rọ",
+                "ig" => "Ekwentị a ga-eji akwụ ụgwọ ọzọ",
+                "ha" => "Lambar wayar da za a caji"
+            ],
+
+            "Product Plan List" => [
+                "en" => "Product Plan List",
+                "yo" => "Àtòkọ Ètò Ọja",
+                "ig" => "Ndepụta atụmatụ ngwaahịa",
+                "ha" => "Jerin Tsarin Samfura"
+            ]
+
           ];
 
           $merged = array_merge($arr1, $arr2);
@@ -1013,6 +1094,208 @@ class MultilanguageController extends Controller
             ]);
           }
 
+        
+          $validations = [
+
+            // Required
+            [
+                'group' => 'validation',
+                'key' => 'required',
+                'text' => [
+                    'en' => 'The :attribute field is required.',
+                    'yo' => 'Pápá :attribute jẹ́ dandan.',
+                    'ig' => 'Ụbọchị :attribute dị mkpa.',
+                    'ha' => 'Filin :attribute yana da matuƙar muhimmanci.'
+                ]
+            ],
+        
+            // Regex
+            [
+                'group' => 'validation',
+                'key' => 'regex',
+                'text' => [
+                    'en' => 'The :attribute format is invalid.',
+                    'yo' => 'Àkóónú :attribute kò bójú mu.',
+                    'ig' => 'Ụdị :attribute ezughị ezu.',
+                    'ha' => 'Tsarin :attribute ba daidai ba ne.'
+                ]
+            ],
+        
+            // Unique
+            [
+                'group' => 'validation',
+                'key' => 'unique',
+                'text' => [
+                    'en' => 'The :attribute has already been taken.',
+                    'yo' => ':attribute ti gba tẹlẹ.',
+                    'ig' => ':attribute ewereela ya.',
+                    'ha' => ':attribute an riga an ɗauka.'
+                ]
+            ],
+        
+            // Exists
+            [
+                'group' => 'validation',
+                'key' => 'exists',
+                'text' => [
+                    'en' => 'The selected :attribute is invalid.',
+                    'yo' => ':attribute tí o yàn kò bójú mu.',
+                    'ig' => ':attribute ahọpụtara ezughị ezu.',
+                    'ha' => ':attribute da ka zaɓa ba daidai ba ne.'
+                ]
+            ],
+        
+            // Numeric
+            [
+                'group' => 'validation',
+                'key' => 'numeric',
+                'text' => [
+                    'en' => 'The :attribute must be a number.',
+                    'yo' => ':attribute gbọ́dọ̀ jẹ́ nọ́mbà.',
+                    'ig' => ':attribute ga-abụ ọnụọgụgụ.',
+                    'ha' => ':attribute dole ne ya zama lamba.'
+                ]
+            ],
+        
+            // Email
+            [
+                'group' => 'validation',
+                'key' => 'email',
+                'text' => [
+                    'en' => 'The :attribute must be a valid email address.',
+                    'yo' => ':attribute gbọ́dọ̀ jẹ́ àdírẹ́sì e-mail to peye.',
+                    'ig' => ':attribute ga-abụ adreesị ozi-e dị irè.',
+                    'ha' => ':attribute dole ne ya zama sahihin adireshin imel.'
+                ]
+            ],
+        
+            // Confirmed
+            [
+                'group' => 'validation',
+                'key' => 'confirmed',
+                'text' => [
+                    'en' => 'The :attribute confirmation does not match.',
+                    'yo' => 'Ìmúdájú :attribute kò bá mu.',
+                    'ig' => 'Nkwenye :attribute ezughi oke.',
+                    'ha' => 'Tabbatar da :attribute bai dace ba.'
+                ]
+            ],
+        
+            // Digits
+            [
+                'group' => 'validation',
+                'key' => 'digits',
+                'text' => [
+                    'en' => 'The :attribute must be :digits digits.',
+                    'yo' => ':attribute gbọ́dọ̀ ní díjítì :digits.',
+                    'ig' => ':attribute ga-abụ ọnụọgụgụ :digits.',
+                    'ha' => ':attribute dole ne ya kasance da lambobi :digits.'
+                ]
+            ],
+        
+            // In
+            [
+                'group' => 'validation',
+                'key' => 'in',
+                'text' => [
+                    'en' => 'The selected :attribute is invalid.',
+                    'yo' => ':attribute tí o yàn kò wúlò.',
+                    'ig' => ':attribute ahọpụtara ezughị ezu.',
+                    'ha' => ':attribute da aka zaɓa ba daidai ba ne.'
+                ]
+            ],
+        
+            // Min (numeric)
+            [
+                'group' => 'validation',
+                'key' => 'min.numeric',
+                'text' => [
+                    'en' => 'The :attribute must be at least :min.',
+                    'yo' => ':attribute gbọ́dọ̀ jẹ́ o kere ju :min.',
+                    'ig' => ':attribute ga-abụ opekata mpe :min.',
+                    'ha' => ':attribute dole ne ya kasance aƙalla :min.'
+                ]
+            ],
+        
+            // Max (numeric)
+            [
+                'group' => 'validation',
+                'key' => 'max.numeric',
+                'text' => [
+                    'en' => 'The :attribute may not be greater than :max.',
+                    'yo' => ':attribute kò gbọdọ̀ ju :max lọ.',
+                    'ig' => ':attribute ekwesịghị ịdị elu karịa :max.',
+                    'ha' => ':attribute ba zai fi :max ba.'
+                ]
+            ],
+        
+            // Boolean
+            [
+                'group' => 'validation',
+                'key' => 'boolean',
+                'text' => [
+                    'en' => 'The :attribute field must be true or false.',
+                    'yo' => ':attribute gbọ́dọ̀ jẹ́ òótọ́ tàbí irọ.',
+                    'ig' => ':attribute ga-abụ eziokwu ma ọ bụ ụgha.',
+                    'ha' => ':attribute dole ne ya kasance gaskiya ko ƙarya.'
+                ]
+            ],
+        
+            // Date
+            [
+                'group' => 'validation',
+                'key' => 'date',
+                'text' => [
+                    'en' => 'The :attribute is not a valid date.',
+                    'yo' => ':attribute kì í ṣe ọjọ́ tó wúlò.',
+                    'ig' => ':attribute abụghị ụbọchị ziri ezi.',
+                    'ha' => ':attribute ba shine kwanan wata mai inganci ba.'
+                ]
+            ],
+        
+            // Attributes (optional field name labels)
+            // [
+            //     'group' => 'validation',
+            //     'key' => 'attributes',
+            //     'text' => [
+            //         'en' => [
+            //             'pin' => 'PIN',
+            //             'email' => 'Email address',
+            //             'amount' => 'Amount',
+            //             'phone_number' => 'Phone number'
+            //         ],
+            //         'yo' => [
+            //             'pin' => 'Nọ́mbà PIN',
+            //             'email' => 'Àdírẹ́sì e-mail',
+            //             'amount' => 'Iye owó',
+            //             'phone_number' => 'Nọ́mbà fóònù'
+            //         ],
+            //         'ig' => [
+            //             'pin' => 'PIN',
+            //             'email' => 'Adreesị ozi-e',
+            //             'amount' => 'Ego',
+            //             'phone_number' => 'Nọmba ekwentị'
+            //         ],
+            //         'ha' => [
+            //             'pin' => 'PIN',
+            //             'email' => 'Adireshin imel',
+            //             'amount' => 'Kudin da ake bukata',
+            //             'phone_number' => 'Lambar waya'
+            //         ]
+            //     ]
+            // ],        
+        ];
+
+        foreach($validations as $key=>$each){
+          $text_to_transform =  json_encode($each, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
+          LanguageLine::updateOrCreate([
+              'key' => $each['key'],
+              'group' => $each['group']
+          ],[
+              'text' => $each['text']
+          ]);
+        }
+        
         
 
           
