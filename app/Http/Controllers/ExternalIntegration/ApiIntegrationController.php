@@ -142,8 +142,8 @@ class ApiIntegrationController extends Controller
                 'first_name' => ['required', 'string', 'max:255'],
                 'last_name' => ['required', 'string', 'max:255'],
                 'username' => ['required', 'string','unique:users,username', 'max:255'],
-                'upline_referral_phone_number' => ['nullable', 'string','exists:users,phone_number' ,'max:255'],
-                'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
+                // 'upline_referral_phone_number' => ['nullable', 'string','exists:users,phone_number' ,'max:255'],
+                'email' => ['required', 'string', 'email', 'max:255', 'unique:'.User::class],
                 'tnc' => ['required'],
                 'password' => ['required', Password::min(8)
                 ->letters()
@@ -262,8 +262,7 @@ class ApiIntegrationController extends Controller
         ]);
      }
    
-     public function login(Request $request)
-     {
+     public function login(Request $request){
         $request->validate([
              'email' => ['required','string','max:255'],
              'password' => 'required',
@@ -294,10 +293,10 @@ class ApiIntegrationController extends Controller
             'token' => $token,
             'expiredAt' => $secs,
          ];
-      
-         
+       
          return $this->success(access: $access,message:'Login was successful',data: $user);
-     }
+     
+    }
 
    
 
