@@ -345,6 +345,14 @@ class UsersController extends Controller
             ->addColumn('phone_number',function($data){
                 return $data->phone_number;
             }) 
+
+            ->addColumn('created_at',function($data){
+              return $data->created_at;
+            }) 
+
+            ->addColumn('updated_at',function($data){
+              return $data->updated_at;
+             }) 
            
             ->addColumn('action', function($data){
                 // $actionBtn = ' ';

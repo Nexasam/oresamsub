@@ -156,7 +156,8 @@
                                     <th>Email Address</th>
                                     <th>Phone</th>
                                     <th>Date Added</th>
-                                    {{-- <th>Action</th> --}}
+                                    <th>Last Logged in</th>
+                                    <th>Action</th>
                                 </tr>
                               </thead>
                               <tbody>

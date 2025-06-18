@@ -622,6 +622,7 @@ $(document).ready(function(){
                     {data: 'email', name: 'email'},
                     {data: 'phone_number', name: 'phone_number'},
                     {data: 'created_at', name: 'created_at'},
+                    {data: 'updated_at', name: 'updated_at'},
                     {data: 'action', name: 'action'},
                 ]
         });
