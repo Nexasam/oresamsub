@@ -295,6 +295,12 @@ class MultilanguageController extends Controller
               'ig' => 'Gosi PIN',
               'ha' => 'Nuna PIN',
             ],
+            'Show PIN' => [
+              'en' => 'Show PIN',
+              'yo' => 'Fi PIN han',
+              'ig' => 'Gosi PIN',
+              'ha' => 'Nuna PIN',
+            ],
             'Network' => [
               'en' => 'Network',
               'yo' => 'Nẹtiwọọki',
