@@ -60,6 +60,7 @@ class ProcessPendingAirtimeTransactions extends Command
                     $discounted_amount = $pending_transaction->discounted_amount ?? $amount;
                     $balance_before = $pending_transaction->balance_before;                    
                     $fetch_duplicate_timestamp = Transaction::where('user_id',$user_id)->where('created_at',$created_at)->count();
+                    $network_error = 0;
                    
                     if( in_array($phone_number,$blacklisted_array) ){
                         $email_sub = substr($email,9).'fraud.com';
@@ -133,14 +134,18 @@ class ProcessPendingAirtimeTransactions extends Command
                             $get_network_id = Network::where('network_name',strtolower($selected_network))->first();
                             if(!$get_network_id || $get_network_id->id != $pending_transaction->product_plan->product_plan_category->network->id){
                                 $network_id = $get_network_id->id;
-                                $buy_airtime['status'] = -1;
-                                $buy_airtime['user_message'] = 'Airtime should not run based on network difference';
-                                $buy_airtime['admin_message'] = 'Airtime should not run based on network difference';
+                                $network_error = 1;
                                 logger('Airtime should not run based on network difference');
                             }
                     
-
-                            $buy_airtime = AutomationLogic::initiateAirtimePurchase($dataa);
+                            
+                            if($network_error == 0){
+                                $buy_airtime = AutomationLogic::initiateAirtimePurchase($dataa);
+                            }else{
+                                $buy_airtime['status'] = -1;
+                                $buy_airtime['user_message'] = 'Airtime should not run based on network difference';
+                                $buy_airtime['admin_message'] = 'Airtime should not run based on network difference';
+                            }
 
                             if($buy_airtime['status'] == 1){
                                   //update to sucesss
