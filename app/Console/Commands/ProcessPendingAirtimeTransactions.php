@@ -3,10 +3,12 @@
 namespace App\Console\Commands;
 
 use App\Models\User;
+use App\Models\Network;
 use App\Models\Automation;
 use App\Models\ProductPlan;
 use App\Models\Transaction;
 use Illuminate\Console\Command;
+use App\Services\Utils\UtilService;
 use Illuminate\Support\Facades\Hash;
 use App\Services\Automation\AutomationLogic;
 use App\Services\Automation\MegaSubPlugAutomation\MegaSubVendAirtime;
@@ -124,6 +126,18 @@ class ProcessPendingAirtimeTransactions extends Command
                             $dataa['plan_id'] = $pending_transaction->product_plan_id;
                             $dataa['validatephonenetwork'] = 0;
                             $dataa['amount'] = $amount;
+
+                            $validate_phone = (new UtilService())->phoneNumberNetworkValidation($pending_transaction->phone_number);
+                            $validated_phone_number = $validate_phone['validated_phone_number'];
+                            $selected_network = $validate_phone['selected_network'] ?? 'NIL';
+                            $get_network_id = Network::where('network_name',$selected_network)->first();
+                            if(! $get_network_id){
+                                $network_id = $get_network_id->id;
+                                logger('Airtime should not run based on this exception');
+                                return ['status'=>'-1', 'message'=>'The phone number does not seem to match the network'];
+                            }
+                    
+
                             $buy_airtime = AutomationLogic::initiateAirtimePurchase($dataa);
 
                             if($buy_airtime['status'] == 1){

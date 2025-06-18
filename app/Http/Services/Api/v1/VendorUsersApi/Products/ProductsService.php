@@ -578,15 +578,15 @@ class ProductsService{
         $plan_level = $user_level->plan_level;
 
         
-        $validate_phone = (new UtilService())->phoneNumberNetworkValidation($phone_number);
-        $validated_phone_number = $validate_phone['validated_phone_number'];
-        $selected_network = $validate_phone['selected_network'] ?? 'NIL';
-        $get_network_id = Network::where('network_name',$selected_network)->first();
-        if(! $get_network_id){
-            $network_id = $get_network_id->id;
-            logger('Airtime should not run based on this exception');
-            return ['status'=>'-1', 'message'=>'The phone number does not seem to match the network'];
-        }
+        // $validate_phone = (new UtilService())->phoneNumberNetworkValidation($phone_number);
+        // $validated_phone_number = $validate_phone['validated_phone_number'];
+        // $selected_network = $validate_phone['selected_network'] ?? 'NIL';
+        // $get_network_id = Network::where('network_name',$selected_network)->first();
+        // if(! $get_network_id){
+        //     $network_id = $get_network_id->id;
+        //     logger('Airtime should not run based on this exception');
+        //     return ['status'=>'-1', 'message'=>'The phone number does not seem to match the network'];
+        // }
 
         
         $plan_details = ProductPlan::with('product_plan_category')
