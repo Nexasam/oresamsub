@@ -569,7 +569,7 @@ class ProductsService{
 
         $user_details = User::where('id',$user_id)->first();
         if($user_details->pin != $pin){
-            return ['status'=>'-1', 'message'=>'Pin mismatch found','data' => ''];
+            return ['status'=>'-1', 'message'=>'Pin mismatch found'];
         }
 
         $user_plan_id = $user_details->user_plan_id;
@@ -584,7 +584,7 @@ class ProductsService{
         $get_network_id = Network::where('network_name',$selected_network)->first();
         if(! $get_network_id){
             $network_id = $get_network_id->id;
-            return ['status'=>'-1', 'message'=>'The phone number does not seem to match the network','data' => ''];
+            return ['status'=>'-1', 'message'=>'The phone number does not seem to match the network'];
         }
 
         
