@@ -293,7 +293,7 @@
                                                   <input type="password" class="my-auto ti-form-input" id="pin" name="pin" value="" placeholder="{{ __('messages.Enter your pin to secure transaction') }}">
                                                   <div class="flex items-center">
                                                     <input type="checkbox" id="hs-basic-with-description-unchecked" class="ti-switch show_pin1">
-                                                    <label for="hs-basic-with-description-unchecked" class="text-sm text-gray-500 ms-3 dark:text-white/70 ">{{__('messages.Show PIN')}}</label>
+                                                    <label for="hs-basic-with-description-unchecked" class="text-sm text-gray-500 ms-3 dark:text-white/70 ">{{__('messages.Show pin')}}</label>
                                                   </div>  
                                                 </div>
 
