@@ -213,12 +213,13 @@
                     @if ( auth()->user()->role->role_name == 'User' )
                       <a href="{{ route('user.manage_profile.index') }}" class="ti-dropdown-item">
                         <i class="ti ti-user-circle text-lg"></i>
-                        Profile
+                        {{__('messages.Profile')}}
                       </a>                     
                     @else
                       <a href="{{ route('admin.manage_profile.index') }}" class="ti-dropdown-item">
                         <i class="ti ti-user-circle text-lg"></i>
-                        Profile
+                        {{__('messages.Profile')}}
+
                       </a>
                     @endif
                     
@@ -235,19 +236,20 @@
                     @if ( auth()->user()->role->role_name == 'User' )
                       <a href="{{ route('user.settings.index') }}" class="ti-dropdown-item">
                         <i class="ti ti-adjustments-horizontal text-lg"></i>
-                        Settings
+                        {{__('messages.Settings')}}
+
                       </a>                        
                     @else
                       <a href="{{ route('admin.settings.index') }}" class="ti-dropdown-item">
                         <i class="ti ti-adjustments-horizontal text-lg"></i>
-                        Settings
+                        {{__('messages.Settings')}}
                       </a>
                     @endif
 
                     @if (auth()->user()->role->role_name == 'User')
                     <a href="#" class="ti-dropdown-item">
                       <i class="ti ti-wallet text-lg"></i>
-                      Main Wallet: &#8358;{{ number_format(auth()->user()->main_wallet ?? 0) }}
+                      {{__('messages.Main Wallet')}} : &#8358;{{ number_format(auth()->user()->main_wallet ?? 0) }}
                     </a>                        
                     @endif
 
@@ -263,7 +265,7 @@
                       <x-dropdown-link  :href="route('logout')"
                               onclick="event.preventDefault();
                                           this.closest('form').submit();">
-                          {{ __('Log Out') }}
+                          {{ __('messages.Logout') }}
                       </x-dropdown-link>
                      </div>
                   </form>

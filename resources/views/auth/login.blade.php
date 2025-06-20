@@ -212,11 +212,11 @@
                                     <h1 class="block text-2xl font-bold text-gray-800 dark:text-gray-900">{{ env('APP_NAME') }}</h1>
                                     <hr>
                                 @endif
-                                <h3 class="block text-xl text-gray-800 dark:text-gray-900">Welcome Back</h3>
+                                <h3 class="block text-xl text-gray-800 dark:text-gray-900">{{__('messages.Welcome back')}}</h3>
                                 <p class="mt-3 text-sm text-gray-600 dark:text-white/70">
-                                    Don't have an account yet?
+                                    {{__("messages.Don't have an account yet")}}?
                                     <a class="text-primary decoration-2 hover:underline font-medium"  href="{{route('register')}}">
-                                        Sign up here
+                                        {{__('messages.Get Started')}}
                                     </a>
                                 </p>
                             </div>
@@ -243,7 +243,7 @@
                                         <div class="grid gap-y-4">
                                             <!-- Form Group -->
                                             <div>
-                                                <label for="email" class="block text-sm mb-2 dark:text-gray-900">Email or Username or Phone</label>
+                                                <label for="email" class="block text-sm mb-2 dark:text-gray-900">{{__('messages.Email or Username or Phone')}}</label>
                                                 <div class="relative">
                                                     <x-text-input id="email" class="block mt-1 w-full" type="text" name="email" :value="old('email')" required autofocus autocomplete="username" />
                                                     <x-input-error :messages="$errors->get('email')" class="mt-2" />
@@ -255,9 +255,9 @@
                                             <div>
                                                 <div class="flex justify-between items-center">
                                                     <label for="password"
-                                                        class="block text-sm mb-2 dark:text-gray-900">Password</label>
+                                                        class="block text-sm mb-2 dark:text-gray-900">{{__('messages.Password')}}</label>
                                                     <a class="text-sm text-primary decoration-2 hover:underline font-medium"
-                                                        href="{{  route('password.email') }}">Forgot password?</a>
+                                                        href="{{  route('password.email') }}">{{__('messages.Forgot password')}}?</a>
                                                 </div>
                                                 <div class="relative">
                                                         {{-- <input type="password" id="password" name="password"
@@ -276,12 +276,12 @@
 
                                             <div class="flex items-center">
                                                 <input type="checkbox" id="hs-basic-with-description-unchecked" class="ti-switch show_password">
-                                                <label for="hs-basic-with-description-unchecked" class="text-sm text-gray-500 ms-3 dark:text-white/70 ">Show password</label>
+                                                <label for="hs-basic-with-description-unchecked" class="text-sm text-gray-500 ms-3 dark:text-white/70 ">{{__('messages.Show password')}}</label>
                                             </div>
                                             <hr>
 
                                             <!-- Checkbox -->
-                                            <div class="flex items-center">
+                                            {{-- <div class="flex items-center">
                                                 <div class="flex">
                                                     <input id="remember-me" name="remember-me" type="checkbox"
                                                         class="shrink-0 mt-0.5 border-gray-200 rounded text-primary pointer-events-none focus:ring-primary dark:bg-bgdark dark:border-white/10 dark:checked:bg-primary dark:checked:border-primary dark:focus:ring-offset-white/10">
@@ -290,10 +290,10 @@
                                                     <label for="remember-me" class="text-sm dark:text-gray-900">Remember
                                                         me</label>
                                                 </div>
-                                            </div>
+                                            </div> --}}
                                             <!-- End Checkbox -->
                                             <x-primary-button class="ms-3">
-                                                Log in
+                                                {{__('messages.Login')}}
                                             </x-primary-button>
                                         </div>
                                     </div>

@@ -245,13 +245,13 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item">
-                        <a class="nav-link" href="#home">Home</a>
+                        <a class="nav-link" href="#home">{{__('messages.Home')}}</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#about">About</a>
+                        <a class="nav-link" href="#about">{{__('messages.About')}}</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#services">Services</a>
+                        <a class="nav-link" href="#services">{{__('messages.Services')}}</a>
                     </li>
                     {{-- <li class="nav-item">
                         <a class="nav-link" href="#portfolio">Portfolio</a>
@@ -260,7 +260,7 @@
                         <a class="nav-link" href="#team">Team</a>
                     </li> --}}
                     <li class="nav-item">
-                        <a class="nav-link" href="#reviews">Testimonials</a>
+                        <a class="nav-link" href="#reviews">{{__('messages.Testimonials')}}</a>
                     </li>
                     {{-- <li class="nav-item">
                         <a class="nav-link" href="#blog">Blog</a>
@@ -268,10 +268,10 @@
                 </ul>
                 {{-- data-bs-toggle="modal" data-bs-target="#exampleModal" --}}
                 <a href="{{ url('/register') }}" 
-                    class="btn btn-brand ms-lg-3">Signup</a>
+                    class="btn btn-brand ms-lg-3">{{__('messages.Signup')}}</a>
 
                 <a href="{{ url('/login') }}" 
-                class="btn btn-brand ms-lg-3">Login</a>
+                class="btn btn-brand ms-lg-3">{{__('messages.Login')}}</a>
             </div>
         </div>
     </nav>
@@ -285,8 +285,8 @@
                     <div class="col-12 text-center text-white">
                         <h6 class="text-white text-uppercase">{{ $sub_hero1 }}</h6>
                         <h1 class="display-3 my-4">{{ $hero1_part1 }}<br />{{ $hero1_part2 }}</h1>
-                        <a href="{{ url('/register') }}" class="btn btn-brand">Get Started</a>
-                        <a href="{{ url('/login') }}" class="btn btn-outline-light ms-3">Login</a>
+                        <a href="{{ url('/register') }}" class="btn btn-brand">{{__('messages.Get Started')}}</a>
+                        <a href="{{ url('/login') }}" class="btn btn-outline-light ms-3">{{__('messages.Login')}}</a>
                     </div>
                 </div>
             </div>
@@ -297,8 +297,8 @@
                     <div class="col-12 col-lg-10 offset-lg-1 text-white">
                         <h6 class="text-white text-uppercase">{{ $sub_hero2 }}</h6>
                         <h1 class="display-3 my-4">{{ $hero2_part1 }}<br />{{ $hero2_part2 }}</h1>
-                        <a href="{{ url('/register') }}" class="btn btn-brand">Get Started</a>
-                        <a href="{{ url('/login') }}" class="btn btn-outline-light ms-3">Login</a>
+                        <a href="{{ url('/register') }}" class="btn btn-brand">{{__('messages.Get Started')}}</a>
+                        <a href="{{ url('/login') }}" class="btn btn-outline-light ms-3">{{__('messages.Login')}}</a>
                     </div>
                 </div>
             </div>
@@ -367,8 +367,8 @@
                     </div>
                     <div class="col-lg-6 mt-5">
                         <div class="intro">
-                            <h6>about us</h6>
-                            <h1>Who we are</h1>
+                            <h6>{{__('messages.About Us')}}</h6>
+                            <h1>{{__('messages.Who we are')}}</h1>
                             <p  class="mx-auto text-left w-3/4">{{ $aboutus_introduction }}</p>
                         </div>
                     </div>
@@ -439,7 +439,7 @@
             <section id="milestone111"  style="color: white; ">
                 <div class="row">
                     <div class="col-12 -pt-4">
-                            <h1 class=" text-center" style="color: black;">Get to know our products in 3 easy steps</h1>
+                            <h1 class=" text-center" style="color: black;">{{__('messages.Get to know our products in 3 easy steps')}}</h1>
                     </div>
                 </div>
                 <div class="container mt-3" id="analyti">
@@ -518,8 +518,8 @@
             <div class="row">
                 <div class="col-12">
                     <div class="intro">
-                        <h6>Get to know us more</h6>
-                        <h1>Our Features and Services</h1>
+                        <h6>{{__('messages.Get to know us more')}}</h6>
+                        <h1>{{__('messages.Our Features and Services')}}</h1>
                         <p class="mx-auto">{{ $service_intro }}</p>
                     </div>
                 </div>
@@ -585,7 +585,7 @@
         <div class="col-12">
             <div class="intro">
                 {{-- <h6>partners</h6> --}}
-                <h1>Our Partners</h1>
+                <h1>{{__('messages.Our Partners')}}</h1>
                 {{-- <p class="mx-auto">Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Pellentesque et neque id ligula mattis commodo.</p> --}}
             </div>
         </div>
@@ -633,7 +633,7 @@
       <div class="row">
         <div class="col-12">
             <div class="intro">
-                <h1>Product Plans & Prices</h1>
+                <h1>{{__('messages.Plans & Prices')}}</h1>
                 <p class="mx-auto"> .</p>
             </div>
         </div>
@@ -853,13 +853,13 @@
             <div class="row">
                 <div class="col-12">
                     <div class="intro">
-                        <h6>Contact</h6>
-                        <h1>Need something else?</h1>
-                        <p class="mx-auto">We’re here to help! Reach out to our customer support team through the following channels:</p>
-                        <span>Email:  <a href="#">{{ $topnav_email }}</a>  </span> <br>
-                        <span>Reach us on whatsapp by <a href="https://api.whatsapp.com/send?phone={{  $support_whatsapp_number  }}&text=Hello,%20Please%20I%20need%20help%20on%20your%20website">clicking this link</a>  </span> <br>
+                        <h6>{{__('messages.Contact')}}</h6>
+                        <h1>{{__('messages.Need something else')}}</h1>
+                        <p class="mx-auto">{{__("messages.We're here to help! Reach out to our customer support team through the following channels")}}:</p>
+                        <span>{{__('messages.Email')}}:  <a href="#">{{ $topnav_email }}</a>  </span> <br>
+                        <span>{{__('messages.Reach us on whatsapp by')}} <a href="https://api.whatsapp.com/send?phone={{  $support_whatsapp_number  }}&text=Hello,%20Please%20I%20need%20help%20on%20your%20website">clicking this link</a>  </span> <br>
                         @if ($physical_address != '' && $physical_address != NULL)
-                        <span>Office Address: {{ $physical_address }}  </span>                            
+                        <span>{{__('messages.Office Address')}}: {{ $physical_address }}  </span>                            
                         @endif
                     </div>
                 </div>
@@ -987,7 +987,7 @@
         </div> --}}
         <div class="footer-bottom text-center">
             {{-- <p class="mb-0" style="color: white">Copyright Crystalpay 2024. All rights Reserved</p> --}}
-            <p class="mb-0" style="color: white">Developed with ❤️ by <a href="https://api.whatsapp.com/send?phone={{  '2347073459839'  }}&text=Hello,%20Please%20I%20want%20to%20own%20a%20data%20website" style="color: white;">Subutility</a> 	&#169; {{ date('Y') }} . Owned by <a href="https://api.whatsapp.com/send?phone={{  '2347073459839'  }}&text=Hello,%20Please%20I%20want%20to%20own%20a%20data%20website" style="color: white;">{{ $site_title }}</a>. All rights Reserved</p>
+            <p class="mb-0" style="color: white">{{__('messages.Developed with ❤️ by')}} <a href="https://api.whatsapp.com/send?phone={{  '2347073459839'  }}&text=Hello,%20Please%20I%20want%20to%20own%20a%20data%20website" style="color: white;">Subutility</a> 	&#169; {{ date('Y') }} . {{__('messages.Owned by')}} <a href="https://api.whatsapp.com/send?phone={{  '2347073459839'  }}&text=Hello,%20Please%20I%20want%20to%20own%20a%20data%20website" style="color: white;">{{ $site_title }}</a>. {{__('messages.All rights reserved.')}}</p>
         </div>
     </footer>
 

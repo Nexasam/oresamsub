@@ -50,28 +50,28 @@
                 <div class="box-body">
                   <nav class="flex space-x-2" aria-label="Tabs" role="tablist">
                     <button type="button" class="hs-tab-active:bg-primary hs-tab-active:text-white py-3 px-4 inline-flex items-center gap-2 bg-transparent text-sm font-medium text-center text-gray-500 rounded-sm hover:text-primary  dark:text-white/70 dark:hover:text-white active" id="pills-with-brand-color-item-2" data-hs-tab="#pills-with-brand-color-2" aria-controls="pills-with-brand-color-2">
-                      API Docs 
+                      {{__('messages.API Docs')}}
                     </button>
                    
                   
                   </nav>
-                  <p>You can now use our apis to create amazing websites for yourself</p>
+                  <p>{{__('messages.You can now use our apis to create amazing websites for yourself')}}</p>
 
 
                   <div class="mt-3">
                     <div id="pills-with-brand-color-2" class="max-w-lg" role="tabpanel" aria-labelledby="pills-with-brand-color-item-2">
                       <div class="overflow-y space-y-6 ">
                         <div>
-                            <b>API Key:</b>
-                            <p style="color: red">PLEASE PROTECT THIS KEY AND SHARE ONLY WITH A TRUSTED PERSON</p>
+                            <b>{{__('messages.API Key')}}:</b>
+                            <p style="color: red">{{__('messages.PLEASE PROTECT THIS KEY AND SHARE ONLY WITH A TRUSTED PERSON')}}</p>
                             <br>
                             <textarea id="myInput" name=""  cols="50" rows="5">{{ auth()->user()->api_token  }}</textarea>
-                            <a class="ti-btn ti-btn-info w-1/4" href="#" onclick="copyToClipboard()"><span id="copyText">Copy Api Key</span></a>
+                            <a class="ti-btn ti-btn-info w-1/4" href="#" onclick="copyToClipboard()"><span id="copyText">{{__('messages.Copy Api Key')}}</span></a>
                         </div>
                         <hr>
                         <div>
                             <b>
-                              <a class="ti-btn ti-btn-primary w-full" target="_blank" href="https://documenter.getpostman.com/view/9168791/2sAY4ygMat#e7c41995-b280-465a-89fe-7a45db2d3544">Click to see documentation</a>
+                              <a class="ti-btn ti-btn-primary w-full" target="_blank" href="https://documenter.getpostman.com/view/9168791/2sAY4ygMat#e7c41995-b280-465a-89fe-7a45db2d3544">{{__('messages.Click to see documentation')}}</a>
                             </b>
                         </div>
 
@@ -84,7 +84,7 @@
                       <div class="box-body">     
                         <div class="box-header">
                           <div class="flex">
-                            <h5 class="box-title my-auto">Filter options</h5>
+                            <h5 class="box-title my-auto">{{__('messages.Filter Options')}}</h5>
                             <div class="hs-dropdown ti-dropdown block ms-auto my-auto s  sm:flex items-center justify-between">
                             
                                   <button type="button"

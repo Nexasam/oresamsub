@@ -11,8 +11,8 @@
 
     <!-- Page Header -->
         <div class="box-header">
-            <h5 class="box-title">Commissions</h5>
-            <p>Your commission will be converted to your main wallet at the start of the next month for purchase of airtime, data etc</p>
+            <h5 class="box-title">{{__('messages.Commissions')}}</h5>
+            {{-- <p>Your commission will be converted to your main wallet at the start of the next month for purchase of airtime, data etc</p> --}}
         </div>  
     <!-- Page Header Close -->
 
@@ -75,7 +75,7 @@
                       </svg>
                   </div>
                   <div>
-                      <p class="text-sm uppercase tracking-wider text-white/80">Plan</p>
+                      <p class="text-sm uppercase tracking-wider text-white/80">{{ __('messages.Plan') }}</p>
                       <p class="text-2xl font-bold">
                           {{ $user->user_plan->updated_user_plan_name ?? $user->user_plan->user_plan_name }}
                       </p>
@@ -84,66 +84,66 @@
       
               <!-- Referral Link + Copy/Share -->
               @if (env('APP_NAME') == 'OresamSub')
-                  <div class="bg-white/10 backdrop-blur-sm p-3 rounded-lg">
-                      <p class="text-sm text-white/80 mb-1">Enjoy commission using your link:</p>
-          
-                      <div class="flex items-center space-x-2">
-                          <input 
-                              type="text" 
-                              x-model="referral" 
-                              readonly 
-                              class="bg-transparent text-white text-sm flex-1 px-2 py-1 border border-white/30 rounded focus:outline-none"
-                          >
-                          <button 
-                              @click="navigator.clipboard.writeText(referral); copied = true; setTimeout(() => copied = false, 2000)" 
-                              class="text-sm bg-white/20 hover:bg-white/30 px-3 py-1 rounded transition"
-                          >
-                              Copy
-                          </button>
-                      </div>
-          
-                      <template x-if="copied">
-                          <p class="text-green-200 text-xs mt-1">Copied!</p>
-                      </template>
-          
-                      <div class="mt-3 flex flex-wrap gap-2">
-                    
-                          <a 
-                              :href="`https://wa.me/?text=Enjoy cheap and affordable data, airtime, cable subscription and electricity bills with {{env('APP_NAME')}} using my referral link: ${referral}`" 
-                              target="_blank" 
-                              class="bg-green-500 hover:bg-green-600 px-3 py-1 rounded text-xs"
-                          >
-                              WhatsApp
-                          </a>
-          
-                          
-                          <a 
-                              :href="`https://twitter.com/intent/tweet?text=Enjoy cheap and affordable data, airtime, cable subscription and electricity bills with {{env('APP_NAME')}} using my referral link&url=${referral}`" 
-                              target="_blank" 
-                              class="bg-blue-400 hover:bg-blue-500 px-3 py-1 rounded text-xs"
-                          >
-                              Twitter
-                          </a>
-          
+                <div class="bg-white/10 backdrop-blur-sm p-3 rounded-lg">
+                    <p class="text-sm text-white/80 mb-1">{{ __('messages.Enjoy commission using your link') }}:</p>
+        
+                    <div class="flex items-center space-x-2">
+                        <input 
+                            type="text" 
+                            x-model="referral" 
+                            readonly 
+                            class="bg-transparent text-white text-sm flex-1 px-2 py-1 border border-white/30 rounded focus:outline-none"
+                        >
+                        <button 
+                            @click="navigator.clipboard.writeText(referral); copied = true; setTimeout(() => copied = false, 2000)" 
+                            class="text-sm bg-white/20 hover:bg-white/30 px-3 py-1 rounded transition"
+                        >
+                            {{ __('messages.Copy') }}
+                        </button>
+                    </div>
+        
+                    <template x-if="copied">
+                        <p class="text-green-200 text-xs mt-1">Copied!</p>
+                    </template>
+        
+                    <div class="mt-3 flex flex-wrap gap-2">
+                
+                        <a 
+                            :href="`https://wa.me/?text=Enjoy cheap and affordable data, airtime, cable subscription and electricity bills with {{env('APP_NAME')}} using this link: ${referral}`" 
+                            target="_blank" 
+                            class="bg-green-500 hover:bg-green-600 px-3 py-1 rounded text-xs"
+                        >
+                            WhatsApp
+                        </a>
+        
                         
-                          <button 
-                              @click="
-                                  if (navigator.share) {
-                                      navigator.share({
-                                          title: 'Referral',
-                                          text: 'Get cheap data here:',
-                                          url: referral
-                                      })
-                                  } else {
-                                      alert('Sharing not supported on this device.');
-                                  }
-                              " 
-                              class="bg-white/20 hover:bg-white/30 px-3 py-1 rounded text-xs"
-                          >
-                              Share
-                          </button>
-                      </div>
-                  </div>
+                        <a 
+                            :href="`https://twitter.com/intent/tweet?text=Enjoy cheap and affordable data, airtime, cable subscription and electricity bills with {{env('APP_NAME')}} using this link&url=${referral}`" 
+                            target="_blank" 
+                            class="bg-blue-400 hover:bg-blue-500 px-3 py-1 rounded text-xs"
+                        >
+                            Twitter
+                        </a>
+        
+                    
+                        <button 
+                            @click="
+                                if (navigator.share) {
+                                    navigator.share({
+                                        title: 'Referral',
+                                        text: 'Get cheap data here:',
+                                        url: referral
+                                    })
+                                } else {
+                                    alert('Sharing not supported on this device.');
+                                }
+                            " 
+                            class="bg-white/20 hover:bg-white/30 px-3 py-1 rounded text-xs"
+                        >
+                            Share
+                        </button>
+                    </div>
+                </div>
               @endif
           </div>
         </div>
@@ -161,7 +161,7 @@
                       
                   </div>
                   <div>
-                    <p class="text-sm uppercase tracking-wider text-white/80">Alltime Commissions</p>
+                    <p class="text-sm uppercase tracking-wider text-white/80">{{__('messages.Alltime Commissions')}}</p>
                     <p class="text-2xl font-bold">
                         &#8358; {{ number_format($total_commissions_balance)  }}
                     </p>
@@ -183,7 +183,7 @@
                       
                   </div>
                   <div>
-                    <p class="text-sm uppercase tracking-wider text-white/80">Pending Commissions</p>
+                    <p class="text-sm uppercase tracking-wider text-white/80">{{__('messages.Pending Commissions')}}</p>
                     <p class="text-2xl font-bold">
                         &#8358; {{ number_format($pending_commissions_balance)  }}
                     </p>
@@ -199,7 +199,7 @@
             <div class="box">
                 <div class="box-header">
                     <div class="sm:flex">
-                        <h5 class="box-title my-auto">Commissions</h5>
+                        <h5 class="box-title my-auto">{{__('messages.Commissions')}}</h5>
                         <div class="box-header">
                             <div class="flex">
                              
@@ -210,7 +210,7 @@
                                         <div class="ti-modal-content">
                                           <div class="ti-modal-header">
                                             <h3 class="ti-modal-title">
-                                              Filter Options
+                                              {{__('messages.Filter Options')}}
                                             </h3>
                                             <button type="button" class="hs-dropdown-toggle ti-modal-close-btn"
                                               data-hs-overlay="#hs-slide-down-animation-modal">
@@ -271,7 +271,7 @@
                         <div class="hs-dropdown ti-dropdown block ms-auto my-auto">
                             <a id="filter_user_txn_table" class="ti-btn ti-btn-primary" data-hs-overlay="#hs-slide-down-animation-modal"
                             href="javascript:void(0);">
-                             Filter Option
+                            {{__('messages.Filter Option ')}}
                             </a>
                             {{-- <button aria-label="button" id="hs-dropdown-custom-icon-trigger3" type="button"
                                 class="hs-dropdown-toggle ti-dropdown-toggle rounded-sm p-2 bg-white !border border-gray-200 text-gray-500 hover:bg-gray-100  focus:ring-gray-200 dark:bg-bodybg dark:hover:bg-black/30 dark:border-white/10 dark:hover:border-white/20 dark:focus:ring-white/10 dark:focus:ring-offset-white/10">

@@ -239,7 +239,7 @@
                                                  </div>
 
                                                   <div class="space-y-2">  
-                                                      <input type="text" id="validation_customer_name" name="validation_customer_name" class="opacity-70 pointer-events-none ti-form-input" disabled readonly placeholder="validated name on the card" />
+                                                      <input type="text" id="validation_customer_name" name="validation_customer_name" class="opacity-70 pointer-events-none ti-form-input" disabled readonly placeholder="{{ __('messages.Validated name on the card') }}" />
                                                   </div>
   
                                                    {{-- <div class="space-y-2"> --}}
@@ -255,12 +255,12 @@
                                                     <input type="password" class="my-auto ti-form-input" id="pin" name="pin" value="" placeholder="Enter your pin to secure transaction">
                                                     <div class="flex items-center">
                                                       <input type="checkbox" id="hs-basic-with-description-unchecked" class="ti-switch show_pin1">
-                                                      <label for="hs-basic-with-description-unchecked" class="text-sm text-gray-500 ms-3 dark:text-white/70 ">Show PIN</label>
+                                                      <label for="hs-basic-with-description-unchecked" class="text-sm text-gray-500 ms-3 dark:text-white/70 ">{{ __('messages.Show pin') }}</label>
                                                     </div>  
                                                   </div>
 
                                                   <div class="space-y-2">
-                                                      <button type="submit" id="buy_cable_btn" class="ti-btn ti-btn-primary w-full">Buy Cable TV</button><br>
+                                                      <button type="submit" id="buy_cable_btn" class="ti-btn ti-btn-primary w-full">{{__('messages.Buy Cable TV')}}</button><br>
                                                       <p class="text-center mt-2 font-bold underline">
                                                       <a href="#" id="cancel_disabling" class="hidden">Click to reactivate the button and try again</a>
                                                     </p>

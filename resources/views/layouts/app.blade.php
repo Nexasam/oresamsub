@@ -1351,8 +1351,8 @@
                   success: function(response) {
                       // $('#validated_name_on_smart_card').removeClass('hidden');
                       $('#validated_name_on_smart_card').html('');
-                      $('#validated_name_on_smart_card').append('Please validate the details below before payment:<br>');
-                      $('#validated_name_on_smart_card').append(`<p>Name on Card: <strong>${response.name}</strong> </p>`);
+                      $('#validated_name_on_smart_card').append('{{__("messages.Please validate the details below before payment")}}:<br>');
+                      $('#validated_name_on_smart_card').append(`<p>{{ __("messages.Name on Card") }}: <strong>${response.name}</strong> </p>`);
                       if(typpe == 'electricity'){
                         $('#validated_name_on_smart_card').append(`<p>Address: <strong>${response.address}</strong> </p>`);
                         $('#'+display_address).val(response.address);

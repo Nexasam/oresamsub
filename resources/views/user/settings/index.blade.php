@@ -49,7 +49,7 @@
           
               <div class="box">
                 <div class="box-header">
-                  <h5 class="box-title">User Settings</h5>
+                  <h5 class="box-title">{{__('messages.User Settings')}}</h5>
                 </div>
 
                 <div class="box-body">
@@ -114,24 +114,24 @@
                           {{-- <div class="grid w-full lg:w-1/2 lg:grid-cols-2 gap-6 space-y-4 lg:space-y-0"> --}}
                           <div class="grid lg:grid-cols-2 gap-6 space-y-4 lg:space-y-0">
                             <div class="space-y-2">
-                                <label class="ti-form-label mb-0">First name</label>
-                                <input type="text" id="first_name" name="first_name" value="{{ $user->first_name }}" class="my-auto ti-form-input" placeholder="Firstname">
+                                <label class="ti-form-label mb-0">{{__('messages.First name')}}</label>
+                                <input type="text" id="first_name" name="first_name" value="{{ $user->first_name }}" class="my-auto ti-form-input" placeholder="">
                             </div>
                             <div class="space-y-2">
-                                <label class="ti-form-label mb-0">Last name</label>
-                                <input type="text" id="last_name" name="last_name" value="{{ $user->last_name }}" class="my-auto ti-form-input" placeholder="Last name">
+                                <label class="ti-form-label mb-0">{{__('messages.Last name')}}</label>
+                                <input type="text" id="last_name" name="last_name" value="{{ $user->last_name }}" class="my-auto ti-form-input" placeholder="">
                             </div>
                             <div class="space-y-2">
-                              <label class="ti-form-label mb-0">Other names</label>
-                              <input type="text" id="other_names" name="other_names" value="{{ $user->other_names }}" class="my-auto ti-form-input" placeholder="Other names">
+                              <label class="ti-form-label mb-0">{{__('messages.Other names')}}</label>
+                              <input type="text" id="other_names" name="other_names" value="{{ $user->other_names }}" class="my-auto ti-form-input" placeholder="">
                             </div>
                             <div class="space-y-2">
                                 <label class="ti-form-label mb-0">PIN</label>
                                 <input type="password" id="pin" name="pin" value="" class="my-auto ti-form-input"
-                                    placeholder="Enter pin to confirm update">
+                                    placeholder="">
                                 <div class="flex items-center">
                                   <input type="checkbox" id="hs-basic-with-description-unchecked" class="ti-switch show_pin1">
-                                  <label for="hs-basic-with-description-unchecked" class="text-sm text-gray-500 ms-3 dark:text-white/70 ">Show PIN</label>
+                                  <label for="hs-basic-with-description-unchecked" class="text-sm text-gray-500 ms-3 dark:text-white/70 ">{{__('messages.Show pin')}}</label>
                                 </div> 
                             </div>
                             {{-- <div class="space-y-2">
@@ -189,7 +189,7 @@
                               </div> --}}
 
                               <div class="space-y-2 mt-5">
-                                  <button type="submit" class="ti-btn ti-btn-primary w-full btn-block">Update profile</button>
+                                  <button type="submit" class="ti-btn ti-btn-primary w-full btn-block">{{__('messages.Update Profile')}}</button>
                               </div>
                             
                               <br>
@@ -205,46 +205,46 @@
                           @csrf
                           <div class="grid w-full lg:w-1/2 lg:grid-cols-1 gap-6 space-y-4 lg:space-y-0">
                               <div class="space-y-2 mt-5">
-                                <label class="ti-form-label mb-0"> Current password</label>
-                                <input type="password" id="current_password" name="current_password" class="my-auto ti-form-input" placeholder="enter current password">    
+                                <label class="ti-form-label mb-0"> {{__('messages.Current password')}}</label>
+                                <input type="password" id="current_password" name="current_password" class="my-auto ti-form-input" placeholder="">    
                                 <div class="flex items-center">
                                   <input type="checkbox" id="hs-basic-with-description-unchecked" class="ti-switch show_password_current">
-                                  <label for="hs-basic-with-description-unchecked" class="text-sm text-gray-500 ms-3 dark:text-white/70 ">Show password</label>
+                                  <label for="hs-basic-with-description-unchecked" class="text-sm text-gray-500 ms-3 dark:text-white/70 ">{{__('messages.Show password')}}</label>
                                 </div>                        
                               </div>
 
                               <div class="space-y-2 mt-5">
-                                <label class="ti-form-label mb-0"> New password</label>
-                                <input type="password" id="new_password" name="new_password" class="my-auto ti-form-input" placeholder="enter new password">                            
+                                <label class="ti-form-label mb-0"> {{__('messages.New password')}}</label>
+                                <input type="password" id="new_password" name="new_password" class="my-auto ti-form-input" placeholder="">                            
                                 <div class="flex items-center">
                                   <input type="checkbox" id="hs-basic-with-description-unchecked" class="ti-switch show_password">
-                                  <label for="hs-basic-with-description-unchecked" class="text-sm text-gray-500 ms-3 dark:text-white/70 ">Show password</label>
+                                  <label for="hs-basic-with-description-unchecked" class="text-sm text-gray-500 ms-3 dark:text-white/70 ">{{__('messages.Show password')}}</label>
                                 </div>
                               </div>
 
 
                               <div class="space-y-2 mt-5">
-                                <label class="ti-form-label mb-0"> Confirm new password</label>
-                                <input type="password" id="confirm_new_password" name="confirm_new_password" class="my-auto ti-form-input" placeholder="confirm new password"> 
+                                <label class="ti-form-label mb-0"> {{__('messages.Confirm new password')}}</label>
+                                <input type="password" id="confirm_new_password" name="confirm_new_password" class="my-auto ti-form-input" placeholder=""> 
                                 <div class="flex items-center">
                                   <input type="checkbox" id="hs-basic-with-description-unchecked" class="ti-switch show_password2">
-                                  <label for="hs-basic-with-description-unchecked" class="text-sm text-gray-500 ms-3 dark:text-white/70 ">Show confirm password</label>
+                                  <label for="hs-basic-with-description-unchecked" class="text-sm text-gray-500 ms-3 dark:text-white/70 ">{{__('messages.Show Confirm Password')}}</label>
                                 </div>                           
                               </div>
                              
 
                               <div class="space-y-2 mt-5">
                                 <label class="ti-form-label mb-0">PIN</label>
-                                <input type="password" id="pin5" name="pin5" class="my-auto ti-form-input" placeholder="confirm action with your PIN"> 
+                                <input type="password" id="pin5" name="pin5" class="my-auto ti-form-input" placeholder=""> 
                                 <div class="flex items-center">
                                   <input type="checkbox" id="hs-basic-with-description-unchecked" class="ti-switch show_pin5">
-                                  <label for="hs-basic-with-description-unchecked" class="text-sm text-gray-500 ms-3 dark:text-white/70 ">Show PIN</label>
+                                  <label for="hs-basic-with-description-unchecked" class="text-sm text-gray-500 ms-3 dark:text-white/70 ">{{__('messages.Show pin')}}</label>
                                 </div>                                
                               </div>
 
 
                               <div class="space-y-2">
-                                  <button type="submit" class="ti-btn ti-btn-primary w-full">Update password</button>
+                                  <button type="submit" class="ti-btn ti-btn-primary w-full">{{__('messages.Update Password')}}</button>
                               </div>
                             
                               <br>
@@ -260,35 +260,35 @@
                               </div> --}}
 
                               <div class="space-y-2 mt-5">
-                                <label class="ti-form-label mb-0"> Current PIN</label>
-                                <input type="password" id="current_pin" name="current_pin" class="my-auto ti-form-input" placeholder="enter current pin">   
+                                <label class="ti-form-label mb-0"> {{__('messages.Current PIN')}}</label>
+                                <input type="password" id="current_pin" name="current_pin" class="my-auto ti-form-input" placeholder="">   
                                 <div class="flex items-center">
                                   <input type="checkbox" id="hs-basic-with-description-unchecked" class="ti-switch show_pin2">
-                                  <label for="hs-basic-with-description-unchecked" class="text-sm text-gray-500 ms-3 dark:text-white/70 ">Show PIN</label>
+                                  <label for="hs-basic-with-description-unchecked" class="text-sm text-gray-500 ms-3 dark:text-white/70 ">{{__('messages.Show pin')}}</label>
                                 </div>                          
                               </div>
 
                               <div class="space-y-2 mt-5">
-                                <label class="ti-form-label mb-0"> New PIN</label>
-                                <input type="password" id="new_pin" name="new_pin" class="my-auto ti-form-input" placeholder="confirm new pin"> 
+                                <label class="ti-form-label mb-0"> {{__('messages.New PIN')}}</label>
+                                <input type="password" id="new_pin" name="new_pin" class="my-auto ti-form-input" placeholder=""> 
                                 <div class="flex items-center">
                                   <input type="checkbox" id="hs-basic-with-description-unchecked" class="ti-switch show_pin3">
-                                  <label for="hs-basic-with-description-unchecked" class="text-sm text-gray-500 ms-3 dark:text-white/70 ">Show PIN</label>
+                                  <label for="hs-basic-with-description-unchecked" class="text-sm text-gray-500 ms-3 dark:text-white/70 ">{{__('messages.Show pin')}}</label>
                                 </div>                            
                               </div>
 
                               <div class="space-y-2 mt-5">
-                                <label class="ti-form-label mb-0">Confirm New PIN</label>
-                                <input type="password" id="confirm_new_pin" name="confirm_new_pin" class="my-auto ti-form-input" placeholder="confirm new pin"> 
+                                <label class="ti-form-label mb-0">{{__('messages.Confirm New PIN')}}</label>
+                                <input type="password" id="confirm_new_pin" name="confirm_new_pin" class="my-auto ti-form-input" placeholder=""> 
                                 <div class="flex items-center">
                                   <input type="checkbox" id="hs-basic-with-description-unchecked" class="ti-switch show_pin4">
-                                  <label for="hs-basic-with-description-unchecked" class="text-sm text-gray-500 ms-3 dark:text-white/70 ">Show PIN</label>
+                                  <label for="hs-basic-with-description-unchecked" class="text-sm text-gray-500 ms-3 dark:text-white/70 ">{{__('messages.Show pin')}}</label>
                                 </div>                            
                               </div>
 
 
                               <div class="space-y-2">
-                                  <button type="submit" class="ti-btn ti-btn-primary w-full">Update PIN</button>
+                                  <button type="submit" class="ti-btn ti-btn-primary w-full">{{__('messages.Update PIN')}}</button>
                               </div>
                             
                               <br>
@@ -296,7 +296,7 @@
                         </form>
                         <hr>
                         <div class="overflow-auto">
-                          <span class="ti-btn ti-btn-danger w-1/2">Note: The 2fa feature is currently disabled. It will be enabled as as soon as possible.</span>
+                          <span class="ti-btn ti-btn-danger w-1/2">{{ __('messages.Note that 2FA feature is currently disabled. It will be enabled as soon as possible.') }}</span>
            
 
                           {{-- Note: Please we are currently making some updates and as a result, the 2fa will be temporarily unavailable.

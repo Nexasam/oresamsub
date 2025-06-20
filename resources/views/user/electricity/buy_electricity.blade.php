@@ -32,16 +32,16 @@
           
               <div class="box">
                 <div class="box-header">
-                  <h5 class="box-title">{{ auth()->user()->role->role_name == 'Admin' ? 'TEST' : '' }}  Utility Bills Transactions</h5>
+                  <h5 class="box-title">{{ auth()->user()->role->role_name == 'Admin' ? 'TEST' : '' }}  {{ __('messages.Utility Bills Transactions') }}</h5>
                 </div>
 
                 <div class="box-body">
                   <nav class="flex space-x-2" aria-label="Tabs" role="tablist">
                     <button type="button" class="hs-tab-active:bg-primary hs-tab-active:text-white py-3 px-4 inline-flex items-center gap-2 bg-transparent text-sm font-medium text-center text-gray-500 rounded-sm hover:text-primary  dark:text-white/70 dark:hover:text-white active" id="pills-with-brand-color-item-2" data-hs-tab="#pills-with-brand-color-2" aria-controls="pills-with-brand-color-2">
-                      Buy Utility Bills
+                      {{ __('messages.Buy Utility Bills') }}
                     </button>
                     <button type="button" class="hs-tab-active:bg-primary hs-tab-active:text-white py-3 px-4 inline-flex items-center gap-2 bg-transparent text-sm font-medium text-center text-gray-500 rounded-sm hover:text-primary  dark:text-white/70 dark:hover:text-white " id="pills-with-brand-color-item-1" data-hs-tab="#pills-with-brand-color-1" aria-controls="pills-with-brand-color-1">
-                      View Utility Bills Transactions
+                      {{ __('messages.View Utility Bills Transactions') }}
                     </button>
                   
                   </nav>
@@ -53,7 +53,7 @@
                       <div class="box-body">     
                         <div class="box-header">
                           <div class="flex">
-                            <h5 class="box-title my-auto">Filter options</h5>
+                            <h5 class="box-title my-auto">{{ __('messages.Filter Options') }}</h5>
                             <div class="hs-dropdown ti-dropdown block ms-auto my-auto s  sm:flex items-center justify-between">
                             
                                   <button type="button"
@@ -193,7 +193,7 @@
                                 <div class="box">
                                     
                                     <div class="box-body">
-                                        <h3><strong> Wallet balance: &#8358;{{  number_format($user_details->main_wallet,2) }}</strong></h3>
+                                        <h3><strong> {{__('messages.Wallet Balance')}}: &#8358;{{  number_format($user_details->main_wallet,2) }}</strong></h3>
                                         <br>
                                         <br>
                                         <form>
@@ -214,7 +214,7 @@
                     
                                                 {{-- single_select --}}
                                                 <div  class="space-y-2">
-                                                    <label class="ti-form-label mb-0">Product Plan Category</label>
+                                                    <label class="ti-form-label mb-0">{{__('messages.Product Plan Category')}}</label>
                                                     <select  required name="electricity_product_plan_category_id" id="electricity_product_plan_category_id" class="my-auto ti-form-select">
                                                         <option value="">Select</option>
                                                         @foreach ($product_plan_categories as $product_plan_category)
@@ -225,8 +225,8 @@
                                                 </div>
 
                                                 <div class="space-y-2">
-                                                  <label class="ti-form-label mb-0">Amount:</label>
-                                                  <input type="number" class="my-auto ti-form-input" id="utility_amount" name="utility_amount" value="" placeholder="Enter amount"> 
+                                                  <label class="ti-form-label mb-0">{{__('messages.Amount')}}:</label>
+                                                  <input type="number" class="my-auto ti-form-input" id="utility_amount" name="utility_amount" value="" placeholder="{{__('messages.Enter Amount')}}"> 
                                                   <div class="display_actual_amount">
                                                         
                                                   </div>
@@ -234,7 +234,7 @@
                                                 
                     
                                                 <div class="space-y-2">
-                                                    <label class="ti-form-label mb-0">Product Plans List</label>
+                                                    <label class="ti-form-label mb-0">{{__('messages.Product Plans List')}}</label>
                                                     <select required name="electricity_product_plan_id" id="electricity_product_plan_id" class="my-auto ti-form-select">
                                                         <option value="all">Select</option>
                     
@@ -242,15 +242,15 @@
                                                 </div>
                                               
                                                 <div class="space-y-2">
-                                                    <label class="ti-form-label mb-0">Metre No*</label>
+                                                    <label class="ti-form-label mb-0">{{__('messages.Metre No')}}*</label>
                                                     <input type="text" onkeyup="validateNameOnSmartCard('electricity')" id="metre_number" name="metre_number" class="my-auto ti-form-input" placeholder="e.g 45082894648" />
                                                     <div id="validated_name_on_smart_card"></div>
                                                 </div>
                                                 
 
                                                 <div class="space-y-2">  
-                                                  <input type="text" id="validation_extra_info" name="validation_extra_info" class="opacity-70 pointer-events-none ti-form-input" disabled readonly placeholder="extra information" />
-                                                  <input type="text" id="validation_address" name="validation_address" class="opacity-70 pointer-events-none ti-form-input" disabled readonly placeholder="extra address information" />
+                                                  <input type="text" id="validation_extra_info" name="validation_extra_info" class="opacity-70 pointer-events-none ti-form-input" disabled readonly placeholder="{{__('messages.extra information')}}" />
+                                                  <input type="text" id="validation_address" name="validation_address" class="opacity-70 pointer-events-none ti-form-input" disabled readonly placeholder="{{__('messages.extra address information')}}" />
                                                </div>
 
                                                
@@ -267,14 +267,14 @@
                                                   <input type="password" class="my-auto ti-form-input" id="pin" name="pin" value="" placeholder="Enter your pin to secure transaction">
                                                   <div class="flex items-center">
                                                     <input type="checkbox" id="hs-basic-with-description-unchecked" class="ti-switch show_pin1">
-                                                    <label for="hs-basic-with-description-unchecked" class="text-sm text-gray-500 ms-3 dark:text-white/70 ">Show PIN</label>
+                                                    <label for="hs-basic-with-description-unchecked" class="text-sm text-gray-500 ms-3 dark:text-white/70 ">{{__('messages.Show pin')}}</label>
                                                   </div>  
                                                 </div>
 
                                                 <div class="space-y-2">
-                                                    <button type="submit" id="buy_electricity_btn" class="ti-btn ti-btn-primary w-full">Buy Now</button><br>
+                                                    <button type="submit" id="buy_electricity_btn" class="ti-btn ti-btn-primary w-full">{{__('messages.Buy Now')}}</button><br>
                                                     <p class="text-center mt-2 font-bold underline">
-                                                      <a href="#" id="cancel_disabling" class="hidden">Click to reactivate the button and try again</a>
+                                                      <a href="#" id="cancel_disabling" class="hidden">{{__('messages.Click to reactivate the button and try again')}}</a>
                                                     </p>
                                                 </div>
                                                

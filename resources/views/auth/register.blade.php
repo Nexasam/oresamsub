@@ -194,12 +194,12 @@
                                     <h1 class="block text-2xl font-bold text-gray-800 dark:text-gray-900">{{ env('APP_NAME') }}</h1>
                                     <hr>
                                     @endif
-                                    <h3 class="block text-xl text-gray-800 dark:text-gray-900">Sign up</h3>
+                                    <h3 class="block text-xl text-gray-800 dark:text-gray-900">{{__('messages.Get Started')}}</h3>
                                     <p class="mt-3 text-sm text-gray-600 dark:text-white/70">
-                                        Already have an account?
+                                        {{__('messages.Already have an account')}}?
                                         <a class="text-primary decoration-2 hover:underline font-medium"
                                             href="{{ url(route('login'))}}">
-                                            Sign in here
+                                            {{__('messages.Signin here')}}
                                         </a>
                                     </p>
                                 </div>
@@ -236,9 +236,9 @@
 
                                                 <!-- Form Group -->
                                                 <div>
-                                                    <label for="fullname" class="block text-sm mb-2 dark:text-gray-900 font-bold">Fullname</label>
+                                                    <label for="fullname" class="block text-sm mb-2 dark:text-gray-900 font-bold">{{__('messages.Fullname')}}</label>
                                                     <div class="relative">
-                                                        <x-text-input placeholder="first name and  surname" id="fullname" class="block mt-1 w-full" type="text" name="fullname" :value="old('fullname')" required autofocus autocomplete="fullname" />
+                                                        <x-text-input placeholder="{{__('messages.First name and Surname')}}" id="fullname" class="block mt-1 w-full" type="text" name="fullname" :value="old('fullname')" required autofocus autocomplete="fullname" />
                                                         <input type="hidden" name="_token" value="{{ csrf_token() }}" />
                                                         <x-input-error :messages="$errors->get('fullname')" class="mt-2" />
                                                     </div>
@@ -247,9 +247,9 @@
 
                                                 <!-- Form Group -->
                                                 <div>
-                                                    <label for="username" class="block text-sm mb-2 dark:text-gray-900 font-bold">Username</label>
+                                                    <label for="username" class="block text-sm mb-2 dark:text-gray-900 font-bold">{{__('messages.Username')}}</label>
                                                     <div class="relative">
-                                                        <x-text-input placeholder="username" id="username" class="block mt-1 w-full" type="text" name="username" :value="old('username')" required autofocus autocomplete="username" />
+                                                        <x-text-input placeholder="" id="username" class="block mt-1 w-full" type="text" name="username" :value="old('username')" required autofocus autocomplete="username" />
                                                         <x-input-error :messages="$errors->get('username')" class="mt-2" />
                                                     </div>
                                                 </div>
@@ -262,7 +262,7 @@
 
                                                 <!-- Form Group -->
                                                 <div>
-                                                    <label for="phone_number" class="block text-sm mb-2 dark:text-gray-900 font-bold">Phone</label>
+                                                    <label for="phone_number" class="block text-sm mb-2 dark:text-gray-900 font-bold">{{__('messages.Phone')}}</label>
                                                     <div class="relative">
                                                         <x-text-input id="phone_number" class="block mt-1 w-full" type="text" name="phone_number" :value="old('phone_number')" required autofocus autocomplete="phone_number" />
                                                         <x-input-error :messages="$errors->get('phone_number')" class="mt-2" />
@@ -271,7 +271,7 @@
 
                                                <!-- Form Group -->
                                                 <div>
-                                                    <label for="email" class="block text-sm mb-2 dark:text-gray-900 font-bold">Email address</label>
+                                                    <label for="email" class="block text-sm mb-2 dark:text-gray-900 font-bold">{{__('messages.Email Address')}}</label>
                                                     <div class="relative">
                                                         <x-text-input id="email" name="email" class="block mt-1 w-full" type="email" email="email" :value="old('email')" required autofocus autocomplete="email" />
                                                         <x-input-error :messages="$errors->get('email')" class="mt-2" />
@@ -291,7 +291,7 @@
                                                       
                                                         <!-- Form Group -->
                                                         <div>
-                                                            <label for="upline_referral_phone_number" class="block text-sm mb-2 dark:text-gray-900 font-bold">Referral phone number (optional)</label>
+                                                            <label for="upline_referral_phone_number" class="block text-sm mb-2 dark:text-gray-900 font-bold">{{__('messages.Referral phone number (optional)')}}</label>
                                                             <div class="relative">
                                                                 @if ($upline != '')
                                                                      <x-text-input readonly id="upline_referral_phone_number" class="block mt-1 w-full" type="text" name="upline_referral_phone_number" :value="old('upline_referral_phone_number')" value="{{$upline}}"  autofocus autocomplete="upline_referral_phone_number" />
@@ -309,28 +309,28 @@
                                             <div class="grid grid-cols-2 gap-6"> 
                                                 <!-- Form Group -->
                                                         <div>
-                                                            <label for="password" class="block text-sm mb-2 dark:text-gray-900 font-bold">Password</label>
+                                                            <label for="password" class="block text-sm mb-2 dark:text-gray-900 font-bold">{{__('messages.Password')}}</label>
                                                             <div class="relative">
                                                                 <x-text-input id="password" name="password" class="block mt-1 w-full" type="password" password="password" :value="old('password')" required autofocus autocomplete="password" />
                                                                 <x-input-error :messages="$errors->get('password')" class="mt-2" />
                                                             </div>
                                                             <div class="flex items-center mt-1">
                                                                 <input type="checkbox" id="hs-basic-with-description-unchecked" class="ti-switch show_password">
-                                                                <label for="hs-basic-with-description-unchecked" class="text-sm text-gray-500 ms-3 dark:text-white/70 ">Show password</label>
+                                                                <label for="hs-basic-with-description-unchecked" class="text-sm text-gray-500 ms-3 dark:text-white/70 ">{{__('messages.Show password')}}</label>
                                                             </div>
                                                         </div>
                                                         <!-- End Form Group -->
             
                                                         <!-- Form Group -->
                                                         <div>
-                                                            <label for="confirm-password" class="block text-sm mb-2 dark:text-gray-900 font-bold">Confirm Password</label>
+                                                            <label for="confirm-password" class="block text-sm mb-2 dark:text-gray-900 font-bold">{{__('messages.Confirm Password')}}</label>
                                                             <div class="relative">
                                                                 <x-text-input id="confirm-password" name="password_confirmation" class="block mt-1 w-full" type="password" password="confirm-password" :value="old('password_confirmation')" required autofocus autocomplete="password_confirmation" />
                                                                 <x-input-error :messages="$errors->get('password_confirmation')" class="mt-2" />
                                                             </div>
                                                             <div class="flex items-center mt-1">
                                                                 <input type="checkbox" id="hs-basic-with-description-unchecked" class="ti-switch show_confirm_password">
-                                                                <label for="hs-basic-with-description-unchecked" class="text-sm text-gray-500 ms-3 dark:text-white/70 ">Show password</label>
+                                                                <label for="hs-basic-with-description-unchecked" class="text-sm text-gray-500 ms-3 dark:text-white/70 ">{{__('messages.Show password')}}</label>
                                                             </div>
                                                         </div>
                                                         <!-- End Form Group -->
@@ -358,8 +358,7 @@
                                         
 
                                             <button type="submit"
-                                                class="py-2 px-3 inline-flex justify-center items-center gap-2 rounded-sm border border-transparent font-semibold bg-primary text-white hover:bg-primary focus:outline-none focus:ring-0 focus:ring-primary focus:ring-offset-0 transition-all text-sm dark:focus:ring-offset-white/10">Sign
-                                                up</button>
+                                                class="py-2 px-3 inline-flex justify-center items-center gap-2 rounded-sm border border-transparent font-semibold bg-primary text-white hover:bg-primary focus:outline-none focus:ring-0 focus:ring-primary focus:ring-offset-0 transition-all text-sm dark:focus:ring-offset-white/10">{{__('messages.Signup')}}</button>
                                         </div>
                                     </form>
                                     <!-- End Form -->

@@ -1197,10 +1197,10 @@
             <div class="box">
                 <div class="box-header">
                     <div class="flex justify-between">
-                        <h5 class="box-title my-auto">Hot sales ({{count($hot_sales)}})</h5>      
+                        <h5 class="box-title my-auto">{{ __('messages.Hot sales') }} ({{count($hot_sales)}})</h5>      
                     </div>
                     <div class="flex items-center">
-                        <p>Enjoy at discounted prices</p>
+                        <p>{{ __('messages.Enjoy at discounted prices')}}</p>
                     </div>
                 </div>
                 <div class="box-body">
@@ -1226,7 +1226,7 @@
                         </table>
 
                         @else
-                          <p>No hot sales at the moment.</p>
+                          <p>{{ __('messages.No hot sales at the moment')}}</p>
                         @endif              
                     </div>
                    

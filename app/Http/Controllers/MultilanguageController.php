@@ -16,6 +16,12 @@ class MultilanguageController extends Controller
               'ig' => 'Ntanụgharị',
               'ha' => 'Allon Kulawa',
             ],
+            "Contact" => [
+              "en" => "Contact",
+              "yo" => "Kan sí wa",
+              "ig" => "Kpọtụrụ",
+              "ha" => "Tuntuɓi"
+            ],
             'Copy' => [
               'en' => 'Copy',
               'yo' => 'Daakọ',
@@ -28,6 +34,48 @@ class MultilanguageController extends Controller
               'ig' => 'Nnọọ',
               'ha' => 'Barka da zuwa',
             ],
+            "We're here to help! Reach out to our customer support team through the following channels" => [
+                  "en" => "We're here to help! Reach out to our customer support team through the following channels",
+                  "yo" => "A wà níbí láti ràn ẹ́ lọ́wọ́! Kan ẹgbẹ́ ìtìlẹ́yìn oníbàárà wa lórí àwọn ọ̀nà yìí",
+                  "ig" => "Anyị dị ebe a iji nyere gị aka! Kpọtụrụ ndị otu nkwado ndị ahịa anyị site na ụzọ ndị a",
+                  "ha" => "Muna nan don taimaka! Tuntuɓi ƙungiyar tallafin abokin cinikinmu ta waɗannan hanyoyin"
+              ],
+
+            "Email" => [
+                "en" => "Email",
+                "yo" => "Ìmẹ́lì",
+                "ig" => "Email",
+                "ha" => "Imel"
+            ],
+
+            "Reach us on whatsapp by" => [
+                "en" => "Reach us on WhatsApp by",
+                "yo" => "Kan wá lórí WhatsApp pẹ̀lú",
+                "ig" => "Kpọtụrụ anyị na WhatsApp site na",
+                "ha" => "Tuntuɓe mu ta WhatsApp ta"
+            ],
+
+            "clicking this link" => [
+                "en" => "clicking this link",
+                "yo" => "títẹ àsọyé yìí",
+                "ig" => "pịnye njikọ a",
+                "ha" => "danna wannan mahaɗin"
+            ],
+
+            "Office Address" => [
+                "en" => "Office Address",
+                "yo" => "Àdírẹ́sì Ọ́fíìsì",
+                "ig" => "Adreesị ụlọ ọrụ",
+                "ha" => "Adireshin ofis"
+            ],
+
+            "Developed with ❤️ by" => [
+                "en" => "Developed with ❤️ by",
+                "yo" => "Dáà ṣe pẹ̀lú ❤️ nipasẹ",
+                "ig" => "E mepụtara ya na ❤️ site n'aka",
+                "ha" => "An haɓaka shi da ❤️ ta hannun"
+            ],
+
             'Buy Data' => [
               'en' => 'Buy Data',
               'yo' => 'Ra Data',
@@ -250,6 +298,12 @@ class MultilanguageController extends Controller
               "ig" => "Lee Ụgwọ Ugboelu",
               "ha" => "Duba Ma'amalolin Katin Waya"
             ],
+            "Enter Amount" => [
+              "en" => "Enter Amount",
+              "yo" => "Tẹ iye owó",
+              "ig" => "Tinye ego",
+              "ha" => "Shigar da adadi"
+            ],
             'Phone number to recharge' => [
               'en' => 'Phone number to recharge',
               'yo' => 'Nọmba foonu lati gba agbara',
@@ -291,12 +345,6 @@ class MultilanguageController extends Controller
             ],
             'Show pin' => [
               'en' => 'Show pin',
-              'yo' => 'Fi PIN han',
-              'ig' => 'Gosi PIN',
-              'ha' => 'Nuna PIN',
-            ],
-            'Show PIN' => [
-              'en' => 'Show PIN',
               'yo' => 'Fi PIN han',
               'ig' => 'Gosi PIN',
               'ha' => 'Nuna PIN',
@@ -568,9 +616,9 @@ class MultilanguageController extends Controller
                 ],
                 "Commissions" => [
                   "en" => "Commissions",
-                  "yo" => "Ẹ̀san",
-                  "ig" => "Uru",
-                  "ha" => "Kwamitoci"
+                  "yo" => "Èrè àtajà",
+                  "ig" => "Ụgwọ uru",
+                  "ha" => "Ribar kudi"
                 ],
                 "Your commission will be converted to your main wallet at the start of the next month for purchase of airtime, data etc" => [
                   "en" => "Your commission will be converted to your main wallet at the start of the next month for purchase of airtime, data etc",
@@ -837,6 +885,12 @@ class MultilanguageController extends Controller
                 "ig" => "Nke a bụ ndepụta ọnụahịa anyị",
                 "ha" => "Ga jerin farashinmu"
               ],
+              "Plans & Prices" => [
+                  "en" => "Plans & Prices",
+                  "yo" => "Ètò àti Ọ̀ya",
+                  "ig" => "Atụmatụ na ọnụahịa",
+                  "ha" => "Tsare-tsare da farashi"
+              ],
               "Product name" => [
                 "en" => "Product name",
                 "yo" => "Orukọ Ọja",
@@ -927,6 +981,12 @@ class MultilanguageController extends Controller
                 "ig" => "Ị nwere akaụntụ?",
                 "ha" => "Kana da asusu tuni?"
               ],
+              "First name and Surname" => [
+                  "en" => "First name and Surname",
+                  "yo" => "Orúkọ àkọ́kọ́ àti orúkọ ìdílé",
+                  "ig" => "Aha mbụ na aha ezinụlọ",
+                  "ha" => "Sunan farko da sunan mahaifi"
+              ],
               "Fullname" => [
                 "en" => "Fullname",
                 "yo" => "Orukọ Kikun",
@@ -969,7 +1029,7 @@ class MultilanguageController extends Controller
                 "ig" => "Nnọọ ọzọ",
                 "ha" => "Barka da dawowa"
               ],
-                        "Email or Username or Phone" => [
+            "Email or Username or Phone" => [
             "en" => "Email or Username or Phone",
             "yo" => "Ímẹ́lì tàbí Orúkọ Olùgbani tàbí Foonu",
             "ig" => "Email ma ọ bụ Aha ojii ma ọ bụ Ekwentị",
@@ -1035,18 +1095,64 @@ class MultilanguageController extends Controller
             "ig" => "PIN ọhụrụ",
             "ha" => "Sabon PIN"
             ],
+            "Current PIN" => [
+                "en" => "Current PIN",
+                "yo" => "PIN Tó Wà Lọ́wọ́",
+                "ig" => "PIN dị ugbu a",
+                "ha" => "PIN ɗin yanzu"
+            ],
             "Confirm New PIN" => [
             "en" => "Confirm New PIN",
             "yo" => "Jẹ́risi PIN Tuntun",
             "ig" => "Kwenye PIN ọhụrụ",
             "ha" => "Tabbatar da sabon PIN"
             ],
+            "Confirm Password" => [
+            "en" => "Confirm Password",
+            "yo" => "Jẹ́risi Ọrọ aṣínà",
+            "ig" => "Kwenye okwuntughe",
+            "ha" => "Tabbatar da kalmar sirri"
+            ],
+            "Show Confirm Password" => [
+                "en" => "Show Confirm Password",
+                "yo" => "Fi Ọrọ aṣínà ìmúlòlùfẹ́ hàn",
+                "ig" => "Gosi okwuntughe nkwenye",
+                "ha" => "Nuna kalmar sirri ta tabbatarwa"
+            ],
+            "Update Password" => [
+                "en" => "Update Password",
+                "yo" => "Ṣàtúnṣe Ọrọ aṣínà",
+                "ig" => "Melite okwuntughe",
+                "ha" => "Sabunta kalmar sirri"
+            ],
+            "Update Profile" => [
+                "en" => "Update Profile",
+                "yo" => "Ṣàtúnṣe Profaili",
+                "ig" => "Melite profaịlụ",
+                "ha" => "Sabunta bayanin martaba"
+            ],
+
+            "Update PIN" => [
+                "en" => "Update PIN",
+                "yo" => "Ṣàtúnṣe PIN",
+                "ig" => "Melite PIN",
+                "ha" => "Sabunta PIN"
+            ],
+
+            "Note that 2FA feature is currently disabled. It will be enabled as soon as possible." => [
+                "en" => "Note that 2FA feature is currently disabled. It will be enabled as soon as possible.",
+                "yo" => "Akíyèsí pé ààmú 2FA ti wa nípò àìṣiṣẹ̀ lọ́wọ́lọwọ́. A ó ṣiṣẹ́ rẹ̀ lẹ́sẹ̀kẹsẹ̀ bí ó ti ṣeé ṣe tó.",
+                "ig" => "Rịba ama na atụmatụ 2FA adịghị arụ ọrụ ugbu a. A ga-eme ka ọ rụọ ọrụ ozugbo o kwere mee.",
+                "ha" => "Lura cewa fasalin 2FA yana a kashe yanzu. Za a kunna shi da wuri da zaran ya yiwu."
+            ],
+
             "Need something else" => [
             "en" => "Need something else",
             "yo" => "Nilo nkankan mìíràn?",
             "ig" => "Chọrọ ihe ọzọ?",
             "ha" => "Kana buƙatar wani abu dabam?"
             ],
+
             "Category" => [
                 "en" => "Category",
                 "yo" => "Ẹ̀ka",
@@ -1084,7 +1190,42 @@ class MultilanguageController extends Controller
                 "yo" => "Àtòkọ Ètò Ọja",
                 "ig" => "Ndepụta atụmatụ ngwaahịa",
                 "ha" => "Jerin Tsarin Samfura"
-            ]
+            ],
+
+            "Hot sales" => [
+                  "en" => "Hot sales",
+                  "yo" => "Tita Lẹsẹkẹsẹ",
+                  "ig" => "Ahịa mberede",
+                  "ha" => "Tallace-tallacen gaggawa"
+              ],
+
+              "Enjoy at discounted prices" => [
+                  "en" => "Enjoy at discounted prices",
+                  "yo" => "Gbadun rẹ ní owó díẹ̀",
+                  "ig" => "Nwee ọṅụ na ọnụ ahịa dị ala",
+                  "ha" => "Ji daɗi da rangwamen farashi"
+              ],
+
+              "No hot sales at the moment" => [
+                  "en" => "No hot sales at the moment",
+                  "yo" => "Ko si tita lẹsẹkẹsẹ ní báyìí",
+                  "ig" => "Enweghị ahịa mberede ugbu a",
+                  "ha" => "Babu tallace-tallacen gaggawa a yanzu"
+              ],
+              "Buy Now" => [
+                  "en" => "Buy Now",
+                  "yo" => "Ra Ní Bayìí",
+                  "ig" => "Zụta Ugbu a",
+                  "ha" => "Sayi Yanzu"
+              ],
+
+              "Metre No" => [
+                  "en" => "Metre No",
+                  "yo" => "Nọ́ńbà Mítà",
+                  "ig" => "Nọmba mita",
+                  "ha" => "Lambar mita"
+              ]
+
 
           ];
 
