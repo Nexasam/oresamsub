@@ -197,7 +197,7 @@
                                               @if ( in_array($bank_code->bank_code,$generated_user_virtual_accts_bank_code))
                                                     @foreach ($user_virtual_accounts as $user_virtual_account)
                                                         @if ($user_virtual_account->bank_code == $bank_code->bank_code)
-                                                          <span class="badge bg-success text-white">Generated</span><br>
+                                                          <span class="badge bg-success text-white">{{__('messages.Generated')}}</span><br>
                                                           <p>{{ __('messages.Account Number')  }}:  {{  $user_virtual_account->account_number  }}</p>
                                                           <p>{{ __('messages.Bank Name')  }}:  {{  $user_virtual_account->bank_name  }}</p>
                                                           <p>{{ __('messages.Account Name')  }}:  {{  $user_virtual_account->account_name  }}</p>
