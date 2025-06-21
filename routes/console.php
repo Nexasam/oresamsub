@@ -23,7 +23,7 @@ Schedule::command(ZerorizeNegativeBalances::class)->everyTwoMinutes()->withoutOv
 Schedule::command(ComputeReferralCommission::class)->everySixHours();
 // Schedule::command(ComputeReferralCommission::class)->everyFourMinutes();
 
-Schedule::command(SendNewRegistrationEmail::class)->everyFourMinutes()->withoutOverlapping();
+Schedule::command(SendNewRegistrationEmail::class)->everyTwoMinutes()->withoutOverlapping();
 Schedule::command(SendFailedTransactionEmail::class)->everyThirtySeconds()->withoutOverlapping();
 
 Schedule::command(ClearErrorLogs::class)->everyThirtyMinutes()->withoutOverlapping();
