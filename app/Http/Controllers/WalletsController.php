@@ -118,6 +118,7 @@ class WalletsController extends Controller
 
               //carry out funding here::: this will change later
               $old_amount = $user_details->main_wallet;
+              $new_amount = $user_details->main_wallet;
               $amount_funded = $response_decode['event_data']['data']['settled'];
            
              //check if the amount is greater than the max set for automatic crediting
@@ -184,6 +185,7 @@ class WalletsController extends Controller
             $created_data['transaction_reference'] = $response_decode['transaction_reference'];
             $created_data['payload_content'] = $response;
             $created = FundingWebhookPayload::create($created_data);
+            $new_amount = $old_amount + $amount_to_fund_user;
 
               if($can_fund == 'yes'){
                 $updated = $user_details->update([
@@ -197,8 +199,8 @@ class WalletsController extends Controller
 
               $walletLog['user_id'] = $user_details->id;
               $walletLog['transaction_category'] = 'CRYSTALPAY_WALLET_FUNDING';
-              $walletLog['balance_before'] = $user_details->main_wallet;
-              $walletLog['balance_after'] = $user_details->main_wallet + $amount_to_fund_user;
+              $walletLog['balance_before'] = $old_amount;
+              $walletLog['balance_after'] = $new_amount;
               $walletLog['transaction_id'] = $response_decode['transaction_reference'];
               $walletLog['action_by'] = 'webhook';           
               $walletLog['description'] = "Wallet of the user with the email: $email has been credited with $amount_to_fund_user via crystal pay";
