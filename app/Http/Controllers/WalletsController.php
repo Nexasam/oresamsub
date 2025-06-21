@@ -140,7 +140,7 @@ class WalletsController extends Controller
             }else{
               $created_data['funding_status'] = 'failed';
               $can_fund = 'no';
-              logger('Cannot fund because user details not found');
+              logger('Cannot fund because user details not found');exit;
             }
 
             $paid_amount = $response_decode['event_data']['data']['paid'];
@@ -362,6 +362,8 @@ class WalletsController extends Controller
           $created_data['collection_reference'] = $response_decode['collection_reference'];
           $created_data['transaction_reference'] = $response_decode['transaction_reference'];
           $created_data['payload_content'] = $response;
+          $new_amount = $old_amount + $amount_to_fund_user;
+
 
         
             $created = FundingWebhookPayload::create($created_data);
@@ -378,8 +380,8 @@ class WalletsController extends Controller
 
             $walletLog['user_id'] = $user_details->id;
             $walletLog['transaction_category'] = 'CRYSTALPAY_WALLET_FUNDING';
-            $walletLog['balance_before'] = $user_details->main_wallet;
-            $walletLog['balance_after'] = $user_details->main_wallet + $amount_to_fund_user;
+            $walletLog['balance_before'] = $old_amount;
+            $walletLog['balance_after'] = $new_amount;
             $walletLog['transaction_id'] = $response_decode['transaction_reference'];
             $walletLog['action_by'] = 'webhook';           
             $walletLog['description'] = "Wallet of the user with the email: $email has been credited with $amount_to_fund_user via crystal pay";
