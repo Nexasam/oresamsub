@@ -49,12 +49,10 @@
                    <p class="text-xl underline"><b>{{ __('messages.Wallet Balance')}} {{ number_format(auth()->user()->main_wallet) }}</b></p>
                    <br>
                   <h5 class="box-title">{{  __('messages.Fund wallet using') }} <b>{{ $funding_option->funding_option_name }}</b></h5>
-                  <b>{{  __('messages.Please note') }}:</b>
+                  {{-- <b>{{  __('messages.Please note') }}:</b>
                   <p>{{  __('messages.You can also make a direct payment to our bank account and your wallet will be credited.') }} <br>
                     @if (env('APP_NAME') == 'OresamSub')
-                        <b>{{ __("messages.Here’s the details") }}:</b> <br>
-                        {{-- 9163128718 <br>
-                        Moniepoint  <br> --}}
+                        <b>{{ __("messages.Here's the details") }}:</b> <br>
                         <b>{{__('messages.Account Number')}}:</b> 3069976671 <br>
                         <b>{{__('messages.Bank Name')}}:</b>      First Bank  <br> 
                         <b>{{__('messages.Account Name')}}:</b>   Olusola Samuel Adebunmi <br> 
@@ -63,7 +61,7 @@
                     @endif
                      <a class="ti-btn ti-btn-primary w-full md:w-1/3" href="https://api.whatsapp.com/send?phone={{ session()->get('whatsapp_support_number') }}&text=Hello,%20Please%20I%20want%20to%20fund%20my%20wallet%20on%20your%20platform">{{ __('messages.Click here to reach us on whatsapp') }}</a>
 
-                  </p>
+                  </p> --}}
                 </div>
 
                 <div class="box-body">
