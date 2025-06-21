@@ -208,6 +208,13 @@ class MultilanguageController extends Controller
               'ig' => 'Nọmba Akaụntụ',
               'ha' => 'Lambar Asusun',
             ],
+            'Account Email' => [
+                'en' => 'Account Email',
+                'yo' => 'Imeeli Iroyin',
+                'ig' => 'Email Akaụntụ',
+                'ha' => 'Imel ɗin Asusun',
+            ],
+
             'Bank Name' => [
               'en' => 'Bank Name',
               'yo' => 'Orukọ Banki',
