@@ -55,9 +55,9 @@
                         <b>{{ __("messages.Here’s the details") }}:</b> <br>
                         {{-- 9163128718 <br>
                         Moniepoint  <br> --}}
-                        <b>Account Number:</b> 3069976671 <br>
-                        <b>Bank Name:</b>      First Bank  <br> 
-                        <b>Account Name:</b>   Olusola Samuel Adebunmi <br> 
+                        <b>{{__('messages.Account Number')}}:</b> 3069976671 <br>
+                        <b>{{__('messages.Bank Name')}}:</b>      First Bank  <br> 
+                        <b>{{__('messages.Account Name')}}:</b>   Olusola Samuel Adebunmi <br> 
                     @else
                         
                     @endif
@@ -198,7 +198,7 @@
                                                     @foreach ($user_virtual_accounts as $user_virtual_account)
                                                         @if ($user_virtual_account->bank_code == $bank_code->bank_code)
                                                           <span class="badge bg-success text-white">Generated</span><br>
-                                                          <p>{{ __('messages.Account number')  }}:  {{  $user_virtual_account->account_number  }}</p>
+                                                          <p>{{ __('messages.Account Number')  }}:  {{  $user_virtual_account->account_number  }}</p>
                                                           <p>{{ __('messages.Bank Name')  }}:  {{  $user_virtual_account->bank_name  }}</p>
                                                           <p>{{ __('messages.Account Name')  }}:  {{  $user_virtual_account->account_name  }}</p>
                                                           <p>{{ __('messages.Account Email')  }}:  {{  $user_virtual_account->account_email  }}</p>
