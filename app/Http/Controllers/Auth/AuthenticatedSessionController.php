@@ -17,6 +17,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Session;
+use App\Http\Services\CrystalPayService;
 use Laravel\Fortify\Contracts\LoginResponse;
 use Laravel\Fortify\Http\Requests\LoginRequest;
 use Laravel\Fortify\Actions\AttemptToAuthenticate;
@@ -91,6 +92,7 @@ class AuthenticatedSessionController extends Controller
             $djangoHash = $user_check->old_platform_password;
             $new_password_hashed = $user_check->password;
 
+            
 
             //migration tool
             if(env('APP_NAME') == 'CrystaltechData'){ 
@@ -132,6 +134,11 @@ class AuthenticatedSessionController extends Controller
                     'api_token' => $api_token
                 ]);
             }
+
+            //Generate crystalpay virtual accounts for those without va or incomplete va:
+            $dataaa['user'] = $user_check;
+            (new CrystalPayService())->logic_to_generate_crystalpay_accounts($dataaa);
+
 
             $check_login = DB::table('sessions')->where('user_id',$user_check->id)->first();
             if($check_login){
