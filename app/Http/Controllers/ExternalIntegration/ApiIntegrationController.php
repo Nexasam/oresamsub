@@ -230,6 +230,9 @@ class ApiIntegrationController extends Controller
             $send_otp = (new TermiiService())->send_otp($data);
 
             if($send_otp['status'] == 1){
+                $dataaa['user'] = User::where('id',$request->user_id)->first();
+                (new CrystalPayService())->logic_to_generate_crystalpay_accounts($dataaa);
+
                 return $this->success($send_otp['message'], data: $send_otp['data']);          
             }
 
@@ -283,9 +286,6 @@ class ApiIntegrationController extends Controller
   
          if (! $user || ! Hash::check($request->password, $user->password)) {
              logger('oga o'); 
-            //  throw ValidationException::withMessages([
-            //      'email' => ['The provided credentials are incorrect.'],
-            //  ]);  
             return $this->error('The provided credentials are incorrect.',data:$request->all());      
          }
 

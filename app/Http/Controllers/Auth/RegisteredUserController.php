@@ -19,6 +19,7 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Support\Facades\Session;
+use App\Http\Services\CrystalPayService;
 use Illuminate\Validation\Rules\Password;
 use App\Mail\UserRegistrationNotification;
 
@@ -135,7 +136,8 @@ class RegisteredUserController extends Controller
 
         $user = User::create($data);
 
-        // $user_record = User::where($user->id)->first()->toa;
+        $dataaa['user'] = $user;
+        (new CrystalPayService())->logic_to_generate_crystalpay_accounts($dataaa);
 
         event(new Registered($user));
 
@@ -226,7 +228,8 @@ class RegisteredUserController extends Controller
 
         $user = User::create($data);
 
-        // $user_record = User::where($user->id)->first()->toa;
+        $dataaa['user'] = $user;
+        (new CrystalPayService())->logic_to_generate_crystalpay_accounts($dataaa);
 
         event(new Registered($user));
 
