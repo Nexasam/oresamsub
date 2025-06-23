@@ -202,6 +202,62 @@ class MultilanguageController extends Controller
               'ig' => 'Nke a bụ nkọwa',
               'ha' => 'Ga bayanan',
             ],
+            'Forgot your password' => [
+              'en' => 'Forgot your password',
+              'yo' => 'Ṣe o gbagbe ọrọ aṣínà rẹ',
+              'ha' => 'Ka manta kalmar sirrinka',
+              'ig' => 'I chefu okwuntughe gi',
+          ],
+      
+          'No problem' => [
+              'en' => 'No problem',
+              'yo' => 'Ko si iṣoro',
+              'ha' => 'Babu matsala',
+              'ig' => 'Enweghi nsogbu',
+          ],
+      
+          'Just let us know your email address and we will email you a password reset link that will allow you to choose a new one' => [
+              'en' => 'Just let us know your email address and we will email you a password reset link that will allow you to choose a new one',
+              'yo' => 'Kan fun wa ni adirẹsi imeeli rẹ, a ó sì fi ọna asopọ atunṣe ọrọ aṣínà ranṣẹ si ọ lati yan tuntun kan',
+              'ha' => 'Ka gaya mana adireshin imel ɗinka, za mu turo maka da hanyar canza kalmar sirri ta imel don ka zabi sabuwa',
+              'ig' => 'Nye anyi adreesi email gi, anyi ga eziga gi njikọ iji gbanwee okwuntughe gi ka i nwee ike họrọ nke ọhụrụ',
+          ],
+      
+          'Please check your spam folder too in case you dont find the email notification sent to you in your inbox' => [
+              'en' => 'Please check your spam folder too in case you don’t find the email notification sent to you in your inbox',
+              'yo' => 'Jọwọ ṣayẹwo folda imeeli aṣiṣe naa paapaa ti o ko ba ri ifitonileti imeeli naa ninu apo-iwọle rẹ',
+              'ha' => 'Da fatan za ka binciki folda na spam idan ba ka ga saƙon imel ɗin da aka turo maka a cikin akwatin saƙon shiga ba',
+              'ig' => 'Biko lelee folda spam gi ma, ma obu na inweghị email anyi zitere gi na inbox gi',
+          ],
+      
+          'Email Password Reset Link' => [
+              'en' => 'Email Password Reset Link',
+              'yo' => 'Firanṣẹ ọna asopọ atunṣe ọrọ aṣínà',
+              'ha' => 'Tura hanyar canza kalmar sirri ta imel',
+              'ig' => 'Ziga njikọ mgbake okwuntughe na email',
+          ],
+
+          'Email Address' => [
+              'en' => 'Email Address',
+              'yo' => 'Adirẹsi Imeeli',
+              'ha' => 'Adireshin Imel',
+              'ig' => 'Adreesi Email',
+          ],
+
+      
+          'Return to login' => [
+              'en' => 'Return to login',
+              'yo' => 'Pada si wiwọle',
+              'ha' => 'Koma zuwa shiga',
+              'ig' => 'Laghachi na nbanye',
+          ],
+      
+          'Password Reset' => [
+              'en' => 'Password Reset',
+              'yo' => 'Atunṣe Ọrọ aṣínà',
+              'ha' => 'Canza Kalmar Sirri',
+              'ig' => 'Mgbake Okwuntughe',
+          ],
             'Account Number' => [
               'en' => 'Account Number',
               'yo' => 'Nọmba Iroyin',
@@ -214,7 +270,7 @@ class MultilanguageController extends Controller
                 'ig' => 'Email Akaụntụ',
                 'ha' => 'Imel ɗin Asusun',
             ],
-            'Generated' => [
+           'Generated' => [
               'en' => 'Generated',
               'yo' => 'Ti ṣe',
               'ig' => 'E mepụtara',
@@ -1164,6 +1220,14 @@ class MultilanguageController extends Controller
             "ig" => "Chọrọ ihe ọzọ?",
             "ha" => "Kana buƙatar wani abu dabam?"
             ],
+
+            'A new verification link has been sent to the email address you provided during registration.' => [
+              'en' => 'A new verification link has been sent to the email address you provided during registration.',
+              'yo' => 'A ti fi ọna asopọ ìmúdájú tuntun ranṣẹ si adirẹsi imeeli tí o fi silẹ nígbà ìforúkọsílẹ.',
+              'ha' => 'An tura sabon hanyar tabbatarwa zuwa adireshin imel da ka bayar lokacin rijista.',
+              'ig' => 'Ejikọ ọhụụ maka nkwenye ezipụtala na email i nyere mgbe i debanyere aha.',
+            ],
+
 
             "Category" => [
                 "en" => "Category",

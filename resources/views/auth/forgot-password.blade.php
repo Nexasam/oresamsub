@@ -117,10 +117,10 @@
                                     <h1 class="block text-2xl font-bold text-gray-800 dark:text-gray-900">{{ env('APP_NAME') }}</h1>
                                     <hr>
                                 @endif
-                                <h3 class="block mt-2 text-xl text-gray-800 dark:text-gray-900">Password Reset</h3>
+                                <h3 class="block mt-2 text-xl text-gray-800 dark:text-gray-900">{{__('messages.Password Reset')}}</h3>
                                 <p class="mt-3 text-sm text-gray-600 dark:text-white/70">
-                                    Forgot your password? No problem. Just let us know your email address and we will email you a password reset link that will allow you to choose a new one. <br>
-                                    Please check your spam folder too in case you dont find the email notification sent to you in your inbox.
+                                    {{__('messages.Forgot your password')}}? {{__('messages.No problem')}}. {{__('messages.Just let us know your email address and we will email you a password reset link that will allow you to choose a new one')}}. <br>
+                                    {{ __('messages.Please check your spam folder too in case you dont find the email notification sent to you in your inbox') }}.
                                 </p>
                             </div>
 
@@ -143,7 +143,7 @@
                                     <div>
                                         <div class="grid gap-y-4">
                                             <div>
-                                                <label for="email" class="block text-sm mb-2 dark:text-gray-900">Email address</label>
+                                                <label for="email" class="block text-sm mb-2 dark:text-gray-900">{{__('messages.Email Address')}}</label>
                                                 <div class="relative">
                                                     <x-text-input id="email" name="email" class="block mt-1 w-full" type="email" email="email" :value="old('email')" required autofocus autocomplete="email" />
                                                     <x-input-error :messages="$errors->get('email')" class="mt-2" />
@@ -151,7 +151,7 @@
                                             </div>
                                             <!-- End Checkbox -->
                                             <x-primary-button class="ms-3">
-                                                {{ __('Email Password Reset Link') }}
+                                                {{ __('messages.Email Password Reset Link') }}
                                             </x-primary-button>
                                         </div>
                                     </div>
@@ -161,7 +161,7 @@
                                    
                                     <p class="mt-3 text-sm text-gray-600 dark:text-white/70">
                                         <a class="text-primary decoration-2 hover:underline font-medium"  href="{{route('login')}}">
-                                          Return to login
+                                          {{__('messages.Return to login')}}
                                         </a>
                                     </p>
                                 </div>
