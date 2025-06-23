@@ -1206,7 +1206,8 @@
                 <div class="box-body">
                    
                     <div class="flex items-center">
-                        @if (count($hot_sales) > 0)
+                        {{-- //dont use this for now --}}
+                        @if (count($hot_sales) ==  1000000)
                             
                         <table class="ti-custom-table ti-custom-table-head">
                            
@@ -1237,7 +1238,8 @@
     <!-- End::row-1 -->
 
     <div class="box-body">
-         @if (count($hot_sales) > 0)
+        {{-- count($hot_sales) > 0: put on hold for now on web --}}
+         @if (count($hot_sales) == 1000000)
             <div class="z-10 fixed inset-0 w-full h-screen hidden modal overflow-auto" id="popup">
                 <div class="modal-backdrop fixed w-full inset-0 bg-slate-500 opacity-40 z-30" data-close></div>
                 <div class="min-h-screen flex items-center justify-center relative pointer-events-none py-8 px-4 z-50">
