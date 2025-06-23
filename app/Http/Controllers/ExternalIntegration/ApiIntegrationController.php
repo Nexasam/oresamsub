@@ -22,6 +22,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Services\GeneralService;
 use Illuminate\Auth\Events\Registered;
+use App\Http\Services\CrystalPayService;
 use App\Traits\JsonResponseWrapperMobile;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rules\Password;
