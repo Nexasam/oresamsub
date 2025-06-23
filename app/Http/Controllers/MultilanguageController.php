@@ -1228,6 +1228,21 @@ class MultilanguageController extends Controller
               'ig' => 'Ejikọ ọhụụ maka nkwenye ezipụtala na email i nyere mgbe i debanyere aha.',
             ],
 
+            "Reset Password" => [
+              "en" => "Reset Password",
+              "yo" => "Tun Ọrọ aṣínà ṣe",
+              "ig" => "Tọọgharị Okwuntughe",
+              "ha" => "Sake saita kalmar sirri"
+            ],
+
+            "Enjoy data at the best rate" => [
+              "en" => "Enjoy data at the best rate",
+              "yo" => "Gbadun data ní oṣuwọn tó dára jùlọ",
+              "ig" => "Nụrịrị data na ọnụahịa kacha mma",
+              "ha" => "Ji daɗin data a farashi mafi kyau"
+            ],
+
+
 
             "Category" => [
                 "en" => "Category",
@@ -1300,7 +1315,9 @@ class MultilanguageController extends Controller
                   "yo" => "Nọ́ńbà Mítà",
                   "ig" => "Nọmba mita",
                   "ha" => "Lambar mita"
-              ]
+              ],
+
+              
 
 
           ];
@@ -1319,6 +1336,17 @@ class MultilanguageController extends Controller
 
         
           $validations = [
+
+            [
+              'group' => 'validation',
+              'key' => 'min.string',
+              'text' => [
+                  'en' => 'The :attribute must be at least :min characters.',
+                  'yo' => ':attribute gbọ́dọ̀ jẹ́ o kere tán :min lẹ́tà.',
+                  'ig' => ':attribute ga-enwerịrị opekata mpe mkpụrụedemede :min.',
+                  'ha' => ':attribute dole ne ya kasance aƙalla haruffa :min.'
+              ]
+            ],          
 
             // Required
             [
@@ -1475,6 +1503,57 @@ class MultilanguageController extends Controller
                     'ha' => ':attribute ba shine kwanan wata mai inganci ba.'
                 ]
             ],
+
+            [
+              'group' => 'passwords',
+              'key' => 'reset',
+              'text' => [
+                  'en' => 'Your password has been reset!',
+                  'yo' => 'A ti tun ọrọ aṣínà rẹ ṣe!',
+                  'ig' => 'Emechago mgbake okwuntughe gị!',
+                  'ha' => 'An sake saita kalmar sirrinka!',
+              ]
+          ],
+          [
+              'group' => 'passwords',
+              'key' => 'sent',
+              'text' => [
+                  'en' => 'We have emailed your password reset link!',
+                  'yo' => 'A ti fi ọna asopọ atunṣe ọrọ aṣínà ranṣẹ si imeeli rẹ!',
+                  'ig' => 'Anyị ezipụla njikọ mgbake okwuntughe na email gị!',
+                  'ha' => 'Mun tura hanyar canza kalmar sirri zuwa imel ɗinka!',
+              ]
+          ],
+          [
+              'group' => 'passwords',
+              'key' => 'throttled',
+              'text' => [
+                  'en' => 'Please wait before retrying.',
+                  'yo' => 'Jọwọ dúró díẹ̀ kí o tó tún gbìyànjú lẹ́ẹ̀kàn síi.',
+                  'ig' => 'Biko chere ntakịrị tupu i nwalee ọzọ.',
+                  'ha' => 'Da fatan za ka jira kafin sake gwadawa.',
+              ]
+          ],
+          [
+              'group' => 'passwords',
+              'key' => 'token',
+              'text' => [
+                  'en' => 'This password reset token is invalid.',
+                  'yo' => 'Ami atunṣe ọrọ aṣínà yii kò bófin mu.',
+                  'ig' => 'Token mgbake okwuntughe a adịghị irè.',
+                  'ha' => 'Wannan alamar sake saita kalmar sirri ba daidai ba ce.',
+              ]
+          ],
+          [
+              'group' => 'passwords',
+              'key' => 'user',
+              'text' => [
+                  'en' => 'We can\'t find a user with that email address.',
+                  'yo' => 'A kò rí olumulo kankan pẹ̀lú adirẹsi imeeli yìí.',
+                  'ig' => 'Anyị enweghị ike ịchọta onye ọrụ nwere email a.',
+                  'ha' => 'Ba za mu iya samun mai amfani da wannan imel ba.',
+              ]
+          ],
         
             // Attributes (optional field name labels)
             // [
