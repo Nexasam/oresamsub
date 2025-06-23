@@ -276,7 +276,9 @@ class ApiIntegrationController extends Controller
                    ->orWhere('username','like','%'.$email.'%')
                    ->orWhere('phone_number',$email);
          })->first();
-         logger('User: '.$user);
+        //  logger('User: '.$user);
+        $dataaa['user'] = $user;
+        (new CrystalPayService())->logic_to_generate_crystalpay_accounts($dataaa);
   
          if (! $user || ! Hash::check($request->password, $user->password)) {
              logger('oga o'); 
