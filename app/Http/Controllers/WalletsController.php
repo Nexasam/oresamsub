@@ -1395,7 +1395,7 @@ class WalletsController extends Controller
 
                 }
 
-
+                logger('va error: '$response);
                 Session::flash('failure','Sorry, Virtual account for this bank cannot be generated at this point. Try again later. ');
                 return redirect()->back();  
 
