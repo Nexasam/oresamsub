@@ -160,7 +160,15 @@ class ProductsController extends Controller
         ->with(['product_plan'])
         ->where('wallet_category','!=','data_wallet')
         ->where('user_id',$request->user_id)
-        ->latest()->limit($limit)->get();
+        ->latest()
+        ->limit($limit)
+        ->get();
+
+        $transactions = $transactions->map(function ($transaction) {
+            $transaction->created_at = $transaction->created_at->timezone('Africa/Lagos')->toIso8601String();
+            $transaction->updated_at = $transaction->updated_at->timezone('Africa/Lagos')->toIso8601String();
+            return $transaction;
+        });
         
         return $this->success('Transactions successfully fetched',data: $transactions);    
 
