@@ -102,7 +102,7 @@ class CrystalPayService{
                         }
                 }else{
                     //it means its been generated already
-                    logger('seems generated already');
+                    logger('seems generated already for '.$first_name);
                 }
             }
         }else{
