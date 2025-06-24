@@ -165,9 +165,10 @@ class ProductsController extends Controller
         ->get();
 
         $transactions = $transactions->map(function ($transaction) {
-            $transaction->created_at2 = date('F Y d',strtotime($transaction->created_at));
-            $transaction->created_at3 = $transaction->created_at->timezone('Africa/Lagos')->toIso8601String();
+            // $transaction->created_at2 = date('F Y d',strtotime($transaction->created_at));
+            $transaction->created_at = $transaction->created_at->timezone('Africa/Lagos')->toIso8601String();
             $transaction->updated_at = $transaction->updated_at->timezone('Africa/Lagos')->toIso8601String();
+            // $transaction->updated_at = $transaction->updated_at->timezone('Africa/Lagos')->toIso8601String();
             return $transaction;
         });
         
