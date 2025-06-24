@@ -21,12 +21,14 @@ class CrystalPayService{
     
         $funding_option = FundingOption::where('slug','crystal_pay')->first();
         if(! $funding_option){
+            logger('na here oh');
             exit;
         }
         $api_key = $funding_option->api_secret_key;
 
         $bank_codes = FundingOptionBankCodes::where('funding_option_id',$funding_option->id)->get();
         if(! $bank_codes){
+            logger('na here oh2');
             exit;
         }
 
@@ -100,10 +102,13 @@ class CrystalPayService{
                         }
                 }else{
                     //it means its been generated already
+                    logger('seems generated already');
                 }
             }
         }else{
             //this should not run
+            logger('this should not run');
+
         }
 
         // for now return nothin
