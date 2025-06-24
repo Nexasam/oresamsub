@@ -164,15 +164,15 @@ class ProductsController extends Controller
         ->limit($limit)
         ->get();
 
-        $transactions = $transactions->map(function ($transaction) {
-            // $transaction->created_at2 = date('F Y d',strtotime($transaction->created_at));
-            // $transaction->created_at = $transaction->created_at->timezone('Africa/Lagos')->toIso8601String();
-            // $transaction->updated_at = $transaction->updated_at->timezone('Africa/Lagos')->toIso8601String();
-            $transaction->created_at_formatted = $transaction->created_at->timezone('Africa/Lagos')->toIso8601String();
-            $transaction->updated_at_formatted = $transaction->updated_at->timezone('Africa/Lagos')->toIso8601String();
-            // $transaction->updated_at = $transaction->updated_at->timezone('Africa/Lagos')->toIso8601String();
-            return $transaction;
-        });
+        // $transactions = $transactions->map(function ($transaction) {
+        //     // $transaction->created_at2 = date('F Y d',strtotime($transaction->created_at));
+        //     // $transaction->created_at = $transaction->created_at->timezone('Africa/Lagos')->toIso8601String();
+        //     // $transaction->updated_at = $transaction->updated_at->timezone('Africa/Lagos')->toIso8601String();
+        //     $transaction->created_at_formatted = $transaction->created_at->timezone('Africa/Lagos')->toIso8601String();
+        //     $transaction->updated_at_formatted = $transaction->updated_at->timezone('Africa/Lagos')->toIso8601String();
+        //     // $transaction->updated_at = $transaction->updated_at->timezone('Africa/Lagos')->toIso8601String();
+        //     return $transaction;
+        // });
         
         return $this->success('Transactions successfully fetched',data: $transactions);    
 
