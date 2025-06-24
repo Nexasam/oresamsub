@@ -105,7 +105,7 @@ class CrystalPayService{
                         ]);
                         logger("VA GENERATED INDEED FOR $first_name | $user_id | bank code: $bank_codee");
                     }else{
-                        logger("VA COULD NOT BE GENERATED FOR $first_name | $user_id | bank code: $bank_codee");
+                        logger("VA COULD NOT BE GENERATED FOR $first_name | $user_id | bank code: $bank_codee | $response");
 
                     }
                     sleep(1);
