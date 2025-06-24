@@ -40,70 +40,74 @@ class CrystalPayService{
             //your logic is here.
             foreach($bank_codes as $bank_code){
                 //first check for the user if he has that va
-                logger('bankcodeAA: '.$bank_code->bank_code);
+               
                 $check_va = UserVirtualAccount::where('user_id',$user_id)->where('bank_code',$bank_code->bank_code)->first();
-                if(! $check_va){
-                        //generating for each vs not yet there
-                        $bank_codee = $bank_code->bank_code;
-                        $arrr = [
-                            "firstname"=>$first_name,
-                            "lastname"=>$last_name,
-                            "email"=>$email,
-                            "virtual_account_package"=>$bank_codee,  
-                            "bvn"=>$phone_number
-                        ];
-                        // return $arrr;
-                        $arrjson = json_encode($arrr);
-                        // logger("CP data passed: $arrjson");
-                        $curl = curl_init();
-                        curl_setopt_array($curl, array(
-                        CURLOPT_URL => 'https://api.crystalpay.finance/business/v1/virtual-account',
-                        CURLOPT_RETURNTRANSFER => true,
-                        CURLOPT_ENCODING => '',
-                        CURLOPT_MAXREDIRS => 10,
-                        CURLOPT_TIMEOUT => 0,
-                        CURLOPT_FOLLOWLOCATION => true,
-                        CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-                        CURLOPT_CUSTOMREQUEST => 'POST',
-                        CURLOPT_POSTFIELDS =>$arrjson,
-                        CURLOPT_HTTPHEADER => array(
-                            'secret_key: '.$api_key,
-                            'Content-Type: application/json',
-                            'Accept: application/json'
-                        ),
-                        ));
-
-                        $response = curl_exec($curl);
-                        // logger("Account generation crystalpay:  $response");
-                        $response_dec = json_decode($response,true);
-                        
-                        if(  isset($response_dec['success']) 
-                            && $response_dec['success'] == true
-                            &&  isset($response_dec['status']) 
-                            &&  $response_dec['status'] == 'Success' 
-                            && isset($response_dec['data']['account_number'])
-                            &&  $response_dec['data']['account_number'] != ''
-                            ){
-                            //success
-                        
-                            UserVirtualAccount::create([
-                                'user_id' => $user_id,
-                                'funding_option_id' => $funding_option->id,
-                                'funding_slug' => $funding_option->slug,
-                                'response_status' =>$response_dec['status'],
-                                'bank_name' =>$response_dec['data']['bank_name'],
-                                'bank_code' =>$bank_codee,
-                                'account_name' =>$response_dec['data']['account_name'],
-                                'account_email' =>$response_dec['data']['account_email'],
-                                'account_number' =>$response_dec['data']['account_number'],
-                                'account_reference' => $response_dec['data']['account_reference'],
-                                'bvn' => $phone_number
-                            ]);
-                            logger("VA GENERATED INDEED FOR $first_name | $user_id | bank code: $bank_codee");
-                        }
+                if($check_va){
+                        //dont generate
+                        logger('seems generated already for '.$first_name.' bankcode: '.$bank_code);
+                 
                 }else{
+                    //generate
+                    $bank_codee = $bank_code->bank_code;
+                    $arrr = [
+                        "firstname"=>$first_name,
+                        "lastname"=>$last_name,
+                        "email"=>$email,
+                        "virtual_account_package"=>$bank_codee,  
+                        "bvn"=>$phone_number
+                    ];
+                    // return $arrr;
+                    $arrjson = json_encode($arrr);
+                    // logger("CP data passed: $arrjson");
+                    $curl = curl_init();
+                    curl_setopt_array($curl, array(
+                    CURLOPT_URL => 'https://api.crystalpay.finance/business/v1/virtual-account',
+                    CURLOPT_RETURNTRANSFER => true,
+                    CURLOPT_ENCODING => '',
+                    CURLOPT_MAXREDIRS => 10,
+                    CURLOPT_TIMEOUT => 0,
+                    CURLOPT_FOLLOWLOCATION => true,
+                    CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                    CURLOPT_CUSTOMREQUEST => 'POST',
+                    CURLOPT_POSTFIELDS =>$arrjson,
+                    CURLOPT_HTTPHEADER => array(
+                        'secret_key: '.$api_key,
+                        'Content-Type: application/json',
+                        'Accept: application/json'
+                    ),
+                    ));
+
+                    $response = curl_exec($curl);
+                    // logger("Account generation crystalpay:  $response");
+                    $response_dec = json_decode($response,true);
+                    
+                    if(  isset($response_dec['success']) 
+                        && $response_dec['success'] == true
+                        &&  isset($response_dec['status']) 
+                        &&  $response_dec['status'] == 'Success' 
+                        && isset($response_dec['data']['account_number'])
+                        &&  $response_dec['data']['account_number'] != ''
+                        ){
+                        //success
+                    
+                        UserVirtualAccount::create([
+                            'user_id' => $user_id,
+                            'funding_option_id' => $funding_option->id,
+                            'funding_slug' => $funding_option->slug,
+                            'response_status' =>$response_dec['status'],
+                            'bank_name' =>$response_dec['data']['bank_name'],
+                            'bank_code' =>$bank_codee,
+                            'account_name' =>$response_dec['data']['account_name'],
+                            'account_email' =>$response_dec['data']['account_email'],
+                            'account_number' =>$response_dec['data']['account_number'],
+                            'account_reference' => $response_dec['data']['account_reference'],
+                            'bvn' => $phone_number
+                        ]);
+                        logger("VA GENERATED INDEED FOR $first_name | $user_id | bank code: $bank_codee");
+                    }
+                    sleep(2);
+
                     //it means its been generated already
-                    logger('seems generated already for '.$first_name);
                 }
             }
         }else{
