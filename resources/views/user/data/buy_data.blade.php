@@ -206,9 +206,9 @@
                                             
                                             <div class="grid w-full lg:w-1/2 lg:grid-cols-1 gap-6 space-y-4 lg:space-y-0">
                                                 
-                                              @if (env('APP_NAME') == 'CrystaltechData' || env('APP_NAME') == 'OresamSub')
+                                              {{-- @if (env('APP_NAME') == 'CrystaltechData' || env('APP_NAME') == 'OresamSub') --}}
                                                <input type="hidden" class="my-auto ti-form-input" value="main_wallet" required id="wallet_category" name="wallet_category">         
-                                              @else
+                                              {{-- @else
                                                   <div class="space-y-2">
                                                       <label class="ti-form-label mb-0">Choose Wallet</label>
                                                       <select required id="wallet_category" name="wallet_category" class="my-auto ti-form-select">
@@ -218,7 +218,7 @@
                                                       
                                                       </select>
                                                   </div>
-                                              @endif
+                                              @endif --}}
 
 
                                               <div class="space-y-2">
