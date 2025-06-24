@@ -44,7 +44,7 @@ class CrystalPayService{
                 $check_va = UserVirtualAccount::where('user_id',$user_id)->where('bank_code',$bank_code->bank_code)->first();
                 if($check_va){
                         //dont generate
-                        logger('seems generated already for '.$first_name.' bankcode: '.$bank_code->bank_code);
+                        // logger('seems generated already for '.$first_name.' bankcode: '.$bank_code->bank_code);
                  
                 }else{
                     //generate

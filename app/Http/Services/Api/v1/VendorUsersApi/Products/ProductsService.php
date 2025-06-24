@@ -182,10 +182,14 @@ class ProductsService{
             if($product_slug == 'airtime' || $product_slug == 'data'){
                 $product_plans_categories = ProductPlanCategory::with('product')->where('network_id',$network)
                 ->where('visibility',1)
-                ->where('product_id',$product_id)->get();
+                ->where('product_id',$product_id)
+                ->orderByDesc('updated_at')
+                ->get();
             }else{
                 $product_plans_categories = ProductPlanCategory::with('product')->where('visibility',1)
-                ->where('product_id',$product_id)->get();
+                ->where('product_id',$product_id)
+                ->orderByDesc('updated_at')
+                ->get();
             }
 
             
