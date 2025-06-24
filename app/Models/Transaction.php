@@ -25,15 +25,15 @@ class Transaction extends Model
         return $this->belongsTo(ProductPlan::class,'product_plan_id','id');
     }
 
-    public function getCreatedAtAttribute($value)
-    {
-        return \Carbon\Carbon::parse($value)->timezone('Africa/Lagos')->toIso8601String();
-    }
+    // public function getCreatedAtAttribute($value)
+    // {
+    //     return \Carbon\Carbon::parse($value)->timezone('Africa/Lagos')->toIso8601String();
+    // }
 
-    public function getUpdatedAtAttribute($value)
-    {
-        return \Carbon\Carbon::parse($value)->timezone('Africa/Lagos')->toIso8601String();
-    }
+    // public function getUpdatedAtAttribute($value)
+    // {
+    //     return \Carbon\Carbon::parse($value)->timezone('Africa/Lagos')->toIso8601String();
+    // }
 
 
 
