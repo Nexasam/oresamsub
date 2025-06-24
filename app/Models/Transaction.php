@@ -12,9 +12,9 @@ class Transaction extends Model
 
     protected $guarded = [];
 
-    protected $casts = [
-        'created_at' => 'datetime:Africa/Lagos',
-    ];
+    // protected $casts = [
+    //     'created_at' => 'datetime:Africa/Lagos',
+    // ];
     
 
     public function user(){
