@@ -12,6 +12,11 @@ class Transaction extends Model
 
     protected $guarded = [];
 
+    protected $casts = [
+        'created_at' => 'datetime:Africa/Lagos',
+    ];
+    
+
     public function user(){
         return $this->belongsTo(User::class,'user_id','id');
     }
