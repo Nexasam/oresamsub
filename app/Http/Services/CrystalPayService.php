@@ -40,6 +40,7 @@ class CrystalPayService{
             //your logic is here.
             foreach($bank_codes as $bank_code){
                 //first check for the user if he has that va
+                logger('bankcodeAA: '.$bank_code->bank_code);
                 $check_va = UserVirtualAccount::where('user_id',$user_id)->where('bank_code',$bank_code->bank_code)->first();
                 if(! $check_va){
                         //generating for each vs not yet there
