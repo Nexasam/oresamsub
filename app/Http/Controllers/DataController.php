@@ -603,7 +603,7 @@ class DataController extends Controller
                                         'user_id' => $user_id,
                                     ]);
                                 }else{
-                                    logger('no coupon used here...');
+                                    // logger('no coupon used here...');
                                 }
                                 
                                 $description = 'Purchase of data';
