@@ -9,6 +9,7 @@ use App\Models\Network;
 use App\Models\Product;
 use App\Models\Setting;
 use App\Models\UserPlan;
+use App\Models\CouponCode;
 use App\Models\ProductPlan;
 use App\Models\Transaction;
 use Illuminate\Http\Request;
@@ -17,9 +18,10 @@ use App\Models\ProductPlanCategory;
 use App\Http\Controllers\Controller;
 use App\Models\BulkDataProductPlans;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
 // use Illuminate\Support\Facades\Password;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Auth\Events\Registered;
+use App\Http\Services\CouponCodeService;
 use App\Traits\JsonResponseWrapperMobile;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rules\Password;
@@ -43,6 +45,74 @@ class ProductsController extends Controller
      public function fetch_products(Request $request){
         $products = Product::where('visibility',1)->where('active_status',1)->get();
         return $this->success('Products successfully fetched',data: $products);    
+     }
+
+     public function validate_coupon_code(Request $request){
+        $validator = Validator::make($request->all(), [
+            'user_id' => 'required|exists:users,id|max:255',
+            'product_slug' => ['required',Rule::in(['data','airtime'])],
+            'product_plan_id' => 'required',
+            'coupon_code' => 'required|exists:coupon_codes,code',
+        ]);
+
+      
+        if ($validator->stopOnFirstFailure()->fails()) {
+            return $this->error($validator->errors()->first(), data: $request->all(), code: 403 );    
+        }
+
+        $product_plan = ProductPlan::where('id',$request->product_plan_id)->first();
+
+        $user = User::with('user_plan')->find($request->user_id);
+        if (!$user || !$user->user_plan) {
+            // handle error, e.g., user or plan not found
+           return $this->error('User or plan not found',data: [],code: 404);
+        }
+        
+        $product_slug = $request->product_slug;
+        $plan_level = $user->user_plan->plan_level;
+        $user_level_selling = "user_level_" . $plan_level . "_selling_price";
+        $selling_price = $product_plan->$user_level_selling;
+
+        
+        if( ( $product_slug == 'airtime' || $product_slug == 'utility_bills' ) && $amount != ''){
+              $purchase_discount = $product_plan->$user_level_selling;
+              $actual_discount_value = ceil(($purchase_discount/100) * $amount);  
+              $discounted_selling_price = $amount - abs($actual_discount_value);
+              $selling_price = 0; //this is from the system, not applicable for airtime
+        }else{
+            $discounted_selling_price = $selling_price;
+        }
+
+       
+        $data1['product_plan_id'] = $request->product_plan_id;
+        $data1['user'] = $user;
+        $data1['amount'] = $discounted_selling_price;
+        $data1['coupon_code'] = $request->coupon_code;
+        
+        $validate_coupon = (new CouponCodeService())->get_coupon_information($data1);
+        if($validate_coupon['status'] != 1){
+          return $this->error($validate_coupon['message'],data: [],code: 403);    
+        }
+
+        return $this->success($validate_coupon['message'],data: $validate_coupon);    
+     }
+
+     public function get_active_coupons(Request $request){
+        $validator = Validator::make($request->all(), [
+            'user_id' => 'required|exists:users,id|max:255',
+        ]);
+
+      
+        if ($validator->stopOnFirstFailure()->fails()) {
+            return $this->error($validator->errors()->first(), data: $request->all(), code: 403 );    
+        }
+ 
+        $active_coupons = CouponCode::with('product_plan_category.network')->where('status',1)->get();
+        if(count($active_coupons) >= 1){
+          return $this->success('Active coupons successfully fetched',data: $active_coupons);    
+        }
+
+        return $this->error('No active coupon found',code: 404);    
      }
 
      public function fetch_product_plan_categories(Request $request){
@@ -211,6 +281,7 @@ class ProductsController extends Controller
         $validator = Validator::make($request->all(), [
             'user_id' => 'required|exists:users,id',
             'network_id' => 'required',
+            'coupon_code' => 'nullable',
             'phone_number' => 'required',
             'product_plan_category_id' => 'required',
             'product_plan_id' => 'required',
@@ -238,6 +309,7 @@ class ProductsController extends Controller
         $data['wallet_category'] = $request->wallet_category;
         $data['validatephonenetwork'] = $request->validatephonenetwork;
         $data['user_id'] = $request->user_id;//this is required
+        $data['coupon_code'] = $request->coupon_code ?? NULL;//this is nullable
 
         
 

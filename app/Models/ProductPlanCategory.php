@@ -39,6 +39,7 @@ class ProductPlanCategory extends Model
     public function product_plans(){
         return $this->hasMany(ProductPlan::class,'product_plan_category_id','id');
     }
+    
 
     
     

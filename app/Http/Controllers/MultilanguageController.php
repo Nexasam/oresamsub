@@ -1235,6 +1235,14 @@ class MultilanguageController extends Controller
               "ha" => "Sake saita kalmar sirri"
             ],
 
+            "Coupon Codes" => [
+              "en" => "Coupon Codes",
+              "yo" => "Kóòdù Kópọ́n",
+              "ig" => "Koodu Kouponụ",
+              "ha" => "Lambobin ragi"
+              ],
+
+
             "Enjoy data at the best rate" => [
               "en" => "Enjoy data at the best rate",
               "yo" => "Gbadun data ní oṣuwọn tó dára jùlọ",

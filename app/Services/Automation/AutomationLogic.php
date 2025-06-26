@@ -4,6 +4,7 @@ namespace App\Services\Automation;
 
 use App\Models\ProductPlan;
 use App\Services\Utils\UtilService;
+use App\Http\Services\CouponCodeService;
 use App\Services\Automation\Twins10Automation;
 use App\Services\Automation\DirectCouponAutomation;
 use App\Services\Automation\MegaSubPlugAutomation\MegaSubCableTV;
@@ -31,6 +32,9 @@ class AutomationLogic{
         $data['token'] = $token;
         $data['url'] = $url;
         $data['automation_id'] = $automation_id;
+        $coupon = $data['coupon'];
+        $data['coupon'] = $data['coupon'] ?? NULL;
+
    
         if($validate_phone['status'] != 1){
             //something when wrong

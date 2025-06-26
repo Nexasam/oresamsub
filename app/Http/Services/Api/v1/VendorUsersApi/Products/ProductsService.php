@@ -8,13 +8,16 @@ use App\Models\Product;
 use App\Models\Setting;
 use App\Models\UserPlan;
 use App\Models\Automation;
+use App\Models\CouponCode;
 use App\Models\ProductPlan;
 use App\Models\Transaction;
+use App\Models\UsedUserCouponCode;
 use App\Models\UserBulkDataWallet;
 use Illuminate\Support\Facades\DB;
 use App\Models\ProductPlanCategory;
 use App\Services\Utils\UtilService;
 use App\Traits\WalletTransactionLogs;
+use App\Http\Services\CouponCodeService;
 use App\Services\Automation\AutomationLogic;
 use App\Services\Api\Automation\OgdamsAutomation\OgdamsVendData;
 use App\Services\Automation\MegaSubPlugAutomation\MegaSubCableTV;
@@ -218,6 +221,8 @@ class ProductsService{
         $wallet_category = $data['wallet_category'];
         $validatephonenetwork = $data['validatephonenetwork'];
         $user_id = $data['user_id'];//this is required
+        $coupon_code = $data['coupon_code'] ?? NULL;
+
 
      
 
@@ -322,6 +327,18 @@ class ProductsService{
                             for($i = 0; $i < count($phone_numbers_array); $i++ ){
                                 
 
+                                $datacoupon['product_plan_id'] = $product_plan_id;
+                                $datacoupon['amount'] = $amount; //original amount
+                                $datacoupon['user'] = $user_details;
+                                $datacoupon['coupon_code'] = $coupon_code;
+                                $get_deducted_amount = (new CouponCodeService())->get_coupon_information($datacoupon);
+                                $amount_after_coupon = $get_deducted_amount['amount'];
+                                $amount = $amount_after_coupon; //this is the new amount
+                                $coupon = $get_deducted_amount['coupon'];
+                                $remaining_slots = $get_deducted_amount['remaining_slots'];
+                                $dataa['coupon'] = $coupon;
+
+
                                 $dataa['phone_number'] = $phone_number;
                                 $dataa['automation_details'] = $automation_details;
                                 $dataa['network_id'] = $network_id;
@@ -329,15 +346,21 @@ class ProductsService{
                                 $dataa['validatephonenetwork'] = $validatephonenetwork;
                                 $sell_data = AutomationLogic::initiateDataPurchase($dataa);
                                 logger('DATAAA SERVICE: '.json_encode($sell_data));
+                                $coupon_count  = 0;
+
 
                                 
                                 if($sell_data['status'] == 1){
+                                    $coupon_count  = 1;
+
                                     $success++;
                                     $status = 1;
                                     $wallet_before = User::where('id',$user_id)->first()->main_wallet;
                                     $wallet_after = $wallet_before - $amount;
                                 }else{
                                     //it might be processing or it failed
+                                    $coupon_count  = 0;
+
                                     $status = -1;
                                     $failure++;
                                     $wallet_before = User::where('id',$user_id)->first()->main_wallet;
@@ -368,6 +391,19 @@ class ProductsService{
                                     );
                                 }
                         
+                                //one code per time
+                                 if($remaining_slots != NULL && $coupon != NULL){
+                                    CouponCode::where('id',$coupon)->update([
+                                        'slots_remaining' => $remaining_slots - $coupon_count
+                                    ]);
+                                    UsedUserCouponCode::create([
+                                        'coupon_code_id' => $coupon,
+                                        'user_id' => $user_id,
+                                    ]);
+                                }else{
+                                    logger('no coupon used here...');
+                                }
+
                                 $description = 'Purchase of data';
                                 $creationData['transaction_category'] = 'data';
                                 $creationData['user_id'] = $user_id;
@@ -375,6 +411,7 @@ class ProductsService{
                                 $creationData['product_plan_id'] = $product_plan_id;
                                 $creationData['phone_number'] = $phone_numbers_array[$i];
                                 $creationData['amount'] = $amount;
+                                $creationData['coupon_code_id'] = $coupon;
                                 $creationData['discounted_amount'] = $amount;
                                 $creationData['status'] = $status;
                                 $creationData['balance_before'] = $wallet_before;

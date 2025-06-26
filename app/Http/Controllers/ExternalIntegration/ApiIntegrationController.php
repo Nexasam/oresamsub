@@ -22,6 +22,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Services\GeneralService;
 use Illuminate\Auth\Events\Registered;
+use App\Http\Services\CouponCodeService;
 use App\Http\Services\CrystalPayService;
 use App\Traits\JsonResponseWrapperMobile;
 use Illuminate\Support\Facades\Validator;
@@ -265,6 +266,7 @@ class ApiIntegrationController extends Controller
            'message' => 'authenticated'
         ]);
      }
+     
    
      public function login(Request $request){
         $request->validate([
@@ -288,6 +290,9 @@ class ApiIntegrationController extends Controller
              logger('oga o'); 
             return $this->error('The provided credentials are incorrect.',data:$request->all());      
          }
+
+         $coupon_check = (new CouponCodeService())->determine_if_user_qualify($dataaa);
+         $user->coupon_available = $coupon_check['status'] == 1 ? $coupon_check['coupon_info'] : NULL;
 
          $token = $user->createToken($request->email)->plainTextToken;
          $expiration_time = Carbon::now()->addMinutes(50);

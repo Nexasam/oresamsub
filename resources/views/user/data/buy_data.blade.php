@@ -237,7 +237,7 @@
                                                         @foreach ($networks as $network)
                                                          <option value="{{  $network->id }}">{{ $network->network_name }}</option>                                        
                                                         @endforeach
-                                                      </select>
+                                                    </select>
                                                 </div>
 
                                                 @if (env('APP_NAME') != 'CrystaltechData' && env('APP_NAME') != 'OresamSub')

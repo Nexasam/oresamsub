@@ -43,6 +43,7 @@ Route::get('v1/external/support_information', [ApiIntegrationController::class, 
 
 // validate_user tokeng
 Route::group(['prefix'=>'v1/external','as'=>'api.','middleware' =>['auth:sanctum','validate_user']], function(){
+    
     Route::put('/update_fingerprint_option', [ApiIntegrationController::class, 'update_fingerprint_option'])->name('update_fingerprint_option');
     Route::put('/update_user_profile', [ApiIntegrationController::class, 'update_user_profile'])->name('update_user_profile'); //discuss this first
     Route::put('/update_user_password', [ApiIntegrationController::class, 'update_user_password'])->name('update_user_password'); //discuss this first
@@ -60,6 +61,8 @@ Route::group(['prefix'=>'v1/external','as'=>'api.','middleware' =>['auth:sanctum
 
 
     
+    Route::middleware('auth:sanctum')->post('get_active_coupons', [ProductsController::class, 'get_active_coupons'])->name('get_active_coupons');
+    Route::middleware('auth:sanctum')->post('validate_coupon_code', [ProductsController::class, 'validate_coupon_code'])->name('validate_coupon_code');
     Route::middleware('auth:sanctum')->get('fetch_transactions', [ProductsController::class, 'fetch_transactions'])->name('fetch_transactions');
     Route::middleware('auth:sanctum')->get('fetch_networks', [ProductsController::class, 'fetch_networks'])->name('fetch_networks');
     Route::middleware('auth:sanctum')->get('fetch_single_transaction', [ProductsController::class, 'fetch_single_transaction'])->name('fetch_single_transaction');

@@ -26,6 +26,7 @@ use App\Http\Controllers\Template2Controller;
 use App\Http\Controllers\AutomationController;
 use App\Http\Controllers\CrystalPayController;
 use App\Http\Controllers\CommissionsController;
+use App\Http\Controllers\CouponCodesController;
 use App\Http\Controllers\NewTemplateController;
 use App\Http\Controllers\PriceChangeController;
 use App\Http\Controllers\ProductPlanController;
@@ -202,6 +203,10 @@ Route::middleware('set_locale')->group(function () {
             Route::middleware(['auth','verified'])->get('commissions/fetch_commissions', [CommissionsController::class, 'fetch_commissions'])->name('user.commissions.fetch_commissions');
 
 
+              // COUPON CODES
+              Route::middleware(['auth','verified'])->get('coupon_codes/index', [CouponCodesController::class, 'index'])->name('admin.coupon_codes.index');
+              Route::middleware(['auth','verified'])->post('coupon_codes/store', [CouponCodesController::class, 'store'])->name('admin.coupon_codes.store');
+            
 
             Route::middleware(['auth','verified','admin'])->get('product_plans/changemegasubprice', [PriceChangeController::class, 'changeMegasubPrice'])->name('changeMegasubPrice');
 
