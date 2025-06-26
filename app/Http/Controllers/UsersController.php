@@ -461,9 +461,13 @@ class UsersController extends Controller
                 $actionBtn = '<a href="'.$route.'" type="button" class="hs-dropdown-toggle ti-btn ti-btn-primary" data-hs-overlay="#hs-vertically-centered-scrollable-modal'.$data->email.'">
                 Manage User
               </a>';
-                $actionBtn .= '<a href="'.$impersonate_route.'" type="button" class="hs-dropdown-toggle ti-btn ti-btn-info">
-                   Impersonate '.$data->username.'
-                </a>';
+                
+                if($data->role->role_name == 'User'){
+                  $actionBtn .= '<a href="'.$impersonate_route.'" type="button" class="hs-dropdown-toggle ti-btn ti-btn-info">
+                  Impersonate '.$data->username.'
+                  </a>';
+                }
+
                 
               return $actionBtn;
                   // return ' 
