@@ -50,6 +50,19 @@
                 <li class="slide__category"><span class="category-name">Main</span></li>
                 <!-- End::slide__category -->
 
+                @if (session()->has('impersonator'))
+                <li class="slide  has-sub bg-green-800 p-2 rounded-2xl">
+                    <a href="{{route('admin.exit_impersonate')}}" class="side-menu__item">
+                        <i class="ti ti-user-secret side-menu__icon"></i>
+                        <span class="side-menu__label">EXIT impersonation</span>
+                        <i class="ri ri-arrow-right-s-line side-menu__angle"></i>
+                    </a>
+                    <ul class="slide-menu child1">
+                        {{-- <li class="slide"><a href="#" class="side-menu__item">View Networks</a></li> --}}
+                    </ul>
+                 </li>
+                @endif
+
                 <!-- Start::slide -->
                 <li class="slide  has-sub ">
                     <a href="{{ route('dashboard') }}" class="side-menu__item">
@@ -64,8 +77,9 @@
                     </ul>
                 </li>
           
+              
 
-            
+
 
                 @if (strtolower(auth()->user()->role->role_name) == 'admin')
 

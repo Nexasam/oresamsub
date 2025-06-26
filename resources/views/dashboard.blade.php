@@ -13,11 +13,19 @@
     @endphp
 
     <!-- Page Header -->
+    <div class="mt-2">
+        <a href="{{route('admin.exit_impersonate')}}">
+            <div class="bg-green-800 text-white p-2 rounded-xl">
+                @if (session()->has('impersonator'))
+                    <h1>You are now impersonating <u>{{ $user->first_name }}</u> as an Administrator.</h1>
+                    <div class="text-lg"><b>Click to EXIT Impersonation</b></div>
+                @endif
+            </div>
+        </a>
+    </div>
+
     <div class="block justify-between page-header md:flex">
-        <div>
-            <h3 class="text-gray-700 hover:text-gray-900 dark:text-gray-900 dark:hover:text-white text-2xl font-medium"> <small style=" font-size: 14px;">{{ __('messages.Welcome') }} <strong>{{ $user->first_name. ' '. $user->last_name }}</strong></small> </h3>
-        </div>
-       
+        <h3 class="text-gray-700 hover:text-gray-900 dark:text-gray-900 dark:hover:text-white text-2xl font-medium"> <small style=" font-size: 14px;">{{ __('messages.Welcome') }} <strong>{{ $user->first_name. ' '. $user->last_name }}</strong></small> </h3>       
     </div>
     <!-- Page Header Close -->
 

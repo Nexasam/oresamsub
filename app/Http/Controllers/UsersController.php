@@ -31,6 +31,47 @@ class UsersController extends Controller
 
     use UserDashboardDataTrait;
 
+    public function impersonate($id){
+
+
+        $user = User::where('id',$id)->first();
+        if(! $user){
+          Session::flash('failure','This customer does not exist.');
+          return redirect()->back();
+        }
+
+        
+        if(auth()->user()->role->role_name != 'Admin' && auth()->user()->email != 'adebsholey4real@gmail.com' ){
+          Session::flash('failure','You do not have the privilege to do this.');
+          return redirect()->back();
+        }
+
+        $fullname = $user->first_name.' '.$user->last_name;
+      
+        session()->put('impersonator', auth()->id()); // Store original user id
+        auth()->login($user); // Log in as target user
+        Session::flash('success','You are now impersonating customer: '. $fullname .' as an Admin');
+        return redirect()->route('dashboard');
+
+    }
+
+    public function exit_impersonate(){
+        if (!session()->has('impersonator')) {
+          return redirect()->back();
+        }
+
+        $originalUserId = session()->pull('impersonator');
+        $originalUser = User::find($originalUserId);
+        auth()->login($originalUser);
+
+        // return redirect('/')->with('status', 'You have stopped impersonating.');
+        Session::flash('success','You have stopped impersonating');
+        return redirect()->route('admin.users.index');
+
+    }
+
+
+
     /**
      * Display a listing of the resource.
      */
@@ -416,9 +457,14 @@ class UsersController extends Controller
                 // $actionBtn = ' ';
                 // <a href="javascript:void(0)" class="delete btn btn-danger btn-sm">Delete</a>
                 $route = route('admin.users.manage_user',$data->id);
+                $impersonate_route = route('admin.impersonate',$data->id);
                 $actionBtn = '<a href="'.$route.'" type="button" class="hs-dropdown-toggle ti-btn ti-btn-primary" data-hs-overlay="#hs-vertically-centered-scrollable-modal'.$data->email.'">
                 Manage User
               </a>';
+                $actionBtn .= '<a href="'.$impersonate_route.'" type="button" class="hs-dropdown-toggle ti-btn ti-btn-info">
+                   Impersonate '.$data->username.'
+                </a>';
+                
               return $actionBtn;
                   // return ' 
                   // <button href="#" type="button" class="hs-dropdown-toggle ti-btn ti-btn-primary" data-hs-overlay="#hs-vertically-centered-scrollable-modal'.$data->email.'">

@@ -204,8 +204,13 @@ Route::middleware('set_locale')->group(function () {
 
 
               // COUPON CODES
-              Route::middleware(['auth','verified'])->get('coupon_codes/index', [CouponCodesController::class, 'index'])->name('admin.coupon_codes.index');
-              Route::middleware(['auth','verified'])->post('coupon_codes/store', [CouponCodesController::class, 'store'])->name('admin.coupon_codes.store');
+              Route::middleware(['auth','verified','admin'])->get('coupon_codes/index', [CouponCodesController::class, 'index'])->name('admin.coupon_codes.index');
+              Route::middleware(['auth','verified','admin'])->post('coupon_codes/store', [CouponCodesController::class, 'store'])->name('admin.coupon_codes.store');
+
+              //IMPERSONATION
+              Route::middleware(['auth','verified','admin'])->get('admin/impersonate/{id}', [UsersController::class, 'impersonate'])->name('admin.impersonate');
+              Route::middleware(['auth','verified'])->get('exit_impersonate', [UsersController::class, 'exit_impersonate'])->name('admin.exit_impersonate');
+
             
 
             Route::middleware(['auth','verified','admin'])->get('product_plans/changemegasubprice', [PriceChangeController::class, 'changeMegasubPrice'])->name('changeMegasubPrice');
