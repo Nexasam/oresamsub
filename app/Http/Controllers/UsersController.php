@@ -111,7 +111,7 @@ class UsersController extends Controller
     {
       //  Gate::authorize('viewAny', User::class);
 
-        $user = User::where('id',$id)->first();
+        $user = User::with(['role','upline:id,username,phone_number','virtual_accounts'])->where('id',$id)->first();
         $user_plans = UserPlan::get();
         if(!$user){
           Session::flash('failure','User not found');
@@ -247,11 +247,53 @@ class UsersController extends Controller
 
      Session::flash('success','User plan was successfully updated');
 
-
-   
     return redirect()->route('admin.users.index');
   
   }
+
+
+      /** 
+    * Update user plan. by ADMIN
+    */
+    public function update_user_info(Request $request)
+    {
+      //  Gate::authorize('viewAny', User::class);
+      // dd($request->all());
+     
+      $validator = Validator::make($request->all(), [
+        'user_id' => 'required|exists:users,id',
+        'phone_number' => 'nullable',
+        'pin' => 'required','integer','regex:/^\d{4,5}$/',
+        'user_plan_id' => ['required','string','exists:user_plans,id'],
+      ]);
+      
+ 
+      if ($validator->stopOnFirstFailure()->fails()) {
+        return redirect()->back()->withErrors($validator)->withInput();
+      }
+ 
+     
+      if($request->pin != 'xxxx'){
+        $dat['pin'] = $request->pin;
+      }
+
+      if($request->phone_number == NULL){
+        $dat['phone_number'] = $request->phone_number;
+      }
+      
+      $dat['user_plan_id'] = $request->user_plan_id;
+
+      // dd($dat);
+
+      $user_id = $request->user_id;
+      
+      User::where('id',$user_id)->update($dat);
+ 
+      Session::flash('success','User profile was successfully updated');
+ 
+     return redirect()->back();
+   
+   }
 
     
 
@@ -297,7 +339,7 @@ class UsersController extends Controller
         // $date_from = date('Y-m-d',strtotime($date_from));
         // $date_to = date('Y-m-d',strtotime($date_to));
         
-        $data = User::with('role')->when(!empty($phone) , function ($query) use ($phone){
+        $data = User::with(['role','upline:id,username,phone_number','virtual_accounts'])->when(!empty($phone) , function ($query) use ($phone){
           $query->where('phone_number',$phone);
         })
         ->when( !empty($email) , function ($query) use ($email){
@@ -318,7 +360,23 @@ class UsersController extends Controller
               return $data->id;
             })
             ->addColumn('full_name',function($data){
-              return $data->first_name.' '.$data->last_name.'('.$data->username.')';
+              $fullnameinfo = $data->first_name.' '.$data->last_name.'('.$data->username.') <br>Upline: ';
+              $fullnameinfo .= $data->upline != NULL ? $data->upline->username.' '.substr($data->upline->phone_number, 0, 11 - 8) . str_repeat('*', 6) : 'none';
+              $fullnameinfo .= '<br>Virtual Accounts Generated: '.count($data->virtual_accounts);
+              
+              // if(count($data->virtual_accounts) > 0){
+              //   $fullnameinfo .= '<br>Virtual Accounts</br>';
+              //   foreach($data->virtual_accounts as $va){
+              //     $fullnameinfo .= '<br>Bank Name: '.$va->account_name.'&nbsp;';
+              //     $fullnameinfo .= '<br>Account Name: '.$va->account_number.'&nbsp;';
+              //     $fullnameinfo .= '<br>Account No: '.$va->account_number.'&nbsp;';
+              //     $fullnameinfo .= '<br>';
+
+              //   }
+              // }
+
+
+              return $fullnameinfo;
             })
             ->addColumn('main_wallet',function($data){
               return number_format($data->main_wallet,2);

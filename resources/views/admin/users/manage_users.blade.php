@@ -103,33 +103,60 @@
                   <div class="box border-0 shadow-none mb-0">
                     <div class="box-header">
                       <h5 class="box-title leading-none flex"><i class="ri ri-shield-user-line me-2"></i> Personal Settings  </h5>
+                      @php
+                      $fullnameinfo = '<br><b>Virtual Accounts Generated: '.count($user->virtual_accounts).'</b></br>'; 
+                      @endphp 
+                      @if (count($user->virtual_accounts) > 0)
+                          <div class="grid grid-cols-3">
+                            @foreach($user->virtual_accounts as $va)
+                              @php
+                                  $fullnameinfo .= '<div>Bank Name: '.$va->bank_name.'&nbsp;';
+                                  $fullnameinfo .= 'Account Name: '.$va->account_name.'&nbsp;';
+                                  $fullnameinfo .= 'Account No: '.$va->account_number.'&nbsp;';
+                                  $fullnameinfo .= '</div>';
+                              @endphp  
+
+                            @endforeach
+                          </div>
+                       
+                          {!! $fullnameinfo !!}
+                          
+                       @endif
                     </div>
                     <div class="box-body">
                       <div>
+                        <form method="POST" action="{{ route('admin.users.update_user_info')  }}">
+                          @csrf
                         <div class="grid lg:grid-cols-2 gap-6">
                             <div class="space-y-2">
                                 <label class="ti-form-label mb-0">User Name</label>
-                                <input type="text" class="my-auto ti-form-input" id="username" name="username" value="{{ $user->username }}" placeholder="Username">
+                                <input type="text" readonly class="my-auto ti-form-input" id="username" name="username" value="{{ $user->username }}" placeholder="Username">
                             </div>
                             <div class="space-y-2">
+                                <input type="hidden" id="user_id" name="user_id" value="{{$user->id}}">
+
                                 <label class="ti-form-label mb-0">First Name</label>
-                                <input type="text" class="my-auto ti-form-input" id="first_name" name="first_name" value="{{ $user->first_name }}" placeholder="Firstname">
+                                <input type="text" readonly class="my-auto ti-form-input" id="first_name" name="first_name" value="{{ $user->first_name }}" placeholder="Firstname">
                             </div>
                             <div class="space-y-2">
                                 <label class="ti-form-label mb-0">Last Name</label>
-                                <input type="text" class="my-auto ti-form-input" id="last_name" name="last_name" value="{{ $user->last_name }}" placeholder="Lastname">
+                                <input type="text" readonly class="my-auto ti-form-input" id="last_name" name="last_name" value="{{ $user->last_name }}" placeholder="Lastname">
                             </div>
                             <div class="space-y-2">
                               <label class="ti-form-label mb-0">Other Names</label>
-                              <input type="text" class="my-auto ti-form-input" id="other_names" name="other_names" value="{{ $user->other_names }}" placeholder="Othernames">
+                              <input type="text" readonly class="my-auto ti-form-input" id="other_names" name="other_names" value="{{ $user->other_names }}" placeholder="Othernames">
                           </div>
                             <div class="space-y-2">
                                 <label class="ti-form-label mb-0">Phone Number</label>
+                                @if ($user->phone_number != NULL)
                                 <input type="number" class="my-auto ti-form-input" id="phone_number" name="phone_number" value="{{ $user->phone_number }}" placeholder="Phone">
+                                @else
+                                <input readonly type="number" class="my-auto ti-form-input" id="phone_number" name="phone_number" value="{{ $user->phone_number }}" placeholder="Phone">
+                                @endif
                             </div>
                             <div class="space-y-2">
                                 <label class="ti-form-label mb-0">Email Address</label>
-                                <input type="email" class="my-auto ti-form-input" id="email_address" name="email_address" value="{{ $user->email }}" placeholder="Email">
+                                <input type="email" readonly class="my-auto ti-form-input" id="email_address" name="email_address" value="{{ $user->email }}" placeholder="Email">
                             </div>
                             <div class="space-y-2">
                               <label class="ti-form-label mb-0">PIN</label>
@@ -159,10 +186,13 @@
                                   @endif 
                                   value="{{ $user_plan->id  }}">{{ $user_plan->updated_user_plan_name ?? $user_plan->user_plan_name  }}</option>
                               @endforeach
-                
                             </select>
+
+                            <input type="submit" class="ti-btn ti-btn-primary w-1/2" value="Update User Details">           
                           
                             </div>
+                            <br>
+                            <br>
                            
                             {{-- <div class="space-y-2">
                                 <label class="ti-form-label mb-0">Date Of Birth</label>
@@ -206,6 +236,8 @@
                                   </ul>
                             </div> --}}
                         </div>
+
+                        </form>
                         {{-- <div class="my-5">
                             <div class="space-y-2">
                                 <label class="ti-form-label mb-0">Address</label>

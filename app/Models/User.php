@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\User;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Fortify\TwoFactorAuthenticatable;
@@ -53,6 +54,14 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function role(){
         return $this->belongsTo(Role::class,'role_id','id');
+    }
+
+    public function upline(){
+        return $this->belongsTo(User::class,'upline_id');
+    }
+
+    public function virtual_accounts(){
+        return $this->hasMany(UserVirtualAccount::class,'user_id','id');
     }
 
 
