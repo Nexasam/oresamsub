@@ -210,7 +210,7 @@
 
                
 
-                @if (env('APP_NAME') == 'OresamSub' || env('APP_NAME') == 'Megasub')
+                @if (env('APP_NAME') == 'OresamSub' || env('APP_NAME') == 'Mega-sub')
                 <!-- End::slide -->
                 <li class="slide  has-sub">
                     <a href="{{ route('admin.coupon_codes.index')}}" class="side-menu__item">
