@@ -173,7 +173,7 @@
                                 </div> --}}
                                 {{-- <x-auth-session-status class="mb-4" :status="session('status') ?? 'nil'" /> --}}
                                 <!-- Form -->
-                                @php dd(old('email')) @endphp
+                                {{-- @php dd(old('email')) @endphp --}}
                                 <form method="POST" action="{{ route('password.email') }}">
                                     @csrf
                                     <div>
