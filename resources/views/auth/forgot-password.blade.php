@@ -142,7 +142,7 @@
                            
 
                             <div class="text-center">
-                                @if (session('status') == 'verification-link-sent')
+                                @if (isset(session('status')) && session('status') == 'verification-link-sent')
                                 <div class="mb-4 font-medium text-sm text-blue-600 dark:text-blue-400">
                                     {{ __('messages.A new verification link has been sent to the email address you provided during registration.') }}
                                 </div>
@@ -170,7 +170,7 @@
                                     class="py-3 flex items-center text-xs text-gray-400 uppercase before:flex-[1_1_0%] before:border-t before:border-gray-200 before:me-6 after:flex-[1_1_0%] after:border-t after:border-gray-200 after:ms-6 dark:text-white/70 dark:before:border-white/10 dark:after:border-white/10">
                                     Or
                                 </div> --}}
-                                <x-auth-session-status class="mb-4" :status="session('status')" />
+                                <x-auth-session-status class="mb-4" :status="session('status') ?? 'nil'" />
                                 <!-- Form -->
                                 <form method="POST" action="{{ route('password.email') }}">
                                     @csrf
