@@ -127,7 +127,7 @@
                     <div class="mt-7">
                         <div class="p-4 sm:p-12 rounded-2xl border border-2 border-gray-100 shadow-lg">
                            
-                            @if (  isset($site_logo) && $site_logo != '')
+                            {{-- @if (  isset($site_logo) && $site_logo != '')
                     
                                     <a href="#" class="header-logo ">
                                         <img style="background-size: contain;" src="{{ env('APP_URL').'assets/landing_page_assets/img/site_logo/'.$site_logo }}" alt="logo"
@@ -138,10 +138,10 @@
                                     <br>
                                     <hr>
                                     <br>
-                            @endif
+                            @endif --}}
                            
 
-                            <div class="text-center">
+                            {{-- <div class="text-center">
                                 @if (session('status') == 'verification-link-sent')
                                 <div class="mb-4 font-medium text-sm text-blue-600 dark:text-blue-400">
                                     {{ __('messages.A new verification link has been sent to the email address you provided during registration.') }}
@@ -156,7 +156,7 @@
                                     {{__('messages.Forgot your password')}}? {{__('messages.No problem')}}. {{__('messages.Just let us know your email address and we will email you a password reset link that will allow you to choose a new one')}}. <br>
                                     {{ __('messages.Please check your spam folder too in case you dont find the email notification sent to you in your inbox') }}.
                                 </p>
-                            </div>
+                            </div> --}}
 
                             <div class="mt-5">
                                 {{-- <button type="button"
@@ -170,7 +170,7 @@
                                     class="py-3 flex items-center text-xs text-gray-400 uppercase before:flex-[1_1_0%] before:border-t before:border-gray-200 before:me-6 after:flex-[1_1_0%] after:border-t after:border-gray-200 after:ms-6 dark:text-white/70 dark:before:border-white/10 dark:after:border-white/10">
                                     Or
                                 </div> --}}
-                                {{-- <x-auth-session-status class="mb-4" :status="session('status')" /> --}}
+                                <x-auth-session-status class="mb-4" :status="session('status')" />
                                 <!-- Form -->
                                 <form method="POST" action="{{ route('password.email') }}">
                                     @csrf
