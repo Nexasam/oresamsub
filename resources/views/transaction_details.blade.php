@@ -101,35 +101,45 @@
                                             {{-- try to call or send a whatsapp message to the user --}}
 
                                             @php
-                                            
                                         
-                                                  $rawPhone = $data->user->phone_number;
-                                              
-                                                  // Remove all non-digit characters
-                                                  $phone = preg_replace('/\D+/', '', $rawPhone);
-                                              
-                                                  if (Illuminate\Support\Str::startsWith($phone, '0')) {
-                                                      $phoneFormatted = '234' . substr($phone, 1);
-                                                  } elseif (Illuminate\Support\Str::startsWith($phone, '+234')) {
-                                                      $phoneFormatted = substr($phone, 1); // remove '+'
-                                                  } elseif (Illuminate\Support\Str::startsWith($phone, '234')) {
-                                                      $phoneFormatted = $phone;
-                                                  } elseif (Illuminate\Support\Str::startsWith($phone, '00')) {
-                                                      $phoneFormatted = substr($phone, 2); // remove '00'
-                                                  } else {
-                                                      $phoneFormatted = $phone; // leave as-is
-                                                  }
-                                               @endphp
-                                              
-                                                <!-- WhatsApp Chat Link -->
-                                                <a href="https://wa.me/{{ $phoneFormatted }}" target="_blank">
-                                                    Chat on WhatsApp
-                                                </a>
-                                                
-                                                <!-- Call Link -->
-                                                <a href="tel:+{{ $phoneFormatted }}">
-                                                    Call Now
-                                                </a>
+                                            $rawPhone = $data->user->phone_number;
+                                        
+                                            // Remove non-digit characters
+                                            $phone = preg_replace('/\D+/', '', $rawPhone);
+                                        
+                                            // Format to 234xxxxxxxxxx
+                                            if (Illuminate\Support\Str::startsWith($phone, '0')) {
+                                                $phoneFormatted = '234' . substr($phone, 1);
+                                            } elseif (Illuminate\Support\Str::startsWith($phone, '+234')) {
+                                                $phoneFormatted = substr($phone, 1); // remove '+'
+                                            } elseif (Illuminate\Support\Str::startsWith($phone, '234')) {
+                                                $phoneFormatted = $phone;
+                                            } elseif (Illuminate\Support\Str::startsWith($phone, '00')) {
+                                                $phoneFormatted = substr($phone, 2); // remove '00'
+                                            } else {
+                                                $phoneFormatted = $phone;
+                                            }
+                                        
+                                            // Predefined message (URL-encoded)
+                                            $product_plan_name = $data->product_plan->product_plan_name;
+                                            $message = urlencode("Hey, I noticed you were having issues with the purchase of this product: $product_plan_name. Please let me know how I can help.");
+                                        @endphp
+                                        
+                                        <div class="flex gap-4 mt-4">
+                                            <!-- WhatsApp Chat Button -->
+                                            <a href="https://wa.me/{{ $phoneFormatted }}?text={{ $message }}" 
+                                               target="_blank"
+                                               class="inline-flex items-center px-4 py-2 bg-green-600 text-white rounded-lg shadow hover:bg-green-700 transition">
+                                                🟢 Chat on WhatsApp
+                                            </a>
+                                        
+                                            <!-- Call Button -->
+                                            <a href="tel:+{{ $phoneFormatted }}" 
+                                               class="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg shadow hover:bg-blue-700 transition">
+                                                📞 Call Now
+                                            </a>
+                                        </div>
+                                        
                                         
 
 
