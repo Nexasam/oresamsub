@@ -159,7 +159,7 @@ Route::middleware('set_locale')->group(function () {
             });
 
             Route::get('/access_denied', function () {
-                return 'You are not authorized. <a href="'.route('login').'">Return back</a>';
+                return 'You are not authorized... <a href="'.route('login').'">Return back</a>';
             })->name('access_denied');
 
 
@@ -321,7 +321,7 @@ Route::middleware('set_locale')->group(function () {
             Route::middleware(['auth','verified','user'])->post('user/settings/update_password', [UserSettingsController::class, 'update_password'])->name('user.settings.update_password');
             Route::middleware(['auth','verified','user'])->post('user/settings/update_pin', [UserSettingsController::class, 'update_pin'])->name('user.settings.update_pin');
             Route::middleware(['auth','verified','user'])->post('user/settings/update_2fa', [UserSettingsController::class, 'update_2fa'])->name('user.settings.update_2fa');
-            Route::middleware(['auth','verified','user'])->get('user/settings/set_pin', [UserSettingsController::class, 'set_pin'])->name('user.settings.set_pin');
+            Route::middleware(['auth','verified'])->get('user/settings/set_pin', [UserSettingsController::class, 'set_pin'])->name('user.settings.set_pin');
             Route::middleware(['auth','verified','user'])->post('user/settings/store_set_pin', [UserSettingsController::class, 'store_set_pin'])->name('user.settings.store_set_pin');
 
 
