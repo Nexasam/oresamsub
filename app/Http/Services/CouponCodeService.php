@@ -22,7 +22,12 @@ class CouponCodeService{
         $user_id = $user->id;
 
         //first check if there is an active coupon code.
-        $coupon_code_check = CouponCode::with('product_plan_category.network')->where('status',1)->where('code',$coupon_code)->first();
+        if($coupon_code == NULL){
+           $coupon_code_check = CouponCode::with('product_plan_category.network')->where('status',1)->first();  
+        }else{
+            $coupon_code_check = CouponCode::with('product_plan_category.network')->where('status',1)->where('code',$coupon_code)->first();
+        }
+        
         if($coupon_code_check){
             //it means a code is active
 
