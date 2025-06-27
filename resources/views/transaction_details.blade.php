@@ -96,6 +96,45 @@
                                         {{  $data->user->first_name  ?? 'nil' }} <br>
                                         {{  $data->user->last_name  ?? 'nil' }} <br>
                                         {{  $data->user->phone_number  ?? 'nil' }} 
+
+                                        @if ($data->user->phone_number != NULL)
+                                            {{-- try to call or send a whatsapp message to the user --}}
+
+                                            @php
+                                            use Illuminate\Support\Str;
+                                        
+                                                  $rawPhone = $data->user->phone_number;
+                                              
+                                                  // Remove all non-digit characters
+                                                  $phone = preg_replace('/\D+/', '', $rawPhone);
+                                              
+                                                  if (Str::startsWith($phone, '0')) {
+                                                      $phoneFormatted = '234' . substr($phone, 1);
+                                                  } elseif (Str::startsWith($phone, '+234')) {
+                                                      $phoneFormatted = substr($phone, 1); // remove '+'
+                                                  } elseif (Str::startsWith($phone, '234')) {
+                                                      $phoneFormatted = $phone;
+                                                  } elseif (Str::startsWith($phone, '00')) {
+                                                      $phoneFormatted = substr($phone, 2); // remove '00'
+                                                  } else {
+                                                      $phoneFormatted = $phone; // leave as-is
+                                                  }
+                                               @endphp
+                                              
+                                                <!-- WhatsApp Chat Link -->
+                                                <a href="https://wa.me/{{ $phoneFormatted }}" target="_blank">
+                                                    Chat on WhatsApp
+                                                </a>
+                                                
+                                                <!-- Call Link -->
+                                                <a href="tel:+{{ $phoneFormatted }}">
+                                                    Call Now
+                                                </a>
+                                        
+
+
+                                        @endif
+
                                       </p>
                                   </td>
                                 </tr>
