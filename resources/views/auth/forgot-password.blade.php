@@ -126,7 +126,7 @@
                     </a> --}}
                     <div class="mt-7">
                         <div class="p-4 sm:p-12 rounded-2xl border border-2 border-gray-100 shadow-lg">
-                            {{$site_logo.'sss'}}
+                           
                             @if (  isset($site_logo) && $site_logo != '')
                     
                                     <a href="#" class="header-logo ">

@@ -37,7 +37,7 @@ class PasswordResetLinkController extends Controller
         $siteTemplate = SiteTemplate::first();
         if(! $siteTemplate || $siteTemplate->template_name == 'template_1'){
             // dd('sas');
-            return view('auth.forgot-password');
+            return view('auth.forgot-password')->with($data);
         }
         
         return view('template2.auth.forgot-password')->with($data);
