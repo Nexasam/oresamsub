@@ -1133,12 +1133,7 @@ class MultilanguageController extends Controller
             "ig" => "Chefuru okwuntughe gị? Ọ dịghị nsogbu. Nye anyị adreesị email gị, anyị ga-eziga gị njikọ ịtọgharịa ya.",
             "ha" => "Ka manta kalmar sirrinka? Babu matsala. Kawai ba mu adireshin imel ɗinka, za mu aiko maka da hanyar sake saitawa."
             ],
-            "Please check your spam folder too in case you dont find the email notification sent to you in your inbox." => [
-            "en" => "Please check your spam folder too in case you dont find the email notification sent to you in your inbox.",
-            "yo" => "Jọ̀wọ́, ṣàyẹ̀wò apamọ̀ àwúrúju rẹ pẹ̀lú bí o bá kò rí ìkìlọ̀ imeeli náà nínú àpótíwọlé rẹ.",
-            "ig" => "Biko, lelee folda spam gị ma ọ bụrụ na ị chọtaghị ozi email ahụ na igbe mbata gị.",
-            "ha" => "Don Allah, duba babban fayil ɗin banza idan baka ga saƙon imel ɗin a akwatin saƙonka ba."
-            ],
+      
             "Email Password Reset Link" => [
             "en" => "Email Password Reset Link",
             "yo" => "Rán Líńkì Ìtunṣètò Ọrọ aṣínà",
