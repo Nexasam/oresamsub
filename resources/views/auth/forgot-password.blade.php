@@ -146,7 +146,8 @@
                                 <div class="mb-4 font-medium text-sm text-blue-600 dark:text-blue-400">
                                     {{ __('messages.A new verification link has been sent to the email address you provided during registration.') }}
                                 </div> --}}
-                                @endif
+                                {{-- @endif --}}
+                                
                                 @if ( !isset($site_logo) )
                                     <h1 class="block text-2xl font-bold text-gray-800 dark:text-gray-900">{{ env('APP_NAME') }}</h1>
                                     <hr>
