@@ -314,7 +314,7 @@ class ApiIntegrationController extends Controller
         ]);
  
         // select('main_wallet','first_name','last_name','email','username')->
-        $user = User::where('id',$request->user_id)->first();
+        $user = User::select('main_wallet','first_name','last_name','email','username')->where('id',$request->user_id)->first();
         $user->main_wallet_formatted = (float)  $user->main_wallet;
         $data['user'] =  $user;
         $data['products'] = Product::where('visibility',1)->where('active_status',1)->get();
