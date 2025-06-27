@@ -141,7 +141,7 @@ class AuthenticatedSessionController extends Controller
             (new CrystalPayService())->logic_to_generate_crystalpay_accounts($dataaa);
 
             $coupon_check = (new CouponCodeService())->determine_if_user_qualify($dataaa);
-            $user_check->coupons_available = $coupon_check['status'] == 1 ? $coupon_check['coupon_info'] : NULL;
+            $user_check->coupons = $coupon_check['status'] == 1 ? $coupon_check['coupon_info'] : NULL;
 
 
             $check_login = DB::table('sessions')->where('user_id',$user_check->id)->first();
