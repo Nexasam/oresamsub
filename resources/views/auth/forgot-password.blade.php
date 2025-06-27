@@ -134,7 +134,6 @@
                                         class="w-24 h-24 mx-auto  block dark:hidden" > 
                                         <img src="{{ env('APP_URL').'assets/landing_page_assets/img/site_logo/'.$site_logo }}" alt="logo"
                                             class="w-24 h-24 mx-auto hidden dark:block" alt="logo" class=""> 
-                                        {{-- <img src="../assets/img/brand-logos/desktop-dark.png" alt="logo" class="mx-auto hidden dark:block"> --}}
                                     </a>
                                     <br>
                                     <hr>
