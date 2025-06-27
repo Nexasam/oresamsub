@@ -134,7 +134,7 @@
                                               <a href="https://wa.me/{{ $phoneFormatted }}?text={{ $message_appreciation }}" 
                                               target="_blank"
                                                 class="inline-flex items-center px-4 py-2 bg-green-600 text-white rounded-lg shadow hover:bg-green-700 transition">
-                                                  🟢 Appreciate user on WhatsApp
+                                                  🟢 Appreciate customer on WhatsApp
                                               </a>
                                         
                                             @endif
@@ -143,14 +143,14 @@
                                                 <a href="https://wa.me/{{ $phoneFormatted }}?text={{ $message }}" 
                                                 target="_blank"
                                                 class="inline-flex items-center px-4 py-2 bg-red-600 text-white rounded-lg shadow hover:bg-red-700 transition">
-                                                  Support to support on WhatsApp
+                                                  Support customer on WhatsApp
                                                 </a>
                                             @endif
 
                                             <!-- Call Button -->
                                             <a href="tel:+{{ $phoneFormatted }}" 
                                                class="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg shadow hover:bg-blue-700 transition">
-                                                📞 Call Now
+                                                📞 Call customer now
                                             </a>
                                         </div>
                                         
