@@ -122,7 +122,8 @@
                                         
                                             // Predefined message (URL-encoded)
                                             $product_plan_name = $data->product_plan->product_plan_name;
-                                            $message = urlencode("Hey, I noticed you were having issues with the purchase of this product: $product_plan_name. Please let me know how I can help.");
+                                            $first_name = $data->user->first_name;
+                                            $message = urlencode("Hello $first_name, I noticed you were having issues with the purchase of this product: $product_plan_name. Please let me know how I can help.");
                                         @endphp
                                         
                                         <div class="flex gap-4 mt-4">
