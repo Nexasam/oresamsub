@@ -181,7 +181,7 @@
                                             <div>
                                                 <label for="email" class="block text-sm mb-2 dark:text-gray-900">{{__('messages.Email Address')}}</label>
                                                 <div class="relative">
-                                                    <x-text-input id="email" name="email" class="block mt-1 w-full" type="email" email="email" required autofocus autocomplete="email" />
+                                                    <input id="email" name="email" class="block mt-1 w-full" type="email" email="email" required autofocus autocomplete="email" />
                                                     {{-- <x-text-input id="email" name="email" class="block mt-1 w-full" type="email" email="email" :value="old('email')" required autofocus autocomplete="email" /> --}}
                                                     {{-- <x-input-error :messages="$errors->get('email')" class="mt-2" /> --}}
                                                 </div>
