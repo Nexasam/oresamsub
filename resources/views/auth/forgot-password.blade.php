@@ -147,7 +147,7 @@
                                     {{ __('messages.A new verification link has been sent to the email address you provided during registration.') }}
                                 </div> --}}
                                 {{-- @endif --}}
-                                
+
                                 @if ( !isset($site_logo) )
                                     <h1 class="block text-2xl font-bold text-gray-800 dark:text-gray-900">{{ env('APP_NAME') }}</h1>
                                     <hr>
@@ -181,7 +181,7 @@
                                                 <label for="email" class="block text-sm mb-2 dark:text-gray-900">{{__('messages.Email Address')}}</label>
                                                 <div class="relative">
                                                     <x-text-input id="email" name="email" class="block mt-1 w-full" type="email" email="email" :value="old('email')" required autofocus autocomplete="email" />
-                                                    <x-input-error :messages="$errors->get('email')" class="mt-2" />
+                                                    {{-- <x-input-error :messages="$errors->get('email')" class="mt-2" /> --}}
                                                 </div>
                                             </div>
                                             <!-- End Checkbox -->
