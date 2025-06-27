@@ -141,7 +141,7 @@
                             @endif
                            
 
-                            {{-- <div class="text-center">
+                            <div class="text-center">
                                 @if (session('status') == 'verification-link-sent')
                                 <div class="mb-4 font-medium text-sm text-blue-600 dark:text-blue-400">
                                     {{ __('messages.A new verification link has been sent to the email address you provided during registration.') }}
@@ -156,7 +156,7 @@
                                     {{__('messages.Forgot your password')}}? {{__('messages.No problem')}}. {{__('messages.Just let us know your email address and we will email you a password reset link that will allow you to choose a new one')}}. <br>
                                     {{ __('messages.Please check your spam folder too in case you dont find the email notification sent to you in your inbox') }}.
                                 </p>
-                            </div> --}}
+                            </div>
 
                             <div class="mt-5">
                                 {{-- <button type="button"
