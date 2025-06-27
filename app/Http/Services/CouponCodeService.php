@@ -23,8 +23,10 @@ class CouponCodeService{
 
         //first check if there is an active coupon code.
         if($coupon_code == NULL){
+            $code_supplied = 0;
            $coupon_code_check = CouponCode::with('product_plan_category.network')->where('status',1)->first();  
         }else{
+            $code_supplied = 1;
             $coupon_code_check = CouponCode::with('product_plan_category.network')->where('status',1)->where('code',$coupon_code)->first();
         }
 
@@ -60,6 +62,7 @@ class CouponCodeService{
                 return [
                     'status' => 1,
                     'coupon_info' => $coupon_info,
+                    'code_supplied' => $code_supplied,
                     'coupon_amount' => $coupon_code_check->amount,
                     'coupon_id' => $coupon_code_check->id,
                     'coupon_code' => $coupon_code_check->code,
@@ -85,6 +88,7 @@ class CouponCodeService{
                 return [
                     'status' => 1,
                     'coupon_info' => $coupon_info,
+                    'code_supplied' => $code_supplied,
                     'coupon_amount' => $coupon_code_check->amount,
                     'coupon_id' => $coupon_code_check->id,
                     'coupon_code' => $coupon_code_check->code,
@@ -124,6 +128,7 @@ class CouponCodeService{
         $determine_if_user_qualify = $this->determine_if_user_qualify($data);
         $remaining_slots = $determine_if_user_qualify['remaining_slots'] ?? NULL;
 
+
         if($determine_if_user_qualify['status'] == -1){
             return [
                 'status' => -1,
@@ -135,6 +140,7 @@ class CouponCodeService{
         }
 
 
+        $code_supplied = $determine_if_user_qualify['code_supplied'] ?? 0;
         $coupon_amount = $determine_if_user_qualify['coupon_amount'];
         $coupon_id = $determine_if_user_qualify['coupon_id'];
         $coupon_code = $determine_if_user_qualify['coupon_code'];
@@ -148,6 +154,21 @@ class CouponCodeService{
         //it shows the category is in order
         if($determine_category_id->product_plan_category_id == $coupon_category_id && $deducted_amount > 0){
             //the coupon  is good
+
+            //check if the code was not supplied, then the user should not get it.
+            if($code_supplied == 0){
+                $coupon_id = NULL;
+                return [
+                    'status' => -1,
+                    'message' => 'Sorry code was not supplied.',
+                    'amount' => $plan_amount,
+                    'actual_plan_amount' => $plan_amount,
+                    'coupon_amount' => $coupon_amount,
+                    'coupon' => NULL,
+                    'remaining_slots' => $remaining_slots,
+                ];
+            }
+
             return [
                 'status' =>1,
                 'amount' => $deducted_amount,
