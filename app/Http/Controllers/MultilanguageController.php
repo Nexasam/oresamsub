@@ -224,7 +224,7 @@ class MultilanguageController extends Controller
           ],
       
           'Please check your spam folder too in case you dont find the email notification sent to you in your inbox' => [
-              'en' => 'Please check your spam folder too in case you don’t find the email notification sent to you in your inbox',
+              'en' => 'Please check your spam folder too in case you dont find the email notification sent to you in your inbox',
               'yo' => 'Jọwọ ṣayẹwo folda imeeli aṣiṣe naa paapaa ti o ko ba ri ifitonileti imeeli naa ninu apo-iwọle rẹ',
               'ha' => 'Da fatan za ka binciki folda na spam idan ba ka ga saƙon imel ɗin da aka turo maka a cikin akwatin saƙon shiga ba',
               'ig' => 'Biko lelee folda spam gi ma, ma obu na inweghị email anyi zitere gi na inbox gi',
