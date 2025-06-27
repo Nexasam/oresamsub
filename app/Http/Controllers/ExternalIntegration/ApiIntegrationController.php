@@ -292,7 +292,7 @@ class ApiIntegrationController extends Controller
          }
 
          $coupon_check = (new CouponCodeService())->determine_if_user_qualify($dataaa);
-         $user->coupon_available = $coupon_check['status'] == 1 ? $coupon_check['coupon_info'] : NULL;
+         $user->coupons_available = $coupon_check['status'] == 1 ? $coupon_check['coupon_info'] : NULL;
 
          $token = $user->createToken($request->email)->plainTextToken;
          $expiration_time = Carbon::now()->addMinutes(50);

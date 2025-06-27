@@ -27,7 +27,7 @@ class CouponCodeService{
         }else{
             $coupon_code_check = CouponCode::with('product_plan_category.network')->where('status',1)->where('code',$coupon_code)->first();
         }
-        
+
         if($coupon_code_check){
             //it means a code is active
 
@@ -56,9 +56,10 @@ class CouponCodeService{
             if(! $last_transaction){
                 //means user has not done any txn: qualifies
                 logger('kkk');
+                $coupon_info = CouponCode::with('product_plan_category.network')->where('status', 1)->get()->toArray();
                 return [
                     'status' => 1,
-                    'coupon_info' => $coupon_code_check->toArray(),
+                    'coupon_info' => $coupon_info,
                     'coupon_amount' => $coupon_code_check->amount,
                     'coupon_id' => $coupon_code_check->id,
                     'coupon_code' => $coupon_code_check->code,
@@ -80,9 +81,10 @@ class CouponCodeService{
 
             if($condition_check){
                 logger('this ran: condition met');
+                $coupon_info = CouponCode::with('product_plan_category.network')->where('status', 1)->get()->toArray();
                 return [
                     'status' => 1,
-                    'coupon_info' => $coupon_code_check->toArray(),
+                    'coupon_info' => $coupon_info,
                     'coupon_amount' => $coupon_code_check->amount,
                     'coupon_id' => $coupon_code_check->id,
                     'coupon_code' => $coupon_code_check->code,
