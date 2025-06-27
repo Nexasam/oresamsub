@@ -74,7 +74,7 @@ class CouponCodeService{
             $condition_check = $transaction_metrics == 'before' ? $strtotime_user_last_created_at <= $strtotime_transaction_metrics_date : $strtotime_user_last_created_at >= $strtotime_transaction_metrics_date;
 
             if($condition_check){
-                // logger('this ran: condition met');
+                logger('this ran: condition met');
                 return [
                     'status' => 1,
                     'coupon_info' => $coupon_code_check->toArray(),
@@ -87,7 +87,7 @@ class CouponCodeService{
                 ];
             }else{
                 
-                // logger('ggg');
+                logger('ggg');
                 return [
                     'status' => -1,
                     'message' =>'Sorry, you do not fulfil the condition for this coupon offer.',
