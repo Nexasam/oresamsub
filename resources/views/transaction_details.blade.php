@@ -123,7 +123,7 @@
                                             // Predefined message (URL-encoded)
                                             $product_plan_name = $data->product_plan->product_plan_name;
                                             $first_name = $data->user->first_name;
-                                            $biz_name = "<a href=".config('app.url').'/login'.">".config('app.name').'</a>';
+                                            $biz_name = '<a href="'.config('app.url').'/login'.'">'.config('app.name').'</a>';
                                             $message = urlencode("Hello $first_name, I noticed you were having issues with the purchase of this product: $product_plan_name. Please let me know how I can help.");
                                             $message_appreciation = urlencode("Hello $first_name, you recently purchased $product_plan_name. Thank you for choosing $biz_name as your trusted Utility Provider. We're constantly seeking more ways to serve you better.");
                                         @endphp
