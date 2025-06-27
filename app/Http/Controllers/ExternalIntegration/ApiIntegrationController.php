@@ -319,6 +319,8 @@ class ApiIntegrationController extends Controller
         $data['products'] = Product::where('visibility',1)->where('active_status',1)->get();
         $data['recent_transactions'] = Transaction::where('user_id',$request->user_id)->orderByDesc('updated_at')->limit(10)->get();
         $data['hot_sales'] = ProductPlanCategory::with('product')->where('is_hot_sales',1)->get();
+        $coupon_check = (new CouponCodeService())->determine_if_user_qualify($user);
+        $data['coupons'] = $coupon_check['status'] == 1 ? $coupon_check['coupon_info'] : NULL;
         // return response()->json([
         //     'status' => true,
         //     'code' => 200,
