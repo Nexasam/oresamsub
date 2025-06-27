@@ -139,14 +139,14 @@
                                         
                                             @endif
 
-                                            @if ($data->status == -1)
+                                            @if ($data->status == -1 || $data->status == 0)
                                                 <a href="https://wa.me/{{ $phoneFormatted }}?text={{ $message }}" 
                                                 target="_blank"
                                                 class="inline-flex items-center px-4 py-2 bg-red-600 text-white rounded-lg shadow hover:bg-red-700 transition">
                                                   Support to support on WhatsApp
                                                 </a>
                                             @endif
-                                            
+
                                             <!-- Call Button -->
                                             <a href="tel:+{{ $phoneFormatted }}" 
                                                class="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg shadow hover:bg-blue-700 transition">
