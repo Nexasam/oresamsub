@@ -125,20 +125,20 @@
                                             $first_name = $data->user->first_name;
                                             $biz_name = config('app.name');
                                             $message = urlencode("Hello $first_name, I noticed you were having issues with the purchase of this product: $product_plan_name. Please let me know how I can help.");
-                                            $message_appreciation = urlencode("Hello $first_name, you recently purchased $product_plan_name. Thank you for choosing $biz_name as your trusted Utility Provider. We seek more ways to serve you better.");
+                                            $message_appreciation = urlencode("Hello $first_name, you recently purchased $product_plan_name. Thank you for choosing $biz_name as your trusted Utility Provider. We're constantly seeking more ways to serve you better.");
                                         @endphp
                                         
                                         <div class="flex gap-4 mt-4">
                                             <!-- WhatsApp Chat Button -->
                                             <a href="https://wa.me/{{ $phoneFormatted }}?text={{ $message }}" 
                                                target="_blank"
-                                               class="inline-flex items-center px-4 py-2 bg-green-600 text-white rounded-lg shadow hover:bg-red-700 transition">
+                                               class="inline-flex items-center px-4 py-2 bg-red-600 text-white rounded-lg shadow hover:bg-red-700 transition">
                                                  Support to support on WhatsApp
                                             </a>
 
                                             <a href="https://wa.me/{{ $phoneFormatted }}?text={{ $message_appreciation }}" 
                                             target="_blank"
-                                              class="inline-flex items-center px-4 py-2 bg-green-600 text-white rounded-lg shadow hover:bg-red-700 transition">
+                                              class="inline-flex items-center px-4 py-2 bg-green-600 text-white rounded-lg shadow hover:bg-green-700 transition">
                                                 🟢 Appreciate user on WhatsApp
                                              </a>
                                         
