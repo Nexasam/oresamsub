@@ -55,7 +55,7 @@ class CouponCodeService{
             $last_transaction = Transaction::where('user_id',$user_id)->latest()->first();
             if(! $last_transaction){
                 //means user has not done any txn: qualifies
-                logger('kkk');
+                logger('never done a txn before... so it works');
                 $coupon_info = CouponCode::with('product_plan_category.network')->where('status', 1)->get()->toArray();
                 return [
                     'status' => 1,
