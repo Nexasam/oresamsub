@@ -170,7 +170,7 @@
                                     class="py-3 flex items-center text-xs text-gray-400 uppercase before:flex-[1_1_0%] before:border-t before:border-gray-200 before:me-6 after:flex-[1_1_0%] after:border-t after:border-gray-200 after:ms-6 dark:text-white/70 dark:before:border-white/10 dark:after:border-white/10">
                                     Or
                                 </div> --}}
-                                <x-auth-session-status class="mb-4" :status="session('status')" />
+                                {{-- <x-auth-session-status class="mb-4" :status="session('status')" /> --}}
                                 <!-- Form -->
                                 <form method="POST" action="{{ route('password.email') }}">
                                     @csrf
