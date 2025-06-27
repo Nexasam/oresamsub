@@ -101,20 +101,20 @@
                                             {{-- try to call or send a whatsapp message to the user --}}
 
                                             @php
-                                            use Illuminate\Support\Str;
+                                            
                                         
                                                   $rawPhone = $data->user->phone_number;
                                               
                                                   // Remove all non-digit characters
                                                   $phone = preg_replace('/\D+/', '', $rawPhone);
                                               
-                                                  if (Str::startsWith($phone, '0')) {
+                                                  if (Illuminate\Support\Str::startsWith($phone, '0')) {
                                                       $phoneFormatted = '234' . substr($phone, 1);
-                                                  } elseif (Str::startsWith($phone, '+234')) {
+                                                  } elseif (Illuminate\Support\Str::startsWith($phone, '+234')) {
                                                       $phoneFormatted = substr($phone, 1); // remove '+'
-                                                  } elseif (Str::startsWith($phone, '234')) {
+                                                  } elseif (Illuminate\Support\Str::startsWith($phone, '234')) {
                                                       $phoneFormatted = $phone;
-                                                  } elseif (Str::startsWith($phone, '00')) {
+                                                  } elseif (Illuminate\Support\Str::startsWith($phone, '00')) {
                                                       $phoneFormatted = substr($phone, 2); // remove '00'
                                                   } else {
                                                       $phoneFormatted = $phone; // leave as-is
