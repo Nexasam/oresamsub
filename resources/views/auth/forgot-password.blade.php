@@ -40,13 +40,6 @@
         /></noscript>
         <!-- End Meta Pixel Code -->
   @endif
-
-  @php
-  $admin_site_color =  App\Models\AdminColorSetting::where('color_name','admin_site_color')->first();
-  $admin_site_color_value = $admin_site_color->color_value ?? (int) '90, 102, 241'; 
- //  echo $admin_site_color_value;  
- @endphp
-
   
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -75,34 +68,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap" rel="stylesheet">
 
 
-   
-   {{-- <style>
-     :root {
-           --color-primary: {{  $admin_site_color_value  }};
-           /* --color-primary: 90 102 241; */
-           --color-primary-rgb: 90,102,241;
-           --color-secondary: 96 165 250;
-           --color-success: 34 197 94;
-           --color-info: 76 117 207;
-           --color-warning: 234 179 8;
-           --color-danger: 244 63 94;
-           --body-bg: 242 246 249;
-           --default-text-color: 71 85 105;
-           --default-border: 243 243 243;
-           --muted: 140 144 151;
-           --dark-rgb: 14 16 20;
-           --menu-bg: 255 255 255;
-           --menu-border-color: 243 243 243;
-           --menu-prime-color: 100 116 139;
-           --header-bg: 255 255 255;
-           --header-prime-color: 100 116 139;
-           --header-border-color: 243 243 243;
-           --dark-bg: 30 41 59;
-           --dark-bg2: 249 250 251;
-       }
-    </style> --}}
-
-
 </head>
 
 <body class="error-page flex h-full !py-0 bg-white dark:bg-bgdark montserrat2">
@@ -126,8 +91,8 @@
                     </a> --}}
                     <div class="mt-7">
                         <div class="p-4 sm:p-12 rounded-2xl border border-2 border-gray-100 shadow-lg">
-                           
-                            @if (  isset($site_logo) && $site_logo != '')
+                            
+                            {{-- @if (  isset($site_logo) && $site_logo != '')
                     
                                     <a href="#" class="header-logo ">
                                         <img style="background-size: contain;" src="{{ env('APP_URL').'assets/landing_page_assets/img/site_logo/'.$site_logo }}" alt="logo"
@@ -138,42 +103,30 @@
                                     <br>
                                     <hr>
                                     <br>
-                            @endif
+                            @endif --}}
                            
 
-                            <div class="text-center">
-                                {{-- @if (isset(session('status')) && session('status') == 'verification-link-sent')
+                            {{-- <div class="text-center">
+                                @if (session('status') == 'verification-link-sent')
                                 <div class="mb-4 font-medium text-sm text-blue-600 dark:text-blue-400">
                                     {{ __('messages.A new verification link has been sent to the email address you provided during registration.') }}
-                                </div> --}}
-                                {{-- @endif --}}
-
+                                </div>
+                                @endif
                                 @if ( !isset($site_logo) )
                                     <h1 class="block text-2xl font-bold text-gray-800 dark:text-gray-900">{{ env('APP_NAME') }}</h1>
                                     <hr>
                                 @endif
-                                <h3 class="block mt-2 text-xl text-gray-800 dark:text-gray-900">{{__('Password Reset')}}</h3>
+                                <h3 class="block mt-2 text-xl text-gray-800 dark:text-gray-900">{{__('messages.Password Reset')}}</h3>
                                 <p class="mt-3 text-sm text-gray-600 dark:text-white/70">
                                     {{__('messages.Forgot your password')}}? {{__('messages.No problem')}}. {{__('messages.Just let us know your email address and we will email you a password reset link that will allow you to choose a new one')}}. <br>
                                     {{ __('messages.Please check your spam folder too in case you dont find the email notification sent to you in your inbox') }}.
                                 </p>
-                            </div>
+                            </div> --}}
 
                             <div class="mt-5">
-                                {{-- <button type="button"
-                                    class="w-full py-2 px-3 inline-flex justify-center items-center gap-2 rounded-sm border font-medium bg-white text-gray-700 shadow-sm align-middle hover:bg-gray-50 focus:outline-none focus:ring-0 focus:ring-offset-0 focus:ring-offset-white focus:ring-primary transition-all text-sm dark:bg-bgdark dark:hover:bg-black/20 dark:border-white/10 dark:text-white/70 dark:hover:text-white dark:focus:ring-offset-white/10">
-                                    <img src="../assets/img/authentication/social/1.png" class="w-4 h-4"
-                                        alt="google-img">
-                                    Sign in with Google
-                                </button>
-
-                                <div
-                                    class="py-3 flex items-center text-xs text-gray-400 uppercase before:flex-[1_1_0%] before:border-t before:border-gray-200 before:me-6 after:flex-[1_1_0%] after:border-t after:border-gray-200 after:ms-6 dark:text-white/70 dark:before:border-white/10 dark:after:border-white/10">
-                                    Or
-                                </div> --}}
-                                {{-- <x-auth-session-status class="mb-4" :status="session('status') ?? 'nil'" /> --}}
+                                
+                                <x-auth-session-status class="mb-4" :status="session('status')" />
                                 <!-- Form -->
-                                {{-- @php dd(old('email')) @endphp --}}
                                 <form method="POST" action="{{ route('password.email') }}">
                                     @csrf
                                     <div>
@@ -181,15 +134,14 @@
                                             <div>
                                                 <label for="email" class="block text-sm mb-2 dark:text-gray-900">{{__('messages.Email Address')}}</label>
                                                 <div class="relative">
-                                                    <input id="email" name="email" class="block mt-1 w-full" type="email" email="email" required autofocus autocomplete="email" />
-                                                    {{-- <x-text-input id="email" name="email" class="block mt-1 w-full" type="email" email="email" :value="old('email')" required autofocus autocomplete="email" /> --}}
-                                                    {{-- <x-input-error :messages="$errors->get('email')" class="mt-2" /> --}}
+                                                    <x-text-input id="email" name="email" class="block mt-1 w-full" type="email" email="email" :value="old('email')" required autofocus autocomplete="email" />
+                                                    <x-input-error :messages="$errors->get('email')" class="mt-2" />
                                                 </div>
                                             </div>
                                             <!-- End Checkbox -->
-                                            {{-- <x-primary-button class="ms-3">
+                                            <x-primary-button class="ms-3">
                                                 {{ __('messages.Email Password Reset Link') }}
-                                            </x-primary-button> --}}
+                                            </x-primary-button>
                                         </div>
                                     </div>
                                 </form>
@@ -227,7 +179,37 @@
     {{-- <script src="../assets/libs/preline/preline.js"></script> --}}
     <script src="{{ asset(env('APP_ASSETS_BASE_URL').'libs/preline/preline.js') }}"></script>
 
-   
+    @php
+     $admin_site_color =  App\Models\AdminColorSetting::where('color_name','admin_site_color')->first();
+     $admin_site_color_value = $admin_site_color->color_value ?? (int) '90, 102, 241'; 
+    //  echo $admin_site_color_value;  
+    @endphp
+
+    <style>
+      :root {
+            --color-primary: {{  $admin_site_color_value  }};
+            /* --color-primary: 90 102 241; */
+            --color-primary-rgb: 90,102,241;
+            --color-secondary: 96 165 250;
+            --color-success: 34 197 94;
+            --color-info: 76 117 207;
+            --color-warning: 234 179 8;
+            --color-danger: 244 63 94;
+            --body-bg: 242 246 249;
+            --default-text-color: 71 85 105;
+            --default-border: 243 243 243;
+            --muted: 140 144 151;
+            --dark-rgb: 14 16 20;
+            --menu-bg: 255 255 255;
+            --menu-border-color: 243 243 243;
+            --menu-prime-color: 100 116 139;
+            --header-bg: 255 255 255;
+            --header-prime-color: 100 116 139;
+            --header-border-color: 243 243 243;
+            --dark-bg: 30 41 59;
+            --dark-bg2: 249 250 251;
+        }
+        </style>
 
 </body>
 
