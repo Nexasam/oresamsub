@@ -127,7 +127,7 @@
                     <div class="mt-7">
                         <div class="p-4 sm:p-12 rounded-2xl border border-2 border-gray-100 shadow-lg">
                            
-                            {{-- @if (  isset($site_logo) && $site_logo != '')
+                            @if (  isset($site_logo) && $site_logo != '')
                     
                                     <a href="#" class="header-logo ">
                                         <img style="background-size: contain;" src="{{ env('APP_URL').'assets/landing_page_assets/img/site_logo/'.$site_logo }}" alt="logo"
@@ -138,7 +138,7 @@
                                     <br>
                                     <hr>
                                     <br>
-                            @endif --}}
+                            @endif
                            
 
                             {{-- <div class="text-center">
