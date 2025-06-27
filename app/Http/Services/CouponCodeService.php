@@ -99,7 +99,7 @@ class CouponCodeService{
         }
 
         //no coupon active at the moment
-        // logger('oooo');
+        logger('oooo');
         return [
             'status' => -1,
             'message' =>'No active coupon code at the moment or the coupon code is inactive.'
