@@ -26,18 +26,46 @@ class WalletFundingPromoService{
         $funding_option_id = $data['funding_option_id'];
         $actual_amount_to_fund_user = $funding_amount;
         $user_id = $user->id;
-        $user_promo_status = 0;
+        $new_status = 1;
         
         //promo metric 1:username
         $check_username_metric = WalletFundingPromo::where('status',1)
         ->where('promo_metric','username')
         ->where('beneficiary',$user_id)
         ->first();
+        
+        // asdfs add logic to fail if slots remaining is zero
 
         // DB::beginTransaction();
         // try{
 
             if($check_username_metric){
+                $slots_remaining = $check_username_metric->slots_remaining;
+                if($slots_remaining <= 0){
+                    WalletFundingPromo::where('id',$check_username_metric->id)->update([
+                        'status' => 0
+                    ]);
+
+                    logger('Slots for this promo has been exhausted');
+                    return [
+                        'status' => -1,
+                        'promo_id' => $check_username_metric->id,
+                        'actual_amount_to_fund_user' => $amount_to_fund_user,
+                        'message' => 'Slots for this promo has been exhausted'
+                    ]; 
+                }
+
+
+                $chheck_used = UsedWalletFundingPromo::where('user_id',$user_id)->where('wallet_funding_promo_id',$check_username_metric->id)->get();
+                if(count($chheck_used) >= 1){
+                    return [
+                        'status' => -1,
+                        'promo_id' => $check_username_metric->id,
+                        'actual_amount_to_fund_user' => $amount_to_fund_user,
+                        'message' =>'customer already enjoyed promo...'
+                    ]; 
+                }
+
                 //if it exists, the logic ends here for the user
                 $dataaaa['promo_discount_category'] = $check_username_metric->promo_discount_category;
                 $dataaaa['funding_amount'] = $funding_amount;
@@ -67,6 +95,9 @@ class WalletFundingPromoService{
                     'message' =>'User qualifies for funding promo. last txn'
                 ]; 
             }
+
+
+
     
             //promo metric 2:last transaction
             $get_last_transaction_metrics = WalletFundingPromo::where('status',1)->where(function($query){
