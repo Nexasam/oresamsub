@@ -1108,7 +1108,7 @@ class WalletsController extends Controller
         $promo_bonus = $data->amount_settled - $data->amount_paid;
 
         if($promo_id != NULL && $promo_bonus > 0){
-          $bonus_message = "Promo bonus of ₦" . number_format($promo_bonus, 2) . " enjoyed 🎉";
+          $res .= "Promo bonus of ₦" . number_format($promo_bonus, 2) . " enjoyed 🎉";
         }
 
 
