@@ -1013,7 +1013,17 @@ class WalletsController extends Controller
             return $user_details;
           })
           ->addColumn('transaction_reference',function($data){
-            return $data->transaction_reference;
+            $res = $data->transaction_reference;
+
+            $promo_id = $data->wallet_funding_promo_id;
+            $promo_bonus = $data->amount_settled - $data->amount_paid;
+
+            if($promo_id != NULL && $promo_bonus > 0){
+              $res .= "<br>Promo bonus of ₦" . number_format($promo_bonus, 2) . " enjoyed 🎉";
+            }
+
+            return $res;
+
           })
           ->addColumn('status',function($data){
             return $data->status;
@@ -1104,26 +1114,7 @@ class WalletsController extends Controller
       })
       ->addColumn('payment_reference',function($data){
         $res = $data->payment_reference;
-        $promo_id = $data->wallet_funding_promo_id;
-        $promo_bonus = $data->amount_settled - $data->amount_paid;
-
-        // && $promo_bonus > 0
-        // if($promo_id != NULL ){
-          $res .= "Promo bonus of ₦" . number_format($promo_bonus, 2) . " enjoyed 🎉";
-        // }
-
-
-
         return $res;
-
-        // $promo_category = $data->funding_promo->promo_discount_category;
-        // $promo_value = $data->funding_promo->promo_value;
-        // if($promo_category != NULL){
-        //   if($promo_category == 'percent'){
-        //       $promo_value = ($promo_value / 100)
-        //   }
-          
-        // }
       })
       ->addColumn('amount',function($data){
         return $data->amount;
