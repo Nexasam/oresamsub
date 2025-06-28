@@ -74,14 +74,28 @@ class WalletFundingPromoService{
             })
             ->latest()
             ->get();
-    
+
+            //chheck if the user has a txn    
             if(count($get_last_transaction_metrics) > 0 ){
                 foreach($get_last_transaction_metrics as $txn_metric){
+                        
+                        $chheck_used = UsedWalletFundingPromo::where('user_id',$user_id)->where('wallet_funding_promo_id',$txn_metric->id)->get();
+                        if(count($chheck_used) >= 1){
+                            return [
+                                'status' => -1,
+                                'promo_id' => $txn_metric->id,
+                                'actual_amount_to_fund_user' => $amount_to_fund_user,
+                                'message' =>'customer already enjoyed promo'
+                            ]; 
+                        }
+
+                    
                         $dataaaa['promo_discount_category'] = $txn_metric->promo_discount_category;
                         $dataaaa['funding_amount'] = $txn_metric->funding_amount;
                         $dataaaa['promo_value'] = $txn_metric->promo_value;
                         $dataaaa['promo_discount_percentage_cap'] = $txn_metric->promo_discount_percentage_cap;
                         $amount_to_fund_user = $this->get_amount_to_fund_user($dataaaa);
+
     
                         //check user last txn
                         $last_transaction = Transaction::where('user_id',$user_id)->latest()->first();
@@ -100,6 +114,7 @@ class WalletFundingPromoService{
                             ]);
                             DB::commit();
 
+                            logger('goooood');
                             return [
                                 'status' => 1,
                                 'promo_id' => $txn_metric->id,
