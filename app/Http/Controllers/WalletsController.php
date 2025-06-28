@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Traits\Dashboard\UserDashboardDataTrait;
 use Exception;
 use App\Models\User;
 use App\Models\Setting;
@@ -20,6 +19,8 @@ use App\Models\FundingOptionBankCodes;
 use Illuminate\Support\Facades\Session;
 use App\Models\UserMonnifyVirtualAccount;
 use Illuminate\Support\Facades\Validator;
+use App\Http\Services\WalletFundingPromoService;
+use App\Traits\Dashboard\UserDashboardDataTrait;
 use App\Models\MaxCrystalPaymentsPendingApproval;
 
 class WalletsController extends Controller
