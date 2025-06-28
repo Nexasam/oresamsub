@@ -56,7 +56,7 @@ class UserDashboardController extends Controller
                 font-weight: 500;
                 display: inline-block;
             '>
-                🎉 You enjoyed promo bonus of <span style='color: #047857;'>₦{$formatted_bonus}</span>
+                🎉 You enjoyed <span style='color: #047857;'>₦{$formatted_bonus} in your last funding</span>
             </div>";
         }
     }
