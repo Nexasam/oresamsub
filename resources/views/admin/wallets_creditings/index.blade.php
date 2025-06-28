@@ -32,7 +32,7 @@
 
                     <div class="box-header">
                         <div class="flex">
-                          <h5 class="box-title my-auto">Filter options</h5>
+                          <h5 class="box-title my-auto">{{__('messages.Filter Options')}}</h5>
                           <div class="hs-dropdown ti-dropdown block ms-auto my-auto s  sm:flex items-center justify-between">
                           
                                 <button type="button"
