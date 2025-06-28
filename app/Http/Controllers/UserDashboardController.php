@@ -36,7 +36,7 @@ class UserDashboardController extends Controller
     $data['active_bankcodes'] = $active_bankcodes;
 
     $last_funding = FundingWebhookPayload::where('user_id',auth()->id())
-                    ->whereIsNotNull('wallet_funding_promo_id')
+                    ->whereNotNull('wallet_funding_promo_id')
                     ->latest()
                     ->first();
     $funding_res = 'nil';
