@@ -252,7 +252,7 @@
                                     &#8358;{{  number_format(auth()->user()->main_wallet,2) ?? 0  }}
                                 </span>
                                 @if ($funding_res != 'nil') 
-                                    {{ $funding_res }}
+                                    {!! $funding_res !!}
                                 @endif
                             </div>
                             {{-- <div>
