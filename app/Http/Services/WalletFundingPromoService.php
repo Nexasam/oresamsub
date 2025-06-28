@@ -141,7 +141,7 @@ class WalletFundingPromoService{
                         $condition_check = $promo_metric == 'last_transaction_before' ? $strtotime_user_last_created_at <= $strtotime_last_transaction_metrics_date : $strtotime_user_last_created_at >= $strtotime_last_transaction_metrics_date;
             
                         if($condition_check){
-                            logger('this ran: condition met');
+                            logger('this ran: condition metttt');
                             return [
                                 'status' => 1,
                                 'promo_id' => $txn_metric->id,
@@ -201,6 +201,7 @@ class WalletFundingPromoService{
              $actual_amount_to_fund_user = $funding_amount; //default to the origin amount
          }
 
+         logger('Testtt'. $actual_amount_to_fund_user);
          return $actual_amount_to_fund_user;
     }  
 
