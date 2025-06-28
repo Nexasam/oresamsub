@@ -1035,7 +1035,7 @@ class WalletsController extends Controller
                   font-weight: 500;
                   display: inline-block;
               '>
-                  🎉 Promo bonus: <span style='color: #047857;'>₦{$formatted_bonus}</span>
+                  🎉 You enjoyed promo bonus of <span style='color: #047857;'>₦{$formatted_bonus}</span>
               </div>";
           
             }
