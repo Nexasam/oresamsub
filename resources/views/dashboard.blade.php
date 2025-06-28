@@ -217,6 +217,7 @@
 
         
         <div class="col-span-12 xxxl:col-span-2 md:col-span-3">
+            <a href="{{route('wallet_creditings.index')}}">
             <div class="max-w-sm w-full p-6 rounded-2xl shadow-lg bg-gradient-to-r from-blue-500 to-blue-700 text-white">
                 <div class="flex items-center space-x-4">
                   <div class="p-3 bg-white/20 rounded-full">
@@ -235,6 +236,7 @@
                   </div>
                 </div>
             </div>
+             </a>
 
             <div class="max-w-sm w-full p-6 mt-2 rounded-2xl shadow-lg bg-gradient-to-r from-indigo-500 to-indigo-700 text-white">
                 <div class="flex items-center space-x-4">

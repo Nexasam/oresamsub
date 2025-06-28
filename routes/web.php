@@ -203,6 +203,8 @@ Route::middleware('set_locale')->group(function () {
             Route::middleware(['auth','verified'])->get('commissions/index', [CommissionsController::class, 'index'])->name('commissions.index');
             Route::middleware(['auth','verified'])->get('commissions/fetch_commissions', [CommissionsController::class, 'fetch_commissions'])->name('user.commissions.fetch_commissions');
 
+            Route::middleware(['auth','verified'])->get('admin/wallet_creditings/index', [WalletsController::class, 'wallet_creditings'])->name('wallet_creditings.index');
+
 
               // COUPON CODES
               Route::middleware(['auth','verified','admin'])->get('coupon_codes/index', [CouponCodesController::class, 'index'])->name('admin.coupon_codes.index');
@@ -314,7 +316,6 @@ Route::middleware('set_locale')->group(function () {
 
             Route::middleware(['auth','verified','admin'])->get('admin/profile/index', [UsersController::class, 'admin_manage_profile'])->name('admin.manage_profile.index');
 
-            Route::middleware(['auth','verified','admin'])->get('admin/wallet_creditings/index', [WalletsController::class, 'wallet_creditings'])->name('admin.wallet_creditings.index');
             Route::middleware(['auth','verified','admin'])->get('admin/wallet/crediting_details/{id}', [WalletsController::class, 'wallet_crediting_details'])->name('admin.wallet.crediting_details');
             Route::middleware(['auth','verified','admin'])->post('admin/wallet/complete_pending_wallet_crediting/', [WalletsController::class, 'complete_pending_wallet_crediting'])->name('admin.wallet.complete_pending_wallet_crediting');
 

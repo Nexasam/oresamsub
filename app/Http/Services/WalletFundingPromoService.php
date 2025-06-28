@@ -99,7 +99,6 @@ class WalletFundingPromoService{
                         $new_slots_remaining = $txn_metric->slots_remaining - 1;
 
 
-    
                         //check user last txn
                         $last_transaction = Transaction::where('user_id',$user_id)->latest()->first();
                         if(! $last_transaction){
