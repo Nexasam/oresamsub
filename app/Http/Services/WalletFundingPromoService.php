@@ -34,8 +34,8 @@ class WalletFundingPromoService{
         ->where('beneficiary',$user_id)
         ->first();
 
-        DB::beginTransaction();
-        try{
+        // DB::beginTransaction();
+        // try{
 
             if($check_username_metric){
                 //if it exists, the logic ends here for the user
@@ -166,14 +166,14 @@ class WalletFundingPromoService{
                 'message' =>'No active promo at the moment or the promo code is inactive.'
             ];
 
-        }catch(Exception $ex){
-            // DB::rollback();
-            logger('Something is wrong...'.$ex->getMessage().' on line: '.$ex->getLine());
-            return [
-                'status' => -1, 
-                'message' => 'Something went wrong '.$ex->getMessage(), 
-            ];
-        }
+        // }catch(Exception $ex){
+        //     // DB::rollback();
+        //     logger('Something is wrong...'.$ex->getMessage().' on line: '.$ex->getLine());
+        //     return [
+        //         'status' => -1, 
+        //         'message' => 'Something went wrong '.$ex->getMessage(), 
+        //     ];
+        // }
         
      
 
