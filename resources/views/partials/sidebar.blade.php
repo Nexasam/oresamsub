@@ -141,18 +141,7 @@
 
                 
 
-                <!-- Start::slide -->
-                <li class="slide  has-sub">
-                    <a href="{{ route('wallet_creditings.index')}}" class="side-menu__item">
-                        <i class="ti ti-credit-card side-menu__icon"></i>
-                        <span class="side-menu__label">Wallet Creditings</span>
-                        <i class="ri ri-arrow-right-s-line side-menu__angle"></i>
-                    </a>
-                    <ul class="slide-menu child1">
-                        {{-- <li class="slide"><a href="#" class="side-menu__item">View Networks</a></li> --}}
-                    </ul>
-                </li>
-                <!-- End::slide -->
+             
 
                 <!-- Start::slide -->
                 <li class="slide  has-sub">
@@ -366,6 +355,20 @@
                     <a href="{{ route('user.electricity.buy_electricity_subscription')}}" class="side-menu__item">
                         <i class="ti ti-recharging  side-menu__icon"></i>
                         <span class="side-menu__label">{{ __('messages.Electricity Subscription') }}</span>
+                        <i class="ri ri-arrow-right-s-line side-menu__angle"></i>
+                    </a>
+                    <ul class="slide-menu child1">
+                        {{-- <li class="slide"><a href="#" class="side-menu__item">View Networks</a></li> --}}
+                    </ul>
+                </li>
+                <!-- End::slide -->
+
+                   <!-- Start::slide -->
+                   <li class="slide  has-sub">
+                    <a href="{{ route('wallet_creditings.index')}}" class="side-menu__item">
+                        <i class="ti ti-credit-card side-menu__icon"></i>
+                        <span class="side-menu__label">{{ __('Wallet Creditings') }}</span>
+                        {{-- <span class="side-menu__label">{{ __('messages.Wallet Creditings') }}</span> --}}
                         <i class="ri ri-arrow-right-s-line side-menu__angle"></i>
                     </a>
                     <ul class="slide-menu child1">
