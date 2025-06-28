@@ -40,7 +40,7 @@ class WalletFundingPromoService{
             if($check_username_metric){
                 //if it exists, the logic ends here for the user
                 $dataaaa['promo_discount_category'] = $check_username_metric->promo_discount_category;
-                $dataaaa['funding_amount'] = $check_username_metric->funding_amount;
+                $dataaaa['funding_amount'] = $funding_amount;
                 $dataaaa['promo_value'] = $check_username_metric->promo_value;
                 $dataaaa['promo_discount_percentage_cap'] = $check_username_metric->promo_discount_percentage_cap;
                 $amount_to_fund_user = $this->get_amount_to_fund_user($dataaaa);
@@ -91,7 +91,7 @@ class WalletFundingPromoService{
 
                     
                         $dataaaa['promo_discount_category'] = $txn_metric->promo_discount_category;
-                        $dataaaa['funding_amount'] = $txn_metric->funding_amount;
+                        $dataaaa['funding_amount'] = $funding_amount;
                         $dataaaa['promo_value'] = $txn_metric->promo_value;
                         $dataaaa['promo_discount_percentage_cap'] = $txn_metric->promo_discount_percentage_cap;
                         $amount_to_fund_user = $this->get_amount_to_fund_user($dataaaa);
