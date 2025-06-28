@@ -16,6 +16,7 @@ use App\Models\LandingPagesSetting;
 use App\Models\ProductPlanCategory;
 use App\Http\Controllers\Controller;
 use App\Models\BulkDataProductPlans;
+use App\Models\FundingWebhookPayload;
 use Illuminate\Support\Facades\Route;
 use App\Models\FundingOptionBankCodes;
 
@@ -33,6 +34,33 @@ class UserDashboardController extends Controller
 
     $data['user_virtual_accounts'] = $user_virtual_accounts;
     $data['active_bankcodes'] = $active_bankcodes;
+
+    $last_funding = FundingWebhookPayload::where('user_id',auth()->id())
+                    ->whereIsNotNull('wallet_funding_promo_id')
+                    ->latest()
+                    ->first();
+    $funding_res = 'nil';
+    if($last_funding){
+          $promo_id = $last_funding->wallet_funding_promo_id;
+          $promo_bonus = $last_funding->amount_settled - $last_funding->amount_paid;
+          if ($promo_id != NULL && $promo_bonus > 0) {
+            $formatted_bonus = number_format($promo_bonus, 2);
+            $funding_res = "<br><div style='
+                background: #d1fae5;
+                border: 1px solid #10b981;
+                color: #065f46;
+                padding: 8px 14px;
+                margin-top: 10px;
+                border-radius: 8px;
+                font-size: 14px;
+                font-weight: 500;
+                display: inline-block;
+            '>
+                🎉 You enjoyed promo bonus of <span style='color: #047857;'>₦{$formatted_bonus}</span>
+            </div>";
+        }
+    }
+    $data['funding_res'] = $funding_res;
 
     foreach($hot_sales as $key=>$hot_sale){
       $new_hot_sales_array[$key]['product_slug'] = $hot_sale->product->slug;
