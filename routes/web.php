@@ -42,6 +42,7 @@ use App\Http\Controllers\ProductCategoryController;
 use App\Http\Controllers\UserProductPlanController;
 use App\Http\Controllers\CableSubscriptionController;
 use Rap2hpoutre\LaravelLogViewer\LogViewerController;
+use App\Http\Controllers\WalletFundingPromoController;
 use App\Http\Controllers\ProductPlanCategoryController;
 use App\Http\Controllers\ElectricitySubscriptionController;
 
@@ -206,6 +207,12 @@ Route::middleware('set_locale')->group(function () {
               // COUPON CODES
               Route::middleware(['auth','verified','admin'])->get('coupon_codes/index', [CouponCodesController::class, 'index'])->name('admin.coupon_codes.index');
               Route::middleware(['auth','verified','admin'])->post('coupon_codes/store', [CouponCodesController::class, 'store'])->name('admin.coupon_codes.store');
+
+
+                // funding promo
+                Route::middleware(['auth','verified','admin'])->get('wallet_funding_promo/index', [WalletFundingPromoController::class, 'index'])->name('admin.wallet_funding_promo.index');
+                Route::middleware(['auth','verified','admin'])->post('wallet_funding_promo/store', [WalletFundingPromoController::class, 'store'])->name('admin.wallet_funding_promo.store');
+              
 
               //IMPERSONATION
               Route::middleware(['auth','verified','admin'])->get('admin/impersonate/{id}', [UsersController::class, 'impersonate'])->name('admin.impersonate');

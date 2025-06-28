@@ -149,9 +149,9 @@
                             <div class="space-y-2">
                                 <label class="ti-form-label mb-0">Phone Number</label>
                                 @if ($user->phone_number != NULL)
-                                <input type="number" class="my-auto ti-form-input" id="phone_number" name="phone_number" value="{{ $user->phone_number }}" placeholder="Phone">
-                                @else
                                 <input readonly type="number" class="my-auto ti-form-input" id="phone_number" name="phone_number" value="{{ $user->phone_number }}" placeholder="Phone">
+                                @else
+                                <input  type="number" class="my-auto ti-form-input" id="phone_number" name="phone_number" value="{{ $user->phone_number }}" placeholder="Phone">
                                 @endif
                             </div>
                             <div class="space-y-2">

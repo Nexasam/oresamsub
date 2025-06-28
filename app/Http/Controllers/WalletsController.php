@@ -97,6 +97,8 @@ class WalletsController extends Controller
         $can_fund = '';
 
         $funding_option_details = FundingOption::with('webhook_string')->where('slug','crystal_pay')->first();
+
+        $promo_id = NULL;
  
 
         DB::beginTransaction();
@@ -166,9 +168,19 @@ class WalletsController extends Controller
                 $amount_to_fund_user = $response_decode['event_data']['data']['settled'];
             }
 
+            //incase there is a promo
+            $daat['user'] = $user_details;
+            $daat['funding_amount'] = $paid_amount;
+            $daat['funding_option_id'] = $funding_option_details->id;
+            $check_promo = (new WalletFundingPromoService())->apply_funding_promo($daat);
+            if($check_promo['status'] == 1){
+              $amount_to_fund_user = $check_promo['actual_amount_to_fund_user'];
+              $promo_id = $check_promo['promo_id'];
+            }
 
             $created_data['funding_slug'] = 'crystal_pay';
             $created_data['user_id'] = $user_details->id;
+            $created_data['wallet_funding_promo_id'] = $promo_id;
             $created_data['user_email'] = $email;
             $created_data['status'] = $response_decode['event_data']['status'];
             $created_data['message'] = $response_decode['event_data']['message'];
@@ -277,6 +289,8 @@ class WalletsController extends Controller
 
       $funding_option_details = FundingOption::with('webhook_string')->where('slug','crystal_pay')->first();
 
+      $promo_id = NULL;
+
 
       DB::beginTransaction();
       try{
@@ -344,10 +358,21 @@ class WalletsController extends Controller
               $amount_to_fund_user = $response_decode['event_data']['data']['settled'];
           }
 
+           //incase there is a promo
+           $daat['user'] = $user_details;
+           $daat['funding_amount'] = $paid_amount;
+           $daat['funding_option_id'] = $funding_option_details->id;
+           $check_promo = (new WalletFundingPromoService())->apply_funding_promo($daat);
+           if($check_promo['status'] == 1){
+             $amount_to_fund_user = $check_promo['actual_amount_to_fund_user'];
+             $promo_id = $check_promo['promo_id'];
+           }
+
 
           $created_data['funding_slug'] = 'crystal_pay';
           $created_data['user_id'] = $user_details->id;
           $created_data['user_email'] = $email;
+          $created_data['wallet_funding_promo_id'] = $promo_id;
           $created_data['status'] = $response_decode['event_data']['status'];
           $created_data['message'] = $response_decode['event_data']['message'];
           $created_data['package_id'] = $response_decode['package_id'];
@@ -365,7 +390,7 @@ class WalletsController extends Controller
           $new_amount = $old_amount + $amount_to_fund_user;
 
 
-        
+      
             $created = FundingWebhookPayload::create($created_data);
 
             if($can_fund == 'yes'){

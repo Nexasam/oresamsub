@@ -137,7 +137,6 @@
                                                 class="inline-flex items-center px-4 py-2 bg-green-600 text-white rounded-lg shadow hover:bg-green-700 transition">
                                                   🟢 Appreciate customer on WhatsApp
                                               </a>
-                                        
                                             @endif
 
                                             @if ($data->status == -1 || $data->status == 0)
