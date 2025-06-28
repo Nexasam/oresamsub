@@ -96,13 +96,14 @@ class WalletFundingPromoService{
                         $dataaaa['promo_value'] = $txn_metric->promo_value;
                         $dataaaa['promo_discount_percentage_cap'] = $txn_metric->promo_discount_percentage_cap;
                         $amount_to_fund_user = $this->get_amount_to_fund_user($dataaaa);
+                        $new_slots_remaining = $txn_metric->slots_remaining - 1;
+
 
     
                         //check user last txn
                         $last_transaction = Transaction::where('user_id',$user_id)->latest()->first();
                         if(! $last_transaction){
 
-                            $new_slots_remaining = $txn_metric->slots_remaining - 1;
                             //PUT THIS IN AN EVENT/QUEUE LATER
                             //update promo remaining slot
                             WalletFundingPromo::where('id',$txn_metric->id)->update([
