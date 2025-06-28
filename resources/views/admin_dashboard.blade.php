@@ -232,6 +232,7 @@
         </div>
         <div class="col-span-12 xxxl:col-span-2 md:col-span-4">
             <div class="box">
+                <a href="{{route('wallet_creditings.index')}}">
                 <div class="box-body">
                     <div class="flex space-x-4 rtl:space-x-reverse">
                         <div class="flex items-center justify-center ecommerce-icon px-0">
@@ -262,6 +263,7 @@
                         </div>
                     </div>
                 </div>
+                </a>
             </div>
         </div>
 
