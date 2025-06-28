@@ -52,7 +52,7 @@ class UserDashboardController extends Controller
                 padding: 8px 14px;
                 margin-top: 10px;
                 border-radius: 8px;
-                font-size: 14px;
+                font-size: 10px;
                 font-weight: 500;
                 display: inline-block;
             '>
