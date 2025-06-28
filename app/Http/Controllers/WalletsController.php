@@ -175,6 +175,7 @@ class WalletsController extends Controller
             $daat['funding_option_id'] = $funding_option_details->id;
             $check_promo = (new WalletFundingPromoService())->apply_funding_promo($daat);
             if($check_promo['status'] == 1){
+              logger('is tmmmmmm'.$check_promo['actual_amount_to_fund_user']);
               $amount_to_fund_user = $check_promo['actual_amount_to_fund_user'];
               $promo_id = $check_promo['promo_id'];
             }
