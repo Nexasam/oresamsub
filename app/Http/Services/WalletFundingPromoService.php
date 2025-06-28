@@ -57,7 +57,7 @@ class WalletFundingPromoService{
                     'user_id' => $user_id,
                 ]);
 
-                DB::commit();
+                // DB::commit();
     
                 logger('testttt '.$amount_to_fund_user );
                 return [
@@ -113,7 +113,7 @@ class WalletFundingPromoService{
                                 'wallet_funding_promo_id' => $txn_metric->id,
                                 'user_id' => $user_id,
                             ]);
-                            DB::commit();
+                            // DB::commit();
 
                             logger('goooood');
                             return [
@@ -167,7 +167,7 @@ class WalletFundingPromoService{
             ];
 
         }catch(Exception $ex){
-            DB::rollback();
+            // DB::rollback();
             logger('Something is wrong...'.$ex->getMessage().' on line: '.$ex->getLine());
             return [
                 'status' => -1, 
