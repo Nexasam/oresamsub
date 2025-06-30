@@ -6,6 +6,7 @@ use App\Models\ProductPlan;
 use App\Services\Utils\UtilService;
 use App\Http\Services\CouponCodeService;
 use App\Services\Automation\Twins10Automation;
+use App\Services\Automation\PaultechsAutomation;
 use App\Services\Automation\DirectCouponAutomation;
 use App\Services\Automation\MegaSubPlugAutomation\MegaSubCableTV;
 use App\Services\Automation\MegaSubPlugAutomation\MegaSubVendData;
