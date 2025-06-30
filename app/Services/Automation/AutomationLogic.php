@@ -54,8 +54,11 @@ class AutomationLogic{
         }
         else if($automation_details->slug == 'twins10'){
             //logic stays here...
-            $buy_data = (new Twins10Automation($data))->buyData();
-            
+            $buy_data = (new Twins10Automation($data))->buyData();    
+        }
+        else if($automation_details->slug == 'paultechs'){
+            //logic stays here...
+            $buy_data = (new PaultechsAutomation($data))->buyData();    
         }
         else{
             //this will be like this until other automations are processed
