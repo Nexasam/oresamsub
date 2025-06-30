@@ -94,7 +94,7 @@ class PaultechsAutomation{
         $httpcode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
         // logger('DirectCoupon:'.$response);
 
-       if(isset($response1['status']) && $response1['status'] == 'Successful'){
+       if(isset($response_dec['status']) && $response_dec['status'] == 'Successful'){
             //success
             return [
                 'status' => 1,
