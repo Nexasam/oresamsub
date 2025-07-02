@@ -215,8 +215,8 @@
 
 
 
-                <!-- Start::slide -->
-                <li class="slide  has-sub mt-10">
+                  <!-- Start::slide -->
+                  <li class="slide  has-sub mt-10">
                     <a href="javascript:void(0);" class="side-menu__item">
                         <i class="ti ti-engine side-menu__icon"></i>
                         <span class="side-menu__label">Automation Settings</span>
@@ -234,7 +234,21 @@
                         {{-- <li class="slide"><a href="{{ route('admin.automation.dashboard_view','ogdams_v2') }}"  class="side-menu__item">Ogdams V2</a></li>--}}
                         {{-- <li class="slide"><a href="{{ route('admin.automation.dashboard_view','megasubplug') }}"  class="side-menu__item">MegasubPlug</a></li>       --}}
                     </ul>
-                    </li>
+                 </li>
+                 <!-- End::slide -->
+
+
+                 <!-- Start::slide -->
+                  {{-- in progress --}}
+                  <li class="slide  has-sub">
+                    <a href="{{ route('admin.translations.index')}}" class="side-menu__item">
+                        <i class="ti ti-world side-menu__icon"></i>
+                        <span class="side-menu__label">Translation Settings</span>
+                        <i class="ri ri-arrow-right-s-line side-menu__angle"></i>
+                    </a>
+                    <ul class="slide-menu child1">
+                    </ul>
+                  </li>
                 <!-- End::slide -->
 
 

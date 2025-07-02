@@ -73,8 +73,7 @@ Route::middleware('set_locale')->group(function () {
             })->name('lang.switch');
 
 
-            //translationcontroller spatie
-            Route::get('multilanguage/translation', [MultilanguageController::class, 'translation'])->name('multilanguage.translation');
+           
 
 
             // NEW TEMPLATE START: temporal routes
@@ -210,10 +209,15 @@ Route::middleware('set_locale')->group(function () {
               Route::middleware(['auth','verified','admin'])->get('coupon_codes/index', [CouponCodesController::class, 'index'])->name('admin.coupon_codes.index');
               Route::middleware(['auth','verified','admin'])->post('coupon_codes/store', [CouponCodesController::class, 'store'])->name('admin.coupon_codes.store');
 
+             // TRANSLATION SETTINGS
+             Route::middleware(['auth','verified','admin'])->get('translations/index', [MultilanguageController::class, 'index'])->name('admin.translations.index');
+             Route::middleware(['auth','verified','admin'])->post('translations/store', [MultilanguageController::class, 'store'])->name('admin.translations.store');
+             Route::middleware(['auth','verified','admin'])->post('translations/store_ajax', [MultilanguageController::class, 'store_ajax'])->name('admin.translations.store_ajax');
+             Route::middleware(['auth','verified','admin'])->get('multilanguage/translation', [MultilanguageController::class, 'translation'])->name('multilanguage.translation');
 
-                // funding promo
-                Route::middleware(['auth','verified','admin'])->get('wallet_funding_promo/index', [WalletFundingPromoController::class, 'index'])->name('admin.wallet_funding_promo.index');
-                Route::middleware(['auth','verified','admin'])->post('wallet_funding_promo/store', [WalletFundingPromoController::class, 'store'])->name('admin.wallet_funding_promo.store');
+             // funding promo
+             Route::middleware(['auth','verified','admin'])->get('wallet_funding_promo/index', [WalletFundingPromoController::class, 'index'])->name('admin.wallet_funding_promo.index');
+             Route::middleware(['auth','verified','admin'])->post('wallet_funding_promo/store', [WalletFundingPromoController::class, 'store'])->name('admin.wallet_funding_promo.store');
               
 
               //IMPERSONATION

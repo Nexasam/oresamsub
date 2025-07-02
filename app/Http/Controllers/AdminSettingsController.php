@@ -68,8 +68,6 @@ class AdminSettingsController extends Controller
       
         //landingpages: All params
         $landing_page_settings = LandingPagesSetting::get();
-        // $landing_page_settings = config('landing_pages');
-        // dd($landing_page_settings);
         foreach($landing_page_settings as $landing_page_setting){
             $data[$landing_page_setting->field_name] = $landing_page_setting->field_details;
         }
