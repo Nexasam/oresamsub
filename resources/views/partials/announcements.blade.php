@@ -19,8 +19,8 @@
             <button @click="open = false" class="absolute top-2 right-2 text-gray-900 hover:text-red-500 text-xl font-bold">
                 &times;
             </button>
-            <h2 class="text-xl font-bold text-gray-800 mb-2">🎉 {{__('messages.Updates')}}!</h2><br>
-            {{-- <h2 class="text-xl font-bold text-gray-800 mb-2">🎉 {{__('messages.Announcements')}}!</h2><br> --}}
+            {{-- <h2 class="text-xl font-bold text-gray-800 mb-2">🎉 {{__('messages.Updates')}}!</h2><br> --}}
+            <h2 class="text-xl font-bold text-gray-800 mb-2">🎉 {{__('messages.Announcements')}}!</h2><br>
             @foreach ($announcements as $ann)
               <div class="bg-green-100  p-4">
                 {!! $ann->description !!}  
