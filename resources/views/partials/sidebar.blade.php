@@ -238,7 +238,34 @@
                  <!-- End::slide -->
 
 
+                 @if (env('APP_NAME') == 'OresamSub')
                  <!-- Start::slide -->
+                  <li class="slide  has-sub">
+                    <a href="{{ route('admin.translations.index')}}" class="side-menu__item">
+                        <i class="ti ti-cash side-menu__icon"></i>
+                        <span class="side-menu__label">Funding Promo</span>
+                        <i class="ri ri-arrow-right-s-line side-menu__angle"></i>
+                    </a>
+                    <ul class="slide-menu child1">
+                    </ul>
+                  </li>
+                <!-- End::slide -->
+                  @endif
+
+                  <!-- Start::slide -->
+                  {{-- in progress --}}
+                  <li class="slide  has-sub">
+                    <a href="{{ route('admin.announcements.index')}}" class="side-menu__item">
+                        <i class="ti ti-bell side-menu__icon"></i>
+                        <span class="side-menu__label">Announcements</span>
+                        <i class="ri ri-arrow-right-s-line side-menu__angle"></i>
+                    </a>
+                    <ul class="slide-menu child1">
+                    </ul>
+                  </li>
+                <!-- End::slide -->
+
+                  <!-- Start::slide -->
                   {{-- in progress --}}
                   <li class="slide  has-sub">
                     <a href="{{ route('admin.translations.index')}}" class="side-menu__item">
@@ -250,6 +277,8 @@
                     </ul>
                   </li>
                 <!-- End::slide -->
+
+               
 
 
                 <!-- Start::slide -->

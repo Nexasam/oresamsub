@@ -11,12 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('announcements', function (Blueprint $table) {
-            $table->uuid('id')->primary();
-            $table->string('title');
-            $table->string('position');
-            $table->string('description');
-            $table->timestamps();
+        Schema::table('announcements', function (Blueprint $table) {
+            $table->string('description', 500)->change();
+
         });
     }
 
@@ -25,6 +22,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('announcements');
+        Schema::table('announcements', function (Blueprint $table) {
+            $table->string('description', 191)->change(); // assuming 191 was the original
+        });
     }
 };

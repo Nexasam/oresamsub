@@ -35,6 +35,7 @@ use App\Http\Controllers\BulkDataPlanController;
 use App\Http\Controllers\ResellerPlanController;
 use App\Http\Controllers\UserSettingsController;
 use App\Http\Controllers\AdminSettingsController;
+use App\Http\Controllers\AnnouncementsController;
 use App\Http\Controllers\MultilanguageController;
 use App\Http\Controllers\UserDashboardController;
 use App\Http\Controllers\UserTwoFactorController;
@@ -219,6 +220,13 @@ Route::middleware('set_locale')->group(function () {
              Route::middleware(['auth','verified','admin'])->get('wallet_funding_promo/index', [WalletFundingPromoController::class, 'index'])->name('admin.wallet_funding_promo.index');
              Route::middleware(['auth','verified','admin'])->post('wallet_funding_promo/store', [WalletFundingPromoController::class, 'store'])->name('admin.wallet_funding_promo.store');
               
+
+               //ANNOUNCEMENT
+               Route::middleware(['auth','verified','admin'])->get('announcements/index', [AnnouncementsController::class, 'index'])->name('admin.announcements.index');
+               Route::middleware(['auth','verified','admin'])->post('announcements/store', [AnnouncementsController::class, 'store'])->name('admin.announcements.store');
+               Route::middleware(['auth','verified','admin'])->post('announcements/update/{id}', [AnnouncementsController::class, 'update'])->name('admin.announcements.update');
+                
+  
 
               //IMPERSONATION
               Route::middleware(['auth','verified','admin'])->get('admin/impersonate/{id}', [UsersController::class, 'impersonate'])->name('admin.impersonate');

@@ -59,6 +59,9 @@
 
     <script src="https://cdn.tailwindcss.com"></script>
 
+    <script src="https://cdn.ckeditor.com/ckeditor5/41.3.0/classic/ckeditor.js"></script>
+
+
 
 
     <link rel="stylesheet" href="">
@@ -77,6 +80,8 @@
        $admin_site_color =  App\Models\AdminColorSetting::where('color_name','admin_site_color')->first();
        $admin_site_color_value = $admin_site_color->color_value ?? (int) '90, 102, 241'; 
       //  echo $admin_site_color_value;  
+
+      
     @endphp
 
     <style>
@@ -2285,9 +2290,54 @@
           
         })
 
+
+
+        
+
       })
 
     </script>
+
+  {{-- <script>
+    ClassicEditor
+      .create(document.querySelector('.editor'), {
+        toolbar: [
+          'heading', '|', 'bold', 'italic', 'underline', 'link',
+          'bulletedList', 'numberedList', '|',
+          'blockQuote', 'undo', 'redo'
+        ]
+      })
+      .then(editor => {
+        // Optional: Sync with hidden textarea for form submission
+        const hiddenTextarea = document.getElementById('ckeditor');
+        editor.model.document.on('change:data', () => {
+          hiddenTextarea.value = editor.getData();
+        });
+      })
+      .catch(error => {
+        console.error(error);
+      });
+  </script> --}}
+
+<script>
+  document.querySelectorAll('.editor').forEach((element) => {
+    ClassicEditor
+      .create(element, {
+        toolbar: [
+          'heading', '|', 'bold', 'italic', 'underline', 'link',
+          'bulletedList', 'numberedList', '|',
+          'blockQuote', 'undo', 'redo'
+        ]
+      })
+      .then(editor => {
+        console.log('Editor initialized for one textarea');
+      })
+      .catch(error => {
+        console.error(error);
+      });
+  });
+</script>
+
 
     <!-- Apex Charts JS -->
     {{-- <script src="../../assets/libs/apexcharts/apexcharts.min.js"></script> --}}

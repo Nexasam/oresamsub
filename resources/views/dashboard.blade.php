@@ -2,7 +2,9 @@
 
 @section('content')
 
-@include('partials.announcements')
+{{-- //change it later to reflect other pages: this is just v1 --}}
+@include('partials.announcements')  
+
 
 <div class="main-content">
 
