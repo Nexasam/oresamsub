@@ -241,7 +241,7 @@
                  @if (env('APP_NAME') == 'OresamSub')
                  <!-- Start::slide -->
                   <li class="slide  has-sub">
-                    <a href="{{ route('admin.translations.index')}}" class="side-menu__item">
+                    <a href="{{ route('admin.wallet_funding_promo.index')}}" class="side-menu__item">
                         <i class="ti ti-cash side-menu__icon"></i>
                         <span class="side-menu__label">Funding Promo</span>
                         <i class="ri ri-arrow-right-s-line side-menu__angle"></i>

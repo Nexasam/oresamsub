@@ -19,7 +19,7 @@
             <button @click="open = false" class="absolute top-2 right-2 text-gray-500 hover:text-red-500 text-xl font-bold">
                 &times;
             </button>
-            <h2 class="text-xl font-bold text-gray-800 mb-2">🎉 Announcements!</h2><br>
+            <h2 class="text-xl font-bold text-gray-800 mb-2">🎉 {{__('messages.Announcements')}}!</h2><br>
             @foreach ($announcements as $ann)
                 {!! $ann->description !!} <br><hr><br>
             @endforeach
