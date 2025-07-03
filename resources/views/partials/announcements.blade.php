@@ -16,7 +16,7 @@
             class="bg-white rounded-xl shadow-lg p-6 w-full max-w-md relative"
             @click.stop 
         >
-            <button @click="open = false" class="absolute top-2 right-2 text-white hover:text-red-500 text-xl font-bold">
+            <button @click="open = false" class="absolute top-2 right-2 text-gray-900 hover:text-red-500 text-xl font-bold">
                 &times;
             </button>
             <h2 class="text-xl font-bold text-gray-800 mb-2">🎉 {{__('messages.Announcements')}}!</h2><br>
