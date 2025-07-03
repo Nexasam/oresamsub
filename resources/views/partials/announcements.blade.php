@@ -13,7 +13,7 @@
         @click.self="open = false" 
     >
         <div 
-            class="bg-green-800 rounded-xl shadow-lg p-6 w-full max-w-md relative"
+            class="bg-white rounded-xl shadow-lg p-6 w-full max-w-md relative"
             @click.stop 
         >
             <button @click="open = false" class="absolute top-2 right-2 text-white hover:text-red-500 text-xl font-bold">
@@ -21,7 +21,10 @@
             </button>
             <h2 class="text-xl font-bold text-gray-800 mb-2">🎉 {{__('messages.Announcements')}}!</h2><br>
             @foreach ($announcements as $ann)
-                {!! $ann->description !!} <br><hr><br>
+              <div class="bg-green-100  p-4">
+                {!! $ann->description !!}  
+              </div> 
+              <br><hr><br>
             @endforeach
         </div>
     </div>
