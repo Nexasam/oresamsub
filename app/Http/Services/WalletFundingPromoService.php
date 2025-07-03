@@ -233,7 +233,7 @@ class WalletFundingPromoService{
              $actual_amount_to_fund_user = $funding_amount; //default to the origin amount
          }
 
-         logger('Testtt'. $actual_amount_to_fund_user);
+         logger('get funding amount: '. $actual_amount_to_fund_user);
          return $actual_amount_to_fund_user;
     }  
 

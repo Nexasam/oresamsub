@@ -219,6 +219,9 @@ Route::middleware('set_locale')->group(function () {
              // funding promo
              Route::middleware(['auth','verified','admin'])->get('wallet_funding_promo/index', [WalletFundingPromoController::class, 'index'])->name('admin.wallet_funding_promo.index');
              Route::middleware(['auth','verified','admin'])->post('wallet_funding_promo/store', [WalletFundingPromoController::class, 'store'])->name('admin.wallet_funding_promo.store');
+             Route::middleware(['auth','verified','admin'])->get('user_wallet_funding_promo/index', [WalletFundingPromoController::class, 'index_user'])->name('admin.user_wallet_funding_promo.index');
+             Route::middleware(['auth','verified','admin'])->post('user_wallet_funding_promo/store', [WalletFundingPromoController::class, 'store_user'])->name('admin.user_wallet_funding_promo.index_store');
+             Route::middleware(['auth','verified','admin'])->post('user_wallet_funding_promo/update/{id}', [WalletFundingPromoController::class, 'update_user'])->name('admin.user_wallet_funding_promo.update_user');
               
 
                //ANNOUNCEMENT

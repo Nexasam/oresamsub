@@ -141,6 +141,7 @@
                                     <th>Title</th>
                                     <th>Description</th>
                                     <th>Status</th>
+                                    {{-- <th>Date Added</th> --}}
                                     <th>Date Added</th>
                                   </tr>
                             </thead>
@@ -153,6 +154,7 @@
                               @foreach ($announcements as $ann)
                                   <tr>
                                     <td>{{ $count++ }}</td>
+                                    <td>{{ $ann->position }}</td>
                                     <td>{{ $ann->title }} <br>
                                         <button class="hs-dropdown-toggle ti-btn ti-btn-primary"  data-hs-overlay="#hs-vertically-centered-modal12{{$ann->id}}">EDIT</button> 
                                         <div id="hs-vertically-centered-modal12{{$ann->id}}" class="hs-overlay ti-modal hidden">
