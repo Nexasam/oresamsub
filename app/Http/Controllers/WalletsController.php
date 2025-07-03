@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\DB;
 use App\Models\LandingPagesSetting;
 use App\Models\FundingWebhookPayload;
 use App\Models\FundingOptionBankCodes;
+use App\Models\UserWalletFundingPromo;
 use Illuminate\Support\Facades\Session;
 use App\Models\UserMonnifyVirtualAccount;
 use Illuminate\Support\Facades\Validator;
