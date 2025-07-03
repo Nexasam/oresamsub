@@ -63,6 +63,7 @@ class WalletsController extends Controller
       $funding_option_details = FundingOption::with('webhook_string')->where('slug','crystal_pay')->first();
 
       $promo_id = NULL;
+      $custom_user_funding_promo_id = NULL;
 
 
       DB::beginTransaction();
@@ -167,6 +168,7 @@ class WalletsController extends Controller
             logger('general promo: '.$check_promo['actual_amount_to_fund_user']);
             $amount_to_fund_user = $check_promo['actual_amount_to_fund_user'];
             $promo_id = $check_promo['promo_id'];
+            $custom_user_funding_promo_id = $check_promo['custom_user_funding_promo_id'];
           }
           //general promo supercedes custom
 
@@ -174,6 +176,7 @@ class WalletsController extends Controller
           $created_data['funding_slug'] = 'crystal_pay';
           $created_data['user_id'] = $user_details->id;
           $created_data['wallet_funding_promo_id'] = $promo_id;
+          $created_data['custom_wallet_funding_promo_id'] = $custom_user_funding_promo_id;
           $created_data['user_email'] = $email;
           $created_data['status'] = $response_decode['event_data']['status'];
           $created_data['message'] = $response_decode['event_data']['message'];
