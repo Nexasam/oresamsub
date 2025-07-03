@@ -42,6 +42,7 @@ class UserDashboardController extends Controller
     $funding_res = 'nil';
     if($last_funding){
           $promo_id = $last_funding->wallet_funding_promo_id;
+          $custom_wallet_funding_promo_id = $last_funding->custom_wallet_funding_promo_id;
           $promo_bonus = $last_funding->amount_settled - $last_funding->amount_paid;
           if ($promo_id != NULL && $promo_bonus > 0) {
             $formatted_bonus = number_format($promo_bonus, 2);
@@ -56,9 +57,46 @@ class UserDashboardController extends Controller
                 font-weight: 500;
                 display: inline-block;
             '>
-                🎉 You enjoyed <span style='color: #047857;'>₦{$formatted_bonus} on your last funding</span>
+                🎉 <span style='color: #047857;'>₦{$formatted_bonus} bonus</span>
             </div>";
         }
+
+        if ($custom_wallet_funding_promo_id != NULL) {
+          if($promo_bonus > 0){
+            $formatted_bonus = number_format($promo_bonus, 2);
+            $funding_res = "<br><div style='
+                background: #d1fae5;
+                border: 1px solid #10b981;
+                color: #065f46;
+                padding: 8px 14px;
+                margin-top: 10px;
+                border-radius: 8px;
+                font-size: 10px;
+                font-weight: 500;
+                display: inline-block;
+            '>
+                🎉 <span style='color: #047857;'>₦{$formatted_bonus} bonus</span>
+            </div>";
+          }else if($promo_bonus == 0){
+              $formatted_bonus = number_format($promo_bonus, 2);
+              $funding_res = "<br><div style='
+                  background: #d1fae5;
+                  border: 1px solid #10b981;
+                  color: #065f46;
+                  padding: 8px 14px;
+                  margin-top: 10px;
+                  border-radius: 8px;
+                  font-size: 10px;
+                  font-weight: 500;
+                  display: inline-block;
+              '>
+                  🎉 <span style='color: #047857;'>100% funding</span>
+              </div>";
+          }else{
+               
+          }
+         
+      }
     }
     $data['funding_res'] = $funding_res;
 
