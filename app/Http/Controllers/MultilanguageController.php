@@ -1322,10 +1322,18 @@ class MultilanguageController extends Controller
                   "ig" => "Nọmba mita",
                   "ha" => "Lambar mita"
               ],
-
-              
-
-
+              "Announcement" => [
+                "en" => "Announcement",
+                "yo" => "Ìkìlò",
+                "ig" => "Nkọwa ozi",
+                "ha" => "Sanarwa"
+              ],
+              "Announcements" => [
+                "en" => "Announcements",
+                "yo" => "Àwọn Ìkéde",
+                "ig" => "Mgbasa ozi",
+                "ha" => "Sanarwa"
+              ]
           ];
 
           $merged = array_merge($arr1, $arr2);
