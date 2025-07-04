@@ -1603,7 +1603,7 @@ class WalletsController extends Controller
 
                 $response = curl_exec($curl);
 
-                // logger("Account generation crystalpay:  $response");
+                logger("Account generation crystalpay:  $response");
 
                 $response_dec = json_decode($response,true);
 
