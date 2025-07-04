@@ -1538,7 +1538,7 @@ class WalletsController extends Controller
           $funding_option_id = $request->funding_option;  
           
            //success
-           if($email == 'mike.e.emmanuel@gmail.com'){
+           if($email == 'mike.e.emmanuel@gmail.com' || $email == 'emmanuel@gmail.com'){
                 $bvn = '22225551122';
            }
 
