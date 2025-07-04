@@ -147,12 +147,9 @@ class WalletsController extends Controller
             $daaat['promo_discount_percentage_cap'] = $user_wallet_funding_promo->capped_at;
             $daaat['funding_amount'] = $paid_amount;
             $daaat['promo_value'] = $user_wallet_funding_promo->value;
-            $check_custom_promo = (new WalletFundingPromoService())->get_amount_to_fund_user($daaat);
-            if($check_custom_promo['status'] == 1){
-              logger('custom promo.: '.$check_custom_promo['actual_amount_to_fund_user']);
-              $amount_to_fund_user = $check_custom_promo['actual_amount_to_fund_user'];
-              $custom_user_funding_promo_id = $check_custom_promo['custom_user_funding_promo_id'];
-            }
+            $amount_to_fund_user = (new WalletFundingPromoService())->get_amount_to_fund_user($daaat);
+            logger('custom promo.: '.$amount_to_fund_user);
+            $custom_user_funding_promo_id = $user_wallet_funding_promo->id;
             //custom funding promo 
           }
 
