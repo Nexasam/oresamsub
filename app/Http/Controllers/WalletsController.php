@@ -1533,9 +1533,14 @@ class WalletsController extends Controller
           $last_name = $user_details->last_name;
           $email = $user_details->email;
           $phone_number = $user_details->phone_number;
-          // $bvn = $request->bvn;
+          $bvn = $request->phone_number;
           $bank_code = $request->bank_code;
-          $funding_option_id = $request->funding_option;      
+          $funding_option_id = $request->funding_option;  
+          
+           //success
+           if($email == 'mike.e.emmanuel@gmail.com'){
+                $bvn = '22225551122';
+           }
 
           
           //   $fetch_user_accts = UserVirtualAccount::where('user_id',$user_details->id)->where('bank_name','WEMA BANK')->first();
@@ -1550,7 +1555,7 @@ class WalletsController extends Controller
           }
 
           
-          //call crystalpay generate endpoint: revamp later
+                //call crystalpay generate endpoint: revamp later
                 $wallet_funding = FundingOption::where('id',$funding_option_id)->first();
                 $api_key = $wallet_funding->api_secret_key;
                 // $api_key = '1417307778664652904fd25';
@@ -1566,7 +1571,7 @@ class WalletsController extends Controller
                     "lastname"=>$last_name,
                     "email"=>$email,
                     "virtual_account_package"=>$bank_code,  
-                    "bvn"=>$phone_number
+                    "bvn"=>$bvn
                 ];
 
 
@@ -1574,8 +1579,6 @@ class WalletsController extends Controller
                 $arrjson = json_encode($arrr);
 
                 // logger("CP data passed: $arrjson");
-
-
                 $curl = curl_init();
                 curl_setopt_array($curl, array(
                 CURLOPT_URL => 'https://api.crystalpay.finance/business/v1/virtual-account',
@@ -1605,9 +1608,7 @@ class WalletsController extends Controller
 
                 logger("Account generation crystalpay:  $response");
 
-                $response_dec = json_decode($response,true);
-
-               
+                $response_dec = json_decode($response,true);    
                 
                 if(  isset($response_dec['success']) 
                      && $response_dec['success'] == true
@@ -1616,7 +1617,6 @@ class WalletsController extends Controller
                      && isset($response_dec['data']['account_number'])
                      &&  $response_dec['data']['account_number'] != ''
                        ){
-                    //success
                    
                     UserVirtualAccount::create([
                         'user_id' => $user_details->id,
@@ -1629,7 +1629,7 @@ class WalletsController extends Controller
                         'account_email' =>$response_dec['data']['account_email'],
                         'account_number' =>$response_dec['data']['account_number'],
                         'account_reference' => $response_dec['data']['account_reference'],
-                        'bvn' => $phone_number
+                        'bvn' => $bvn
                     ]);
 
                     Session::flash('success','Virtual account was successfully generated');
@@ -1640,8 +1640,6 @@ class WalletsController extends Controller
                 
                 Session::flash('failure','Sorry, Virtual account for this bank cannot be generated at this point. Try again later. ');
                 return redirect()->back();  
-
-
                 
         }
 
