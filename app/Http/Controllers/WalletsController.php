@@ -227,7 +227,12 @@ class WalletsController extends Controller
         logger('This webhook did not update wallet because its likely that the payment has been processed before');
       }
     }catch(Exception $ex){
-      logger($ex->getMessage().' on lineeee '.$ex->getLine());
+      logger(
+        $ex->getMessage() . 
+        ' on line ' . $ex->getLine() . 
+        ' in ' . $ex->getFile() . 
+        ' [Thrown in class: ' . get_class($ex) . ']'
+     );
       DB::rollBack();
     }
 
