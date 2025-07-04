@@ -1065,6 +1065,7 @@ class DataController extends Controller
         $user_id = $user_details->id;
         $user_level = UserPlan::select('plan_level')->where('id',$user_plan_id)->first();
         $plan_level = $user_level->plan_level;
+        $sellingp = 'user_level_'.$plan_level.'_selling_price';
         
          
         if($plan_category_id == ''){
@@ -1105,6 +1106,7 @@ class DataController extends Controller
                     ->where('visibility',1)
                     // ->where('automation_id',$product_plan_category->automation_id)
                     ->orderByRaw('CAST(data_size_in_mb AS UNSIGNED)')
+                    ->orderByRaw('CAST('.$sellingp.' AS UNSIGNED)')
                     ->orderByRaw('CAST(validity_in_days AS UNSIGNED) DESC')
                     ->get();
                 }
@@ -1144,6 +1146,7 @@ class DataController extends Controller
             ->where('visibility',1)
             // ->where('automation_id',$product_plan_category->automation_id)
             ->orderByRaw('CAST(data_size_in_mb AS UNSIGNED)')
+            ->orderByRaw('CAST('.$sellingp.' AS UNSIGNED)')
             ->orderByRaw('CAST(validity_in_days AS UNSIGNED) DESC')
             ->get();
 
