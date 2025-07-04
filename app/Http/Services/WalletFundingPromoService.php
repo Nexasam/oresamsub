@@ -50,7 +50,7 @@ class WalletFundingPromoService{
                     return [
                         'status' => -1,
                         'promo_id' => $check_username_metric->id,
-                        'actual_amount_to_fund_user' => $amount_to_fund_user,
+                        'actual_amount_to_fund_user' => $actual_amount_to_fund_user,
                         'message' => 'Slots for this promo has been exhausted'
                     ]; 
                 }
@@ -61,7 +61,7 @@ class WalletFundingPromoService{
                     return [
                         'status' => -1,
                         'promo_id' => $check_username_metric->id,
-                        'actual_amount_to_fund_user' => $amount_to_fund_user,
+                        'actual_amount_to_fund_user' => $actual_amount_to_fund_user,
                         'message' =>'customer already enjoyed promo...'
                     ]; 
                 }
@@ -71,7 +71,7 @@ class WalletFundingPromoService{
                 $dataaaa['funding_amount'] = $funding_amount;
                 $dataaaa['promo_value'] = $check_username_metric->promo_value;
                 $dataaaa['promo_discount_percentage_cap'] = $check_username_metric->promo_discount_percentage_cap;
-                $amount_to_fund_user = $this->get_amount_to_fund_user($dataaaa);
+                $actual_amount_to_fund_user = $this->get_amount_to_fund_user($dataaaa);
                 $new_slots_remaining = $check_username_metric->slots_remaining - 1;
     
                 //PUT THIS IN AN EVENT/QUEUE LATER
@@ -87,11 +87,11 @@ class WalletFundingPromoService{
 
                 // DB::commit();
     
-                logger('testttt '.$amount_to_fund_user );
+                logger('testttt '.$actual_amount_to_fund_user );
                 return [
                     'status' => 1,
                     'promo_id' => $check_username_metric->id,
-                    'actual_amount_to_fund_user' => $amount_to_fund_user,
+                    'actual_amount_to_fund_user' => $actual_amount_to_fund_user,
                     'message' =>'User qualifies for funding promo. last txn'
                 ]; 
             }
@@ -116,7 +116,7 @@ class WalletFundingPromoService{
                             return [
                                 'status' => -1,
                                 'promo_id' => $txn_metric->id,
-                                'actual_amount_to_fund_user' => $amount_to_fund_user,
+                                'actual_amount_to_fund_user' => $actual_amount_to_fund_user,
                                 'message' =>'customer already enjoyed promo'
                             ]; 
                         }
@@ -126,7 +126,7 @@ class WalletFundingPromoService{
                         $dataaaa['funding_amount'] = $funding_amount;
                         $dataaaa['promo_value'] = $txn_metric->promo_value;
                         $dataaaa['promo_discount_percentage_cap'] = $txn_metric->promo_discount_percentage_cap;
-                        $amount_to_fund_user = $this->get_amount_to_fund_user($dataaaa);
+                        $actual_amount_to_fund_user = $this->get_amount_to_fund_user($dataaaa);
                         $new_slots_remaining = $txn_metric->slots_remaining - 1;
 
 
@@ -150,7 +150,7 @@ class WalletFundingPromoService{
                             return [
                                 'status' => 1,
                                 'promo_id' => $txn_metric->id,
-                                'actual_amount_to_fund_user' => $amount_to_fund_user,
+                                'actual_amount_to_fund_user' => $actual_amount_to_fund_user,
                                 // 'funding_option_id' => $txn_metric->funding_option_id,
                                 // 'actual_amount_to_fund_user' => $txn_metric->promo_discount_category,
                                 // 'promo_discount_percentage_cap' => $txn_metric->promo_discount_percentage_cap,
@@ -173,11 +173,11 @@ class WalletFundingPromoService{
                         $condition_check = $promo_metric == 'last_transaction_before' ? $strtotime_user_last_created_at <= $strtotime_last_transaction_metrics_date : $strtotime_user_last_created_at >= $strtotime_last_transaction_metrics_date;
             
                         if($condition_check){
-                            logger('this ran: condition mettttPP'. $amount_to_fund_user);
+                            logger('this ran: condition mettttPP'. $actual_amount_to_fund_user);
                             return [
                                 'status' => 1,
                                 'promo_id' => $txn_metric->id,
-                                'actual_amount_to_fund_user' => $amount_to_fund_user,
+                                'actual_amount_to_fund_user' => $actual_amount_to_fund_user,
                                 'message' =>'User qualifies for funding promo. last txn'
                             ]; 
                            
