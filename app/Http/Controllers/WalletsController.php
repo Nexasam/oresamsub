@@ -151,7 +151,7 @@ class WalletsController extends Controller
             if($check_custom_promo['status'] == 1){
               logger('custom promo.: '.$check_custom_promo['actual_amount_to_fund_user']);
               $amount_to_fund_user = $check_custom_promo['actual_amount_to_fund_user'];
-              $promo_id = $check_custom_promo['promo_id'];
+              $custom_user_funding_promo_id = $check_custom_promo['custom_user_funding_promo_id'];
             }
             //custom funding promo 
           }
@@ -168,7 +168,6 @@ class WalletsController extends Controller
             logger('general promo: '.$check_promo['actual_amount_to_fund_user']);
             $amount_to_fund_user = $check_promo['actual_amount_to_fund_user'];
             $promo_id = $check_promo['promo_id'];
-            $custom_user_funding_promo_id = $check_promo['custom_user_funding_promo_id'];
           }
           //general promo supercedes custom
 
