@@ -142,22 +142,15 @@ class WalletFundingPromoService{
                             //add customer to enjoyment list
                             UsedWalletFundingPromo::create([
                                 'wallet_funding_promo_id' => $txn_metric->id,
-                                'user_id' => $user_id,
+                                'user_id' => $user_id
                             ]);
                             // DB::commit();
 
-                            logger('goooood');
+                            logger('goooood..never did a txn');
                             return [
                                 'status' => 1,
                                 'promo_id' => $txn_metric->id,
                                 'actual_amount_to_fund_user' => $actual_amount_to_fund_user,
-                                // 'funding_option_id' => $txn_metric->funding_option_id,
-                                // 'actual_amount_to_fund_user' => $txn_metric->promo_discount_category,
-                                // 'promo_discount_percentage_cap' => $txn_metric->promo_discount_percentage_cap,
-                                // 'promo_value' => $txn_metric->promo_value,
-                                // 'slots' => $txn_metric->slots,
-                                // 'slots_remaining' => $txn_metric->slots_remaining,
-                                // 'beneficiary' => $user_id,
                                 'message' =>'User qualifies for funding promo. last txn'
                             ]; 
                         }
@@ -173,6 +166,17 @@ class WalletFundingPromoService{
                         $condition_check = $promo_metric == 'last_transaction_before' ? $strtotime_user_last_created_at <= $strtotime_last_transaction_metrics_date : $strtotime_user_last_created_at >= $strtotime_last_transaction_metrics_date;
             
                         if($condition_check){
+                            //PUT THIS IN AN EVENT/QUEUE LATER
+                            //update promo remaining slot
+                            WalletFundingPromo::where('id',$txn_metric->id)->update([
+                            'slots_remaining' =>  $new_slots_remaining
+                            ]);
+                            //add customer to enjoyment list
+                            UsedWalletFundingPromo::create([
+                            'wallet_funding_promo_id' => $txn_metric->id,
+                            'user_id' => $user_id
+                            ]);
+                            // DB::commit();
                             logger('this ran: condition mettttPP'. $actual_amount_to_fund_user);
                             return [
                                 'status' => 1,
