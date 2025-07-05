@@ -19,6 +19,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Session;
 use App\Http\Services\CouponCodeService;
 use App\Http\Services\CrystalPayService;
+use App\Http\Services\VirtualAccountService;
 use Laravel\Fortify\Contracts\LoginResponse;
 use Laravel\Fortify\Http\Requests\LoginRequest;
 use Laravel\Fortify\Actions\AttemptToAuthenticate;
@@ -138,7 +139,7 @@ class AuthenticatedSessionController extends Controller
 
             //Generate crystalpay virtual accounts for those without va or incomplete va:
             $dataaa['user'] = $user_check;
-            (new CrystalPayService())->logic_to_generate_crystalpay_accounts($dataaa);
+            (new VirtualAccountService())->generate_accounts($dataaa);
 
             $coupon_check = (new CouponCodeService())->determine_if_user_qualify($dataaa);
             $user_check->coupons = $coupon_check['status'] == 1 ? $coupon_check['coupon_info'] : NULL;

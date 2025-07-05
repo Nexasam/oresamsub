@@ -27,6 +27,7 @@ use App\Http\Services\CrystalPayService;
 use App\Traits\JsonResponseWrapperMobile;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rules\Password;
+use App\Http\Services\VirtualAccountService;
 use Illuminate\Validation\ValidationException;
 use App\Http\Services\Sms\Termii\TermiiService;
 use App\Http\Services\UserOnboarding\TransactionPinService;
@@ -232,7 +233,8 @@ class ApiIntegrationController extends Controller
 
             if($send_otp['status'] == 1){
                 $dataaa['user'] = User::where('id',$request->user_id)->first();
-                (new CrystalPayService())->logic_to_generate_crystalpay_accounts($dataaa);
+                (new VirtualAccountService())->generate_accounts($dataaa);
+
 
                 return $this->success($send_otp['message'], data: $send_otp['data']);          
             }
@@ -284,7 +286,8 @@ class ApiIntegrationController extends Controller
          })->first();
         //  logger('User: '.$user);
         $dataaa['user'] = $user;
-        (new CrystalPayService())->logic_to_generate_crystalpay_accounts($dataaa);
+        (new VirtualAccountService())->generate_accounts($dataaa);
+
   
          if (! $user || ! Hash::check($request->password, $user->password)) {
              logger('oga o'); 

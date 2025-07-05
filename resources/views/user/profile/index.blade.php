@@ -150,36 +150,6 @@
                                   </ul>
                             </div> --}}
                         </div>
-                        {{-- <div class="my-5">
-                            <div class="space-y-2">
-                                <label class="ti-form-label mb-0">Address</label>
-                                <input type="text" class="my-auto ti-form-input" placeholder="Address">
-                            </div>
-                        </div>
-                        <div class="grid lg:grid-cols-2 gap-6">
-                            <div class="space-y-2">
-                                <label class="ti-form-label mb-0">City</label>
-                                <input type="text" class="my-auto ti-form-input" placeholder="city">
-                            </div>
-                            <div class="space-y-2">
-                                <label class="ti-form-label mb-0">Country</label>
-                                <input type="text" class="my-auto ti-form-input" placeholder="state">
-                            </div>
-                            <div class="space-y-2">
-                                <label class="ti-form-label mb-0">State</label>
-                                <input type="text" class="my-auto ti-form-input" placeholder="state">
-                            </div>
-                            <div class="space-y-2">
-                                <label class="ti-form-label mb-0">Pincode</label>
-                                <input type="number" class="my-auto ti-form-input" placeholder="pincode">
-                            </div>
-                        </div>
-                        <div class="mt-5">
-                            <div class="space-y-2">
-                                <label class="ti-form-label mb-0">Bio</label>
-                                <textarea class="ti-form-input" rows="3" placeholder="Add Your Bio"></textarea>
-                            </div>
-                        </div> --}}
                       </div>
                     </div>
                   </div>

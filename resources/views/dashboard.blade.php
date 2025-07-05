@@ -167,6 +167,28 @@
             >
 
                 @if (count($user_virtual_accounts) > 0)
+                
+
+                   @if (config('app.name') == 'OresamSub')
+                        <div class="grid">
+                            @if (auth()->user()->verification_status != 1)
+                                <div class="max-w-sm w-full p-4 rounded-2xl shadow-xl bg-[{{$sidebar_color}}] text-white">
+                                    <b><a class="underline" href="{{route('user.verification.index')}}">{{__('messages.Verify your Account for better opportunities')}} </a></b>                               
+                                </div>
+                            @endif
+                            
+                            @if(count($user_virtual_accounts) < $total_expected_bankcodes)
+                            <form action="{{ route('user.virtual_accounts.generate') }}" method="POST">
+                                @csrf
+                                <div class="mb-4">
+                                    <button type="submit" class="ti-btn ti-btn-primary w-full">{{__('messages.Generate More Virtual Accounts')}}</button>
+                                </div>
+                            </form>
+                            @endif
+                        </div>     
+                   @endif    
+                  
+
                     @foreach ($user_virtual_accounts as $vaccount)
                             {{-- <div class="flex items-center space-x-4">
                                 <div>
@@ -203,9 +225,23 @@
                                 
                             </div>
             
-                            <a href="{{route('user.wallet.index')}}" class="bg-[{{$sidebar_color}}]  text-sm font-medium px-4 py-2 rounded-lg shadow hover:bg-indigo-700 transition">
+                            @if (config('app.name') == 'OresamSub')
+                                <div class="grid">
+                                    @if (auth()->user()->verification_status != 1)
+                                    <b><a class="underline" href="{{route('user.verification.index')}}">{{__('messages.Verify your Account with better opportunities')}} </a></b>                               
+                                    @endif
+                                    <form action="{{ route('user.virtual_accounts.generate') }}" method="POST">
+                                        @csrf
+                                        <div class="mb-4">
+                                            <button type="submit" class="ti-btn ti-btn-primary w-full">{{__('messages.Generate Virtual Accounts')}}</button>
+                                        </div>
+                                    </form>
+                                 </div>
+                            @endif
+
+                            {{-- <a href="{{route('user.wallet.index')}}" class="bg-[{{$sidebar_color}}]  text-sm font-medium px-4 py-2 rounded-lg shadow hover:bg-indigo-700 transition">
                                 {{ __('messages.Fund Wallet')  }}
-                            </a>
+                            </a> --}}
                             </div>
                         </div>
 

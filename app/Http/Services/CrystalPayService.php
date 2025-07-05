@@ -11,7 +11,7 @@ use App\Models\FundingOptionBankCodes;
 
 class CrystalPayService{
 
-    public function logic_to_generate_crystalpay_accounts($data){
+    public function generate_accounts($data){
         $user = $data['user'];
         $user_id = $user->id;
         $first_name = $user->first_name;

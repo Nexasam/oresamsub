@@ -1333,7 +1333,141 @@ class MultilanguageController extends Controller
                 "yo" => "Àwọn Ìkéde",
                 "ig" => "Mgbasa ozi",
                 "ha" => "Sanarwa"
+              ],
+              "KYC (Know Your Customer) helps us verify your identity so you can unlock all the features available on" => [
+                  "en" => "KYC (Know Your Customer) helps us verify your identity so you can unlock all the features available on",
+                  "yo" => "KYC (Mọ Onibara Rẹ) n ran wa lọwọ lati jẹrisi idanimọ rẹ ki o le ni iraye si gbogbo awọn ẹya inu pẹpẹ wa",
+                  "ig" => "KYC (Mata Onye Ahịa Gị) na-enyere anyị aka ịchọpụta onye ị bụ ka i wee nwee ike iji atụmatụ niile dị na nyiwe a",
+                  "ha" => "KYC (Sanin Abokin Ciniki) yana taimaka mana wajen tantance kai don ka sami cikakken amfani da duk fasalulluka"
+              ],
+
+              "You can enjoy lower charges on wallet funding — as low as 1% charge." => [
+                  "en" => "You can enjoy lower charges on wallet funding — as low as 1% charge.",
+                  "yo" => "O le gbadun idiyele kekere lori fifi owo si apamọwọ — bii 1% nikan.",
+                  "ig" => "Ị nwere ike inweta ụgwọ dị ala mgbe ị na-etinye ego — dịka 1% naanị.",
+                  "ha" => "Za ka iya more cajin ƙasa yayin da kake cike walat — kamar 1% kacal."
+              ],
+
+              "Why Do We Need KYC?" => [
+                  "en" => "Why Do We Need KYC?",
+                  "yo" => "Kí Lọ Dé Tí A Fi Nílò KYC?",
+                  "ig" => "Gịnị mere anyị ji achọ KYC?",
+                  "ha" => "Me ya sa muke buƙatar KYC?"
+              ],
+
+              "Why Do We Request for Your BVN?" => [
+                  "en" => "Why Do We Request for Your BVN?",
+                  "yo" => "Kí Lọ Dé Tí A Fi N Béèrè BVN Rẹ?",
+                  "ig" => "Gịnị mere anyị ji achọ BVN gị?",
+                  "ha" => "Me ya sa muke tambayar BVN ɗinka?"
+              ],
+
+              "Match your BVN with the details you used during registration" => [
+                  "en" => "Match your BVN with the details you used during registration",
+                  "yo" => "Ba BVN rẹ mu pẹlu awọn alaye ti o lo nigba iforukọsilẹ",
+                  "ig" => "Tụnyere BVN gị na nkọwa ị nyere mgbe ị na-edebanye aha",
+                  "ha" => "Daidaita BVN ɗinka da bayanan da ka bayar lokacin rijista"
+              ],
+
+              "Confirm that the account number you link truly belongs to you" => [
+                  "en" => "Confirm that the account number you link truly belongs to you",
+                  "yo" => "Jẹrisi pé nọmba àkọọlẹ tí o sọ pọ̀ mọ́ jẹ́ tiẹ gangan",
+                  "ig" => "Gosi na akaụntụ ị jikọtara bụ nke gị n’ezie",
+                  "ha" => "Tabbatar da cewa lambar asusun da ka ɗaura da gaske naka ne"
+              ],
+
+              "Create a unique and secure identity for each user" => [
+                  "en" => "Create a unique and secure identity for each user",
+                  "yo" => "Ṣẹda idanimọ alailẹgbẹ ati ailewu fun gbogbo olumulo",
+                  "ig" => "Mepụta njirimara pụrụ iche na echekwara maka onye ọrụ ọ bụla",
+                  "ha" => "Ƙirƙiri ingantacciyar shaidar musamman ga kowanne mai amfani"
+              ],
+
+              "Help protect both you and us from fraud" => [
+                  "en" => "Help protect both you and us from fraud",
+                  "yo" => "Ràn wá lọ́wọ́ láti dáàbò bò ọ́ ati wa lórí jibiti",
+                  "ig" => "Na-enyere aka chebe gị na anyị pụọ na izu ohi",
+                  "ha" => "Taimaka wajen kare kai da mu daga damfara"
+              ],
+
+              "Is It Safe to Provide My BVN?" => [
+                  "en" => "Is It Safe to Provide My BVN?",
+                  "yo" => "Ṣé ó dájú pé ó dáa láti fi BVN mi han?",
+                  "ig" => "Ọ dị mma inye BVN m?",
+                  "ha" => "Shin lafiya ne in bayar da BVN ɗina?"
+              ],
+
+              "Yes, your BVN is safe with us. We use it strictly to confirm your identity. Once your BVN is linked, no other user can use it on this platform." => [
+                  "en" => "Yes, your BVN is safe with us. We use it strictly to confirm your identity. Once your BVN is linked, no other user can use it on this platform.",
+                  "yo" => "Bẹẹni, BVN rẹ wa ní ààbò pẹ̀lú wa. A máa lò ó fún ìmúdájú idanimọ rẹ nìkan. Lẹ́yìn tí a bá dá a pọ̀ mọ́ akọọlẹ rẹ, ẹlòmíràn kò le lò ó lórí pẹpẹ yìí.",
+                  "ig" => "Ee, BVN gị dị nchebe n’aka anyị. Anyị na-eji ya kpọrọ ihe iji chọpụta onye ị bụ. Ozugbo ejikọtala ya, onye ọzọ agaghị eji ya na nyiwe a.",
+                  "ha" => "Eh, BVN ɗinka yana cikin aminci tare da mu. Muna amfani da shi ne kawai don tantance kai. Da zarar an ɗaura shi da asusunka, babu wani mai amfani da zai iya amfani da shi."
+              ],
+
+              "Note: Please use your own personal BVN for this verification. A fee of ₦50 applies per attempt." => [
+                  "en" => "Note: Please use your own personal BVN for this verification. A fee of ₦50 applies per attempt.",
+                  "yo" => "Akíyèsí: Jọ̀wọ́ lo BVN tirẹ fún ìmúdájú yìí. Ìsanwó ₦50 ni kọọkan ìgbìyànjú.",
+                  "ig" => "Rịba ama: Biko jiri BVN gị onwe gị maka nkwenye a. Ego ₦50 na-akwụ ụgwọ kwa mgbalị.",
+                  "ha" => "Lura: Da fatan za a yi amfani da BVN ɗinka na kanka don wannan tantancewa. Ana cajin ₦50 a kowane ƙoƙari."
+              ],
+              "Verify your Account for better opportunities" => [
+                  "en" => "Verify your Account for better opportunities",
+                  "yo" => "Jẹ́risi Àkọọlẹ Rẹ fún Àǹfààní Tó Dáa Jùlọ",
+                  "ig" => "Chọpụta Akaụntụ Gị Maka Oge Ka Mma",
+                  "ha" => "Tabbatar da Asusunka don Dama Mafi Alheri"
+              ],
+
+              "Return to Dashboard" => [
+                  "en" => "Return to Dashboard",
+                  "yo" => "Pada sí Dasibọdu",
+                  "ig" => "Laghachi na Dashboard",
+                  "ha" => "Koma zuwa Dashboard"
+              ],
+
+              "Please use your own personal BVN for this verification." => [
+                  "en" => "Please use your own personal BVN for this verification.",
+                  "yo" => "Jọ̀wọ́ lo BVN tirẹ fún ìmúdájú yìí.",
+                  "ig" => "Biko jiri BVN gị onwe gị maka nkwenye a.",
+                  "ha" => "Da fatan za a yi amfani da BVN ɗinka na kanka don wannan tantancewa."
+              ],
+
+              "Cost is" => [
+                  "en" => "Cost is",
+                  "yo" => "Ìye owó náà jẹ́",
+                  "ig" => "Ego ya bụ",
+                  "ha" => "Farashin shine"
+              ],
+
+              "IF YOU ENCOUNTER ANY ISSUES, REACH OUT TO SUPPORT ON WHATSAPP BY USING THE WHATSAPP ICON BELOW" => [
+                  "en" => "IF YOU ENCOUNTER ANY ISSUES, REACH OUT TO SUPPORT ON WHATSAPP BY USING THE WHATSAPP ICON BELOW",
+                  "yo" => "TÍ O BÁ NÍ ÌṢÒRÒ KÁNKAN, BÁ Ẹ̀YÀN ÌTÓJU SỌ̀RÒ LÓRÍ WHATSAPP PẸ̀LÚ ÀMÌ WHATSAPP TÓ WÀ NÍSÀLẸ̀",
+                  "ig" => "Ọ BỤRỤ NA Ị NWEGHI NSỌPỤ, KỌRỌTA NA SUPPORT SITE NA WHATSAPP SITE KWỤỌ N’AKA ICON WHATSAPP DI N’ALA",
+                  "ha" => "IDAN KA GAMU DA WANI MATSALA, TUNTUBI GOYON BAYANMU TA WHATSAPP TA HANNUN GURBIN WHATSAPP A KASA"
+              ],
+              "Verify your Account with better opportunities" => [
+                  "en" => "Verify your Account with better opportunities",
+                  "yo" => "Jẹ́risi Àkọọlẹ Rẹ Pẹ̀lú Àǹfààní Tó Dáa Jùlọ",
+                  "ig" => "Chọpụta Akaụntụ Gị Maka Oge Ka Mma",
+                  "ha" => "Tabbatar da Asusunka tare da Dama Mafi Alheri"
+              ],
+
+              "Generate Virtual Accounts" => [
+                  "en" => "Generate Virtual Accounts",
+                  "yo" => "Ṣẹda Àkọọlẹ Foju",
+                  "ig" => "Mepụta Akaụntụ Ntan",
+                  "ha" => "Ƙirƙiri Asusun Na Ƙarya"
+              ],
+
+              "Account Verification" => [
+                  "en" => "Account Verification",
+                  "yo" => "Ìmúdájú Àkọọlẹ",
+                  "ig" => "Nkwenye Akaụntụ",
+                  "ha" => "Tantance Asusun"
               ]
+
+
+
+
           ];
 
           $merged = array_merge($arr1, $arr2);

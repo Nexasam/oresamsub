@@ -29,11 +29,14 @@ class UserDashboardController extends Controller
     $user_virtual_accounts = UserVirtualAccount::where('user_id',auth()->id())->get();
 
     $active_bankcodes = FundingOptionBankCodes::where('visibility_status',1)->pluck('bank_code')->toArray();
+    $total_expected_bankcodes = FundingOptionBankCodes::count();
+
     // dd($user_virtual_accounts);
     $new_hot_sales_array = [];
 
     $data['user_virtual_accounts'] = $user_virtual_accounts;
     $data['active_bankcodes'] = $active_bankcodes;
+    $data['total_expected_bankcodes'] = $total_expected_bankcodes;
 
     $last_funding = FundingWebhookPayload::where('user_id',auth()->id())
                     ->whereNotNull('wallet_funding_promo_id')

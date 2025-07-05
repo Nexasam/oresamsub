@@ -50,6 +50,232 @@ class WalletsController extends Controller
     private $monnify_token_authorization = 'TUtfUFJPRF9NUU1CS0VOWUpEOjdWWTdaV1M0NVNIVE1aQTk4TVAxSzFRUzIwQ1JWU1pW'; //live
     private $contract_code = '339854561147'; //live
     private $base_url = 'https://api.monnify.com/api/'; 
+
+    public function xixahook($id,Request $request){
+        header('Content-Type: application/json');
+
+        $can_fund = '';
+        $funding_option_details = FundingOption::with('webhook_string')->where('slug','xixapay')->first();
+        $response = file_get_contents('php://input');
+        $signatureHeader = $_SERVER['HTTP_XIXAPAY']; // xixapay signature header
+        // Your Xixapay secret security key
+        $secretKey = $funding_option->api_secret_key; // Replace with your actual secret key
+        // Calculate the expected signature using HMAC-SHA256
+        $calculatedSignature = hash_hmac('sha256', $response, $secretKey);
+        // Compare the calculated signature with the one from the xixapay header
+        if (hash_equals($calculatedSignature, $signatureHeader)) {
+            // Signature is valid, proceed with handling the webhook
+            logger("Webhook signature is valid!");
+            // Process the payload (decode JSON, handle business logic)
+            $response_dec = json_decode($payload, true);
+            // Example: Process the data (e.g., update database)
+        } else {
+            // Signature is invalid, reject the request
+            header('HTTP/1.1 400 Bad Request');
+            echo "Invalid signature!";exit;
+        }
+
+        $promo_id = NULL;
+        $custom_user_funding_promo_id = NULL;
+
+
+        DB::beginTransaction();
+        try{
+
+        $check_exists = FundingWebhookPayload::where('transaction_reference',$response_decode['transaction_id'])
+        ->first();
+
+
+        // notificaton json format
+        // {
+        //   "notification_status": "payment_successful",
+        //   "transaction_id": "xxx",
+        //   "amount_paid": 100,
+        //   "settlement_amount": 99.5,
+        //   "settlement_fee": 0.5,
+        //   "transaction_status": "success",
+        //   "sender": {
+        //     "name": "A D E LIMITED",
+        //     "account_number": "****4290",
+        //     "bank": "HYDROGEN"
+        //   },
+        //   "receiver": {
+        //     "name": "adex-Abd(xixapay)",
+        //     "account_number": "667985",
+        //     "bank": "PalmPay"
+        //   },
+        //   "customer": {
+        //     "name": "adex dev",
+        //     "email": "adexplug@gmail.com,
+        //     "phone": null,
+        //     "customer_id": "xxx"
+        //   },
+        //   "description": "Your payment has been successfully processed.",
+        //   "timestamp": "2024-11-22T13:00:04.256092Z"
+        // }
+
+      
+
+        if( ($response_decode['notification_status'] == 'payment_successful') && (!$check_exists) ){    
+            
+            $email = $response_decode['customer']['email'];
+            $user_details = User::select('id','main_wallet')->where('email',$email)->first();
+            
+            if($user_details){
+              $created_data['funding_status'] = 'success';
+
+              //carry out funding here::: this will change later
+              $old_amount = $user_details->main_wallet;
+              $new_amount = $user_details->main_wallet;
+              $amount_funded = $response_decode['settlement_amount'];
+          
+            //check if the amount is greater than the max set for automatic crediting
+              $setting = Setting::where('field_name','max_automatic_crediting_allowed')->first();
+              if($setting && $amount_funded > intval($setting->field_value) ){
+                //log automatic crediting
+                $can_fund = 'no';
+                MaxCrystalPaymentsPendingApproval::create([
+                  'user_id' => $user_details->id,
+                  'amount' => $amount_funded,
+                  'payment_reference' => $response_decode['transaction_reference']
+                ]);
+              }else{
+                $new_amount = $old_amount + $amount_funded;
+                //carry out funding here
+                $can_fund = 'yes';
+              }
+                          
+            }else{
+              $created_data['funding_status'] = 'failed';
+              $can_fund = 'no';
+              logger('Cannot fund because user details not found');exit;
+            }
+
+            $paid_amount = $response_decode['amount_paid'];
+            $bank_name = $response_decode['receiver']['bank_name'];
+            $get_charges = FundingOptionBankCodes::where('bank_name','like','%'.$bank_name.'%')
+                            ->where('funding_option_id',$funding_option->id)
+                            ->first();
+            if($get_charges){
+              $rate_type = $get_charges->rate_category;
+              if($rate_type == 'Flat'){
+                $charges = $get_charges->bank_charges;
+                $amount_to_fund_user = $paid_amount - $charges;
+              }else{
+                $charges1 = $get_charges->bank_charges;
+                $capped_value = $get_charges->capped_at;
+                $charges = ceil(($charges1/100) * $paid_amount);
+                if($charges > $capped_value){
+                  $charges = $capped_value;
+                }
+                $amount_to_fund_user = $paid_amount - $charges;
+              }
+            }else{
+                //use crystalpay default settings
+                $charges = $response_decode['event_data']['data']['charged'];
+                $amount_to_fund_user = $response_decode['event_data']['data']['settled'];
+            }
+
+
+            //inacase there is a custom funding promo: think of DRY
+            //incase there is a promo
+            $user_wallet_funding_promo  = UserWalletFundingPromo::where('user_id',$user_details->id)
+            ->where('funding_option_id',$funding_option_details->id)
+            ->where('status',1)
+            ->first();
+
+            if($user_wallet_funding_promo){
+              //custom funding exists
+              $daaat['promo_discount_category'] = $user_wallet_funding_promo->rate_category;
+              $daaat['promo_discount_percentage_cap'] = $user_wallet_funding_promo->capped_at;
+              $daaat['funding_amount'] = $paid_amount;
+              $daaat['promo_value'] = $user_wallet_funding_promo->value;
+              $daaat['funding_option_id'] = $funding_option_details->id;
+              $amount_to_fund_user = (new WalletFundingPromoService())->get_amount_to_fund_user($daaat);
+              logger('custom promo.: '.$amount_to_fund_user);
+              $custom_user_funding_promo_id = $user_wallet_funding_promo->id;
+              //custom funding promo 
+            }
+
+          
+
+
+            //incase there is a general promo: think of DRY
+            $daat['user'] = $user_details;
+            $daat['funding_amount'] = $paid_amount;
+            $daat['funding_option_id'] = $funding_option_details->id;
+            $check_promo = (new WalletFundingPromoService())->apply_funding_promo($daat);
+            if($check_promo['status'] == 1){
+              logger('general promo: '.$check_promo['actual_amount_to_fund_user']);
+              $amount_to_fund_user = $check_promo['actual_amount_to_fund_user'];
+              $promo_id = $check_promo['promo_id'];
+            }
+            //general promo supercedes custom
+
+
+            $created_data['funding_slug'] = 'xixapay';
+            $created_data['user_id'] = $user_details->id;
+            $created_data['wallet_funding_promo_id'] = $promo_id;
+            $created_data['custom_wallet_funding_promo_id'] = $custom_user_funding_promo_id;
+            $created_data['user_email'] = $response_dec['customer']['email'];
+            $created_data['status'] = $response_decode['transaction_status'];
+            $created_data['message'] = $response_decode['description'];
+            $created_data['package_id'] = $get_charges['bank_code'];
+            $created_data['bank_name'] = $response_decode['destination']['bank_name'];
+            $created_data['account_name'] = $response_decode['destination']['account_name'];
+            $created_data['account_number'] = $response_decode['destination']['account_number'];
+            $created_data['account_reference'] = $response_decode['destination']['account_reference'];
+            $created_data['amount_paid'] = $response_decode['event_data']['data']['paid'];
+            $created_data['amount_charged'] = $charges;
+            $created_data['amount_settled'] = $amount_to_fund_user;
+            $created_data['currency'] = $response_decode['event_data']['data']['currency'];
+            $created_data['collection_reference'] = $response_decode['collection_reference'];
+            $created_data['transaction_reference'] = $response_decode['transaction_reference'];
+            $created_data['payload_content'] = $response;
+            $created = FundingWebhookPayload::create($created_data);
+            $new_amount = $old_amount + $amount_to_fund_user;
+
+            if($can_fund == 'yes'){
+              $updated = $user_details->update([
+                'main_wallet' => $new_amount
+              ]);
+            }else{
+              $updated = true;
+            }
+
+              $walletLog['user_id'] = $user_details->id;
+              $walletLog['transaction_category'] = 'XIXPAY_WALLET_FUNDING';
+              $walletLog['balance_before'] = $old_amount;
+              $walletLog['balance_after'] = $new_amount;
+              $walletLog['transaction_id'] = $response_decode['transaction_id'];
+              $walletLog['action_by'] = 'webhook';           
+              $walletLog['description'] = "Wallet of the user with the email: $email has been credited with $amount_to_fund_user via crystal pay";
+              $this->log_wallet_transactions($walletLog);
+              
+              if( $created && $updated ){
+                DB::commit();
+                logger('Great... All good.');
+
+              }else{
+                logger('Crediting failed for some reasons...');
+                DB::rollBack();
+              }
+          
+        }else{
+          logger('This webhook did not update wallet because its likely that the payment has been processed before');
+        }
+      }catch(Exception $ex){
+        logger(
+          $ex->getMessage() . 
+          ' on line ' . $ex->getLine() . 
+          ' in ' . $ex->getFile() . 
+          ' [Thrown in class: ' . get_class($ex) . ']'
+      );
+        DB::rollBack();
+      }
+
+      logger('testing webhook end');
+    }
    
     public function webhook($id,Request $request){
        
@@ -147,6 +373,7 @@ class WalletsController extends Controller
             $daaat['promo_discount_percentage_cap'] = $user_wallet_funding_promo->capped_at;
             $daaat['funding_amount'] = $paid_amount;
             $daaat['promo_value'] = $user_wallet_funding_promo->value;
+            $daaat['funding_option_id'] = $funding_option_details->id;
             $amount_to_fund_user = (new WalletFundingPromoService())->get_amount_to_fund_user($daaat);
             logger('custom promo.: '.$amount_to_fund_user);
             $custom_user_funding_promo_id = $user_wallet_funding_promo->id;
@@ -191,15 +418,13 @@ class WalletsController extends Controller
           $created = FundingWebhookPayload::create($created_data);
           $new_amount = $old_amount + $amount_to_fund_user;
 
-            if($can_fund == 'yes'){
-              $updated = $user_details->update([
-                'main_wallet' => $new_amount
-              ]);
-            }else{
-              $updated = true;
-            }
-
-       
+          if($can_fund == 'yes'){
+            $updated = $user_details->update([
+              'main_wallet' => $new_amount
+            ]);
+          }else{
+            $updated = true;
+          }
 
             $walletLog['user_id'] = $user_details->id;
             $walletLog['transaction_category'] = 'CRYSTALPAY_WALLET_FUNDING';
@@ -210,7 +435,6 @@ class WalletsController extends Controller
             $walletLog['description'] = "Wallet of the user with the email: $email has been credited with $amount_to_fund_user via crystal pay";
             $this->log_wallet_transactions($walletLog);
             
-
             if( $created && $updated ){
               DB::commit();
               logger('Great... All good.');
@@ -223,261 +447,32 @@ class WalletsController extends Controller
       }else{
         logger('This webhook did not update wallet because its likely that the payment has been processed before');
       }
-    }catch(Exception $ex){
-      logger(
-        $ex->getMessage() . 
-        ' on line ' . $ex->getLine() . 
-        ' in ' . $ex->getFile() . 
-        ' [Thrown in class: ' . get_class($ex) . ']'
-     );
-      DB::rollBack();
-    }
-
-    logger('testing webhook end');
-    }
-
-    public function webhook22($id,Request $request){
-       
-        //{
-        //   $resp = '{"event":"VIRTUAL_ACCOUNT_INFLOW",
-        //   "source":{
-        //       "bank_name":"WEMA BANK",
-        //       "account_name":"OLUSOLA  ADEBUNMI",
-        //       "account_number":"0239582872"
-        //   },
-        //   "reference":"2144185",
-        //   "event_data":{
-        //       "data":{
-        //         "paid":500,
-        //         "charged":25,
-        //         "settled":475,
-        //         "currency":"NGN"
-        //       },
-        //       "status":"SUCCESSFUL",
-        //       "message":"Virtual Account Payment received",
-        //       "success":true
-        //   },
-        //   "package_id":1,
-        //   "amount_info":{
-        //       "paid":500,
-        //       "charged":25,
-        //       "settled":475,
-        //       "currency":"NGN"
-        //   },
-        //   "destination":{
-        //       "bank_code":"",
-        //       "bank_name":"wema",
-        //       "account_name":"CrystalPay-konnectdataOreofeAdebu",
-        //       "account_email":"oreofe@gmail.com",
-        //       "account_number":"7172937429",
-        //       "account_reference":"wema_7172937429"
-        //   },
-        //   "collection_reference":"COLLECTED_20240820144515_000000214418558",
-        //   "transaction_reference":"COLLECTED_20240820144515_000000214418558"
-        // }';
-
-        header('Content-Type: application/json');
-        $response = file_get_contents('php://input');
-        $response_decode = json_decode($response,true);
-        // logger('testing webhook start');
-      
-        $can_fund = '';
-
-        $funding_option_details = FundingOption::with('webhook_string')->where('slug','crystal_pay')->first();
-
-        $promo_id = NULL;
- 
-
-        DB::beginTransaction();
-        try{
-
-        $check_exists = FundingWebhookPayload::where('transaction_reference',$response_decode['transaction_reference'])
-        ->first();
-
-       
-
-        if( ($response_decode['event_data']['status'] == 'SUCCESSFUL') && (!$check_exists) ){    
-            
-            $email = $response_decode['destination']['account_email'];
-
-            $user_details = User::select('id','main_wallet')->where('email',$email)->first();
-            
-            if($user_details){
-              $created_data['funding_status'] = 'success';
-
-              //carry out funding here::: this will change later
-              $old_amount = $user_details->main_wallet;
-              $new_amount = $user_details->main_wallet;
-              $amount_funded = $response_decode['event_data']['data']['settled'];
-           
-             //check if the amount is greater than the max set for automatic crediting
-              $setting = Setting::where('field_name','max_automatic_crediting_allowed')->first();
-              if($setting && $amount_funded > intval($setting->field_value) ){
-                //log automatic crediting
-                $can_fund = 'no';
-                MaxCrystalPaymentsPendingApproval::create([
-                  'user_id' => $user_details->id,
-                  'amount' => $amount_funded,
-                  'payment_reference' => $response_decode['transaction_reference']
-                ]);
-              }else{
-                $new_amount = $old_amount + $amount_funded;
-                //carry out funding here
-                $can_fund = 'yes';
-              }
-                           
-            }else{
-              $created_data['funding_status'] = 'failed';
-              $can_fund = 'no';
-              logger('Cannot fund because user details not found');exit;
-            }
-
-            $paid_amount = $response_decode['event_data']['data']['paid'];
-            $package_id = $response_decode['package_id'];
-            $get_charges = FundingOptionBankCodes::where('bank_code',$package_id)->first();
-            if($get_charges){
-              $rate_type = $get_charges->rate_category;
-              if($rate_type == 'Flat'){
-                $charges = $get_charges->bank_charges;
-                $amount_to_fund_user = $paid_amount - $charges;
-              }else{
-                $charges1 = $get_charges->bank_charges;
-                $capped_value = $get_charges->capped_at;
-                $charges = ceil(($charges1/100) * $paid_amount);
-                if($charges > $capped_value){
-                  $charges = $capped_value;
-                }
-                $amount_to_fund_user = $paid_amount - $charges;
-              }
-            }else{
-                //use crystalpay default settings
-                $charges = $response_decode['event_data']['data']['charged'];
-                $amount_to_fund_user = $response_decode['event_data']['data']['settled'];
-            }
-
-            //incase there is a promo
-            $daat['user'] = $user_details;
-            $daat['funding_amount'] = $paid_amount;
-            $daat['funding_option_id'] = $funding_option_details->id;
-            $check_promo = (new WalletFundingPromoService())->apply_funding_promo($daat);
-            if($check_promo['status'] == 1){
-              logger('is tmmmmmm'.$check_promo['actual_amount_to_fund_user']);
-              $amount_to_fund_user = $check_promo['actual_amount_to_fund_user'];
-              $promo_id = $check_promo['promo_id'];
-            }
-
-            $created_data['funding_slug'] = 'crystal_pay';
-            $created_data['user_id'] = $user_details->id;
-            $created_data['wallet_funding_promo_id'] = $promo_id;
-            $created_data['user_email'] = $email;
-            $created_data['status'] = $response_decode['event_data']['status'];
-            $created_data['message'] = $response_decode['event_data']['message'];
-            $created_data['package_id'] = $response_decode['package_id'];
-            $created_data['bank_name'] = $response_decode['destination']['bank_name'];
-            $created_data['account_name'] = $response_decode['destination']['account_name'];
-            $created_data['account_number'] = $response_decode['destination']['account_number'];
-            $created_data['account_reference'] = $response_decode['destination']['account_reference'];
-            $created_data['amount_paid'] = $response_decode['event_data']['data']['paid'];
-            $created_data['amount_charged'] = $charges;
-            $created_data['amount_settled'] = $amount_to_fund_user;
-            $created_data['currency'] = $response_decode['event_data']['data']['currency'];
-            $created_data['collection_reference'] = $response_decode['collection_reference'];
-            $created_data['transaction_reference'] = $response_decode['transaction_reference'];
-            $created_data['payload_content'] = $response;
-            $created = FundingWebhookPayload::create($created_data);
-            $new_amount = $old_amount + $amount_to_fund_user;
-
-              if($can_fund == 'yes'){
-                $updated = $user_details->update([
-                  'main_wallet' => $new_amount
-                ]);
-              }else{
-                $updated = true;
-              }
-  
-         
-
-              $walletLog['user_id'] = $user_details->id;
-              $walletLog['transaction_category'] = 'CRYSTALPAY_WALLET_FUNDING';
-              $walletLog['balance_before'] = $old_amount;
-              $walletLog['balance_after'] = $new_amount;
-              $walletLog['transaction_id'] = $response_decode['transaction_reference'];
-              $walletLog['action_by'] = 'webhook';           
-              $walletLog['description'] = "Wallet of the user with the email: $email has been credited with $amount_to_fund_user via crystal pay";
-              $this->log_wallet_transactions($walletLog);
-              
-
-              if( $created && $updated ){
-                DB::commit();
-                logger('Great... All good.');
-
-              }else{
-                logger('Crediting failed for some reasons...');
-                DB::rollBack();
-              }
-           
-        }else{
-          logger('This webhook did not update wallet because its likely that the payment has been processed before');
-        }
       }catch(Exception $ex){
-        logger($ex->getMessage().' on line '.$ex->getLine());
+        logger(
+          $ex->getMessage() . 
+          ' on line ' . $ex->getLine() . 
+          ' in ' . $ex->getFile() . 
+          ' [Thrown in class: ' . get_class($ex) . ']'
+      );
         DB::rollBack();
       }
 
       logger('testing webhook end');
     }
 
-    public function webhook22OLD(){
+    public function webhook22($id,Request $request){
        
-      //{
-      //   $resp = '{"event":"VIRTUAL_ACCOUNT_INFLOW",
-      //   "source":{
-      //       "bank_name":"WEMA BANK",
-      //       "account_name":"OLUSOLA  ADEBUNMI",
-      //       "account_number":"0239582872"
-      //   },
-      //   "reference":"2144185",
-      //   "event_data":{
-      //       "data":{
-      //         "paid":500,
-      //         "charged":25,
-      //         "settled":475,
-      //         "currency":"NGN"
-      //       },
-      //       "status":"SUCCESSFUL",
-      //       "message":"Virtual Account Payment received",
-      //       "success":true
-      //   },
-      //   "package_id":1,
-      //   "amount_info":{
-      //       "paid":500,
-      //       "charged":25,
-      //       "settled":475,
-      //       "currency":"NGN"
-      //   },
-      //   "destination":{
-      //       "bank_code":"",
-      //       "bank_name":"wema",
-      //       "account_name":"CrystalPay-konnectdataOreofeAdebu",
-      //       "account_email":"oreofe@gmail.com",
-      //       "account_number":"7172937429",
-      //       "account_reference":"wema_7172937429"
-      //   },
-      //   "collection_reference":"COLLECTED_20240820144515_000000214418558",
-      //   "transaction_reference":"COLLECTED_20240820144515_000000214418558"
-      // }';
-
       header('Content-Type: application/json');
       $response = file_get_contents('php://input');
       $response_decode = json_decode($response,true);
-      logger('testing webhook start');
-      // logger($response);
+      
     
       $can_fund = '';
 
       $funding_option_details = FundingOption::with('webhook_string')->where('slug','crystal_pay')->first();
 
       $promo_id = NULL;
+      $custom_user_funding_promo_id = NULL;
 
 
       DB::beginTransaction();
@@ -499,6 +494,7 @@ class WalletsController extends Controller
 
             //carry out funding here::: this will change later
             $old_amount = $user_details->main_wallet;
+            $new_amount = $user_details->main_wallet;
             $amount_funded = $response_decode['event_data']['data']['settled'];
          
            //check if the amount is greater than the max set for automatic crediting
@@ -520,7 +516,7 @@ class WalletsController extends Controller
           }else{
             $created_data['funding_status'] = 'failed';
             $can_fund = 'no';
-            logger('Cannot fund because user details not found');
+            logger('Cannot fund because user details not found');exit;
           }
 
           $paid_amount = $response_decode['event_data']['data']['paid'];
@@ -546,21 +542,48 @@ class WalletsController extends Controller
               $amount_to_fund_user = $response_decode['event_data']['data']['settled'];
           }
 
-           //incase there is a promo
-           $daat['user'] = $user_details;
-           $daat['funding_amount'] = $paid_amount;
-           $daat['funding_option_id'] = $funding_option_details->id;
-           $check_promo = (new WalletFundingPromoService())->apply_funding_promo($daat);
-           if($check_promo['status'] == 1){
-             $amount_to_fund_user = $check_promo['actual_amount_to_fund_user'];
-             $promo_id = $check_promo['promo_id'];
-           }
+
+          //inacase there is a custom funding promo: think of DRY
+          //incase there is a promo
+          $user_wallet_funding_promo  = UserWalletFundingPromo::where('user_id',$user_details->id)
+          ->where('funding_option_id',$funding_option_details->id)
+          ->where('status',1)
+          ->first();
+
+          if($user_wallet_funding_promo){
+            //custom funding exists
+            $daaat['promo_discount_category'] = $user_wallet_funding_promo->rate_category;
+            $daaat['promo_discount_percentage_cap'] = $user_wallet_funding_promo->capped_at;
+            $daaat['funding_amount'] = $paid_amount;
+            $daaat['promo_value'] = $user_wallet_funding_promo->value;
+            $daaat['funding_option_id'] = $funding_option_details->id;
+            $amount_to_fund_user = (new WalletFundingPromoService())->get_amount_to_fund_user($daaat);
+            logger('custom promo.: '.$amount_to_fund_user);
+            $custom_user_funding_promo_id = $user_wallet_funding_promo->id;
+            //custom funding promo 
+          }
+
+         
+
+
+          //incase there is a general promo: think of DRY
+          $daat['user'] = $user_details;
+          $daat['funding_amount'] = $paid_amount;
+          $daat['funding_option_id'] = $funding_option_details->id;
+          $check_promo = (new WalletFundingPromoService())->apply_funding_promo($daat);
+          if($check_promo['status'] == 1){
+            logger('general promo: '.$check_promo['actual_amount_to_fund_user']);
+            $amount_to_fund_user = $check_promo['actual_amount_to_fund_user'];
+            $promo_id = $check_promo['promo_id'];
+          }
+          //general promo supercedes custom
 
 
           $created_data['funding_slug'] = 'crystal_pay';
           $created_data['user_id'] = $user_details->id;
-          $created_data['user_email'] = $email;
           $created_data['wallet_funding_promo_id'] = $promo_id;
+          $created_data['custom_wallet_funding_promo_id'] = $custom_user_funding_promo_id;
+          $created_data['user_email'] = $email;
           $created_data['status'] = $response_decode['event_data']['status'];
           $created_data['message'] = $response_decode['event_data']['message'];
           $created_data['package_id'] = $response_decode['package_id'];
@@ -575,21 +598,16 @@ class WalletsController extends Controller
           $created_data['collection_reference'] = $response_decode['collection_reference'];
           $created_data['transaction_reference'] = $response_decode['transaction_reference'];
           $created_data['payload_content'] = $response;
+          $created = FundingWebhookPayload::create($created_data);
           $new_amount = $old_amount + $amount_to_fund_user;
 
-
-      
-            $created = FundingWebhookPayload::create($created_data);
-
-            if($can_fund == 'yes'){
-              $updated = $user_details->update([
-                'main_wallet' => $new_amount
-              ]);
-            }else{
-              $updated = true;
-            }
-
-       
+          if($can_fund == 'yes'){
+            $updated = $user_details->update([
+              'main_wallet' => $new_amount
+            ]);
+          }else{
+            $updated = true;
+          }
 
             $walletLog['user_id'] = $user_details->id;
             $walletLog['transaction_category'] = 'CRYSTALPAY_WALLET_FUNDING';
@@ -600,7 +618,6 @@ class WalletsController extends Controller
             $walletLog['description'] = "Wallet of the user with the email: $email has been credited with $amount_to_fund_user via crystal pay";
             $this->log_wallet_transactions($walletLog);
             
-
             if( $created && $updated ){
               DB::commit();
               logger('Great... All good.');
@@ -613,13 +630,22 @@ class WalletsController extends Controller
       }else{
         logger('This webhook did not update wallet because its likely that the payment has been processed before');
       }
-    }catch(Exception $ex){
-      logger($ex->getMessage().' on line '.$ex->getLine());
-      DB::rollBack();
+      }catch(Exception $ex){
+        logger(
+          $ex->getMessage() . 
+          ' on line ' . $ex->getLine() . 
+          ' in ' . $ex->getFile() . 
+          ' [Thrown in class: ' . get_class($ex) . ']'
+      );
+        DB::rollBack();
+      }
+
+      logger('testing webhook end');
     }
 
-    logger('testing webhook end');
-  }
+ 
+
+
 
     public function wallet_creditings(Request $request){
       // dd('sss');
