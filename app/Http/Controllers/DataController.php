@@ -1115,8 +1115,11 @@ class DataController extends Controller
                     foreach($product_plans as $product_plan){
     
                         $user_level_selling = "user_level_".$plan_level."_selling_price";
-                        // $user_level_selling = "{user_level_$user_level_selling_price}";
+                        $user_level_commission = "user_level_".$plan_level."_commission";
+
                         $selling_price = $product_plan->$user_level_selling;
+                        $upline_commission = $product_plan->$user_level_commission;
+
                         
                         if( ( $product_slug == 'airtime' || $product_slug == 'utility_bills' ) && $amount != ''){
                               $purchase_discount = $product_plan->$user_level_selling;
@@ -1132,6 +1135,7 @@ class DataController extends Controller
                             $product_planss[$counter]['product_plan_id'] = $product_plan->id;
                             $product_planss[$counter]['amount'] = $amount;
                             $product_planss[$counter]['selling_price'] = $discounted_selling_price;
+                            $product_planss[$counter]['upline_commission'] = $upline_commission;
                             $product_planss[$counter]['product_plan_name'] = $product_plan->product_plan_name;
                             $product_planss[$counter]['data_size_in_mb'] = $product_plan->data_size_in_mb;
                             $product_planss[$counter]['validity_in_days'] = $product_plan->validity_in_days;    
@@ -1156,8 +1160,10 @@ class DataController extends Controller
                 foreach($product_plans as $product_plan){
 
                     $user_level_selling = "user_level_".$plan_level."_selling_price";
+                    $user_level_commission = "user_level_".$plan_level."_commission";
                     // $user_level_selling = "{user_level_$user_level_selling_price}";
                     $selling_price = $product_plan->$user_level_selling;
+                    $upline_commission = $product_plan->$user_level_commission;
                     
                     if( ( $product_slug == 'airtime' || $product_slug == 'utility_bills' ) && $amount != ''){
                           $purchase_discount = $product_plan->$user_level_selling;
@@ -1175,6 +1181,7 @@ class DataController extends Controller
                         $product_planss[$counter]['product_plan_id'] = $product_plan->id;
                         $product_planss[$counter]['amount'] = $amount;
                         $product_planss[$counter]['selling_price'] = $discounted_selling_price;
+                        $product_planss[$counter]['upline_commission'] = $upline_commission;
                         $product_planss[$counter]['product_plan_name'] = $product_plan->product_plan_name;
                         $product_planss[$counter]['data_size_in_mb'] = $product_plan->data_size_in_mb;
                         $product_planss[$counter]['validity_in_days'] = $product_plan->validity_in_days;    

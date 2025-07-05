@@ -855,6 +855,7 @@
                                 
                                   const idd = dataList[child].product_plan_id;
                                   const product_plan_name = dataList[child].product_plan_name;
+                                  const upline_commission = dataList[child].upline_commission;
                                   const selling_price = dataList[child].selling_price;
                                   if(product_slug == 'data'){
                                     option = "<option value="+idd+">"+product_plan_name+'- &#8358;'+selling_price+"</option>";
@@ -866,7 +867,7 @@
                                     option = "<option selected value="+idd+">"+product_plan_name+'- You are buying for: &#8358;'+selling_price+"</option>";
                                   }
                                   else if(product_slug == 'airtime' && amount == ''){
-                                    option = "<option value="+idd+">"+product_plan_name+"</option>";
+                                    option = "<option value="+idd+">"+product_plan_name+" &nbsp;&nbsp;Upline Commission:N"+upline_commission+"</option>";
                                   }else{
                                     option = "<option value="+idd+">"+product_plan_name+"</option>";
                                   }
