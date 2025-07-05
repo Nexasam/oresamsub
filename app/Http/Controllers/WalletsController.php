@@ -66,7 +66,7 @@ class WalletsController extends Controller
             // Signature is valid, proceed with handling the webhook
             logger("Webhook signature is valid!");
             // Process the payload (decode JSON, handle business logic)
-            $response_dec = json_decode($response, true);
+            $response_decode = json_decode($response, true);
             // Example: Process the data (e.g., update database)
         } else {
              logger('ran err');
@@ -217,7 +217,7 @@ class WalletsController extends Controller
             $created_data['user_id'] = $user_details->id;
             $created_data['wallet_funding_promo_id'] = $promo_id;
             $created_data['custom_wallet_funding_promo_id'] = $custom_user_funding_promo_id;
-            $created_data['user_email'] = $response_dec['customer']['email'];
+            $created_data['user_email'] = $response_decode['customer']['email'];
             $created_data['status'] = $response_decode['transaction_status'];
             $created_data['message'] = $response_decode['description'];
             $created_data['package_id'] = $get_charges['bank_code'];
