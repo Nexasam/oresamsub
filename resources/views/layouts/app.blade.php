@@ -869,7 +869,7 @@
                                   else if(product_slug == 'airtime' && amount == ''){
                                     option = "<option value="+idd+">"+product_plan_name+" &nbsp;&nbsp;Upline Commission:N"+upline_commission+"</option>";
                                   }else{
-                                    option = "<option value="+idd+">"+product_plan_name+"</option>";
+                                    option = "<option value="+idd+">"+product_plan_name+" &nbsp;&nbsp;Upline Commission:N"+upline_commission+"</option>";
                                   }
                                   $('#product_plan_id').append(option);
                                 
