@@ -152,7 +152,7 @@ class WalletsController extends Controller
             }
 
             $paid_amount = $response_decode['amount_paid'];
-            $bank_name = $response_decode['receiver']['bank_name'];
+            $bank_name = $response_decode['receiver']['bank'];
             $get_charges = FundingOptionBankCodes::where('bank_name','like','%'.$bank_name.'%')
                             ->where('funding_option_id',$funding_option_details->id)
                             ->first();
