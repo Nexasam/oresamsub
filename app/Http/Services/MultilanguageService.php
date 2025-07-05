@@ -21,7 +21,7 @@ use Spatie\TranslationLoader\LanguageLine;
 class MultilanguageService{
 
 
-    public function translate(){
+    public function translation(){
          
          // dd('sssdfawerw');
          $arr1 = [
