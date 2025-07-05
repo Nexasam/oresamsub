@@ -28,7 +28,7 @@ Route::post('webhook/megasub', [WalletsController::class, 'webhook22'])->name('a
 Route::post('admin/wallets/crystal_pay_webhook/{id}', [WalletsController::class, 'webhook'])->name('admin.wallet.crystalpay.webhook');
 Route::post('admin/products/oresamsub', [ProductWebhookController::class, 'product_webhook'])->name('admin.product.webhook');
 Route::get('admin/fetch_addons', [AddonController::class, 'fetch_addons'])->name('admin.addons.fetch_addons');
-Route::post('admin/wallets/xixapayhook/{id}', [WalletsController::class, 'xixapaywebhook'])->name('admin.wallet.xixapay.webhook');
+Route::post('admin/wallets/xixapayhook/{id}', [WalletsController::class, 'xixapayhook'])->name('admin.wallet.xixapay.webhook');
 
 //WEBHOOK
 
