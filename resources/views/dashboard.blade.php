@@ -204,7 +204,7 @@
                                 <p>
                                     <span class="text-md font-bold">{{$vaccount->bank_name }}</span> &nbsp; | &nbsp; {{ $vaccount->account_name }} | &nbsp; <span class="text-xl font-bold">{{ $vaccount->account_number }}</span>
                                     <br>
-                                    <small>{{$vaccount->short_description }}</small>
+                                    <small>{{ App\Models\FundingOptionBankCodes::where('bank_code',$vaccount->bank_code)->first()->short_description }}</small>
                                 </p>
                             
                             </div>     
