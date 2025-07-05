@@ -1463,7 +1463,15 @@ class MultilanguageController extends Controller
                   "yo" => "Ìmúdájú Àkọọlẹ",
                   "ig" => "Nkwenye Akaụntụ",
                   "ha" => "Tantance Asusun"
+              ],
+
+              "Congratulations! Your account has been verified." => [
+                "en" => "Congratulations! Your account has been verified.",
+                "yo" => "Ẹ ku orire! Àkọọlẹ rẹ ti jẹ́risi.",
+                "ig" => "Ekele diri gị! A kwadoro akaụntụ gị.",
+                "ha" => "Murna! An tabbatar da asusunka."
               ]
+
 
 
 
