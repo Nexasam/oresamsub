@@ -351,8 +351,8 @@ Route::middleware('set_locale')->group(function () {
 
 
             //VERIFICATIONS
-            Route::middleware(['auth','verified','user'])->get('user/verifications/index', [UserVerificationController::class, 'index'])->name('user.verification.index');
-            Route::middleware(['auth','verified','user'])->post('user/verifications/store', [UserVerificationController::class, 'store'])->name('user.verification.store');
+            Route::middleware(['auth','verified'])->get('user/verifications/index', [UserVerificationController::class, 'index'])->name('user.verification.index');
+            Route::middleware(['auth','verified'])->post('user/verifications/store', [UserVerificationController::class, 'store'])->name('user.verification.store');
             
             Route::middleware(['auth','verified','user'])->post('user/virtual_accounts/generate', [VirtualAccountsController::class, 'generate'])->name('user.virtual_accounts.generate');
                
