@@ -53,7 +53,6 @@ class WalletsController extends Controller
 
     public function xixapayhook($id,Request $request){
         header('Content-Type: application/json');
-
         $can_fund = '';
         $funding_option_details = FundingOption::with('webhook_string')->where('slug','xixapay')->first();
         $response = file_get_contents('php://input');
@@ -222,16 +221,16 @@ class WalletsController extends Controller
             $created_data['status'] = $response_decode['transaction_status'];
             $created_data['message'] = $response_decode['description'];
             $created_data['package_id'] = $get_charges['bank_code'];
-            $created_data['bank_name'] = $response_decode['destination']['bank_name'];
-            $created_data['account_name'] = $response_decode['destination']['account_name'];
-            $created_data['account_number'] = $response_decode['destination']['account_number'];
-            $created_data['account_reference'] = $response_decode['destination']['account_reference'];
-            $created_data['amount_paid'] = $response_decode['event_data']['data']['paid'];
+            $created_data['bank_name'] = $bank_name;
+            $created_data['account_name'] = $response_decode['receiver']['name'];
+            $created_data['account_number'] = $response_decode['receiver']['account_number'];
+            $created_data['account_reference'] = $response_decode['transaction_id'];
+            $created_data['amount_paid'] = $response_decode['amount_paid'];
             $created_data['amount_charged'] = $charges;
             $created_data['amount_settled'] = $amount_to_fund_user;
-            $created_data['currency'] = $response_decode['event_data']['data']['currency'];
-            $created_data['collection_reference'] = $response_decode['collection_reference'];
-            $created_data['transaction_reference'] = $response_decode['transaction_reference'];
+            $created_data['currency'] = 'NGN';
+            $created_data['collection_reference'] = $response_decode['transaction_id'];
+            $created_data['transaction_reference'] = $response_decode['transaction_id'];
             $created_data['payload_content'] = $response;
             $created = FundingWebhookPayload::create($created_data);
             $new_amount = $old_amount + $amount_to_fund_user;
