@@ -29,6 +29,6 @@ class GeneralRepetitiveTasks extends Command
     public function handle()
     {
         (new MultilanguageService())->translation();
-        logger('GRTs ran');
+        // logger('GRTs ran');
     }
 }

@@ -354,7 +354,7 @@ Route::middleware('set_locale')->group(function () {
             Route::middleware(['auth','verified'])->get('user/verifications/index', [UserVerificationController::class, 'index'])->name('user.verification.index');
             Route::middleware(['auth','verified'])->post('user/verifications/store', [UserVerificationController::class, 'store'])->name('user.verification.store');
             
-            Route::middleware(['auth','verified','user'])->post('user/virtual_accounts/generate', [VirtualAccountsController::class, 'generate'])->name('user.virtual_accounts.generate');
+            Route::middleware(['auth','verified'])->post('user/virtual_accounts/generate', [VirtualAccountsController::class, 'generate'])->name('user.virtual_accounts.generate');
                
 
             Route::middleware(['auth','verified','user'])->get('user/data/buy_bulk_data/bulk_data_wallet/{data_wallet_id}', [DataController::class, 'buy_bulk_data'])->name('user.data.buy_bulk_data.bulk_data_wallet');
