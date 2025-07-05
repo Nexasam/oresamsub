@@ -51,7 +51,7 @@ class WalletsController extends Controller
     private $contract_code = '339854561147'; //live
     private $base_url = 'https://api.monnify.com/api/'; 
 
-    public function xixahook($id,Request $request){
+    public function xixapayhook($id,Request $request){
         header('Content-Type: application/json');
 
         $can_fund = '';
