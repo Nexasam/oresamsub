@@ -115,8 +115,9 @@
                                        $bankcodeinfo = App\Models\FundingOptionBankCodes::where('bank_code',$vaccount->bank_code)->first();
                                        $charge_info = $bankcodeinfo->rate_category == 'Percentage' ? '%':' NGN Flat rate';
                                        $bank_charges =  $bankcodeinfo->bank_charges;
+                                       $bank_charges =  $bankcodeinfo->short_description == NULL ? '':'|&nbsp;';
                                    @endphp
-                                   <small>{!! $bankcodeinfo->bank_charges .$charge_info.'&nbsp;|&nbsp;'.$bankcodeinfo->short_description !!}</small>
+                                   <small>{!! 'charges: '.$bankcodeinfo->bank_charges .$charge_info.'&nbsp;'.$bankcodeinfo->short_description !!}</small>
                                </p>
                            
                            </div>     
