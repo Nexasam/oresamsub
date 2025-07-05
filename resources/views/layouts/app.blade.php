@@ -859,6 +859,7 @@
                                   const selling_price = dataList[child].selling_price;
                                   if(product_slug == 'data'){
                                     option = "<option value="+idd+">"+product_plan_name+'- &#8358;'+selling_price+"</option>";
+                                    option = "<option value="+idd+">"+product_plan_name+"- &#8358; "+selling_price+" - Upline Commission:N"+upline_commission+"</option>";
                                   }
                                   else if(product_slug == 'airtime' && amount != ''){
 
@@ -867,7 +868,7 @@
                                     option = "<option selected value="+idd+">"+product_plan_name+'- You are buying for: &#8358;'+selling_price+"</option>";
                                   }
                                   else if(product_slug == 'airtime' && amount == ''){
-                                    option = "<option value="+idd+">"+product_plan_name+" &nbsp;&nbsp;Upline Commission:N"+upline_commission+"</option>";
+                                    option = "<option value="+idd+">"+product_plan_name+"</option>";
                                   }else{
                                     option = "<option value="+idd+">"+product_plan_name+" &nbsp;&nbsp;Upline Commission:N"+upline_commission+"</option>";
                                   }
