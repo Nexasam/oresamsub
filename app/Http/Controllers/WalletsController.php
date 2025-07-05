@@ -58,7 +58,7 @@ class WalletsController extends Controller
         $response = file_get_contents('php://input');
         $signatureHeader = $_SERVER['HTTP_XIXAPAY']; // xixapay signature header
         // Your Xixapay secret security key
-        $secretKey = $funding_option->api_secret_key; // Replace with your actual secret key
+        $secretKey = $funding_option_details->api_secret_key; // Replace with your actual secret key
         // Calculate the expected signature using HMAC-SHA256
         $calculatedSignature = hash_hmac('sha256', $response, $secretKey);
         // Compare the calculated signature with the one from the xixapay header
@@ -154,7 +154,7 @@ class WalletsController extends Controller
             $paid_amount = $response_decode['amount_paid'];
             $bank_name = $response_decode['receiver']['bank_name'];
             $get_charges = FundingOptionBankCodes::where('bank_name','like','%'.$bank_name.'%')
-                            ->where('funding_option_id',$funding_option->id)
+                            ->where('funding_option_id',$funding_option_details->id)
                             ->first();
             if($get_charges){
               $rate_type = $get_charges->rate_category;
