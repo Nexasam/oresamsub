@@ -26,7 +26,7 @@ class UserDashboardController extends Controller
   public function index(){
    
     $hot_sales = ProductPlanCategory::with('product')->where('is_hot_sales',1)->get();
-    $user_virtual_accounts = UserVirtualAccount::where('user_id',auth()->id())->get();
+    $user_virtual_accounts = UserVirtualAccount::where('user_id',auth()->id())->latest()->get();
 
     $active_bankcodes = FundingOptionBankCodes::where('visibility_status',1)->pluck('bank_code')->toArray();
     $total_expected_bankcodes = FundingOptionBankCodes::count();
