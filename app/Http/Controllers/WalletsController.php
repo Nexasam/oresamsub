@@ -67,9 +67,10 @@ class WalletsController extends Controller
             // Signature is valid, proceed with handling the webhook
             logger("Webhook signature is valid!");
             // Process the payload (decode JSON, handle business logic)
-            $response_dec = json_decode($payload, true);
+            $response_dec = json_decode($response, true);
             // Example: Process the data (e.g., update database)
         } else {
+             logger('ran err');
             // Signature is invalid, reject the request
             header('HTTP/1.1 400 Bad Request');
             echo "Invalid signature!";exit;
