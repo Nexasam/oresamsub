@@ -22,7 +22,6 @@ class BvnVerificationService{
         $bvn = $data['bvn'];
         $gender = $data['gender'];
         $dob = $data['dob'];
-        $bankcode = "20867"; //hardcoded
         $verification_point = 0;
         $charge = 50;
 
