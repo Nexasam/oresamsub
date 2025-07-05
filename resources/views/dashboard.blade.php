@@ -199,7 +199,7 @@
                                 </div>
                             </div> --}}
 
-                        <div class="grid grid-cols-3">
+                        <div class="grid grid-cols-1">
                             @if (in_array($vaccount->bank_code,$active_bankcodes))
                             <div class="max-w-sm w-full p-4 rounded-2xl shadow-xl bg-[{{$sidebar_color}}] text-white">
                             
