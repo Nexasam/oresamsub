@@ -198,7 +198,9 @@
                                     </p>
                                 </div>
                             </div> --}}
-                        @if (in_array($vaccount->bank_code,$active_bankcodes))
+
+                        <div class="grid grid-cols-3">
+                            @if (in_array($vaccount->bank_code,$active_bankcodes))
                             <div class="max-w-sm w-full p-4 rounded-2xl shadow-xl bg-[{{$sidebar_color}}] text-white">
                             
                                 <p>
@@ -213,8 +215,9 @@
                                 </p>
                             
                             </div>     
-                        @endif  
-                       
+                            @endif   
+                        </div>
+                     
                     @endforeach
                 @else
                                     
