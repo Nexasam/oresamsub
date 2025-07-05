@@ -89,7 +89,7 @@
                         <form action="{{ route('user.virtual_accounts.generate') }}" method="POST">
                             @csrf
                             <div class="mb-4">
-                                <button type="submit" class="ti-btn ti-btn-primary w-full">{{__('messages.Generate Virtual Accounts')}}</button>
+                                <button type="submit" class="ti-btn ti-btn-primary w-full">{{__('messages.Generate More Virtual Accounts')}}</button>
                             </div>
                         </form>
                         </div>

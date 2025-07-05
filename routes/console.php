@@ -5,6 +5,7 @@ use Illuminate\Foundation\Inspiring;
 use Illuminate\Support\Facades\Artisan;
 use App\Console\Commands\ClearErrorLogs;
 use Illuminate\Support\Facades\Schedule;
+use App\Console\Commands\GeneralRepetitiveTasks;
 use App\Console\Commands\SendNewRegistrationEmail;
 use App\Console\Commands\ZerorizeNegativeBalances;
 use App\Console\Commands\ComputeReferralCommission;
@@ -21,7 +22,7 @@ Schedule::command('migrate --force')->everyMinute();
 Schedule::command(ProcessPendingAirtimeTransactions::class)->everyThirtySeconds();
 Schedule::command(ZerorizeNegativeBalances::class)->everyTwoMinutes()->withoutOverlapping();
 Schedule::command(ComputeReferralCommission::class)->everySixHours();
-// Schedule::command(ComputeReferralCommission::class)->everyFourMinutes();
+Schedule::command(GeneralRepetitiveTasks::class)->everyTwoMinutes();
 
 Schedule::command(SendNewRegistrationEmail::class)->everyTwoMinutes()->withoutOverlapping();
 Schedule::command(SendFailedTransactionEmail::class)->everyThirtySeconds()->withoutOverlapping();

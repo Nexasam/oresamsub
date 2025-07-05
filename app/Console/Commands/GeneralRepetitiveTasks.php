@@ -5,34 +5,30 @@ namespace App\Console\Commands;
 use App\Models\User;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Artisan;
+use App\Http\Services\MultilanguageService;
 
-class ClearErrorLogs extends Command
+class GeneralRepetitiveTasks extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'clear-error-logs';
+    protected $signature = 'general-repetitive-tasks';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Clear Error Logs';
+    protected $description = 'General Repetitive Tasks';
 
     /**
      * Execute the console command.
      */
     public function handle()
     {
-
-        Artisan::call('clear-error-logs');
-    
-        //add some stuffs hhere
-
-        logger('sss');
-        
+        (new MultilanguageService())->translation();
+        logger('GRTs ran');
     }
 }
