@@ -116,7 +116,7 @@
                                        $charge_info = $bankcodeinfo->rate_category == 'Percentage' ? '%':'Naira';
                                        $bank_charges =  $bankcodeinfo->bank_charges;
                                    @endphp
-                                   <small>{{ $bankcodeinfo->short_description.'&nbsp;|&nbsp;'.$bankcodeinfo->bank_charges .'&nbsp;|&nbsp;'. $charge_info}}</small>
+                                   <small>{!! $bankcodeinfo->bank_charges .'&nbsp;|&nbsp;'. $charge_info.'&nbsp;|&nbsp;'.$bankcodeinfo->short_description !!}</small>
                                </p>
                            
                            </div>     
