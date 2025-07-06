@@ -30,6 +30,7 @@ class WalletFundingPromoService{
         
         //promo metric 1:username
         $check_username_metric = WalletFundingPromo::where('status',1)
+        ->where('funding_option_id',$funding_option_id)
         ->where('promo_metric','username')
         ->where('beneficiary',$user_id)
         ->first();
