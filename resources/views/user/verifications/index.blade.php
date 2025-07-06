@@ -122,7 +122,7 @@
                                     
                                       <div class="bg-gray-100 border-l-4 border-blue-500 p-4 mt-6">
                                         <p>
-                                          <strong>{{__('Note')}}:</strong> {{__('messages.Please use your own personal BVN for this verification.')}} {{__('messages.Cost is')}} N50.
+                                          <strong>{{__('Note')}}:</strong> {{__('messages.Please use your own personal BVN for this verification.')}} {{__('messages.Cost is')}} free.
                                         </p>
                                       </div>
                                     </div>

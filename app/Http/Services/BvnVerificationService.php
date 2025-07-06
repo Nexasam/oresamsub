@@ -23,7 +23,7 @@ class BvnVerificationService{
         $gender = $data['gender'];
         $dob = $data['dob'];
         $verification_point = 0;
-        $charge = 50;
+        $charge = 0;
 
         //for now: verification amount is 50;
         if($user->main_wallet < $charge){
