@@ -71,6 +71,11 @@
   
     <div class="grid grid-cols-12 gap-3">
 
+        {{-- <div class="col-span-12 xxxl:col-span-2 md:col-span-3">
+            <p class="font-bold">
+            <a href="{{}}">You can also fund your account via a dynamic virtual account</a>
+            </p>
+        </div> --}}
         <div class="col-span-12 xxxl:col-span-2 md:col-span-3">
             <div 
                 x-data="{ 

@@ -24,4 +24,6 @@ class VirtualAccountsController extends Controller
         
         //generate crystal
     }
+
+   
 }

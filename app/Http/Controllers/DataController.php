@@ -1023,6 +1023,7 @@ class DataController extends Controller
         $amount = $request->amount ?? '';
         $plan_category_id = $request->plan_category_id ?? '';
         $product_slug = $request->product_slug ?? ''; //this is required
+        logger($product_slug.'wpp');
         $slug_array = ['data','airtime','cable_subscription','utility_bills'];
         if(! in_array($product_slug,$slug_array)){
             //get it by route:

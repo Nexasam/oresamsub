@@ -19,7 +19,7 @@ class UserVerificationController extends Controller
 
     public function store(Request $request){
       // dd($request->all());
-      $validator = Validator::make($request->all(), [
+          $validator = Validator::make($request->all(), [
             'fullname' => 'required|max:255',
             'email' => 'required|email|max:255',
             'phone_number' => 'required|max:255',

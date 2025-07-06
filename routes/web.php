@@ -39,6 +39,7 @@ use App\Http\Controllers\AnnouncementsController;
 use App\Http\Controllers\MultilanguageController;
 use App\Http\Controllers\UserDashboardController;
 use App\Http\Controllers\UserTwoFactorController;
+use App\Http\Controllers\DynamicAccountsController;
 use App\Http\Controllers\ProductCategoryController;
 use App\Http\Controllers\UserProductPlanController;
 use App\Http\Controllers\VirtualAccountsController;
@@ -355,6 +356,8 @@ Route::middleware('set_locale')->group(function () {
             Route::middleware(['auth','verified'])->post('user/verifications/store', [UserVerificationController::class, 'store'])->name('user.verification.store');
             
             Route::middleware(['auth','verified'])->post('user/virtual_accounts/generate', [VirtualAccountsController::class, 'generate'])->name('user.virtual_accounts.generate');
+            Route::middleware(['auth','verified'])->get('user/dynamic_accounts/index', [DynamicAccountsController::class, 'index'])->name('user.dynamic_accounts.index');
+            Route::middleware(['auth','verified'])->post('user/dynamic_accounts/generate', [DynamicAccountsController::class, 'generate_dynamic_account'])->name('user.dynamic_accounts.generate');
                
 
             Route::middleware(['auth','verified','user'])->get('user/data/buy_bulk_data/bulk_data_wallet/{data_wallet_id}', [DataController::class, 'buy_bulk_data'])->name('user.data.buy_bulk_data.bulk_data_wallet');

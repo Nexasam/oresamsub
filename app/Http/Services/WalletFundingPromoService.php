@@ -224,7 +224,8 @@ class WalletFundingPromoService{
          $promo_discount_percentage_cap = $data['promo_discount_percentage_cap'];
          //next line is a safety measure
          if($promo_discount_category == 'percent' && $promo_discount_percentage_cap != NULL){
-             $promo_discount_percentage_cap = $promo_discount_percentage_cap > 80 ? 80 : $promo_discount_percentage_cap; 
+             $promo_discount_percentage_cap = $promo_discount_percentage_cap > 100 ? 100 : $promo_discount_percentage_cap; 
+             $promo_value = $promo_value > 15 ? 15 : $promo_value; 
              $promo_value = (($promo_value / 100) * $funding_amount);
 
              if($promo_value > $promo_discount_percentage_cap){
