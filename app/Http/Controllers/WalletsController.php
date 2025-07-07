@@ -1346,7 +1346,9 @@ class WalletsController extends Controller
       })->when(auth()->user()->role->role_name == 'User', function($query){
         $query->where('user_id',auth()->id());
       })
-      ->latest()->limit($limit)->get();
+      ->latest()
+      ->limit($limit)
+      ->get();
   
       return DataTables::of($data)
       ->addIndexColumn()
