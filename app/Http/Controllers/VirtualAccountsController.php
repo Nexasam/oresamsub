@@ -2,11 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use Illuminate\Http\Request;
 use App\Http\Services\XixaPayService;
 use Illuminate\Support\Facades\Session;
-use App\Http\Services\VirtualAccountService;
 use Illuminate\Support\Facades\Validator;
+use App\Http\Services\VirtualAccountService;
 
 
 class VirtualAccountsController extends Controller
