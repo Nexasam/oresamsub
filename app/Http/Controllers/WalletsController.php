@@ -1328,8 +1328,11 @@ class WalletsController extends Controller
 
     public function fetch_crystal_pay_pending_transactions(Request $request){
 
-      $date_from = $request->date_from ?? date('Y-m-d', strtotime('-10000 days'));
-      $date_to= $request->date_to ?? date('Y-m-d');
+      // date('Y-m-d', strtotime('-10000 days'))
+      $date_from = $request->date_from ?? '';
+
+      // date('Y-m-d')
+      $date_to= $request->date_to ?? '';
 
       $reference = $request->reference ?? '';
     
