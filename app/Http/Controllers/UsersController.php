@@ -455,10 +455,9 @@ class UsersController extends Controller
            
                 $first_name = $data->first_name;
                 $phone_number = $data->phone_number;
-                $biz_name = config('app.name');
                 $call = '<a href="tel:'.$phone_number.'">Call: '.$phone_number.'</a>';
     
-                return $data->phone_number.'</a>';
+                return $call.'</a>';
             }) 
 
             ->addColumn('created_at',function($data){
