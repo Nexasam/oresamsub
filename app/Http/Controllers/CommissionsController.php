@@ -74,7 +74,7 @@ class CommissionsController extends Controller
             $date_to = date('Y-m-d', strtotime('+1 day', strtotime($date_to)));
             $query->where('created_at','>=',$date_from)->where('created_at','<=',$date_to);
         })
-        ->when( $rolee == 'user' , function ($query) use ($user){
+        ->when( $rolee == 'User' , function ($query) use ($user){
             $query->where('beneficiary','<=',$user->id);
         })
         // ->where('payout_status')
