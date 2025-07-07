@@ -85,7 +85,7 @@ class CommissionsController extends Controller
         ->latest()
         ->get();
 
-         return $data;
+        //  return $data;
         return DataTables::of($data)
         ->addIndexColumn()
         ->addColumn('DT_RowIndex',function($data){
