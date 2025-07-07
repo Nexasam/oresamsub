@@ -416,6 +416,15 @@ class UsersController extends Controller
               //   }
               // }
 
+              if(auth()->user()->role->role_name == 'Admin'){
+                echo '<form action="'.route('user.virtual_accounts.generate').'" method="POST">
+                  @csrf
+                  <div class="mb-4">
+                      <button type="submit" class="ti-btn ti-btn-primary w-full">'. __('messages.Generate Virtual Accounts').'</button>
+                  </div>
+                </form>';
+              }
+
 
               return $fullnameinfo;
             })

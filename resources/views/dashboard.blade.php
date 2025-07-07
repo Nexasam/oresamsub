@@ -183,12 +183,12 @@
                             @endif --}}
                             
                             @if(count($user_virtual_accounts) < $total_expected_bankcodes)
-                            <form action="{{ route('user.virtual_accounts.generate') }}" method="POST">
-                                @csrf
-                                <div class="mb-4">
-                                    <button type="submit" class="ti-btn ti-btn-primary w-full">{{__('messages.Generate More Virtual Accounts')}}</button>
-                                </div>
-                            </form>
+                                <form action="{{ route('user.virtual_accounts.generate') }}" method="POST">
+                                    @csrf
+                                    <div class="mb-4">
+                                        <button type="submit" class="ti-btn ti-btn-primary w-full">{{__('messages.Generate More Virtual Accounts')}}</button>
+                                    </div>
+                                </form>
                             @endif
 
                         </div>      

@@ -66,10 +66,8 @@
                       <div class="overflow-auto">
                         <div class="box-body">
                             <div class="grid grid-cols-10 gap-4"> 
-                                
-
+                
                                 @if (auth()->user()->verification_status == 1)
-
                                 <div class="col-span-12">
                                     <div class="bg-green-100 border border-green-300 text-green-800 rounded-xl p-4 flex items-center space-x-3 shadow-sm">
                                       <svg class="w-6 h-6 text-green-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
