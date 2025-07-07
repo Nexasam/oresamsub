@@ -82,12 +82,13 @@ class RegisteredUserController extends Controller
             'phone_number' => ['required','unique:users,phone_number', 'string', 'max:255'],
             // 'upline_referral_phone_number' => ['nullable', 'string','exists:users,phone_number' ,'max:255'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
-            'password' => ['required', 'confirmed', Password::min(8)
-            ->letters()
-            ->mixedCase()
-            ->numbers()
-            ->symbols()
-            ->uncompromised()::defaults()],
+            'password' => ['required', 'confirmed', Password::min(6)]
+            // 'password' => ['required', 'confirmed', Password::min(8)
+            // ->letters()
+            // ->mixedCase()
+            // ->numbers()
+            // ->symbols()
+            // ->uncompromised()::defaults()],
         ]);
 
         // 	echo REGEX_CountMatches('as.sfad.asdferw.asdfsdf.@gmail.com','.');
@@ -154,21 +155,14 @@ class RegisteredUserController extends Controller
      */
     public function store2(Request $request): RedirectResponse
     {
-   
-       
-        
+  
         $request->validate([
             'username' => ['required', 'string', 'unique:users,username'],
             'fullname' => ['required', 'string', 'max:255'],
             'phone_number' => ['required','unique:users,phone_number', 'string', 'max:255'],
             // 'upline_referral_phone_number' => ['nullable', 'string','exists:users,phone_number' ,'max:255'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
-            'password' => ['required', 'confirmed', Password::min(8)
-            ->letters()
-            ->mixedCase()
-            ->numbers()
-            ->symbols()
-            ->uncompromised()::defaults()],
+            'password' => ['required', 'confirmed', Password::min(6)],
         ]);
 
         // 	echo REGEX_CountMatches('as.sfad.asdferw.asdfsdf.@gmail.com','.');

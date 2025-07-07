@@ -45,6 +45,7 @@ class ComputeReferralCommission extends Command
                     foreach($fetch_yest_successful_txns as $yest_successful_txn){
                         $txn_id = $yest_successful_txn->id;
                         $user = $yest_successful_txn->user;
+                        $user_id = $yest_successful_txn->user_id;
                         $plan_level = $yest_successful_txn->user->user_plan->plan_level;
                         $commission_field = 'user_level_'.$plan_level.'_commission';
                         $expected_commission = $yest_successful_txn->product_plan->$commission_field;//continue here
@@ -54,7 +55,7 @@ class ComputeReferralCommission extends Command
                             //insert
                             //check if the user has an upline:
                             $user_upline_check = User::where('id',$upline_id)->first();
-                            if($user_upline_check && $user_upline_check->id != $user->id){
+                            if($user_upline_check && $user_upline_check->id != $user_id){
                                     //upline exists
                                     if(! Commissions::where('transaction_id',$txn_id)->first() ){
                                         $commissionssss = Commissions::create([
