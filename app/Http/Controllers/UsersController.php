@@ -455,7 +455,7 @@ class UsersController extends Controller
            
                 $first_name = $data->first_name;
                 $phone_number = $data->phone_number;
-                $call = '<a href="tel:'.$phone_number.'">Call: '.$phone_number.'</a>';
+                $call = '<strong><a href="tel:'.$phone_number.'">Call: '.$phone_number.'</a></strong>';
     
                 return $call.'</a>';
             }) 
