@@ -286,7 +286,7 @@
 
                             <div class="mt-5 ">
                                 <!-- Form -->
-                                <form method="POST" action="{{ route('login') }}">
+                                <form method="POST" action="{{ route('login') }}" onsubmit="handleSubmit(this)">
                                     @csrf
                                     <div>
                                         <div class="grid gap-y-4">
@@ -341,7 +341,7 @@
                                                 </div>
                                             </div> --}}
                                             <!-- End Checkbox -->
-                                            <x-primary-button class="ms-3">
+                                            <x-primary-button class="ms-3" id="loginBtn">
                                                 {{__('messages.Login')}}
                                             </x-primary-button>
                                         </div>
@@ -392,9 +392,9 @@
 
     <script>
         function handleSubmit(form) {
-        const btn = form.querySelector('#registerBtn');
+        const btn = form.querySelector('#loginBtn');
         btn.disabled = true;
-        btn.innerText = 'Registering...';
+        btn.innerText = 'Logging in...';
         }
 
         window.addEventListener('load', function () {
