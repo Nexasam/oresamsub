@@ -1233,22 +1233,38 @@ class WalletsController extends Controller
             //   $res .= "<br>Promo bonus of ₦" . number_format($promo_bonus, 2) . " enjoyed 🎉";
             // }
 
-            if ($promo_id != NULL && $promo_bonus > 0) {
-              $formatted_bonus = number_format($promo_bonus, 2);
-              $res .= "<br><div style='
-                  background: #d1fae5;
-                  border: 1px solid #10b981;
-                  color: #065f46;
-                  padding: 8px 14px;
-                  margin-top: 10px;
-                  border-radius: 8px;
-                  font-size: 14px;
-                  font-weight: 500;
-                  display: inline-block;
-              '>
-                  🎉 You enjoyed promo bonus of <span style='color: #047857;'>₦{$formatted_bonus}</span>
-              </div>";
-          
+            if ($promo_id != NULL && $promo_bonus > 0 || ($promo_bonus == 0)) {
+              if($promo_bonus == 0){
+                $formatted_bonus = number_format($promo_bonus, 2);
+                $res .= "<br><div style='
+                    background: #d1fae5;
+                    border: 1px solid #10b981;
+                    color: #065f46;
+                    padding: 8px 14px;
+                    margin-top: 10px;
+                    border-radius: 8px;
+                    font-size: 14px;
+                    font-weight: 500;
+                    display: inline-block;
+                '>
+                    🎉 You enjoyed 100% funding. No charges!</span>
+                </div>";
+              }else{
+                $formatted_bonus = number_format($promo_bonus, 2);
+                $res .= "<br><div style='
+                    background: #d1fae5;
+                    border: 1px solid #10b981;
+                    color: #065f46;
+                    padding: 8px 14px;
+                    margin-top: 10px;
+                    border-radius: 8px;
+                    font-size: 14px;
+                    font-weight: 500;
+                    display: inline-block;
+                '>
+                    🎉 You enjoyed promo bonus of <span style='color: #047857;'>₦{$formatted_bonus}</span>
+                </div>";
+              }
             }
           
 

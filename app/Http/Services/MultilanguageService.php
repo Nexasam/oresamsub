@@ -1489,7 +1489,14 @@ class MultilanguageService{
                   "yo" => "Ṣẹda Àwọn Àkọọlẹ Foju Síi",
                   "ig" => "Mepụta Akaụntụ Ntan Ọzọ",
                   "ha" => "Ƙirƙiri Ƙarin Asusun Na Ƙarya"
-              ]
+              ],
+              "You enjoyed 100% funding. No charges!" => [
+                  "en" => "You enjoyed 100% funding. No charges!",
+                  "yo" => "O gbádùn ìfowópamọ́ 100%. Kò sí owó kankan!",
+                  "ig" => "Ị nwetara ego 100% n’enweghị ụgwọ ọ bụla!",
+                  "ha" => "Ka an ba ka daɗa da 100% kuɗi. Babu cajin!"
+              ],
+
 
 
 
