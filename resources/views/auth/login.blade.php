@@ -141,6 +141,55 @@
          .my-float{
          margin-top:16px;
          }
+
+
+          /* loading overlay */
+
+          #loadingOverlay {
+            position: fixed;
+            z-index: 9999;
+            top: 0;
+            left: 0;
+            height: 100vh;
+            width: 100vw;
+            background: rgba(0, 0, 0, 0.85); /* dark semi-transparent */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.5s ease;
+        }
+
+        #loadingOverlay.fade-out {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .spinner {
+            width: 60px;
+            height: 60px;
+            border: 6px solid rgba(255, 255, 255, 0.3);
+            border-top-color: #00d9ff;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 20px;
+        }
+
+        .loading-text {
+            color: #fff;
+            font-size: 1.25rem;
+            letter-spacing: 1px;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.6; }
+        }
    </style>
 
 </head>
@@ -341,7 +390,21 @@
         })
     </script>
 
+    <script>
+        function handleSubmit(form) {
+        const btn = form.querySelector('#registerBtn');
+        btn.disabled = true;
+        btn.innerText = 'Registering...';
+        }
 
+        window.addEventListener('load', function () {
+        const overlay = document.getElementById('loadingOverlay');
+        overlay.classList.add('fade-out');
+        setTimeout(() => {
+            overlay.style.display = 'none';
+        }, 500); // matches transition duration
+        });
+    </script>
 
 </body>
 

@@ -139,12 +139,67 @@
          .my-float{
          margin-top:16px;
          }
+
+
+
+         /* loading overlay */
+
+            #loadingOverlay {
+            position: fixed;
+            z-index: 9999;
+            top: 0;
+            left: 0;
+            height: 100vh;
+            width: 100vw;
+            background: rgba(0, 0, 0, 0.85); /* dark semi-transparent */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.5s ease;
+        }
+
+        #loadingOverlay.fade-out {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .spinner {
+            width: 60px;
+            height: 60px;
+            border: 6px solid rgba(255, 255, 255, 0.3);
+            border-top-color: #00d9ff;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 20px;
+        }
+
+        .loading-text {
+            color: #fff;
+            font-size: 1.25rem;
+            letter-spacing: 1px;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.6; }
+        }
    </style>
 
 
 </head>
 
 <body class="flex h-full !py-0 bg-white dark:bg-bgdark montserrat2">
+
+    <div id="loadingOverlay">
+        <div class="spinner"></div>
+        <div class="loading-text">Loading, please wait...</div>
+      </div>
 
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
     {{-- &text=Hola%21%20Quisiera%20m%C3%A1s%20informaci%C3%B3n%20sobre%20Varela%202. --}}
@@ -228,7 +283,7 @@
                                         </div>
                                         @endif
                                     </div>
-                                    <form action="{{ route('store2') }}" method="POST">
+                                    <form action="{{ route('store2') }}" method="POST" onsubmit="handleSubmit(this)">
                                         {{-- @csrf --}}
                                         <div class="grid gap-y-4">
 
@@ -357,7 +412,7 @@
 
                                         
 
-                                            <button type="submit"
+                                            <button type="submit" id="registerBtn"
                                                 class="py-2 px-3 inline-flex justify-center items-center gap-2 rounded-sm border border-transparent font-semibold bg-primary text-white hover:bg-primary focus:outline-none focus:ring-0 focus:ring-primary focus:ring-offset-0 transition-all text-sm dark:focus:ring-offset-white/10">{{__('messages.Signup')}}</button>
                                         </div>
                                     </form>
@@ -422,6 +477,21 @@
         })
     </script>
 
+    <script>
+        function handleSubmit(form) {
+        const btn = form.querySelector('#registerBtn');
+        btn.disabled = true;
+        btn.innerText = 'Registering...';
+        }
+
+        window.addEventListener('load', function () {
+          const overlay = document.getElementById('loadingOverlay');
+          overlay.classList.add('fade-out');
+          setTimeout(() => {
+              overlay.style.display = 'none';
+          }, 500); // matches transition duration
+        });
+    </script>
 
 </body>
 
