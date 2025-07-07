@@ -219,7 +219,7 @@
                                        $bank_charges =  $bankcodeinfo->bank_charges;
                                        $bank_charges =  $bankcodeinfo->short_description == NULL ? '':'|&nbsp;';
                                    @endphp
-                                   <small>{!! 'charges: '.$bankcodeinfo->bank_charges .$charge_info.'&nbsp;'.$bankcodeinfo->short_description !!}</small>
+                                   <small class="font-bold">{!! '<br>charges: '.$bankcodeinfo->bank_charges .$charge_info.'&nbsp;'.$bankcodeinfo->short_description !!}</small>
                                 </p>
                             
                             </div>     
