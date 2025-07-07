@@ -25,7 +25,10 @@ class BvnVerificationService{
         $verification_point = 0;
         $charge = 0;
 
-        //for now: verification amount is 50;
+        //businessbvn FOR NOW
+
+
+        //for now: verification amount is 0;
         if($user->main_wallet < $charge){
             return [
                 'status' => -1,
@@ -55,6 +58,8 @@ class BvnVerificationService{
             $api_biz_id = $getxixa->contract_code;
             $api_secret_key = $getxixa->api_secret_key;
             $api_public_key = $getxixa->api_public_key;
+            $bvn = $getxixa->biz_bvn;
+
             $error = '';
             $error_count = 0;
     

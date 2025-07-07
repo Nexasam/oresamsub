@@ -25,6 +25,7 @@ class CrystalPayService{
             exit;
         }
         $api_key = $funding_option->api_secret_key;
+        $biz_bvn = $funding_option->biz_bvn ?? $phone_number;
 
         $bank_codes = FundingOptionBankCodes::where('funding_option_id',$funding_option->id)->get();
         if(! $bank_codes){
@@ -54,7 +55,7 @@ class CrystalPayService{
                         "lastname"=>$last_name,
                         "email"=>$email,
                         "virtual_account_package"=>$bank_codee,  
-                        "bvn"=>$phone_number
+                        "bvn"=>$biz_bvn
                     ];
                     // return $arrr;
                     $arrjson = json_encode($arrr);
@@ -101,7 +102,7 @@ class CrystalPayService{
                             'account_email' =>$response_dec['data']['account_email'],
                             'account_number' =>$response_dec['data']['account_number'],
                             'account_reference' => $response_dec['data']['account_reference'],
-                            'bvn' => $phone_number
+                            'bvn' => $biz_bvn
                         ]);
                         logger("VA GENERATED INDEED FOR $first_name | $user_id | bank code: $bank_codee");
                     }else{

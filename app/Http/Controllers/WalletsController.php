@@ -1584,6 +1584,8 @@ class WalletsController extends Controller
                 //call crystalpay generate endpoint: revamp later
                 $wallet_funding = FundingOption::where('id',$funding_option_id)->first();
                 $api_key = $wallet_funding->api_secret_key;
+                $api_key = $wallet_funding->api_secret_key;
+                $biz_bvn = $wallet_funding->biz_bvn ?? $phone_number;
                 // $api_key = '1417307778664652904fd25';
             
 
@@ -1597,7 +1599,7 @@ class WalletsController extends Controller
                     "lastname"=>$last_name,
                     "email"=>$email,
                     "virtual_account_package"=>$bank_code,  
-                    "bvn"=>$bvn
+                    "bvn"=>$biz_bvn
                 ];
 
 
@@ -1655,7 +1657,7 @@ class WalletsController extends Controller
                         'account_email' =>$response_dec['data']['account_email'],
                         'account_number' =>$response_dec['data']['account_number'],
                         'account_reference' => $response_dec['data']['account_reference'],
-                        'bvn' => $bvn
+                        'bvn' => $biz_bvn
                     ]);
 
                     Session::flash('success','Virtual account was successfully generated');

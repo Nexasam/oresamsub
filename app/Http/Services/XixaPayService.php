@@ -39,6 +39,7 @@ class XixaPayService{
         $api_secret_key = $funding_option->api_secret_key;
         $api_biz_id = $funding_option->contract_code;
         $api_public_key = $funding_option->api_public_key;
+        $biz_bvn = $funding_option->biz_bvn ?? $bvn;
 
         $bank_codes = FundingOptionBankCodes::where('funding_option_id',$funding_option->id)->get();
         if(count($bank_codes) <= 0 ){
@@ -119,7 +120,7 @@ class XixaPayService{
                                 'account_email' =>$email,
                                 'account_number' =>$bankAccount['accountNumber'],
                                 'account_reference' => $bankAccount['Reserved_Account_Id'],
-                                'bvn' => $bvn
+                                'bvn' => $biz_bvn
                             ]);
                         }
                         logger("XIXA VAs GENERATED INDEED FOR $first_name | $user_id | bank code: $bank_codee");

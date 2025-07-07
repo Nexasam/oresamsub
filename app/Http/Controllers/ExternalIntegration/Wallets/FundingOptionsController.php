@@ -125,6 +125,8 @@ class FundingOptionsController extends Controller
             $wallet_funding = FundingOption::where('id',$funding_option_id)->first();
             $api_key = $wallet_funding->api_secret_key;
             // $api_key = '1417307778664652904fd25';
+            $biz_bvn = $wallet_funding->biz_bvn ?? $phone_number;
+
         
   
             if($wallet_funding->slug != 'crystal_pay'){
@@ -187,7 +189,7 @@ class FundingOptionsController extends Controller
                     'account_email' =>$response_dec['data']['account_email'],
                     'account_number' =>$response_dec['data']['account_number'],
                     'account_reference' => $response_dec['data']['account_reference'],
-                    'bvn' => $phone_number
+                    'bvn' => $biz_bvn
                 ]);
   
                 return $this->success('Wallet virtual accounts generated',data: $response_dec); 
