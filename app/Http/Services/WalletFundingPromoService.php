@@ -105,6 +105,7 @@ class WalletFundingPromoService{
                 $query->where('promo_metric','last_transaction_before')
                       ->orWhere('promo_metric','last_transaction_after');
             })
+            ->where('funding_option_id',$funding_option_id)
             ->latest()
             ->get();
 
