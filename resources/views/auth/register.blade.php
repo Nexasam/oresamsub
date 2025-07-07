@@ -294,7 +294,7 @@
                                                             <label for="upline_referral_phone_number" class="block text-sm mb-2 dark:text-gray-900 font-bold">{{__('messages.Referral phone number (optional)')}}</label>
                                                             <div class="relative">
                                                                 @if ($upline != '')
-                                                                     <x-text-input readonly id="upline_referral_phone_number" class="block mt-1 w-full" type="text" name="upline_referral_phone_number" :value="old('upline_referral_phone_number')" value="{{$upline}}"  autofocus autocomplete="upline_referral_phone_number" />
+                                                                     <x-text-input readonly id="upline_referral_phone_number" class="block mt-1 w-full" type="text" name="upline_referral_phone_number" value="{{$upline}}"  autofocus autocomplete="upline_referral_phone_number" />
                                                                 @else
                                                                      <x-text-input id="upline_referral_phone_number" class="block mt-1 w-full" type="text" name="upline_referral_phone_number" :value="old('upline_referral_phone_number')" autofocus autocomplete="upline_referral_phone_number" />         
                                                                 @endif
