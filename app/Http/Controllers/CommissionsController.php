@@ -60,9 +60,11 @@ class CommissionsController extends Controller
 
     public function fetch_commissions(Request $request){
         
-        $date_from = $request->date_from ?? date('Y-m-01', strtotime('-2 days'));
+        // ?? date('Y-m-01', strtotime('-2 days'))
+        $date_from = $request->date_from ?? '';
         
-        $date_to= $request->date_to ?? date('Y-m-t');
+        // ?? date('Y-m-t')
+        $date_to= $request->date_to ?? '';
  
         $limit = $request->limit ?? 5000;
 
@@ -75,7 +77,7 @@ class CommissionsController extends Controller
             $query->where('created_at','>=',$date_from)->where('created_at','<=',$date_to);
         })
         ->when( $rolee == 'user' , function ($query) use ($user){
-            $query->where('beneficiary','<=',$user->id);
+            $query->where('transaction_by','<=',$user->id);
         })
         // ->where('payout_status')
         ->with(['beneficiary','transaction.user','transaction.product_plan'])
