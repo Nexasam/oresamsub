@@ -16,18 +16,28 @@ class VirtualAccountService{
     public function generate_accounts($data){
             $dataaa['user'] = $data['user'];
             $crystal =  (new CrystalPayService())->generate_accounts($dataaa);
-            $xixa =  (new XixaPayService())->generate_accounts($dataaa);
-            if($xixa['status'] == 1){
+            if(config('app.name') == 'OresamSub'){
+                $xixa =  (new XixaPayService())->generate_accounts($dataaa);
+                if($xixa['status'] == 1){
+                    return [
+                        'status' => 1,
+                        'message' => 'Virtual Accounts Generated Successfully',
+                    ];
+                }
+
                 return [
-                    'status' => 1,
-                    'message' => 'Virtual Accounts Generated Successfully',
+                    'status' => -1,
+                    'message' => 'One or more accounts could not be generated',
                 ];
             }
 
+
             return [
-                'status' => -1,
-                'message' => 'One or more accounts could not be generated',
+                'status' => 1,
+                'message' => 'Virtual Accounts Generated Attempt was successful',
             ];
+
+            
         
     }
 
