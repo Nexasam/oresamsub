@@ -11,7 +11,7 @@ class VirtualAccountsController extends Controller
 {
     public function generate(Request $request){
         //generate xixa
-        $data['user'] = auth()->user();
+        $data['user'] = $request->user ?? auth()->user();
         $generate_vas = (new VirtualAccountService())->generate_accounts($data);
 
         if($generate_vas['status'] == 1){

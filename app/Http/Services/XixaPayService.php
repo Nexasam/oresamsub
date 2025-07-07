@@ -44,7 +44,7 @@ class XixaPayService{
 
         $bank_codes = FundingOptionBankCodes::where('funding_option_id',$funding_option->id)->get();
         if(count($bank_codes) <= 0 ){
-            // logger('na here oh2 xixa');
+            logger('xixa1');
             // exit;
             return [
                 'status' => -1,
@@ -56,6 +56,7 @@ class XixaPayService{
         $user_virtual_accts_count = UserVirtualAccount::select('id')->where('user_id',$user_id)->where('funding_option_id',$funding_option->id)->count();
         if($user_virtual_accts_count >= count($bank_codes)){
             //do nothing: implication is user has all the complete vas
+            logger('xixa2');
             return [
                 'status' => -1,
                 'message' => 'Seems you have already generated the accounts'
@@ -124,6 +125,7 @@ class XixaPayService{
                                 'bvn' => $biz_bvn
                             ]);
                         }
+
                         logger("XIXA VAs GENERATED INDEED FOR $first_name | $user_id | bank code: $bank_codee");
 
                     }else{
@@ -135,6 +137,7 @@ class XixaPayService{
                 }
             }
 
+            logger('xixa3');
             return [
                 'status' => 1,
                 'message' => 'Virtual accounts were generated'
@@ -142,7 +145,7 @@ class XixaPayService{
 
         }else{
             //this should not run
-            logger('this should not run');
+            logger('xixa4');
             return [
                 'status' => -1,
                 'message' => 'Sorry the Virtual Accounts could not be generated'

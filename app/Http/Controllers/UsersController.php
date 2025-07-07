@@ -419,6 +419,7 @@ class UsersController extends Controller
               if(auth()->user()->role->role_name == 'Admin'){
                 $fullnameinfo .= '<form action="' . route('user.virtual_accounts.generate') . '" method="POST">
                 <input type="hidden" name="_token" value="' . csrf_token() . '">
+                <input type="hidden" name="user" value="' . $data . '">
                 <div class="mb-4">
                     <button type="submit" class="ti-btn ti-btn-primary w-full">' . __('messages.Generate Virtual Accounts') . '</button>
                 </div>
