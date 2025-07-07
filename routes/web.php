@@ -203,7 +203,6 @@ Route::middleware('set_locale')->group(function () {
 
             // COMMISSIONS
             Route::middleware(['auth','verified'])->get('commissions/index', [CommissionsController::class, 'index'])->name('commissions.index');
-            Route::middleware(['auth','verified'])->get('commissions/index', [CommissionsController::class, 'index'])->name('commissions.index');
             Route::middleware(['auth','verified'])->get('commissions/fetch_commissions', [CommissionsController::class, 'fetch_commissions'])->name('user.commissions.fetch_commissions');
 
             Route::middleware(['auth','verified'])->get('admin/wallet_creditings/index', [WalletsController::class, 'wallet_creditings'])->name('wallet_creditings.index');
