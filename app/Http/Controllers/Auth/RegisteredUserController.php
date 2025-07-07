@@ -197,7 +197,11 @@ class RegisteredUserController extends Controller
             return redirect()->back();
         }
 
-        $upline_details = User::where('phone_number',$request->upline_referral_phone_number)->first();
+
+        $upline_details = NULL;
+        if(isset($request->upline_referral_phone_number) &&  $request->upline_referral_phone_number != NULL){
+            $upline_details = User::where('phone_number',$request->upline_referral_phone_number)->first();
+        }
         $upline_id = $upline_details != NULL && $request->upline_referral_phone_number != $request->phone_number ? $upline_details->id : NULL;
         // $upline_id = $upline_details->id;
        
@@ -224,7 +228,7 @@ class RegisteredUserController extends Controller
         $user = User::create($data);
 
         $dataaa['user'] = $user;
-        (new VirtualAccountService())->generate_accounts($dataaa);
+        // (new VirtualAccountService())->generate_accounts($dataaa);
 
 
         event(new Registered($user));
