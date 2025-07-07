@@ -80,7 +80,7 @@ class XixaPayService{
                         "businessId"=>$api_biz_id,
                         "accountType"=>"static",
                         "id_type"=>"bvn",
-                        "id_number"=>$bvn
+                        "id_number"=>$biz_bvn
                     ];
                     $arrjson = json_encode($arrr);
                     
