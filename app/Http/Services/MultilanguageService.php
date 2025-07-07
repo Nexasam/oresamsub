@@ -1496,12 +1496,12 @@ class MultilanguageService{
                   "ig" => "Ị nwetara ego 100% n’enweghị ụgwọ ọ bụla!",
                   "ha" => "Ka an ba ka daɗa da 100% kuɗi. Babu cajin!"
               ],
-
-
-
-
-
-
+              "You enjoyed promo bonus" => [
+                  "en" => "You enjoyed promo bonus",
+                  "yo" => "O gbádùn àfikún ìpolówó",
+                  "ig" => "Ị nwetara onyinye mgbakwunye n’akwụkwọ mgbasa ozi",
+                  "ha" => "Ka an ba ka daɗa da ƙarin rangwamen talla"
+              ],
 
           ];
 

@@ -1247,7 +1247,7 @@ class WalletsController extends Controller
                     font-weight: 500;
                     display: inline-block;
                 '>
-                    🎉 You enjoyed 100% funding. No charges!</span>
+                    🎉 ".__('messages.You enjoyed 100% funding. No charges!')."</span>
                 </div>";
               }else{
                 $formatted_bonus = number_format($promo_bonus, 2);
@@ -1262,7 +1262,7 @@ class WalletsController extends Controller
                     font-weight: 500;
                     display: inline-block;
                 '>
-                    🎉 You enjoyed promo bonus of <span style='color: #047857;'>₦{$formatted_bonus}</span>
+                    🎉 ".__('messages.You enjoyed promo bonus').": <span style='color: #047857;'>₦{$formatted_bonus}</span>
                 </div>";
               }
             }
