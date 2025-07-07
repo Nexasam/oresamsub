@@ -453,8 +453,8 @@ class UsersController extends Controller
           
             ->addColumn('phone_number',function($data){
            
-                $first_name = $data->user->first_name;
-                $phone_number = $data->user->phone_number;
+                $first_name = $data->first_name;
+                $phone_number = $data->phone_number;
                 $biz_name = config('app.name');
                 $call = '<a href="tel:'.$phone_number.'">Call: '.$phone_number.'</a>';
     
