@@ -57,7 +57,7 @@ class User extends Authenticatable implements MustVerifyEmail
     }
 
     public function upline(){
-        return $this->belongsTo(User::class,'upline_id');
+        return $this->belongsTo(User::class,'upline_id','id');
     }
 
     public function virtual_accounts(){
