@@ -42,6 +42,7 @@ class UserDashboardController extends Controller
                     ->whereNotNull('wallet_funding_promo_id')
                     ->latest()
                     ->first();
+
     $funding_res = 'nil';
     if($last_funding){
           $promo_id = $last_funding->wallet_funding_promo_id;
@@ -97,9 +98,10 @@ class UserDashboardController extends Controller
               </div>";
           }else{
                
-          }
-         
+          }      
       }
+
+      
     }
     $data['funding_res'] = $funding_res;
 
