@@ -15,8 +15,8 @@ class VirtualAccountService{
 
     public function generate_accounts($data){
             $dataaa['user'] = $data['user'];
+            $crystal =  (new CrystalPayService())->generate_accounts($dataaa);
             $xixa =  (new XixaPayService())->generate_accounts($dataaa);
-            // $crystal =  (new CrystalPayService())->generate_accounts($dataaa);
             if($xixa['status'] == 1){
                 return [
                     'status' => 1,
