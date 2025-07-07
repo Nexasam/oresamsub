@@ -175,7 +175,7 @@
                 
 
                    @if (config('app.name') == 'OresamSub')
-                        <div class="grid">
+                        {{-- <div class="grid">
                             @if (auth()->user()->verification_status != 1)
                                 <div class="max-w-sm w-full p-4 rounded-2xl shadow-xl bg-[{{$sidebar_color}}] text-white">
                                     <b><a class="underline" href="{{route('user.verification.index')}}">{{__('messages.Verify your Account for better opportunities')}} </a></b>                               
@@ -190,7 +190,8 @@
                                 </div>
                             </form>
                             @endif
-                        </div>     
+
+                        </div>      --}}
                    @endif    
                   
 
