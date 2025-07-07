@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use App\Http\Services\XixaPayService;
 use Illuminate\Support\Facades\Session;
 use App\Http\Services\VirtualAccountService;
+use Illuminate\Support\Facades\Validator;
+
 
 class VirtualAccountsController extends Controller
 {
@@ -20,7 +22,7 @@ class VirtualAccountsController extends Controller
         }
 
         $user_id = $request->user_id ?? '';
-        
+
         if($user_id == ''){
             $data['user'] = auth()->user();
         }else{
