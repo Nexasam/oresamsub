@@ -20,12 +20,13 @@ class XixaPayService{
         $phone_number = $user->phone_number;
         $bvn = $user->bvn;
 
-        if($bvn == NULL || $user->verification_status != 1){
-            return [
-                'status' => -1,
-                'message' => 'BVN is not yet verified'
-            ];
-        }
+        //FOR NOW, RELAX ON THIS
+        // if($bvn == NULL || $user->verification_status != 1){
+        //     return [
+        //         'status' => -1,
+        //         'message' => 'BVN is not yet verified'
+        //     ];
+        // }
     
         $funding_option = FundingOption::where('slug','xixapay')->first();
         if(! $funding_option){
