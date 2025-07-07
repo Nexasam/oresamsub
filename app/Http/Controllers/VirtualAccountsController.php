@@ -11,7 +11,21 @@ class VirtualAccountsController extends Controller
 {
     public function generate(Request $request){
         //generate xixa
-        $data['user'] = $request->user ?? auth()->user();
+        $validator = Validator::make($request->all(), [
+            'user_id' => 'nullable|exists:users,id',
+          ]);
+    
+        if ($validator->stopOnFirstFailure()->fails()) {
+            return redirect()->back()->withErrors($validator)->withInput();
+        }
+
+        $user_id = $request->user_id ?? '';
+        
+        if($user_id == ''){
+            $data['user'] = auth()->user();
+        }else{
+            $data['user'] = User::where('id',$user_id)->first();
+        }
         $generate_vas = (new VirtualAccountService())->generate_accounts($data);
 
         if($generate_vas['status'] == 1){
