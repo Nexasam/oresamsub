@@ -62,11 +62,23 @@ class AdminSettingsController extends Controller
            if(! $check_template_field_exist){
              LandingPagesSetting::create($dataa);
            }
-    
        }
 
       
         //landingpages: All params
+        $landing_page_settings = config('landing_pages');
+        foreach($landing_page_settings as $key=>$value){
+            $dataaa['field_name'] = $key;
+            $dataaa['field_details'] = $value[2];
+            $dataaa['template_type'] = 'template_1';
+            $dataaa['visibility'] = 1;
+            $check_template_field_exist1 = LandingPagesSetting::where('field_name',$key)->first();
+            if(! $check_template_field_exist1){
+              LandingPagesSetting::create($dataaa);
+            }
+        }
+
+        
         $landing_page_settings = LandingPagesSetting::get();
         foreach($landing_page_settings as $landing_page_setting){
             $data[$landing_page_setting->field_name] = $landing_page_setting->field_details;
@@ -799,7 +811,7 @@ class AdminSettingsController extends Controller
         $count = 0;
         foreach($dataa as $key=>$new_value){
           $column_details = LandingPagesSetting::select('field_details')->where('field_name',$key)->first();
-          $old_value = $column_details->field_details;
+          $old_value = $column_details->field_details ?? NULL;
           if($old_value != $new_value){
             $new_update['field_details'] = $new_value; 
             LandingPagesSetting::where('field_name',$key)->where('field_details',$old_value)->update($new_update);

@@ -1502,6 +1502,13 @@ class MultilanguageService{
                   "ig" => "Ị nwetara onyinye mgbakwunye n’akwụkwọ mgbasa ozi",
                   "ha" => "Ka an ba ka daɗa da ƙarin rangwamen talla"
               ],
+              "Download Our App" => [
+                  "en" => "Download Our App",
+                  "yo" => "Gba Ìṣàkóso Wa Dánù",
+                  "ig" => "Budata Ngwa Anyị",
+                  "ha" => "Zazzage Manhajar Mu"
+              ],
+
 
           ];
 

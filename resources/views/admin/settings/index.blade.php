@@ -556,6 +556,11 @@
                                 <label class="ti-form-label mb-0">Physical Address</label>
                                 <input value="{{ $physical_address }}" type="text"  name="physical_address" class="my-auto ti-form-input" placeholder="">
                               </div>
+
+                              <div class="space-y-2">
+                                <label class="ti-form-label mb-0">Mobile App Link</label>
+                                <input value="{{ $mobile_app_link  }}" type="text"  name="mobile_app_link" class="my-auto ti-form-input" placeholder="">
+                              </div>
                               
 
                               {{-- <div class="space-y-2 mt-5">
