@@ -294,6 +294,9 @@
                     <div class="col-12 text-center text-white">
                         <h6 class="text-white text-uppercase">{{ $sub_hero1 }}</h6>
                         <h1 class="display-3 my-4">{{ $hero1_part1 }}<br />{{ $hero1_part2 }}</h1>
+                        @if (isset($mobile_app_link) && $mobile_app_link != '')
+                        <a href="{{ $mobile_app_link ?? '#' }}" class="btn btn-brand">{{__('messages.Download Our App')}}</a>
+                        @endif
                         <a href="{{ url('/register') }}" class="btn btn-brand">{{__('messages.Get Started')}}</a>
                         <a href="{{ url('/login') }}" class="btn btn-outline-light ms-3">{{__('messages.Login')}}</a>
                     </div>
