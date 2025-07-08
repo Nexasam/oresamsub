@@ -138,9 +138,9 @@ class AuthenticatedSessionController extends Controller
             }
 
 
+            $dataaa['user'] = $user_check;
             // PUT BOTH IN AN EVENT
             //Generate crystalpay virtual accounts for those without va or incomplete va:
-            // $dataaa['user'] = $user_check;
             // (new VirtualAccountService())->generate_accounts($dataaa);
 
             $coupon_check = (new CouponCodeService())->determine_if_user_qualify($dataaa);
