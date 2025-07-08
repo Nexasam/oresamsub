@@ -143,8 +143,8 @@ class AuthenticatedSessionController extends Controller
             // $dataaa['user'] = $user_check;
             // (new VirtualAccountService())->generate_accounts($dataaa);
 
-            // $coupon_check = (new CouponCodeService())->determine_if_user_qualify($dataaa);
-            // $user_check->coupons = $coupon_check['status'] == 1 ? $coupon_check['coupon_info'] : NULL;
+            $coupon_check = (new CouponCodeService())->determine_if_user_qualify($dataaa);
+            $user_check->coupons = $coupon_check['status'] == 1 ? $coupon_check['coupon_info'] : NULL;
 
 
             $check_login = DB::table('sessions')->where('user_id',$user_check->id)->first();

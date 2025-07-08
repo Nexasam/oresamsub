@@ -2499,13 +2499,36 @@
 
 
     <script>
-      window.addEventListener('load', function () {
-          const overlay = document.getElementById('loadingOverlay');
-          overlay.classList.add('fade-out');
-          setTimeout(() => {
+      // window.addEventListener('load', function () {
+      //     const overlay = document.getElementById('loadingOverlay');
+      //     overlay.classList.add('fade-out');
+      //     setTimeout(() => {
+      //         overlay.style.display = 'none';
+      //     }, 500); // matches transition duration
+      // });
+
+
+      const overlay = document.getElementById('loadingOverlay');
+
+        // Fallback after 5 seconds
+        setTimeout(() => {
+          if (overlay) {
+            overlay.classList.add('fade-out');
+            setTimeout(() => {
               overlay.style.display = 'none';
-          }, 500); // matches transition duration
-      });
+            }, 500);
+          }
+        }, 5000);
+
+        window.addEventListener('load', function () {
+          if (overlay) {
+            overlay.classList.add('fade-out');
+            setTimeout(() => {
+              overlay.style.display = 'none';
+            }, 500);
+          }
+        });
+
   </script>
   
   
