@@ -125,6 +125,10 @@
                     </div>
                     <div class="box-body">
                       <div>
+                        {{-- <form method="POST" action="{{ route('admin.users.reset_password')  }}">
+                          <input type="submit" class="ti-btn ti-btn-primary w-1/2" value="Reset Customer Password">           
+                        </form> --}}
+
                         <form method="POST" action="{{ route('admin.users.update_user_info')  }}">
                           @csrf
                         <div class="grid lg:grid-cols-2 gap-6">

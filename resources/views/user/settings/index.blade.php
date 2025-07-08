@@ -204,14 +204,14 @@
                         <form method="POST" action="{{ route('user.settings.update_password')  }}">
                           @csrf
                           <div class="grid w-full lg:w-1/2 lg:grid-cols-1 gap-6 space-y-4 lg:space-y-0">
-                              <div class="space-y-2 mt-5">
+                              {{-- <div class="space-y-2 mt-5">
                                 <label class="ti-form-label mb-0"> {{__('messages.Current password')}}</label>
                                 <input type="password" id="current_password" name="current_password" class="my-auto ti-form-input" placeholder="">    
                                 <div class="flex items-center">
                                   <input type="checkbox" id="hs-basic-with-description-unchecked" class="ti-switch show_password_current">
                                   <label for="hs-basic-with-description-unchecked" class="text-sm text-gray-500 ms-3 dark:text-white/70 ">{{__('messages.Show password')}}</label>
                                 </div>                        
-                              </div>
+                              </div> --}}
 
                               <div class="space-y-2 mt-5">
                                 <label class="ti-form-label mb-0"> {{__('messages.New password')}}</label>

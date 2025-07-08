@@ -101,6 +101,11 @@ Route::middleware('set_locale')->group(function () {
                 return redirect()->route('login');
             })->name('artisan.clear_cache');
 
+
+            Route::get('/test', function () {
+                return view('landing.indextest');
+            });
+
             Route::get('/', function () {
             
                 //get template name:
