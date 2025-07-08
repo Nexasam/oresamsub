@@ -273,9 +273,12 @@
                 <a href="{{ url('/login') }}" 
                 class="btn btn-brand ms-lg-3">{{__('messages.Login')}}</a>
 
-                <a target="_blank" href="{{ $mobile_app_link ?? '#' }}" class="btn btn-info ms-lg-3">
-                 <i class="fas fa-mobile-alt me-2"></i> {{ __('messages.Download Our App') }}
-                </a>
+                @if (isset($mobile_app_link) && $mobile_app_link != '')
+                    <a target="_blank" href="{{ $mobile_app_link ?? '#' }}" class="btn btn-info ms-lg-3">
+                    <i class="fas fa-mobile-alt me-2"></i> {{ __('messages.Download Our App') }}
+                    </a>      
+                @endif
+              
              
 
             </div>
