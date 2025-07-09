@@ -31,13 +31,14 @@ class ComputeReferralCommission extends Command
     {
         //start adding commission from this date:
        if(env('APP_NAME') == 'OresamSub'){
-                $start_from_this_date = date('2025-06-09');
+                $start_from_this_date = date('2025-07-08');
                 $today = date('Y-m-d');
-                $yesterday = date('Y-m-d', strtotime('-1 day'));
+                $yesterday = date('Y-m-d', strtotime('-2 day'));
+                $twodaysback = date('Y-m-d', strtotime('-2 day'));
 
                 $fetch_yest_successful_txns = Transaction::with(['user.user_plan','product_plan'])
-                                        ->whereDate('created_at','>=',$start_from_this_date)
-                                        ->whereDate('created_at','like','%'.$today.'%') #use yesterday after testing
+                                        ->whereDate('created_at','>=',$twodaysback)
+                                        // ->whereDate('created_at','like','%'.$today.'%') #use yesterday after testing
                                         ->whereStatus(1)
                                         ->get();
 
