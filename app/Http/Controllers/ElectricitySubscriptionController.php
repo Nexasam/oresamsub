@@ -42,9 +42,14 @@ class ElectricitySubscriptionController extends Controller
 
     public function fetch_electricity_transactions(Request $request){
    
-        $date_from = $request->date_from ?? date('Y-m-d', strtotime('-10 days'));
-        $date_to= $request->date_to ?? date('Y-m-d');
+        // date('Y-m-d', strtotime('-10 days'));
+        $date_from = $request->date_from ?? '';
 
+
+        // date('Y-m-d')
+        $date_to= $request->date_to ?? '';
+
+        
         $product_plan_category_filter = $request->product_plan_category_filter ?? '';
         
         $metre = $request->metre_number ?? '';
