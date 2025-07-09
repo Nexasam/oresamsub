@@ -22,8 +22,9 @@ Schedule::command('migrate --force')->everyMinute();
 Schedule::command(ProcessPendingAirtimeTransactions::class)->everyThirtySeconds();
 Schedule::command(ZerorizeNegativeBalances::class)->everyTwoMinutes()->withoutOverlapping();
 Schedule::command(ComputeReferralCommission::class)->everyMinute();
-// Schedule::command(ComputeReferralCommission::class)->everySixHours();
-Schedule::command(GeneralRepetitiveTasks::class)->everyTwoMinutes();
+Schedule::command(ComputeReferralCommission::class)->everySixHours();
+// Schedule::command(ComputeReferralCommission::class)->hourly();
+
 
 Schedule::command(SendNewRegistrationEmail::class)->everyTwoMinutes()->withoutOverlapping();
 Schedule::command(SendFailedTransactionEmail::class)->everyThirtySeconds()->withoutOverlapping();
