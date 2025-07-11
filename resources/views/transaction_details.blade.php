@@ -440,12 +440,19 @@
                                               Are you sure you want to mark this transaction as succesful? <br> <hr>
                                               <form class=" space-x-2" method="POST" action="{{ route('transactions.manually_mark_transaction_as_successful') }}">
                                                 @csrf
-                                                  <div class="space-x-2">
+                                                  <div class="">
+                                                    <label for="">Success Message</label>
                                                     <input type="text" required name="success_message" id="success_message" placeholder="Enter success message" value="">
                                                   </div>
 
-                                                  <input type="hidden" name="transaction_id" id="transaction_id" value="{{  $data->id }}">
-                                                  <input type="password" required name="pin" id="pin" placeholder="Enter PIN" value="">
+                                                  <div class="">
+                                                    <label for="">PIN</label>    
+                                                    <input type="hidden" name="transaction_id" id="transaction_id" value="{{  $data->id }}">
+                                                    <input type="password" required name="pin" id="pin" placeholder="Enter PIN" value="">
+                                                  
+                                                  </div>
+
+                                                  
       
                                                 </div>
                                                 <div class="space-y-2">
