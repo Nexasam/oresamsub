@@ -25,6 +25,7 @@ use App\Services\Automation\AutomationLogic;
 use App\Traits\Dashboard\UserDashboardDataTrait;
 use App\Services\Automation\MegaSubPlugAutomation\VendData;
 use App\Services\Automation\MegaSubPlugAutomation\MegaSubCableTV;
+use App\Services\Automation\VtpassAutomation;
 use App\Http\Services\Api\v1\VendorUsersApi\Products\ProductsService;
 
 class CableSubscriptionController extends Controller
@@ -230,8 +231,14 @@ class CableSubscriptionController extends Controller
          if($automation_slug == 'megasubplug'){
              $validate_metre_number = (new MegaSubCableTV(smart_card_number: $request->smart_card_number, plan_id: $request->plan_id, user_id: $user_id))->validateSmartCardNumber();
              return $validate_metre_number;
-         }
-         return 'Nil';
+         }else if($automation_slug == 'vtpass'){
+            $dataa['smart_card_number'] = $request->smart_card_number;
+            $dataa['plan_id'] = $request->plan_id;
+            $dataa['user_id'] = $user_id;
+            $validate_smart_card_number = (new VtpassAutomation($dataa))->validateSmartCard();
+            return $validate_smart_card_number;
+        }
+        return 'Nil';
 
     }
 

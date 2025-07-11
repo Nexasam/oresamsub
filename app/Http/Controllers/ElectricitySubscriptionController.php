@@ -24,6 +24,7 @@ use Illuminate\Support\Facades\Validator;
 use App\Services\Automation\AutomationLogic;
 use App\Traits\Dashboard\UserDashboardDataTrait;
 use App\Services\Automation\MegaSubPlugAutomation\VendData;
+use App\Services\Automation\VtpassAutomation;
 use App\Http\Services\Api\v1\VendorUsersApi\Products\ProductsService;
 use App\Services\Automation\MegaSubPlugAutomation\MegaSubElectricity;
 use App\Services\Automation\MegaSubPlugAutomation\MegaSubelectricityTV;
@@ -234,6 +235,12 @@ class ElectricitySubscriptionController extends Controller
             $validate_metre_number = (new MegaSubElectricity(metre_number: $request->smart_card_number, plan_id: $request->plan_id, user_id: $user_id))->validateMetreNumber();
             return $validate_metre_number;
       
+        }else if($automation_slug == 'vtpass'){
+            $dataa['smart_card_number'] = $request->smart_card_number;
+            $dataa['plan_id'] = $request->plan_id;
+            $dataa['user_id'] = $request->user_id;
+            $validate_metre_number = (new VtpassAutomation($dataa))->validateMetreNumber();
+            return $validate_metre_number;
         }
     }
 
@@ -399,7 +406,7 @@ class ElectricitySubscriptionController extends Controller
         DB::beginTransaction();
         try{
 
-              ////validate wallet
+                        ////validate wallet
                         if($request->wallet_category == 'main_wallet'){
                             $wallet_before = $user_details->main_wallet;
                             $total_amount =  $no_of_slots * $amount;
@@ -417,7 +424,6 @@ class ElectricitySubscriptionController extends Controller
                                 //HERE the endpoint of the automation service is called:
                                 //this is for megasubplug: vend for Airtime
                                 
-
 
                                 //WE MOVED THIS
                                 // if($automation_details->slug == 'megasubplug'){
