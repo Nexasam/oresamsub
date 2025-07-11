@@ -404,7 +404,7 @@
 
                                   @if (auth()->user()->email == 'adebsholey4real@gmail.com')   
                                   <input type="hidden" name="transaction_id" id="transaction_id" value="{{  $data->id }}">
-                                  <button value="Mark As Successful" type="button" class="hs-dropdown-toggle ti-btn ti-btn-success" data-hs-overlay="#hs-basic-modal22">                                                                    
+                                  <button type="button" class="hs-dropdown-toggle ti-btn ti-btn-success" data-hs-overlay="#hs-basic-modal22">Mark As Successful</button>                                                                   
                                   @endif
 
                                   @if ($data->status != 2)
