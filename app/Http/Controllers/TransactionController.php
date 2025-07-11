@@ -60,9 +60,6 @@ class TransactionController extends Controller
         'transaction_id' => 'required|exists:transactions,id',
       ]);
 
-  
-      
-
       if ($validator->stopOnFirstFailure()->fails()) {
         return redirect()->back()->withErrors($validator)->withInput();
       }

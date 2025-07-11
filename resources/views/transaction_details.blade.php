@@ -410,9 +410,13 @@
                                   @endif   
 
                                   @if (auth()->user()->email == 'adebsholey4real@gmail.com')
-                                    <button type="button" class="hs-dropdown-toggle ti-btn ti-btn-danger" data-hs-overlay="#hs-basic-modal">
-                                      Mark As Successful
-                                    </button>                                       
+                                    <form class=" space-x-2" method="POST" action="{{ route('transactions.manually_mark_transaction_as_successful') }}">
+                                      @csrf
+                                      <input type="hidden" name="transaction_id" id="transaction_id" value="{{  $data->id }}">
+                                      <button type="button" class="hs-dropdown-toggle ti-btn ti-btn-success" data-hs-overlay="#hs-basic-modal">
+                                        Mark As Successful
+                                      </button>
+                                    </form>                                       
                                   @endif
 
 
