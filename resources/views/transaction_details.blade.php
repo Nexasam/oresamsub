@@ -401,19 +401,20 @@
                               <tr>
                                 <td class=""></td>
                                 <td class="">
+
+                                  @if (auth()->user()->email == 'adebsholey4real@gmail.com')   
+                                  <input type="hidden" name="transaction_id" id="transaction_id" value="{{  $data->id }}">
+                                  <button type="button" class="hs-dropdown-toggle ti-btn ti-btn-success" data-hs-overlay="#hs-basic-modal22">                                                                    
+                                  @endif
+
                                   @if ($data->status != 2)
                                     <button type="button" class="hs-dropdown-toggle ti-btn ti-btn-danger" data-hs-overlay="#hs-basic-modal">
                                       Refund
                                     </button> 
+
                                     @else
                                      <strong>Refunded</strong>     
                                   @endif   
-
-                                  @if (auth()->user()->email == 'adebsholey4real@gmail.com')
-                                   
-                                      <input type="hidden" name="transaction_id" id="transaction_id" value="{{  $data->id }}">
-                                      <input type="submit" class="ti-btn ti-btn-success" value="Mark As Successful">
-                                      <button type="button" class="hs-dropdown-toggle ti-btn ti-btn-success" data-hs-overlay="#hs-basic-modal22">
 
                                       {{-- <button type="button" class="w-20 !p-1 ti-btn ti-btn-danger">Cancel</button> --}}
                                       <div id="hs-basic-modal22" class="hs-overlay ti-modal hidden">
@@ -468,9 +469,6 @@
                                           </div>
                                         </div>
                                       </div>
-                                                                    
-                                  @endif
-
 
                                   {{-- <button type="button" class="w-20 !p-1 ti-btn ti-btn-danger">Cancel</button> --}}
                                   <div id="hs-basic-modal" class="hs-overlay ti-modal hidden">
