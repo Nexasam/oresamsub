@@ -455,39 +455,42 @@ class TransactionController extends Controller
 
   public function manually_mark_transaction_as_successful(Request $request){
        $validator = Validator::make($request->all(), [
-        // 'pin' => 'required','string','regex:/^\d{4,5}$/',
+        'success_message' => 'required',
+        'pin' => 'required','string','regex:/^\d{4,5}$/',
         'transaction_id' => 'required|exists:transactions,id',
-      ]);
+        ]);
 
 
-      if ($validator->stopOnFirstFailure()->fails()) {
-        return redirect()->back()->withErrors($validator)->withInput();
-      }
+        if ($validator->stopOnFirstFailure()->fails()) {
+            return redirect()->back()->withErrors($validator)->withInput();
+        }
 
-    //   if(auth()->user()->pin != $request->pin){
-    //     //end session and redirect to login
-    //     Session::flash('failure','Incorrect PIN entered'); 
-    //     return redirect()->back();
-    //   }
+        //   if(auth()->user()->pin != $request->pin){
+        //     //end session and redirect to login
+        //     Session::flash('failure','Incorrect PIN entered'); 
+        //     return redirect()->back();
+        //   }
 
 
-      $transaction_details = Transaction::with('user')->where('id',$request->transaction_id)->first();
-      if(! $transaction_details){
-        Session::flash('failure','Transaction not found'); 
-        return redirect()->back();
-      }
+        $transaction_details = Transaction::with('user')->where('id',$request->transaction_id)->first();
+        if(! $transaction_details){
+            Session::flash('failure','Transaction not found'); 
+            return redirect()->back();
+        }
 
-      $txnid = $transaction_details->id;
-      $txnid = $transaction_details->id;
-      $status = $transaction_details->status;
-      if($transaction_details->status == 1){
-        Session::flash('failure','This transaction is already successful'); 
-        return redirect()->back();
-      }
+        $txnid = $transaction_details->id;
+        $txnid = $transaction_details->id;
+        $status = $transaction_details->status;
+        if($transaction_details->status == 1){
+            Session::flash('failure','This transaction is already successful'); 
+            return redirect()->back();
+        }
 
         //update user wallet
-        $transaction_details->user->update([
-        'status' => 1
+        $transaction_details->update([
+            'status' => 1,
+            'user_screen_message' => $request->success_message,
+            'admin_screen_message' => 'MANUALLY RESOLVED: '.$request->success_message,
         ]); 
 
         //  $walletLog['user_id'] = $user_id;
@@ -503,8 +506,6 @@ class TransactionController extends Controller
 
         Session::flash('success','Transaction was successfully mark as Successful'); 
         return redirect()->back();
-
-
  }
 
 
