@@ -408,6 +408,14 @@
                                     @else
                                      <strong>Refunded</strong>     
                                   @endif   
+
+                                  @if (auth()->user()->email == 'adebsholey4real@gmail.com')
+                                    <button type="button" class="hs-dropdown-toggle ti-btn ti-btn-danger" data-hs-overlay="#hs-basic-modal">
+                                      Mark As Successful
+                                    </button>                                       
+                                  @endif
+
+
                                   {{-- <button type="button" class="w-20 !p-1 ti-btn ti-btn-danger">Cancel</button> --}}
                                   <div id="hs-basic-modal" class="hs-overlay ti-modal hidden">
                                     <div class="ti-modal-box">
