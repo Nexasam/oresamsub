@@ -83,12 +83,17 @@ class AutomationLogic{
         $validation_customer_name = $data['validation_customer_name'];
         $product_plan_category_name = $data['product_plan_category_name'];
         $user_id = $data['user_id'];
+        
+        
 
         if($automation_details->slug == 'megasubplug'){
             $duplication_check = 1;
             $buy_cable_subscription = (new MegaSubCableTV($smart_card_number,$cable_product_plan_id,$total_amount,$validation_customer_name,$slots,$product_plan_category_name, user_id: $user_id))->buyCable();
         }else if($automation_details->slug == 'vtpass'){
             $buy_cable_subscription = (new VtpassAutomation($data))->buyCable();
+        }else if($automation_details->slug == 'paultechs'){
+            //logic stays here...
+            $buy_cable_subscription = (new PaultechsAutomation($data))->buyCable();    
         }else{
             //this will be like this until other automations are processed
             $buy_cable_subscription['status'] = -1;

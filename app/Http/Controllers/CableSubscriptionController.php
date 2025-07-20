@@ -22,11 +22,13 @@ use App\Models\BulkDataProductPlans;
 use App\Models\UserBulkDataPurchase;
 use Illuminate\Support\Facades\Validator;
 use App\Services\Automation\AutomationLogic;
+use App\Services\Automation\VtpassAutomation;
+use App\Services\Automation\PaultechsAutomation;
 use App\Traits\Dashboard\UserDashboardDataTrait;
 use App\Services\Automation\MegaSubPlugAutomation\VendData;
 use App\Services\Automation\MegaSubPlugAutomation\MegaSubCableTV;
-use App\Services\Automation\VtpassAutomation;
 use App\Http\Services\Api\v1\VendorUsersApi\Products\ProductsService;
+use App\Services\Automation\MsOrgGroupAutomation\MsOrgGroupAutomation;
 
 class CableSubscriptionController extends Controller
 {
@@ -228,6 +230,7 @@ class CableSubscriptionController extends Controller
  
          $user_id = auth()->id();
          $automation_slug = $plan_details->automation->slug;
+         $automation_group = $plan_details->automation->automation_group;
          if($automation_slug == 'megasubplug'){
              $validate_metre_number = (new MegaSubCableTV(smart_card_number: $request->smart_card_number, plan_id: $request->plan_id, user_id: $user_id))->validateSmartCardNumber();
              return $validate_metre_number;
@@ -236,6 +239,26 @@ class CableSubscriptionController extends Controller
             $dataa['plan_id'] = $request->plan_id;
             $dataa['user_id'] = $user_id;
             $validate_smart_card_number = (new VtpassAutomation($dataa))->validateSmartCard();
+            return $validate_smart_card_number;
+        }else if($automation_slug == 'paultechs'){
+            $token = $plan_details->automation->api_public_key;
+            $dataa['automation_id'] =  $plan_details->automation->id;
+            $dataa['smart_card_number'] = $request->smart_card_number;
+            $dataa['plan_id'] = $request->plan_id;
+            $dataa['token'] = $token;
+            $dataa['user_id'] = $user_id;
+            $dataa['url'] = $plan_details->automation->cable_url;
+            $validate_smart_card_number = (new PaultechsAutomation($dataa))->validateSmartCard();
+            return $validate_smart_card_number;
+        }else if($automation_group == 'msorg'){
+            $token = $plan_details->automation->api_public_key;
+            $dataa['automation_id'] =  $plan_details->automation->id;
+            $dataa['smart_card_number'] = $request->smart_card_number;
+            $dataa['plan_id'] = $request->plan_id;
+            $dataa['token'] = $token;
+            $dataa['user_id'] = $user_id;
+            $dataa['url'] = $plan_details->automation->cable_url;
+            $validate_smart_card_number = (new MsOrgGroupAutomation($dataa))->validateSmartCard();
             return $validate_smart_card_number;
         }
         return 'Nil';

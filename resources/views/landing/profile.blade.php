@@ -1,18 +1,19 @@
 <!DOCTYPE html>
-<html lang="en" x-data="onboardingForm()" x-init="init()" :class="{ 'dark': darkMode }">
+<html lang="en" x-data="{ darkMode: false }" x-init="darkMode = localStorage.getItem('darkMode') === 'true'" :class="{ 'dark': darkMode }">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard</title>
+    <!-- TailwindCSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- AlpineJS CDN -->
     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <!-- Google Font: Inter -->
+    {{-- <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet"> --}}
+
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
       body { font-family: 'Outfit', sans-serif; }
-        /* .drag-drop {
-            @apply mt-1 block w-full border-2 border-dashed rounded p-4 text-center cursor-pointer bg-white dark:bg-gray-700 transition-colors;
-        } */
-
         .wallet-bg {
             background: radial-gradient(circle at top left, rgba(99, 102, 241, 0.2), transparent 70%),
                         radial-gradient(circle at bottom right, rgba(16, 185, 129, 0.2), transparent 70%);
@@ -21,6 +22,7 @@
             position: relative;
             overflow: hidden;
         }
+
         .wallet-svg-bg::before {
             content: "";
             position: absolute;
@@ -35,6 +37,7 @@
             opacity: 0.3;
             z-index: 0;
         }
+
         .wallet-svg-bg > * {
             position: relative;
             z-index: 1;
@@ -191,67 +194,7 @@
                 </div>
             </div>
 
-            <div class="mb-10 bg-white dark:bg-gray-800 shadow rounded-lg p-6">
-                <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-6">Business Onboarding</h2>
-
-                <template x-for="s in steps" :key="s">
-                    <div x-show="step === s" class="space-y-4">
-                        <h3 class="text-lg font-semibold text-blue-600 dark:text-blue-400" x-text="'Step ' + s + ': ' + stepTitles[s-1]"></h3>
-                        <div class="grid grid-cols-1 gap-4">
-                            <template x-for="(field, index) in fields[s-1]" :key="index">
-                                <div>
-                                    <template x-if="field.type === 'file'">
-                                        <label class="block w-full">
-                                            <span class="text-sm font-medium text-gray-700 dark:text-gray-200" x-text="field.label"></span>
-                                            <div class="mt-1 block w-full border-2 border-dashed rounded p-4 text-center cursor-pointer bg-white dark:bg-gray-700 transition-colors relative"
-                                                 @dragover.prevent="dragOver = true"
-                                                 @dragleave.prevent="dragOver = false"
-                                                 @drop.prevent="handleDragDrop($event, field.key); dragOver = false"
-                                                 :class="{ 'border-blue-500': dragOver }">
-                                                <input type="file" class="absolute inset-0 opacity-0 cursor-pointer"
-                                                       @change="handleFileUpload($event, field.key)">
-                                                <div class="text-sm text-gray-500 dark:text-gray-300">
-                                                    <template x-if="!formData[field.key]">
-                                                        <p>Drag & drop or click to upload</p>
-                                                    </template>
-                                                    <template x-if="formData[field.key]">
-                                                        <p x-text="formData[field.key]?.name"></p>
-                                                    </template>
-                                                </div>
-                                            </div>
-                                            <p x-show="errors[field.key]" class="text-red-500 text-sm mt-1">This field is required</p>
-                                        </label>
-                                    </template>
-
-                                    <template x-if="field.type !== 'file'">
-                                        <div>
-                                            <label class="block mb-1 text-sm font-medium text-gray-700 dark:text-gray-200" x-text="field.label"></label>
-                                            <input :type="field.type"
-                                                   x-model="formData[field.key]"
-                                                   @input="errors[field.key] = ''"
-                                                   :class="[
-                                                       'px-4 py-2 border rounded w-full',
-                                                       'text-gray-900 dark:text-white',
-                                                       errors[field.key] ? 'border-red-500' : 'border-gray-300 dark:border-gray-600',
-                                                       'bg-white dark:bg-gray-700'
-                                                   ]">
-                                            <p x-show="errors[field.key]" class="text-red-500 text-sm mt-1">This field is required</p>
-                                        </div>
-                                    </template>
-                                </div>
-                            </template>
-                        </div>
-                        <div class="flex justify-between mt-6">
-                            <button x-show="s > 1" @click="prevStep" class="px-4 py-2 bg-gray-300 text-gray-800 rounded hover:bg-gray-400">Previous</button>
-                            <button x-show="s < steps.length" @click="nextStep" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">Next</button>
-                            <button x-show="s === steps.length" @click="submitForm" class="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700">Submit</button>
-                        </div>
-                    </div>
-                </template>
-            </div>
-
-
-
+            
             
 
           <!-- API Settings Forms -->
@@ -337,85 +280,5 @@
         </main>
     </div>
 </div>
-
-<script>
-function onboardingForm() {
-    return {
-        step: 1,
-        stepTitles: ['Basic Details', 'Directors', 'Verifications', 'Document Uploads'],
-        steps: [1, 2, 3, 4],
-        fields: [
-            [
-                { label: 'Full Name', key: 'fullName', type: 'text' },
-                { label: 'Business Name', key: 'businessName', type: 'text' },
-                { label: 'Email Address', key: 'email', type: 'email' },
-                { label: 'Phone Number', key: 'phone', type: 'text' },
-                { label: 'RC Number', key: 'rcNumber', type: 'text' },
-                { label: 'Business Category', key: 'category', type: 'text' },
-            ],
-            [
-                { label: 'Director 1 Name', key: 'director1Name', type: 'text' },
-                { label: 'Director 1 Phone', key: 'director1Phone', type: 'text' },
-                { label: 'Director 1 Email', key: 'director1Email', type: 'email' },
-                { label: 'Director 2 Name', key: 'director2Name', type: 'text' },
-                { label: 'Director 2 Phone', key: 'director2Phone', type: 'text' },
-                { label: 'Director 2 Email', key: 'director2Email', type: 'email' },
-            ],
-            [
-                { label: 'Business Address', key: 'address', type: 'text' },
-                { label: 'Tax ID', key: 'taxId', type: 'text' },
-                { label: 'TIN', key: 'tin', type: 'text' },
-                { label: 'NIN', key: 'nin', type: 'text' },
-                { label: 'Bank Name', key: 'bankName', type: 'text' },
-                { label: 'Account Number', key: 'accountNumber', type: 'text' },
-            ],
-            [
-                { label: 'CAC Document', key: 'cacDoc', type: 'file' },
-                { label: 'Utility Bill', key: 'utilityBill', type: 'file' },
-                { label: 'Valid ID', key: 'validId', type: 'file' },
-                { label: 'Passport Photo', key: 'passport', type: 'file' },
-                { label: 'Signature', key: 'signature', type: 'file' },
-                { label: 'Business Logo', key: 'logo', type: 'file' },
-            ]
-        ],
-        formData: {},
-        errors: {},
-        init() {
-            this.darkMode = localStorage.getItem('darkMode') === 'true';
-            this.formData = JSON.parse(localStorage.getItem('onboardingFormData') || '{}');
-        },
-        validateStep() {
-            this.errors = {};
-            for (const field of this.fields[this.step - 1]) {
-                const value = this.formData[field.key];
-                if (!value || (field.type === 'file' && value instanceof File === false)) {
-                    this.errors[field.key] = true;
-                }
-            }
-            return Object.keys(this.errors).length === 0;
-        },
-        nextStep() {
-            if (this.validateStep()) {
-                this.saveData();
-                if (this.step < this.steps.length) this.step++;
-            }
-        },
-        prevStep() {
-            if (this.step > 1) this.step--;
-        },
-        saveData() {
-            localStorage.setItem('onboardingFormData', JSON.stringify(this.formData));
-        },
-        submitForm() {
-            if (this.validateStep()) {
-                this.saveData();
-                alert('Form Submitted! Check your console for data.');
-                console.log(this.formData);
-                localStorage.removeItem('onboardingFormData');
-            }
-        }
-    }
-}
-</script>
 </body>
 </html>

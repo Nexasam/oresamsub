@@ -1,18 +1,19 @@
 <!DOCTYPE html>
-<html lang="en" x-data="onboardingForm()" x-init="init()" :class="{ 'dark': darkMode }">
+<html lang="en" x-data="{ darkMode: false }" x-init="darkMode = localStorage.getItem('darkMode') === 'true'" :class="{ 'dark': darkMode }">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard</title>
+    <!-- TailwindCSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- AlpineJS CDN -->
     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <!-- Google Font: Inter -->
+    {{-- <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet"> --}}
+
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
       body { font-family: 'Outfit', sans-serif; }
-        /* .drag-drop {
-            @apply mt-1 block w-full border-2 border-dashed rounded p-4 text-center cursor-pointer bg-white dark:bg-gray-700 transition-colors;
-        } */
-
         .wallet-bg {
             background: radial-gradient(circle at top left, rgba(99, 102, 241, 0.2), transparent 70%),
                         radial-gradient(circle at bottom right, rgba(16, 185, 129, 0.2), transparent 70%);
@@ -21,6 +22,7 @@
             position: relative;
             overflow: hidden;
         }
+
         .wallet-svg-bg::before {
             content: "";
             position: absolute;
@@ -35,6 +37,7 @@
             opacity: 0.3;
             z-index: 0;
         }
+
         .wallet-svg-bg > * {
             position: relative;
             z-index: 1;
@@ -146,7 +149,26 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
                     </svg>
                 </button>
-                <h1 class="text-2xl font-semibold text-gray-700 dark:text-gray-100 ml-4">Dashboard</h1>
+      
+                <div x-data="{ selectedBusiness: 'Nexasam Tech', open: false, businesses: ['Nexasam Tech', 'Oresamsub', 'SamsApp'] }" class="relative ml-4">
+                    <button @click="open = !open" class="text-2xl font-semibold text-gray-700 dark:text-gray-100 flex items-center gap-2">
+                        <span x-text="selectedBusiness"></span>
+                        <svg class="w-5 h-5 text-gray-600 dark:text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                        </svg>
+                    </button>
+                
+                    <!-- Dropdown -->
+                    <div x-show="open" @click.away="open = false" class="absolute z-50 mt-2 w-48 bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded shadow">
+                        <template x-for="business in businesses" :key="business">
+                            <button @click="selectedBusiness = business; open = false"
+                                class="block w-full text-left px-4 py-2 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-600"
+                                x-text="business"></button>
+                        </template>
+                    </div>
+                </div>
+                
+
             </div>
            
             <div class="flex items-center gap-4">
@@ -191,67 +213,84 @@
                 </div>
             </div>
 
-            <div class="mb-10 bg-white dark:bg-gray-800 shadow rounded-lg p-6">
-                <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-6">Business Onboarding</h2>
-
-                <template x-for="s in steps" :key="s">
-                    <div x-show="step === s" class="space-y-4">
-                        <h3 class="text-lg font-semibold text-blue-600 dark:text-blue-400" x-text="'Step ' + s + ': ' + stepTitles[s-1]"></h3>
-                        <div class="grid grid-cols-1 gap-4">
-                            <template x-for="(field, index) in fields[s-1]" :key="index">
+            <div x-data="{ drawerOpen: false }">
+                <!-- Total Users and Add Button -->
+                <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between mt-6 p-6 bg-gradient-to-r from-blue-50 via-white to-blue-50 dark:from-gray-800 dark:via-gray-900 dark:to-gray-800 rounded-lg shadow-md border border-blue-100 dark:border-gray-700">
+                    <div>
+                        <h2 class="text-2xl font-bold text-gray-800 dark:text-white flex items-center gap-2">
+                            <svg class="w-6 h-6 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5V4H2v16h5m10-11l-5 5m0 0l-5-5m5 5V4" />
+                            </svg>
+                            Total Users: 
+                            <span class="text-blue-600 dark:text-blue-400 ml-1">1,250</span>
+                        </h2>
+                        <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Users currently active on this business profile</p>
+                    </div>
+                
+                    <button @click="drawerOpen = true" class="mt-4 sm:mt-0 inline-flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-blue-600 to-blue-500 text-white text-sm font-semibold rounded-lg shadow hover:from-blue-700 hover:to-blue-600 transition-all">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/>
+                        </svg>
+                        Add New User
+                    </button>
+                </div>
+            
+                <!-- Drawer -->
+                <div x-show="drawerOpen" class="fixed inset-0 flex z-50">
+                    <!-- Overlay -->
+                    <div class="fixed inset-0 bg-black bg-opacity-40" @click="drawerOpen = false"></div>
+            
+                    <!-- Drawer Panel -->
+                    <div class="ml-auto w-full max-w-md bg-white dark:bg-gray-800 h-full shadow-xl transform transition-transform duration-300 ease-in-out"
+                         x-transition:enter="translate-x-full"
+                         x-transition:enter-start="translate-x-full"
+                         x-transition:enter-end="translate-x-0"
+                         x-transition:leave="translate-x-0"
+                         x-transition:leave-start="translate-x-0"
+                         x-transition:leave-end="translate-x-full">
+                        <div class="p-6 flex flex-col h-full">
+                            <div class="flex justify-between items-center mb-4">
+                                <h3 class="text-xl font-semibold text-gray-800 dark:text-white">Add New User</h3>
+                                <button @click="drawerOpen = false" class="text-gray-500 dark:text-gray-300 hover:text-red-500 transition">
+                                    <svg class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+                                    </svg>
+                                </button>
+                            </div>
+            
+                            <!-- Form -->
+                            <form class="space-y-4 flex-1 overflow-y-auto">
                                 <div>
-                                    <template x-if="field.type === 'file'">
-                                        <label class="block w-full">
-                                            <span class="text-sm font-medium text-gray-700 dark:text-gray-200" x-text="field.label"></span>
-                                            <div class="mt-1 block w-full border-2 border-dashed rounded p-4 text-center cursor-pointer bg-white dark:bg-gray-700 transition-colors relative"
-                                                 @dragover.prevent="dragOver = true"
-                                                 @dragleave.prevent="dragOver = false"
-                                                 @drop.prevent="handleDragDrop($event, field.key); dragOver = false"
-                                                 :class="{ 'border-blue-500': dragOver }">
-                                                <input type="file" class="absolute inset-0 opacity-0 cursor-pointer"
-                                                       @change="handleFileUpload($event, field.key)">
-                                                <div class="text-sm text-gray-500 dark:text-gray-300">
-                                                    <template x-if="!formData[field.key]">
-                                                        <p>Drag & drop or click to upload</p>
-                                                    </template>
-                                                    <template x-if="formData[field.key]">
-                                                        <p x-text="formData[field.key]?.name"></p>
-                                                    </template>
-                                                </div>
-                                            </div>
-                                            <p x-show="errors[field.key]" class="text-red-500 text-sm mt-1">This field is required</p>
-                                        </label>
-                                    </template>
-
-                                    <template x-if="field.type !== 'file'">
-                                        <div>
-                                            <label class="block mb-1 text-sm font-medium text-gray-700 dark:text-gray-200" x-text="field.label"></label>
-                                            <input :type="field.type"
-                                                   x-model="formData[field.key]"
-                                                   @input="errors[field.key] = ''"
-                                                   :class="[
-                                                       'px-4 py-2 border rounded w-full',
-                                                       'text-gray-900 dark:text-white',
-                                                       errors[field.key] ? 'border-red-500' : 'border-gray-300 dark:border-gray-600',
-                                                       'bg-white dark:bg-gray-700'
-                                                   ]">
-                                            <p x-show="errors[field.key]" class="text-red-500 text-sm mt-1">This field is required</p>
-                                        </div>
-                                    </template>
+                                    <label class="block mb-1 text-sm font-medium text-gray-700 dark:text-gray-300">Full Name</label>
+                                    <input type="text" class="w-full px-4 py-2 border rounded dark:bg-gray-700 dark:text-white">
                                 </div>
-                            </template>
-                        </div>
-                        <div class="flex justify-between mt-6">
-                            <button x-show="s > 1" @click="prevStep" class="px-4 py-2 bg-gray-300 text-gray-800 rounded hover:bg-gray-400">Previous</button>
-                            <button x-show="s < steps.length" @click="nextStep" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">Next</button>
-                            <button x-show="s === steps.length" @click="submitForm" class="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700">Submit</button>
+                                <div>
+                                    <label class="block mb-1 text-sm font-medium text-gray-700 dark:text-gray-300">Email</label>
+                                    <input type="email" class="w-full px-4 py-2 border rounded dark:bg-gray-700 dark:text-white">
+                                </div>
+                                <div>
+                                    <label class="block mb-1 text-sm font-medium text-gray-700 dark:text-gray-300">Phone</label>
+                                    <input type="text" class="w-full px-4 py-2 border rounded dark:bg-gray-700 dark:text-white">
+                                </div>
+                                <div>
+                                    <label class="block mb-1 text-sm font-medium text-gray-700 dark:text-gray-300">Role</label>
+                                    <select class="w-full px-4 py-2 border rounded dark:bg-gray-700 dark:text-white">
+                                        <option>User</option>
+                                        <option>Admin</option>
+                                    </select>
+                                </div>
+                                <div class="pt-4">
+                                    <button type="submit" class="w-full py-2 bg-blue-600 text-white font-semibold rounded hover:bg-blue-700 transition">
+                                        Save User
+                                    </button>
+                                </div>
+                            </form>
                         </div>
                     </div>
-                </template>
+                </div>
             </div>
-
-
-
+            
+            
             
 
           <!-- API Settings Forms -->
@@ -337,85 +376,5 @@
         </main>
     </div>
 </div>
-
-<script>
-function onboardingForm() {
-    return {
-        step: 1,
-        stepTitles: ['Basic Details', 'Directors', 'Verifications', 'Document Uploads'],
-        steps: [1, 2, 3, 4],
-        fields: [
-            [
-                { label: 'Full Name', key: 'fullName', type: 'text' },
-                { label: 'Business Name', key: 'businessName', type: 'text' },
-                { label: 'Email Address', key: 'email', type: 'email' },
-                { label: 'Phone Number', key: 'phone', type: 'text' },
-                { label: 'RC Number', key: 'rcNumber', type: 'text' },
-                { label: 'Business Category', key: 'category', type: 'text' },
-            ],
-            [
-                { label: 'Director 1 Name', key: 'director1Name', type: 'text' },
-                { label: 'Director 1 Phone', key: 'director1Phone', type: 'text' },
-                { label: 'Director 1 Email', key: 'director1Email', type: 'email' },
-                { label: 'Director 2 Name', key: 'director2Name', type: 'text' },
-                { label: 'Director 2 Phone', key: 'director2Phone', type: 'text' },
-                { label: 'Director 2 Email', key: 'director2Email', type: 'email' },
-            ],
-            [
-                { label: 'Business Address', key: 'address', type: 'text' },
-                { label: 'Tax ID', key: 'taxId', type: 'text' },
-                { label: 'TIN', key: 'tin', type: 'text' },
-                { label: 'NIN', key: 'nin', type: 'text' },
-                { label: 'Bank Name', key: 'bankName', type: 'text' },
-                { label: 'Account Number', key: 'accountNumber', type: 'text' },
-            ],
-            [
-                { label: 'CAC Document', key: 'cacDoc', type: 'file' },
-                { label: 'Utility Bill', key: 'utilityBill', type: 'file' },
-                { label: 'Valid ID', key: 'validId', type: 'file' },
-                { label: 'Passport Photo', key: 'passport', type: 'file' },
-                { label: 'Signature', key: 'signature', type: 'file' },
-                { label: 'Business Logo', key: 'logo', type: 'file' },
-            ]
-        ],
-        formData: {},
-        errors: {},
-        init() {
-            this.darkMode = localStorage.getItem('darkMode') === 'true';
-            this.formData = JSON.parse(localStorage.getItem('onboardingFormData') || '{}');
-        },
-        validateStep() {
-            this.errors = {};
-            for (const field of this.fields[this.step - 1]) {
-                const value = this.formData[field.key];
-                if (!value || (field.type === 'file' && value instanceof File === false)) {
-                    this.errors[field.key] = true;
-                }
-            }
-            return Object.keys(this.errors).length === 0;
-        },
-        nextStep() {
-            if (this.validateStep()) {
-                this.saveData();
-                if (this.step < this.steps.length) this.step++;
-            }
-        },
-        prevStep() {
-            if (this.step > 1) this.step--;
-        },
-        saveData() {
-            localStorage.setItem('onboardingFormData', JSON.stringify(this.formData));
-        },
-        submitForm() {
-            if (this.validateStep()) {
-                this.saveData();
-                alert('Form Submitted! Check your console for data.');
-                console.log(this.formData);
-                localStorage.removeItem('onboardingFormData');
-            }
-        }
-    }
-}
-</script>
 </body>
 </html>

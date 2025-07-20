@@ -16,6 +16,7 @@ use App\Http\Controllers\AddonController;
 use App\Http\Controllers\UsersController;
 use App\Http\Controllers\AirtimeController;
 use App\Http\Controllers\NetworkController;
+use App\Http\Controllers\PrivacyController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\WalletsController;
@@ -53,9 +54,13 @@ use App\Http\Controllers\ElectricitySubscriptionController;
 
 Route::middleware('set_locale')->group(function () {
 
+            //privacy controller
+            Route::get('privacy/index', [PrivacyController::class, 'index']);
+
+
             // migration tools
-            Route::get('migrate_users', [MigrationController::class, 'migrate_users']);
-            Route::get('migrate_accounts', [MigrationController::class, 'migrate_accounts']);
+            // Route::get('migrate_users', [MigrationController::class, 'migrate_users']);
+            // Route::get('migrate_accounts', [MigrationController::class, 'migrate_accounts']);
 
 
             Route::get('logs', [LogViewerController::class, 'index']);
