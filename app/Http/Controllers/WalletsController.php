@@ -700,11 +700,11 @@ class WalletsController extends Controller
         'nin_fullname' => 'required',
         'nin_phone_number' => 'required',
         'pin' => ['required','string','regex:/^\d{4,5}$/'],
-    ]);
+      ]);
     
-    if ($validator->stopOnFirstFailure()->fails()) {
-        return response()->json(['status'=>'-1', 'message'=>$validator->errors()->first(),'data' => $request->all() ]);
-    }
+      if ($validator->stopOnFirstFailure()->fails()) {
+          return response()->json(['status'=>'-1', 'message'=>$validator->errors()->first(),'data' => $request->all() ]);
+      }
 
    
 
