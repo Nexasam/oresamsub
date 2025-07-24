@@ -917,11 +917,8 @@
                                   const upline_commission = dataList[child].upline_commission;
                                   const selling_price = dataList[child].selling_price;
                                   if(product_slug == 'data'){
-                                    if(env('APP_NAME') == 'OresamSub'){
-                                      option = "<option value="+idd+">"+product_plan_name+"- &#8358; "+selling_price+" - Upline Commission:&#8358;"+upline_commission+"</option>";
-                                    }else{
-                                      option = "<option value="+idd+">"+product_plan_name+'- &#8358;'+selling_price+"</option>";
-                                    }
+                                    // option = "<option value="+idd+">"+product_plan_name+'- &#8358;'+selling_price+"</option>";
+                                    option = "<option value="+idd+">"+product_plan_name+"- &#8358; "+selling_price+" - Upline Commission:&#8358;"+upline_commission+"</option>";
                                   }
                                   else if(product_slug == 'airtime' && amount != ''){
 
@@ -932,13 +929,7 @@
                                   else if(product_slug == 'airtime' && amount == ''){
                                     option = "<option value="+idd+">"+product_plan_name+"</option>";
                                   }else{
-
-                                    if(env('APP_NAME') == 'OresamSub'){
-                                      option = "<option value="+idd+">"+product_plan_name+" &nbsp;&nbsp;Upline Commission:&#8358;"+upline_commission+"</option>";
-                                     }else{
-                                      option = "<option value="+idd+">"+product_plan_name+"</option>";
-                                     }
-
+                                    option = "<option value="+idd+">"+product_plan_name+" &nbsp;&nbsp;Upline Commission:&#8358;"+upline_commission+"</option>";
                                   }
                                   $('#product_plan_id').append(option);
                                 
