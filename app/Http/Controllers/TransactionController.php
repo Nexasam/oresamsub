@@ -374,7 +374,7 @@ class TransactionController extends Controller
                     $dataa .=  '<b>'.$prefix.'  '.$token_details.'</b>  <br>';
                 }
                 if($data->transaction_category == 'data'){
-                    $dataa .= number_format($data->product_plan->data_size_in_mb ?? '0') .' MB';
+                    $dataa .= number_format($data->product_plan->data_size_in_mb ?? '0') .' MBx';
                 }
 
             }else{
