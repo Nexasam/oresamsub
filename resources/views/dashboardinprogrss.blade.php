@@ -78,310 +78,220 @@
         </div> --}}
         <div class="col-span-12 xxxl:col-span-2 md:col-span-3">
             <div 
-                x-data="{ 
-                    referral: '{{ url("/register?ref=" . $user->phone_number) }}', 
-                    copied: false 
-                }" 
-                class="max-w-sm w-full p-4 rounded-2xl shadow-lg bg-gradient-to-r from-green-500 to-green-700 text-white relative space-y-4"
+              x-data="{ 
+                referral: '{{ url("/register?ref=" . $user->phone_number) }}', 
+                copied: false 
+              }" 
+              class="max-w-sm w-full p-4 rounded-2xl shadow-lg bg-gradient-to-r from-green-500 to-green-700 text-white dark:from-green-600 dark:to-green-800 relative space-y-4"
             >
-                <!-- Plan Info -->
-                <div class="flex items-center space-x-4">
-                    <div class="p-3 bg-white/20 rounded-full">
-                        <!-- Icon -->
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none"
-                            viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M8 7V3m8 4V3M5 11h14M5 19h14M5 15h14M4 5h16a1 1 0 011 1v14a1 1 0 01-1 1H4a1 1 0 01-1-1V6a1 1 0 011-1z" />
-                        </svg>
-                    </div>
-                    <div>
-                        <p class="text-sm uppercase tracking-wider text-white/80">{{ __('messages.Plan') }}</p>
-                        <p class="text-2xl font-bold">
-                            {{ $user->user_plan->updated_user_plan_name ?? $user->user_plan->user_plan_name }}
-                        </p>
-                    </div>
+              <!-- Plan Info -->
+              <div class="flex items-center space-x-4">
+                <div class="p-3 bg-white/20 dark:bg-white/10 rounded-full">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none"
+                       viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M8 7V3m8 4V3M5 11h14M5 19h14M5 15h14M4 5h16a1 1 0 011 1v14a1 1 0 01-1 1H4a1 1 0 01-1-1V6a1 1 0 011-1z" />
+                  </svg>
                 </div>
-        
-                <!-- Referral Link + Copy/Share -->
-                @if (env('APP_NAME') == 'OresamSub')
-                    <div class="bg-white/10 backdrop-blur-sm p-3 rounded-lg">
-                        <p class="text-sm text-white/80 mb-1">{{ __('messages.Enjoy commission using your link') }}:</p>
-            
-                        <div class="flex items-center space-x-2">
-                            <input 
-                                type="text" 
-                                x-model="referral" 
-                                readonly 
-                                class="bg-transparent text-white text-sm flex-1 px-2 py-1 border border-white/30 rounded focus:outline-none"
-                            >
-                            <button 
-                                @click="navigator.clipboard.writeText(referral); copied = true; setTimeout(() => copied = false, 2000)" 
-                                class="text-sm bg-white/20 hover:bg-white/30 px-3 py-1 rounded transition"
-                            >
-                                {{ __('messages.Copy') }}
-                            </button>
-                        </div>
-            
-                        <template x-if="copied">
-                            <p class="text-green-200 text-xs mt-1">Copied!</p>
-                        </template>
-            
-                        <div class="mt-3 flex flex-wrap gap-2">
-                     
-                            <a 
-                                :href="`https://wa.me/?text=Enjoy cheap and affordable data, airtime, cable subscription and electricity bills with {{env('APP_NAME')}} using this link: ${referral}`" 
-                                target="_blank" 
-                                class="bg-green-500 hover:bg-green-600 px-3 py-1 rounded text-xs"
-                            >
-                                WhatsApp
-                            </a>
-            
-                           
-                            <a 
-                                :href="`https://twitter.com/intent/tweet?text=Enjoy cheap and affordable data, airtime, cable subscription and electricity bills with {{env('APP_NAME')}} using this link&url=${referral}`" 
-                                target="_blank" 
-                                class="bg-blue-400 hover:bg-blue-500 px-3 py-1 rounded text-xs"
-                            >
-                                Twitter
-                            </a>
-            
-                         
-                            <button 
-                                @click="
-                                    if (navigator.share) {
-                                        navigator.share({
-                                            title: 'Referral',
-                                            text: 'Get cheap data here:',
-                                            url: referral
-                                        })
-                                    } else {
-                                        alert('Sharing not supported on this device.');
-                                    }
-                                " 
-                                class="bg-white/20 hover:bg-white/30 px-3 py-1 rounded text-xs"
-                            >
-                                Share
-                            </button>
-                        </div>
-                    </div>
-                @endif
-            </div>
-
-            <div
-             class="max-w-sm w-full p-2 mt-2 rounded-2xl shadow-lg bg-white border border-2 border-gray-700  text-white relative space-y-4"
-            >
-
-                @if (count($user_virtual_accounts) > 0)
-                
-
-                   @if (config('app.name') == 'OresamSub')
-                        <div class="grid">
-                            {{-- @if (auth()->user()->verification_status != 1)
-                                <div class="max-w-sm w-full p-4 rounded-2xl shadow-xl bg-[{{$sidebar_color}}] text-white">
-                                    <b><a class="underline" href="{{route('user.verification.index')}}">{{__('messages.Verify your Account for better opportunities')}} </a></b>                               
-                                </div>
-                            @endif --}}
-                            
-                            @if(count($user_virtual_accounts) < $total_expected_bankcodes)
-                                <form action="{{ route('user.virtual_accounts.generate') }}" method="POST">
-                                    @csrf
-                                    <div class="mb-4">
-                                        <button type="submit" class="ti-btn ti-btn-primary w-full">{{__('messages.Generate More Virtual Accounts')}}</button>
-                                    </div>
-                                </form>
-                            @endif
-
-                        </div>      
-
-
-                   @endif    
-                  
-
-                    @foreach ($user_virtual_accounts as $vaccount)
-                            {{-- <div class="flex items-center space-x-4">
-                                <div>
-                                    <p class="text-sm uppercase tracking-wider text-gray-900"></p>
-                                    <p class="text-2xl font-bold">
-                                        {{ $vaccount->account_number }} 
-                                    </p>
-                                </div>
-                            </div> --}}
-
-                        <div class="grid grid-cols-1">
-                            @if (in_array($vaccount->bank_code,$active_bankcodes))
-                            <div class="max-w-sm w-full p-4 rounded-2xl shadow-xl bg-[{{$sidebar_color}}] text-white">
-                            
-                                <p>
-                                    <span class="text-md font-bold">{{$vaccount->bank_name }}</span> &nbsp; | &nbsp; {{ $vaccount->account_name }} | &nbsp; <span class="text-xl font-bold">{{ $vaccount->account_number }}</span>
-                                    @php
-                                       $bankcodeinfo = App\Models\FundingOptionBankCodes::where('bank_code',$vaccount->bank_code)->first();
-                                       $charge_info = $bankcodeinfo->rate_category == 'Percentage' ? '%':' NGN Flat rate';
-                                       $bank_charges =  $bankcodeinfo->bank_charges;
-                                       $bank_charges =  $bankcodeinfo->short_description == NULL ? '':'|&nbsp;';
-                                   @endphp
-                                   <small class="font-bold">{!! '<br>charges: '.$bankcodeinfo->bank_charges .$charge_info.'&nbsp;'.$bankcodeinfo->short_description !!}</small>
-                                </p>
-                            
-                            </div>     
-                            @endif   
-                        </div>
-                     
-                    @endforeach
-                @else
-                                    
-                        <div class="max-w-sm w-full p-6 rounded-2xl shadow-xl bg-gradient-to-r from-indigo-600 to-purple-600 text-white">
-                            <div class="flex items-center justify-between">
-                            <!-- Icon (pointing down) -->
-                            <div class="p-3 bg-white/20 rounded-full">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-current" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <!-- Wallet Icon -->
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
-                                        d="M3 10h18M3 14h18M3 6h18c.553 0 1 .447 1 1v12c0 .553-.447 1-1 1H3c-.553 0-1-.447-1-1V7c0-.553.447-1 1-1z" />
-                                    <!-- Naira Symbol (₦) -->
-                                    <text x="12" y="15" font-size="8" font-family="Arial" text-anchor="middle" fill="currentColor">₦</text>
-                                </svg>
-                                
-                            </div>
-            
-                            @if (config('app.name') == 'OresamSub')
-                                <div class="grid">
-                                    @if (auth()->user()->verification_status != 1)
-                                    <b><a class="underline" href="{{route('user.verification.index')}}">{{__('messages.Verify your Account with better opportunities')}} </a></b>                               
-                                    @endif
-                                    <form action="{{ route('user.virtual_accounts.generate') }}" method="POST">
-                                        @csrf
-                                        <div class="mb-4">
-                                            <button type="submit" class="ti-btn ti-btn-primary w-full">{{__('messages.Generate Virtual Accounts')}}</button>
-                                        </div>
-                                    </form>
-                                 </div>
-                            @endif
-
-                            {{-- <a href="{{route('user.wallet.index')}}" class="bg-[{{$sidebar_color}}]  text-sm font-medium px-4 py-2 rounded-lg shadow hover:bg-indigo-700 transition">
-                                {{ __('messages.Fund Wallet')  }}
-                            </a> --}}
-                            </div>
-                        </div>
-
-                @endif
-               
-               
-
-            </div>
+                <div>
+                  <p class="text-sm uppercase tracking-wider text-white/80 dark:text-white/70">{{ __('messages.Plan') }}</p>
+                  <p class="text-2xl font-bold">
+                    {{ $user->user_plan->updated_user_plan_name ?? $user->user_plan->user_plan_name }}
+                  </p>
+                </div>
+              </div>
+          
+              <!-- Referral -->
+              @if (env('APP_NAME') == 'OresamSub')
+                <div class="bg-white/10 dark:bg-white/5 backdrop-blur-sm p-3 rounded-lg">
+                  <p class="text-sm text-white/80 dark:text-white/60 mb-1">{{ __('messages.Enjoy commission using your link') }}:</p>
+          
+                  <div class="flex items-center space-x-2">
+                    <input 
+                      type="text" 
+                      x-model="referral" 
+                      readonly 
+                      class="bg-transparent text-white dark:text-white text-sm flex-1 px-2 py-1 border border-white/30 dark:border-white/20 rounded focus:outline-none"
+                    >
+                    <button 
+                      @click="navigator.clipboard.writeText(referral); copied = true; setTimeout(() => copied = false, 2000)" 
+                      class="text-sm bg-white/20 dark:bg-white/10 hover:bg-white/30 dark:hover:bg-white/20 px-3 py-1 rounded transition"
+                    >
+                      {{ __('messages.Copy') }}
+                    </button>
+                  </div>
+          
+                  <template x-if="copied">
+                    <p class="text-green-200 text-xs mt-1">Copied!</p>
+                  </template>
+          
+                  <div class="mt-3 flex flex-wrap gap-2">
+                    <a 
+                      :href="`https://wa.me/?text=Enjoy cheap and affordable data, airtime, cable subscription and electricity bills with {{env('APP_NAME')}} using this link: ${referral}`" 
+                      target="_blank" 
+                      class="bg-green-500 hover:bg-green-600 px-3 py-1 rounded text-xs text-white"
+                    >
+                      WhatsApp
+                    </a>
+                    <a 
+                      :href="`https://twitter.com/intent/tweet?text=Enjoy cheap and affordable data, airtime, cable subscription and electricity bills with {{env('APP_NAME')}} using this link&url=${referral}`" 
+                      target="_blank" 
+                      class="bg-blue-400 hover:bg-blue-500 px-3 py-1 rounded text-xs text-white"
+                    >
+                      Twitter
+                    </a>
+                    <button 
+                      @click="
+                        if (navigator.share) {
+                          navigator.share({
+                            title: 'Referral',
+                            text: 'Get cheap data here:',
+                            url: referral
+                          })
+                        } else {
+                          alert('Sharing not supported on this device.');
+                        }
+                      " 
+                      class="bg-white/20 dark:bg-white/10 hover:bg-white/30 dark:hover:bg-white/20 px-3 py-1 rounded text-xs text-white"
+                    >
+                      Share
+                    </button>
+                  </div>
+                </div>
+              @endif
         </div>
+          
  
 
         
         <div class="col-span-12 xxxl:col-span-2 md:col-span-3">
-            <a href="{{route('wallet_creditings.index')}}">
-            <div class="max-w-sm w-full p-6 rounded-2xl shadow-lg bg-gradient-to-r from-blue-500 to-blue-700 text-white">
+            <a href="{{ route('wallet_creditings.index') }}">
+                <div class="max-w-sm w-full p-6 rounded-2xl shadow-lg 
+                            bg-gradient-to-r from-blue-500 to-blue-700 
+                            dark:from-blue-600 dark:to-blue-800 
+                            text-white">
+                    <div class="flex items-center space-x-4">
+                        <div class="p-3 bg-white/20 dark:bg-white/10 rounded-full">
+                            <!-- Icon -->
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                                      d="M8 7V3m8 4V3M5 11h14M5 19h14M5 15h14M4 5h16a1 1 0 011 1v14a1 1 0 01-1 1H4a1 1 0 01-1-1V6a1 1 0 011-1z" />
+                            </svg>
+                        </div>
+                        <div>
+                            <p class="text-sm uppercase tracking-wider text-white/80 dark:text-white/70">{{ __('messages.Balance') }}</p>
+                            <p class="text-2xl font-bold">
+                                &#8358; {{ number_format($user->main_wallet, 2) ?? 0 }}
+                            </p>
+                            @if ($funding_res != 'nil') 
+                                {!! $funding_res !!}
+                            @endif
+                        </div>
+                    </div>
+                </div>
+            </a>
+        
+            <div class="max-w-sm w-full p-6 mt-2 rounded-2xl shadow-lg 
+                        bg-gradient-to-r from-indigo-500 to-indigo-700 
+                        dark:from-indigo-600 dark:to-indigo-800 
+                        text-white">
                 <div class="flex items-center space-x-4">
-                  <div class="p-3 bg-white/20 rounded-full">
-                    <!-- Icon: Heroicon or Lucide -->
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
-                              d="M8 7V3m8 4V3M5 11h14M5 19h14M5 15h14M4 5h16a1 1 0 011 1v14a1 1 0 01-1 1H4a1 1 0 01-1-1V6a1 1 0 011-1z" />
-                      </svg>
-                      
-                  </div>
-                  <div>
-                    <p class="text-sm uppercase tracking-wider text-white/80"> {{ __('messages.Balance') }}</p>
-                    <p class="text-2xl font-bold">
-                        &#8358; {{ number_format($user->main_wallet,2) ?? 0  }}
-                    </p>
-                    @if ($funding_res != 'nil') 
-                           {!! $funding_res !!}
-                    @endif
-                  </div>
+                    <div class="p-3 bg-white/20 dark:bg-white/10 rounded-full">
+                        <!-- Icon -->
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                                  d="M8 7V3m8 4V3M5 11h14M5 19h14M5 15h14M4 5h16a1 1 0 011 1v14a1 1 0 01-1 1H4a1 1 0 01-1-1V6a1 1 0 011-1z" />
+                        </svg>
+                    </div>
+                    <div>
+                        <p class="text-sm uppercase tracking-wider text-white/80 dark:text-white/70">{{ __('messages.Transactions') }}</p>
+                        <p class="text-2xl font-bold">
+                            {{ number_format(count($transactions)) }}
+                        </p>
+                    </div>
                 </div>
             </div>
-             </a>
-
-            <div class="max-w-sm w-full p-6 mt-2 rounded-2xl shadow-lg bg-gradient-to-r from-indigo-500 to-indigo-700 text-white">
-                <div class="flex items-center space-x-4">
-                  <div class="p-3 bg-white/20 rounded-full">
-                    <!-- Icon: Heroicon or Lucide -->
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
-                              d="M8 7V3m8 4V3M5 11h14M5 19h14M5 15h14M4 5h16a1 1 0 011 1v14a1 1 0 01-1 1H4a1 1 0 01-1-1V6a1 1 0 011-1z" />
-                      </svg>
-                      
-                  </div>
-                  <div>
-                    <p class="text-sm uppercase tracking-wider text-white/80">{{  __('messages.Transactions')  }}</p>
-                    <p class="text-2xl font-bold">
-                        {{ number_format( count($transactions))  }}
-                    </p>
-                  </div>
-                </div>
-              </div>
-              
         </div>
+        
 
         <div class="col-span-12 xxxl:col-span-2 md:col-span-3">
-         
-            <div class="max-w-sm w-full p-6 rounded-2xl shadow-xl text-gray-800 relative overflow-hidden bg-white">
-             
-                <div class="absolute inset-0 opacity-30 pointer-events-none">
-                  <svg class="w-full h-full" xmlns="http://www.w3.org/2000/svg" fill="none">
-                    <defs>
-                      <pattern id="bigger-dots" width="40" height="40" patternUnits="userSpaceOnUse">
-                        <circle cx="4" cy="4" r="3" fill="#cbd5e0" />
-                      </pattern>
-                    </defs>
-                    <rect width="100%" height="100%" fill="url(#bigger-dots)" />
-                  </svg>
-                </div>
-              
-              
-                <div class="relative z-10 flex items-center justify-between">
-                  <!-- Icon -->
-                  <div class="p-3 bg-gray-100 rounded-full">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-current" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
-                              d="M5 20h1v-4H5v4zm4 0h1v-7H9v7zm4 0h1v-10h-1v10zm4 0h1v-13h-1v13z" />
-                      </svg>
-                  </div>
-              
-                  <!-- Button -->
-                  <a href="{{route('user.data.buy_data')}}" class=" bg-[{{$sidebar_color}}] text-white text-sm font-medium px-4 py-2 rounded-lg shadow hover:bg-indigo-700 transition">
-                    {{ __('messages.Buy Data') }}
-                  </a>
-                </div>
-            </div>
 
-            <div class="max-w-sm w-full p-6 mt-3 rounded-2xl shadow-xl text-gray-800 relative overflow-hidden bg-white">
-                <!-- Enhanced Pattern Background -->
-                <div class="absolute inset-0 opacity-30 pointer-events-none">
-                  <svg class="w-full h-full" xmlns="http://www.w3.org/2000/svg" fill="none">
-                    <defs>
-                      <pattern id="bigger-dots" width="40" height="40" patternUnits="userSpaceOnUse">
-                        <circle cx="4" cy="4" r="3" fill="#cbd5e0" />
-                      </pattern>
-                    </defs>
-                    <rect width="100%" height="100%" fill="url(#bigger-dots)" />
+            <!-- Buy Data Card -->
+            <div class="max-w-sm w-full p-6 rounded-2xl shadow-xl relative overflow-hidden 
+                        bg-white text-gray-800 dark:bg-gray-800 dark:text-white">
+                        
+              <!-- SVG Pattern Background -->
+              <div class="absolute inset-0 opacity-30 pointer-events-none">
+                <svg class="w-full h-full" xmlns="http://www.w3.org/2000/svg" fill="none">
+                  <defs>
+                    <pattern id="bigger-dots-light" width="40" height="40" patternUnits="userSpaceOnUse">
+                      <circle cx="4" cy="4" r="3" fill="#cbd5e0" />
+                    </pattern>
+                    <pattern id="bigger-dots-dark" width="40" height="40" patternUnits="userSpaceOnUse">
+                      <circle cx="4" cy="4" r="3" fill="#4b5563" />
+                    </pattern>
+                  </defs>
+                  <rect width="100%" height="100%" class="dark:hidden" fill="url(#bigger-dots-light)" />
+                  <rect width="100%" height="100%" class="hidden dark:block" fill="url(#bigger-dots-dark)" />
+                </svg>
+              </div>
+          
+              <!-- Card Content -->
+              <div class="relative z-10 flex items-center justify-between">
+                <div class="p-3 bg-gray-100 dark:bg-gray-700 rounded-full">
+                  <!-- Icon -->
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-current" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M5 20h1v-4H5v4zm4 0h1v-7H9v7zm4 0h1v-10h-1v10zm4 0h1v-13h-1v13z" />
                   </svg>
                 </div>
-              
-                <!-- Card Content -->
-                <div class="relative z-10 flex items-center justify-between">
-                  <!-- Icon -->
-                  <div class="p-3 bg-gray-100 rounded-full">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-current" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
-                          d="M7 4h10a1 1 0 011 1v14a1 1 0 01-1 1H7a1 1 0 01-1-1V5a1 1 0 011-1zm5 7v4m2-2h-4" />
-                      </svg>
-                      
-                  </div>
-              
-                  <!-- Button -->
-                  <a href="{{route('user.airtime.buy_airtime')}}" class="bg-[{{$sidebar_color}}]  text-white text-sm font-medium px-4 py-2 rounded-lg shadow hover:bg-indigo-700 transition">
-                    {{ __('messages.Buy Airtime') }}
-                  </a>
-                </div>
+          
+                <a href="{{ route('user.data.buy_data') }}" 
+                   class="bg-[{{ $sidebar_color }}] text-white text-sm font-medium px-4 py-2 rounded-lg shadow hover:bg-indigo-700 transition">
+                  {{ __('messages.Buy Data') }}
+                </a>
+              </div>
             </div>
-              
-        </div>
+          
+            <!-- Buy Airtime Card -->
+            <div class="max-w-sm w-full p-6 mt-3 rounded-2xl shadow-xl relative overflow-hidden 
+                        bg-white text-gray-800 dark:bg-gray-800 dark:text-white">
+                        
+              <!-- SVG Pattern Background -->
+              <div class="absolute inset-0 opacity-30 pointer-events-none">
+                <svg class="w-full h-full" xmlns="http://www.w3.org/2000/svg" fill="none">
+                  <defs>
+                    <pattern id="bigger-dots-light2" width="40" height="40" patternUnits="userSpaceOnUse">
+                      <circle cx="4" cy="4" r="3" fill="#cbd5e0" />
+                    </pattern>
+                    <pattern id="bigger-dots-dark2" width="40" height="40" patternUnits="userSpaceOnUse">
+                      <circle cx="4" cy="4" r="3" fill="#4b5563" />
+                    </pattern>
+                  </defs>
+                  <rect width="100%" height="100%" class="dark:hidden" fill="url(#bigger-dots-light2)" />
+                  <rect width="100%" height="100%" class="hidden dark:block" fill="url(#bigger-dots-dark2)" />
+                </svg>
+              </div>
+          
+              <!-- Card Content -->
+              <div class="relative z-10 flex items-center justify-between">
+                <div class="p-3 bg-gray-100 dark:bg-gray-700 rounded-full">
+                  <!-- Icon -->
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-current" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M7 4h10a1 1 0 011 1v14a1 1 0 01-1 1H7a1 1 0 01-1-1V5a1 1 0 011-1zm5 7v4m2-2h-4" />
+                  </svg>
+                </div>
+          
+                <a href="{{ route('user.airtime.buy_airtime') }}" 
+                   class="bg-[{{ $sidebar_color }}] text-white text-sm font-medium px-4 py-2 rounded-lg shadow hover:bg-indigo-700 transition">
+                  {{ __('messages.Buy Airtime') }}
+                </a>
+              </div>
+            </div>
+          
+          </div>
+          
 
 
   
@@ -417,84 +327,79 @@
 
         <div class="col-span-12 xxxl:col-span-2 md:col-span-3">
 
-           
-            <div class="max-w-sm w-full p-6 rounded-2xl shadow-xl text-gray-800 relative overflow-hidden bg-white">
-                <!-- Enhanced Pattern Background -->
-                <div class="absolute inset-0 opacity-30 pointer-events-none">
-                  <svg class="w-full h-full" xmlns="http://www.w3.org/2000/svg" fill="none">
-                    <defs>
-                      <pattern id="bigger-dots" width="40" height="40" patternUnits="userSpaceOnUse">
-                        <circle cx="4" cy="4" r="3" fill="#cbd5e0" />
-                      </pattern>
-                    </defs>
-                    <rect width="100%" height="100%" fill="url(#bigger-dots)" />
+            <!-- Cable Subscription Card -->
+            <div class="max-w-sm w-full p-6 rounded-2xl shadow-xl relative overflow-hidden bg-white text-gray-800 dark:bg-gray-800 dark:text-white">
+              
+              <!-- Background Pattern -->
+              <div class="absolute inset-0 opacity-30 pointer-events-none">
+                <svg class="w-full h-full" xmlns="http://www.w3.org/2000/svg" fill="none">
+                  <defs>
+                    <pattern id="dots-light-cable" width="40" height="40" patternUnits="userSpaceOnUse">
+                      <circle cx="4" cy="4" r="3" fill="#cbd5e0" />
+                    </pattern>
+                    <pattern id="dots-dark-cable" width="40" height="40" patternUnits="userSpaceOnUse">
+                      <circle cx="4" cy="4" r="3" fill="#4b5563" />
+                    </pattern>
+                  </defs>
+                  <rect width="100%" height="100%" class="dark:hidden" fill="url(#dots-light-cable)" />
+                  <rect width="100%" height="100%" class="hidden dark:block" fill="url(#dots-dark-cable)" />
+                </svg>
+              </div>
+          
+              <!-- Content -->
+              <div class="relative z-10 flex items-center justify-between">
+                <div class="p-3 bg-gray-100 dark:bg-gray-700 rounded-full">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-current" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                      d="M5 3h14a2 2 0 012 2v12a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2zm0 16v2h14v-2H5zm4-5h6m-3 0v4" />
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                      d="M6 17l-2 2m2-2h2" />
                   </svg>
                 </div>
-              
-                <!-- Card Content -->
-                <div class="relative z-10 flex items-center justify-between">
-                  <!-- Icon -->
-                  <div class="p-3 bg-gray-100 rounded-full">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-current" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
-                              d="M5 3h14a2 2 0 012 2v12a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2zm0 16v2h14v-2H5zm4-5h6m-3 0v4" />
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
-                              d="M6 17l-2 2m2-2h2" />
-                      </svg>
-                      
-                  </div>
-              
-                  <!-- Button -->
-                  <a href="{{route('user.cable_subscription.buy_cable_subscription')}}" class="bg-[{{$sidebar_color}}]  text-white text-sm font-medium px-4 py-2 rounded-lg shadow hover:bg-indigo-700 transition">
-                    {{ __('messages.Cable Subscription') }}
-                  </a>
-                </div>
+          
+                <a href="{{ route('user.cable_subscription.buy_cable_subscription') }}"
+                   class="bg-[{{ $sidebar_color }}] text-white text-sm font-medium px-4 py-2 rounded-lg shadow hover:bg-indigo-700 transition">
+                  {{ __('messages.Cable Subscription') }}
+                </a>
+              </div>
             </div>
-
-            <div class="max-w-sm w-full p-6 mt-3 rounded-2xl shadow-xl text-gray-800 relative overflow-hidden bg-white">
-                <!-- Enhanced Pattern Background -->
-                <div class="absolute inset-0 opacity-30 pointer-events-none">
-                  <svg class="w-full h-full" xmlns="http://www.w3.org/2000/svg" fill="none">
-                    <defs>
-                      <pattern id="bigger-dots" width="40" height="40" patternUnits="userSpaceOnUse">
-                        <circle cx="4" cy="4" r="3" fill="#cbd5e0" />
-                      </pattern>
-                    </defs>
-                    <rect width="100%" height="100%" fill="url(#bigger-dots)" />
+          
+            <!-- Electricity Card -->
+            <div class="max-w-sm w-full p-6 mt-3 rounded-2xl shadow-xl relative overflow-hidden bg-white text-gray-800 dark:bg-gray-800 dark:text-white">
+              
+              <!-- Background Pattern -->
+              <div class="absolute inset-0 opacity-30 pointer-events-none">
+                <svg class="w-full h-full" xmlns="http://www.w3.org/2000/svg" fill="none">
+                  <defs>
+                    <pattern id="dots-light-elec" width="40" height="40" patternUnits="userSpaceOnUse">
+                      <circle cx="4" cy="4" r="3" fill="#cbd5e0" />
+                    </pattern>
+                    <pattern id="dots-dark-elec" width="40" height="40" patternUnits="userSpaceOnUse">
+                      <circle cx="4" cy="4" r="3" fill="#4b5563" />
+                    </pattern>
+                  </defs>
+                  <rect width="100%" height="100%" class="dark:hidden" fill="url(#dots-light-elec)" />
+                  <rect width="100%" height="100%" class="hidden dark:block" fill="url(#dots-dark-elec)" />
+                </svg>
+              </div>
+          
+              <!-- Content -->
+              <div class="relative z-10 flex items-center justify-between">
+                <div class="p-3 bg-gray-100 dark:bg-gray-700 rounded-full">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-current" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                      d="M13 2L10 8h4l-3 6M10 8h4l-3 6m6 2h-4m-2 0H9" />
                   </svg>
                 </div>
-              
-                <!-- Card Content -->
-                <div class="relative z-10 flex items-center justify-between">
-                  <!-- Icon -->
-                  <div class="p-3 bg-gray-100 rounded-full">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-current" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
-                              d="M13 2L10 8h4l-3 6M10 8h4l-3 6m6 2h-4m-2 0H9" />
-                      </svg>
-                      
-                      
-                  </div>
-              
-                  <!-- Button -->
-                  
-                  <a href="{{route('user.electricity.buy_electricity_subscription')}}" class="bg-[{{$sidebar_color}}]  text-white text-sm font-medium px-4 py-2 rounded-lg shadow hover:bg-indigo-700 transition">
-                    {{ __('messages.Buy Electricity') }}
-                  </a>
-                </div>
+          
+                <a href="{{ route('user.electricity.buy_electricity_subscription') }}"
+                   class="bg-[{{ $sidebar_color }}] text-white text-sm font-medium px-4 py-2 rounded-lg shadow hover:bg-indigo-700 transition">
+                  {{ __('messages.Buy Electricity') }}
+                </a>
+              </div>
             </div>
-              
-
-        </div>
-
-        <div class="col-span-12 xxxl:col-span-2 md:col-span-3">
-
-           
-           
-              
-              
-
-        </div>        
+          </div>
+          
           
 
 
