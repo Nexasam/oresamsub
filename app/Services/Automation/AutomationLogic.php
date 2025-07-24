@@ -160,6 +160,9 @@ class AutomationLogic{
         else if($automation_details->automation_group == 'msorg'){
             $data['mobile_number'] = $validated_phone_number;
             $buy_airtime = (new MsOrgGroupAutomation($data))->buyAirtime();
+        }else if($automation_details->slug == 'simserver'){
+            $data['mobile_number'] = $validated_phone_number;
+            $buy_airtime = (new SimserverAutomation($data))->buyAirtime();
         }
         else{
             //this will be like this until other automations are processed

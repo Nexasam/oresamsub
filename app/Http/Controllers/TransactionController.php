@@ -324,7 +324,7 @@ class TransactionController extends Controller
         
         $phone = $request->phone_recharged ?? '';
     
-        $limit = $request->limit ?? 2000;
+        $limit = $request->limit ?? 1000;
 
         
         $data = Transaction::when(!empty($date_from) && !empty($date_to) , function ($query) use ($date_from,$date_to){
