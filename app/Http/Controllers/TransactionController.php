@@ -324,7 +324,7 @@ class TransactionController extends Controller
         
         $phone = $request->phone_recharged ?? '';
     
-        $limit = $request->limit ?? 1000;
+        $limit = $request->limit ?? 700;
 
         
         $data = Transaction::when(!empty($date_from) && !empty($date_to) , function ($query) use ($date_from,$date_to){
@@ -337,7 +337,8 @@ class TransactionController extends Controller
           $query->where('phone_number',$phone);
         })
         ->where('wallet_category','!=','data_wallet')
-        ->with(['user','product_plan'])->latest()->limit($limit)->get();
+        ->with(['user','product_plan'])->latest()->limit($limit)
+        ->get();
 
 
         return DataTables::of($data)
@@ -374,7 +375,7 @@ class TransactionController extends Controller
                     $dataa .=  '<b>'.$prefix.'  '.$token_details.'</b>  <br>';
                 }
                 if($data->transaction_category == 'data'){
-                    $dataa .= number_format($data->product_plan->data_size_in_mb ?? '0') .' MBx';
+                    $dataa .= number_format($data->product_plan->data_size_in_mb ?? '0') .' MB';
                 }
 
             }else{
