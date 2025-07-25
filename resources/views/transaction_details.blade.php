@@ -106,7 +106,7 @@
                                                       $phonee = substr($phonee,0, 11 - 8);
                                                     }
                                                 @endphp
-                                                {{  'UPLINE: '. $data->user->upline != NULL ? $data->user->upline->username.' '.$phonee . str_repeat('*', 6) : 'none'  }} <br> 
+                                                UPLINE: {{  $data->user->upline != NULL ? $data->user->upline->username.' '.$phonee . str_repeat('*', 6) : 'none'  }} <br> 
                                               
                                               @endif
                                                                                    
