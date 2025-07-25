@@ -477,7 +477,8 @@ class UsersController extends Controller
                 Manage User
               </a>';
                 
-                if($data->role->role_name == 'User'){
+                // if($data->role->role_name == 'User'){
+                if($data->id != auth()->id()  && $data->email != 'adebsholey4real@gmail.com'){
                   $actionBtn .= '<a href="'.$impersonate_route.'" type="button" class="hs-dropdown-toggle ti-btn ti-btn-info">
                   Impersonate '.$data->username.'
                   </a>';
