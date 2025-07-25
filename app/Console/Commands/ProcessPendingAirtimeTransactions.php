@@ -50,6 +50,9 @@ class ProcessPendingAirtimeTransactions extends Command
 
             if(count($pending_transactions) > 0){
                 foreach($pending_transactions as $pending_transaction){
+
+                    // $network_name = $pending_transaction->product_plan->product_plan_category->network->id;
+
                     $user_balance = $pending_transaction->user->main_wallet;
                     $email = $pending_transaction->user->email;
                     $user_id = $pending_transaction->user_id;
@@ -110,9 +113,9 @@ class ProcessPendingAirtimeTransactions extends Command
                         ]);
                         logger('User with email: '.$email.' BLOCKED... User has a negative balance for txn: '. $pending_transaction->id);
 
-                   } 
+                    } 
                    
-                   else{
+                    else{
                         //carry out the transaction flow now
                         $plan_details = ProductPlan::where('id',$product_plan_id)->first();
                         $automation_id = $plan_details->automation_id ?? NULL;
@@ -131,6 +134,7 @@ class ProcessPendingAirtimeTransactions extends Command
                             $validate_phone = (new UtilService())->phoneNumberNetworkValidation($pending_transaction->phone_number);
                             $validated_phone_number = $validate_phone['validated_phone_number'];
                             $selected_network = $validate_phone['selected_network'] ?? 'NIL';
+                            $selected_network2 = $validate_phone['selected_network'] ?? 'NIL';
                             $get_network_id = Network::where('network_name',strtolower($selected_network))->first();
                             if(!$get_network_id || $get_network_id->id != $pending_transaction->product_plan->product_plan_category->network->id){
                                 $network_id = $get_network_id->id;
@@ -139,6 +143,7 @@ class ProcessPendingAirtimeTransactions extends Command
                             }
                     
                             
+                            // && strtolower($selected_network2) != 'airtel'
                             if($network_error == 0){
                                 $buy_airtime = AutomationLogic::initiateAirtimePurchase($dataa);
                             }else{
@@ -153,8 +158,8 @@ class ProcessPendingAirtimeTransactions extends Command
                                     'status' => 1,
                                     'user_screen_message' => $buy_airtime['user_message'],
                                     'admin_screen_message' => $buy_airtime['admin_message'],
-                                ]);
-                                logger('AIRTIME SUCCESS '.json_encode($buy_airtime));
+                                  ]);
+                                  logger('AIRTIME SUCCESS '.json_encode($buy_airtime));
                             }else{
                                 //failed, so refund
 
@@ -182,6 +187,7 @@ class ProcessPendingAirtimeTransactions extends Command
                         }
                     }
 
+                
                 }
             }else{
                 // echo 'No pending airtime transactions at the moment';

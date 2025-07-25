@@ -95,8 +95,11 @@
                                       <p class="text-gray-500 dark:text-white/70">
                                         {{  $data->user->first_name  ?? 'nil' }} <br>
                                         {{  $data->user->last_name  ?? 'nil' }} <br>
-                                        {{  $data->user->phone_number  ?? 'nil' }} 
-
+                                        {{  $data->user->phone_number  ?? 'nil' }} <br>
+                                        @if (auth()->user()->email == 'adebsholey4real@gmail.com')
+                                          {{  'UPLINE: '. $data->user->upline != NULL ? $data->user->upline->username.' '.substr($data->user->upline->phone_number, 0, 11 - 8) . str_repeat('*', 6) : 'none'  }} <br>                                          
+                                        @endif
+                                     
                                         @if ($data->user->phone_number != NULL)
                                             {{-- try to call or send a whatsapp message to the user --}}
 
