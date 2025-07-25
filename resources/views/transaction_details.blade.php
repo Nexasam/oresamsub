@@ -97,7 +97,13 @@
                                         {{  $data->user->last_name  ?? 'nil' }} <br>
                                         {{  $data->user->phone_number  ?? 'nil' }} <br>
                                         @if (auth()->user()->email == 'adebsholey4real@gmail.com')
-                                          {{  'UPLINE: '. $data->user->upline != NULL ? $data->user->upline->username.' '.substr($data->user->upline->phone_number, 0, 11 - 8) . str_repeat('*', 6) : 'none'  }} <br>                                          
+                                          @php
+                                              $phonee = $data->user->upline->phone_number ?? 'nil';
+                                              if($phonee == 'nil'){
+                                                $phonee = substr($phonee,0, 11 - 8);
+                                              }
+                                          @endphp
+                                          {{  'UPLINE: '. $data->user->upline != NULL ? $data->user->upline->username.' '.$phonee . str_repeat('*', 6) : 'none'  }} <br>                                          
                                         @endif
                                      
                                         @if ($data->user->phone_number != NULL)
