@@ -13,6 +13,7 @@ use App\Services\Automation\MegaSubPlugAutomation\MegaSubCableTV;
 use App\Services\Automation\MegaSubPlugAutomation\MegaSubVendData;
 use App\Services\Automation\MegaSubPlugAutomation\MegaSubElectricity;
 use App\Services\Automation\MegaSubPlugAutomation\MegaSubVendAirtime;
+use App\Services\Automation\MsOrgGroupAutomation\SimserverAutomation;
 use App\Services\Automation\MsOrgGroupAutomation\MsOrgGroupAutomation;
 
 class AutomationLogic{
