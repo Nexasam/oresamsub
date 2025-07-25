@@ -391,6 +391,7 @@ class UsersController extends Controller
           $query->where('created_at','>=',$date_from)->where('created_at','<=',$date_to);
          })
          ->limit($limit)
+         ->latest()
         ->get();
         
         // return $data;
