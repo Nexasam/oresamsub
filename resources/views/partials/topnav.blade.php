@@ -272,13 +272,50 @@
                   </div>
                 </div>
               </div>
-              {{-- <div class="switcher-icon">
-                <button aria-label="button" type="button"
-                  class="hs-dropdown-toggle inline-flex flex-shrink-0 justify-center items-center gap-2 h-[2.375rem] w-[2.375rem] rounded-full font-medium bg-gray-100 hover:bg-gray-200 text-gray-500 align-middle focus:outline-none focus-visible:outline-none focus:ring-0 focus:ring-gray-400 focus:ring-offset-0 focus:ring-offset-white transition-all text-xs dark:bg-bgdark dark:hover:bg-black/20 dark:text-white/70 dark:hover:text-white dark:focus:ring-white/10 dark:focus:ring-offset-white/10"
-                  data-hs-overlay="#hs-overlay-switcher">
-                  <i class="ri-settings-5-line header-icon animate-spin"></i>
+       
+              <div x-data="{ open: false }" class="relative group">
+                <!-- Language Button with Badge -->
+                <button @click="open = !open" @click.outside="open = false"
+                  class="relative inline-flex items-center justify-center h-[2.75rem] w-[2.75rem] rounded-full bg-yellow-100 hover:bg-yellow-200 text-yellow-800 dark:bg-yellow-900 dark:hover:bg-yellow-800 dark:text-yellow-200 transition-all shadow-md focus:outline-none">
+                  <i class="ri-translate-2 text-xl animate-bounce-slow"></i>
+              
+                  <!-- "New" badge -->
+                  <span
+                    class="absolute top-0 right-0 inline-flex items-center justify-center px-1.5 py-0.5 text-[10px] font-bold leading-none text-white bg-red-600 rounded-full transform translate-x-1/2 -translate-y-1/2">
+                    New
+                  </span>
+              
+                  <!-- Tooltip -->
+                  <span
+                    class="absolute bottom-full mb-2 px-2 py-1 text-xs text-white bg-gray-900 rounded opacity-0 group-hover:opacity-100 transition-opacity">
+                    Switch Language
+                  </span>
                 </button>
-              </div> --}}
+              
+                <!-- Dropdown -->
+                <div x-show="open" x-transition
+                  class="absolute right-0 mt-2 w-40 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg z-50"
+                  @click.away="open = false">
+                  <a href="{{ route('lang.switch', 'en') }}"
+                    class="block px-4 py-2 text-sm text-gray-700 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700">
+                    🇬🇧 English
+                  </a>
+                  <a href="{{ route('lang.switch', 'yo') }}"
+                    class="block px-4 py-2 text-sm text-gray-700 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700">
+                    🟡 Yoruba
+                  </a>
+                  <a href="{{ route('lang.switch', 'ha') }}"
+                    class="block px-4 py-2 text-sm text-gray-700 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700">
+                    🟢 Hausa
+                  </a>
+                  <a href="{{ route('lang.switch', 'ig') }}"
+                    class="block px-4 py-2 text-sm text-gray-700 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700">
+                    🔴 Igbo
+                  </a>
+                </div>
+              </div>
+              
+              
             </div>
           </div>
         </div>

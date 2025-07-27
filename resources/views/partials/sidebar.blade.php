@@ -76,6 +76,42 @@
                         
                     </ul>
                 </li>
+
+
+                <!-- Start::slide -->
+        
+                <!-- Language Switcher -->
+                <li class="slide has-sub" id="languageSwitcher">
+                    <a href="#" class="side-menu__item text-yellow-700 dark:text-yellow-300 font-semibold">
+                        <i class="ri-translate-2 side-menu__icon text-lg animate-bounce"></i>
+                        <span class="side-menu__label">🌍 Language</span>
+                        <i class="ri-arrow-down-s-line side-menu__angle ml-auto"></i>
+                    </a>
+
+                    <ul class="slide-menu child1 pl-6 py-2 space-y-1 hidden">
+                        <li><a href="{{ route('lang.switch', 'en') }}" class="side-menu__item text-sm hover:text-blue-600">🇬🇧 English</a></li>
+                        <li><a href="{{ route('lang.switch', 'yo') }}" class="side-menu__item text-sm hover:text-blue-600">🟡 Yoruba</a></li>
+                        <li><a href="{{ route('lang.switch', 'ha') }}" class="side-menu__item text-sm hover:text-blue-600">🟢 Hausa</a></li>
+                        <li><a href="{{ route('lang.switch', 'ig') }}" class="side-menu__item text-sm hover:text-blue-600">🔴 Igbo</a></li>
+                    </ul>
+                </li>
+
+<!-- Add this script to the bottom of your Blade template or layout -->
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const langToggle = document.querySelector('#languageSwitcher > a');
+        const langMenu = document.querySelector('#languageSwitcher > ul');
+
+        langToggle.addEventListener('click', function (e) {
+            e.preventDefault();
+            langMenu.classList.toggle('hidden');
+            langMenu.parentElement.classList.toggle('open'); // Optional: for sidebar visual logic
+        });
+    });
+</script>
+
+
+
           
               
 

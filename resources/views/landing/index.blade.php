@@ -253,18 +253,40 @@
                     <li class="nav-item">
                         <a class="nav-link" href="#services">{{__('messages.Services')}}</a>
                     </li>
-                    {{-- <li class="nav-item">
-                        <a class="nav-link" href="#portfolio">Portfolio</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#team">Team</a>
-                    </li> --}}
                     <li class="nav-item">
                         <a class="nav-link" href="#reviews">{{__('messages.Testimonials')}}</a>
                     </li>
-                    {{-- <li class="nav-item">
-                        <a class="nav-link" href="#blog">Blog</a>
-                    </li> --}}
+
+                    
+                    <li class="nav-item position-relative" x-data="{ open: false }">
+                        <!-- Toggle Button -->
+                        <a href="#" @click.prevent="open = !open" @click.outside="open = false"
+                           class="nav-link fw-bold d-flex align-items-center gap-1 text-warning position-relative">
+                            🌍 <span class="d-none d-md-inline">Language</span>
+                    
+                            <!-- Animated Icon -->
+                            <span class="ms-1 animate__animated animate__pulse animate__infinite">
+                                <i class="ri-arrow-down-s-line transition-transform"
+                                   :class="{ 'rotate-180': open }"></i>
+                            </span>
+                        </a>
+                    
+                        <!-- Dropdown Menu -->
+                        <ul x-show="open" x-transition x-cloak
+                            class="dropdown-menu show mt-2 start-0 bg-white border border-light shadow rounded z-50"
+                            style="min-width: 170px;">
+                            <li><a href="{{ route('lang.switch', 'en') }}" class="dropdown-item small px-3 py-2 text-dark hover:bg-light">🇬🇧 English</a></li>
+                            <li><a href="{{ route('lang.switch', 'yo') }}" class="dropdown-item small px-3 py-2 text-dark hover:bg-light">🟡 Yoruba</a></li>
+                            <li><a href="{{ route('lang.switch', 'ig') }}" class="dropdown-item small px-3 py-2 text-dark hover:bg-light">🔴 Igbo</a></li>
+                            <li><a href="{{ route('lang.switch', 'ha') }}" class="dropdown-item small px-3 py-2 text-dark hover:bg-light">🟢 Hausa</a></li>
+                        </ul>
+                    </li>
+                    
+                    
+
+                    
+
+               
                 </ul>
                 {{-- data-bs-toggle="modal" data-bs-target="#exampleModal" --}}
                 <a href="{{ url('/register') }}" 
@@ -278,8 +300,6 @@
                     <i class="fas fa-mobile-alt me-2"></i> {{ __('messages.Download Our App') }}
                     </a>      
                 @endif
-              
-             
 
             </div>
         </div>
@@ -1075,6 +1095,8 @@
    <script src="{{ asset(env('APP_ASSETS_BASE_URL').'landing_page_assets/js/main.js') }}"></script>
    <script src="{{ asset(env('APP_ASSETS_BASE_URL').'landing_page_assets/js/owl.carousel.min.js') }}"></script>
    <script src="{{ asset(env('APP_ASSETS_BASE_URL').'landing_page_assets/js/app.js') }}"></script>
+   <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
 </body>
 
 </html>
