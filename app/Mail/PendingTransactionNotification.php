@@ -30,7 +30,7 @@ class PendingTransactionNotification extends Mailable
     {
         return new Envelope(
             from: new Address(env('MAIL_FROM_ADDRESS'), env('APP_NAME')),
-            subject: $this->data['transactions_count'] .' transaction need urgent treatement on '. env('APP_NAME'),
+            subject: $this->data['transactions_count'] .' transaction need urgent treatement on '. env('APP_NAME'). ' ref:'.time().rand(111,999),
         );
     }
 
