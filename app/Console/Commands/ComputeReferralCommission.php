@@ -75,11 +75,11 @@ class ComputeReferralCommission extends Command
                                         'transaction_by' => $successful_txn->user_id,
                                     ]));
                             }else{
-                                logger('upline not found for user or user is found as upline of self: '.$user->username.' with txn id: '.$txn_id);
+                                // logger('upline not found for user or user is found as upline of self: '.$user->username.' with txn id: '.$txn_id);
                             }
                             
                         }else{
-                            logger('commission is likely 0 or no upline for user: '.$user->username.' with txn id: '.$txn_id);
+                            // logger('commission is likely 0 or no upline for user: '.$user->username.' with txn id: '.$txn_id);
                         }
                     }
                 }else{
