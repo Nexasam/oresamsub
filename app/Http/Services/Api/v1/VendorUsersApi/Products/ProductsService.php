@@ -270,6 +270,7 @@ class ProductsService{
             $description = 'Purchase of data';
             $creationData['transaction_category'] = 'data';
             $creationData['user_id'] = $user_id;
+            $creationData['set_for_manual'] = 0;
             $creationData['wallet_category'] = $wallet_category;
             $creationData['product_plan_id'] = $product_plan_id;
             $creationData['phone_number'] = $phone_number;
@@ -347,6 +348,8 @@ class ProductsService{
                                 $dataa['plan_id'] = $product_plan_id;
                                 $dataa['validatephonenetwork'] = $validatephonenetwork;
                                 $sell_data = AutomationLogic::initiateDataPurchase($dataa);
+                                $set_for_manual = $sell_data['set_for_manual'] ?? 0;
+
                                 logger('DATAAA SERVICE: '.json_encode($sell_data));
                                 $coupon_count  = 0;
 
@@ -409,6 +412,7 @@ class ProductsService{
                                 $description = 'Purchase of data';
                                 $creationData['transaction_category'] = 'data';
                                 $creationData['user_id'] = $user_id;
+                                $creationData['set_for_manual'] = $set_for_manual ?? 0;
                                 $creationData['wallet_category'] = $wallet_category;
                                 $creationData['product_plan_id'] = $product_plan_id;
                                 $creationData['phone_number'] = $phone_numbers_array[$i];

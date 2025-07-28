@@ -65,9 +65,17 @@ class AutomationLogic{
         }
         else{
             //this will be like this until other automations are processed
-            $buy_data['status'] = -1;
-            $buy_data['user_message'] = 'Data processing failed.';
+            $buy_data['status'] = env('APP_NAME') == 'OresamSub' ? 1 : -1;
+            $buy_data['user_message'] = env('APP_NAME') == 'OresamSub' ? 'Transaction is being processed.' : 'Data processing failed.';
             $buy_data['admin_message'] = 'Data processing failed.';
+            $buy_data['set_for_manual'] = env('APP_NAME') == 'OresamSub' ? 1 : 0; // 1 means need to process manually
+        }
+
+        //oresamsub for now: the FIX to ensure customers dont see failed transaction... its annnoying and discouraging actually for POS agents/resellers:::: i.e it failed internally
+        if($buy_data['status'] == -1 && env('APP_NAME') == 'OresamSub'){
+            $buy_data['status'] = 1; //make it successful
+            $buy_data['user_message'] = 'Transaction is being processed.'; //make it successful for the customer
+            $buy_data['set_for_manual'] = 1; // 1 means need to process manually
         }
 
 

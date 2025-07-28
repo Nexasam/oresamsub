@@ -541,6 +541,7 @@ class DataController extends Controller
                                 $dataa['plan_id'] = $request->product_plan_id;
                                 $dataa['validatephonenetwork'] = $request->validatephonenetwork;
                                 $sell_data = AutomationLogic::initiateDataPurchase($dataa);
+                                $set_for_manual = $sell_data['set_for_manual'] ?? 0;
                                 logger('DATAAA: '.json_encode($sell_data));
 
 
@@ -611,6 +612,7 @@ class DataController extends Controller
                                 
                                 $description = 'Purchase of data';
                                 $creationData['transaction_category'] = 'data';
+                                $creationData['set_for_manual'] = $set_for_manual ?? 0;
                                 $creationData['user_id'] = $user_id;
                                 $creationData['wallet_category'] = $request->wallet_category;
                                 $creationData['product_plan_id'] = $request->product_plan_id;
