@@ -53,8 +53,8 @@
         <div class="grid grid-cols-12 gap-6 min-h-screen">
             <!-- Left side image -->
             <div class="lg:col-span-6 col-span-12 hidden lg:block">
-                <img src="{{ asset('assets/img/authentication/delacc.jpg') }}" alt="Delete Account"
-                     class="w-full h-full object-cover">
+                {{-- <img src="{{ asset('assets/img/authentication/delacc.jpg') }}" alt="Delete Account" class="w-full h-full object-cover"> --}}
+                <img src="https://cdn.pixabay.com/photo/2015/02/21/17/47/computer-644457_1280.png" alt="Delete Account" class="w-full h-full object-cover">
             </div>
         
             <!-- Right side form -->
