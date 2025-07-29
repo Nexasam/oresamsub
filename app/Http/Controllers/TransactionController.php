@@ -490,10 +490,10 @@ class TransactionController extends Controller
         $txnid = $transaction_details->id;
         $txnid = $transaction_details->id;
         $status = $transaction_details->status;
-        if($transaction_details->status == 1 && $transaction_details->set_for_manual == 0){
-            Session::flash('failure','This transaction is already successful'); 
-            return redirect()->back();
-        }
+        // if($transaction_details->status == 1 && $transaction_details->set_for_manual == 0){
+        //     Session::flash('failure','This transaction is already successful'); 
+        //     return redirect()->back();
+        // }
 
        $userinfooo = auth()->user()->username.' '.auth()->user()->email;
 
