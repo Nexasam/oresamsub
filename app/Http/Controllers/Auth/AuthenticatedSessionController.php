@@ -87,6 +87,12 @@ class AuthenticatedSessionController extends Controller
 
         if($user_check){
 
+            if ( $user_check->is_deactivated == 1 ) {
+                logger('deactivated oh');
+                Session::flash('failure','Sorry, this account has been deactivated.');
+                return redirect()->back();    
+             }
+
             $request->merge([
                 'user' => $user_check
             ]);

@@ -283,7 +283,8 @@ class ApiIntegrationController extends Controller
              $query->where('email',$email)
                    ->orWhere('username','like','%'.$email.'%')
                    ->orWhere('phone_number',$email);
-         })->first();
+         })
+         ->first();
         //  logger('User: '.$user);
         $dataaa['user'] = $user;
         (new VirtualAccountService())->generate_accounts($dataaa);
@@ -292,6 +293,11 @@ class ApiIntegrationController extends Controller
          if (! $user || ! Hash::check($request->password, $user->password)) {
              logger('oga o'); 
             return $this->error('The provided credentials are incorrect.',data:$request->all());      
+         }
+
+         if ( $user->is_deactivated == 1 ) {
+            logger('deactivated oh'); 
+           return $this->error('Sorry, this account has been deactivated.',data:$request->all());      
          }
 
          $coupon_check = (new CouponCodeService())->determine_if_user_qualify($dataaa);

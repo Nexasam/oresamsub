@@ -111,6 +111,10 @@ Route::middleware('set_locale')->group(function () {
                 return view('landing.indextest');
             });
 
+            Route::get('/delete_user_account', function () {
+                return view('auth.delete_account');
+            })->name('account.deactivate');
+
             Route::get('/', function () {
             
                 //get template name:
@@ -177,6 +181,9 @@ Route::middleware('set_locale')->group(function () {
             })->name('access_denied');
 
 
+            Route::get('users/delete_user_account', [UsersController::class, 'delete_user_account'])->name('user.delete_user_account.index');
+            Route::post('users/delete_user_account_action', [UsersController::class, 'delete_user_account_action'])->name('user.delete_user_account.action');
+           
             Route::get('users_listing/{category}', [QuickToolController::class, 'users_listing'])->name('quicktool.users_listing');
             Route::get('users_listing_date/{date}', [QuickToolController::class, 'users_listing_date'])->name('quicktool.users_listing_date');
 

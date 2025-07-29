@@ -31,6 +31,40 @@ class UsersController extends Controller
 
     use UserDashboardDataTrait;
 
+    public function delete_user_account_action(Request $request){
+          $request->validate([
+              'email' => 'required|email',
+              'password' => 'required',
+          ]);
+
+          // $user = auth()->user();
+          $user = User::where('email',$request->email)->first();
+
+          // return response()->json(['message' => $user->email], 422);
+
+          if (!$user || $user->email !== $request->email) {
+              return response()->json(['message' => 'Invalid email provided.'], 422);
+          }
+
+          if ( $user->is_deactivated == 1) {
+            return response()->json(['message' => 'This account has already deactivated.'], 422);
+        }
+
+          if (!Hash::check($request->password, $user->password)) {
+              return response()->json(['message' => 'Incorrect password.'], 422);
+          }
+
+
+
+          // Deactivate user by clearing email_verified_at
+          $user->is_deactivated = 1;
+          $user->save();
+
+          // Auth::logout();
+          return response()->json(['message' => 'Your account has been deactivated.']);       
+    
+    }
+
     public function impersonate($id){
 
 
