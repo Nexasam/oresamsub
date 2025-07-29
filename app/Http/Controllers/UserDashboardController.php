@@ -24,7 +24,7 @@ class UserDashboardController extends Controller
 {
  
   public function index(){
-   
+  
     $hot_sales = ProductPlanCategory::with('product')->where('is_hot_sales',1)->get();
     $user_virtual_accounts = UserVirtualAccount::where('user_id',auth()->id())->latest()->get();
 

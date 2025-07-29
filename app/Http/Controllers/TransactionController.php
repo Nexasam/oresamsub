@@ -6,6 +6,7 @@ use App\Models\ProductPlan;
 use App\Models\Transaction;
 use App\Models\SiteTemplate;
 use Illuminate\Http\Request;
+use App\Models\ConfigSetting;
 use App\Models\UserBulkDataWallet;
 use App\Models\ProductPlanCategory;
 use Illuminate\Support\Facades\Mail;
@@ -504,6 +505,35 @@ class TransactionController extends Controller
             'set_for_manual' => 0,
             'manually_processed_by' => $userinfooo,
         ]); 
+
+
+        
+          //TODO::: Candidate for DRY
+          //expected key:  email_sending_count_for_pending_transactions
+          $config_setting_key = config('config_settings')[0]['key'];      
+          $db_config = ConfigSetting::where('key',$config_setting_key)->first();     
+         if(! $db_config){
+             //config file
+             $config_setting_value = config('config_settings')[0]['value'];
+             $config_setting_current_value = config('config_settings')[0]['current_value'];
+             $config_setting_description = config('config_settings')[0]['description'];
+             
+            $db_config = ConfigSetting::create([
+              'key' => $config_setting_key,
+              'value' => $config_setting_value,
+              'current_value' => $config_setting_current_value,
+              'description' => $config_setting_description,
+            ]);
+
+         }
+
+
+         //reset to 0
+         ConfigSetting::where('key',$config_setting_key)->update([
+            'current_value' => 0
+        ]);
+
+
 
         //  $walletLog['user_id'] = $user_id;
         //  $walletLog['transaction_category'] = 'MARK_TRANSACTION_AS_SUCCESSFUL';
