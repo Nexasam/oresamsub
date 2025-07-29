@@ -63,6 +63,9 @@
         
                     <!-- Intro -->
                     <div class="text-center mb-6">
+                        <h1>
+                            {{ env('APP_NAME') }}
+                        </h1>
                         <h2 class="text-2xl font-semibold text-gray-800 dark:text-white">Account Settings</h2>
                         <p class="text-sm text-gray-500 dark:text-gray-300">You can deactivate your account below.</p>
                     </div>
