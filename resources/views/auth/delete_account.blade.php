@@ -63,7 +63,7 @@
         
                     <!-- Intro -->
                     <div class="text-center mb-6">
-                        <h1>
+                        <h1 class="text-4xl font-semibold text-gray-800 dark:text-white">
                             {{ env('APP_NAME') }}
                         </h1>
                         <h2 class="text-2xl font-semibold text-gray-800 dark:text-white">Account Settings</h2>
