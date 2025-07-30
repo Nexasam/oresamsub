@@ -490,7 +490,7 @@ class TransactionController extends Controller
                 $timeString = "{$minutes} min" . ($minutes > 1 ? 's' : '');
             }
 
-            $status_display .= '<br><span class="font-bold">Processed time: ' . $timeString . '</span>';
+            $status_display .= '<br><span class="font-bold">in ' . $timeString . '</span>';
 
             return $status_display;  
 
