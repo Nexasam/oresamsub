@@ -470,28 +470,27 @@ class TransactionController extends Controller
                 $status_display .= '<span class="font-bold">URGENT: TREAT MANUALLY</span>';    
             }
 
-            // $diff = $data->created_at->diff($data->updated_at);
-            // // Use days, hours, and minutes if needed
-            // $total_processing_time = $diff->format('%d days %h hours %i minutes');
-            // // Optionally remove "0 days" if not needed
-            // $total_processing_time = trim(preg_replace('/^0 days\s*/', '', $total_processing_time));
-            // $status_display .= '<br><span class="font-bold">Processing time: ' . $total_processing_time . '</span>';
-
-
-
+           
             $createdAt = Carbon::parse($data->created_at);
             $updatedAt = Carbon::parse($data->updated_at);
 
-            $diff = $createdAt->diff($updatedAt);
+            // Total time in minutes
+            $totalMinutes = $createdAt->diffInMinutes($updatedAt);
 
-            // Format: "X days Y hours Z minutes"
-            $total_processing_time = $diff->format('%d days %h hours %i minutes');
+            // Calculate hours and remaining minutes
+            $hours = intdiv($totalMinutes, 60);
+            $minutes = $totalMinutes % 60;
 
-            // Optional: remove "0 days" if you want a cleaner look
-            $total_processing_time = trim(preg_replace('/^0 days\s*/', '', $total_processing_time));
+            // Build output string
+            if ($hours > 0 && $minutes > 0) {
+                $timeString = "{$hours} hour" . ($hours > 1 ? 's' : '') . " {$minutes} minute" . ($minutes > 1 ? 's' : '');
+            } elseif ($hours > 0) {
+                $timeString = "{$hours} hour" . ($hours > 1 ? 's' : '');
+            } else {
+                $timeString = "{$minutes} minute" . ($minutes > 1 ? 's' : '');
+            }
 
-            // Append to display
-            $status_display .= '<br><span class="font-bold">Processing time: ' . $total_processing_time . '</span>';
+            $status_display .= '<br><span class="font-bold">Processing time: ' . $timeString . '</span>';
 
 
 
