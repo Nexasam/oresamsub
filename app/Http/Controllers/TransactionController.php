@@ -469,9 +469,12 @@ class TransactionController extends Controller
             }
 
             $diff = $data->created_at->diff($data->updated_at);
-            $total_processing_time =  $diff->h . ' hours, ' . $diff->i . ' minutes';
-            $total_processing_time =  $diff->format('%h hours %i minutes');
-            $status_display .= '<br><span class="font-bold">processing time: '.$total_processing_time.'</span>';
+            // Use days, hours, and minutes if needed
+            $total_processing_time = $diff->format('%d days %h hours %i minutes');
+            // Optionally remove "0 days" if not needed
+            $total_processing_time = trim(preg_replace('/^0 days\s*/', '', $total_processing_time));
+            $status_display .= '<br><span class="font-bold">Processing time: ' . $total_processing_time . '</span>';
+
 
 
 
