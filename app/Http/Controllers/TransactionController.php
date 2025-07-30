@@ -468,12 +468,12 @@ class TransactionController extends Controller
                 $status_display .= '<span class="font-bold">URGENT: TREAT MANUALLY</span>';    
             }
 
-            $diff = $data->created_at->diff($data->updated_at);
-            // Use days, hours, and minutes if needed
-            $total_processing_time = $diff->format('%d days %h hours %i minutes');
-            // Optionally remove "0 days" if not needed
-            $total_processing_time = trim(preg_replace('/^0 days\s*/', '', $total_processing_time));
-            $status_display .= '<br><span class="font-bold">Processing time: ' . $total_processing_time . '</span>';
+            // $diff = $data->created_at->diff($data->updated_at);
+            // // Use days, hours, and minutes if needed
+            // $total_processing_time = $diff->format('%d days %h hours %i minutes');
+            // // Optionally remove "0 days" if not needed
+            // $total_processing_time = trim(preg_replace('/^0 days\s*/', '', $total_processing_time));
+            // $status_display .= '<br><span class="font-bold">Processing time: ' . $total_processing_time . '</span>';
 
 
 
