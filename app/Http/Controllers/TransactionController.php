@@ -86,6 +86,33 @@ class TransactionController extends Controller
       $transaction_category = $transaction_details->transaction_category;
       $status = $transaction_details->status;
       $user_id = $transaction_details->user_id;
+
+
+          //TODO::: Candidate for DRY
+          //expected key:  email_sending_count_for_pending_transactions
+          $config_setting_key = config('config_settings')[0]['key'];      
+          $db_config = ConfigSetting::where('key',$config_setting_key)->first();     
+          if(! $db_config){
+             //config file
+             $config_setting_value = config('config_settings')[0]['value'];
+             $config_setting_current_value = config('config_settings')[0]['current_value'];
+             $config_setting_description = config('config_settings')[0]['description'];
+             
+            $db_config = ConfigSetting::create([
+              'key' => $config_setting_key,
+              'value' => $config_setting_value,
+              'current_value' => $config_setting_current_value,
+              'description' => $config_setting_description,
+            ]);
+          }
+
+
+         //reset to 0
+         ConfigSetting::where('key',$config_setting_key)->update([
+            'current_value' => 0
+         ]);
+
+
       if($transaction_details->status == 2){
         Session::flash('failure','This is a refunded transaction'); 
         return redirect()->back();
@@ -488,19 +515,18 @@ class TransactionController extends Controller
         }
 
         $txnid = $transaction_details->id;
-        $txnid = $transaction_details->id;
         $status = $transaction_details->status;
-        // if($transaction_details->status == 1 && $transaction_details->set_for_manual == 0){
-        //     Session::flash('failure','This transaction is already successful'); 
-        //     return redirect()->back();
-        // }
+        if($transaction_details->status == 1 && $transaction_details->set_for_manual == 0){
+            Session::flash('failure','This transaction is already successful'); 
+            return redirect()->back();
+        }
 
        $userinfooo = auth()->user()->username.' '.auth()->user()->email;
 
         //update user wallet
         $transaction_details->update([
             'status' => 1,
-            'user_screen_message' => $request->success_message,
+            // 'user_screen_message' => $request->success_message,
             'admin_screen_message' => 'MANUALLY RESOLVED: '.$request->success_message,
             'set_for_manual' => 0,
             'manually_processed_by' => $userinfooo,
@@ -531,7 +557,7 @@ class TransactionController extends Controller
          //reset to 0
          ConfigSetting::where('key',$config_setting_key)->update([
             'current_value' => 0
-        ]);
+         ]);
 
 
 
