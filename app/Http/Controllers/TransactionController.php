@@ -468,7 +468,7 @@ class TransactionController extends Controller
                 $status_display .= '<span class="font-bold">URGENT: TREAT MANUALLY</span>';    
             }
 
-            $diff = $transaction->created_at->diff($transaction->updated_at);
+            $diff = $data->created_at->diff($data->updated_at);
             $total_processing_time =  $diff->h . ' hours, ' . $diff->i . ' minutes';
             $total_processing_time =  $diff->format('%h hours %i minutes');
             $status_display .= '<br><span class="font-bold">processing time: '.$total_processing_time.'</span>';
