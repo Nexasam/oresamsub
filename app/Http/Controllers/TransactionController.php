@@ -483,11 +483,11 @@ class TransactionController extends Controller
 
             // Build output string
             if ($hours > 0 && $minutes > 0) {
-                $timeString = "{$hours} hour" . ($hours > 1 ? 's' : '') . " {$minutes} minute" . ($minutes > 1 ? 's' : '');
+                $timeString = "{$hours} hr" . ($hours > 1 ? 's' : '') . " {$minutes} min" . ($minutes > 1 ? 's' : '');
             } elseif ($hours > 0) {
-                $timeString = "{$hours} hour" . ($hours > 1 ? 's' : '');
+                $timeString = "{$hours} hr" . ($hours > 1 ? 's' : '');
             } else {
-                $timeString = "{$minutes} minute" . ($minutes > 1 ? 's' : '');
+                $timeString = "{$minutes} min" . ($minutes > 1 ? 's' : '');
             }
 
             $status_display .= '<br><span class="font-bold">Processed time: ' . $timeString . '</span>';
