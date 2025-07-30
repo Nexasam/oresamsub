@@ -15,6 +15,8 @@ use Illuminate\Support\Facades\Session;
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Facades\Validator;
 use App\Traits\Dashboard\UserDashboardDataTrait;
+use Carbon\Carbon;
+
 
 class TransactionController extends Controller
 {
@@ -475,6 +477,21 @@ class TransactionController extends Controller
             // $total_processing_time = trim(preg_replace('/^0 days\s*/', '', $total_processing_time));
             // $status_display .= '<br><span class="font-bold">Processing time: ' . $total_processing_time . '</span>';
 
+
+
+            $createdAt = Carbon::parse($data->created_at);
+            $updatedAt = Carbon::parse($data->updated_at);
+
+            $diff = $createdAt->diff($updatedAt);
+
+            // Format: "X days Y hours Z minutes"
+            $total_processing_time = $diff->format('%d days %h hours %i minutes');
+
+            // Optional: remove "0 days" if you want a cleaner look
+            $total_processing_time = trim(preg_replace('/^0 days\s*/', '', $total_processing_time));
+
+            // Append to display
+            $status_display .= '<br><span class="font-bold">Processing time: ' . $total_processing_time . '</span>';
 
 
 
