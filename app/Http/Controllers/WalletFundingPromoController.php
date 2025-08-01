@@ -13,7 +13,6 @@ use App\Models\ProductPlanCategory;
 use App\Models\UserWalletFundingPromo;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
-use App\Http\Controllers\WalletFundingPromoController;
 
 class WalletFundingPromoController extends Controller
 {
