@@ -129,9 +129,11 @@ class TransactionController extends Controller
             'main_wallet' => $new_wallet_balance
          ]); 
 
-
+         $userinfooo = auth()->user()->username.' '.auth()->user()->email;
          $transaction_details->update([
-            'status' => 2 //i.e refunded
+            'status' => 2, //i.e refunded
+            'set_for_manual' => 0,
+            'manually_processed_by' => $userinfooo,
          ]); 
 
          $walletLog['user_id'] = $user_id;
