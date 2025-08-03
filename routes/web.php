@@ -54,8 +54,18 @@ use App\Http\Controllers\ElectricitySubscriptionController;
 use App\Http\Controllers\ProductPlanCustomPricingController;
 
 
+    //ORESAMSUB ROUTES
+    Route::get('oresamsub/dashboard', fn () => view('oresamsub.pages.dashboard'))->name('ore.dashboard');
+    // Route::get('oresamsub/airtime', fn () => view('oresamsub.pages.airtime'))->name('ore.airtime');
+    // Route::get('oresamsub/data', fn () => view('oresamsub.pages.data'))->name('ore.data');
+    // Route::get('oresamsub/electricity', fn () => view('oresamsub.pages.electricity'))->name('ore.electricity');
+    // Route::get('oresamsub/virtual', fn () => view('oresamsub.pages.virtual'))->name('ore.virtual');
+
+
+
 Route::middleware('set_locale')->group(function () {
 
+        
             //privacy controller
             Route::get('privacy/index', [PrivacyController::class, 'index']);
 
