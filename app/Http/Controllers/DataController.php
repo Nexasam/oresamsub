@@ -1134,6 +1134,9 @@ class DataController extends Controller
 
                         $selling_price = $product_plan->$user_level_selling;
                         $upline_commission = $product_plan->$user_level_commission;
+ 
+                        $selling_price = $check_custom_setting == NULL ? $selling_price : $check_custom_setting->price;  
+
 
                         
                         if( ( $product_slug == 'airtime' || $product_slug == 'utility_bills' ) && $amount != ''){
@@ -1176,15 +1179,17 @@ class DataController extends Controller
                 foreach($product_plans as $product_plan){
 
 
-                    //HERE SELLING PRICE CHANGES IF THEHRE IS A CUSTOM SETTING: put in a service later
-                    $check_custom_setting = ProductPlanCustomPricing::where('product_plan_id','=', $product_plan->id)->where('user_id',auth()->id())->first();
-                    $amount = $check_custom_setting == NULL ? $amount : $check_custom_setting->price;  
+                   
 
                     $user_level_selling = "user_level_".$plan_level."_selling_price";
                     $user_level_commission = "user_level_".$plan_level."_commission";
                     // $user_level_selling = "{user_level_$user_level_selling_price}";
                     $selling_price = $product_plan->$user_level_selling;
                     $upline_commission = $product_plan->$user_level_commission;
+
+                     //HERE SELLING PRICE CHANGES IF THEHRE IS A CUSTOM SETTING: put in a service later
+                     $check_custom_setting = ProductPlanCustomPricing::where('product_plan_id','=', $product_plan->id)->where('user_id',auth()->id())->first();
+                     $selling_price = $check_custom_setting == NULL ? $selling_price : $check_custom_setting->price;  
                     
                     if( ( $product_slug == 'airtime' || $product_slug == 'utility_bills' ) && $amount != ''){
                           $purchase_discount = $product_plan->$user_level_selling;
