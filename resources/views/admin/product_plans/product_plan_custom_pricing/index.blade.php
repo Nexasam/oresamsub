@@ -95,7 +95,7 @@
                                         </div> --}}
 
                                         {{-- for now: product slug is data --}}
-                                        <input type="text" id="product_slug" name="product_slug" value="data">
+                                        <input type="hidden" id="product_slug" name="product_slug" value="data">
 
                                         <div class="space-y-2">
                                             <label class="ti-form-label mb-0">{{ __('messages.Product Plans List') }}</label>
