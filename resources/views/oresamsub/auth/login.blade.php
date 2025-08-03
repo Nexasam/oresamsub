@@ -1,4 +1,4 @@
-@extends('oresamsub.layouts.app')
+@extends('oresamsub.layouts.authapp')
 
 @section('content')
 <div class="pt-10 pb-6 max-w-xs mx-auto" x-data="{ isLoggingIn: false }">
