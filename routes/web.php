@@ -56,6 +56,7 @@ use App\Http\Controllers\ProductPlanCustomPricingController;
 
     //ORESAMSUB ROUTES
     Route::get('oresamsub/login', fn () => view('oresamsub.auth.login'))->name('ore.login');
+    Route::get('oresamsub/register', fn () => view('oresamsub.auth.register'))->name('ore.register');
     Route::get('oresamsub/dashboard', fn () => view('oresamsub.pages.dashboard'))->name('ore.dashboard');
     // Route::get('oresamsub/airtime', fn () => view('oresamsub.pages.airtime'))->name('ore.airtime');
     // Route::get('oresamsub/data', fn () => view('oresamsub.pages.data'))->name('ore.data');
