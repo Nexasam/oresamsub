@@ -68,12 +68,12 @@ class ComputeReferralCommission extends Command
                                     }
                                     
 
-                                    logger('Commission added for:'.json_encode([
-                                        'transaction_id' => $successful_txn->id,
-                                        'commission' => $expected_commission,
-                                        'beneficiary' => $user_upline_check->id,
-                                        'transaction_by' => $successful_txn->user_id,
-                                    ]));
+                                    // logger('Commission added for:'.json_encode([
+                                    //     'transaction_id' => $successful_txn->id,
+                                    //     'commission' => $expected_commission,
+                                    //     'beneficiary' => $user_upline_check->id,
+                                    //     'transaction_by' => $successful_txn->user_id,
+                                    // ]));
                             }else{
                                 // logger('upline not found for user or user is found as upline of self: '.$user->username.' with txn id: '.$txn_id);
                             }
