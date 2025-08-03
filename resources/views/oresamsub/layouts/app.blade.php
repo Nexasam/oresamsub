@@ -17,7 +17,7 @@
     }
   </script>
 
-  <!-- Tailwind + Alpine -->
+  <!-- Tailwind CSS + Alpine.js -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = { darkMode: 'class' };
@@ -51,45 +51,32 @@
       @yield('content')
     </main>
 
-    <!-- Bottom Nav -->
+    <!-- Bottom Navigation -->
     <nav class="fixed bottom-0 inset-x-0 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 shadow-lg">
       <div class="max-w-md mx-auto flex justify-around py-2 text-xs font-medium text-gray-700 dark:text-gray-200">
-        <a 
-          href="{{ route('ore.dashboard') }}"
-          @click.prevent="showLoader = true; setTimeout(() => window.location.href = '{{ route('ore.dashboard') }}', 150)"
-          class="flex flex-col items-center hover:text-blue-600 dark:hover:text-blue-400"
-        >
-          <div class="text-xl">🏠</div><span>Dashboard</span>
-        </a>
-        <a 
-          href="{{ route('ore.dashboard') }}"
-          @click.prevent="showLoader = true; setTimeout(() => window.location.href = '{{ route('ore.dashboard') }}', 150)"
-          class="flex flex-col items-center hover:text-blue-600 dark:hover:text-blue-400"
-        >
-          <div class="text-xl">📞</div><span>Airtime</span>
-        </a>
-        <a 
-          href="{{ route('ore.dashboard') }}"
-          @click.prevent="showLoader = true; setTimeout(() => window.location.href = '{{ route('ore.dashboard') }}', 150)"
-          class="flex flex-col items-center hover:text-blue-600 dark:hover:text-blue-400"
-        >
-          <div class="text-xl">📶</div><span>Data</span>
-        </a>
-        <a 
-          href="{{ route('ore.dashboard') }}"
-          @click.prevent="showLoader = true; setTimeout(() => window.location.href = '{{ route('ore.dashboard') }}', 150)"
-          class="flex flex-col items-center hover:text-blue-600 dark:hover:text-blue-400"
-        >
-          <div class="text-xl">⚡</div><span>Electricity</span>
-        </a>
+        @foreach ([
+          ['icon' => '🏠', 'label' => 'Dashboard'],
+          ['icon' => '📞', 'label' => 'Airtime'],
+          ['icon' => '📶', 'label' => 'Data'],
+          ['icon' => '⚡', 'label' => 'Electricity']
+        ] as $item)
+          <a 
+            href="{{ route('ore.dashboard') }}"
+            @click.prevent="showLoader = true; setTimeout(() => window.location.href = '{{ route('ore.dashboard') }}', 5000)"
+            class="flex flex-col items-center hover:text-blue-600 dark:hover:text-blue-400"
+          >
+            <div class="text-xl">{{ $item['icon'] }}</div>
+            <span>{{ $item['label'] }}</span>
+          </a>
+        @endforeach
       </div>
     </nav>
 
   </div>
 
-  <!-- Global Loader Overlay -->
+  <!-- Global Loader -->
   <div x-show="showLoader" x-cloak class="fixed inset-0 z-50 flex items-center justify-center bg-white dark:bg-gray-900 bg-opacity-80">
-    <div class="animate-spin rounded-full h-12 w-12 border-4 border-blue-500 border-t-transparent"></div>
+    <div class="animate-spin h-12 w-12 border-4 border-blue-500 border-t-transparent rounded-full"></div>
   </div>
 
   <!-- Alpine Logic -->
