@@ -143,6 +143,9 @@ class ProductsService{
                     // $user_level_selling = "{user_level_$user_level_selling_price}";
                     $selling_price = $product_plan->$user_level_selling;
                     
+                    $selling_price = $check_custom_setting == NULL ? $selling_price : $check_custom_setting->price; 
+
+
                     if( ( $product_slug == 'airtime' || $product_slug == 'utility_bills' ) && $amount != ''){
                           $purchase_discount = $product_plan->$user_level_selling;
                           $actual_discount_value = ceil(($purchase_discount/100) * $amount);  
