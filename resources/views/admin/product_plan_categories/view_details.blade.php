@@ -214,7 +214,7 @@
 
                                               <ul class="my-1 p-2 bg-white">
                                                 @foreach ($automations as $each_automation)
-                                                <li class="p-1 text-blue-800 underline"><a href="{{ route('admin.product_plan_categories.view_details_by_automation',['id' => $product_plan_category->id, 'automation_id' =>$each_automation->id]); }}">{{ $each_automation->automation_name }}</a></li>
+                                                <li class="p-1 text-blue-800 underline"><a href="{{ route('admin.product_plan_categories.view_details_by_automation',['id' => $product_plan_category->id, 'automation_id' =>$each_automation->id]) }}">{{ $each_automation->automation_name }}</a></li>
                                                 @endforeach
                                               </ul>
                                           

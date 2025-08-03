@@ -1895,9 +1895,7 @@
           $('#filter_by_plan_category').prop('checked',false)
           var network_id = $(this).val();
           var product_slug = $('#product_slug').val();
-
           let selectedNetwork = $('#network_id option:selected').text();
-
           // alert(selectedNetwork);return;
 
 

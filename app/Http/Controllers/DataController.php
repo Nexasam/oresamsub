@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ProductPlanCustomPricing;
 use Exception;
 use App\Models\User;
 use App\Models\Network;
@@ -505,6 +506,10 @@ class DataController extends Controller
             }
         }
 
+        //HERE SELLING PRICE CHANGES IF THEHRE IS A CUSTOM SETTING: put in a service later
+        $check_custom_setting = ProductPlanCustomPricing::where('product_plan_id','=', $request->product_plan_id)->where('user_id',$user_id)->first();
+        $amount = $check_custom_setting == NULL ? $amount : $check_custom_setting->price;  
+
         DB::beginTransaction();
         try{
 
@@ -520,7 +525,6 @@ class DataController extends Controller
                             $automation_details = Automation::where('id',$automation_id)->first();
                             //TODO: candidate for separation:
                             for($i = 0; $i < count($phone_numbers_array); $i++ ){
-
 
 
                                 $datacoupon['product_plan_id'] = $request->product_plan_id;
@@ -1135,6 +1139,10 @@ class DataController extends Controller
                         }else{
                             $discounted_selling_price = $selling_price;
                         }
+
+                         //HERE SELLING PRICE CHANGES IF THEHRE IS A CUSTOM SETTING: put in a service later
+                        $check_custom_setting = ProductPlanCustomPricing::where('product_plan_id','=', $product_plan->id)->where('user_id',auth()->id())->first();
+                        $discounted_selling_price = $check_custom_setting == NULL ? $discounted_selling_price : $check_custom_setting->price;  
                        
                         if($product_plan){
                             $counter++;
@@ -1181,6 +1189,10 @@ class DataController extends Controller
                     }else{
                         $discounted_selling_price = $selling_price;
                     }
+
+                    //HERE SELLING PRICE CHANGES IF THEHRE IS A CUSTOM SETTING: put in a service later
+                    $check_custom_setting = ProductPlanCustomPricing::where('product_plan_id','=', $product_plan->id)->where('user_id',auth()->id())->first();
+                    $discounted_selling_price = $check_custom_setting == NULL ? $discounted_selling_price : $check_custom_setting->price;  
                    
                     if($product_plan){
                         $counter++;

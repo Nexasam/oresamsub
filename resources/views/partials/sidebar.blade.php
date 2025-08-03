@@ -298,6 +298,21 @@
                             </ul>
                         </li>
                         <!-- End::slide -->
+
+
+
+                        <!-- Start::slide -->
+                        <li class="slide  has-sub">
+                            <a href="{{ route('admin.product_plan_custom_pricing.index')}}" class="side-menu__item">
+                                <i class="ti ti-cash side-menu__icon"></i>
+                                <span class="side-menu__label">Custom Plan Pricing</span>
+                                <i class="ri ri-arrow-right-s-line side-menu__angle"></i>
+                            </a>
+                            <ul class="slide-menu child1">
+                            </ul>
+                        </li>
+                        <!-- End::slide -->
+
                   @endif
 
                   <!-- Start::slide -->

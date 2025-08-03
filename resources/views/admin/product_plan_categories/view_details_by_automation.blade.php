@@ -208,7 +208,7 @@
                                        <div  class="w-1/4 bg-gray-200 p-4">
                                           <p class="font-bold">FILTER BY AUTOMATION</p>
                                           <ul class="my-1 p-2 bg-white">
-                                          <li class="p-1 text-blue-800 underline"><a href="{{ route('admin.product_plan_categories.view_details',['id' => $product_plan_category->id]); }}">ALL AUTOMATION</a></li>
+                                          <li class="p-1 text-blue-800 underline"><a href="{{ route('admin.product_plan_categories.view_details',['id' => $product_plan_category->id]) }}">ALL AUTOMATION</a></li>
 
                                             @foreach ($automations as $each_automation)
                                             
@@ -216,7 +216,7 @@
                                                class="
                                                p-1 text-blue-800 underline 
                                                @if ($each_automation->id == $automation->id) font-bold  @endif
-                                               "><a href="{{ route('admin.product_plan_categories.view_details_by_automation',['id' => $product_plan_category->id, 'automation_id' =>$each_automation->id]); }}">{{ $each_automation->automation_name }}</a></li>    
+                                               "><a href="{{ route('admin.product_plan_categories.view_details_by_automation',['id' => $product_plan_category->id, 'automation_id' =>$each_automation->id]) }}">{{ $each_automation->automation_name }}</a></li>    
                                              {{-- @else
                                               <li class="p-1 text-blue-800 underline"><a href="{{ route('admin.product_plan_categories.view_details_by_automation',['id' => $product_plan_category->id, 'automation_id' =>$each_automation->id]); }}">{{ $each_automation->automation_name }}</a></li>
                                             --}}

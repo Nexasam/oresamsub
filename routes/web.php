@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Session;
 use App\Http\Controllers\DataController;
 use App\Http\Controllers\RoleController;
 use App\Http\Middleware\RoleAdminAccess;
+use App\Models\ProductPlanCustomPricing;
 use App\Http\Controllers\AddonController;
 use App\Http\Controllers\UsersController;
 use App\Http\Controllers\AirtimeController;
@@ -50,6 +51,7 @@ use Rap2hpoutre\LaravelLogViewer\LogViewerController;
 use App\Http\Controllers\WalletFundingPromoController;
 use App\Http\Controllers\ProductPlanCategoryController;
 use App\Http\Controllers\ElectricitySubscriptionController;
+use App\Http\Controllers\ProductPlanCustomPricingController;
 
 
 Route::middleware('set_locale')->group(function () {
@@ -242,17 +244,20 @@ Route::middleware('set_locale')->group(function () {
              Route::middleware(['auth','verified','admin'])->post('user_wallet_funding_promo/store', [WalletFundingPromoController::class, 'store_user'])->name('admin.user_wallet_funding_promo.index_store');
              Route::middleware(['auth','verified','admin'])->post('user_wallet_funding_promo/update/{id}', [WalletFundingPromoController::class, 'update_user'])->name('admin.user_wallet_funding_promo.update_user');
               
+             //product plan custom pricing
+             Route::middleware(['auth','verified','admin'])->get('product_plan_custom_pricing/index', [ProductPlanCustomPricingController::class, 'index'])->name('admin.product_plan_custom_pricing.index');
+             Route::middleware(['auth','verified','admin'])->post('product_plan_custom_pricing/store', [ProductPlanCustomPricingController::class, 'store'])->name('admin.product_plan_custom_pricing.store');
 
-               //ANNOUNCEMENT
-               Route::middleware(['auth','verified','admin'])->get('announcements/index', [AnnouncementsController::class, 'index'])->name('admin.announcements.index');
-               Route::middleware(['auth','verified','admin'])->post('announcements/store', [AnnouncementsController::class, 'store'])->name('admin.announcements.store');
-               Route::middleware(['auth','verified','admin'])->post('announcements/update/{id}', [AnnouncementsController::class, 'update'])->name('admin.announcements.update');
-                
-  
+            //ANNOUNCEMENT
+            Route::middleware(['auth','verified','admin'])->get('announcements/index', [AnnouncementsController::class, 'index'])->name('admin.announcements.index');
+            Route::middleware(['auth','verified','admin'])->post('announcements/store', [AnnouncementsController::class, 'store'])->name('admin.announcements.store');
+            Route::middleware(['auth','verified','admin'])->post('announcements/update/{id}', [AnnouncementsController::class, 'update'])->name('admin.announcements.update');
+            
 
-              //IMPERSONATION
-              Route::middleware(['auth','verified','admin'])->get('admin/impersonate/{id}', [UsersController::class, 'impersonate'])->name('admin.impersonate');
-              Route::middleware(['auth','verified'])->get('exit_impersonate', [UsersController::class, 'exit_impersonate'])->name('admin.exit_impersonate');
+
+            //IMPERSONATION
+            Route::middleware(['auth','verified','admin'])->get('admin/impersonate/{id}', [UsersController::class, 'impersonate'])->name('admin.impersonate');
+            Route::middleware(['auth','verified'])->get('exit_impersonate', [UsersController::class, 'exit_impersonate'])->name('admin.exit_impersonate');
 
             
 
