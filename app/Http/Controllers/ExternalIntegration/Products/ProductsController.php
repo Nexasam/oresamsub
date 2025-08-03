@@ -73,6 +73,8 @@ class ProductsController extends Controller
         $user_level_selling = "user_level_" . $plan_level . "_selling_price";
         $selling_price = $product_plan->$user_level_selling;
 
+        $amount = $request->amount; //check this o
+
         
         if( ( $product_slug == 'airtime' || $product_slug == 'utility_bills' ) && $amount != ''){
               $purchase_discount = $product_plan->$user_level_selling;

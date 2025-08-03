@@ -1123,6 +1123,11 @@ class DataController extends Controller
     
                 if(count($product_plans) > 0){
                     foreach($product_plans as $product_plan){
+
+
+                         //HERE SELLING PRICE CHANGES IF THEHRE IS A CUSTOM SETTING: put in a service later
+                         $check_custom_setting = ProductPlanCustomPricing::where('product_plan_id','=', $product_plan->id)->where('user_id',auth()->id())->first();
+                         $amount = $check_custom_setting == NULL ? $amount : $check_custom_setting->price;  
     
                         $user_level_selling = "user_level_".$plan_level."_selling_price";
                         $user_level_commission = "user_level_".$plan_level."_commission";
@@ -1140,9 +1145,6 @@ class DataController extends Controller
                             $discounted_selling_price = $selling_price;
                         }
 
-                         //HERE SELLING PRICE CHANGES IF THEHRE IS A CUSTOM SETTING: put in a service later
-                        $check_custom_setting = ProductPlanCustomPricing::where('product_plan_id','=', $product_plan->id)->where('user_id',auth()->id())->first();
-                        $discounted_selling_price = $check_custom_setting == NULL ? $discounted_selling_price : $check_custom_setting->price;  
                        
                         if($product_plan){
                             $counter++;
@@ -1173,6 +1175,11 @@ class DataController extends Controller
             if(count($product_plans) > 0){
                 foreach($product_plans as $product_plan){
 
+
+                    //HERE SELLING PRICE CHANGES IF THEHRE IS A CUSTOM SETTING: put in a service later
+                    $check_custom_setting = ProductPlanCustomPricing::where('product_plan_id','=', $product_plan->id)->where('user_id',auth()->id())->first();
+                    $amount = $check_custom_setting == NULL ? $amount : $check_custom_setting->price;  
+
                     $user_level_selling = "user_level_".$plan_level."_selling_price";
                     $user_level_commission = "user_level_".$plan_level."_commission";
                     // $user_level_selling = "{user_level_$user_level_selling_price}";
@@ -1190,10 +1197,7 @@ class DataController extends Controller
                         $discounted_selling_price = $selling_price;
                     }
 
-                    //HERE SELLING PRICE CHANGES IF THEHRE IS A CUSTOM SETTING: put in a service later
-                    $check_custom_setting = ProductPlanCustomPricing::where('product_plan_id','=', $product_plan->id)->where('user_id',auth()->id())->first();
-                    $discounted_selling_price = $check_custom_setting == NULL ? $discounted_selling_price : $check_custom_setting->price;  
-                   
+               
                     if($product_plan){
                         $counter++;
                         $product_planss[$counter]['product_plan_id'] = $product_plan->id;

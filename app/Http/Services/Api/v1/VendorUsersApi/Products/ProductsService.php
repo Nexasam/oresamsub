@@ -18,6 +18,7 @@ use App\Models\ProductPlanCategory;
 use App\Services\Utils\UtilService;
 use App\Traits\WalletTransactionLogs;
 use App\Http\Services\CouponCodeService;
+use App\Models\ProductPlanCustomPricing;
 use App\Services\Automation\AutomationLogic;
 use App\Services\Api\Automation\OgdamsAutomation\OgdamsVendData;
 use App\Services\Automation\MegaSubPlugAutomation\MegaSubCableTV;
@@ -133,6 +134,11 @@ class ProductsService{
             if(count($product_plans) > 0){
                 foreach($product_plans as $product_plan){
 
+
+                    //HERE SELLING PRICE CHANGES IF THEHRE IS A CUSTOM SETTING: put in a service later
+                    $check_custom_setting = ProductPlanCustomPricing::where('product_plan_id','=', $product_plan->id)->where('user_id',$user_id)->first();
+                    $amount = $check_custom_setting == NULL ? $amount : $check_custom_setting->price; 
+
                     $user_level_selling = "user_level_".$plan_level."_selling_price";
                     // $user_level_selling = "{user_level_$user_level_selling_price}";
                     $selling_price = $product_plan->$user_level_selling;
@@ -145,7 +151,8 @@ class ProductsService{
                     }else{
                         $discounted_selling_price = $selling_price;
                     }
-                   
+ 
+            
                     if($product_plan){
                         $counter++;
             
@@ -315,7 +322,12 @@ class ProductsService{
         DB::beginTransaction();
         try{
 
-              ////validate wallet
+
+                    //HERE SELLING PRICE CHANGES IF THEHRE IS A CUSTOM SETTING: put in a service later
+                    $check_custom_setting = ProductPlanCustomPricing::where('product_plan_id','=', $product_plan_id)->where('user_id',$user_id)->first();
+                    $amount = $check_custom_setting == NULL ? $amount : $check_custom_setting->price;  
+                    
+                    ////validate wallet
                         if($wallet_category == 'main_wallet'){
                             $wallet_before = $user_details->main_wallet;
                             $total_amount = $phone_numbers_count * $amount;
