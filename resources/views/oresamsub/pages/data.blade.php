@@ -6,8 +6,8 @@
   <!-- Back Button -->
   <div class="mb-4">
     <a 
-    href="{{ route('dashboard') }}"
-    @click.prevent="showLoader = true; setTimeout(() => window.location.href = '{{ route('dashboard') }}', 1000)"
+    href="{{ route('ore.dashboard') }}"
+    @click.prevent="showLoader = true; setTimeout(() => window.location.href = '{{ route('ore.dashboard') }}', 1000)"
     class="flex flex-col items-center hover:text-blue-600 dark:hover:text-blue-400"
     >
        class="inline-flex items-center px-3 py-1.5 rounded-md bg-green-100 dark:bg-green-800 text-green-700 dark:text-green-200 text-xs font-medium hover:bg-green-200 dark:hover:bg-green-700 transition-all duration-200">
