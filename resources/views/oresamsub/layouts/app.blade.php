@@ -542,7 +542,7 @@
             //display product plans categories
             const cable_product_plan_category_id = $('#cable_product_plan_category_id').val();
             let smart_card_number = $('#smart_card_number').val();
-            const validation_customer_name = $('#validation_customer_name').val();
+            const validation_customer_name = $('#smartcard_name_preview').val();
             const wallet_category = $('#wallet_category').val();
             const cable_product_plan_id = $('#cable_product_plan_id').val();
             const pin = $('#pin').val();
