@@ -8,6 +8,19 @@
     <div class="mb-4 text-red-600 text-sm text-center">{{ session('error') }}</div>
   @endif
 
+
+  @if (Session::has('success'))
+  <div class="bg-success/10 border border-success/10 alert text-success" role="alert">
+      Success {{-- {{ Session::get('success') }} --}}
+  </div>
+  @endif
+
+  @if (Session::has('failure'))
+  <div class="bg-danger/10 border border-danger/10 alert text-danger" role="alert">
+  {{ Session::get('failure') }}
+  </div>
+  @endif
+
   <form method="POST" action="{{ route('login') }}" @submit.prevent="isLoggingIn = true; $el.submit();">
     @csrf
 
@@ -18,9 +31,11 @@
         type="email"
         name="email"
         id="email"
+        placeholder="Email or Username or Phone"
         required
         class="w-full px-4 py-2 rounded-lg bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
       >
+      <x-input-error :messages="$errors->get('email')" class="mt-2" />
     </div>
 
     <!-- Password -->
@@ -33,6 +48,7 @@
         required
         class="w-full px-4 py-2 rounded-lg bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
       >
+      <x-input-error :messages="$errors->get('password')" class="mt-2" />
     </div>
 
     <!-- Submit -->

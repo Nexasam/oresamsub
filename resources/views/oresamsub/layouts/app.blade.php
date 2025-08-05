@@ -331,12 +331,12 @@
             //display product plans categories
             const electricity_product_plan_category_id = $('#electricity_product_plan_category_id').val();
             const metre_number = $('#metre_number').val();
-            const validation_extra_info = $('#meter_name_preview').val();
-            const validation_address = $('#meter_address_preview').val();
+            const validation_extra_info = $('#meter_name_preview').text();
+            const validation_address = $('#meter_address_preview').text();
             const wallet_category = $('#wallet_category').val();
             const electricity_product_plan_id = $('#electricity_product_plan_id').val();
             const pin = $('#pin').val();
-            const no_of_slots = $('#no_of_slots').val();
+            const no_of_slots = 1;
             const utility_amount = $('#utility_amount').val();
             
             
@@ -372,17 +372,26 @@
                       var dataList = JSON.parse(result);
                       if( parseInt(dataList.status) == 1){
                           sweetAlertDisplay(dataList.message,'Success','success');
+                          $('#buy_electricity_btn').html('Buy Token');
+                          $('#buy_electricity_btn').prop('disabled',false);
+
                           reload(3000,'dashboard');
                       }
                       else if(dataList.status == 2){
                           //@least 1 tranaction had an issue
                           sweetAlertDisplay(dataList.message,'Info','warning');
+                          $('#buy_electricity_btn').html('Buy Token');
+                          $('#buy_electricity_btn').prop('disabled',false);
+
                           reload(100000000);
                       }
                       else{
                         sweetAlertDisplay(dataList.message,'Error','error');
-                        $(this).prop('disabled',false);
+                        $('#buy_electricity_btn').html('Buy Token');
+                        $('#buy_electricity_btn').prop('disabled',false);
                       }
+                    
+
                   },
                   error: function(xhr, status, error) {
                       // Handle errors if needed
@@ -390,6 +399,9 @@
                   }
                 });
             } else {
+              $('#buy_electricity_btn').html('Buy Token');
+              $('#buy_electricity_btn').prop('disabled',false);
+
               return;
             }  
         })
@@ -576,6 +588,9 @@
                         sweetAlertDisplay(dataList.message,'Error','error');
                         $(this).prop('disabled',false);
                       }
+                      $('#buy_cable_btn').html('Subscribe');
+                      $('#buy_cable_btn').prop('disabled',false);
+
                   },
                   error: function(xhr, status, error) {
                       // Handle errors if needed
@@ -583,6 +598,8 @@
                   }
                 });
             } else {
+              $('#buy_cable_btn').html('Subscribe');
+              $('#buy_cable_btn').prop('disabled',false);
               return;
             }
 
@@ -722,8 +739,9 @@
                           $("#buy_data_btn").prop('disabled',false);
                           $('#cancel_disabling').addClass('hidden')
                           // reload(6000);
-                      }
-                      $(this).html('Buy Airtime');
+                      }        
+                      $('#buy_data_btn').html('Buy Data');
+                      $('#buy_data_btn').prop('disabled',false);
 
                   },
                   error: function(xhr, status, error) {
@@ -732,6 +750,8 @@
                   }
                 });
             } else {
+              $('#buy_data_btn').html('Buy Data');
+              $('#buy_data_btn').prop('disabled',false);
               return;
             }
       })
@@ -817,8 +837,8 @@
                         sweetAlertDisplay(dataList.message,'Error','error');
                         $(this).prop('disabled',false);
                       }
-
-                      $(this).html('Buy Airtime');
+                      $('#buy_airtime_btn').html('Buy Airtime');
+                      $('#buy_airtime_btn').prop('disabled',false);
 
                   },
                   error: function(xhr, status, error) {
@@ -827,6 +847,8 @@
                   }
                 });
             } else {
+              $('#buy_airtime_btn').html('Buy Airtime');
+              $('#buy_airtime_btn').prop('disabled',false);
               return;
             }      
     })

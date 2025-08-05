@@ -36,6 +36,11 @@ class AuthenticatedSessionController extends Controller
      */
     public function create(Request $request)
     {
+
+        $siteTemplate = SiteTemplate::first();
+        if((! $siteTemplate || $siteTemplate->template_name == 'template_1') && env('APP_NAME') == 'OresamSub') {
+            return view('oresamsub.auth.login');
+        }
        
         $data = [];
         $landing_data = LandingPagesSetting::where('field_name','support_whatsapp_number')->first();
@@ -241,6 +246,6 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerateToken();
 
-        return redirect('/');
+        return redirect()->route('login');
     }
 }

@@ -7,13 +7,13 @@
   <!-- Logout Button -->
   <div class="flex justify-between items-center px-4" x-data="{ isRefreshing: false }">
     <h1 class="text-lg font-bold text-gray-800 dark:text-white">
-      Hi, {{ auth()->user()->username }} 👋
+      Welcome back {{ auth()->user()->username }} 👋
     </h1>
   
     <!-- Refresh Button -->
     <button
       @click="isRefreshing = true; setTimeout(() => location.reload(), 800)"
-      class="relative group inline-flex items-center space-x-2 px-3 py-1.5 bg-gradient-to-r from-emerald-500 to-green-500 text-white rounded-full shadow-md hover:from-emerald-600 hover:to-green-600 transition duration-300"
+      class="relative group inline-flex items-center space-x-2 px-3 py-1.5 bg-gradient-to-r from-indigo-500 to-blue-500 text-white rounded-full shadow-md hover:from-indigo-600 hover:to-blue-600 transition duration-300"
       title="Refresh Dashboard"
     >
       <div class="text-sm font-semibold">
@@ -48,13 +48,14 @@
   
 
   <!-- Wallet Card -->
-<!-- WALLET CARD -->
+  <!-- Wallet Card -->
 <div class="relative">
-  <div class="bg-gradient-to-r from-emerald-500 to-green-500 text-white p-4 rounded-xl shadow space-y-2">
+  <div class="bg-gradient-to-r from-blue-500 to-indigo-600 text-white p-4 rounded-xl shadow space-y-2">
+
     <div class="flex justify-between items-center">
       <div>
         <p class="text-xs">Wallet Balance</p>
-        <p class="text-2xl font-semibold mt-1" x-show="!isWalletLoading" x-cloak>₦{{ number_format(auth()->user()->main_wallet,2) }}</p>
+        <p class="text-2xl font-semibold mt-1" x-show="!isWalletLoading" x-cloak>₦5,000.00</p>
       </div>
       <button
         @click="isWalletLoading = true; setTimeout(() => isWalletLoading = false, 2000)"
@@ -63,6 +64,8 @@
         🔄
       </button>
     </div>
+
+    <!-- Top Up Link -->
     <div class="text-right">
       <a href="{{ route('ore.virtual_accounts') }}"
          class="text-xs underline text-white/90 hover:text-white transition">
@@ -71,50 +74,41 @@
     </div>
   </div>
 
-  <!-- WALLET LOADER -->
-  <div x-show="isWalletLoading" x-cloak class="absolute inset-0 bg-green-600/70 flex items-center justify-center rounded-xl z-10">
+  <!-- Loader Overlay -->
+  <div x-show="isWalletLoading" x-cloak class="absolute inset-0 bg-blue-600/70 flex items-center justify-center rounded-xl z-10">
     <div class="animate-spin h-6 w-6 border-4 border-white border-t-transparent rounded-full"></div>
   </div>
 </div>
 
   
 
-<!-- Action Buttons -->
-<!-- ACTION BUTTONS -->
-<div class="grid grid-cols-2 md:grid-cols-3 gap-4 text-sm text-center">
-  @foreach ([
-    ['label' => 'Buy Airtime', 'icon' => '📞', 'route' => 'ore.airtime'],
-    ['label' => 'Buy Data', 'icon' => '📶', 'route' => 'ore.data'],
-    ['label' => 'Electricity', 'icon' => '⚡', 'route' => 'ore.electricity'],
-    ['label' => 'Cable Subscription', 'icon' => '📺', 'route' => 'ore.cable'],
-  ] as $item)
-    <a
-      href="{{ route($item['route']) }}"
-      @click.prevent="showLoader = true; setTimeout(() => window.location.href = '{{ route($item['route']) }}', 150)"
-      class="group p-5 bg-white dark:bg-gray-900 rounded-2xl ring-2 ring-green-200 dark:ring-green-700 shadow-xl hover:shadow-2xl transition transform hover:scale-[1.02]"
-    >
-      <div class="w-12 h-12 mx-auto rounded-full bg-gradient-to-r from-emerald-500 to-green-500 flex items-center justify-center text-white text-2xl shadow-sm group-hover:scale-110 transition duration-200 ease-in-out">
-        {{ $item['icon'] }}
-      </div>
-      <div class="mt-3 font-semibold text-gray-800 dark:text-gray-100 group-hover:text-green-600">{{ $item['label'] }}</div>
-    </a>
-  @endforeach
-
-  <!-- LOGOUT CARD -->
-  <form method="POST" action="{{ route('logout') }}"
-        class="p-5 bg-white dark:bg-gray-900 rounded-2xl ring-2 ring-red-200 dark:ring-red-800 shadow-xl hover:shadow-2xl transition transform hover:scale-[1.02] cursor-pointer">
-    @csrf
-    <button type="submit" class="w-full h-full text-center">
-      <div class="w-12 h-12 mx-auto rounded-full bg-gradient-to-r from-red-500 to-rose-500 text-white text-2xl flex items-center justify-center shadow-sm hover:scale-110 transition duration-200 ease-in-out">
-        🚪
-      </div>
-      <div class="mt-3 font-semibold text-red-600 dark:text-red-400">Logout</div>
-    </button>
-  </form>
-</div>
-
-
-
+  <!-- Action Buttons -->
+  <div class="grid grid-cols-2 md:grid-cols-3 gap-4 text-center text-sm">
+    @foreach ([
+      ['label' => 'Buy Airtime', 'icon' => '📞', 'route' => 'ore.airtime'],
+      ['label' => 'Buy Data', 'icon' => '📶', 'route' => 'ore.data'],
+      ['label' => 'Electricity', 'icon' => '⚡', 'route' => 'ore.electricity'],
+      ['label' => 'Cable Subscription', 'icon' => '📺', 'route' => 'ore.cable'],
+    ] as $item)
+      <a
+        href="{{ route($item['route']) }}"
+        @click.prevent="showLoader = true; setTimeout(() => window.location.href = '{{ route($item['route']) }}', 150)"
+        class="p-4 bg-white dark:bg-gray-800 rounded-xl shadow hover:shadow-lg transition"
+      >
+        <div class="text-2xl">{{ $item['icon'] }}</div>
+        <div class="mt-1 font-semibold">{{ $item['label'] }}</div>
+      </a>
+    @endforeach
+  
+    <!-- Stylish Logout Card -->
+    <form method="POST" action="{{ route('logout') }}" class="p-4 bg-white dark:bg-gray-800 rounded-xl shadow hover:shadow-lg transition cursor-pointer">
+      @csrf
+      <button type="submit" class="w-full h-full text-center">
+        <div class="text-2xl text-red-500">🚪</div>
+        <div class="mt-1 font-semibold text-red-600 dark:text-red-400">Logout</div>
+      </button>
+    </form>
+  </div>
   
   
 
@@ -160,10 +154,6 @@
     
             <div class="space-y-2 text-sm text-gray-700 dark:text-gray-300">
               <div class="flex justify-between">
-                <span>Plan:</span>
-                <span class="font-semibold">{{ $transaction->product_plan->product_plan_name }}</span>
-              </div>
-              <div class="flex justify-between">
                 <span>Phone Recharged:</span>
                 <span class="font-semibold">{{ $transaction->phone_number }}</span>
               </div>
@@ -193,10 +183,7 @@
             </div>
     
             <div class="mt-6 text-center">
-              <button @click="showModal = false"
-              class="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 text-sm">
-              Close
-              </button>
+              <button @click="showModal = false" class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 text-sm">Close</button>
             </div>
           </div>
         </div>

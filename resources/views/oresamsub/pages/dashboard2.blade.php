@@ -7,7 +7,7 @@
   <!-- Logout Button -->
   <div class="flex justify-between items-center px-4" x-data="{ isRefreshing: false }">
     <h1 class="text-lg font-bold text-gray-800 dark:text-white">
-      Hi, {{ auth()->user()->username }} 👋
+      Welcome back {{ auth()->user()->username }} 👋
     </h1>
   
     <!-- Refresh Button -->
@@ -54,7 +54,7 @@
     <div class="flex justify-between items-center">
       <div>
         <p class="text-xs">Wallet Balance</p>
-        <p class="text-2xl font-semibold mt-1" x-show="!isWalletLoading" x-cloak>₦{{ number_format(auth()->user()->main_wallet,2) }}</p>
+        <p class="text-2xl font-semibold mt-1" x-show="!isWalletLoading" x-cloak>₦5,000.00</p>
       </div>
       <button
         @click="isWalletLoading = true; setTimeout(() => isWalletLoading = false, 2000)"
@@ -159,10 +159,6 @@
             <h2 class="text-lg font-bold text-gray-800 dark:text-gray-100 mb-4">Transaction Details</h2>
     
             <div class="space-y-2 text-sm text-gray-700 dark:text-gray-300">
-              <div class="flex justify-between">
-                <span>Plan:</span>
-                <span class="font-semibold">{{ $transaction->product_plan->product_plan_name }}</span>
-              </div>
               <div class="flex justify-between">
                 <span>Phone Recharged:</span>
                 <span class="font-semibold">{{ $transaction->phone_number }}</span>

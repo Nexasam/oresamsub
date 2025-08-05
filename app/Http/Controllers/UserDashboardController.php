@@ -24,6 +24,14 @@ class UserDashboardController extends Controller
 {
  
   public function index(){
+
+      
+    $template = SiteTemplate::first();
+    if((! $template || $template->template_name == 'template_1') && env('APP_NAME') == 'OresamSub' && auth()->user()->role->role_name == 'User'){
+        $data['transactions'] = Transaction::with('product_plan')->where('user_id',auth()->id())->limit(10)->latest()->get();
+        return view('oresamsub.pages.dashboard')->with($data);
+    }
+
   
     $hot_sales = ProductPlanCategory::with('product')->where('is_hot_sales',1)->get();
     $user_virtual_accounts = UserVirtualAccount::where('user_id',auth()->id())->latest()->get();
