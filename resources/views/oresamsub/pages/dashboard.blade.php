@@ -118,12 +118,12 @@
 
 <!-- Action Buttons -->
 <!-- ACTION BUTTONS -->
-<div class="grid grid-cols-2 md:grid-cols-3 gap-4 text-sm text-center">
+<div class="grid grid-cols-3 md:grid-cols-3 gap-4 text-sm text-center">
   @foreach ([
     ['label' => 'Buy Airtime', 'icon' => '📞', 'route' => 'ore.airtime'],
     ['label' => 'Buy Data', 'icon' => '📶', 'route' => 'ore.data'],
     ['label' => 'Electricity', 'icon' => '⚡', 'route' => 'ore.electricity'],
-    ['label' => 'Cable Subscription', 'icon' => '📺', 'route' => 'ore.cable'],
+    ['label' => 'Subscribe Cable', 'icon' => '📺', 'route' => 'ore.cable'],
   ] as $item)
     <a
       href="{{ route($item['route']) }}"
