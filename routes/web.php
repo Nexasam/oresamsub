@@ -54,20 +54,48 @@ use App\Http\Controllers\ElectricitySubscriptionController;
 use App\Http\Controllers\ProductPlanCustomPricingController;
 
 
-    //ORESAMSUB ROUTES
-    Route::get('oresamsub/login', fn () => view('oresamsub.auth.login'))->name('ore.login');
-    Route::get('oresamsub/register', fn () => view('oresamsub.auth.register'))->name('ore.register');
-    Route::get('oresamsub/dashboard', fn () => view('oresamsub.pages.dashboard'))->name('ore.dashboard');
-    // Route::get('oresamsub/airtime', fn () => view('oresamsub.pages.airtime'))->name('ore.airtime');
-    // Route::get('oresamsub/data', fn () => view('oresamsub.pages.data'))->name('ore.data');
-    // Route::get('oresamsub/electricity', fn () => view('oresamsub.pages.electricity'))->name('ore.electricity');
-    // Route::get('oresamsub/virtual', fn () => view('oresamsub.pages.virtual'))->name('ore.virtual');
-
-
-
+   
+Route::get('oresamsub/login', fn () => view('oresamsub.auth.login'))->name('ore.login');
+Route::get('oresamsub/register', fn () => view('oresamsub.auth.register'))->name('ore.register');
+            
 Route::middleware('set_locale')->group(function () {
 
-        
+             //ORESAMSUB ROUTES
+            Route::get('oresamsub/dashboard', fn () => view('oresamsub.pages.dashboard'))->name('ore.dashboard');
+            
+            Route::get('oresamsub/airtime', function(){
+                $data['networks'] = App\Models\Network::get();
+            return view('oresamsub.pages.airtime')->with($data);
+            } )->name('ore.airtime');
+            Route::post('oresamsub/airtime/submit', fn () => view('oresamsub.pages.airtime.submit'))->name('ore.airtime.submit');
+            
+            
+            Route::get('oresamsub/data', function(){
+                $data['networks'] = App\Models\Network::get();
+            return view('oresamsub.pages.data')->with($data);
+            } )->name('ore.data');
+            Route::post('oresamsub/data/submit', fn () => view('oresamsub.pages.data.submit'))->name('ore.data.submit');
+           
+
+            Route::get('oresamsub/cable', function(){
+                $product = App\Models\Product::select('id')->where('slug','cable_subscription')->first(); //TODO: have enums that gets the id later
+                $product_plan_categories = App\Models\ProductPlanCategory::where('product_id',$product->id)->get(); //TODO: have enums that gets the id later
+                $data['product'] = $product;
+                $data['product_plan_categories'] = $product_plan_categories;
+                return view('oresamsub.pages.cable')->with($data);
+            } )->name('ore.cable');
+
+            Route::get('oresamsub/electricity', function(){
+                $product = App\Models\Product::select('id')->where('slug','utility_bills')->first(); //TODO: have enums that gets the id later
+                $product_plan_categories = App\Models\ProductPlanCategory::where('product_id',$product->id)->get(); //TODO: have enums that gets the id later
+                $data['product'] = $product;
+                $data['product_plan_categories'] = $product_plan_categories;
+                return view('oresamsub.pages.electricity')->with($data);
+            } )->name('ore.electricity');
+            
+            // Route::post('oresamsub/cable/submit', fn () => view('oresamsub.pages.cable.submit'))->name('ore.cable.submit');
+            Route::get('oresamsub/virtual-accts', fn () => view('oresamsub.pages.virtual_accounts'))->name('ore.virtual_accounts');     
+
             //privacy controller
             Route::get('privacy/index', [PrivacyController::class, 'index']);
 

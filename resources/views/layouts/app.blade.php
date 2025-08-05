@@ -1545,6 +1545,8 @@
             var network_id = $("#network_id").val();
             var product_slug = $("#product_slug").val();
             var plan_category_id = $('#product_plan_category_id').val();
+            var product_plan_id = $('#product_product_plan_id').val();
+            
               
             if(network_id == ''){
               sweetAlertDisplay('Network is required','Network required','error');
@@ -2096,11 +2098,10 @@
                 });
             } else {
               return;
-            }
-
-            
-          
+            }     
         })
+
+        
 
         $('#buy_electricity_btn').click(function(e){
           e.preventDefault();
@@ -2172,10 +2173,7 @@
                 });
             } else {
               return;
-            }
-
-            
-          
+            }  
         })
 
         $('#buy_data_btn').click(function(e){
@@ -2260,9 +2258,6 @@
             } else {
               return;
             }
-
-            
-          
         })
 
         $('#buy_airtime_btn').click(function(e){
@@ -2466,9 +2461,6 @@
     {{-- <script src="../../assets/js/custom.js"></script> --}}
     <script src=" {{ asset(env('APP_ASSETS_BASE_URL').'js/custom.js') }}"></script>
 
-
-
-
     
     <!-- Custom-Switcher JS -->
     {{-- <script src="../../assets/js/custom-switcher.js"></script> --}}
@@ -2478,14 +2470,12 @@
     <script src="../assets/libs/choices.js/public/assets/scripts/choices.min.js"></script>
     <script src="../assets/js/choices.js"></script>
 
-  <!-- Tom Select JS -->
+    <!-- Tom Select JS -->
     <script src="{{ asset(env('APP_ASSETS_BASE_URL').'libs/tom-select/js/tom-select.complete.min.js') }}"></script>
     <script src="{{ asset(env('APP_ASSETS_BASE_URL').'js/tom-select.js') }}"></script>
     {{-- <script src="../assets/libs/tom-select/js/tom-select.complete.min.js"></script> --}}
     {{-- <script src="../assets/js/tom-select.js"></script> --}}
-
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-
     {{-- <script src="https://cdn.jsdelivr.net/npm/flowbite@2.4.1/dist/flowbite.min.js"></script> --}}
 
   

@@ -5,36 +5,56 @@
 
   <!-- Wallet Card -->
   <div class="relative">
-    <div class="bg-gradient-to-r from-blue-500 to-indigo-600 text-white p-6 rounded-xl shadow flex justify-between items-center">
-      <div>
-        <p class="text-sm">Wallet Balance</p>
-        <p class="text-3xl font-bold mt-2" x-show="!isWalletLoading" x-cloak>₦5,000.00</p>
+    <div class="bg-gradient-to-r from-blue-500 to-indigo-600 text-white p-6 rounded-xl shadow space-y-3">
+  
+      <div class="flex justify-between items-center">
+        <div>
+          <p class="text-sm">Wallet Balance</p>
+          <p class="text-3xl font-bold mt-2" x-show="!isWalletLoading" x-cloak>₦5,000.00</p>
+        </div>
+        <button
+          @click="isWalletLoading = true; setTimeout(() => isWalletLoading = false, 2000)"
+          class="text-white hover:text-gray-200 transition"
+          title="Refresh Balance">
+          🔄
+        </button>
       </div>
-      <button
-        @click="isWalletLoading = true; setTimeout(() => isWalletLoading = false, 2000)"
-        class="text-white hover:text-gray-200 transition"
-        title="Refresh Balance">
-        🔄
-      </button>
+  
+      <!-- Top Up Link -->
+      <div class="text-right">
+        <a href="{{ route('ore.virtual_accounts') }}"
+           class="text-sm underline text-white/90 hover:text-white transition">
+          + Top Up Wallet
+        </a>
+      </div>
     </div>
+  
+    <!-- Loader Overlay -->
     <div x-show="isWalletLoading" x-cloak class="absolute inset-0 bg-blue-600/70 flex items-center justify-center rounded-xl z-10">
       <div class="animate-spin h-8 w-8 border-4 border-white border-t-transparent rounded-full"></div>
     </div>
   </div>
+  
 
   <!-- Action Buttons -->
-  <div class="grid grid-cols-2 gap-4 text-center text-sm">
-    @foreach (['Buy Airtime', 'Buy Data', 'Electricity', 'Virtual Accountee'] as $label)
+  <div class="grid grid-cols-2 md:grid-cols-3 gap-4 text-center text-sm">
+    @foreach ([
+      ['label' => 'Buy Airtime', 'icon' => '📞', 'route' => 'ore.airtime'],
+      ['label' => 'Buy Data', 'icon' => '📶', 'route' => 'ore.data'],
+      ['label' => 'Electricity', 'icon' => '⚡', 'route' => 'ore.electricity'],
+      ['label' => 'Cable Subscription', 'icon' => '📺', 'route' => 'ore.cable'],
+    ] as $item)
       <a
-        href="{{ route('ore.dashboard') }}"
-        @click.prevent="showLoader = true; setTimeout(() => window.location.href = '{{ route('ore.dashboard') }}', 150)"
-        class="p-4 bg-white dark:bg-gray-800 rounded-xl shadow hover:shadow-lg"
+        href="{{ route($item['route']) }}"
+        @click.prevent="showLoader = true; setTimeout(() => window.location.href = '{{ route($item['route']) }}', 150)"
+        class="p-4 bg-white dark:bg-gray-800 rounded-xl shadow hover:shadow-lg transition"
       >
-        {{ ['📞','📶','⚡','🏦'][$loop->index] }}
-        <div class="mt-1 font-semibold">{{ $label }}</div>
+        <div class="text-2xl">{{ $item['icon'] }}</div>
+        <div class="mt-1 font-semibold">{{ $item['label'] }}</div>
       </a>
     @endforeach
   </div>
+  
 
   <!-- Transactions Table (Scrollable) -->
   <div class="bg-white dark:bg-gray-800 mt-6 rounded-xl shadow overflow-hidden">

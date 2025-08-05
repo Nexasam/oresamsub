@@ -439,7 +439,7 @@ class DataController extends Controller
         $validator = Validator::make($request->all(), [
             'network_id' => 'required',
             'phone_number' => 'required',
-            'product_plan_category_id' => 'required',
+            'product_plan_category_id' => 'nullable', #watchh, changed 4th aug. 25
             'product_plan_id' => 'required',
             'pin' => ['required','regex:/^\d{4,5}$/'],
             'wallet_category'=>['required',Rule::in(['main_wallet','data_wallet'])],

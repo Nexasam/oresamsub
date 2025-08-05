@@ -24,6 +24,8 @@
   </script>
   <script src="https://unpkg.com/alpinejs@3.x.x" defer></script>
 
+
+
   <style>
     [x-cloak] { display: none !important; }
   </style>
@@ -62,7 +64,7 @@
         ] as $item)
           <a 
             href="{{ route('ore.dashboard') }}"
-            @click.prevent="showLoader = true; setTimeout(() => window.location.href = '{{ route('ore.dashboard') }}', 5000)"
+            @click.prevent="showLoader = true; setTimeout(() => window.location.href = '{{ route('ore.dashboard') }}', 1000)"
             class="flex flex-col items-center hover:text-blue-600 dark:hover:text-blue-400"
           >
             <div class="text-xl">{{ $item['icon'] }}</div>
@@ -79,7 +81,808 @@
     <div class="animate-spin h-12 w-12 border-4 border-blue-500 border-t-transparent rounded-full"></div>
   </div>
 
-  <!-- Alpine Logic -->
+
+
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script> 
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+  var APP_NAME = @json(env('APP_NAME'));
+   $(document).ready(function(){
+    //  alert('this is working') 
+
+    function getProductPlans(network_id='', plan_category_id='', product_slug='', amount = ''){
+              if(network_id != '' && product_slug != '' && plan_category_id == ''){
+                var data = {
+                  network_id : network_id,
+                  product_slug : product_slug,
+                  amount : amount
+                };
+              
+                // alert('hhhhh')
+              }
+
+              if(network_id != '' && plan_category_id != '' && product_slug != ''){
+                var data = {
+                  network_id : network_id,
+                  plan_category_id : plan_category_id,
+                  product_slug : product_slug,
+                  amount : amount
+                };        
+              }
+
+              //  console.log(data);
+              //  return;
+              
+
+              $.ajax({
+                        type: 'GET',
+                        url: "{{ route('user.fetch_product_plans') }}",
+                        data: data,
+                        dataType: 'json',
+                        success: function(response) {
+                            console.log(response)
+                            // console.log(response.data)
+                            var result = JSON.stringify(response.data);
+                            var dataList = JSON.parse(result);
+                        
+                              $('#product_plan_id').html("");
+                              $('#product_plan_id').append('<option value="">Select Product Plan</option>');
+      
+                              // let jj = jsonn;
+                              for (const child in dataList) {
+            
+                                 
+                                  const idd = dataList[child].product_plan_id;
+                                  const product_plan_name = dataList[child].product_plan_name;
+                                  const upline_commission = dataList[child].upline_commission;
+                                  const selling_price = dataList[child].selling_price;
+                                  if(product_slug == 'data'){
+
+                                    
+                                    // if(APP_NAME == 'OresamSub'){
+                                    //   option = "<option value="+idd+">"+product_plan_name+"- &#8358; "+selling_price+" - Upline Commission:&#8358;"+upline_commission+"</option>";
+                                    // }else{
+                                    //   option = "<option value="+idd+">"+product_plan_name+'- &#8358;'+selling_price+"</option>";
+                                    // }
+
+
+                                    $('#plan_grid').html(""); // Clear previous
+                                    let planBoxes = '';
+
+                                    for (const child in dataList) {
+                                      const idd = dataList[child].product_plan_id;
+                                      const name = dataList[child].product_plan_name;
+                                      const price = dataList[child].selling_price;
+                                      const commission = dataList[child].upline_commission;
+
+                                      let label = APP_NAME == 'OresamSub'
+                                        ? `${name}<br><span class='text-xs text-green-600'>₦${price} | Upline: ₦${commission}</span>`
+                                        : `${name}<br><span class='text-xs'>₦${price}</span>`;
+
+                                      planBoxes += `
+                                        <div 
+                                          class="border rounded-lg p-3 text-center cursor-pointer bg-white dark:bg-gray-800 hover:border-blue-600 transition"
+                                          data-id="${idd}"
+                                          onclick="selectPlan(this)"
+                                        >
+                                          ${label}
+                                        </div>
+                                      `;
+                                    }
+                                    $('#plan_grid').html(planBoxes);
+
+                                   
+
+                                  
+                                  
+                                  }
+                                  else if(product_slug == 'airtime' && amount != ''){
+
+                                    // $('.display_actual_amount').html("<b>You are buying for: &#8358;"+selling_price+"</b>");
+                                    // $('#product_plan_id').val(idd);
+                                    option = "<option selected value="+idd+">"+product_plan_name+'- Discounted Price: &#8358;'+selling_price+"</option>";
+                                  }
+                                  else if(product_slug == 'airtime' && amount == ''){
+                                    option = "<option value="+idd+">"+product_plan_name+"</option>";
+                                  }else{
+                                    if(APP_NAME == 'OresamSub'){
+                                      option = "<option value="+idd+">"+product_plan_name+" &nbsp;&nbsp;Upline Commission:&#8358;"+upline_commission+"</option>";
+                                    }else{
+                                      option = "<option value="+idd+">"+product_plan_name+"</option>";
+                                    }
+                                  }
+                                  $('#product_plan_id').append(option);
+                                
+                                
+                              }
+                            
+                          
+                        },
+                        error: function(xhr, status, error) {
+                            // Handle errors if needed
+                            console.error(xhr.responseText);
+                        }
+                });
+    }
+
+    function getCableProductPlans(plan_category_id='', product_slug=''){
+              
+              var data = {
+                plan_category_id : plan_category_id,
+                product_slug : product_slug
+              };
+                
+  
+                $.ajax({
+                          type: 'GET',
+                          url: "{{ route('user.fetch_product_plans') }}",
+                          data: data,
+                          dataType: 'json',
+                          success: function(response) {
+                              console.log(response)
+                              // console.log(response.data)
+                              var result = JSON.stringify(response.data);
+                              var dataList = JSON.parse(result);
+                          
+                              $('#cable_product_plan_id').html("");
+                              $('#cable_product_plan_id').append('<option value="">Select Product Plan</option>');
+  
+                                // let jj = jsonn;
+
+                                  $('#plan_grid').html(""); // Clear previous
+                                  let boxes = '';
+                             
+                                  for (const child in dataList) {
+                                      const idd = dataList[child].product_plan_id;
+                                      const name = dataList[child].product_plan_name;
+                                      const price = dataList[child].selling_price;
+                                      const commission = dataList[child].upline_commission;
+
+                                      let label = APP_NAME == 'OresamSub'
+                                        ? `${name}<br><span class='text-xs text-green-600'>₦${price} | Upline: ₦${commission}</span>`
+                                        : `${name}<br><span class='text-xs'>₦${price}</span>`;
+
+                                        boxes += `
+                                        <div 
+                                          class="border rounded-lg p-3 text-center cursor-pointer bg-white dark:bg-gray-800 hover:border-blue-600 transition plan-card"
+                                          data-id="${idd}">
+                                          ${name}<br>
+                                          <span class="text-xs text-green-600">₦${price}</span>
+                                        </div>`;
+                                    }
+                                    $('#plan_grid').html(boxes);
+                              
+                            
+                          },
+                          error: function(xhr, status, error) {
+                              // Handle errors if needed
+                              console.error(xhr.responseText);
+                          }
+                });
+    }
+
+
+    function getElectricityProductPlans(plan_category_id='', product_slug='', amount = ''){
+              
+              var data = {
+                plan_category_id : plan_category_id,
+                product_slug : product_slug,
+                amount : amount,
+              };
+              
+              console.log('electric',data);
+
+              $.ajax({
+                        type: 'GET',
+                        url: "{{ route('user.fetch_product_plans') }}",
+                        data: data,
+                        dataType: 'json',
+                        success: function(response) {
+                            console.log(response)
+                            console.log('e dey reach here o')
+                            // console.log(response.data)
+                            var result = JSON.stringify(response.data);
+                            var dataList = JSON.parse(result);
+                        
+                              $('#electricity_product_plan_id').html("");
+                              $('#electricity_product_plan_id').append('<option value="">Select Product Plan</option>');
+      
+                              $('#plan_grid').html(""); // Clear previous
+                              let boxes = '';
+                             
+                              for (const child in dataList) {
+                                  const idd = dataList[child].product_plan_id;
+                                  const name = dataList[child].product_plan_name;
+                                  const price = dataList[child].selling_price;
+                                  const commission = dataList[child].upline_commission;
+
+                                  let label = APP_NAME == 'OresamSub'
+                                    ? `${name}<br><span class='text-xs text-green-600'>₦${price} | Upline: ₦${commission}</span>`
+                                    : `${name}<br><span class='text-xs'>₦${price}</span>`;
+
+                                    boxes += `
+                                    <div 
+                                      class="border rounded-lg p-3 text-center cursor-pointer bg-white dark:bg-gray-800 hover:border-blue-600 transition plan-card-elect"
+                                      data-id="${idd}">
+                                      ${name}<br>
+                                      <span class="text-xs text-green-600">₦${price}</span>
+                                    </div>`;
+                              }
+                              $('#plan_grid').html(boxes);
+                            
+                          
+                        },
+                        error: function(xhr, status, error) {
+                            // Handle errors if needed
+                            console.error(xhr.responseText);
+                        }
+                });
+        }
+
+
+        $('#buy_electricity_btn').click(function(e){
+          e.preventDefault();
+            $(this).html('Processing...Please wait');
+            $(this).prop('disabled',true);
+            $('#cancel_disabling').removeClass('hidden')
+
+          
+            //display product plans categories
+            const electricity_product_plan_category_id = $('#electricity_product_plan_category_id').val();
+            const metre_number = $('#metre_number').val();
+            const validation_extra_info = $('#meter_name_preview').val();
+            const validation_address = $('#meter_address_preview').val();
+            const wallet_category = $('#wallet_category').val();
+            const electricity_product_plan_id = $('#electricity_product_plan_id').val();
+            const pin = $('#pin').val();
+            const no_of_slots = $('#no_of_slots').val();
+            const utility_amount = $('#utility_amount').val();
+            
+            
+
+            const data = {
+              electricity_product_plan_category_id : electricity_product_plan_category_id,
+              metre_number : metre_number,
+              validation_extra_info : validation_extra_info,
+              validation_address : validation_address,
+              wallet_category : wallet_category,
+              electricity_product_plan_id : electricity_product_plan_id,
+              pin : pin,
+              no_of_slots : no_of_slots,
+              amount : utility_amount,
+            };
+
+            // console.log(data);
+            // return;
+
+            if (confirm("Are you sure you want to complete this electricity subscription purchase?") == true) {
+                // alert('logic happens here')
+              
+
+                $.ajax({
+                  type: 'GET',
+                  url: "{{ route('user.electricity.buy_electricity_subscription_action') }}",
+                  data: data,
+                  dataType: 'json',
+                  success: function(response) {
+                      console.log(response);
+                      // console.log(response.data);
+                      var result = JSON.stringify(response);
+                      var dataList = JSON.parse(result);
+                      if( parseInt(dataList.status) == 1){
+                          sweetAlertDisplay(dataList.message,'Success','success');
+                          reload(3000,'dashboard');
+                      }
+                      else if(dataList.status == 2){
+                          //@least 1 tranaction had an issue
+                          sweetAlertDisplay(dataList.message,'Info','warning');
+                          reload(100000000);
+                      }
+                      else{
+                        sweetAlertDisplay(dataList.message,'Error','error');
+                        $(this).prop('disabled',false);
+                      }
+                  },
+                  error: function(xhr, status, error) {
+                      // Handle errors if needed
+                      console.error(xhr.responseText);
+                  }
+                });
+            } else {
+              return;
+            }  
+        })
+
+    //cable
+    $(document).on('click', '.plan-card', function () {
+      $('#plan_grid .plan-card').removeClass('border-blue-600 ring-2 ring-blue-200');
+      $(this).addClass('border-blue-600 ring-2 ring-blue-200');
+      $('#cable_product_plan_id').val($(this).data('id'));
+      $('#plan_error').addClass('hidden');
+    });
+
+    //electricity
+      $(document).on('click', '.plan-card-elect', function () {
+        // alert('asdfsfd')
+      $('#plan_grid .plan-card-elect').removeClass('border-blue-600 ring-2 ring-blue-200');
+      $(this).addClass('border-blue-600 ring-2 ring-blue-200');
+      $('#electricity_product_plan_id').val($(this).data('id'));
+      $('#plan_error').addClass('hidden');
+    });
+
+  
+    let verifyTimer;
+    $('#smart_card_number').on('keyup', function () {
+        clearTimeout(verifyTimer); // Cancel previous timer
+
+        const number = $(this).val();
+        const plan_id = $('#cable_product_plan_id').val();
+
+        console.log(plan_id,number);
+
+        
+
+        if (number.length >= 10 && plan_id) {
+          $('#smartcard_name_preview').text('Typing...');
+
+          verifyTimer = setTimeout(() => {
+            $('#smartcard_name_preview').text('Verifying...');
+           var urll = "{{ route('user.cable_subscription.validate_smart_card_number') }}";
+
+
+            $.ajax({
+              type: 'GET',
+              url: urll,
+              data: {
+                smart_card_number : number,
+                plan_id : plan_id
+              },
+              success: function (response) {
+               console.log(response);
+                $('#smartcard_name_preview').text(response.name || 'Not Found');
+              },
+              error: function () {
+                $('#smartcard_name_preview').text('Verification failed');
+              }
+            });
+          }, 500); // Wait 500ms after user stops typing
+        } else {
+          $('#smartcard_name_preview').text('Not yet verified');
+        }
+    });
+
+
+    let verifyTimer2;
+    $('#metre_number').on('keyup', function () {
+        clearTimeout(verifyTimer2); // Cancel previous timer
+
+        const number = $(this).val();
+        const plan_id = $('#electricity_product_plan_id').val();
+
+        console.log(plan_id,number);
+
+        
+
+        if (number.length >= 10 && plan_id) {
+          $('#meter_name_preview').text('Checking...');
+          $('#meter_address_preview').text('Checking...');
+
+          verifyTimer = setTimeout(() => {
+            $('#meter_name_preview').text('Verifying...');
+            $('#meter_addresspreview').text('Verifying...');
+             var urll = "{{ route('user.electricity.validate_metre_number') }}";
+
+
+            $.ajax({
+              type: 'GET',
+              url: urll,
+              data: {
+                smart_card_number : number,
+                plan_id : plan_id
+              },
+              success: function (response) {
+               console.log(response);
+                $('#meter_name_preview').text(response.name || 'No Name Found');
+                $('#meter_address_preview').text(response.address || 'No Address Found');
+              },
+              error: function () {
+                $('#meter_name_preview').text('Verification failed');
+                $('#meter_address_preview').text('Verification failed');
+              }
+            });
+          }, 500); // Wait 500ms after user stops typing
+        } else {
+          $('#meter_name_preview').text('Not yet verified');
+          $('#meter_address_preview').text('Not yet verified');
+        }
+    });
+
+
+
+    function sweetAlertDisplay(message,title,status){
+        Swal.fire({
+              icon: status,
+              title: title,
+              text: message,
+              // footer: '<a href="">Why do I have this issue?</a>'
+              });
+    }
+
+    function reload(timeout = 3000, redirectUrl = null) {
+      setTimeout(() => {
+        if (redirectUrl) {
+          window.location.href = redirectUrl;
+        } else {
+          window.location.reload();
+        }
+      }, timeout);
+     }
+
+
+     $('#buy_cable_btn').click(function(e){
+          e.preventDefault();
+            $(this).html('Processing...Please wait');
+            $(this).prop('disabled',true);
+            $('#cancel_disabling').removeClass('hidden')
+
+          
+            //display product plans categories
+            const cable_product_plan_category_id = $('#cable_product_plan_category_id').val();
+            let smart_card_number = $('#smart_card_number').val();
+            const validation_customer_name = $('#validation_customer_name').val();
+            const wallet_category = $('#wallet_category').val();
+            const cable_product_plan_id = $('#cable_product_plan_id').val();
+            const pin = $('#pin').val();
+            const no_of_slots = $('#no_of_slots').val();
+            
+            const data = {
+              cable_product_plan_category_id : cable_product_plan_category_id,
+              smart_card_number : smart_card_number,
+              validation_customer_name : validation_customer_name,
+              wallet_category : wallet_category,
+              cable_product_plan_id : cable_product_plan_id,
+              pin : pin,
+              no_of_slots : no_of_slots,
+            };
+
+
+            // console.log(data);
+            // return;
+
+            if (confirm("Are you sure you want to complete this cable subscription purchase?") == true) {
+                // alert('logic happens here')
+              
+
+                $.ajax({
+                  type: 'GET',
+                  url: "{{ route('user.cable_subscription.buy_cable_subscription_action') }}",
+                  data: data,
+                  dataType: 'json',
+                  success: function(response) {
+                      console.log(response);
+                      var result = JSON.stringify(response);
+                      var dataList = JSON.parse(result);
+                      if( parseInt(dataList.status) == 1){
+                          sweetAlertDisplay(dataList.message,'Success','success');
+                          reload(3000,'dashboard');
+                      }
+                      else if(dataList.status == 2){
+                          //@least 1 tranaction had an issue
+                          sweetAlertDisplay(dataList.message,'Info','warning');
+                          reload(100000000);
+                      }
+                      else{
+                        sweetAlertDisplay(dataList.message,'Error','error');
+                        $(this).prop('disabled',false);
+                      }
+                  },
+                  error: function(xhr, status, error) {
+                      // Handle errors if needed
+                      console.error(xhr.responseText);
+                  }
+                });
+            } else {
+              return;
+            }
+
+            
+          
+        })
+
+    
+
+
+
+    $('#utility_amount').keyup(function(e){
+        e.preventDefault();
+        var amount =  $(this).val();
+        var product_slug = $("#product_slug").val();
+        var plan_category_id = $('#electricity_product_plan_category_id').val();
+          
+        var amount = product_slug == 'airtime' || product_slug == 'utility_bills'  ? amount : '';
+        // alert(plan_category_id)
+
+        getElectricityProductPlans(plan_category_id,product_slug,amount);
+
+    });
+
+    $('#amount').keyup(function(e){
+            e.preventDefault();
+            var amount =  $(this).val();
+            var network_id = $("#network_id").val();
+            var product_slug = $("#product_slug").val();
+            var plan_category_id = $('#product_plan_category_id').val();
+            var product_plan_id = $('#product_product_plan_id').val();
+            
+              
+            if(network_id == ''){
+              sweetAlertDisplay('Network is required','Network required','error');
+              return;
+            }
+            var amount = product_slug == 'airtime' ? $('#amount').val() : '';
+      
+            getProductPlans(network_id,plan_category_id,product_slug,amount);
+    });
+
+    $('#cable_product_plan_category_id').change(function(){
+          var product_slug = $("#product_slug").val();
+          var plan_category_id = $(this).val();
+
+          if(plan_category_id == '' || plan_category_id == 'all'){
+            sweetAlertDisplay('Product plan category is required','Plan category required','error');
+            return;
+          }
+
+          getCableProductPlans(plan_category_id,product_slug);
+    })
+
+    $('#electricity_product_plan_category_id').change(function(){
+          var product_slug = $("#product_slug").val();
+          var plan_category_id = $(this).val();
+
+          if(plan_category_id == '' || plan_category_id == 'all'){
+            sweetAlertDisplay('Product plan category is required','Plan category required','error');
+            return;
+          }
+
+          getCableProductPlans(plan_category_id,product_slug);
+    })
+
+
+    $('#buy_data_btn').click(function(e){
+          e.preventDefault();
+            $(this).html('Processing...Please wait');
+            $(this).prop('disabled',true);
+            $('#cancel_disabling').removeClass('hidden')
+
+          
+            //display product plans categories
+            const network_id = $('#network_id').val();
+            const product_plan_category_id = $('#product_plan_category_id').val();
+            const phone_number = $('#phone_number').val();
+            const wallet_category = $('#wallet_category').val();
+            const product_plan_id = $('#product_plan_id').val();
+            const pin = $('#pin').val();
+            // const validatephonenetwork = $('#validatephonenetwork').val();
+            let checkvalidatephonenetwork = $('#validatephonenetwork').is(":checked");
+            if(checkvalidatephonenetwork){
+              var validatephonenetwork = 1;
+            }else{
+              var validatephonenetwork = 0;
+              
+            }
+            
+
+            const data = {
+              network_id : network_id,
+              product_plan_category_id : product_plan_category_id,
+              phone_number : phone_number,
+              wallet_category : wallet_category,
+              product_plan_id : product_plan_id,
+              pin : pin,
+              validatephonenetwork : validatephonenetwork
+            };
+
+            
+
+            // console.log(data);
+            // return;
+
+            if (confirm("Are you sure you want to complete this data purchase?") == true) {
+                // alert('logic happens here')
+              
+
+                $.ajax({
+                  type: 'GET',
+                  url: "{{ route('user.data.buy_data_action') }}",
+                  data: data,
+                  dataType: 'json',
+                  success: function(response) {
+                      console.log(response);
+                      // console.log(response.data);
+                      var result = JSON.stringify(response);
+                      var dataList = JSON.parse(result);
+                      if( parseInt(dataList.status) == 1){
+                          sweetAlertDisplay(dataList.message,'Success','success');
+                          reload(3000,'dashboard');
+                      }
+                      else if(dataList.status == 2){
+                          //@least 1 tranaction had an issue
+                          sweetAlertDisplay(dataList.message,'Info','warning');
+                          $("#buy_data_btn").text('Buy Data');
+                          $("#buy_data_btn").prop('disabled',false);
+                          $('#cancel_disabling').addClass('hidden')
+                          reload(6000);
+
+                      }
+                      else{
+                        sweetAlertDisplay(dataList.message,'Error','error');
+                          $("#buy_data_btn").text('Buy Data');
+                          $("#buy_data_btn").prop('disabled',false);
+                          $('#cancel_disabling').addClass('hidden')
+                          // reload(6000);
+                      }
+                      $(this).html('Buy Airtime');
+
+                  },
+                  error: function(xhr, status, error) {
+                      // Handle errors if needed
+                      console.error(xhr.responseText);
+                  }
+                });
+            } else {
+              return;
+            }
+      })
+
+    $('#buy_airtime_btn').click(function(e){
+          e.preventDefault();
+            $(this).html('Processing...Please wait');
+            $(this).prop('disabled',true);
+            $('#cancel_disabling').removeClass('hidden')
+
+            //display product plans categories
+            const network_id = $('#network_id').val();
+            const product_plan_category_id = $('#product_plan_category_id').val();
+            const phone_number = $('#phone_number').val();
+            const wallet_category = $('#wallet_category').val();
+            const product_plan_id = $('#product_plan_id').val();
+            const pin = $('#pin').val();
+            let checkvalidatephonenetwork = $('#validatephonenetwork').is(":checked");
+            if(checkvalidatephonenetwork){
+              var validatephonenetwork = 1;
+            }else{
+              var validatephonenetwork = 0;
+              
+            }
+
+            if($('#amount_for_airtime_category').val() == ''){
+              var amount = $('#amount_for_airtime_category').val();
+              console.log('this is running')
+
+              if(amount == undefined){
+                var amount = $('#amount').val();
+              }
+            }else{
+              var amount = $('#amount').val();
+            }
+
+            if( parseInt(amount) < 50){
+              $(this).html('Buy Airtime');
+              sweetAlertDisplay("{{ __('messages.You need to buy at least N50 worth of airtime.') }}",'Airtime purchase error','error');
+              // sweetAlertDisplay('You need to buy atleast &#8358;50 worth of airtime','Airtime purchase error','error');
+              return;
+            
+            }
+            
+
+            const data = {
+              network_id : network_id,
+              product_plan_category_id : product_plan_category_id,
+              phone_number : phone_number,
+              wallet_category : wallet_category,
+              product_plan_id : product_plan_id,
+              pin : pin,
+              amount : amount,
+              validatephonenetwork : validatephonenetwork
+            };
+
+            // console.log(data);
+            // return;
+
+            if (confirm("Are you sure you want to complete this airtime purchase?") == true) {
+                // alert('logic happens here')
+                $.ajax({
+                  type: 'GET',
+                  url: "{{ route('user.airtime.buy_airtime_action') }}",
+                  data: data,
+                  dataType: 'json',
+                  success: function(response) {
+                      console.log(response);
+                      // console.log(response.data);
+                      var result = JSON.stringify(response);
+                      var dataList = JSON.parse(result);
+                      console.log(dataList);
+                      if( parseInt(dataList.status) == 1){
+                          sweetAlertDisplay(dataList.message,'Success','success');
+                          reload(3000,'dashboard');
+                      }
+                      else if(dataList.status == 2){
+                          //@least 1 tranaction had an issue
+                          sweetAlertDisplay(dataList.message,'Info','warning');
+                          reload(60000000);
+                      }
+                      else{
+                        sweetAlertDisplay(dataList.message,'Error','error');
+                        $(this).prop('disabled',false);
+                      }
+
+                      $(this).html('Buy Airtime');
+
+                  },
+                  error: function(xhr, status, error) {
+                      // Handle errors if needed
+                      console.error(xhr.responseText);
+                  }
+                });
+            } else {
+              return;
+            }      
+    })
+ 
+  
+    $('#network_id').change(function(){
+      
+          $('#product_plan_category_id').html('<option value="all">All categories selected</option>');
+          $("#product_plan_category_div").addClass('hidden');
+          $('#filter_by_plan_category').prop('checked',false)
+          var network_id = $(this).val();
+          var product_slug = $('#product_slug').val();
+          let selectedNetwork = $('#network_id option:selected').text();
+          // alert(selectedNetwork);return;
+
+
+          if(selectedNetwork == 'MTN'){
+            $('#mtn_svg').show();
+            $('#airtel_svg').hide();
+            $('#glo_svg').hide();
+            $('#9mobile_svg').hide();
+          }else if(selectedNetwork == 'GLO'){
+            $('#mtn_svg').hide();
+            $('#airtel_svg').hide();
+            $('#glo_svg').show();
+            $('#9mobile_svg').hide();
+          }else if(selectedNetwork == 'AIRTEL'){
+            $('#mtn_svg').hide();
+            $('#airtel_svg').show();
+            $('#glo_svg').hide();
+            $('#9mobile_svg').hide();
+          }else if(selectedNetwork == '9MOBILE'){
+            $('#mtn_svg').hide();
+            $('#airtel_svg').hide();
+            $('#glo_svg').hide();
+            $('#9mobile_svg').show();
+          }else{
+            $('#mtn_svg').hide();
+            $('#airtel_svg').hide();
+            $('#glo_svg').hide();
+            $('#9mobile_svg').hide();
+          }
+          // $('#network_id').prepend('<option selected value="'+response.network_id+'">'+selectedNetwork+'</option>');
+
+          
+          // alert(network_id)
+          //here you have to display all plans that are tied to this network but only where tied to the automation tied to each product plan category
+          var amount = product_slug == 'airtime' ? $('#amount').val() : '';
+          
+          getProductPlans(network_id,'',product_slug,amount);
+        })    
+   })
+  </script>
+
+
+  
   <script>
     function themeToggle() {
       return {
@@ -98,6 +901,23 @@
       }
     }
   </script>
+
+  <script>
+     function selectPlan(element,idselector = 'product_plan_id') {
+        // alert('sdfsfd')
+        // Remove active class from others
+        $('#plan_grid div').removeClass('border-blue-600 ring-2 ring-blue-200');
+
+        // Add active class to selected
+        $(element).addClass('border-blue-600 ring-2 ring-blue-200');
+
+        // Set selected value
+        const planId = $(element).data('id');
+        $('#'+idselector).val(planId);
+        $('#plan_error').addClass('hidden');
+     }
+  </script>
+
 
 </body>
 </html>

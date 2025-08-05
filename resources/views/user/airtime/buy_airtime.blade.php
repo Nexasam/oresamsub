@@ -270,8 +270,8 @@
                                                 </div> --}}
                     
                                                 <div class="space-y-2">
-                                                    <label class="ti-form-label mb-0">{{ __('messages.Product Plan List') }}</label>
-                                                    <select required name="product_plan_id" id="product_plan_id" class="my-auto ti-form-select">
+                                                      <label class="ti-form-label mb-0">{{ __('messages.Product Plan List') }}</label>
+                                                      <select required name="product_plan_id" id="product_plan_id" class="my-auto ti-form-select">
                                                         <option value="all">Select</option>
                     
                                                       </select>

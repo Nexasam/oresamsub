@@ -2,7 +2,7 @@
 
 @section('content')
 <div class="pt-6 max-w-sm mx-auto" x-data="{ isSubmitting: false }">
-  <h2 class="text-xl font-bold text-center mb-6">Buy Airtime</h2>
+  <h2 class="text-xl font-bold text-center mb-6">Buy Data</h2>
 
   @if(session('success'))
     <div class="mb-4 bg-green-100 text-green-800 text-sm px-4 py-2 rounded-lg">
@@ -14,11 +14,11 @@
     </div>
   @endif
 
-  <form id="airtimeWrapper" @submit.prevent="isSubmitting = true" method="POST">
+  <form id="dataWrapper" method="POST" @submit.prevent="isSubmitting = true" action="{{ route('ore.data.submit') }}">
     @csrf
 
     <!-- Hidden Fields -->
-    <input type="hidden" name="product_slug" id="product_slug" value="airtime">
+    <input type="hidden" name="product_slug" id="product_slug" value="data">
     <input type="hidden" name="wallet_category" id="wallet_category" value="main_wallet">
 
     <!-- Network -->
@@ -32,7 +32,7 @@
       >
         <option value="">Select</option>
         @foreach ($networks as $network)
-          <option value="{{ $network->id }}">{{ $network->network_name }}  {{ $network->id }}</option>
+          <option value="{{ $network->id }}">{{ $network->network_name }}</option>
         @endforeach
       </select>
     </div>
@@ -50,32 +50,16 @@
       >
     </div>
 
-    <!-- Amount -->
-    <div class="mb-4">
-      <label for="amount" class="block text-sm mb-1">Amount (₦)</label>
-      <input
-        type="number"
-        name="amount"
-        id="amount"
-        required
-        min="50"
-        placeholder="e.g. 100"
-        class="w-full px-4 py-2 rounded-lg bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
-      >
-    </div>
+   <!-- Hidden field for selected product_plan_id -->
+    <input type="hidden" name="product_plan_id" id="product_plan_id">
 
-    <!-- Product Plan -->
+    <!-- Data Plan Grid -->
     <div class="mb-4">
-      <label for="product_plan_id" class="block text-sm mb-1">Product Plan</label>
-      <select
-        name="product_plan_id"
-        id="product_plan_id"
-        required
-        class="w-full px-4 py-2 rounded-lg bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
-      >
-        <option value="">Select</option>
-        {{-- Dynamic plans will be loaded here --}}
-      </select>
+      <label class="block text-sm mb-1">Data Plan</label>
+      <div id="plan_grid" class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+        {{-- Plans will be appended here dynamically --}}
+      </div>
+      <div id="plan_error" class="text-red-500 text-sm mt-2 hidden">Please select a data plan</div>
     </div>
 
     <!-- Transaction PIN -->
@@ -98,11 +82,11 @@
     <!-- Submit Button -->
     <button
       type="submit"
-      id="buy_airtime_btn"
+      id="buy_data_btn"
       class="w-full py-2 px-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition disabled:opacity-50"
       :disabled="isSubmitting"
     >
-      <span x-show="!isSubmitting">🔌 Buy Airtime</span>
+      <span x-show="!isSubmitting">📶 Buy Data</span>
       <span x-show="isSubmitting" x-cloak class="flex items-center justify-center gap-2">
         <svg class="animate-spin h-4 w-4" viewBox="0 0 24 24">
           <circle class="opacity-25" cx="12" cy="12" r="10"
@@ -115,5 +99,4 @@
     </button>
   </form>
 </div>
-
 @endsection
