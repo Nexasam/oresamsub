@@ -63,8 +63,8 @@
           ['icon' => '⚡', 'label' => 'Electricity']
         ] as $item)
           <a 
-            href="{{ route('ore.dashboard') }}"
-            @click.prevent="showLoader = true; setTimeout(() => window.location.href = '{{ route('ore.dashboard') }}', 1000)"
+            href="{{ route('dashboard') }}"
+            @click.prevent="showLoader = true; setTimeout(() => window.location.href = '{{ route('dashboard') }}', 1000)"
             class="flex flex-col items-center hover:text-blue-600 dark:hover:text-blue-400"
           >
             <div class="text-xl">{{ $item['icon'] }}</div>

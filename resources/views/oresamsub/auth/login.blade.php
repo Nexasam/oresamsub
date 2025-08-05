@@ -28,7 +28,7 @@
     <div class="mb-4">
       <label for="email" class="block text-sm mb-1">Email</label>
       <input
-        type="email"
+        type="text"
         name="email"
         id="email"
         placeholder="Email or Username or Phone"

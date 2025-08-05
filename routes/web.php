@@ -87,7 +87,7 @@ Route::middleware('set_locale')->group(function () {
 
                 Route::get('oresamsub/cable', function () {
                     $product = App\Models\Product::select('id')->where('slug', 'cable_subscription')->first();
-                    $product_plan_categories = App\Models\ProductPlanCategory::where('product_id', $product->id)->get();
+                    $product_plan_categories = App\Models\ProductPlanCategory::select('id','product_plan_category_name')->where('product_id', $product->id)->get();
                     $data['product'] = $product;
                     $data['product_plan_categories'] = $product_plan_categories;
                     return view('oresamsub.pages.cable')->with($data);
@@ -95,14 +95,14 @@ Route::middleware('set_locale')->group(function () {
 
                 Route::get('oresamsub/electricity', function () {
                     $product = App\Models\Product::select('id')->where('slug', 'utility_bills')->first();
-                    $product_plan_categories = App\Models\ProductPlanCategory::where('product_id', $product->id)->get();
+                    $product_plan_categories = App\Models\ProductPlanCategory::select('id','product_plan_category_name')->where('product_id', $product->id)->get();
                     $data['product'] = $product;
                     $data['product_plan_categories'] = $product_plan_categories;
                     return view('oresamsub.pages.electricity')->with($data);
                 })->name('ore.electricity');
 
                 Route::get('oresamsub/virtual-accts', function () {
-                    $virtualccts = App\Models\UserVirtualAccount::where('user_id',auth()->id())->get();
+                    $virtualccts = App\Models\UserVirtualAccount::select('id','bank_name','account_name','account_number')->where('user_id',auth()->id())->get();
                     $data['virtualccts'] = $virtualccts;
                     // dd($data);
                     return view('oresamsub.pages.virtual_accounts')->with($data);

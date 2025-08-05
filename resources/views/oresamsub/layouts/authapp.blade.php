@@ -62,7 +62,7 @@
         ] as $item)
           <a 
             href="{{ route('ore.dashboard') }}"
-            @click.prevent="showLoader = true; setTimeout(() => window.location.href = '{{ route('ore.dashboard') }}', 5000)"
+            @click.prevent="showLoader = true; setTimeout(() => window.location.href = '{{ route('ore.dashboard') }}', 10000)"
             class="flex flex-col items-center hover:text-blue-600 dark:hover:text-blue-400"
           >
             <div class="text-xl">{{ $item['icon'] }}</div>
