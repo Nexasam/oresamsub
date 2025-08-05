@@ -103,7 +103,7 @@
       <!-- Top Up -->
       <div class="text-right">
         <a href="{{ route('ore.virtual_accounts') }}"
-          @click.prevent="showLoader = true; setTimeout(() => window.location.href = '{{ route('dashboard') }}', 1000)"
+          @click.prevent="showLoader = true; setTimeout(() => window.location.href = '{{ route('ore.virtual_accounts') }}', 1000)"
            class="text-xs font-bold underline text-white/90 hover:text-white transition">
           + Top Up Wallet
         </a>
