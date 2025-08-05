@@ -4,12 +4,25 @@
 <div class="space-y-6 pt-2" x-data="{ isWalletLoading: false, isRefreshing: false }">
 
 
+
   <!-- Logout Button -->
   <div class="flex justify-between items-center px-4" x-data="{ isRefreshing: false }">
     <h1 class="text-lg font-bold text-gray-800 dark:text-white">
       Hi, {{ auth()->user()->username }} 👋
     </h1>
   
+    <div class="mt-2">
+      <a href="{{route('admin.exit_impersonate')}}">
+              @if (session()->has('impersonator'))
+                 <div class="bg-green-800 text-white p-2 rounded-xl">
+                  <h1>You are now impersonating <u>{{ $user->first_name }} {{ $user->pin }}</u> as an Administrator.</h1>
+                  <div class="text-lg"><b>Click to EXIT Impersonation</b></div>
+                  </div>
+
+              @endif
+      </a>
+    </div>
+
     <!-- Refresh Button -->
     <button
       @click="isRefreshing = true; setTimeout(() => location.reload(), 800)"
