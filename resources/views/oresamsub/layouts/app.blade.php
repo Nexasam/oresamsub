@@ -181,7 +181,7 @@
 
                                     // $('.display_actual_amount').html("<b>You are buying for: &#8358;"+selling_price+"</b>");
                                     // $('#product_plan_id').val(idd);
-                                    option = "<option selected value="+idd+">"+product_plan_name+'- Discounted Price: &#8358;'+selling_price+"</option>";
+                                    option = "<option selected value="+idd+">"+product_plan_name+' - &#8358;'+selling_price+"</option>";
                                   }
                                   else if(product_slug == 'airtime' && amount == ''){
                                     option = "<option value="+idd+">"+product_plan_name+"</option>";
