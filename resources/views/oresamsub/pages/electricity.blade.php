@@ -65,13 +65,33 @@
     </div>
 
     <!-- Plan Grid (Optional: skip if not used for electricity) -->
-    <div class="mb-4">
+    {{-- <div class="mb-4">
       <label class="block text-sm mb-1">Plans display here</label>
       <div id="plan_grid" class="grid grid-cols-2 sm:grid-cols-3 gap-3">
-        {{-- AJAX-loaded plans here --}}
       </div>
       <div id="plan_error" class="text-red-500 text-sm mt-2 hidden">Please select an electricity plan</div>
+    </div> --}}
+
+    <div class="mb-4">
+      <label class="block text-sm mb-1">Plans display here</label>
+    
+      <!-- Scrollable container -->
+      <div class="relative max-h-64 overflow-y-auto border rounded-lg p-2 pr-3 scrollbar-thin scrollbar-thumb-emerald-500 scrollbar-track-transparent">
+    
+        <!-- Grid layout: 3 columns on small screens, smaller font -->
+        <div id="plan_grid" class="grid grid-cols-3 gap-2 text-xs">
+          {{-- AJAX-loaded plans here --}}
+        </div>
+    
+        <!-- Scroll hint -->
+        <div class="absolute bottom-1 right-2 text-[10px] text-gray-400 dark:text-gray-500 italic pointer-events-none">
+          Scroll for more ↓
+        </div>
+      </div>
+    
+      <div id="plan_error" class="text-red-500 text-sm mt-2 hidden">Please select an electricity plan</div>
     </div>
+    
 
     <!-- Meter Number -->
     <div class="mb-4">
@@ -122,20 +142,21 @@
 
     <!-- Submit -->
     <button
-      type="submit"
-      id="buy_electricity_btn"
-      class="w-full py-2 px-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition disabled:opacity-50"
-      :disabled="isSubmitting"
+    type="submit"
+    id="buy_electricity_btn"
+    class="w-full py-2 px-4 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition disabled:opacity-50"
+    :disabled="isSubmitting"
     >
-      <span x-show="!isSubmitting">⚡ Buy Token</span>
-      <span x-show="isSubmitting" x-cloak class="flex items-center justify-center gap-2">
-        <svg class="animate-spin h-4 w-4" viewBox="0 0 24 24">
-          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none"/>
-          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4l3-3-3-3v4a8 8 0 00-8 8z"/>
-        </svg>
-        Processing...
-      </span>
-    </button>
+    <span x-show="!isSubmitting">⚡ Buy Token</span>
+    <span x-show="isSubmitting" x-cloak class="flex items-center justify-center gap-2">
+      <svg class="animate-spin h-4 w-4" viewBox="0 0 24 24">
+        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none"/>
+        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4l3-3-3-3v4a8 8 0 00-8 8z"/>
+      </svg>
+      Processing...
+    </span>
+   </button>
+  
   </form>
 </div>
 @endsection

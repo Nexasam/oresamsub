@@ -3,25 +3,24 @@
 @section('content')
 <div class="space-y-6 pt-2" x-data="{ isWalletLoading: false, isRefreshing: false }">
 
+  <div class="">
+    <a href="{{route('admin.exit_impersonate')}}">
+            @if (session()->has('impersonator'))
+               <div class="bg-green-800 text-white p-2 rounded-xl">
+                <h1>You are now impersonating <u>{{ auth()->user()->first_name }} {{ auth()->user()->pin }}</u> as an Administrator.</h1>
+                <div class="text-lg"><b>Click to EXIT Impersonation</b></div>
+                </div>
 
+            @endif
+    </a>
+  </div>
 
   <!-- Logout Button -->
   <div class="flex justify-between items-center px-4" x-data="{ isRefreshing: false }">
     <h1 class="text-lg font-bold text-gray-800 dark:text-white">
       Hi, {{ auth()->user()->username }} 👋
     </h1>
-  
-    <div class="mt-2">
-      <a href="{{route('admin.exit_impersonate')}}">
-              @if (session()->has('impersonator'))
-                 <div class="bg-green-800 text-white p-2 rounded-xl">
-                  <h1>You are now impersonating <u>{{ auth()->user()->first_name }} {{ auth()->user()->pin }}</u> as an Administrator.</h1>
-                  <div class="text-lg"><b>Click to EXIT Impersonation</b></div>
-                  </div>
 
-              @endif
-      </a>
-    </div>
 
     <!-- Refresh Button -->
     <button
@@ -59,36 +58,61 @@
 
   
   
-
-  <!-- Wallet Card -->
-<!-- WALLET CARD -->
-<div class="relative">
-  <div class="bg-gradient-to-r from-emerald-500 to-green-500 text-white p-4 rounded-xl shadow space-y-2">
-    <div class="flex justify-between items-center">
-      <div>
-        <p class="text-xs">Wallet Balance</p>
-        <p class="text-2xl font-semibold mt-1" x-show="!isWalletLoading" x-cloak>₦{{ number_format(auth()->user()->main_wallet,2) }}</p>
+  <div class="relative" x-data="{ isWalletLoading: false, showBalance: false }">
+    <div class="bg-gradient-to-r from-emerald-500 to-green-500 text-white p-4 rounded-xl shadow space-y-2">
+      <div class="flex justify-between items-center">
+        <div>
+          <p class="text-xs">Wallet Balance</p>
+          <p class="text-2xl font-semibold mt-1 flex items-center space-x-2" x-show="!isWalletLoading" x-cloak>
+            <!-- Hidden by default -->
+            <span x-show="showBalance" x-cloak>₦{{ number_format(auth()->user()->main_wallet, 2) }}</span>
+            <span x-show="!showBalance" x-cloak class="tracking-widest">•••••••</span>
+  
+            <!-- Toggle Button -->
+            <button
+              @click="showBalance = !showBalance"
+              class="ml-2 text-white hover:text-gray-200 transition"
+              title="Toggle Balance"
+            >
+              <!-- Eye icon (show balance) -->
+              <svg x-show="!showBalance" x-cloak xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none"
+                viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                <path d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-1.274 4.057-5.065 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+              </svg>
+  
+              <!-- Eye-off icon (hide balance) -->
+              <svg x-show="showBalance" x-cloak xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none"
+                viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.269-2.943-9.543-7a10.06 10.06 0 013.232-4.568M6.223 6.223A10.05 10.05 0 0112 5c4.478 0 8.269 2.943 9.543 7a10.06 10.06 0 01-4.676 5.316M15 12a3 3 0 00-3-3M3 3l18 18" />
+              </svg>
+            </button>
+          </p>
+        </div>
+  
+        <!-- Refresh Wallet -->
+        {{-- <button
+          @click="isWalletLoading = true; setTimeout(() => isWalletLoading = false, 2000)"
+          class="text-white hover:text-gray-200 transition text-xl"
+          title="Refresh Balance"
+        >
+          🔄
+        </button> --}}
       </div>
-      <button
-        @click="isWalletLoading = true; setTimeout(() => isWalletLoading = false, 2000)"
-        class="text-white hover:text-gray-200 transition"
-        title="Refresh Balance">
-        🔄
-      </button>
-    </div>
-    <div class="text-right">
-      <a href="{{ route('ore.virtual_accounts') }}"
-         class="text-xs underline text-white/90 hover:text-white transition">
-        + Top Up Wallet
-      </a>
+  
+      <!-- Top Up -->
+      <div class="text-right">
+        <a href="{{ route('ore.virtual_accounts') }}"
+           class="text-xs font-bold underline text-white/90 hover:text-white transition">
+          + Top Up Wallet
+        </a>
+      </div>
     </div>
   </div>
-
-  <!-- WALLET LOADER -->
-  <div x-show="isWalletLoading" x-cloak class="absolute inset-0 bg-green-600/70 flex items-center justify-center rounded-xl z-10">
-    <div class="animate-spin h-6 w-6 border-4 border-white border-t-transparent rounded-full"></div>
-  </div>
-</div>
+  
+  
+  
+  
 
   
 
@@ -136,7 +160,9 @@
     <div class="p-4 border-b border-gray-200 dark:border-gray-700 font-semibold text-gray-700 dark:text-gray-200">
       Recent Transactions
     </div>
-    <div class="max-h-[400px] overflow-y-auto divide-y divide-gray-200 dark:divide-gray-700 text-sm">
+    {{-- <div class="max-h-[400px] overflow-y-auto divide-y divide-gray-200 dark:divide-gray-700 text-sm"> --}}
+    <div class="relative max-h-[400px] overflow-y-auto divide-y divide-gray-200 dark:divide-gray-700 text-sm scrollbar-thin scrollbar-thumb-emerald-500 scrollbar-track-transparent">
+
       @foreach ($transactions as $key => $transaction)
       @php
         $types = ['Airtime', 'Data', 'Electricity', 'Cable'];
@@ -216,7 +242,13 @@
       </div>
       @endforeach
     
+        <!-- Scroll hint -->
+      <div class="sticky bottom-0 text-center text-[11px] text-gray-400 dark:text-gray-500 bg-white dark:bg-gray-800 py-1 border-t border-gray-200 dark:border-gray-700">
+        Scroll to view more ⬇️
+      </div>
     </div>
+
+
   </div>
 
 </div>

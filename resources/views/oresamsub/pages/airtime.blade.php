@@ -110,22 +110,23 @@
 
     <!-- Submit Button -->
     <button
-      type="submit"
-      id="buy_airtime_btn"
-      class="w-full py-2 px-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition disabled:opacity-50"
-      :disabled="isSubmitting"
+    type="submit"
+    id="buy_airtime_btn"
+    class="w-full py-2 px-4 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition disabled:opacity-50"
+    :disabled="isSubmitting"
     >
-      <span x-show="!isSubmitting">🔌 Buy Airtime</span>
-      <span x-show="isSubmitting" x-cloak class="flex items-center justify-center gap-2">
-        <svg class="animate-spin h-4 w-4" viewBox="0 0 24 24">
-          <circle class="opacity-25" cx="12" cy="12" r="10"
-                  stroke="currentColor" stroke-width="4" fill="none"/>
-          <path class="opacity-75" fill="currentColor"
-                d="M4 12a8 8 0 018-8v4l3-3-3-3v4a8 8 0 00-8 8z"/>
-        </svg>
-        Processing...
-      </span>
-    </button>
+    <span x-show="!isSubmitting">🔌 Buy Airtime</span>
+    <span x-show="isSubmitting" x-cloak class="flex items-center justify-center gap-2">
+      <svg class="animate-spin h-4 w-4" viewBox="0 0 24 24">
+        <circle class="opacity-25" cx="12" cy="12" r="10"
+                stroke="currentColor" stroke-width="4" fill="none"/>
+        <path class="opacity-75" fill="currentColor"
+              d="M4 12a8 8 0 018-8v4l3-3-3-3v4a8 8 0 00-8 8z"/>
+      </svg>
+      Processing...
+    </span>
+   </button>
+  
   </form>
 </div>
 
