@@ -417,7 +417,7 @@ Route::middleware(['set_locale'])->group(function () {
             Route::middleware(['auth','verified','admin'])->post('admin/wallet/complete_pending_wallet_crediting/', [WalletsController::class, 'complete_pending_wallet_crediting'])->name('admin.wallet.complete_pending_wallet_crediting');
 
 
-            Route::middleware(['auth','verified','user'])->get('user/settings/api_docs', [UsersController::class, 'api_docs'])->name('user.api.docs');
+            Route::middleware(['auth','verified'])->get('user/settings/api_docs', [UsersController::class, 'api_docs'])->name('user.api.docs');
             Route::middleware(['auth','verified','user'])->get('user/profile/index', [UsersController::class, 'manage_profile'])->name('user.manage_profile.index');
             Route::middleware(['auth','verified','user'])->get('user/generate_user_bulk_data_wallets', [UsersController::class, 'generate_user_bulk_data_wallets'])->name('user.generate_user_bulk_data_wallets');
             Route::middleware(['auth','verified','user'])->get('user/settings', [UserSettingsController::class, 'index'])->name('user.settings.index');
