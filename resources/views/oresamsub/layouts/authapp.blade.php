@@ -31,7 +31,7 @@
 <body
   x-data="themeToggle()"
   x-init="init(); $watch('showLoader', val => document.body.classList.toggle('overflow-hidden', val))"
-  class="min-h-screen text-gray-800 dark:text-gray-100"
+  class="min-h-screen text-gray-800 dark:text-gray-100 bg-gray-100 dark:bg-gray-900"
 >
 
   <!-- App Container -->
@@ -46,7 +46,8 @@
     </div>
 
     <!-- Main Content -->
-    <main class="px-4 pt-4 pb-28 min-h-[calc(100vh-96px)]">
+    {{-- px-4 pt-4 pb-28 --}}
+    <main class="px-4 min-h-[calc(100vh-96px)]">
       @yield('content')
     </main>
 

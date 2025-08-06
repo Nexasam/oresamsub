@@ -1,7 +1,11 @@
 @extends('oresamsub.layouts.app')
 
 @section('content')
+
 <div class="space-y-6 pt-2" x-data="{ isWalletLoading: false, isRefreshing: false }">
+
+
+ 
 
   <div class="">
     <a href="{{route('admin.exit_impersonate')}}">
@@ -15,8 +19,10 @@
     </a>
   </div>
 
+
   <!-- Logout Button -->
   <div class="flex justify-between items-center px-4" x-data="{ isRefreshing: false }">
+
     <h1 class="text-lg font-bold text-gray-800 dark:text-white">
       Hi, {{ auth()->user()->username }} 👋
     </h1>

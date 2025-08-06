@@ -2,6 +2,7 @@
 
 @section('content')
 <div class="pt-10 pb-6 max-w-md mx-auto" x-data="{ isRegistering: false, showPassword: false, showConfirm: false }">
+  
   <h2 class="text-2xl font-bold text-center mb-6">Create Your Account</h2>
 
   {{-- @if (Session::has('success'))
