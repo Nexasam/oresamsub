@@ -58,10 +58,10 @@
       <div class="max-w-md mx-auto flex justify-around py-2 text-xs font-medium text-gray-700 dark:text-gray-200">
         @foreach ([
           ['label' => 'Dashboard', 'icon' => '🏠', 'route' => 'dashboard'],
-          ['label' => 'Airtime', 'icon' => '📞', 'route' => 'ore.airtime'],
           ['label' => 'Data', 'icon' => '📶', 'route' => 'ore.data'],
-          ['label' => 'Electricity', 'icon' => '⚡', 'route' => 'ore.electricity'],
+          ['label' => 'Airtime', 'icon' => '📞', 'route' => 'ore.airtime'],
           ['label' => 'Cable', 'icon' => '📺', 'route' => 'ore.cable'],
+          ['label' => 'Electricity', 'icon' => '⚡', 'route' => 'ore.electricity'],
           ['label' => 'Profile', 'icon' => '👤', 'route' => 'dashboard'], // Replace 'profile' with your actual route
         ] as $item)
           <a 

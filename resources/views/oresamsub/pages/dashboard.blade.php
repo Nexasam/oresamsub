@@ -191,7 +191,7 @@
 
       @foreach ($transactions as $key => $transaction)
       @php
-        $types = ['Airtime', 'Data', 'Electricity', 'Cable'];
+        $types = ['Data','Airtime', 'Electricity', 'Cable'];
         $type = $types[array_rand($types)];
         $amount = '₦' . number_format(rand(200, 5000), 2);
         $time = Carbon\Carbon::parse($transaction->created_at)->subMinutes(($key+1) * 10)->format('M j, g:i A');
