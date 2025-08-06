@@ -41,7 +41,7 @@ class UserSettingsController extends Controller
 
 
         if($request->pin == '1234'){
-          Session::flash('failure','Please use another PIN. It is not a strong PIN.');
+          Session::flash('failure','Please use another PIN. The PIN: 1234 is not a strong PIN.');
           return redirect()->back();
         }
 

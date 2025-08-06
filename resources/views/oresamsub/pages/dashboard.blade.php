@@ -139,7 +139,7 @@
   @endforeach
 
   <!-- LOGOUT CARD -->
-  <form method="POST" action="{{ route('logout') }}"
+  {{-- <form method="POST" action="{{ route('logout') }}"
         class="p-5 bg-white dark:bg-gray-900 rounded-2xl ring-2 ring-red-200 dark:ring-red-800 shadow-xl hover:shadow-2xl transition transform hover:scale-[1.02] cursor-pointer">
     @csrf
     <button type="submit" class="w-full h-full text-center">
@@ -148,7 +148,32 @@
       </div>
       <div class="mt-3 font-semibold text-red-600 dark:text-red-400">Logout</div>
     </button>
+  </form> --}}
+
+  <form method="POST" action="{{ route('logout') }}"
+      x-data="{ isLoggingOut: false }"
+      @submit.prevent="isLoggingOut = true; $el.submit()"
+      class="p-5 bg-white dark:bg-gray-900 rounded-2xl ring-2 ring-red-200 dark:ring-red-800 shadow-xl hover:shadow-2xl transition transform hover:scale-[1.02] cursor-pointer">
+  @csrf
+  <button type="submit" class="w-full h-full text-center">
+    <div class="w-12 h-12 mx-auto rounded-full bg-gradient-to-r from-red-500 to-rose-500 text-white text-2xl flex items-center justify-center shadow-sm transition duration-200 ease-in-out"
+         :class="{ 'animate-pulse opacity-70 scale-90': isLoggingOut }">
+      <template x-if="!isLoggingOut">
+        <span>🚪</span>
+      </template>
+      <template x-if="isLoggingOut">
+        <svg class="h-6 w-6 animate-spin" viewBox="0 0 24 24" fill="none">
+          <circle class="opacity-25" cx="12" cy="12" r="10"
+                  stroke="currentColor" stroke-width="4" />
+          <path class="opacity-75" fill="currentColor"
+                d="M4 12a8 8 0 018-8v4l3-3-3-3v4a8 8 0 00-8 8z"/>
+        </svg>
+      </template>
+    </div>
+    <div class="mt-3 font-semibold text-red-600 dark:text-red-400" x-text="isLoggingOut ? 'Logging out...' : 'Logout'"></div>
+  </button>
   </form>
+
 </div>
 
 

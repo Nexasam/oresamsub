@@ -7,6 +7,7 @@ use App\Models\User;
 use App\Models\UserPlan;
 use App\Models\SiteImage;
 use Illuminate\View\View;
+use App\Events\Registered;
 use App\Models\SiteTemplate;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rules;
@@ -17,7 +18,6 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Auth\Events\Registered;
 use Illuminate\Support\Facades\Session;
 use App\Http\Services\CrystalPayService;
 use Illuminate\Validation\Rules\Password;
@@ -32,11 +32,16 @@ class RegisteredUserController extends Controller
     public function create(Request $request): View
     {
         $upline = $request->ref ?? '';
-        // dd($upline);
-
-
         $data = [];
         $data['upline'] = $upline;
+        // dd($upline);
+
+        if( env('APP_NAME') == 'OresamSub') {
+            return view('oresamsub.auth.register')->with($data);
+        }
+
+
+       
         // dd($data);
         $landing_data = LandingPagesSetting::where('field_name','support_whatsapp_number')->first();
         $data[$landing_data->field_name] = $landing_data->field_details;
@@ -141,8 +146,8 @@ class RegisteredUserController extends Controller
 
         $user = User::create($data);
 
-        $dataaa['user'] = $user;
-        (new VirtualAccountService())->generate_accounts($dataaa);
+        // $dataaa['user'] = $user;
+        // (new VirtualAccountService())->generate_accounts($dataaa);
 
         event(new Registered($user));
 
@@ -157,6 +162,67 @@ class RegisteredUserController extends Controller
      * @throws \Illuminate\Validation\ValidationException
      */
     public function store2(Request $request): RedirectResponse
+    {
+        // 1. Validate input
+        $validated = $request->validate([
+            'username' => ['required', 'string', 'unique:users,username'],
+            'fullname' => ['required', 'string', 'max:255'],
+            'phone_number' => ['required', 'string', 'max:255', 'unique:users,phone_number'],
+            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:users,email'],
+            'password' => ['required', 'confirmed', Password::min(6)],
+        ]);
+
+        // 2. Fast email security check
+        $dotCount = substr_count($validated['email'], '.');
+        if ($dotCount > 2 || preg_match('/\.+@/', $validated['email'])) {
+            return back()->with('failure', 'This email is not allowed. Contact support via WhatsApp.');
+        }
+
+        // 3. Split name (fallback to fullname if only one)
+        $nameParts = explode(' ', $validated['fullname'], 2);
+        $firstName = $nameParts[0];
+        $lastName = $nameParts[1] ?? $firstName;
+
+        // 4. Upline check
+        $uplineId = null;
+        if ($request->filled('upline_referral_phone_number') && $request->upline_referral_phone_number !== $validated['phone_number']) {
+            $upline = User::where('phone_number', $request->upline_referral_phone_number)->first();
+            if ($upline) {
+                $uplineId = $upline->id;
+            }
+        }
+
+        // 5. Role and Plan
+        $roleId = Role::where('role_name', 'User')->value('id');
+        $defaultPlanId = UserPlan::where('is_default', 1)->value('id');
+
+        // 6. Create user
+        $user = User::create([
+            'first_name' => $firstName,
+            'last_name' => $lastName,
+            'username' => $validated['username'],
+            'phone_number' => $validated['phone_number'],
+            'email' => $validated['email'],
+            'upline_id' => $uplineId,
+            'pin' => null,
+            'role_id' => $roleId,
+            'user_plan_id' => $defaultPlanId,
+            'password' => Hash::make($validated['password']),
+            'email_verified_at' => env('APP_NAME') === 'OresamSub' ? now() : null,
+        ]);
+
+        // 7. Dispatch event to handle account setup
+        event(new \App\Events\Registered($user));
+
+        // 8. Login and redirect
+        Auth::login($user);
+        return redirect()->route('dashboard');
+    }
+
+
+
+
+    public function store2BACKUP(Request $request): RedirectResponse
     {
   
         $request->validate([
@@ -230,14 +296,14 @@ class RegisteredUserController extends Controller
 
         $user = User::create($data);
 
-        $dataaa['user'] = $user;
-        (new VirtualAccountService())->generate_accounts($dataaa);
-
-
+        // $dataaa['user'] = $user;
+        // (new VirtualAccountService())->generate_accounts($dataaa);
         event(new Registered($user));
 
         Auth::login($user);
 
         return redirect(route('dashboard', absolute: false));
     }
+
+
 }

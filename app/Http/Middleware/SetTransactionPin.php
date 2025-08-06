@@ -21,6 +21,9 @@ class SetTransactionPin
 
         if(auth()->user()->pin == NULL || auth()->user()->pin == '1234'){
             // dd('pin creation required');
+            if(env('APP_NAME') == 'OresamSub'){
+            return redirect()->route('ore.set_pin');
+            }
             return redirect()->route('user.settings.set_pin');
         }
 

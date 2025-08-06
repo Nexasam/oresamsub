@@ -58,10 +58,14 @@ use App\Http\Controllers\ProductPlanCustomPricingController;
 // Route::get('oresamsub/login', fn () => view('oresamsub.auth.login'))->name('ore.login');
 Route::get('oresamsub/register', fn () => view('oresamsub.auth.register'))->name('ore.register');
             
-Route::middleware('set_locale')->group(function () {
+Route::middleware(['set_locale'])->group(function () {
+
+
+             Route::get('oresamsub/set_pin', fn () => view('oresamsub.pages.set_pin'))->name('ore.set_pin');
+           
 
             // ORESAMSUB WEBPWA V1: ROUTES (wrapped in auth middleware)
-            Route::middleware('auth')->group(function () {
+            Route::middleware(['auth','set_transaction_pin'])->group(function () {
 
                 // Route::get('oresamsub/dashboard', fn () => view('oresamsub.pages.dashboard'))->name('ore.dashboard');
 
@@ -107,10 +111,6 @@ Route::middleware('set_locale')->group(function () {
                     // dd($data);
                     return view('oresamsub.pages.virtual_accounts')->with($data);
                 })->name('ore.virtual_accounts');
-
-                // Optional cable submit route
-                // Route::post('oresamsub/cable/submit', fn () => view('oresamsub.pages.cable.submit'))->name('ore.cable.submit');
-
              
             });
 

@@ -22,8 +22,7 @@
   <script>
     tailwind.config = { darkMode: 'class' };
   </script>
-  <script src="https://unpkg.com/alpinejs@3.x.x" defer></script>
-
+ 
   <style>
     [x-cloak] { display: none !important; }
   </style>
@@ -79,6 +78,8 @@
     <div class="animate-spin h-12 w-12 border-4 border-blue-500 border-t-transparent rounded-full"></div>
   </div>
 
+
+  <script src="https://unpkg.com/alpinejs@3.x.x" defer></script>
   <!-- Alpine Logic -->
   <script>
     function themeToggle() {
@@ -98,6 +99,5 @@
       }
     }
   </script>
-
 </body>
 </html>

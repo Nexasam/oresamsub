@@ -72,8 +72,28 @@
     </div>
   </form>
 
-  <p class="text-xs text-center mt-6 text-gray-500 dark:text-gray-400">
-    Don't have an account? <a href="{{ route('register') }}" class="text-blue-600 dark:text-blue-400 font-semibold">Register</a>
+  <p class="text-xs text-center mt-6 text-gray-500 dark:text-gray-400" x-data="{ loading: false }">
+    Don't have an account?
+    
+    <a 
+      href="{{ route('register') }}"
+      @click.prevent="loading = true; setTimeout(() => window.location.href = '{{ route('register') }}', 300)"
+      class="text-blue-600 dark:text-blue-400 font-semibold"
+      x-show="!loading"
+    >
+      Register
+    </a>
+  
+    <span x-show="loading" x-cloak class="text-blue-500 dark:text-blue-300 font-semibold flex justify-center items-center gap-1">
+      <svg class="h-4 w-4 animate-spin" viewBox="0 0 24 24" fill="none">
+        <circle class="opacity-25" cx="12" cy="12" r="10"
+                stroke="currentColor" stroke-width="4" />
+        <path class="opacity-75" fill="currentColor"
+              d="M4 12a8 8 0 018-8v4l3-3-3-3v4a8 8 0 00-8 8z"/>
+      </svg>
+      Redirecting to registration...
+    </span>
   </p>
+  
 </div>
 @endsection
