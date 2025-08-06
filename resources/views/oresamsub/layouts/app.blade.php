@@ -57,14 +57,14 @@
     <nav class="fixed bottom-0 inset-x-0 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 shadow-lg">
       <div class="max-w-md mx-auto flex justify-around py-2 text-xs font-medium text-gray-700 dark:text-gray-200">
         @foreach ([
-          ['icon' => '🏠', 'label' => 'Dashboard'],
-          ['icon' => '📞', 'label' => 'Airtime'],
-          ['icon' => '📶', 'label' => 'Data'],
-          ['icon' => '⚡', 'label' => 'Electricity']
+             ['label' => 'Buy Airtime', 'icon' => '📞', 'route' => 'ore.airtime'],
+              ['label' => 'Buy Data', 'icon' => '📶', 'route' => 'ore.data'],
+              ['label' => 'Electricity', 'icon' => '⚡', 'route' => 'ore.electricity'],
+              ['label' => 'Subscribe Cable', 'icon' => '📺', 'route' => 'ore.cable'],
         ] as $item)
           <a 
             href="{{ route('dashboard') }}"
-            @click.prevent="showLoader = true; setTimeout(() => window.location.href = '{{ route('dashboard') }}', 200)"
+            @click.prevent="showLoader = true; setTimeout(() => window.location.href = '{{ route($item['route']) }}', 200)"
             class="flex flex-col items-center hover:text-blue-600 dark:hover:text-blue-400"
           >
             <div class="text-xl">{{ $item['icon'] }}</div>

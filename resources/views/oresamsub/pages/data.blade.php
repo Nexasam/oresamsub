@@ -1,7 +1,7 @@
 @extends('oresamsub.layouts.app')
 
 @section('content')
-<div class="pt-6 max-w-sm mx-auto" x-data="{ isSubmitting: false }">
+<div class="pt-6 max-w-sm mx-auto pb-24" x-data="{ isSubmitting: false }">
 
   <!-- Back Button -->
   <div class="mb-4">
@@ -30,6 +30,8 @@
     </div>
   @endif
 
+
+  <div class="pt-6 max-w-sm mx-auto pb-24" x-data="{ isSubmitting: false }">
   <form id="dataWrapper" method="POST" @submit.prevent="isSubmitting = true" action="{{ route('ore.data.submit') }}">
     @csrf
 
@@ -139,5 +141,6 @@
   </button>
   
   </form>
+  
 </div>
 @endsection
