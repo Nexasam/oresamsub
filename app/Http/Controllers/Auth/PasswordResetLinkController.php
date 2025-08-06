@@ -18,9 +18,14 @@ class PasswordResetLinkController extends Controller
      */
     public function create(): View
     {
+
+        if(env('APP_NAME') == 'OresamSub') {
+            // dd($data);
+            return view('oresamsub.auth.forgot-password');
+        }
         // dd('ssss');
-        $site_images_data = SiteImage::get();
-       $data = [];
+    $site_images_data = SiteImage::get();
+    $data = [];
       if(count($site_images_data) > 0){
             foreach($site_images_data as $site_image){
                 $data[$site_image->image_category] = $site_image->image_name;

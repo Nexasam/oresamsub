@@ -23,7 +23,13 @@ class NewPasswordController extends Controller
      */
     public function create(Request $request): View
     {
-        $site_images_data = SiteImage::get();
+
+
+        if(env('APP_NAME') == 'OresamSub') {
+            return view('oresamsub.auth.reset-password', ['request' => $request]);
+        }
+
+       $site_images_data = SiteImage::get();
        $data = [];
         if(count($site_images_data) > 0){
             foreach($site_images_data as $site_image){

@@ -53,7 +53,7 @@
       </div>
 
       <!-- Password -->
-      <div class="mb-4">
+      <div class="mb-0">
         <label for="password" class="block text-sm mb-1">Password</label>
         <input
           type="password"
@@ -63,6 +63,13 @@
           class="w-full px-4 py-2 rounded-lg bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
         >
         <x-input-error :messages="$errors->get('password')" class="mt-2" />
+      </div>
+
+      <!-- Forgot Password Link -->
+      <div class="mb-2 text-right">
+        <a href="{{ route('password.request') }}" class="text-xs text-blue-600 dark:text-blue-400 hover:underline">
+          Forgot your password?
+        </a>
       </div>
 
       <!-- Submit -->
