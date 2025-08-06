@@ -85,12 +85,45 @@
   </div> --}}
 
 <!-- Loader Overlay -->
+{{-- <div
+  x-show="showLoader"
+  class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-60 z-50"
+  style="display: none;"
+>
+  <div class="text-center text-white space-y-4">
+  
+    <svg class="animate-spin h-10 w-10 mx-auto text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+      <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+      <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
+    </svg>
+
+    
+    <p class="text-sm max-w-xs mx-auto">
+      Please wait... If this loader appears for too long, check your internet connection and reload this page again.
+    </p>
+
+   
+    <button
+      @click="window.location.reload()"
+      class="mt-2 px-4 py-2 bg-white text-black rounded shadow hover:bg-gray-200 transition"
+    >
+      Reload Page
+    </button>
+  </div>
+</div> --}}
+
+<!-- Loader Overlay -->
 <div
   x-show="showLoader"
   class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-60 z-50"
   style="display: none;"
 >
   <div class="text-center text-white space-y-4">
+    <!-- Logo -->
+    <img src="{{ asset('assets/logo_imgs/oresamsublogo.jpeg') }}" alt="Oresamsub Logo" class="h-12 mx-auto rounded-full" />
+    {{-- <img src="{{ asset('images/logo.png') }}" alt="Logo" class="h-12 mx-auto animate-pulse" /> --}}
+
+
     <!-- Spinner -->
     <svg class="animate-spin h-10 w-10 mx-auto text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
       <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
@@ -111,6 +144,7 @@
     </button>
   </div>
 </div>
+
 
 
 

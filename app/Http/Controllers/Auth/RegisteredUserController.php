@@ -212,7 +212,7 @@ class RegisteredUserController extends Controller
         ]);
 
         // 7. Dispatch event to handle account setup
-        event(new \App\Events\Registered($user));
+        event(new Registered($user));
 
         // 8. Login and redirect
         Auth::login($user);
