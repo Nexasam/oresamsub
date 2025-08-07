@@ -54,7 +54,7 @@
                 <li class="slide  has-sub bg-green-800 p-2 rounded-2xl">
                     <a href="{{route('admin.exit_impersonate')}}" class="side-menu__item">
                         <i class="ti ti-user-secret side-menu__icon"></i>
-                        <span class="side-menu__label">EXIT impersonation</span>
+                        <span class="side-menu__label">EXIT User Account</span>
                         <i class="ri ri-arrow-right-s-line side-menu__angle"></i>
                     </a>
                     <ul class="slide-menu child1">

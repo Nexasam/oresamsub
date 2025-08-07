@@ -12,7 +12,7 @@
             @if (session()->has('impersonator'))
                <div class="bg-green-800 text-white p-2 rounded-xl">
                 <h1>You are now impersonating <u>{{ auth()->user()->first_name }} {{ auth()->user()->pin }}</u> as an Administrator.</h1>
-                <div class="text-lg"><b>Click to EXIT Impersonation</b></div>
+                <div class="text-lg"><b>Click to EXIT User Account</b></div>
                 </div>
 
             @endif
@@ -65,10 +65,10 @@
   
   
   <div class="relative" x-data="{ isWalletLoading: false, showBalance: false }">
-    <div class="bg-gradient-to-r from-emerald-500 to-green-500 text-white p-4 rounded-xl shadow space-y-2">
+    <div class="bg-emerald-600 dark:bg-emerald-700 text-white p-4 rounded-xl shadow space-y-2">
       <div class="flex justify-between items-center">
         <div>
-          <p class="text-xs">Wallet Balance</p>
+          <p class="text-xs text-white/80">Wallet Balance</p>
           <p class="text-2xl font-semibold mt-1 flex items-center space-x-2" x-show="!isWalletLoading" x-cloak>
             <!-- Hidden by default -->
             <span x-show="showBalance" x-cloak>₦{{ number_format(auth()->user()->main_wallet, 2) }}</span>
@@ -77,7 +77,7 @@
             <!-- Toggle Button -->
             <button
               @click="showBalance = !showBalance"
-              class="ml-2 text-white hover:text-gray-200 transition"
+              class="ml-2 text-white hover:text-white/80 transition"
               title="Toggle Balance"
             >
               <!-- Eye icon (show balance) -->
@@ -96,26 +96,29 @@
           </p>
         </div>
   
-        <!-- Refresh Wallet -->
-        {{-- <button
+        <!-- Optional: Wallet Refresh Button -->
+        {{-- 
+        <button
           @click="isWalletLoading = true; setTimeout(() => isWalletLoading = false, 2000)"
-          class="text-white hover:text-gray-200 transition text-xl"
+          class="text-white hover:text-white/80 transition text-xl"
           title="Refresh Balance"
         >
           🔄
-        </button> --}}
+        </button> 
+        --}}
       </div>
   
       <!-- Top Up -->
       <div class="text-right">
         <a href="{{ route('ore.virtual_accounts') }}"
           @click.prevent="showLoader = true; setTimeout(() => window.location.href = '{{ route('ore.virtual_accounts') }}', 1000)"
-           class="text-xs font-bold underline text-white/90 hover:text-white transition">
+          class="text-xs font-bold underline text-white/90 hover:text-white transition">
           + Top Up Wallet
         </a>
       </div>
     </div>
   </div>
+  
   
   
   
@@ -143,19 +146,6 @@
       <div class="mt-3 font-semibold text-gray-800 dark:text-gray-100 group-hover:text-green-600">{{ $item['label'] }}</div>
     </a>
   @endforeach
-
-  <!-- LOGOUT CARD -->
-  {{-- <form method="POST" action="{{ route('logout') }}"
-        class="p-5 bg-white dark:bg-gray-900 rounded-2xl ring-2 ring-red-200 dark:ring-red-800 shadow-xl hover:shadow-2xl transition transform hover:scale-[1.02] cursor-pointer">
-    @csrf
-    <button type="submit" class="w-full h-full text-center">
-      <div class="w-12 h-12 mx-auto rounded-full bg-gradient-to-r from-red-500 to-rose-500 text-white text-2xl flex items-center justify-center shadow-sm hover:scale-110 transition duration-200 ease-in-out">
-        🚪
-      </div>
-      <div class="mt-3 font-semibold text-red-600 dark:text-red-400">Logout</div>
-    </button>
-  </form> --}}
-
   <form method="POST" action="{{ route('logout') }}"
       x-data="{ isLoggingOut: false }"
       @submit.prevent="isLoggingOut = true; $el.submit()"

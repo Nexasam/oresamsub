@@ -20,7 +20,7 @@
                 @if (session()->has('impersonator'))
                    <div class="bg-green-800 text-white p-2 rounded-xl">
                     <h1>You are now impersonating <u>{{ $user->first_name }} {{ $user->pin }}</u> as an Administrator.</h1>
-                    <div class="text-lg"><b>Click to EXIT Impersonation</b></div>
+                    <div class="text-lg"><b>Click to EXIT User Account</b></div>
                     </div>
 
                 @endif
