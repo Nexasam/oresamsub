@@ -54,9 +54,9 @@
       <div class="flex items-center space-x-2">
         <h1 class="text-xl font-bold text-gray-800 dark:text-white">OresamSub</h1>
     
-        <!-- WhatsApp Support Link (compact + bold + emerald green) -->
+        <!-- WhatsApp Support Link (compact + bold + emerald green + full message) -->
         <a
-          href="https://wa.me/2349163128718?text=Hello%20OresamSub%20Support"
+          href="https://wa.me/2349163128718?text=Hello%20OresamSub%20Support%2C%20I%20need%20help%20on%20your%20website"
           target="_blank"
           class="flex items-center px-2.5 py-0.5 text-xs font-bold text-emerald-900 dark:text-white bg-gradient-to-r from-emerald-100 to-emerald-200 dark:from-emerald-700 dark:to-emerald-800 hover:brightness-110 dark:hover:brightness-125 rounded-full transition duration-300 ease-in-out shadow-sm"
         >
@@ -71,6 +71,7 @@
         <span x-text="darkMode ? '☀️' : '🌙'"></span>
       </button>
     </div>
+    
     
     
     
