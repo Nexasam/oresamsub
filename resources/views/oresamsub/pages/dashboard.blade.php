@@ -11,7 +11,7 @@
     <a href="{{route('admin.exit_impersonate')}}">
             @if (session()->has('impersonator'))
                <div class="bg-green-800 text-white p-2 rounded-xl">
-                <h1>You are now impersonating <u>{{ auth()->user()->first_name }} {{ auth()->user()->pin }}</u> as an Administrator.</h1>
+                <h1>You are now viewing <u>{{ auth()->user()->first_name }} {{ auth()->user()->pin }}</u> as an Administrator.</h1>
                 <div class="text-lg"><b>Click to EXIT User Account</b></div>
                 </div>
 

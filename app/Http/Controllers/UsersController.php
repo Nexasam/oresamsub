@@ -84,7 +84,7 @@ class UsersController extends Controller
       
         session()->put('impersonator', auth()->id()); // Store original user id
         auth()->login($user); // Log in as target user
-        Session::flash('success','You are now impersonating customer: '. $fullname .' as an Admin');
+        Session::flash('success','You are now viewing customer: '. $fullname .' as an Admin');
         return redirect()->route('dashboard');
 
     }
@@ -99,7 +99,7 @@ class UsersController extends Controller
         auth()->login($originalUser);
 
         // return redirect('/')->with('status', 'You have stopped impersonating.');
-        Session::flash('success','You have stopped impersonating');
+        Session::flash('success','You have stopped viewing user account');
         return redirect()->route('admin.users.index');
 
     }
