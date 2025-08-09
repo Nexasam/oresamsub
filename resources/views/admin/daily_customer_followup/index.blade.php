@@ -138,15 +138,16 @@
             <ul>
               @foreach($users as $item)
               @php
-                    
-                    if ($item->latestTransaction && $item->latestTransaction->created_at) {
-                        $lastTxnDate = Carbon\Carbon::parse($item->latestTransaction->created_at);
-                        // diffInDays with absolute = true (default)
-                        $daysWithoutTxn = $lastTxnDate->diffInDays(Carbon\Carbon::now(), true);
-                    } else {
-                        $daysWithoutTxn = 'No transactions';
-                    }
-            @endphp
+              
+          
+              if ($item->latestTransaction && $item->latestTransaction->created_at) {
+                  $lastTxnDate =  Carbon\Carbon::parse($item->latestTransaction->created_at);
+                  $hoursDiff = $lastTxnDate->diffInHours( Carbon\Carbon::now(), true);
+                  $daysWithoutTxn = ceil($hoursDiff / 24);
+              } else {
+                  $daysWithoutTxn = 'No transactions';
+              }
+             @endphp
 
                 <li>
                     Name: {{ $item->first_name.' '.$item->last_name }} <br>
