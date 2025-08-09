@@ -165,38 +165,13 @@ public function filter(Request $request){
 
     $data = $request->all();
 
-    // $users = User::select('first_name', 'last_name', 'phone_number') // select only user columns
-    // ->with('latestTransaction') // eager load latestTransaction relation
-    // ->when($type === 'both', fn($q) => $q->whereIn('customer_category', ['generic', 'pos']))
-    // ->when($type !== 'both', fn($q) => $q->where('customer_category', $type))
-    // ->when($transaction_status === 'no_transaction', fn($q) => $q->doesntHave('latestTransaction'))
-    // ->when(
-    //     $transaction_status === 'atleast_one_transaction' && $days !== 'nil' && $metric !== 'nil',
-    //     function ($q) use ($days, $metric) {
-    //         $date = now()->subDays($days)->startOfDay();
-
-    //         $q->whereHas('latestTransaction', function ($q) use ($date, $metric) {
-    //             if ($metric === 'atleast_x_days') {
-    //                 $q->where('created_at', '<=', $date);
-    //             } elseif ($metric === 'x_days') {
-    //                 $q->whereDate('created_at', '=', $date);
-    //             }
-    //         });
-    //     }
-    // )
-    // ->get();
-
-
     $check_category = $data['type'] == 'both' ? '' : $data['type'];
     $users = User::with('latestTransaction')->when($check_category !== '',function($q) use ($check_category){
         $q->where('customer_category', $check_category);
     })
     ->get();
 
-    // $users = $users_no_txn->merge($users_txn_metrix);
-
     return $users;
-
 }
 
 
