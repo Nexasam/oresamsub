@@ -141,7 +141,7 @@
                     Name: {{ $item->first_name.' '.$item->last_name }} <br>
                     Call Phone: {{ $item->phone_number }} <br>
                     Whatsapp Phone: {{ $item->phone_number }} <br>
-                    No of Days : {{ $item->latestTransaction->created_at  }} <br>
+                    No of Days :  {{ $item->latestTransaction->created_at ?? 'No transaction' }} <br>
                  </li>
               @endforeach
             </ul>
