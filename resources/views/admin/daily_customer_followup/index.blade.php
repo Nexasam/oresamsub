@@ -104,9 +104,9 @@
               
 
             <!-- Display results if set -->
-            @if(isset($results) && $results->count())
+            @if(isset($users) && $users->count())
             <ul>
-              @foreach($results as $item)
+              @foreach($users as $item)
                 <li>{{ $item->first_name ?? 'No name available' }}</li>
               @endforeach
             </ul>
