@@ -256,7 +256,7 @@ public function filter(Request $request){
     $days = $data['days'] ?? 'nil';
     $metric = $data['transaction_metric'] ?? 'nil';
 
-    $users = User::with('latestTransaction')
+    $users = User::select('users.first_name','users.last_name','users.phone','transactions.*')->with('latestTransaction')
     ->when($type === 'both', fn($q) => $q->whereIn('customer_category', ['generic', 'pos']))
     ->when($type !== 'both', fn($q) => $q->where('customer_category', $type))
     ->when($transaction_status === 'no_transaction', fn($q) => $q->doesntHave('latestTransaction'))
