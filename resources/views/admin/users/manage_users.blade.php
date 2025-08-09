@@ -162,6 +162,24 @@
                                 <label class="ti-form-label mb-0">Email Address</label>
                                 <input type="email" readonly class="my-auto ti-form-input" id="email_address" name="email_address" value="{{ $user->email }}" placeholder="Email">
                             </div>
+                            @if (env('APP_NAME') == 'OresamSub')
+                            
+                                <div class="space-y-2">
+                                  <label class="ti-form-label mb-0">Customer Landmark: Describe a way for us to know how the business meet this customer</label>
+                                  <input type="text"  class="my-auto ti-form-input" id="customer_landmark" name="customer_landmark" value="{{ $user->customer_landmark ?? NULL }}" placeholder="Landmark">
+                                </div>
+
+                                <div class="space-y-2">
+                                  <label class="ti-form-label mb-0">Customer Category</label>
+                                  <select required id="customer_category" name="customer_category"  class="my-auto ti-form-select">
+                                    <option value="">Select</option>
+                                    <option @if ($user->customer_category == 'generic') selected @endif  value="generic">Generic</option>
+                                    <option @if ($user->customer_category == 'pos') selected @endif  value="pos">POS</option>
+                                  </select>
+                                  </div>
+                            @endif
+
+
                             <div class="space-y-2">
                               <label class="ti-form-label mb-0">PIN</label>
                               @if ($user->role->role_name == 'User')

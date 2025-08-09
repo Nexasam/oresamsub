@@ -338,6 +338,8 @@ class UsersController extends Controller
       $validator = Validator::make($request->all(), [
         'user_id' => 'required|exists:users,id',
         'phone_number' => 'nullable',
+        'customer_category' => 'nullable',
+        'customer_landmark' => 'nullable',
         'pin' => 'required','integer','regex:/^\d{4,5}$/',
         'user_plan_id' => ['required','string','exists:user_plans,id'],
       ]);
@@ -354,6 +356,14 @@ class UsersController extends Controller
 
       if($request->phone_number == NULL){
         $dat['phone_number'] = $request->phone_number;
+      }
+
+      if($request->customer_category != NULL){
+        $dat['customer_category'] = $request->customer_category;
+      }
+
+      if($request->customer_landmark != NULL){
+        $dat['customer_landmark'] = $request->customer_landmark;
       }
       
       $dat['user_plan_id'] = $request->user_plan_id;
