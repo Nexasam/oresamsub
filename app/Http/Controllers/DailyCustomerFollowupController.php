@@ -170,9 +170,10 @@ public function filter(Request $request){
         $q->where('customer_category', $check_category);
     })
     ->get();
+    $data['users'] = $users;
 
     // return $users;
-    return view('admin.daily_customer_followup.index',compact('users'))->withInput();
+    return view('admin.daily_customer_followup.index',compact('users'))->with($data);
 
 }
 
