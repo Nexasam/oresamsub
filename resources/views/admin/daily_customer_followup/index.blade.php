@@ -107,7 +107,7 @@
             @if(isset($results) && $results->count())
             <ul>
               @foreach($results as $item)
-                <li>{{ $item->name ?? 'No name available' }}</li>
+                <li>{{ $item->first_name ?? 'No name available' }}</li>
               @endforeach
             </ul>
             @else
