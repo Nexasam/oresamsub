@@ -107,7 +107,12 @@
             @if(isset($users) && $users->count())
             <ul>
               @foreach($users as $item)
-                <li>{{ $item->first_name ?? 'No name available' }}</li>
+                <li>
+                    Name: {{ $item->first_name.' '.$item->last_name }} <br>
+                    Call Phone: {{ $item->phone_number }} <br>
+                    Whatsapp Phone: {{ $item->phone_number }} <br>
+                    No of Days : {{ $item->last_transaction->created ?? 'nil' }} <br>
+                 </li>
               @endforeach
             </ul>
             @else
