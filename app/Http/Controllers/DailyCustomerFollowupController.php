@@ -175,7 +175,7 @@ public function filter(Request $request){
     $dataa['users'] = $users;
     $dataa['days'] = $data['days_since_last_txn'] ?? 0;
 
-    // return $users;
+    return $users;
     return view('admin.daily_customer_followup.index',compact('users'))->with($dataa);
 
 }
