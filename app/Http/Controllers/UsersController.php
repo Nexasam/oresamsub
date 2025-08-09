@@ -451,8 +451,8 @@ class UsersController extends Controller
               $fullnameinfo .= '<br>Virtual Accounts Generated: '.count($data->virtual_accounts);
 
               if(env('APP_NAME') == 'OresamSub'){
-                $fullnameinfo .= '<br>Customer Category: '.count($data->customer_category).'<br>';
-                $fullnameinfo .= '<br>Customer Landmark: '.count($data->customer_landmark);  
+                $fullnameinfo .= '<br>Customer Category: '.$data->customer_category.'<br>';
+                $fullnameinfo .= '<br>Customer Landmark: '.$data->customer_landmark;  
               }
              
               // if(count($data->virtual_accounts) > 0){
