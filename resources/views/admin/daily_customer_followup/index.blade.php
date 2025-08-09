@@ -142,7 +142,9 @@
 
                 if ($item->latestTransaction && $item->latestTransaction->created_at) {
                     $lastTxnDate = Carbon\Carbon::parse($item->latestTransaction->created_at);
-                    $daysWithoutTxn = Carbon\Carbon::now()->diffInDays($lastTxnDate);
+                    // $daysWithoutTxn = Carbon\Carbon::now()->diffInDays($lastTxnDate);
+                    $daysWithoutTxn = max(0, Carbon\Carbon::now()->diffInDays($lastTxnDate));
+
                 } else {
                     $daysWithoutTxn = 'No transactions';
                 }
