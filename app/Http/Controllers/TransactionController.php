@@ -379,13 +379,14 @@ class TransactionController extends Controller
         return $data->id;
         })
         ->addColumn('user_id',function($data){
+            $usercategory = env('APP_NAME') == 'OresamSub' ? $data->user->customer_category : '';
             $user_plan_name = $data->user->user_plan->updated_user_plan_name ??  $data->user->user_plan->user_plan_name;
             $first_name = $data->user->first_name  ?? 'nil';
             $last_name = $data->user->last_name  ?? 'nil';
             $phone_number = $data->user->phone_number  ?? 'nil';
             $user_details =  $first_name.'<br>'.$last_name.'<br>'.$phone_number.'<br>'; 
-            $user_details .= '<b><i>'.$user_plan_name.'</i></b>';    
-            $user_details .= '<b><i>'.env('APP_NAME') == 'OresamSub' ? $data->user->customer_category : ''.'</i></b>';    
+            $user_details .= '<b><i>'.$user_plan_name.'</i></b><br>';    
+            $user_details .= '<b><i>'.$usercategory.'</i></b>';    
             return $user_details;
         })
         ->addColumn('wallet_category',function($data){
