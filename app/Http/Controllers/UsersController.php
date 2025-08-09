@@ -449,7 +449,12 @@ class UsersController extends Controller
               $fullnameinfo = $data->first_name.' '.$data->last_name.'('.$data->username.') <br>Upline: ';
               $fullnameinfo .= $data->upline != NULL ? $data->upline->username.' '.substr($data->upline->phone_number, 0, 11 - 8) . str_repeat('*', 6) : 'none';
               $fullnameinfo .= '<br>Virtual Accounts Generated: '.count($data->virtual_accounts);
-              
+
+              if(env('APP_NAME') == 'OresamSub'){
+                $fullnameinfo .= '<br>Customer Category: '.count($data->customer_category).'<br>';
+                $fullnameinfo .= '<br>Customer Landmark: '.count($data->customer_landmark);  
+              }
+             
               // if(count($data->virtual_accounts) > 0){
               //   $fullnameinfo .= '<br>Virtual Accounts</br>';
               //   foreach($data->virtual_accounts as $va){
