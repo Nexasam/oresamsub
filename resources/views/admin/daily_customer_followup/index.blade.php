@@ -137,11 +137,16 @@
             @if(isset($users) && $users->count())
             <ul>
               @foreach($users as $item)
+              @php
+                $lastTxnDate = $item->latestTransaction->created_at ?? null;
+                $daysWithoutTxn = $lastTxnDate ? now()->diffInDays(\Carbon\Carbon::parse($lastTxnDate)) : 'No transactions';
+             @endphp
+
                 <li>
                     Name: {{ $item->first_name.' '.$item->last_name }} <br>
                     Call Phone: {{ $item->phone_number }} <br>
                     Whatsapp Phone: {{ $item->phone_number }} <br>
-                    No of Days :  {{ $item->latestTransaction->created_at ?? 'No transaction' }} <br>
+                    Days without transaction :  {{ $daysWithoutTxn }} <br>
                     <hr>
                     <hr>
                     <hr>
