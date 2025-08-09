@@ -279,8 +279,7 @@ public function filter(Request $request){
 
 
 
-    $users = User::select('first_name', 'last_name', 'phone_number')
-    ->with('latestTransaction')
+    $users = User::with('latestTransaction')
     // ->when($type === 'both', fn($q) => $q->whereIn('customer_category', ['generic', 'pos']))
     // ->when($type !== 'both', fn($q) => $q->where('customer_category', $type))
     // ->when($transaction_status === 'no_transaction', fn($q) => $q->doesntHave('latestTransaction'))
