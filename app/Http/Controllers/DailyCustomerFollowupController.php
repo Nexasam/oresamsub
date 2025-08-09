@@ -290,7 +290,7 @@ public function filter(Request $request){
             $targetDate = Carbon::now()->subDays($days)->toDateString();
 
             $q->whereHas('latestTransaction', function ($q) use ($targetDate) {
-                $q->whereDate('created_at', '=', $targetDate);
+                $q->whereDate('created_at', '<=', $targetDate);
             });
         }
     )
