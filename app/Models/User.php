@@ -64,6 +64,16 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasMany(UserVirtualAccount::class,'user_id','id');
     }
 
+    public function transactions(){
+        return $this->hasMany(Transaction::class,'user_id','id');
+    }
+
+    public function latestTransaction()
+    {
+    return $this->hasOne(Transaction::class)->orderBy('created_at', 'desc');
+    }
+
+
 
     // public function getRoleDetailsAttribute(){
     //     return $this->role()->first();

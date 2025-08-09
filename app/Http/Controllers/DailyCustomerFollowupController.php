@@ -163,46 +163,117 @@ public function filter(Request $request){
         return response()->json(['status'=>'-1', 'message'=>$validator->errors()->first(),'data' => $request->all() ]);
     }
 
+
     $data = $request->all();
 
-    $check_category = $data['type'] == 'both' ? '' : $data['type'];
+    // $transactions = Transaction::where('type','')->where('', $data[
 
-    $filter_transaction = $data['transaction_status'] == 'no_transaction' ?'': $data['transaction_status'];
-
-    $operator = '';
-    $days = 3;
-
-    if( isset($data['transaction_metric']) && $data['transaction_metric'] == 'x_days' ){
-        $operator = '=';
-        $days = $data['days'] ?? 3;
-        $xDaysAgo = Carbon::now()->subDays($days);
-        // If you want the date string (e.g. "2025-08-06")
-        $dateString = $xDaysAgo->toDateString();
-    }
-    if( isset($data['transaction_metric']) && $data['transaction_metric'] == 'atleast_x_days' ){
-        $operator = '<=';
-        $days = $data['days'] ?? 3;
-        $xDaysAgo = Carbon::now()->subDays($days);
-        // If you want the date string (e.g. "2025-08-06")
-        $dateString = $xDaysAgo->toDateString();
-
-    }
+    // //TODO: revamp this query to be better later
+    // $users = User::with('transactions')->get();
 
 
 
-    $users = User::when($check_category != '',function($qq){
-        $qq->whereIn('customer_category', ['pos','generic']);
+    // $operator = '';
+    // $days = 3;
+
+    
+
+    // foreach($users as $user){
+    //     if($user->transactions->count() > 0){
+    //         //has atleast a txn
+    //         $lasttx = $user->transactions()->latest()->first();
+    //         if($lasttx){
+
+    //             $lasttxDate = $lasttx->created_at;
+
+    //                             // Ensure $lasttxDate is a Carbon instance
+    //             $lasttxCarbon = Carbon::parse($lasttxDate);
+
+    //             $today = Carbon::now();
+
+    //             $daysDifference = $lasttxCarbon->diffInDays($today);
+
+
+    //             if( isset($data['transaction_metric']) && $data['transaction_metric'] == 'x_days' ){
+    //                 $operator = '=';
+    //                 $days = $data['days'] ?? 3;
+    //                 $xDaysAgo = Carbon::now()->subDays($days);
+    //                 // If you want the date string (e.g. "2025-08-06")
+    //                 $dateString = $xDaysAgo->toDateString();
+    //             }
+    //             if( isset($data['transaction_metric']) && $data['transaction_metric'] == 'atleast_x_days' ){
+    //                 $operator = '<=';
+    //                 $days = $data['days'] ?? 3;
+    //                 $xDaysAgo = Carbon::now()->subDays($days);
+    //                 // If you want the date string (e.g. "2025-08-06")
+    //                 $dateString = $xDaysAgo->toDateString();
+            
+    //             }
+
+
+
+    //         }else{
+    //           $user->has_transaction = 'nil_strange';
+    //         }
+
+
+    //     }else{
+    //         $user->has_transaction = 'nil';
+    //     }
+    // }
+
+    
+
+    // //////////////////////////////////////
+
+    // $data = $request->all();
+
+    // $check_category = $data['type'] == 'both' ? '' : $data['type'];
+
+    // $filter_transaction = $data['transaction_status'] == 'no_transaction' ?'': $data['transaction_status'];
+
+    // $operator = '';
+    // $days = 3;
+
+    // if( isset($data['transaction_metric']) && $data['transaction_metric'] == 'x_days' ){
+    //     $operator = '=';
+    //     $days = $data['days'] ?? 3;
+    //     $xDaysAgo = Carbon::now()->subDays($days);
+    //     // If you want the date string (e.g. "2025-08-06")
+    //     $dateString = $xDaysAgo->toDateString();
+    // }
+    // if( isset($data['transaction_metric']) && $data['transaction_metric'] == 'atleast_x_days' ){
+    //     $operator = '<=';
+    //     $days = $data['days'] ?? 3;
+    //     $xDaysAgo = Carbon::now()->subDays($days);
+    //     // If you want the date string (e.g. "2025-08-06")
+    //     $dateString = $xDaysAgo->toDateString();
+
+    // }
+
+    $type = $data['type'];
+    $transaction_status = $data['transaction_status'] ?? 'nil';
+    $days = $data['days'] ?? 'nil';
+    $metric = $data['transaction_metric'] ?? 'nil';
+
+    $users = User::with('latestTransaction')
+    ->when($type === 'both', fn($q) => $q->whereIn('customer_category', ['generic', 'pos']))
+    ->when($type !== 'both', fn($q) => $q->where('customer_category', $type))
+    ->when($transaction_status === 'no_transaction', fn($q) => $q->doesntHave('latestTransaction'))
+    ->when($transaction_status === 'atleast_one_transaction' && $days != 'nil' && $metric != 'nil', function ($q) use ($days, $metric) {
+        $date = now()->subDays($days)->startOfDay();
+
+        $q->whereHas('latestTransaction', function ($q) use ($date, $metric) {
+            if ($metric === 'atleast_x_days') {
+                $q->where('created_at', '<=', $date);
+            } else if ($metric === 'x_days') {
+                $q->whereDate('created_at', '=', $date);
+            }
+        });
     })
-    ->leftJoin(DB::raw('(SELECT user_id, MAX(created_at) as last_tx FROM transactions GROUP BY user_id) tx'), 'users.id', '=', 'tx.user_id')
-    ->when($filter_transaction != '', fn($q) => $q->whereNull('tx.last_tx'))
-    ->when($operator != '', function($q) use($operator,$dateString){
-        $q->where('tx.last_tx', "$operator", $dateString);
-    }) 
-    ->select('users.*')
     ->get();
 
-
-    dd($users);
+    return $users;
 
 }
 
