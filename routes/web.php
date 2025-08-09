@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\DailyCustomerFollowupController;
 use App\Models\SiteImage;
 use App\Models\ProductPlan;
 use App\Models\SiteTemplate;
@@ -141,10 +142,7 @@ Route::middleware(['set_locale'])->group(function () {
                 return redirect()->back();
             })->name('lang.switch');
 
-
-           
-
-
+ 
             // NEW TEMPLATE START: temporal routes
             Route::get('template2', [Template2Controller::class, 'index'])->name('template2.index');
             Route::get('template2/login', [Template2Controller::class, 'login'])->name('template2.login');
@@ -274,10 +272,6 @@ Route::middleware(['set_locale'])->group(function () {
             Route::middleware(['auth','verified'])->get('/dashboard', [UserDashboardController::class, 'index'])->name('dashboard');
             Route::get('product_plans/fetch_public_product_plans', [ProductPlanController::class, 'fetch_public_product_plans'])->name('fetch_public_product_plans');
 
-
-
-
-
             // COMMISSIONS
             Route::middleware(['auth','verified'])->get('commissions/index', [CommissionsController::class, 'index'])->name('commissions.index');
             Route::middleware(['auth','verified'])->get('commissions/fetch_commissions', [CommissionsController::class, 'fetch_commissions'])->name('user.commissions.fetch_commissions');
@@ -294,6 +288,12 @@ Route::middleware(['set_locale'])->group(function () {
              Route::middleware(['auth','verified','admin'])->post('translations/store', [MultilanguageController::class, 'store'])->name('admin.translations.store');
              Route::middleware(['auth','verified','admin'])->post('translations/store_ajax', [MultilanguageController::class, 'store_ajax'])->name('admin.translations.store_ajax');
              Route::middleware(['auth','verified','admin'])->get('multilanguage/translation', [MultilanguageController::class, 'translation'])->name('multilanguage.translation');
+
+
+             //customer follow up feature
+             Route::middleware(['auth','verified','admin'])->get('admin/daily_customer_followup/index', [DailyCustomerFollowupController::class, 'index'])->name('admin.daily_customer_followup.index');
+             Route::middleware(['auth','verified','admin'])->post('admin/daily_customer_followup/search', [DailyCustomerFollowupController::class, 'filter'])->name('admin.daily_customer_followup.filter');
+
 
              // funding promo
              Route::middleware(['auth','verified','admin'])->get('wallet_funding_promo/index', [WalletFundingPromoController::class, 'index'])->name('admin.wallet_funding_promo.index');
