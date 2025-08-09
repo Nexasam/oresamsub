@@ -142,6 +142,9 @@
                     Call Phone: {{ $item->phone_number }} <br>
                     Whatsapp Phone: {{ $item->phone_number }} <br>
                     No of Days :  {{ $item->latestTransaction->created_at ?? 'No transaction' }} <br>
+                    <hr>
+                    <hr>
+                    <hr>
                  </li>
               @endforeach
             </ul>
