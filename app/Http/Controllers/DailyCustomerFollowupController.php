@@ -93,8 +93,8 @@ public function filteroolll(Request $request)
 {
     $data = $request->validate([
         'type' => 'required|in:generic,pos,both',
-        'transaction_status' => 'required|in:atleast_one_transaction,no_transaction',
-        'transaction_metric' => 'nullable|in:atleast_x_days,x_days',
+        // 'transaction_status' => 'required|in:atleast_one_transaction,no_transaction',
+        // 'transaction_metric' => 'nullable|in:atleast_x_days,x_days',
         'days' => 'nullable|integer|min:1',
     ]);
 
@@ -153,8 +153,8 @@ public function filteroolll(Request $request)
 public function filter(Request $request){
     $validator = Validator::make($request->all(), [
         'type' => 'required|in:generic,pos,both',
-        'transaction_status' => 'required|in:atleast_one_transaction,no_transaction',
-        'transaction_metric' => 'nullable|in:atleast_x_days,x_days',
+        // 'transaction_status' => 'required|in:atleast_one_transaction,no_transaction',
+        // 'transaction_metric' => 'nullable|in:atleast_x_days,x_days',
         'days_since_last_txn' => 'nullable|integer|min:1',
     ]);
     
