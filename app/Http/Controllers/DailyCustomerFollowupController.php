@@ -256,26 +256,46 @@ public function filter(Request $request){
     $days = $data['days'] ?? 'nil';
     $metric = $data['transaction_metric'] ?? 'nil';
 
-    $users = User::select('first_name', 'last_name', 'phone_number') // select only user columns
-    ->with('latestTransaction') // eager load latestTransaction relation
+    // $users = User::select('first_name', 'last_name', 'phone_number') // select only user columns
+    // ->with('latestTransaction') // eager load latestTransaction relation
+    // ->when($type === 'both', fn($q) => $q->whereIn('customer_category', ['generic', 'pos']))
+    // ->when($type !== 'both', fn($q) => $q->where('customer_category', $type))
+    // ->when($transaction_status === 'no_transaction', fn($q) => $q->doesntHave('latestTransaction'))
+    // ->when(
+    //     $transaction_status === 'atleast_one_transaction' && $days !== 'nil' && $metric !== 'nil',
+    //     function ($q) use ($days, $metric) {
+    //         $date = now()->subDays($days)->startOfDay();
+
+    //         $q->whereHas('latestTransaction', function ($q) use ($date, $metric) {
+    //             if ($metric === 'atleast_x_days') {
+    //                 $q->where('created_at', '<=', $date);
+    //             } elseif ($metric === 'x_days') {
+    //                 $q->whereDate('created_at', '=', $date);
+    //             }
+    //         });
+    //     }
+    // )
+    // ->get();
+
+
+
+    $users = User::select('first_name', 'last_name', 'phone_number')
+    ->with('latestTransaction')
     ->when($type === 'both', fn($q) => $q->whereIn('customer_category', ['generic', 'pos']))
     ->when($type !== 'both', fn($q) => $q->where('customer_category', $type))
     ->when($transaction_status === 'no_transaction', fn($q) => $q->doesntHave('latestTransaction'))
     ->when(
-        $transaction_status === 'atleast_one_transaction' && $days !== 'nil' && $metric !== 'nil',
-        function ($q) use ($days, $metric) {
-            $date = now()->subDays($days)->startOfDay();
+        $transaction_status === 'atleast_one_transaction' && $days !== 'nil' && $metric === 'x_days',
+        function ($q) use ($days) {
+            $targetDate = Carbon::now()->subDays($days)->toDateString();
 
-            $q->whereHas('latestTransaction', function ($q) use ($date, $metric) {
-                if ($metric === 'atleast_x_days') {
-                    $q->where('created_at', '<=', $date);
-                } elseif ($metric === 'x_days') {
-                    $q->whereDate('created_at', '=', $date);
-                }
+            $q->whereHas('latestTransaction', function ($q) use ($targetDate) {
+                $q->whereDate('created_at', '=', $targetDate);
             });
         }
     )
     ->get();
+
 
 
     return $users;
