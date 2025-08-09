@@ -278,23 +278,18 @@ public function filter(Request $request){
     // ->get();
 
 
+    $check_category = $data['type'] == 'both' ? '' : $data['type'];
 
-    $users = User::with('latestTransaction')
-    ->where('customer_category', 'pos')
-    // ->when($type === 'both', fn($q) => $q->whereIn('customer_category', ['generic', 'pos']))
-    // ->when($type !== 'both', fn($q) => $q->where('customer_category', $type))
-    // ->when($transaction_status === 'no_transaction', fn($q) => $q->doesntHave('latestTransaction'))
-    // ->when(
-    //     $transaction_status === 'atleast_one_transaction' && $days !== 'nil' && $metric === 'x_days',
-    //     function ($q) use ($days) {
-    //         $targetDate = Carbon::now()->subDays($days)->toDateString();
 
-    //         $q->whereHas('latestTransaction', function ($q) use ($targetDate) {
-    //             $q->whereDate('created_at', '<=', $targetDate);
-    //         });
-    //     }
-    // )
+    $users = User::with('latestTransaction')->when($check_category == '',function($q) use ($check_category){
+        $q->where('customer_category', $check_category);
+    })
     ->get();
+
+
+
+
+    // $users = $users_no_txn->merge($users_txn_metrix);
 
 
 
