@@ -171,7 +171,9 @@ public function filter(Request $request){
     })
     ->get();
 
-    return $users;
+    // return $users;
+    return view('admin.daily_customer_followup.index',compact('users'))->withInput();
+
 }
 
 
