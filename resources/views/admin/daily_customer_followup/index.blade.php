@@ -111,7 +111,7 @@
                     Name: {{ $item->first_name.' '.$item->last_name }} <br>
                     Call Phone: {{ $item->phone_number }} <br>
                     Whatsapp Phone: {{ $item->phone_number }} <br>
-                    No of Days : {{ $item->last_transaction->created ?? 'nil' }} <br>
+                    No of Days : {{ $item->last_transaction->created_at ?? 'nil' }} <br>
                  </li>
               @endforeach
             </ul>
