@@ -280,6 +280,7 @@ public function filter(Request $request){
 
 
     $users = User::with('latestTransaction')
+    ->where('customer_category', 'pos')
     // ->when($type === 'both', fn($q) => $q->whereIn('customer_category', ['generic', 'pos']))
     // ->when($type !== 'both', fn($q) => $q->where('customer_category', $type))
     // ->when($transaction_status === 'no_transaction', fn($q) => $q->doesntHave('latestTransaction'))
