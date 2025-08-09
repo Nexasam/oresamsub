@@ -281,19 +281,19 @@ public function filter(Request $request){
 
     $users = User::select('first_name', 'last_name', 'phone_number')
     ->with('latestTransaction')
-    ->when($type === 'both', fn($q) => $q->whereIn('customer_category', ['generic', 'pos']))
-    ->when($type !== 'both', fn($q) => $q->where('customer_category', $type))
-    ->when($transaction_status === 'no_transaction', fn($q) => $q->doesntHave('latestTransaction'))
-    ->when(
-        $transaction_status === 'atleast_one_transaction' && $days !== 'nil' && $metric === 'x_days',
-        function ($q) use ($days) {
-            $targetDate = Carbon::now()->subDays($days)->toDateString();
+    // ->when($type === 'both', fn($q) => $q->whereIn('customer_category', ['generic', 'pos']))
+    // ->when($type !== 'both', fn($q) => $q->where('customer_category', $type))
+    // ->when($transaction_status === 'no_transaction', fn($q) => $q->doesntHave('latestTransaction'))
+    // ->when(
+    //     $transaction_status === 'atleast_one_transaction' && $days !== 'nil' && $metric === 'x_days',
+    //     function ($q) use ($days) {
+    //         $targetDate = Carbon::now()->subDays($days)->toDateString();
 
-            $q->whereHas('latestTransaction', function ($q) use ($targetDate) {
-                $q->whereDate('created_at', '<=', $targetDate);
-            });
-        }
-    )
+    //         $q->whereHas('latestTransaction', function ($q) use ($targetDate) {
+    //             $q->whereDate('created_at', '<=', $targetDate);
+    //         });
+    //     }
+    // )
     ->get();
 
 
