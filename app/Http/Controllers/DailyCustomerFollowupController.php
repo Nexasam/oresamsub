@@ -155,7 +155,7 @@ public function filter(Request $request){
         'type' => 'required|in:generic,pos,both',
         'transaction_status' => 'required|in:atleast_one_transaction,no_transaction',
         'transaction_metric' => 'nullable|in:atleast_x_days,x_days',
-        'days' => 'nullable|integer|min:1',
+        'days_since_last_txn' => 'nullable|integer|min:1',
     ]);
     
          
@@ -165,13 +165,15 @@ public function filter(Request $request){
 
     $data = $request->all();
 
+    // $days =
+
     $check_category = $data['type'] == 'both' ? '' : $data['type'];
     $users = User::with('latestTransaction')->when($check_category !== '',function($q) use ($check_category){
         $q->where('customer_category', $check_category);
     })
     ->get();
     $dataa['users'] = $users;
-    $dataa['days'] = $data['days'];
+    $dataa['days'] = $data['days_since_last_txn'] ?? 0;
 
     // return $users;
     return view('admin.daily_customer_followup.index',compact('users'))->with($dataa);

@@ -48,7 +48,7 @@
 
           <div class="box-body">
 
-            <form method="POST" action="{{ route('admin.daily_customer_followup.filter') }}" 
+            {{-- <form method="POST" action="{{ route('admin.daily_customer_followup.filter') }}" 
             x-data="{ transactionStatus: '', showTransactionDetails: false }" 
             @change="showTransactionDetails = transactionStatus === 'atleast_one_transaction'">
                 @csrf
@@ -99,7 +99,37 @@
                 </div>
             
                 </div>
+            </form> --}}
+
+            <form method="POST" action="{{ route('admin.daily_customer_followup.filter') }}">
+                @csrf
+            
+                <div class="flex flex-wrap items-center gap-6 max-w-full">
+            
+                    <!-- Type select -->
+                    <div class="flex flex-col">
+                        <label for="type" class="ti-form-label mb-1">Type</label>
+                        <select name="type" id="type" class="ti-form-input w-48">
+                            <option value="generic">Generic</option>
+                            <option value="pos">POS</option>
+                            <option value="both">Both</option>
+                        </select>
+                    </div>
+            
+                    <!-- Days since last transaction input -->
+                    <div class="flex flex-col">
+                        <label for="days_since_last_txn" class="ti-form-label mb-1">Days Since Last Transaction</label>
+                        <input type="number" min="0" name="days_since_last_txn" id="days_since_last_txn" class="ti-form-input w-28" placeholder="Enter days">
+                    </div>
+            
+                    <!-- Submit Button -->
+                    <div class="mt-6">
+                        <button type="submit" class="ti-btn ti-btn-primary px-8 py-3">Apply Filter</button>
+                    </div>
+            
+                </div>
             </form>
+            
       
               
 
@@ -111,7 +141,7 @@
                     Name: {{ $item->first_name.' '.$item->last_name }} <br>
                     Call Phone: {{ $item->phone_number }} <br>
                     Whatsapp Phone: {{ $item->phone_number }} <br>
-                    No of Days : {{ $item->last_transaction->created_at ?? 'nil' }} <br>
+                    No of Days : {{ $item->created_at  }} <br>
                  </li>
               @endforeach
             </ul>
