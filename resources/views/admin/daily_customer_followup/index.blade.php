@@ -155,7 +155,7 @@
                     Whatsapp Phone: {{ $item->phone_number }} <br>
                     How/Where we met customer: {{ $item->customer_landmark }} <br>
                     Last transaction date :  {{ $lastTxnDate }} <br>
-                    Days without transaction :  {{ $daysWithoutTxn.' ago' }} <br>
+                    Days without transaction :  {{ $daysWithoutTxn.' days ago' }} <br>
                     <hr>
                     <hr>
                     <hr>
