@@ -150,10 +150,12 @@
              @endphp
 
                 <li>
-                    Name: {{ $item->first_name.' '.$item->last_name }} <br>
+                    Name: {{ $item->first_name.' '.$item->last_name.' '.$item->username }} <br>
                     Call Phone: {{ $item->phone_number }} <br>
                     Whatsapp Phone: {{ $item->phone_number }} <br>
-                    Days without transaction :  {{ $daysWithoutTxn }} <br>
+                    How/Where we met customer: {{ $item->customer_landmark }} <br>
+                    Last transaction date :  {{ $item->latestTransaction->created_at }} <br>
+                    Days without transaction :  {{ $daysWithoutTxn.' ago' }} <br>
                     <hr>
                     <hr>
                     <hr>
