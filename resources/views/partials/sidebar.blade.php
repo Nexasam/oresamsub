@@ -301,7 +301,7 @@
 
                           <!-- Start::slide -->
                           <li class="slide  has-sub">
-                            <a href="{{ route('admin.user_wallet_funding_promo.index')}}" class="side-menu__item">
+                            <a href="{{ route('admin.daily_customer_followup.index')}}" class="side-menu__item">
                                 <i class="ti ti-cash side-menu__icon"></i>
                                 <span class="side-menu__label">Daily Customer Follow-Up</span>
                                 <i class="ri ri-arrow-right-s-line side-menu__angle"></i>
