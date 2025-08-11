@@ -150,6 +150,8 @@ class ProcessPendingAirtimeTransactions extends Command
                                 $buy_airtime['status'] = -1;
                                 $buy_airtime['user_message'] = 'Phone number and network does not align';
                                 $buy_airtime['admin_message'] = 'Phone number and network does not align';
+                                $set_for_manual = 0;
+
                             }
 
                             $set_for_manual = $buy_airtime['set_for_manual'] ?? 0;
@@ -165,7 +167,7 @@ class ProcessPendingAirtimeTransactions extends Command
                                   ]);
                                   logger('AIRTIME SUCCESS '.json_encode($buy_airtime));
                             }else{
-                                //failed, so refund
+                                //failed, so refund: this should not run for oresamsub
                                 $user_message = $buy_airtime['user_message'];
                                 $admin_message = $buy_airtime['admin_message'];
                                 $new_amount = $user_balance + $discounted_amount;
