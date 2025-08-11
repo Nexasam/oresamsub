@@ -520,7 +520,9 @@ class AirtimeController extends Controller
                                 );
                                        
                     
+
                                 $description = 'Purchase of airtime';
+                                $creationData['set_for_manual'] = env('APP_NAME') == 'OresamSub' ? 1 : 0; //this is an urgent fix to watch...
                                 $creationData['transaction_category'] = 'airtime';
                                 $creationData['user_id'] = $user_id;
                                 $creationData['wallet_category'] = $request->wallet_category;
