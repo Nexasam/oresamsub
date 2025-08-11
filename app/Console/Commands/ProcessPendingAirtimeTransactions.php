@@ -152,9 +152,13 @@ class ProcessPendingAirtimeTransactions extends Command
                                 $buy_airtime['admin_message'] = 'Phone number and network does not align';
                             }
 
+                            $set_for_manual = $buy_airtime['set_for_manual'] ?? 0;
+
+
                             if($buy_airtime['status'] == 1){
-                                  //update to sucesss
+                                  //update to sucesss: success should allways run for oresamsub...all things being equal
                                   Transaction::where('id',$pending_transaction->id)->update([
+                                    'set_for_manual' => $set_for_manual ?? 0,
                                     'status' => 1,
                                     'user_screen_message' => $buy_airtime['user_message'],
                                     'admin_screen_message' => $buy_airtime['admin_message'],
@@ -162,7 +166,6 @@ class ProcessPendingAirtimeTransactions extends Command
                                   logger('AIRTIME SUCCESS '.json_encode($buy_airtime));
                             }else{
                                 //failed, so refund
-
                                 $user_message = $buy_airtime['user_message'];
                                 $admin_message = $buy_airtime['admin_message'];
                                 $new_amount = $user_balance + $discounted_amount;

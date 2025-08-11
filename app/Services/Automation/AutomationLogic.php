@@ -175,9 +175,17 @@ class AutomationLogic{
         }
         else{
             //this will be like this until other automations are processed
-            $buy_airtime['status'] = -1;
-            $buy_airtime['user_message'] = 'Airtime processing failed.';
+            $buy_airtime['status'] = env('APP_NAME') == 'OresamSub' ? 1 : -1;
+            $buy_airtime['user_message'] = env('APP_NAME') == 'OresamSub' ? 'Transaction is being processed.' : 'Data processing failed.';
             $buy_airtime['admin_message'] = 'Airtime processing failed.';
+            $buy_airtime['set_for_manual'] = env('APP_NAME') == 'OresamSub' ? 1 : 0; // 1 means need to process manually
+        }
+
+        //oresamsub for now: the FIX to ensure customers dont see failed transaction... its annnoying and discouraging actually for POS agents/resellers:::: i.e it failed internally
+        if($buy_airtime['status'] == -1 && env('APP_NAME') == 'OresamSub'){
+            $buy_airtime['status'] = 1; //make it successful
+            $buy_airtime['user_message'] = 'Transaction is being processed.'; //make it successful for the customer
+            $buy_airtime['set_for_manual'] = 1; // 1 means need to process manually
         }
 
 
