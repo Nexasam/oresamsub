@@ -30,7 +30,7 @@
                   <h5 class="box-title">Product Plan Custom Pricing</h5>
 
                   
-                <button class="hs-dropdown-toggle ti-btn ti-btn-success"  data-hs-overlay="#hs-vertically-centered-modal12">Add User Custom Wallet Funding Promo</button>
+                <button class="hs-dropdown-toggle ti-btn ti-btn-success"  data-hs-overlay="#hs-vertically-centered-modal12">Add Product Plan Custom Pricing</button>
               
                 <div id="hs-vertically-centered-modal12" class="hs-overlay ti-modal hidden">
                  
