@@ -59,7 +59,7 @@
                                     rateCategory: '' 
                                 }" 
                                 method="POST" 
-                                action="{{ route('admin.product_plan_custom_pricing.store') }}"
+                                action="#"
                                 >
                                 @csrf
                                 <div class="grid w-full lg:w-full lg:grid-cols-1 gap-6 space-y-4 lg:space-y-0">
