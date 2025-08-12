@@ -26,28 +26,37 @@
 <!-- Font Awesome Free CDN -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
-<div x-data="{ copied: false }" class="flex flex-col space-y-3 px-3 mt-4">
+<div x-data="{ copied: false }" class="flex flex-col space-y-2 px-3 mt-1">
     
     <!-- Header: Hi Username + Refresh -->
-    <!-- Header: Hi Username + Refresh -->
+   <!-- Header: Hi Username + Refresh -->
     <div class="flex items-center justify-between">
       <h1 class="text-base font-semibold text-gray-800 dark:text-gray-100">
-          Hi, {{ auth()->user()->name }}
+          Hi, {{ auth()->user()->username }}
       </h1>
 
-      <button 
-          onclick="location.reload()" 
-          class="flex items-center gap-1 px-3 py-1.5 rounded-lg 
-                bg-emerald-500 text-white text-sm font-medium 
-                hover:bg-emerald-600 active:bg-emerald-700 
-                focus:outline-none focus:ring-2 focus:ring-emerald-400 
-                transition-colors duration-200"
+      <a
+          href="{{ url()->current() }}"
+          @click.prevent="showLoader = true; setTimeout(() => window.location.href = '{{ url()->current() }}', 150)"
+          class="group p-3 bg-white dark:bg-gray-900 rounded-xl 
+                ring-2 ring-green-200 dark:ring-green-700 
+                shadow-lg hover:shadow-2xl 
+                transition transform hover:scale-[1.02] flex items-center space-x-2"
           title="Refresh page"
       >
-          <i class="fas fa-sync-alt"></i>
-          <span>Refresh</span>
-      </button>
+          <div class="w-5 h-5 mx-auto rounded-full 
+                      bg-gradient-to-r from-emerald-500 to-green-500 
+                      flex items-center justify-center 
+                      text-white text-sm shadow-sm 
+                      group-hover:scale-110 transition duration-200 ease-in-out">
+              <i class="fas fa-sync-alt"></i>
+          </div>
+          <div class="mt-1 text-xs font-medium text-gray-800 dark:text-gray-100 group-hover:text-green-600">
+              Refresh
+          </div>
+      </a>
     </div>
+
 
 
     {{-- <h2 class="text-sm font-semibold text-gray-700 dark:text-gray-300">Refer & Earn</h2> --}}
