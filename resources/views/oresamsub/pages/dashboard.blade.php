@@ -29,21 +29,28 @@
 <div x-data="{ copied: false }" class="flex flex-col space-y-3 px-3 mt-4">
     
     <!-- Header: Hi Username + Refresh -->
+    <!-- Header: Hi Username + Refresh -->
     <div class="flex items-center justify-between">
-        <h1 class="text-base font-semibold text-gray-800 dark:text-gray-100">
-            Hi, {{ auth()->user()->name }}
-        </h1>
-        <button 
-            onclick="location.reload()" 
-            class="flex items-center space-x-1 text-sm text-blue-600 dark:text-blue-400 hover:underline"
-            title="Refresh page"
-        >
-            <i class="fas fa-sync-alt"></i>
-            <span>Refresh</span>
-        </button>
+      <h1 class="text-base font-semibold text-gray-800 dark:text-gray-100">
+          Hi, {{ auth()->user()->name }}
+      </h1>
+
+      <button 
+          onclick="location.reload()" 
+          class="flex items-center gap-1 px-3 py-1.5 rounded-lg 
+                bg-emerald-500 text-white text-sm font-medium 
+                hover:bg-emerald-600 active:bg-emerald-700 
+                focus:outline-none focus:ring-2 focus:ring-emerald-400 
+                transition-colors duration-200"
+          title="Refresh page"
+      >
+          <i class="fas fa-sync-alt"></i>
+          <span>Refresh</span>
+      </button>
     </div>
 
-    <h2 class="text-sm font-semibold text-gray-700 dark:text-gray-300">Refer & Earn</h2>
+
+    {{-- <h2 class="text-sm font-semibold text-gray-700 dark:text-gray-300">Refer & Earn</h2> --}}
 
     <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-3 border border-gray-200 dark:border-gray-700">
         <p class="text-sm text-gray-600 dark:text-gray-400 mb-2">
