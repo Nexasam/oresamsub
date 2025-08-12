@@ -38,7 +38,7 @@
       <a
           href="{{ url()->current() }}"
           @click.prevent="showLoader = true; setTimeout(() => window.location.href = '{{ url()->current() }}', 150)"
-          class="group p-3 bg-white dark:bg-gray-900 rounded-xl 
+          class="group p-2 bg-white dark:bg-gray-900 rounded-xl 
                 ring-2 ring-green-200 dark:ring-green-700 
                 shadow-lg hover:shadow-2xl 
                 transition transform hover:scale-[1.02] flex items-center space-x-2"
