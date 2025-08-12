@@ -23,11 +23,11 @@
 <!-- Font Awesome Free CDN -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
-<div class="flex flex-col space-y-3 px-4 mt-4">
+<div class="flex flex-col space-y-2 px-3 mt-4" x-data="{ copied: false }">
     <h2 class="text-sm font-semibold text-gray-700 dark:text-gray-300">Refer & Earn</h2>
 
-    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-4 border border-gray-200 dark:border-gray-700">
-        <p class="text-sm text-gray-600 dark:text-gray-400 mb-3">
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-3 border border-gray-200 dark:border-gray-700">
+        <p class="text-sm text-gray-600 dark:text-gray-400 mb-2">
             Buy airtime, data, and pay bills at affordable rates — get started now! 🚀
         </p>
 
@@ -38,19 +38,20 @@
                 type="text" 
                 readonly 
                 value="{{ url('/register?ref=' . auth()->user()->phone_number) }}"
-                class="flex-grow px-3 py-2 text-sm bg-transparent border-none focus:outline-none text-gray-700 dark:text-gray-200"
+                class="flex-grow px-2 py-1 text-sm bg-transparent border-none focus:outline-none text-gray-700 dark:text-gray-200"
             >
             <button 
-                onclick="navigator.clipboard.writeText(document.getElementById('refLink').value)"
-                class="px-3 py-2 bg-emerald-500 hover:bg-emerald-600 text-white text-xs font-medium"
+                @click="navigator.clipboard.writeText($refs.refInput.value).then(() => { copied = true; setTimeout(() => copied = false, 2000) })"
+                class="px-2 py-1 bg-emerald-500 hover:bg-emerald-600 text-white text-xs font-medium"
                 title="Copy link"
             >
                 <i class="fas fa-copy"></i>
             </button>
         </div>
+        <span x-show="copied" class="text-xs text-emerald-500 mt-1 block">✅ Link copied!</span>
 
         <!-- Share Buttons -->
-        <div class="flex space-x-3 mt-4">
+        <div class="flex space-x-2 mt-3">
             <a href="https://wa.me/?text=Buy%20airtime%2C%20data%20and%20pay%20bills%20at%20affordable%20rates%20-%20get%20started%20now!%20{{ urlencode(url('/register?ref=' . auth()->user()->phone_number)) }}" 
                target="_blank" 
                class="flex items-center justify-center w-8 h-8 bg-green-500 hover:bg-green-600 rounded-full text-white"
@@ -78,6 +79,7 @@
         </div>
     </div>
 </div>
+
 
 
   
