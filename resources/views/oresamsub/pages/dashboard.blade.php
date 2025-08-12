@@ -20,13 +20,29 @@
   </div>
 
 
-<!-- Alpine (only include if you don't already load it in your layout) -->
+<!-- Alpine (only include if not already loaded in your layout) -->
 <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
 
 <!-- Font Awesome Free CDN -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
-<div x-data="{ copied: false }" class="flex flex-col space-y-2 px-3 mt-4">
+<div x-data="{ copied: false }" class="flex flex-col space-y-3 px-3 mt-4">
+    
+    <!-- Header: Hi Username + Refresh -->
+    <div class="flex items-center justify-between">
+        <h1 class="text-base font-semibold text-gray-800 dark:text-gray-100">
+            Hi, {{ auth()->user()->name }}
+        </h1>
+        <button 
+            onclick="location.reload()" 
+            class="flex items-center space-x-1 text-sm text-blue-600 dark:text-blue-400 hover:underline"
+            title="Refresh page"
+        >
+            <i class="fas fa-sync-alt"></i>
+            <span>Refresh</span>
+        </button>
+    </div>
+
     <h2 class="text-sm font-semibold text-gray-700 dark:text-gray-300">Refer & Earn</h2>
 
     <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-3 border border-gray-200 dark:border-gray-700">
@@ -36,17 +52,13 @@
 
         <!-- Referral Link with Copy Button -->
         <div class="flex items-center bg-gray-100 dark:bg-gray-700 rounded-md overflow-hidden">
-            <!-- x-ref added so Alpine can access this element via $refs.refInput -->
             <input 
                 x-ref="refInput"
-                id="refLink" 
                 type="text" 
                 readonly 
                 value="{{ url('/register?ref=' . auth()->user()->phone_number) }}"
                 class="flex-grow px-2 py-1 text-sm bg-transparent border-none focus:outline-none text-gray-700 dark:text-gray-200"
             >
-
-            <!-- Button swaps icon when copied -->
             <button 
                 @click="navigator.clipboard.writeText($refs.refInput.value).then(() => { copied = true; setTimeout(() => copied = false, 2000) })"
                 class="px-2 py-1 bg-emerald-500 hover:bg-emerald-600 text-white text-xs font-medium flex items-center justify-center"
@@ -57,41 +69,41 @@
             </button>
         </div>
 
-        <!-- Visually hidden until copied; x-cloak prevents flash -->
-        <span x-show="copied" x-transition x-cloak class="text-xs text-emerald-500 mt-1 block">✅ Link copied!</span>
+        <!-- Link Copied Notice -->
+        <span x-show="copied" x-transition x-cloak class="text-xs text-emerald-500 mt-1 block">
+            ✅ Link copied!
+        </span>
 
-        <!-- Share Buttons (urlencoded server-side) -->
+        <!-- Share Buttons -->
         <div class="flex space-x-2 mt-3">
             <a href="https://wa.me/?text={{ urlencode('Buy airtime, data and pay bills at affordable rates - get started now! ' . url('/register?ref=' . auth()->user()->phone_number)) }}"
                target="_blank" 
                class="flex items-center justify-center w-8 h-8 bg-green-500 hover:bg-green-600 rounded-full text-white"
-               title="Share on WhatsApp" rel="noopener noreferrer">
+               title="Share on WhatsApp">
                <i class="fab fa-whatsapp"></i>
             </a>
-
             <a href="https://www.facebook.com/sharer/sharer.php?u={{ urlencode(url('/register?ref=' . auth()->user()->phone_number)) }}&quote={{ urlencode('Buy airtime, data and pay bills at affordable rates - get started now!') }}" 
                target="_blank" 
                class="flex items-center justify-center w-8 h-8 bg-blue-600 hover:bg-blue-700 rounded-full text-white"
-               title="Share on Facebook" rel="noopener noreferrer">
+               title="Share on Facebook">
                <i class="fab fa-facebook-f"></i>
             </a>
-
             <a href="https://www.instagram.com/?url={{ urlencode(url('/register?ref=' . auth()->user()->phone_number)) }}" 
                target="_blank" 
                class="flex items-center justify-center w-8 h-8 bg-pink-500 hover:bg-pink-600 rounded-full text-white"
-               title="Share on Instagram" rel="noopener noreferrer">
+               title="Share on Instagram">
                <i class="fab fa-instagram"></i>
             </a>
-
             <a href="https://www.tiktok.com/share?url={{ urlencode(url('/register?ref=' . auth()->user()->phone_number)) }}" 
                target="_blank" 
                class="flex items-center justify-center w-8 h-8 bg-black hover:bg-gray-800 rounded-full text-white"
-               title="Share on TikTok" rel="noopener noreferrer">
+               title="Share on TikTok">
                <i class="fab fa-tiktok"></i>
             </a>
         </div>
     </div>
 </div>
+
 
 
   
