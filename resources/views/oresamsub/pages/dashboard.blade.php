@@ -20,43 +20,66 @@
   </div>
 
 
-  <!-- Logout Button -->
-  <div class="flex justify-between items-center px-4" x-data="{ isRefreshing: false }">
+<!-- Font Awesome Free CDN -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
-    <h1 class="text-lg font-bold text-gray-800 dark:text-white">
-      Hi, {{ auth()->user()->username }} 👋
-    </h1>
+<div class="flex flex-col space-y-3 px-4 mt-4">
+    <h2 class="text-sm font-semibold text-gray-700 dark:text-gray-300">Refer & Earn</h2>
+
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-4 border border-gray-200 dark:border-gray-700">
+        <p class="text-sm text-gray-600 dark:text-gray-400 mb-3">
+            Buy airtime, data, and pay bills at affordable rates — get started now! 🚀
+        </p>
+
+        <!-- Referral Link with Copy Button -->
+        <div class="flex items-center bg-gray-100 dark:bg-gray-700 rounded-md overflow-hidden">
+            <input 
+                id="refLink" 
+                type="text" 
+                readonly 
+                value="{{ url('/register?ref=' . auth()->user()->phone_number) }}"
+                class="flex-grow px-3 py-2 text-sm bg-transparent border-none focus:outline-none text-gray-700 dark:text-gray-200"
+            >
+            <button 
+                onclick="navigator.clipboard.writeText(document.getElementById('refLink').value)"
+                class="px-3 py-2 bg-emerald-500 hover:bg-emerald-600 text-white text-xs font-medium"
+                title="Copy link"
+            >
+                <i class="fas fa-copy"></i>
+            </button>
+        </div>
+
+        <!-- Share Buttons -->
+        <div class="flex space-x-3 mt-4">
+            <a href="https://wa.me/?text=Buy%20airtime%2C%20data%20and%20pay%20bills%20at%20affordable%20rates%20-%20get%20started%20now!%20{{ urlencode(url('/register?ref=' . auth()->user()->phone_number)) }}" 
+               target="_blank" 
+               class="flex items-center justify-center w-8 h-8 bg-green-500 hover:bg-green-600 rounded-full text-white"
+               title="Share on WhatsApp">
+               <i class="fab fa-whatsapp"></i>
+            </a>
+            <a href="https://www.facebook.com/sharer/sharer.php?u={{ urlencode(url('/register?ref=' . auth()->user()->phone_number)) }}" 
+               target="_blank" 
+               class="flex items-center justify-center w-8 h-8 bg-blue-600 hover:bg-blue-700 rounded-full text-white"
+               title="Share on Facebook">
+               <i class="fab fa-facebook-f"></i>
+            </a>
+            <a href="https://www.instagram.com/?url={{ urlencode(url('/register?ref=' . auth()->user()->phone_number)) }}" 
+               target="_blank" 
+               class="flex items-center justify-center w-8 h-8 bg-pink-500 hover:bg-pink-600 rounded-full text-white"
+               title="Share on Instagram">
+               <i class="fab fa-instagram"></i>
+            </a>
+            <a href="https://www.tiktok.com/share?url={{ urlencode(url('/register?ref=' . auth()->user()->phone_number)) }}" 
+               target="_blank" 
+               class="flex items-center justify-center w-8 h-8 bg-black hover:bg-gray-800 rounded-full text-white"
+               title="Share on TikTok">
+               <i class="fab fa-tiktok"></i>
+            </a>
+        </div>
+    </div>
+</div>
 
 
-    <!-- Refresh Button -->
-    <button
-      @click="isRefreshing = true; setTimeout(() => location.reload(), 800)"
-      class="relative group inline-flex items-center space-x-2 px-3 py-1.5 bg-gradient-to-r from-emerald-500 to-green-500 text-white rounded-full shadow-md hover:from-emerald-600 hover:to-green-600 transition duration-300"
-      title="Refresh Dashboard"
-    >
-      <div class="text-sm font-semibold">
-        <template x-if="!isRefreshing">
-          <span class="inline-flex items-center space-x-1">
-            <svg class="w-4 h-4 group-hover:animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-              <path stroke="currentColor" stroke-width="2" d="M4 4v6h6M20 20v-6h-6"></path>
-              <path stroke="currentColor" stroke-width="2" d="M20 4a9 9 0 0 0-16 5.5M4 20a9 9 0 0 0 16-5.5" />
-            </svg>
-            <span>Refresh</span>
-          </span>
-        </template>
-        <template x-if="isRefreshing">
-          <span class="inline-flex items-center space-x-1">
-            <svg class="animate-spin w-4 h-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-              <path class="opacity-75" fill="currentColor"
-                d="M4 12a8 8 0 018-8v4l4-4-4-4v4a8 8 0 000 16v-4l-4 4 4 4v-4a8 8 0 01-8-8z" />
-            </svg>
-            <span>Refreshing...</span>
-          </span>
-        </template>
-      </div>
-    </button>
-  </div>
   
   
   
