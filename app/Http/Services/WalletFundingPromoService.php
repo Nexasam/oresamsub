@@ -189,7 +189,7 @@ class WalletFundingPromoService{
                            
                         }
                             
-                        logger('user: '.$username .' did not fulfill condition for promo offer');
+                        logger('user: '.$user_id .' did not fulfill condition for promo offer');
                         
                 }
             
