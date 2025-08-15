@@ -36,21 +36,38 @@
                           for ₦{{ number_format($data->amount ?? $data->discounted_amount) }}
                       </p>
                   
-                       @if ($data->locked_for_manual_processing == NULL)
+                      @if ($data->locked_for_manual_processing == NULL)
                           <form action="{{ route('transactions.lock_for_manual_processing') }}" method="POST" class="mt-4">
                               @csrf
-                              
                               <input id="transaction_id" name="transaction_id" type="hidden" value="{{ $data->id }}">
+                              
                               <button type="submit" 
                                   class="px-4 py-2 bg-yellow-500 hover:bg-yellow-600 text-white font-bold rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:ring-offset-1 transition">
                                   Mark as Working on Txn
                               </button>
                           </form>
-                       @else
-                           <p><b>Locked for processing by {{ $data->manual_processing_locker->first_name.'  '.$data->manual_processing_locker->last_name ?? 'nil'  }}</b></p>
-                       @endif
-                      
+                      @else
+                          <div class="flex items-start p-4 border border-red-500 bg-red-50 dark:bg-red-900/20 rounded-lg">
+                              <svg xmlns="http://www.w3.org/2000/svg" 
+                                   class="w-6 h-6 text-red-600 dark:text-red-400 mt-1 mr-3 flex-shrink-0" 
+                                   fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                                        d="M12 9v2m0 4h.01M5.07 19h13.86c.97 0 1.75-.78 1.75-1.75V6.75C20.68 5.78 19.9 5 18.93 5H5.07C4.1 5 3.32 5.78 3.32 6.75v10.5C3.32 18.22 4.1 19 5.07 19z" />
+                              </svg>
+                              <div>
+                                  <p class="text-red-800 dark:text-red-300 font-bold text-lg">
+                                      🚫 This transaction is locked!
+                                  </p>
+                                  <p class="text-red-700 dark:text-red-400 mt-1">
+                                      Locked for processing by 
+                                      <strong>{{ $data->manual_processing_locker->first_name.' '.$data->manual_processing_locker->last_name ?? 'Unknown' }}</strong>.  
+                                      You cannot work on it right now.
+                                  </p>
+                              </div>
+                          </div>
+                      @endif
                   </div>
+                  
                   
                     <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md space-y-3 mb-2">
                       <p><b>Other Automation Processing Same Plan
