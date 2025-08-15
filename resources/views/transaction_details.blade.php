@@ -62,7 +62,7 @@
                     <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md space-y-3 mb-2">
                       <p class="font-semibold">
                           Plan details: {{ $data->product_plan->product_plan_name }} 
-                          for ₦{{ number_format($data->amount ?? $data->discounted_amount) }}
+                          for ₦{{ number_format($data->discounted_amount ?? $data->amount) }}
                       </p>
                   
                      @if ($data->set_for_manual == 1)
