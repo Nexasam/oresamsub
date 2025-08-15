@@ -31,7 +31,7 @@
 
                     <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md space-y-3 mb-2">
                       <p><b>Other Automation Processing Same Plan
-                        {{ $data->product_plan->product_plan_category->network->network_name  }}
+                        {{-- {{ $data->product_plan->product_plan_category->network->network_name  }} --}}
                       </b></p>
                       @php
                           $product_plansss = App\Models\ProductPlan::where('data_size_in_mb',$data->product_plan->data_size_in_mb)
