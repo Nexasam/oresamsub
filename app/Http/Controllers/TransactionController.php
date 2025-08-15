@@ -70,7 +70,7 @@ class TransactionController extends Controller
     $dataa = $this->get_user_dashboard_data();
     $data = [...$dataa];
     // dd($data['user']->role->role_name);
-    $data['data'] = Transaction::with(['user','product_plan.product_plan_category.network'])->where('id',$id)->first();
+    $data['data'] = Transaction::with(['user','product_plan.product_plan_category.network','manual_processing_locker'])->where('id',$id)->first();
 
     //get the network_id:
 
