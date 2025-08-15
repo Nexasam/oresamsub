@@ -57,7 +57,7 @@
                               href="{{ $pdplan->automation->domain_url }}" 
                               class="block text-blue-600 dark:text-blue-400 font-semibold hover:underline"
                           >
-                          {{ $pdplan->product_plan_name }}  |  {{ $pdplan->automation->automation_name }}  |  
+                          PROCESS WITH: {{ $pdplan->product_plan_name }}  |  {{ $pdplan->automation->automation_name }}  |  
                               @if ($pdplan->automation->automation_name == 'samicsub')
                               (For MTN 5GB and 10GB )
                               @endif 
