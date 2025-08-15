@@ -38,6 +38,7 @@
                       @php
                           $network_plan_categories_arr = App\Models\ProductPlanCategory::where('network_id',$data->product_plan->product_plan_category->network->id)
                           ->where('product_id',$data->product_plan->product_plan_category->product->id)
+                          ->where('visibility',1)
                           ->pluck('id')
                           ->toArray();
 
