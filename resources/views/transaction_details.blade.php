@@ -31,28 +31,30 @@
 
                     <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md space-y-3 mb-2">
                       <p><b>Other Automation Processing Same Plan
-                        {{ $data->product_plan->product_plan_category->network->network_name  }}
+                        {{ $data->product_plan->product_plan_category->network->id  }}
                       </b></p>
                       @php
-                          $product_plansss = App\Models\ProductPlan::where('data_size_in_mb',$data->product_plan->data_size_in_mb)
+                          $network_plan_categories_arr = App\Models\ProductPlanCategory::where('network_id',$data->product_plan->product_plan_category->network->id)->pluck('id')->toArray();
+
+                          $product_plansss = App\Models\ProductPlan::with('automation')->where('data_size_in_mb',$data->product_plan->data_size_in_mb)
                           ->where('validity_in_days',$data->product_plan->validity_in_days)
-                          // ->whereIn()
+                          ->whereIn('product_plan_category_id',$network_plan_categories_arr)
                           ->get();
                       @endphp
                       
-                      {{-- @foreach ($automationss as $automationn)
+                     @foreach ($product_plansss as $pdplan)
                           <a 
                               target="_blank" 
-                              href="{{ $automationn->domain_url }}" 
+                              href="{{ $pdplan->automation->domain_url }}" 
                               class="block text-blue-600 dark:text-blue-400 font-semibold hover:underline"
                           >
-                              {{ $automationn->automation_name }}  |  
-                              @if ($automationn->automation_name == 'samicsub')
+                          {{ $pdplan->product_plan_name }}  |  {{ $pdplan->automation->automation_name }}  |  
+                              @if ($pdplan->automation->automation_name == 'samicsub')
                               (For MTN 5GB and 10GB )
                               @endif 
                               
                           </a>
-                      @endforeach --}}
+                      @endforeach 
                     </div>
                     <br>
                   
