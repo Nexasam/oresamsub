@@ -36,7 +36,8 @@
                           for ₦{{ number_format($data->amount ?? $data->discounted_amount) }}
                       </p>
                   
-                      @if ($data->locked_for_manual_processing == NULL)
+                     @if ($data->set_for_manual == 1)
+                          @if ($data->locked_for_manual_processing == NULL)
                           <form action="{{ route('transactions.lock_for_manual_processing') }}" method="POST" class="mt-4">
                               @csrf
                               <input id="transaction_id" name="transaction_id" type="hidden" value="{{ $data->id }}">
@@ -49,8 +50,8 @@
                       @else
                           <div class="flex items-start p-4 border border-red-500 bg-red-50 dark:bg-red-900/20 rounded-lg">
                               <svg xmlns="http://www.w3.org/2000/svg" 
-                                   class="w-6 h-6 text-red-600 dark:text-red-400 mt-1 mr-3 flex-shrink-0" 
-                                   fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    class="w-6 h-6 text-red-600 dark:text-red-400 mt-1 mr-3 flex-shrink-0" 
+                                    fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
                                         d="M12 9v2m0 4h.01M5.07 19h13.86c.97 0 1.75-.78 1.75-1.75V6.75C20.68 5.78 19.9 5 18.93 5H5.07C4.1 5 3.32 5.78 3.32 6.75v10.5C3.32 18.22 4.1 19 5.07 19z" />
                               </svg>
@@ -66,6 +67,8 @@
                               </div>
                           </div>
                       @endif
+                     @endif
+
                   </div>
                   
                   
