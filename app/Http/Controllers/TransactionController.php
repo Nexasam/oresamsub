@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
+use App\Models\Automation;
 use App\Models\ProductPlan;
 use App\Models\Transaction;
 use App\Models\SiteTemplate;
@@ -15,7 +17,6 @@ use Illuminate\Support\Facades\Session;
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Facades\Validator;
 use App\Traits\Dashboard\UserDashboardDataTrait;
-use Carbon\Carbon;
 
 
 class TransactionController extends Controller
@@ -548,18 +549,13 @@ class TransactionController extends Controller
         'success_message' => 'required',
         'pin' => 'required','string','regex:/^\d{4,5}$/',
         'transaction_id' => 'required|exists:transactions,id',
+        'automation_id' => 'required|exists:automations,id', 
         ]);
 
 
         if ($validator->stopOnFirstFailure()->fails()) {
             return redirect()->back()->withErrors($validator)->withInput();
         }
-
-        //   if(auth()->user()->pin != $request->pin){
-        //     //end session and redirect to login
-        //     Session::flash('failure','Incorrect PIN entered'); 
-        //     return redirect()->back();
-        //   }
 
 
         $transaction_details = Transaction::with('user')->where('id',$request->transaction_id)->first();
@@ -577,11 +573,15 @@ class TransactionController extends Controller
 
        $userinfooo = auth()->user()->username.' '.auth()->user()->email;
 
+       $automation_name = Automation::where('id', $request->automation_id)
+       ->value('automation_name');
+   
+
         //update user wallet
         $transaction_details->update([
             'status' => 1,
             // 'user_screen_message' => $request->success_message,
-            'admin_screen_message' => 'MANUALLY RESOLVED by '.auth()->user()->email. auth()->user()->first_name.'  message:'.$request->success_message,
+            'admin_screen_message' => 'MANUALLY RESOLVED: automation:'.$automation_name.' by '.auth()->user()->email. auth()->user()->first_name.'  message:'.$request->success_message,
             'set_for_manual' => 0,
             'manually_processed_by' => $userinfooo,
         ]); 
