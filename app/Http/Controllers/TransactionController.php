@@ -498,21 +498,16 @@ class TransactionController extends Controller
 
           
 
-            if ($data->locked_for_manual_processing != NULL) {
-                $locked_by = $data->manual_processing_locker
-                    ? $data->manual_processing_locker->first_name . ' ' . $data->manual_processing_locker->last_name
+            if ($transaction->locked_for_manual_processing) {
+                $locked_by = $transaction->manual_processing_locker
+                    ? $transaction->manual_processing_locker->first_name . ' ' . $transaction->manual_processing_locker->last_name
                     : 'Unknown';
             
-                $status_display .= '<div class="p-3 bg-red-100 border-l-4 border-red-600 rounded-md shadow-md">
-                    <p class="text-red-800 font-bold text-lg flex items-center">
-                        🚫 Locked for Processing
-                    </p>
-                    <p class="text-red-700 text-sm">
-                        This transaction is currently being handled by 
-                        <span class="font-semibold">' . e($locked_by) . '</span>. Please do not work on it.
-                    </p>
-                </div>';
-            } 
+                $status_display .= '<span class="inline-block px-2 py-1 text-xs font-bold text-white bg-red-600 rounded shadow animate-pulse">
+                    🔒 Locked by ' . e($locked_by) . '
+                </span>';
+            }
+            
             
             if($data->set_for_manual == 1){
                 $status_display .= '<span class="font-bold text-red-500">URGENT</span>';    
