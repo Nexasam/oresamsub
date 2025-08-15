@@ -143,37 +143,38 @@
                           $automationss = App\Models\Automation::select('id','domain_url','automation_name')->get();
                       @endphp
 
-                      <div class="flex flex-wrap gap-2">
-                        @php
-                            $colors = [
-                                'bg-blue-100 text-blue-800 dark:bg-blue-800 dark:text-blue-100',
-                                'bg-green-100 text-green-800 dark:bg-green-800 dark:text-green-100',
-                                'bg-yellow-100 text-yellow-800 dark:bg-yellow-800 dark:text-yellow-100',
-                                'bg-purple-100 text-purple-800 dark:bg-purple-800 dark:text-purple-100',
-                                'bg-pink-100 text-pink-800 dark:bg-pink-800 dark:text-pink-100',
-                                'bg-red-100 text-red-800 dark:bg-red-800 dark:text-red-100',
-                            ];
-                            $i = 0;
-                        @endphp
+                    <div class="flex flex-wrap gap-2">
+                      @php
+                          $colors = [
+                              'bg-blue-600 text-white dark:bg-blue-400 dark:text-black',
+                              'bg-green-600 text-white dark:bg-green-400 dark:text-black',
+                              'bg-yellow-500 text-black dark:bg-yellow-300 dark:text-black',
+                              'bg-purple-600 text-white dark:bg-purple-400 dark:text-black',
+                              'bg-pink-600 text-white dark:bg-pink-400 dark:text-black',
+                              'bg-red-600 text-white dark:bg-red-400 dark:text-black',
+                          ];
+                          $i = 0;
+                      @endphp
 
-                        @foreach ($automationss as $automationn)
-                            @php
-                                $colorClass = $colors[$i % count($colors)];
-                                $i++;
-                            @endphp
-                            
-                            <a 
-                                target="_blank" 
-                                href="{{ $automationn->domain_url }}" 
-                                class="px-3 py-1 text-sm font-semibold rounded-full {{ $colorClass }} hover:opacity-80 transition"
-                            >
-                                {{ $automationn->automation_name }}
-                                @if ($automationn->automation_name == 'samicsub')
-                                    <span class="font-normal">(For MTN 5GB and 10GB)</span>
-                                @endif
-                            </a>
-                        @endforeach
-                      </div>
+                      @foreach ($automationss as $automationn)
+                          @php
+                              $colorClass = $colors[$i % count($colors)];
+                              $i++;
+                          @endphp
+                          
+                          <a 
+                              target="_blank" 
+                              href="{{ $automationn->domain_url }}" 
+                              class="px-3 py-1 text-sm font-bold rounded-full {{ $colorClass }} shadow-md hover:opacity-90 transition"
+                          >
+                              {{ $automationn->automation_name }}
+                              @if ($automationn->automation_name == 'samicsub')
+                                  <span class="font-normal">(For MTN 5GB and 10GB)</span>
+                              @endif
+                          </a>
+                      @endforeach
+                    </div>
+
 
                      
                     </div>
