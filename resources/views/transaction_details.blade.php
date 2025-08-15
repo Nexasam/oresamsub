@@ -36,16 +36,20 @@
                           for ₦{{ number_format($data->amount ?? $data->discounted_amount) }}
                       </p>
                   
-                      {{--  --}}
-                      <form action="{{ route('transactions.lock_for_manual_processing') }}" method="POST" class="mt-4">
-                          @csrf
-                          
-                          <input id="transaction_id" name="transaction_id" type="hidden" value="{{ $data->id }}">
-                          <button type="submit" 
-                              class="px-4 py-2 bg-yellow-500 hover:bg-yellow-600 text-white font-bold rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:ring-offset-1 transition">
-                              Mark as Working on Txn
-                          </button>
-                      </form>
+                       @if ($data->locked_for_manual_processing == NULL)
+                          <form action="{{ route('transactions.lock_for_manual_processing') }}" method="POST" class="mt-4">
+                              @csrf
+                              
+                              <input id="transaction_id" name="transaction_id" type="hidden" value="{{ $data->id }}">
+                              <button type="submit" 
+                                  class="px-4 py-2 bg-yellow-500 hover:bg-yellow-600 text-white font-bold rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:ring-offset-1 transition">
+                                  Mark as Working on Txn
+                              </button>
+                          </form>
+                       @else
+                           <p><b>Locked for processing by {{ $data->locked_for_manual_processing->first_name.' '.$data->locked_for_manual_processing->last_name  }}</b></p>
+                       @endif
+                      
                   </div>
                   
                     <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md space-y-3 mb-2">

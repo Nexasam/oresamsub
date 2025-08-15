@@ -21,6 +21,10 @@ class Transaction extends Model
         return $this->belongsTo(User::class,'user_id','id');
     }
 
+    public function locked_for_manual_processing(){
+        return $this->belongsTo(User::class,'locked_for_manual_processing','id');
+    }
+
     public function product_plan(){
         return $this->belongsTo(ProductPlan::class,'product_plan_id','id');
     }
