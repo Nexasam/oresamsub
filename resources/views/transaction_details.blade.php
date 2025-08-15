@@ -34,12 +34,12 @@
                         {{-- {{ $data->product_plan->product_plan_category->network->network_name  }} --}}
                       </b></p>
                       @php
-                          $product_plansss = App\Models\ProductPlan::where('data_size_in_mb',$data->product_plan->data_size_in_mb)
-                          ->where('validity_in_days',$data->product_plan->validity_in_days)
+                          // $product_plansss = App\Models\ProductPlan::where('data_size_in_mb',$data->product_plan->data_size_in_mb)
+                          // ->where('validity_in_days',$data->product_plan->validity_in_days)
                           // ->whereIn()
-                          ->get();
+                          // ->get();
                       @endphp
-                      
+{{--                       
                       @foreach ($automationss as $automationn)
                           <a 
                               target="_blank" 
@@ -52,7 +52,7 @@
                               @endif 
                               
                           </a>
-                      @endforeach
+                      @endforeach --}}
                     </div>
                     <br>
                   
