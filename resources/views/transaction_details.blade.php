@@ -91,7 +91,7 @@
                                   <p class="text-red-700 dark:text-red-400 mt-1">
                                       Locked for processing by 
                                       <strong>{{ $data->manual_processing_locker->first_name.' '.$data->manual_processing_locker->last_name ?? 'Unknown' }}</strong>.  
-                                      You cannot work on it right now.
+                                       No one should work on it.
                                   </p>
                               </div>
                           </div>
