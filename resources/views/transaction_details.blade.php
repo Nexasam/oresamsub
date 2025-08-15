@@ -47,7 +47,7 @@
                               </button>
                           </form>
                        @else
-                           <p><b>Locked for processing by {{ $data->manual_processing_locker->first_name ?? 'nil'  }}</b></p>
+                           <p><b>Locked for processing by {{ $data->manual_processing_locker->first_name.'  '.$data->manual_processing_locker->last_name ?? 'nil'  }}</b></p>
                        @endif
                       
                   </div>
