@@ -31,7 +31,7 @@
 
                     @if (env('APP_NAME') == 'OresamSub')
                     <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md space-y-3 mb-2">
-                      <p><b>Plan details:  {{ $data->product_plan->product_plan_name }} {{ $data->amount ?? $data->discounted_amount }} </b></p>
+                      <p><b>Plan details:  {{ $data->product_plan->product_plan_name }} for N{{number_format($data->amount ?? $data->discounted_amount) }} </b></p>
                     </div>
                     <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md space-y-3 mb-2">
                       <p><b>Other Automation Processing Same Plan
