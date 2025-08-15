@@ -45,7 +45,7 @@ class TransactionController extends Controller
 
   public function lock_for_manual_processing(Request $request){
 
-    dd($request->all());
+    // dd($request->all());
      $validator = Validator::make($request->all(), [
         'transaction_id' => 'required|exists:transactions,id',
       ]);
