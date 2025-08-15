@@ -41,13 +41,13 @@
                       @php
                           $network_plan_categories_arr = App\Models\ProductPlanCategory::where('network_id',$data->product_plan->product_plan_category->network->id)
                           ->where('product_id',$data->product_plan->product_plan_category->product->id)
-                          ->where('visibility',1)
                           ->pluck('id')
                           ->toArray();
 
                           $product_plansss = App\Models\ProductPlan::with('automation')->where('data_size_in_mb',$data->product_plan->data_size_in_mb)
                           ->where('validity_in_days',$data->product_plan->validity_in_days)
                           ->whereIn('product_plan_category_id',$network_plan_categories_arr)
+                          ->where('visibility',1)
                           ->get();
                       @endphp
                       
