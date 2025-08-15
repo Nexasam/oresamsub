@@ -29,6 +29,7 @@
                     <a class="underline font-extrabold text-blue-700" href="{{ route('admin.product_plan_categories.view_details_by_automation',['id' => $data->product_plan->product_plan_category->id, 'automation_id' =>$data->product_plan->automation->id]) }}">See the Automation: {{  $data->product_plan->automation->automation_name }}</a> <br><br>
 
 
+                    @if (env('APP_NAME') == 'OresamSub')
                     <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md space-y-3 mb-2">
                       <p><b>Other Automation Processing Same Plan
                         {{ $data->product_plan->product_plan_category->network->id  }}
@@ -81,6 +82,8 @@
                       @endforeach
                     </div>
                     <br>
+                    @endif
+                
                   
               
                     <a class="underline font-extrabold text-blue-700 mt-3" target="_blank" href="{{ route('admin.product_plans.index') }}">Go to All Plans & Prices</a><br><br>
