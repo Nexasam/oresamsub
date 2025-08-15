@@ -498,9 +498,9 @@ class TransactionController extends Controller
 
           
 
-            if ($transaction->locked_for_manual_processing) {
-                $locked_by = $transaction->manual_processing_locker
-                    ? $transaction->manual_processing_locker->first_name . ' ' . $transaction->manual_processing_locker->last_name
+            if ($data->locked_for_manual_processing && $data->set_for_manual == 1) {
+                $locked_by = $data->manual_processing_locker
+                    ? $data->manual_processing_locker->first_name . ' ' . $data->manual_processing_locker->last_name
                     : 'Unknown';
             
                 $status_display .= '<span class="inline-block px-2 py-1 text-xs font-bold text-white bg-red-600 rounded shadow animate-pulse">
