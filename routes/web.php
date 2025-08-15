@@ -56,13 +56,16 @@ use App\Http\Controllers\ProductPlanCustomPricingController;
 
 
    
-// Route::get('oresamsub/login', fn () => view('oresamsub.auth.login'))->name('ore.login');
+Route::get('oresamsub/newlanding', fn () => view('oresamsub.landing.new'))->name('ore.landing');
+
+
+
 Route::get('oresamsub/register', fn () => view('oresamsub.auth.register'))->name('ore.register');
             
 Route::middleware(['set_locale'])->group(function () {
 
 
-             Route::get('oresamsub/set_pin', fn () => view('oresamsub.pages.set_pin'))->name('ore.set_pin');
+            Route::get('oresamsub/set_pin', fn () => view('oresamsub.pages.set_pin'))->name('ore.set_pin');
            
 
             // ORESAMSUB WEBPWA V1: ROUTES (wrapped in auth middleware)

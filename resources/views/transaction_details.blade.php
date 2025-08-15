@@ -27,6 +27,23 @@
                     <a class="underline font-extrabold text-blue-700" target="_blank" href="{{ route('admin.product_plan_categories.view_details',$data->product_plan->product_plan_category->id )}}">Go to Plan Category: {{ $data->product_plan->product_plan_name }}</a><br><br>
                     {{-- <a class="underline font-extrabold text-blue-700" target="_blank" href="{{ route('admin.product_plans.product_plan_details',$data->product_plan->id) }}">Go to Plan Details: {{ $data->product_plan->product_plan_name }}</a> <br><br> --}}
                     <a class="underline font-extrabold text-blue-700" href="{{ route('admin.product_plan_categories.view_details_by_automation',['id' => $data->product_plan->product_plan_category->id, 'automation_id' =>$data->product_plan->automation->id]) }}">See the Automation: {{  $data->product_plan->automation->automation_name }}</a> <br><br>
+
+                    <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md space-y-3">
+                      @php
+                          $automationss = App\Models\Automation::select('domain_url','automation_name')->get();
+                      @endphp
+                      
+                      @foreach ($automationss as $automationn)
+                          <a 
+                              target="_blank" 
+                              href="{{ $automationn->domain_url }}" 
+                              class="block text-blue-600 dark:text-blue-400 font-semibold hover:underline"
+                          >
+                              {{ $automationn->automation_name }}
+                          </a>
+                      @endforeach
+                  </div>
+                  
               
                     <a class="underline font-extrabold text-blue-700" target="_blank" href="{{ route('admin.product_plans.index') }}">Go to All Plans & Prices</a><br><br>
                    
@@ -425,7 +442,7 @@
                                 <td class=""></td>
                                 <td class="">
 
-                                  @if (auth()->user()->email == 'adebsholey4real@gmail.com')   
+                                  @if (auth()->user()->email == 'adebsholey4real@gmail.com' || auth()->user()->email == 'mike.e.emmanuel@gmail.com')   
                                   <input type="hidden" name="transaction_id" id="transaction_id" value="{{  $data->id }}">
                                   <button type="button" class="hs-dropdown-toggle ti-btn ti-btn-success" data-hs-overlay="#hs-basic-modal22">Mark As Successful</button>                                                                   
                                   @endif
