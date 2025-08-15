@@ -142,8 +142,9 @@
                       @php
                           $automationss = App\Models\Automation::select('id','domain_url','automation_name')->get();
                       @endphp
-                      
-                      @foreach ($automationss as $automationn)
+
+                      <div class="flex">
+                          @foreach ($automationss as $automationn)
                           <a 
                               target="_blank" 
                               href="{{ $automationn->domain_url }}" 
@@ -155,7 +156,10 @@
                               @endif 
                               
                           </a>
-                      @endforeach
+                        @endforeach
+                      </div>
+                      
+                     
                     </div>
                     <br>
                     @endif
