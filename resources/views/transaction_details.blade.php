@@ -8,31 +8,10 @@
              <!-- Page Header -->
         <div class="block justify-between page-header md:flex">
 
-          <div class="col-span-12">
-            @if (Session::has('success'))
-            <div class="bg-success/10 border border-success/10 alert text-success" role="alert">
-              Great! {{ Session::get('success') }}
-              </div>
-            @endif
-
-            @if (Session::has('failure'))
-              <div class="bg-danger/10 border border-danger/10 alert text-danger" role="alert">
-               Ops! {{ Session::get('failure') }}
-              </div>
-            @endif
-            
-            @if ($errors->any())
-              <div class="bg-danger/10 border border-danger/10 alert text-danger" role="alert">
-                <ul>
-                    @foreach ($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                    @endforeach
-                </ul>
-              </div>
-            @endif
-          </div>
-
+       
             <div>
+
+
                 <h3 class="text-gray-700 hover:text-gray-900 dark:text-gray-900 dark:hover:text-white text-2xl font-medium"> Transaction details</strong></h3>
                 
 
@@ -44,6 +23,31 @@
                 </div>
 
                 @if (strtolower(auth()->user()->role->role_name) == 'admin')
+
+                <div class="col-span-12">
+                  @if (Session::has('success'))
+                  <div class="bg-success/10 border border-success/10 alert text-success" role="alert">
+                    Great! {{ Session::get('success') }}
+                    </div>
+                  @endif
+      
+                  @if (Session::has('failure'))
+                    <div class="bg-danger/10 border border-danger/10 alert text-danger" role="alert">
+                     Ops! {{ Session::get('failure') }}
+                    </div>
+                  @endif
+                  
+                  @if ($errors->any())
+                    <div class="bg-danger/10 border border-danger/10 alert text-danger" role="alert">
+                      <ul>
+                          @foreach ($errors->all() as $error)
+                              <li>{{ $error }}</li>
+                          @endforeach
+                      </ul>
+                    </div>
+                  @endif
+                </div>
+      
                   <div class="bg-gray-100 border border-gray-300 text-gray-600 alert" role="alert">
                     <span class="font-bold">Admin Screen Message</span> {{  $data->admin_screen_message  }} 
                     <br>
