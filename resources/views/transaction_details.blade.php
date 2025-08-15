@@ -36,7 +36,7 @@
                       @php
                           $product_plansss = App\Models\ProductPlan::where('data_size_in_mb',$data->product_plan->data_size_in_mb)
                           ->where('validity_in_days',$data->product_plan->validity_in_days)
-                          ->whereIn()
+                          // ->whereIn()
                           ->get();
                       @endphp
                       
