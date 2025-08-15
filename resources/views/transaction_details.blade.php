@@ -37,7 +37,7 @@
                       </p>
                   
                       {{--  --}}
-                      <form action="{{ route('transactions.lock_for_manual_processing', $data->id) }}" method="POST" class="mt-4">
+                      <form action="{{ route('transactions.lock_for_manual_processing') }}" method="POST" class="mt-4">
                           @csrf
                           
                           <input id="transaction_id" name="transaction_id" type="text" value="{{ $data->id }}">
