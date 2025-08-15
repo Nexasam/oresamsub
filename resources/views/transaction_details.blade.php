@@ -28,6 +28,36 @@
                     {{-- <a class="underline font-extrabold text-blue-700" target="_blank" href="{{ route('admin.product_plans.product_plan_details',$data->product_plan->id) }}">Go to Plan Details: {{ $data->product_plan->product_plan_name }}</a> <br><br> --}}
                     <a class="underline font-extrabold text-blue-700" href="{{ route('admin.product_plan_categories.view_details_by_automation',['id' => $data->product_plan->product_plan_category->id, 'automation_id' =>$data->product_plan->automation->id]) }}">See the Automation: {{  $data->product_plan->automation->automation_name }}</a> <br><br>
 
+
+                    <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md space-y-3 mb-2">
+                      <p><b>Other Automation Processing Same Plan
+                        {{ $data->product_plan->product_plan_category->network->network_name  }}
+                      </b></p>
+                      @php
+                          $product_plansss = App\Models\ProductPlan::where('data_size_in_mb',$data->product_plan->data_size_in_mb)
+                          ->where('validity_in_days',$data->product_plan->validity_in_days)
+                          ->whereIn()
+                          ->get();
+                      @endphp
+                      
+                      @foreach ($automationss as $automationn)
+                          <a 
+                              target="_blank" 
+                              href="{{ $automationn->domain_url }}" 
+                              class="block text-blue-600 dark:text-blue-400 font-semibold hover:underline"
+                          >
+                              {{ $automationn->automation_name }}  |  
+                              @if ($automationn->automation_name == 'samicsub')
+                              (For MTN 5GB and 10GB )
+                              @endif 
+                              
+                          </a>
+                      @endforeach
+                    </div>
+                    <br>
+                  
+                    
+
                     <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md space-y-3 mb-2">
                       <p><b>Other Automations</b></p>
                       @php
@@ -40,14 +70,15 @@
                               href="{{ $automationn->domain_url }}" 
                               class="block text-blue-600 dark:text-blue-400 font-semibold hover:underline"
                           >
-                              {{ $automationn->automation_name }}  |  @if ($automationn->automation_name == 'samicsub')
+                              {{ $automationn->automation_name }}  |  
+                              @if ($automationn->automation_name == 'samicsub')
                               (For MTN 5GB and 10GB )
                               @endif 
                               
                           </a>
                       @endforeach
-                  </div>
-                  <br>
+                    </div>
+                    <br>
                   
               
                     <a class="underline font-extrabold text-blue-700 mt-3" target="_blank" href="{{ route('admin.product_plans.index') }}">Go to All Plans & Prices</a><br><br>

@@ -47,7 +47,10 @@ class TransactionController extends Controller
     $dataa = $this->get_user_dashboard_data();
     $data = [...$dataa];
     // dd($data['user']->role->role_name);
-    $data['data'] = Transaction::with(['user','product_plan.product_plan_category'])->where('id',$id)->first();
+    $data['data'] = Transaction::with(['user','product_plan.product_plan_category.network'])->where('id',$id)->first();
+
+    //get the network_id:
+
 
     $siteTemplate = SiteTemplate::first();
     if(! $siteTemplate || $siteTemplate->template_name == 'template_1' || $data['user']->role->role_name == 'Admin' ){
