@@ -57,13 +57,9 @@ class TransactionController extends Controller
       //update user wallet
       Transaction::where('id','=', $request->transaction_id)->update([
         'locked_for_manual_processing' => auth()->id()
-    ]); 
+      ]); 
 
-    if(auth()->user()->pin != $request->pin){
-        //end session and redirect to login
-        Session::flash('failure','Incorrect PIN entered'); 
-        return redirect()->back();
-    }
+   
 
     Session::flash('failure','Locked successfully'); 
     return redirect()->back();
