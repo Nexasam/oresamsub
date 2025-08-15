@@ -32,10 +32,14 @@
                     @if (env('APP_NAME') == 'OresamSub')
                     <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md space-y-3 mb-2">
                       <p><b>Other Automation Processing Same Plan
-                        {{ $data->product_plan->product_plan_category->network->id  }}
+                        {{-- {{ $data->product_plan->product_plan_category->network->id  }}
+                        {{ $data->product_plan->product_plan_category->product->id  }} --}}
                       </b></p>
                       @php
-                          $network_plan_categories_arr = App\Models\ProductPlanCategory::where('network_id',$data->product_plan->product_plan_category->network->id)->pluck('id')->toArray();
+                          $network_plan_categories_arr = App\Models\ProductPlanCategory::where('network_id',$data->product_plan->product_plan_category->network->id)
+                          ->where('product_id',$data->product_plan->product_plan_category->product->id)
+                          ->pluck('id')
+                          ->toArray();
 
                           $product_plansss = App\Models\ProductPlan::with('automation')->where('data_size_in_mb',$data->product_plan->data_size_in_mb)
                           ->where('validity_in_days',$data->product_plan->validity_in_days)
