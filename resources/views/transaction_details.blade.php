@@ -566,7 +566,7 @@
                                             </div>
                                             <div class="ti-modal-body">
                                               Are you sure you want to mark this transaction as succesful? <br> <hr>
-                                              <form class=" space-x-2" method="POST" action="{{ route('transactions.manually_mark_transaction_as_successful') }}">
+                                              {{-- <form class=" space-x-2" method="POST" action="{{ route('transactions.manually_mark_transaction_as_successful') }}">
                                                 @csrf
                                                   <div class="">
                                                     <label for="">Success Message</label>
@@ -586,7 +586,60 @@
                                                 <div class="space-y-2">
                                                   <button type="submit" class="ti-btn ti-btn-success w-full">Confirm Mark As Successful</button>
                                                 </div>
-                                              </form>
+                                              </form> --}}
+
+
+                                              <form class="space-y-4" method="POST" action="{{ route('transactions.manually_mark_transaction_as_successful') }}">
+                                                @csrf
+                                            
+                                                <div>
+                                                    <label for="success_message" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                                        Success Message
+                                                    </label>
+                                                    <input type="text" 
+                                                           required 
+                                                           name="success_message" 
+                                                           id="success_message" 
+                                                           placeholder="Enter success message" 
+                                                           value=""
+                                                           class="mt-1 block w-full rounded-lg border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:ring-indigo-500 focus:border-indigo-500">
+                                                </div>
+                                            
+                                                <div>
+                                                    <label for="automation_id" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                                        Select Automation
+                                                    </label>
+                                                    <select name="automation_id" id="automation_id" required
+                                                            class="mt-1 block w-full rounded-lg border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:ring-indigo-500 focus:border-indigo-500">
+                                                        <option value="">-- Choose Automation --</option>
+                                                        @foreach($automationss as $automation)
+                                                            <option value="{{ $automation->id }}">{{ $automation->automation_name }}</option>
+                                                        @endforeach
+                                                    </select>
+                                                </div>
+                                            
+                                                <div>
+                                                    <label for="pin" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                                        PIN
+                                                    </label>
+                                                    <input type="hidden" name="transaction_id" id="transaction_id" value="{{ $data->id }}">
+                                                    <input type="password" 
+                                                           required 
+                                                           name="pin" 
+                                                           id="pin" 
+                                                           placeholder="Enter PIN" 
+                                                           value=""
+                                                           class="mt-1 block w-full rounded-lg border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:ring-indigo-500 focus:border-indigo-500">
+                                                </div>
+                                            
+                                                <div>
+                                                    <button type="submit" class="w-full px-4 py-2 bg-green-600 hover:bg-green-700 text-white font-bold rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-offset-1 transition">
+                                                        Confirm Mark As Successful
+                                                    </button>
+                                                </div>
+                                            </form>
+                                            
+
                                             </div>
                                               <div class="ti-modal-footer">
                                               
