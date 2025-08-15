@@ -143,22 +143,38 @@
                           $automationss = App\Models\Automation::select('id','domain_url','automation_name')->get();
                       @endphp
 
-                      <div class="flex">
-                          @foreach ($automationss as $automationn)
-                          <a 
-                              target="_blank" 
-                              href="{{ $automationn->domain_url }}" 
-                              class="block text-blue-600 dark:text-blue-400 font-semibold hover:underline"
-                          >
-                              {{ $automationn->automation_name }}  |  
-                              @if ($automationn->automation_name == 'samicsub')
-                              (For MTN 5GB and 10GB )
-                              @endif 
-                              
-                          </a>
+                      <div class="flex flex-wrap gap-2">
+                        @php
+                            $colors = [
+                                'bg-blue-100 text-blue-800 dark:bg-blue-800 dark:text-blue-100',
+                                'bg-green-100 text-green-800 dark:bg-green-800 dark:text-green-100',
+                                'bg-yellow-100 text-yellow-800 dark:bg-yellow-800 dark:text-yellow-100',
+                                'bg-purple-100 text-purple-800 dark:bg-purple-800 dark:text-purple-100',
+                                'bg-pink-100 text-pink-800 dark:bg-pink-800 dark:text-pink-100',
+                                'bg-red-100 text-red-800 dark:bg-red-800 dark:text-red-100',
+                            ];
+                            $i = 0;
+                        @endphp
+
+                        @foreach ($automationss as $automationn)
+                            @php
+                                $colorClass = $colors[$i % count($colors)];
+                                $i++;
+                            @endphp
+                            
+                            <a 
+                                target="_blank" 
+                                href="{{ $automationn->domain_url }}" 
+                                class="px-3 py-1 text-sm font-semibold rounded-full {{ $colorClass }} hover:opacity-80 transition"
+                            >
+                                {{ $automationn->automation_name }}
+                                @if ($automationn->automation_name == 'samicsub')
+                                    <span class="font-normal">(For MTN 5GB and 10GB)</span>
+                                @endif
+                            </a>
                         @endforeach
                       </div>
-                      
+
                      
                     </div>
                     <br>
