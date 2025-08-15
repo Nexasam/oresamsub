@@ -24,12 +24,15 @@
                     <br>
                     <br>
               
-                    <a class="underline font-extrabold text-blue-700" target="_blank" href="{{ route('admin.product_plan_categories.view_details',$data->product_plan->product_plan_category->id )}}">Go to Plan Category: {{ $data->product_plan->product_plan_name }}</a><br><br>
+                    <a class="underline font-extrabold text-blue-700" target="_blank" href="{{ route('admin.product_plan_categories.view_details',$data->product_plan->product_plan_category->id )}}">Go to Plan Category</a><br><br>
                     {{-- <a class="underline font-extrabold text-blue-700" target="_blank" href="{{ route('admin.product_plans.product_plan_details',$data->product_plan->id) }}">Go to Plan Details: {{ $data->product_plan->product_plan_name }}</a> <br><br> --}}
                     <a class="underline font-extrabold text-blue-700" href="{{ route('admin.product_plan_categories.view_details_by_automation',['id' => $data->product_plan->product_plan_category->id, 'automation_id' =>$data->product_plan->automation->id]) }}">See the Automation: {{  $data->product_plan->automation->automation_name }}</a> <br><br>
 
 
                     @if (env('APP_NAME') == 'OresamSub')
+                    <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md space-y-3 mb-2">
+                      <p><b>Plan details:  {{ $data->product_plan->product_plan_name }} {{ $data->amount ?? $data->discounted_amount }} </b></p>
+                    </div>
                     <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md space-y-3 mb-2">
                       <p><b>Other Automation Processing Same Plan
                         {{-- {{ $data->product_plan->product_plan_category->network->id  }}
