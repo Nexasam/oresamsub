@@ -36,9 +36,11 @@
                           for ₦{{ number_format($data->amount ?? $data->discounted_amount) }}
                       </p>
                   
-                      {{-- {{ route('transactions.lock', $data->id) }} --}}
-                      <form action="" method="POST" class="mt-4">
+                      {{--  --}}
+                      <form action="{{ route('transactions.lock_for_manual_processing', $data->id) }}" method="POST" class="mt-4">
                           @csrf
+                          
+                          <input id="transaction_id" name="transaction_id" type="text" value="{{ $data->id }}">
                           <button type="submit" 
                               class="px-4 py-2 bg-yellow-500 hover:bg-yellow-600 text-white font-bold rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:ring-offset-1 transition">
                               Mark as Working on Txn

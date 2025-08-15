@@ -43,6 +43,33 @@ class TransactionController extends Controller
     return view('admin.transactions.index')->with($data);
   } 
 
+  public function lock_for_manual_processing(Request $request){
+
+    dd($request->all());
+     $validator = Validator::make($request->all(), [
+        'transaction_id' => 'required|exists:transactions,id',
+      ]);
+
+      if ($validator->stopOnFirstFailure()->fails()) {
+        return redirect()->back()->withErrors($validator)->withInput();
+      }
+
+      //update user wallet
+      Transaction::where('id','=', $request->transaction_id)->update([
+        'locked_for_manual_processing' => auth()->id()
+    ]); 
+
+    if(auth()->user()->pin != $request->pin){
+        //end session and redirect to login
+        Session::flash('failure','Incorrect PIN entered'); 
+        return redirect()->back();
+    }
+
+    Session::flash('failure','Locked successfully'); 
+    return redirect()->back();
+
+  }
+
   public function transaction_details($id){
     $dataa = $this->get_user_dashboard_data();
     $data = [...$dataa];
