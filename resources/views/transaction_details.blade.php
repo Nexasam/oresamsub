@@ -40,7 +40,7 @@
                               href="{{ $automationn->domain_url }}" 
                               class="block text-blue-600 dark:text-blue-400 font-semibold hover:underline"
                           >
-                              {{ $automationn->automation_name }} &nbps; @if ($automationn->automation_name == 'samicusb')
+                              {{ $automationn->automation_name }}  |  @if ($automationn->automation_name == 'samicsub')
                               (For MTN 5GB and 10GB )
                               @endif 
                               
