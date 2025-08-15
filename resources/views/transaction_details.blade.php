@@ -45,7 +45,7 @@
                   </div>
                   
               
-                    <a class="underline font-extrabold text-blue-700" target="_blank" href="{{ route('admin.product_plans.index') }}">Go to All Plans & Prices</a><br><br>
+                    <a class="underline font-extrabold text-blue-700 mt-3" target="_blank" href="{{ route('admin.product_plans.index') }}">Go to All Plans & Prices</a><br><br>
                    
                     <a class="underline font-extrabold text-blue-700" target="_blank" href="{{ route('admin.product_plans.product_plan_details',$data->product_plan->id) }}">Go to Single Plan Page </a><br><br>
 
