@@ -67,7 +67,7 @@
                     
 
                     <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md space-y-3 mb-2">
-                      <p><b>Other Automations</b></p>
+                      <p><b>Process Manually with any of the Automations</b></p>
                       @php
                           $automationss = App\Models\Automation::select('domain_url','automation_name')->get();
                       @endphp
