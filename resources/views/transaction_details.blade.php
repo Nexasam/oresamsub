@@ -31,8 +31,20 @@
 
                     @if (env('APP_NAME') == 'OresamSub')
                     <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md space-y-3 mb-2">
-                      <p><b>Plan details:  {{ $data->product_plan->product_plan_name }} for N{{number_format($data->amount ?? $data->discounted_amount) }} </b></p>
-                    </div>
+                      <p class="font-semibold">
+                          Plan details: {{ $data->product_plan->product_plan_name }} 
+                          for ₦{{ number_format($data->amount ?? $data->discounted_amount) }}
+                      </p>
+                  
+                      <form action="{{ route('transactions.lock', $data->id) }}" method="POST" class="mt-4">
+                          @csrf
+                          <button type="submit" 
+                              class="px-4 py-2 bg-yellow-500 hover:bg-yellow-600 text-white font-bold rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:ring-offset-1 transition">
+                              Mark as Working on Txn
+                          </button>
+                      </form>
+                  </div>
+                  
                     <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md space-y-3 mb-2">
                       <p><b>Other Automation Processing Same Plan
                         {{-- {{ $data->product_plan->product_plan_category->network->id  }}
