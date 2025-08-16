@@ -206,6 +206,9 @@
                       ->whereIn('product_plan_category_id',$network_plan_categories_arr)
                       ->where('visibility',1)
                       ->get();
+
+                      $automationss = App\Models\Automation::select('id','domain_url','automation_name')->get();
+                        
                       @endphp
   
                       <div 
@@ -311,9 +314,7 @@
 
                       <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md space-y-3 mb-2">
                         <p><b>Process Manually with any of the Automations</b></p>
-                        @php
-                            $automationss = App\Models\Automation::select('id','domain_url','automation_name')->get();
-                        @endphp
+                      
   
                       <div class="flex flex-wrap gap-2">
                         @php
