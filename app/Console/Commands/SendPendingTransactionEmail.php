@@ -37,7 +37,7 @@ class SendPendingTransactionEmail extends Command
             //chhange this later
             $get_emails_to_notify_failed_transactions = Setting::where('field_name','emails_to_notify_failed_transactions')->first();
             if(! $get_emails_to_notify_failed_transactions){
-                logger('no email to notify yet for failed/pending transaction');
+                // logger('no email to notify yet for failed/pending transaction');
                 exit;
             }
 

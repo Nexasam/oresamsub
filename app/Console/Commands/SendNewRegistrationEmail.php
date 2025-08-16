@@ -49,7 +49,7 @@ class SendNewRegistrationEmail extends Command
                 User::where('id',$user->id)->update([
                     'new_user_alert' => 1
                 ]);
-                logger('New Registration Processed');
+                // logger('New Registration Processed');
 
             }
     

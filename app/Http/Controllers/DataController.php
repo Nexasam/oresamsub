@@ -546,7 +546,7 @@ class DataController extends Controller
                                 $dataa['validatephonenetwork'] = $request->validatephonenetwork;
                                 $sell_data = AutomationLogic::initiateDataPurchase($dataa);
                                 $set_for_manual = $sell_data['set_for_manual'] ?? 0;
-                                logger('DATAAA: '.json_encode($sell_data));
+                                // logger('DATAAA: '.json_encode($sell_data));
 
 
                                 if($sell_data['status'] == 1){
@@ -1032,7 +1032,7 @@ class DataController extends Controller
         $amount = $request->amount ?? '';
         $plan_category_id = $request->plan_category_id ?? '';
         $product_slug = $request->product_slug ?? ''; //this is required
-        logger($product_slug.'wpp');
+        // logger($product_slug.'wpp');
         $slug_array = ['data','airtime','cable_subscription','utility_bills'];
         if(! in_array($product_slug,$slug_array)){
             //get it by route:
@@ -1193,8 +1193,8 @@ class DataController extends Controller
                     
                     if( ( $product_slug == 'airtime' || $product_slug == 'utility_bills' ) && $amount != ''){
                           $purchase_discount = $product_plan->$user_level_selling;
-                          logger('purchase discount:'.$purchase_discount);
-                          logger('purchase amount:'.$amount);
+                        //   logger('purchase discount:'.$purchase_discount);
+                        //   logger('purchase amount:'.$amount);
                           $actual_discount_value = ceil(($purchase_discount/100) * $amount);  
                           $discounted_selling_price = $amount - abs($actual_discount_value);
                           $selling_price = 0; //this is from the system, not applicable for airtime
@@ -1242,7 +1242,7 @@ class DataController extends Controller
         $amount = $request->amount ?? '';
         $plan_category_id = $request->plan_category_id ?? '';
         $product_slug = $request->product_slug ?? ''; //this is required
-        logger('ProductSlug display in fetch product plans fxn: '.$product_slug.' <== display here.');
+        // logger('ProductSlug display in fetch product plans fxn: '.$product_slug.' <== display here.');
         
         
         $product_id = Product::where('slug',$product_slug)->first()->id;

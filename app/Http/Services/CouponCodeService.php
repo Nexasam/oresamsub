@@ -37,7 +37,7 @@ class CouponCodeService{
             //check if the user already used the code:
             $check_used_state = UsedUserCouponCode::where('user_id',$user_id)->where('coupon_code_id',$coupon_code_check->id)->first();
             if($check_used_state){
-                logger('aaa');
+                // logger('aaa');
                 return [
                     'status' => -1,
                     'message' =>'Sorry coupon code has already been used once by you'
@@ -46,7 +46,7 @@ class CouponCodeService{
 
             //check if remaining slots is not zero
             if($coupon_code_check->slots_remaining <= 0){
-                logger('bbb');
+                // logger('bbb');
                 return [
                     'status' => -1,
                     'message' =>'Coupon slots have been exhausted',
@@ -57,7 +57,7 @@ class CouponCodeService{
             $last_transaction = Transaction::where('user_id',$user_id)->latest()->first();
             if(! $last_transaction){
                 //means user has not done any txn: qualifies
-                logger('never done a txn before... so it works');
+                // logger('never done a txn before... so it works');
                 $coupon_info = CouponCode::with('product_plan_category.network')->where('status', 1)->get()->toArray();
                 return [
                     'status' => 1,
@@ -83,7 +83,7 @@ class CouponCodeService{
             $condition_check = $transaction_metrics == 'before' ? $strtotime_user_last_created_at <= $strtotime_transaction_metrics_date : $strtotime_user_last_created_at >= $strtotime_transaction_metrics_date;
 
             if($condition_check){
-                logger('this ran: condition met');
+                // logger('this ran: condition met');
                 $coupon_info = CouponCode::with('product_plan_category.network')->where('status', 1)->get()->toArray();
                 return [
                     'status' => 1,
@@ -98,7 +98,7 @@ class CouponCodeService{
                 ];
             }else{
                 
-                logger('ggg');
+                // logger('ggg');
                 return [
                     'status' => -1,
                     'message' =>'Sorry, you do not fulfil the condition for this coupon offer.',
@@ -110,7 +110,7 @@ class CouponCodeService{
         }
 
         //no coupon active at the moment
-        logger('oooo');
+        // logger('oooo');
         return [
             'status' => -1,
             'message' =>'No active coupon code at the moment or the coupon code is inactive.'

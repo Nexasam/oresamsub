@@ -59,7 +59,9 @@ class SyncAddons extends Command
                     CURLOPT_FOLLOWLOCATION => true,
                     CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
                     CURLOPT_CUSTOMREQUEST => 'GET',
-                    CURLOPT_HTTPHEADER => $header
+                    CURLOPT_HTTPHEADER => array(
+                        'Accept: application/json'
+                    ),
                 )
             );
             $response = curl_exec($curl);
@@ -70,13 +72,13 @@ class SyncAddons extends Command
 
             foreach($response_dec['data'] as $each_feature){
                 echo $each_feature['id'].'<br>';
-                logger('Feature List Ran: '.$each_feature['id']); //test well then insert
+                // logger('Feature List Ran: '.$each_feature['id']); //test well then insert
             }
 
             
     
         }else{
-            logger('this is oresam...cant fetch');
+            // logger('this is oresam...cant fetch');
         }
        
     }

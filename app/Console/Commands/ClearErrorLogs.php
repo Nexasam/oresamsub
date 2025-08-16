@@ -32,7 +32,7 @@ class ClearErrorLogs extends Command
     
         //add some stuffs hhere
 
-        logger('sss');
+        // logger('sss');
         
     }
 }

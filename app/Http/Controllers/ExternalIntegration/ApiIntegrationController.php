@@ -291,12 +291,12 @@ class ApiIntegrationController extends Controller
 
   
          if (! $user || ! Hash::check($request->password, $user->password)) {
-             logger('oga o'); 
+            //  logger('oga o'); 
             return $this->error('The provided credentials are incorrect.',data:$request->all());      
          }
 
          if ( $user->is_deactivated == 1 ) {
-            logger('deactivated oh'); 
+            // logger('deactivated oh'); 
            return $this->error('Sorry, this account has been deactivated.',data:$request->all());      
          }
 

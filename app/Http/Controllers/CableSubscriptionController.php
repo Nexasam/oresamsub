@@ -429,7 +429,7 @@ class CableSubscriptionController extends Controller
                                 $dataa['product_plan_category_name'] = $plan_category_details->product_plan_category_name;
                                 $dataa['user_id'] = $user_id;
                                 $buy_cable_subscription = AutomationLogic::initiateCablePurchase($dataa);
-                                logger('CABLEEE: '.json_encode($buy_cable_subscription));
+                                // logger('CABLEEE: '.json_encode($buy_cable_subscription));
 
                               
                               

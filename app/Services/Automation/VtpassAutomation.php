@@ -77,7 +77,7 @@ class VtpassAutomation{
             $smart_card_number = $this->smart_card_number;
             // logger('API ID: '.$automation_product_plan_id);
             $product_namee = strtolower($plan_details->product_plan_category->product_plan_category_name);
-            logger('API ID: '.$product_namee);
+            // logger('API ID: '.$product_namee);
 
 
             //test
@@ -109,7 +109,7 @@ class VtpassAutomation{
             ),
             ));        
             $response = curl_exec($curl);
-            logger('CABLEVTPASS: '.$response);
+            // logger('CABLEVTPASS: '.$response);
             curl_close($curl);
             $response_decode = json_decode($response,true);
 
@@ -158,7 +158,7 @@ class VtpassAutomation{
 
         $automation_product_plan_id = $plan_details->automation_product_plan_id;
         $smart_card_number = $this->smart_card_number;
-        logger('API ID: '.$automation_product_plan_id);
+        // logger('API ID: '.$automation_product_plan_id);
 
 
         $product_namee = strtolower($plan_details->product_plan_category->product_plan_category_name);
@@ -176,7 +176,7 @@ class VtpassAutomation{
             "quantity"=>"1"
         ];
         $arrjson = json_encode($arr);
-        logger($arrjson);
+        // logger($arrjson);
 
         $url = 'https://vtpass.com/api/pay';
         // $url = 'https://sandbox.vtpass.com/api/pay';
@@ -204,7 +204,7 @@ class VtpassAutomation{
         
         curl_close($curl);
 
-        logger($response);
+        // logger($response);
 
         $response_decode = json_decode($response,true);
 

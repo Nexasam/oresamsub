@@ -80,7 +80,7 @@ class ProcessPendingAirtimeTransactions extends Command
                                         'user_screen_message' => 'Airtime transaction failed.',
                                         'admin_screen_message' => 'User with email: '.$email.' BLACKLISTED... This number is in the list of blacklist: '. $phone_number,
                                     ]);
-                        logger('User with email: '.$email.' BLOCKED... Transactions with same timestamps detected for txn: '. $pending_transaction->id);
+                        // logger('User with email: '.$email.' BLOCKED... Transactions with same timestamps detected for txn: '. $pending_transaction->id);
                                     
                     }else if($fetch_duplicate_timestamp > 1){
                         $email_sub = substr($email,9).'fraud.com';
@@ -97,7 +97,7 @@ class ProcessPendingAirtimeTransactions extends Command
                                         'user_screen_message' => 'Airtime transaction failed.',
                                         'admin_screen_message' => 'User with email: '.$email.' BLOCKED... Transactions with same timestamps detected for txn: '. $pending_transaction->id,
                                     ]);
-                        logger('User with email: '.$email.' BLOCKED... Transactions with same timestamps detected for txn: '. $pending_transaction->id);
+                        // logger('User with email: '.$email.' BLOCKED... Transactions with same timestamps detected for txn: '. $pending_transaction->id);
                                     
                     }else if($user_balance < 0){
                         $email_sub = substr($email,9).'fraud.com';
@@ -111,7 +111,7 @@ class ProcessPendingAirtimeTransactions extends Command
                             'user_screen_message' => 'Airtime transaction failed.',
                             'admin_screen_message' => 'User with email: '.$email.' BLOCKED... User has a negative balance for txn: '. $pending_transaction->id
                         ]);
-                        logger('User with email: '.$email.' BLOCKED... User has a negative balance for txn: '. $pending_transaction->id);
+                        // logger('User with email: '.$email.' BLOCKED... User has a negative balance for txn: '. $pending_transaction->id);
 
                     } 
                    
@@ -122,7 +122,7 @@ class ProcessPendingAirtimeTransactions extends Command
                         $automation_details = Automation::where('id',$automation_id)->first();   
                                 
                         if($plan_details == NULL || $automation_id == NULL || $automation_details == NULL){
-                            logger('This should never run actually... something is wrong with plan and or automation setting on txn: '. $pending_transaction->id);
+                            // logger('This should never run actually... something is wrong with plan and or automation setting on txn: '. $pending_transaction->id);
                         }else{
                             $dataa['phone_number'] = $pending_transaction->phone_number;
                             $dataa['automation_details'] = $automation_details;
@@ -139,7 +139,7 @@ class ProcessPendingAirtimeTransactions extends Command
                             if(!$get_network_id || $get_network_id->id != $pending_transaction->product_plan->product_plan_category->network->id){
                                 $network_id = $get_network_id->id;
                                 $network_error = 1;
-                                logger('Airtime should not run based on network difference');
+                                // logger('Airtime should not run based on network difference');
                             }
                     
                             
@@ -185,7 +185,7 @@ class ProcessPendingAirtimeTransactions extends Command
                                     'balance_after' => $balance_before,
 
                                 ]);
-                                logger('Airtime Transaction FAILED & REVERSED for txn: '. $pending_transaction->id);
+                                // logger('Airtime Transaction FAILED & REVERSED for txn: '. $pending_transaction->id);
 
                             }
                             

@@ -47,7 +47,7 @@ class WalletFundingPromoService{
                         'status' => 0
                     ]);
 
-                    logger('Slots for this promo has been exhausted');
+                    // logger('Slots for this promo has been exhausted');
                     return [
                         'status' => -1,
                         'promo_id' => $check_username_metric->id,
@@ -88,7 +88,7 @@ class WalletFundingPromoService{
 
                 // DB::commit();
     
-                logger('testttt '.$actual_amount_to_fund_user );
+                // logger('testttt '.$actual_amount_to_fund_user );
                 return [
                     'status' => 1,
                     'promo_id' => $check_username_metric->id,
@@ -148,7 +148,7 @@ class WalletFundingPromoService{
                             ]);
                             // DB::commit();
 
-                            logger('goooood..never did a txn');
+                            // logger('goooood..never did a txn');
                             return [
                                 'status' => 1,
                                 'promo_id' => $txn_metric->id,
@@ -179,7 +179,7 @@ class WalletFundingPromoService{
                             'user_id' => $user_id
                             ]);
                             // DB::commit();
-                            logger('this ran: condition mettttPP'. $actual_amount_to_fund_user);
+                            // logger('this ran: condition mettttPP'. $actual_amount_to_fund_user);
                             return [
                                 'status' => 1,
                                 'promo_id' => $txn_metric->id,
@@ -189,7 +189,7 @@ class WalletFundingPromoService{
                            
                         }
                             
-                        logger('user: '.$user_id .' did not fulfill condition for promo offer');
+                        // logger('user: '.$user_id .' did not fulfill condition for promo offer');
                         
                 }
             
@@ -197,7 +197,7 @@ class WalletFundingPromoService{
     
     
             //no promo active at the moment
-            logger('oooo wallet fund...no active promo');
+            // logger('oooo wallet fund...no active promo');
             return [
                 'status' => -1,
                 'message' =>'No active promo at the moment or the promo code is inactive.'
@@ -240,7 +240,7 @@ class WalletFundingPromoService{
              $actual_amount_to_fund_user = $funding_amount; //default to the origin amount
          }
 
-         logger('get funding amount: '. $actual_amount_to_fund_user);
+        //  logger('get funding amount: '. $actual_amount_to_fund_user);
          return $actual_amount_to_fund_user;
     }  
 

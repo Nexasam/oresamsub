@@ -161,7 +161,7 @@ class BvnVerificationService{
                         ];
                     }
         
-                    logger('BVN Verification: errors: '.$error_count.' errormessage: '.$error);
+                    // logger('BVN Verification: errors: '.$error_count.' errormessage: '.$error);
                     $new_verification_attempts = $user->verification_attempts + 1;
                     User::where('id',$user_id)->update([
                         'bvn' => $bvn,
@@ -256,7 +256,7 @@ class BvnVerificationService{
                         ];
                     }
         
-                    logger('BVN Verification: errors: '.$error_count.' errormessage: '.$error);
+                    // logger('BVN Verification: errors: '.$error_count.' errormessage: '.$error);
                     $new_verification_attempts = $user->verification_attempts + 1;
                     User::where('id',$user_id)->update([
                         'bvn' => $bvn,

@@ -162,9 +162,9 @@ class FundingOptionsController extends Controller
             ));
   
             $response = curl_exec($curl);
-            logger('Wallet generation');
-            logger($response);
-            logger('Wallet generation');
+            // logger('Wallet generation');
+            // logger($response);
+            // logger('Wallet generation');
   
             $response_dec = json_decode($response,true);
   

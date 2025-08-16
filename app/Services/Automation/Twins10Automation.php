@@ -50,7 +50,7 @@ class Twins10Automation{
         $json = curl_exec($ch);
         curl_close($ch); 
 
-        logger('TOKENACCESS:  '. $json);
+        // logger('TOKENACCESS:  '. $json);
 
         if(isset($json['status']) && $json['status'] == 'success'){
             return [
@@ -168,7 +168,7 @@ class Twins10Automation{
         $response = curl_exec($curl);
         $response_dec = json_decode($response,true);
         $httpcode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
-        logger($response);
+        // logger($response);
 
         if(isset($response_dec['status']) && $response_dec['status'] == 'success'){
             //success

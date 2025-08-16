@@ -30,7 +30,7 @@ class XixaPayService{
     
         $funding_option = FundingOption::where('slug','xixapay')->first();
         if(! $funding_option){
-            logger('na here oh');
+            // logger('na here oh');
             return [
                 'status' => -1,
                 'message' => 'Funding Option not found'
@@ -44,7 +44,7 @@ class XixaPayService{
 
         $bank_codes = FundingOptionBankCodes::where('funding_option_id',$funding_option->id)->get();
         if(count($bank_codes) <= 0 ){
-            logger('xixa1');
+            // logger('xixa1');
             // exit;
             return [
                 'status' => -1,
@@ -56,7 +56,7 @@ class XixaPayService{
         $user_virtual_accts_count = UserVirtualAccount::select('id')->where('user_id',$user_id)->where('funding_option_id',$funding_option->id)->count();
         if($user_virtual_accts_count >= count($bank_codes)){
             //do nothing: implication is user has all the complete vas
-            logger('xixa2');
+            // logger('xixa2');
             return [
                 'status' => -1,
                 'message' => 'Seems you have already generated the accounts'
@@ -126,10 +126,10 @@ class XixaPayService{
                             ]);
                         }
 
-                        logger("XIXA VAs GENERATED INDEED FOR $first_name | $user_id | bank code: $bank_codee");
+                        // logger("XIXA VAs GENERATED INDEED FOR $first_name | $user_id | bank code: $bank_codee");
 
                     }else{
-                        logger("XIXA VA COULD NOT BE GENERATED FOR $first_name | $user_id | bank code: $bank_codee | $response");
+                        // logger("XIXA VA COULD NOT BE GENERATED FOR $first_name | $user_id | bank code: $bank_codee | $response");
 
                     }
                     sleep(2);
@@ -137,7 +137,7 @@ class XixaPayService{
                 }
             }
 
-            logger('xixa3');
+            // logger('xixa3');
             return [
                 'status' => 1,
                 'message' => 'Virtual accounts were generated'
@@ -145,7 +145,7 @@ class XixaPayService{
 
         }else{
             //this should not run
-            logger('xixa4');
+            // logger('xixa4');
             return [
                 'status' => -1,
                 'message' => 'Sorry the Virtual Accounts could not be generated'

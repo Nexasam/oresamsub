@@ -148,7 +148,7 @@ class WalletsController extends Controller
             }else{
               $created_data['funding_status'] = 'failed';
               $can_fund = 'no';
-              logger('Cannot fund because user details not found');exit;
+              // logger('Cannot fund because user details not found');exit;
             }
 
             $paid_amount = $response_decode['amount_paid'];
@@ -192,7 +192,7 @@ class WalletsController extends Controller
               $daaat['promo_value'] = $user_wallet_funding_promo->value;
               $daaat['funding_option_id'] = $funding_option_details->id;
               $amount_to_fund_user = (new WalletFundingPromoService())->get_amount_to_fund_user($daaat);
-              logger('custom promo.: '.$amount_to_fund_user);
+              // logger('custom promo.: '.$amount_to_fund_user);
               $custom_user_funding_promo_id = $user_wallet_funding_promo->id;
               //custom funding promo 
             }
@@ -206,7 +206,7 @@ class WalletsController extends Controller
             $daat['funding_option_id'] = $funding_option_details->id;
             $check_promo = (new WalletFundingPromoService())->apply_funding_promo($daat);
             if($check_promo['status'] == 1){
-              logger('general promo: '.$check_promo['actual_amount_to_fund_user']);
+              // logger('general promo: '.$check_promo['actual_amount_to_fund_user']);
               $amount_to_fund_user = $check_promo['actual_amount_to_fund_user'];
               $promo_id = $check_promo['promo_id'];
             }
@@ -254,7 +254,7 @@ class WalletsController extends Controller
               
               if( $created && $updated ){
                 DB::commit();
-                logger('Great... All good.');
+                // logger('Great... All good.');
 
               }else{
                 logger('Crediting failed for some reasons...');
@@ -274,7 +274,7 @@ class WalletsController extends Controller
         DB::rollBack();
       }
 
-      logger('testing webhook end');
+      // logger('testing webhook end');
     }
    
     public function webhook($id,Request $request){
@@ -389,7 +389,7 @@ class WalletsController extends Controller
           $daat['funding_option_id'] = $funding_option_details->id;
           $check_promo = (new WalletFundingPromoService())->apply_funding_promo($daat);
           if($check_promo['status'] == 1){
-            logger('general promo: '.$check_promo['actual_amount_to_fund_user']);
+            // logger('general promo: '.$check_promo['actual_amount_to_fund_user']);
             $amount_to_fund_user = $check_promo['actual_amount_to_fund_user'];
             $promo_id = $check_promo['promo_id'];
           }
@@ -440,12 +440,12 @@ class WalletsController extends Controller
               logger('Great... All good.');
 
             }else{
-              logger('Crediting failed for some reasons...');
+              // logger('Crediting failed for some reasons...');
               DB::rollBack();
             }
          
       }else{
-        logger('This webhook did not update wallet because its likely that the payment has been processed before');
+        // logger('This webhook did not update wallet because its likely that the payment has been processed before');
       }
       }catch(Exception $ex){
         logger(
@@ -748,7 +748,7 @@ class WalletsController extends Controller
 
               if($user_details->nin_json != NULL){
                   //means it has been called before
-                  logger('THIS ONE RAN');
+                  // logger(message: 'THIS ONE RAN');
                   $nin_response_json = $user_details->nin_json;
                   $response_decodde = json_decode($nin_response_json,true);
                   $responseMessage = $response_decodde['responseMessage'] ;   
@@ -783,9 +783,9 @@ class WalletsController extends Controller
                            $nin_phone_number_arr = [ $phone_range1, $phone_range2, $phone_range3 ];
                        }
   
-                       logger('userid: '.$user_id);
-                       logger('inputtednin: '.$nin_phone_number);
-                       logger('verifiednin: '.$verifiedNinMobileNumber);
+                      //  logger('userid: '.$user_id);
+                      //  logger('inputtednin: '.$nin_phone_number);
+                      //  logger('verifiednin: '.$verifiedNinMobileNumber);
                        logger(json_encode($nin_phone_number_arr));
   
                        //ask if to stop users if their phone number on nin does not match their registered phone number
@@ -801,7 +801,7 @@ class WalletsController extends Controller
                         return redirect()->back(); 
                       
                       }else{
-                           logger('THIS ONE RAAAAAN - neg');
+                          //  logger('THIS ONE RAAAAAN - neg');
                            //bad status - DONT VERIFY
                            DB::commit();
                            Session::flash('failure', 'Phone number does not match NIN registered phone number: '. $verifiedNinMobileNumber);
@@ -871,8 +871,8 @@ class WalletsController extends Controller
                               $nin_phone_number_arr = [ $phone_range1, $phone_range2, $phone_range3 ];
                           }
   
-                          logger('NIN Phone: '.$nin_phone_number);
-                          logger(json_encode($nin_phone_number_arr));
+                          // logger('NIN Phone: '.$nin_phone_number);
+                          // logger(json_encode($nin_phone_number_arr));
   
                           //ask if to stop users if their phone number on nin does not match their supplied phone number
                          if(  $verifiedNinMobileNumber == 'Not Available' || in_array($verifiedNinMobileNumber,$nin_phone_number_arr) ){
@@ -973,9 +973,9 @@ class WalletsController extends Controller
                   ));
                   
                   $response = curl_exec($curl);
-                  logger('Monnify BVN: ');
-                  logger($response);
-                  logger('Monnify BVN end:');
+                  // logger('Monnify BVN: ');
+                  // logger($response);
+                  // logger('Monnify BVN end:');
                   
                   curl_close($curl);
                   
@@ -1006,7 +1006,7 @@ class WalletsController extends Controller
                             return redirect()->back();
 
                       }else{
-                            logger('Monnify bvn verification failed: '.$responseMessage);
+                            // logger('Monnify bvn verification failed: '.$responseMessage);
                             DB::commit();
                             Session::flash('failure', $responseMessage);
                             return redirect()->back();   
@@ -1140,7 +1140,7 @@ class WalletsController extends Controller
         ));
 
         $response = curl_exec($curl);
-        logger('Monnify Virtual Accounts Generated: '. $response);
+        // logger('Monnify Virtual Accounts Generated: '. $response);
 
         $response_dec = json_decode($response,true);
 
@@ -1658,7 +1658,7 @@ class WalletsController extends Controller
 
                 $response = curl_exec($curl);
 
-                logger("Account generation crystalpay:  $response");
+                // logger("Account generation crystalpay:  $response");
 
                 $response_dec = json_decode($response,true);    
                 

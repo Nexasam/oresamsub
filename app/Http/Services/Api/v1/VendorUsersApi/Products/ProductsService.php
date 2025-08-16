@@ -365,7 +365,7 @@ class ProductsService{
                                 $sell_data = AutomationLogic::initiateDataPurchase($dataa);
                                 $set_for_manual = $sell_data['set_for_manual'] ?? 0;
 
-                                logger('DATAAA SERVICE: '.json_encode($sell_data));
+                                // logger('DATAAA SERVICE: '.json_encode($sell_data));
                                 $coupon_count  = 0;
 
 
@@ -421,7 +421,7 @@ class ProductsService{
                                         'user_id' => $user_id,
                                     ]);
                                 }else{
-                                    logger('no coupon used here...');
+                                    // logger('no coupon used here...');
                                 }
 
                                 $description = 'Purchase of data';
@@ -657,7 +657,7 @@ class ProductsService{
         $automation_id = $plan_details->automation_id;
         $product_plan_category = $plan_details->product_plan_category;
         // $actual_amount = abs($actual_amount);
-        logger('parent actual_amount: '.$actual_amount);
+        // logger('parent actual_amount: '.$actual_amount);
 
         $user_level_selling = "user_level_".$plan_level."_selling_price";
         $purchase_discount =  $plan_details->$user_level_selling;

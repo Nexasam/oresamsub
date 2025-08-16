@@ -85,7 +85,7 @@ class MegaSubElectricity{
 
         $automation_product_plan_id = $plan_details->automation_product_plan_id;
         $metre_number = $this->metre_number;
-        logger('API ID'.$automation_product_plan_id);
+        // logger('API ID'.$automation_product_plan_id);
 
         
         $curl = curl_init();
@@ -107,7 +107,7 @@ class MegaSubElectricity{
 
         $response = curl_exec($curl);
 
-        logger($response);
+        // logger($response);
 
         curl_close($curl);
 
@@ -187,7 +187,7 @@ class MegaSubElectricity{
         $response = curl_exec($curl);
 
         
-        logger($response.'pppppppps');
+        // logger($response.'pppppppps');
 
 
         curl_close($curl);

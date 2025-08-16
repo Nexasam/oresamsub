@@ -506,7 +506,7 @@ class ProductsController extends Controller
      
         $buy_electricity = (new ProductsService())->buy_electricity_service($data);
 
-        logger('sssss: '.json_encode($buy_electricity));
+        // logger('sssss: '.json_encode($buy_electricity));
 
         $status = $buy_electricity['status'];
         $message = $buy_electricity['message'];

@@ -56,7 +56,7 @@ class DynamicAccountService{
             ),
             ));
             $response = curl_exec($curl);
-            logger($response);
+            // logger($response);
             curl_close($curl);
             $response_dec = json_decode($response,true);
 

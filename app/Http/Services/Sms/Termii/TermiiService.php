@@ -38,7 +38,7 @@ class TermiiService{
             ];
          }
 
-        logger("Termii Phone check:::::".$phone_num);
+        // logger("Termii Phone check:::::".$phone_num);
         
         $post_fields = [
                 "api_key"=>env('TERMII_API_KEY'),
@@ -98,7 +98,7 @@ class TermiiService{
 
             
         if ($err) {
-            logger("Termii:: cURL Error #:" . $err);
+            // logger("Termii:: cURL Error #:" . $err);
             return [
                 'status' => -1,
                 'message' => 'Sorry, the validation could not be completed... Please try again',
@@ -122,7 +122,7 @@ class TermiiService{
 
             }else{
 
-                logger('Termii failed response: '.$response);
+                // logger('Termii failed response: '.$response);
                 return [
                     'status' => -1,
                     'message' => 'Sorry an error occurred. Try again',
@@ -186,7 +186,7 @@ class TermiiService{
 
             
         if ($err) {
-                logger("Termii:: cURL Error #:" . $err);
+                // logger("Termii:: cURL Error #:" . $err);
                 return [
                     'status' => -1,
                     'message' => 'Sorry, the verification could not be completed... Please try again',
@@ -207,7 +207,7 @@ class TermiiService{
 
             }else{
 
-                logger('Termii failed response: '.$response);
+                // logger('Termii failed response: '.$response);
                 return [
                     'status' => -1,
                     'message' => 'Sorry an error occurred. Try again',

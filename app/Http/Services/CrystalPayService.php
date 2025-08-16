@@ -21,7 +21,7 @@ class CrystalPayService{
     
         $funding_option = FundingOption::where('slug','crystal_pay')->first();
         if(! $funding_option){
-            logger('na here oh');
+            // logger('na here oh');
             exit;
         }
         $api_key = $funding_option->api_secret_key;
@@ -29,7 +29,7 @@ class CrystalPayService{
 
         $bank_codes = FundingOptionBankCodes::where('funding_option_id',$funding_option->id)->get();
         if(! $bank_codes){
-            logger('na here oh2');
+            // logger('na here oh2');
             exit;
         }
 
@@ -104,9 +104,9 @@ class CrystalPayService{
                             'account_reference' => $response_dec['data']['account_reference'],
                             'bvn' => $biz_bvn
                         ]);
-                        logger("VA GENERATED INDEED FOR $first_name | $user_id | bank code: $bank_codee");
+                        // logger("VA GENERATED INDEED FOR $first_name | $user_id | bank code: $bank_codee");
                     }else{
-                        logger("VA COULD NOT BE GENERATED FOR $first_name | $user_id | bank code: $bank_codee | $response");
+                        // logger("VA COULD NOT BE GENERATED FOR $first_name | $user_id | bank code: $bank_codee | $response");
 
                     }
                     sleep(1);
