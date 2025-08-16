@@ -58,7 +58,7 @@
                     <br>
                     <br>
               
-                    <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md">
+                    <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md mb-2">
                       {{-- <h3 class="text-lg font-bold mb-4 text-gray-800 dark:text-gray-200">Quick Navigation</h3> --}}
                   
                       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
