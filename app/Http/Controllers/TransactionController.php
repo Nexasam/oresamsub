@@ -60,10 +60,15 @@ class TransactionController extends Controller
         'locked_for_manual_processing' => auth()->id()
       ]); 
 
+      return response()->json([
+        'success' => true,
+        'message' => "Locked successfully",
+        'data' => $request->all()
+    ]);
    
 
-    Session::flash('failure','Locked successfully'); 
-    return redirect()->back();
+    // Session::flash('failure','Locked successfully'); 
+    // return redirect()->back();
 
   }
 
