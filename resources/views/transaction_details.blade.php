@@ -58,10 +58,10 @@
                     <br>
                     <br>
               
-                    <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md mb-4">
+                    <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md">
                       {{-- <h3 class="text-lg font-bold mb-4 text-gray-800 dark:text-gray-200">Quick Navigation</h3> --}}
                   
-                      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 ">
+                      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                           <a 
                               href="{{ route('admin.product_plan_categories.view_details', $data->product_plan->product_plan_category->id) }}" 
                               target="_blank"
@@ -92,12 +92,13 @@
                           >
                               📄 Single Plan Page
                           </a>
-                      </div>
                   
-                      <p class="mt-4 text-sm text-gray-600 dark:text-gray-400">
-                          <span class="font-semibold">PLAN ID:</span> {{ $data->product_plan->automation_product_plan_id }}
-                      </p>
+                          <div class="block px-4 py-3 bg-green-50 dark:bg-green-900/40 text-green-700 dark:text-green-300 font-semibold rounded-lg shadow">
+                              🆔 Plan ID: {{ $data->product_plan->automation_product_plan_id }}
+                          </div>
+                      </div>
                   </div>
+                  
                   
 
 
