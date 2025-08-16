@@ -64,35 +64,52 @@
                       <p>Plan: {{ $data->product_plan->product_plan_name }}</p> 
                       <p>Amount: ₦{{ number_format($data->discounted_amount ?? $data->amount) }}</p> 
                       {{-- <p>Phone Number: {{ $data->phone_number }}</p>  --}}
+                    
+                      
                       <div 
-                          x-data="{ copied: false }" 
-                          x-init="
-                              navigator.clipboard.writeText('{{ $data->phone_number }}')
-                                  .then(() => { copied = true; setTimeout(() => copied = false, 3000) })
-                          "
-                          class="flex items-center space-x-3 bg-gray-100 dark:bg-gray-800 p-4 rounded-xl shadow-md"
-                      >
-                          <p class="font-bold text-lg text-gray-800 dark:text-gray-200">
-                              Phone Number: 
-                              <span class="text-blue-600 dark:text-blue-400" x-text="'{{ $data->phone_number }}'"></span>
-                          </p>
-                          
-                          <button 
-                              @click="navigator.clipboard.writeText('{{ $data->phone_number }}'); copied = true; setTimeout(() => copied = false, 3000)" 
-                              class="flex items-center space-x-2 px-4 py-2 text-base bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg shadow-lg transition transform hover:scale-105"
-                          >
-                              <span>📋 Copy</span>
-                          </button>
-
-                          <!-- Big Copied Feedback -->
-                          <div 
-                              x-show="copied" 
-                              x-transition 
-                              class="fixed top-5 right-5 bg-green-600 text-white font-bold px-4 py-2 rounded-lg shadow-lg"
-                          >
-                              ✅ Number Copied!
-                          </div>
+    x-data 
+    x-init="
+        navigator.clipboard.writeText('{{ $data->phone_number }}')
+            .then(() => {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Copied!',
+                    text: 'Phone number has been copied to clipboard',
+                    showConfirmButton: false,
+                    timer: 2000,
+                    toast: true,
+                    position: 'top-end'
+                });
+            })
+    "
+    class="flex items-center space-x-3 bg-gray-100 dark:bg-gray-800 p-4 rounded-xl shadow-md"
+>
+    <p class="font-bold text-lg text-gray-800 dark:text-gray-200">
+        Phone Number: 
+        <span class="text-blue-600 dark:text-blue-400">{{ $data->phone_number }}</span>
+    </p>
+    
+    <button 
+        @click="
+            navigator.clipboard.writeText('{{ $data->phone_number }}')
+            .then(() => {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Copied!',
+                    text: 'Phone number has been copied to clipboard',
+                    showConfirmButton: false,
+                    timer: 2000,
+                    toast: true,
+                    position: 'top-end'
+                });
+            })
+        " 
+        class="flex items-center space-x-2 px-4 py-2 text-base bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg shadow-lg transition transform hover:scale-105"
+    >
+        📋 Copy
+    </button>
                       </div>
+
 
 
                           
