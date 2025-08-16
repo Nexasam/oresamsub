@@ -327,9 +327,12 @@
                                 'bg-red-600 text-white dark:bg-red-400 dark:text-black',
                             ];
                             $i = 0;
+
+                          $automationsss = App\Models\Automation::select('id','domain_url','automation_name')->get();
+
                         @endphp
   
-                        @foreach ($automationss as $automationn)
+                        @foreach ($automationsss as $automationn)
                             @php
                                 $colorClass = $colors[$i % count($colors)];
                                 $i++;
