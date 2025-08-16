@@ -24,6 +24,11 @@
 
                 @if (strtolower(auth()->user()->role->role_name) == 'admin')
 
+                @php
+                      $automationss = App\Models\Automation::select('id','domain_url','automation_name')->get();
+                    
+                @endphp
+
                 <div class="col-span-12">
                   @if (Session::has('success'))
                   <div class="bg-success/10 border border-success/10 alert text-success" role="alert">
@@ -207,7 +212,6 @@
                       ->where('visibility',1)
                       ->get();
 
-                      $automationss = App\Models\Automation::select('id','domain_url','automation_name')->get();
                         
                       @endphp
   
