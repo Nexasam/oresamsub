@@ -97,58 +97,70 @@
 
 
                           <div 
-                            x-data="{
-                                loading: false, 
-                                success: false, 
-                                error: null,
-                                submitForm() {
-                                    this.loading = true;
-                                    this.error = null;
-                                    fetch('{{ route('transactions.lock_for_manual_processing') }}', {
-                                        method: 'POST',
-                                        headers: {
-                                            'Content-Type': 'application/json',
-                                            'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                                        },
-                                        body: JSON.stringify({
-                                            transaction_id: '{{ $data->id }}',
-                                        }),
-                                    })
-                                    .then(res => res.json())
-                                    .then(data => {
-                                        if (data.success) {
-                                            this.success = true;
-                                        } else {
-                                            this.error = data.message || 'Something went wrong';
-                                        }
-                                    })
-                                    .catch(() => {
-                                        this.error = 'Server error, try again later';
-                                    })
-                                    .finally(() => {
-                                        this.loading = false;
-                                        setTimeout(() => this.success = false, 3000); // hide success after 3s
-                                    });
-                                }
-                            }"
-                        >
-                            <button 
-                                @click.prevent="submitForm()" 
-                                x-bind:disabled="loading"
-                                class="px-4 py-2 bg-yellow-500 hover:bg-yellow-600 text-white font-bold rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:ring-offset-1 transition"
-                            >
-                                <span x-show="!loading">Mark as Working on Txn</span>
-                                <span x-show="loading">Processing...</span>
-                            </button>
-
-                            <!-- Success Message -->
-                            <p x-show="success" x-transition class="mt-2 text-green-600 font-semibold">
-                                ✅ Transaction locked successfully!
-                            </p>
-
-                            <!-- Error Message -->
-                            <p x-show="error" x-transition class="mt-2 text-red-600 font-semibold" x-text="error"></p>
-                        </div>
+                          x-data="{
+                              loading: false, 
+                              success: false, 
+                              error: null,
+                              locked: false,
+                              submitForm() {
+                                  if (this.locked) return; // prevent double click
+                                  this.loading = true;
+                                  this.error = null;
+                                  fetch('{{ route('transactions.lock_for_manual_processing') }}', {
+                                      method: 'POST',
+                                      headers: {
+                                          'Content-Type': 'application/json',
+                                          'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                                      },
+                                      body: JSON.stringify({
+                                          transaction_id: '{{ $data->id }}',
+                                      }),
+                                  })
+                                  .then(res => res.json())
+                                  .then(data => {
+                                      if (data.success) {
+                                          this.success = true;
+                                          this.locked = true; // 👈 mark as locked
+                                      } else {
+                                          this.error = data.message || 'Something went wrong';
+                                      }
+                                  })
+                                  .catch(() => {
+                                      this.error = 'Server error, try again later';
+                                  })
+                                  .finally(() => {
+                                      this.loading = false;
+                                  });
+                              }
+                          }"
+                      >
+                          <button 
+                              @click.prevent="submitForm()" 
+                              x-bind:disabled="loading || locked"
+                              :class="locked 
+                                  ? 'px-4 py-2 bg-red-500 text-white font-bold rounded-lg shadow-md cursor-not-allowed' 
+                                  : 'px-4 py-2 bg-yellow-500 hover:bg-yellow-600 text-white font-bold rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:ring-offset-1 transition'"
+                          >
+                              <template x-if="!locked">
+                                  <span>
+                                      <span x-show="!loading">Mark as Working on Txn</span>
+                                      <span x-show="loading">Processing...</span>
+                                  </span>
+                              </template>
+                              <template x-if="locked">
+                                  <span>🔒 Locked</span>
+                              </template>
+                          </button>
+                      
+                          <!-- Success Message -->
+                          <p x-show="success" x-transition class="mt-2 text-green-600 font-semibold">
+                              ✅ Transaction locked successfully!
+                          </p>
+                      
+                          <!-- Error Message -->
+                          <p x-show="error" x-transition class="mt-2 text-red-600 font-semibold" x-text="error"></p>
+                      </div>
+                      
 
 
                       @else
