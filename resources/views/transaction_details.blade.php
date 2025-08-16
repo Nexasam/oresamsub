@@ -307,6 +307,49 @@
                             </div>
                         </div>
                       </div>
+
+
+                      <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md space-y-3 mb-2">
+                        <p><b>Process Manually with any of the Automations</b></p>
+                        @php
+                            $automationss = App\Models\Automation::select('id','domain_url','automation_name')->get();
+                        @endphp
+  
+                      <div class="flex flex-wrap gap-2">
+                        @php
+                            $colors = [
+                                'bg-blue-600 text-white dark:bg-blue-400 dark:text-black',
+                                'bg-green-600 text-white dark:bg-green-400 dark:text-black',
+                                'bg-yellow-500 text-black dark:bg-yellow-300 dark:text-black',
+                                'bg-purple-600 text-white dark:bg-purple-400 dark:text-black',
+                                'bg-pink-600 text-white dark:bg-pink-400 dark:text-black',
+                                'bg-red-600 text-white dark:bg-red-400 dark:text-black',
+                            ];
+                            $i = 0;
+                        @endphp
+  
+                        @foreach ($automationss as $automationn)
+                            @php
+                                $colorClass = $colors[$i % count($colors)];
+                                $i++;
+                            @endphp
+                            
+                            <a 
+                                target="_blank" 
+                                href="{{ $automationn->domain_url }}" 
+                                class="px-3 py-1 text-sm font-bold rounded-full {{ $colorClass }} shadow-md hover:opacity-90 transition"
+                            >
+                                {{ $automationn->automation_name }}
+                                @if ($automationn->automation_name == 'samicsub')
+                                    <span class="font-normal">(For MTN 5GB and 10GB)</span>
+                                @endif
+                            </a>
+                        @endforeach
+                      </div>
+  
+  
+                       
+                      </div>
   
                       
 
@@ -334,88 +377,8 @@
                      @endif
 
                   </div>
-                  
-                  
-                    {{-- <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md space-y-3 mb-2">
-                      <p><b>Other Automation Processing Same Plan
-                      </b></p>
-                      @php
-                          $network_plan_categories_arr = App\Models\ProductPlanCategory::where('network_id',$data->product_plan->product_plan_category->network->id)
-                          ->where('product_id',$data->product_plan->product_plan_category->product->id)
-                          ->pluck('id')
-                          ->toArray();
-
-                          $product_plansss = App\Models\ProductPlan::with('automation')->where('data_size_in_mb',$data->product_plan->data_size_in_mb)
-                          ->where('validity_in_days',$data->product_plan->validity_in_days)
-                          ->whereIn('product_plan_category_id',$network_plan_categories_arr)
-                          ->where('visibility',1)
-                          ->get();
-                      @endphp
-                      
-                     @foreach ($product_plansss as $pdplan)
-                          <a 
-                              target="_blank" 
-                              href="{{ $pdplan->automation->domain_url }}" 
-                              class="block text-blue-600 dark:text-blue-400 font-semibold hover:underline"
-                          >
-                          PROCESS WITH: {{ $pdplan->product_plan_name }}  |  <b>{{ $pdplan->automation->automation_name }}</b>  |  
-                              @if ($pdplan->automation->automation_name == 'samicsub')
-                              (For MTN 5GB and 10GB )
-                              @endif 
-                              
-                          </a>
-                      @endforeach 
-                    </div>
-                    <br> --}}
-
-                    {{-- {{ route('transactions.process_with_automation') }} --}}
-
-               
-                  
-                    
-
-                    <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md space-y-3 mb-2">
-                      <p><b>Process Manually with any of the Automations</b></p>
-                      @php
-                          $automationss = App\Models\Automation::select('id','domain_url','automation_name')->get();
-                      @endphp
-
-                    <div class="flex flex-wrap gap-2">
-                      @php
-                          $colors = [
-                              'bg-blue-600 text-white dark:bg-blue-400 dark:text-black',
-                              'bg-green-600 text-white dark:bg-green-400 dark:text-black',
-                              'bg-yellow-500 text-black dark:bg-yellow-300 dark:text-black',
-                              'bg-purple-600 text-white dark:bg-purple-400 dark:text-black',
-                              'bg-pink-600 text-white dark:bg-pink-400 dark:text-black',
-                              'bg-red-600 text-white dark:bg-red-400 dark:text-black',
-                          ];
-                          $i = 0;
-                      @endphp
-
-                      @foreach ($automationss as $automationn)
-                          @php
-                              $colorClass = $colors[$i % count($colors)];
-                              $i++;
-                          @endphp
-                          
-                          <a 
-                              target="_blank" 
-                              href="{{ $automationn->domain_url }}" 
-                              class="px-3 py-1 text-sm font-bold rounded-full {{ $colorClass }} shadow-md hover:opacity-90 transition"
-                          >
-                              {{ $automationn->automation_name }}
-                              @if ($automationn->automation_name == 'samicsub')
-                                  <span class="font-normal">(For MTN 5GB and 10GB)</span>
-                              @endif
-                          </a>
-                      @endforeach
-                    </div>
-
-
-                     
-                    </div>
-                    <br>
+    
+                   <br>
                     @endif
                 
                   
