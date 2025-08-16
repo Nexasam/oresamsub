@@ -85,7 +85,7 @@
                   
                      @if ($data->set_for_manual == 1)
                           @if ($data->locked_for_manual_processing == NULL)
-                          <form action="{{ route('transactions.lock_for_manual_processing') }}" method="POST" class="mt-4">
+                          {{-- <form action="{{ route('transactions.lock_for_manual_processing') }}" method="POST" class="mt-4">
                               @csrf
                               <input id="transaction_id" name="transaction_id" type="hidden" value="{{ $data->id }}">
                               
@@ -93,7 +93,64 @@
                                   class="px-4 py-2 bg-yellow-500 hover:bg-yellow-600 text-white font-bold rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:ring-offset-1 transition">
                                   Mark as Working on Txn
                               </button>
-                          </form>
+                          </form> --}}
+
+
+                          <div 
+                            x-data="{
+                                loading: false, 
+                                success: false, 
+                                error: null,
+                                submitForm() {
+                                    this.loading = true;
+                                    this.error = null;
+                                    fetch('{{ route('transactions.lock_for_manual_processing') }}', {
+                                        method: 'POST',
+                                        headers: {
+                                            'Content-Type': 'application/json',
+                                            'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                                        },
+                                        body: JSON.stringify({
+                                            transaction_id: '{{ $data->id }}',
+                                        }),
+                                    })
+                                    .then(res => res.json())
+                                    .then(data => {
+                                        if (data.success) {
+                                            this.success = true;
+                                        } else {
+                                            this.error = data.message || 'Something went wrong';
+                                        }
+                                    })
+                                    .catch(() => {
+                                        this.error = 'Server error, try again later';
+                                    })
+                                    .finally(() => {
+                                        this.loading = false;
+                                        setTimeout(() => this.success = false, 3000); // hide success after 3s
+                                    });
+                                }
+                            }"
+                        >
+                            <button 
+                                @click.prevent="submitForm()" 
+                                x-bind:disabled="loading"
+                                class="px-4 py-2 bg-yellow-500 hover:bg-yellow-600 text-white font-bold rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:ring-offset-1 transition"
+                            >
+                                <span x-show="!loading">Mark as Working on Txn</span>
+                                <span x-show="loading">Processing...</span>
+                            </button>
+
+                            <!-- Success Message -->
+                            <p x-show="success" x-transition class="mt-2 text-green-600 font-semibold">
+                                ✅ Transaction locked successfully!
+                            </p>
+
+                            <!-- Error Message -->
+                            <p x-show="error" x-transition class="mt-2 text-red-600 font-semibold" x-text="error"></p>
+                        </div>
+
+
                       @else
                           <div class="flex items-start p-4 border border-red-500 bg-red-50 dark:bg-red-900/20 rounded-lg">
                               <svg xmlns="http://www.w3.org/2000/svg" 
