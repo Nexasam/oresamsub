@@ -73,7 +73,7 @@
             .then(() => {
                 Swal.fire({
                     icon: 'success',
-                    title: 'Copied!',
+                    title: 'Phone Number Copied!',
                     text: 'Phone number has been copied to clipboard',
                     showConfirmButton: false,
                     timer: 2000,
