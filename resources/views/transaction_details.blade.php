@@ -192,6 +192,122 @@
                           <!-- Error Message -->
                           <p x-show="error" x-transition class="mt-2 text-red-600 font-semibold" x-text="error"></p>
                       </div>
+
+
+
+                      @php
+                      $network_plan_categories_arr = App\Models\ProductPlanCategory::where('network_id',$data->product_plan->product_plan_category->network->id)
+                      ->where('product_id',$data->product_plan->product_plan_category->product->id)
+                      ->pluck('id')
+                      ->toArray();
+  
+                      $product_plansss = App\Models\ProductPlan::with('automation')->where('data_size_in_mb',$data->product_plan->data_size_in_mb)
+                      ->where('validity_in_days',$data->product_plan->validity_in_days)
+                      ->whereIn('product_plan_category_id',$network_plan_categories_arr)
+                      ->where('visibility',1)
+                      ->get();
+                      @endphp
+  
+                      <div 
+                        x-data="{
+                            showModal: false,
+                            selectedAutomation: null,
+                            processWith(automationId, automationName) {
+                                this.selectedAutomation = { id: automationId, name: automationName };
+                                this.showModal = true;
+                            },
+                            confirmProcess() {
+                                // Example AJAX request (adjust route)
+                                fetch('', {
+                                    method: 'POST',
+                                    headers: {
+                                        'Content-Type': 'application/json',
+                                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                                    },
+                                    body: JSON.stringify({
+                                        transaction_id: '{{ $data->id }}',
+                                        automation_id: this.selectedAutomation.id,
+                                    }),
+                                })
+                                .then(res => res.json())
+                                .then(data => {
+                                    if (data.success) {
+                                        Swal.fire({
+                                            icon: 'success',
+                                            title: 'Processing Started',
+                                            text: 'Transaction is being processed with ' + this.selectedAutomation.name,
+                                            showConfirmButton: false,
+                                            timer: 2500
+                                        });
+                                    } else {
+                                        Swal.fire({
+                                            icon: 'error',
+                                            title: 'Error',
+                                            text: data.message || 'Something went wrong!',
+                                        });
+                                    }
+                                })
+                                .catch(() => {
+                                    Swal.fire({
+                                        icon: 'error',
+                                        title: 'Server Error',
+                                        text: 'Please try again later',
+                                    });
+                                })
+                                .finally(() => {
+                                    this.showModal = false;
+                                });
+                            }
+                        }"
+                        class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md space-y-3 mb-2"
+                    >
+                        <p><b>Other Automation Processing Same Plan</b></p>
+  
+                        @foreach ($product_plansss as $pdplan)
+                            <button 
+                                @click="processWith('{{ $pdplan->automation->id }}', '{{ $pdplan->automation->automation_name }}')" 
+                                class="block w-full text-left text-blue-600 dark:text-blue-400 font-semibold hover:underline"
+                            >
+                                PROCESS WITH: {{ $pdplan->product_plan_name }}  |  
+                                <b>{{ $pdplan->automation->automation_name }}</b>  
+                                @if ($pdplan->automation->automation_name == 'samicsub')
+                                    (For MTN 5GB and 10GB)
+                                @endif 
+                            </button>
+                        @endforeach 
+  
+                        <!-- Modal -->
+                        <div 
+                            x-show="showModal" 
+                            x-transition 
+                            class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50"
+                        >
+                            <div class="bg-white dark:bg-gray-900 rounded-xl p-6 w-full max-w-md shadow-lg">
+                                <h2 class="text-lg font-bold mb-4 text-gray-800 dark:text-gray-200">
+                                    Confirm Reprocessing
+                                </h2>
+                                <p class="text-gray-600 dark:text-gray-400 mb-6">
+                                    Are you sure you want to reprocess this transaction using 
+                                    <span class="font-bold text-blue-600" x-text="selectedAutomation?.name"></span>?
+                                </p>
+                                <div class="flex justify-end space-x-3">
+                                    <button 
+                                        @click="showModal = false" 
+                                        class="px-4 py-2 bg-gray-300 dark:bg-gray-700 text-gray-800 dark:text-gray-200 rounded-lg hover:bg-gray-400 dark:hover:bg-gray-600"
+                                    >
+                                        Cancel
+                                    </button>
+                                    <button 
+                                        @click="confirmProcess()" 
+                                        class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+                                    >
+                                        Yes, Process
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                      </div>
+  
                       
 
 
@@ -254,119 +370,7 @@
 
                     {{-- {{ route('transactions.process_with_automation') }} --}}
 
-                    @php
-                    $network_plan_categories_arr = App\Models\ProductPlanCategory::where('network_id',$data->product_plan->product_plan_category->network->id)
-                    ->where('product_id',$data->product_plan->product_plan_category->product->id)
-                    ->pluck('id')
-                    ->toArray();
-
-                    $product_plansss = App\Models\ProductPlan::with('automation')->where('data_size_in_mb',$data->product_plan->data_size_in_mb)
-                    ->where('validity_in_days',$data->product_plan->validity_in_days)
-                    ->whereIn('product_plan_category_id',$network_plan_categories_arr)
-                    ->where('visibility',1)
-                    ->get();
-                    @endphp
-
-                    <div 
-                      x-data="{
-                          showModal: false,
-                          selectedAutomation: null,
-                          processWith(automationId, automationName) {
-                              this.selectedAutomation = { id: automationId, name: automationName };
-                              this.showModal = true;
-                          },
-                          confirmProcess() {
-                              // Example AJAX request (adjust route)
-                              fetch('', {
-                                  method: 'POST',
-                                  headers: {
-                                      'Content-Type': 'application/json',
-                                      'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                                  },
-                                  body: JSON.stringify({
-                                      transaction_id: '{{ $data->id }}',
-                                      automation_id: this.selectedAutomation.id,
-                                  }),
-                              })
-                              .then(res => res.json())
-                              .then(data => {
-                                  if (data.success) {
-                                      Swal.fire({
-                                          icon: 'success',
-                                          title: 'Processing Started',
-                                          text: 'Transaction is being processed with ' + this.selectedAutomation.name,
-                                          showConfirmButton: false,
-                                          timer: 2500
-                                      });
-                                  } else {
-                                      Swal.fire({
-                                          icon: 'error',
-                                          title: 'Error',
-                                          text: data.message || 'Something went wrong!',
-                                      });
-                                  }
-                              })
-                              .catch(() => {
-                                  Swal.fire({
-                                      icon: 'error',
-                                      title: 'Server Error',
-                                      text: 'Please try again later',
-                                  });
-                              })
-                              .finally(() => {
-                                  this.showModal = false;
-                              });
-                          }
-                      }"
-                      class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md space-y-3 mb-2"
-                  >
-                      <p><b>Other Automation Processing Same Plan</b></p>
-
-                      @foreach ($product_plansss as $pdplan)
-                          <button 
-                              @click="processWith('{{ $pdplan->automation->id }}', '{{ $pdplan->automation->automation_name }}')" 
-                              class="block w-full text-left text-blue-600 dark:text-blue-400 font-semibold hover:underline"
-                          >
-                              PROCESS WITH: {{ $pdplan->product_plan_name }}  |  
-                              <b>{{ $pdplan->automation->automation_name }}</b>  
-                              @if ($pdplan->automation->automation_name == 'samicsub')
-                                  (For MTN 5GB and 10GB)
-                              @endif 
-                          </button>
-                      @endforeach 
-
-                      <!-- Modal -->
-                      <div 
-                          x-show="showModal" 
-                          x-transition 
-                          class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50"
-                      >
-                          <div class="bg-white dark:bg-gray-900 rounded-xl p-6 w-full max-w-md shadow-lg">
-                              <h2 class="text-lg font-bold mb-4 text-gray-800 dark:text-gray-200">
-                                  Confirm Processing
-                              </h2>
-                              <p class="text-gray-600 dark:text-gray-400 mb-6">
-                                  Are you sure you want to process this transaction using 
-                                  <span class="font-bold text-blue-600" x-text="selectedAutomation?.name"></span>?
-                              </p>
-                              <div class="flex justify-end space-x-3">
-                                  <button 
-                                      @click="showModal = false" 
-                                      class="px-4 py-2 bg-gray-300 dark:bg-gray-700 text-gray-800 dark:text-gray-200 rounded-lg hover:bg-gray-400 dark:hover:bg-gray-600"
-                                  >
-                                      Cancel
-                                  </button>
-                                  <button 
-                                      @click="confirmProcess()" 
-                                      class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
-                                  >
-                                      Yes, Process
-                                  </button>
-                              </div>
-                          </div>
-                      </div>
-                  </div>
-
+               
                   
                     
 
