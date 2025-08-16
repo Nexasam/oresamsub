@@ -4,10 +4,10 @@ namespace App\Services\Automation;
 
 use App\Models\ProductPlan;
 use App\Services\Utils\UtilService;
-use App\Http\Services\CouponCodeService;
 use App\Services\Automation\VtpassAutomation;
 use App\Services\Automation\Twins10Automation;
 use App\Services\Automation\PaultechsAutomation;
+use App\Services\Automation\Nine9javtuAutomation;
 use App\Services\Automation\DirectCouponAutomation;
 use App\Services\Automation\MegaSubPlugAutomation\MegaSubCableTV;
 use App\Services\Automation\MegaSubPlugAutomation\MegaSubVendData;
@@ -47,6 +47,9 @@ class AutomationLogic{
         }
         else if($automation_details->slug == 'megasubplug'){
             $buy_data = (new MegaSubVendData($validated_phone_number,$product_plan_id,$validatephonenetwork))->buyData();
+        }
+        else if($automation_details->slug == '9javtu'){
+            $buy_data = (new Nine9javtuAutomation($validated_phone_number,$product_plan_id,$validatephonenetwork))->buyData();
         }
         else if($automation_details->automation_group == 'msorg'){  
             $buy_data = (new MsOrgGroupAutomation($data))->buyData();
