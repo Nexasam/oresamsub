@@ -58,9 +58,13 @@
                     <br>
                     <br>
               
-                    <a class="underline font-extrabold text-blue-700" target="_blank" href="{{ route('admin.product_plan_categories.view_details',$data->product_plan->product_plan_category->id )}}">Go to Plan Category: {{ $data->product_plan->product_plan_name }}</a><br><br>
-                    {{-- <a class="underline font-extrabold text-blue-700" target="_blank" href="{{ route('admin.product_plans.product_plan_details',$data->product_plan->id) }}">Go to Plan Details: {{ $data->product_plan->product_plan_name }}</a> <br><br> --}}
-                    <a class="underline font-extrabold text-blue-700" href="{{ route('admin.product_plan_categories.view_details_by_automation',['id' => $data->product_plan->product_plan_category->id, 'automation_id' =>$data->product_plan->automation->id]) }}">See the Automation: {{  $data->product_plan->automation->automation_name }}</a> <br><br>
+                    <div class="flex space-x-2">
+                      <a class="underline font-extrabold text-blue-700" target="_blank" href="{{ route('admin.product_plan_categories.view_details',$data->product_plan->product_plan_category->id )}}">Go to Plan Category: {{ $data->product_plan->product_plan_name }}</a><br><br>
+                      <a class="underline font-extrabold text-blue-700" href="{{ route('admin.product_plan_categories.view_details_by_automation',['id' => $data->product_plan->product_plan_category->id, 'automation_id' =>$data->product_plan->automation->id]) }}">See the Automation: {{  $data->product_plan->automation->automation_name }}</a> <br><br>
+                      <a class="underline font-extrabold text-blue-700 mt-3" target="_blank" href="{{ route('admin.product_plans.index') }}">Go to All Plans & Prices</a><br><br>
+                      <a class="underline font-extrabold text-blue-700" target="_blank" href="{{ route('admin.product_plans.product_plan_details',$data->product_plan->id) }}">Go to Single Plan Page </a><br><br>
+                       <p>PLAN ID: {{ $data->product_plan->automation_product_plan_id }}</p>
+                    </div>
 
 
                     @if (env('APP_NAME') == 'OresamSub')
@@ -391,11 +395,7 @@
                 
                   
               
-                    <a class="underline font-extrabold text-blue-700 mt-3" target="_blank" href="{{ route('admin.product_plans.index') }}">Go to All Plans & Prices</a><br><br>
                    
-                    <a class="underline font-extrabold text-blue-700" target="_blank" href="{{ route('admin.product_plans.product_plan_details',$data->product_plan->id) }}">Go to Single Plan Page </a><br><br>
-
-                     <p>PLAN ID: {{ $data->product_plan->automation_product_plan_id }}</p>
 
                     {{-- <hr> --}}
                  </div>
