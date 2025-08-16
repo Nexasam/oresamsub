@@ -61,18 +61,18 @@
                     <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md">
                       <h3 class="text-lg font-bold mb-4 text-gray-800 dark:text-gray-200">Quick Navigation</h3>
                   
-                      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                           <a 
                               href="{{ route('admin.product_plan_categories.view_details', $data->product_plan->product_plan_category->id) }}" 
                               target="_blank"
-                              class="block px-4 py-2 bg-blue-50 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300 font-semibold rounded-lg shadow hover:bg-blue-100 dark:hover:bg-blue-800 transition"
+                              class="block px-4 py-3 bg-blue-50 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300 font-semibold rounded-lg shadow hover:bg-blue-100 dark:hover:bg-blue-800 transition"
                           >
                               📂 Plan Category: {{ $data->product_plan->product_plan_name }}
                           </a>
                   
                           <a 
                               href="{{ route('admin.product_plan_categories.view_details_by_automation', ['id' => $data->product_plan->product_plan_category->id, 'automation_id' => $data->product_plan->automation->id]) }}" 
-                              class="block px-4 py-2 bg-blue-50 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300 font-semibold rounded-lg shadow hover:bg-blue-100 dark:hover:bg-blue-800 transition"
+                              class="block px-4 py-3 bg-blue-50 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300 font-semibold rounded-lg shadow hover:bg-blue-100 dark:hover:bg-blue-800 transition"
                           >
                               🤖 Automation: {{ $data->product_plan->automation->automation_name }}
                           </a>
@@ -80,7 +80,7 @@
                           <a 
                               href="{{ route('admin.product_plans.index') }}" 
                               target="_blank"
-                              class="block px-4 py-2 bg-blue-50 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300 font-semibold rounded-lg shadow hover:bg-blue-100 dark:hover:bg-blue-800 transition"
+                              class="block px-4 py-3 bg-blue-50 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300 font-semibold rounded-lg shadow hover:bg-blue-100 dark:hover:bg-blue-800 transition"
                           >
                               📊 All Plans & Prices
                           </a>
@@ -88,7 +88,7 @@
                           <a 
                               href="{{ route('admin.product_plans.product_plan_details', $data->product_plan->id) }}" 
                               target="_blank"
-                              class="block px-4 py-2 bg-blue-50 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300 font-semibold rounded-lg shadow hover:bg-blue-100 dark:hover:bg-blue-800 transition"
+                              class="block px-4 py-3 bg-blue-50 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300 font-semibold rounded-lg shadow hover:bg-blue-100 dark:hover:bg-blue-800 transition"
                           >
                               📄 Single Plan Page
                           </a>
