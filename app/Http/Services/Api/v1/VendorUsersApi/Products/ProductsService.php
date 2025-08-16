@@ -401,8 +401,8 @@ class ProductsService{
                                 //this should not run though because it has already been checked
                                 if($wallet_after <= 0){
                                     $status = -1;
-                                    $user_message = 'Failed due to insufficient balance';
-                                    $admin_message = 'Failed due to insufficient balance';
+                                    $user_message = 'Failed due to insufficient balance...';
+                                    $admin_message = 'Failed due to insufficient balance...';
                                     $failure++;
                                     $display_results[$i] = array(
                                         'message' => $user_message,

@@ -60,10 +60,28 @@
 
                     @if (env('APP_NAME') == 'OresamSub')
                     <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md space-y-3 mb-2">
-                      <p class="font-semibold">
-                          Plan details: {{ $data->product_plan->product_plan_name }} 
-                          for ₦{{ number_format($data->discounted_amount ?? $data->amount) }}
-                      </p>
+                      <p class="font-semibold">Quick Transaction details:</p>
+                      <p>Plan: {{ $data->product_plan->product_plan_name }}</p> 
+                      <p>Amount: ₦{{ number_format($data->discounted_amount ?? $data->amount) }}</p> 
+                      {{-- <p>Phone Number: {{ $data->phone_number }}</p>  --}}
+                      <div 
+                          x-data="{ copied: false }" 
+                          class="flex items-center space-x-2"
+                      >
+                          <p>Phone Number: <span x-text="'{{ $data->phone_number }}'"></span></p>
+                          
+                          <button 
+                              @click="navigator.clipboard.writeText('{{ $data->phone_number }}'); copied = true; setTimeout(() => copied = false, 2000)" 
+                              class="px-2 py-1 text-sm bg-blue-600 text-white rounded-md hover:bg-blue-700"
+                          >
+                              Copy
+                          </button>
+
+                          <span x-show="copied" x-transition class="text-green-600 text-sm">Copied!</span>
+                      </div>
+
+                          
+                     
                   
                      @if ($data->set_for_manual == 1)
                           @if ($data->locked_for_manual_processing == NULL)
