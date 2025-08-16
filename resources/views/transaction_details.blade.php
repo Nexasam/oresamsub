@@ -252,6 +252,7 @@
                     </div>
                     <br> --}}
 
+                    {{-- {{ route('transactions.process_with_automation') }} --}}
 
                     <div 
                       x-data="{
@@ -263,7 +264,7 @@
                           },
                           confirmProcess() {
                               // Example AJAX request (adjust route)
-                              fetch('{{ route('transactions.process_with_automation') }}', {
+                              fetch('', {
                                   method: 'POST',
                                   headers: {
                                       'Content-Type': 'application/json',
