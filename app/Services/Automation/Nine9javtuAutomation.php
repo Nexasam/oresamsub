@@ -63,6 +63,27 @@ class Nine9javtuAutomation{
         return -1;
     }
 
+    protected function getNetworkApiIDAirtime($network_name){
+        $network_name = strtolower($network_name);
+        if($network_name == 'mtn'){
+            return 5;
+        }
+
+        if($network_name == 'glo'){
+            return 6;
+        }
+
+        if($network_name == 'airtel'){
+            return 7;
+        }
+
+        if($network_name == '9mobile'){
+            return 8;
+        }
+
+        return -1;
+    }
+
     public function buyData(){
 
         $plan_details = ProductPlan::with('product_plan_category.network')
@@ -192,7 +213,7 @@ class Nine9javtuAutomation{
         $network_name = $plan_details->product_plan_category->network->network_name;
         
         $airtime_api_id = $plan_details->automation_product_plan_id;
-        $network_api_id = $this->getNetworkApiID($network_name);
+        $network_api_id = $this->getNetworkApiIDAirtime($network_name);
 
         if($network_api_id == -1){
             //not found
