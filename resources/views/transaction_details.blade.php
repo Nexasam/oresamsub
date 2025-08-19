@@ -241,14 +241,14 @@
                         <p><b>Other Automation Processing Same Plan</b></p>
   
                         @foreach ($product_plansss as $pdplan)
-                            @if (($pdplan->cost_price + 5) < $ammount && auth()->user()->email != 'adebsholey4real@gmail.com')
+                            @if (($pdplan->cost_price + 5) > $ammount && auth()->user()->email != 'adebsholey4real@gmail.com')
                             
                                   {{ $pdplan->product_plan_name }}  |  
                                   <b>{{ $pdplan->automation->automation_name }}</b> 
                                   
                                   @if (auth()->user()->email == 'adebsholey4real@gmail.com')
                                   | <b>Cost Price: {{  $pdplan->cost_price + 5 }}</b> |
-                                  | <b>Profitable? : {{  ($pdplan->cost_price + 5) < $ammount ? 'NOPE' : 'YES' }}</b> 
+                                  | <b>Profitable? : {{  ($pdplan->cost_price + 5) < $ammount ? 'YES' : 'NOPE' }}</b> 
                                   @endif
                                 
                                   
@@ -268,7 +268,7 @@
                                   
                                   @if (auth()->user()->email == 'adebsholey4real@gmail.com')
                                   | <b>Cost Price: {{  $pdplan->cost_price + 5 }}</b> |
-                                  | <b>Profitable? : {{  ($pdplan->cost_price + 5) < $ammount ? 'NOPE' : 'YES' }}</b> 
+                                  | <b>Profitable? : {{  ($pdplan->cost_price + 5) < $ammount ? 'YES' : 'NOPE' }}</b> 
                                   @endif
                                 
                                   
