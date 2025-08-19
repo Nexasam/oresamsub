@@ -248,7 +248,7 @@
                                 PROCESS WITH: {{ $pdplan->product_plan_name }}  |  
                                 <b>{{ $pdplan->automation->automation_name }}</b> 
                                 
-                                @if (auth()->email == 'adebsholey4real@gmail.com')
+                                @if (auth()->user()->email == 'adebsholey4real@gmail.com')
                                 | <b>Cost Price: {{  $pdplan->cost_price + 10 }}</b> |
                                 @endif
                               
