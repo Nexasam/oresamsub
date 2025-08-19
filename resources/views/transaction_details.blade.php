@@ -241,22 +241,44 @@
                         <p><b>Other Automation Processing Same Plan</b></p>
   
                         @foreach ($product_plansss as $pdplan)
-                            <button 
-                                @click="processWith('{{ $pdplan->id }}','{{ $data->id }}','{{ $pdplan->automation->id }}', '{{ $pdplan->automation->automation_name }}')" 
-                                class="block w-full text-left text-blue-600 dark:text-blue-400 font-semibold hover:underline"
-                            >
-                                PROCESS WITH: {{ $pdplan->product_plan_name }}  |  
-                                <b>{{ $pdplan->automation->automation_name }}</b> 
+                            @if (($pdplan->cost_price + 5) < $ammount && auth()->user()->email != 'adebsholey4real@gmail.com')
+                            
+                                  {{ $pdplan->product_plan_name }}  |  
+                                  <b>{{ $pdplan->automation->automation_name }}</b> 
+                                  
+                                  @if (auth()->user()->email == 'adebsholey4real@gmail.com')
+                                  | <b>Cost Price: {{  $pdplan->cost_price + 5 }}</b> |
+                                  | <b>Profitable? : {{  ($pdplan->cost_price + 5) < $ammount ? 'NOPE' : 'YES' }}</b> 
+                                  @endif
                                 
-                                @if (auth()->user()->email == 'adebsholey4real@gmail.com')
-                                | <b>Cost Price: {{  $pdplan->cost_price + 10 }}</b> |
-                                @endif
-                              
+                                  
+                                  @if ($pdplan->automation->automation_name == 'samicsub')
+                                      (For MTN 5GB and 10GB)
+                                  @endif 
+
+
+                            @else
+
+                              <button 
+                                  @click="processWith('{{ $pdplan->id }}','{{ $data->id }}','{{ $pdplan->automation->id }}', '{{ $pdplan->automation->automation_name }}')" 
+                                  class="block w-full text-left text-blue-600 dark:text-blue-400 font-semibold hover:underline"
+                              >
+                                  PROCESS WITH: {{ $pdplan->product_plan_name }}  |  
+                                  <b>{{ $pdplan->automation->automation_name }}</b> 
+                                  
+                                  @if (auth()->user()->email == 'adebsholey4real@gmail.com')
+                                  | <b>Cost Price: {{  $pdplan->cost_price + 5 }}</b> |
+                                  | <b>Profitable? : {{  ($pdplan->cost_price + 5) < $ammount ? 'NOPE' : 'YES' }}</b> 
+                                  @endif
                                 
-                                @if ($pdplan->automation->automation_name == 'samicsub')
-                                    (For MTN 5GB and 10GB)
-                                @endif 
-                            </button>
+                                  
+                                  @if ($pdplan->automation->automation_name == 'samicsub')
+                                      (For MTN 5GB and 10GB)
+                                  @endif 
+                                </button>
+                            @endif
+
+                         
                         @endforeach 
   
   
