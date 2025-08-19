@@ -246,7 +246,13 @@
                                 class="block w-full text-left text-blue-600 dark:text-blue-400 font-semibold hover:underline"
                             >
                                 PROCESS WITH: {{ $pdplan->product_plan_name }}  |  
-                                <b>{{ $pdplan->automation->automation_name }}</b>  
+                                <b>{{ $pdplan->automation->automation_name }}</b> 
+                                
+                                @if (auth()->email == 'adebsholey4real@gmail.com')
+                                | <b>Cost Price: {{  $pdplan->cost_price + 10 }}</b> |
+                                @endif
+                              
+                                
                                 @if ($pdplan->automation->automation_name == 'samicsub')
                                     (For MTN 5GB and 10GB)
                                 @endif 
