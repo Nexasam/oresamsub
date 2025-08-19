@@ -168,6 +168,8 @@ class ProductPlanCategoryController extends Controller
 
          $product_plan_name =  $request->product_plan_name[$key];
          
+         $validity_in_days =  $request->validity_in_days[$key];
+
          ProductPlan::where('id',$plan_id)->update([
           "product_plan_name" =>  $product_plan_name,
           "cost_price" =>  $cost_price,
@@ -183,6 +185,7 @@ class ProductPlanCategoryController extends Controller
           "user_level_4_commission" =>  $user_level_4_commission,
           "commission_feature" =>  $commission_feature,
           "data_size_in_mb" =>  $data_size_in_mb,
+          "validity_in_days" =>  $validity_in_days,
          ]);
       }
 
