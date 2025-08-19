@@ -13,6 +13,8 @@ class Nine9javtuAutomation{
     private $amount;
 
 
+    private $airtime_api_id;
+
     private $network_api_id;
 
     private $data_api_id;
