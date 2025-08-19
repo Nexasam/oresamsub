@@ -176,66 +176,68 @@
                         
                       @endphp
   
-                      <div 
+                        <div 
                         x-data="{
                             showModal: false,
                             selectedAutomation: null,
+                            selectedNewPlan: null,
+                            processing: false,
                             processWith(newPlanId, transactionId, automationId, automationName) {
                                 this.selectedAutomation = { id: automationId, name: automationName };
                                 this.selectedNewPlan = { id: newPlanId };
                                 this.showModal = true;
                             },
-                         confirmProcess() {
-                            fetch('{{ route("transactions.reprocess_transaction") }}', {
-                                method: 'POST',
-                                headers: {
-                                    'Content-Type': 'application/json',
-                                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                                },
-                                body: JSON.stringify({
-                                    transaction_id: '{{ $data->id }}',
-                                    transaction_amount: '{{ $ammount }}',
-                                    plan_id: this.selectedNewPlan.id,
-                                    automation_id: this.selectedAutomation.id,
-                                    automation_name: this.selectedAutomation.name,
-                                    phone_number: '{{ $data->phone_number }}',
-                                    network_id: '{{ $data->product_plan->product_plan_category->network->id ?? NULL }}',
-                                }),
-                            })
-                            .then(res => res.json())
-                            .then(data => {
-                                 {{-- console.log(data) --}}
-                                if (data.status) {
-                                    Swal.fire({
-                                        icon: 'success',
-                                        title: 'Transaction Reprocessed',
-                                        text: 'Transaction was successfully processed with ' + this.selectedAutomation.name,
-                                        showConfirmButton: false,
-                                        timer: 2500
-                                    });
-                                } else {
+                            confirmProcess() {
+                                this.processing = true;
+                                fetch('{{ route("transactions.reprocess_transaction") }}', {
+                                    method: 'POST',
+                                    headers: {
+                                        'Content-Type': 'application/json',
+                                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                                    },
+                                    body: JSON.stringify({
+                                        transaction_id: '{{ $data->id }}',
+                                        transaction_amount: '{{ $ammount }}',
+                                        plan_id: this.selectedNewPlan.id,
+                                        automation_id: this.selectedAutomation.id,
+                                        automation_name: this.selectedAutomation.name,
+                                        phone_number: '{{ $data->phone_number }}',
+                                        network_id: '{{ $data->product_plan->product_plan_category->network->id ?? NULL }}',
+                                    }),
+                                })
+                                .then(res => res.json())
+                                .then(data => {
+                                    if (data.status) {
+                                        Swal.fire({
+                                            icon: 'success',
+                                            title: 'Transaction Reprocessed',
+                                            text: 'Transaction was successfully processed with ' + this.selectedAutomation.name,
+                                            showConfirmButton: false,
+                                            timer: 2500
+                                        });
+                                    } else {
+                                        Swal.fire({
+                                            icon: 'error',
+                                            title: 'Error',
+                                            text: data.message || 'Something went wrong!',
+                                        });
+                                    }
+                                })
+                                .catch(() => {
                                     Swal.fire({
                                         icon: 'error',
-                                        title: 'Error',
-                                        text: data.message || 'Something went wrong!',
+                                        title: 'Server Error',
+                                        text: 'Please try again later',
                                     });
-                                }
-                            })
-                            .catch(() => {
-                                Swal.fire({
-                                    icon: 'error',
-                                    title: 'Server Error',
-                                    text: 'Please try again later',
+                                })
+                                .finally(() => {
+                                    this.processing = false;
+                                    this.showModal = false;
                                 });
-                            })
-                            .finally(() => {
-                                this.showModal = false;
-                            });
-                        }
-
+                            }
                         }"
                         class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md space-y-3 mb-2"
-                    >
+                      >
                         <p><b>Other Automation Processing Same Plan</b></p>
   
                         @foreach ($product_plansss as $pdplan)
@@ -251,37 +253,40 @@
                             </button>
                         @endforeach 
   
+  
                         <!-- Modal -->
                         <div 
-                            x-show="showModal" 
-                            x-transition 
-                            class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50"
-                        >
-                            <div class="bg-white dark:bg-gray-900 rounded-xl p-6 w-full max-w-md shadow-lg">
-                                <h2 class="text-lg font-bold mb-4 text-gray-800 dark:text-gray-200">
-                                    Confirm Reprocessing
-                                </h2>
-                                <p class="text-gray-600 dark:text-gray-400 mb-6">
-                                    Are you sure you want to reprocess this transaction using 
-                                    <span class="font-bold text-blue-600" x-text="selectedAutomation?.name"></span>?
-                                </p>
-                                <div class="flex justify-end space-x-3">
-                                    <button 
-                                        @click="showModal = false" 
-                                        class="px-4 py-2 bg-gray-300 dark:bg-gray-700 text-gray-800 dark:text-gray-200 rounded-lg hover:bg-gray-400 dark:hover:bg-gray-600"
-                                    >
-                                        Cancel
-                                    </button>
-                                    <button 
-                                        @click="confirmProcess()" 
-                                        class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
-                                    >
-                                        Yes, Process
-                                    </button>
-                                </div>
+                        x-show="showModal" 
+                        x-transition 
+                        class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50"
+                    >
+                        <div class="bg-white dark:bg-gray-900 rounded-xl p-6 w-full max-w-md shadow-lg">
+                            <h2 class="text-lg font-bold mb-4 text-gray-800 dark:text-gray-200">
+                                Confirm Reprocessing
+                            </h2>
+                            <p class="text-gray-600 dark:text-gray-400 mb-6">
+                                Are you sure you want to reprocess this transaction using 
+                                <span class="font-bold text-blue-600" x-text="selectedAutomation?.name"></span>?
+                            </p>
+                            <div class="flex justify-end space-x-3">
+                                <button 
+                                    @click="showModal = false" 
+                                    class="px-4 py-2 bg-gray-300 dark:bg-gray-700 text-gray-800 dark:text-gray-200 rounded-lg hover:bg-gray-400 dark:hover:bg-gray-600"
+                                    :disabled="processing"
+                                >
+                                    Cancel
+                                </button>
+                                <button 
+                                    @click="confirmProcess()" 
+                                    class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50"
+                                    x-text="processing ? 'Reprocessing…' : 'Yes, Process'"
+                                    :disabled="processing"
+                                >
+                                </button>
                             </div>
                         </div>
-                      </div>    
+                    </div>
+                    </div>
 
                      
                   
