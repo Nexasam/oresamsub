@@ -279,6 +279,10 @@
                                                     <input class="w-60 text-sm " name="product_plan_name[]" type="text" value="{{ $product_plann->product_plan_name }}">
                                                   </div>
                                                   <div class="mr-4">
+                                                    <label for="">Validity(days)</label>
+                                                    <input class="w-20 text-sm" name="validity_in_days[]" type="text" value="{{ $product_plann->validity_in_days }}">
+                                                  </div>
+                                                  <div class="mr-4">
                                                     <label for="">Cost Price</label>
                                                     <input class="w-20 text-sm" name="cost_price[]" type="text" value="{{ $product_plann->cost_price }}">
                                                   </div>
