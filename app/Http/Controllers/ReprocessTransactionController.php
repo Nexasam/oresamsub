@@ -43,8 +43,14 @@ class ReprocessTransactionController extends Controller
         $transaction_details = Transaction::where('id',$request->transaction_id)->first();
 
 
+        if( ($transaction_details  && $transaction_details->status == 1 && $transaction_details->set_for_manual == 0) || $transaction_details->status == 2) {
+            return response()->json(['status'=>false,'message'=>'This transaction is already in a good state or its been refunded.' ]);
+        }
+
+
+
         if($product_slug  != 'data'){
-            return response()->json(['status'=>true,'message'=>'Applicable on DATA only for now' ]);
+            return response()->json(['status'=>false,'message'=>'Applicable on DATA only for now' ]);
         }
 
         $phone_number = $request->phone_number;
