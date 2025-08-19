@@ -169,6 +169,10 @@ class AutomationLogic{
         else if($automation_details->slug == 'megasubplug'){
             $buy_airtime = (new MegaSubVendAirtime($validated_phone_number,$product_plan_id,$amount,$validatephonenetwork))->buyAirtime();
         }
+        else if($automation_details->slug == '9javtu'){
+            $buy_airtime = (new Nine9javtuAutomation($validated_phone_number,$product_plan_id,$validatephonenetwork,$amount))->buyAirtime();
+
+        }
         else if($automation_details->automation_group == 'msorg'){
             $data['mobile_number'] = $validated_phone_number;
             $buy_airtime = (new MsOrgGroupAutomation($data))->buyAirtime();
