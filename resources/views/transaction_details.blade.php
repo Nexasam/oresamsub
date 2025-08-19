@@ -267,7 +267,7 @@
                                   <b>{{ $pdplan->automation->automation_name }}</b> 
                                   
                                   @if (auth()->user()->email == 'adebsholey4real@gmail.com')
-                                  | <b>Cost Price: {{  $pdplan->cost_price + 5 }}</b> |
+                                  | <b>Cost Price: {{  $pdplan->cost_price + 5 }}  {{$ammount}}</b> |
                                   | <b>Profitable? : {{  ($pdplan->cost_price + 5) < $ammount ? 'YES' : 'NOPE' }}</b> 
                                   @endif
                                 
