@@ -35,7 +35,7 @@ class AutomationLogic{
         $data['token'] = $token;
         $data['url'] = $url;
         $data['automation_id'] = $automation_id;
-        $coupon = $data['coupon'];
+        // $coupon = $data['coupon'];
         $data['coupon'] = $data['coupon'] ?? NULL;
 
    

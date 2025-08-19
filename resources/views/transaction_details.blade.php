@@ -111,47 +111,47 @@
                     
                       
                       <div 
-    x-data 
-    x-init="
-        navigator.clipboard.writeText('{{ $data->phone_number }}')
-            .then(() => {
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Phone Number Copied!',
-                    text: 'Phone number has been copied to clipboard',
-                    showConfirmButton: false,
-                    timer: 2000,
-                    toast: true,
-                    position: 'top-end'
-                });
-            })
-    "
-    class="flex items-center space-x-3 bg-gray-100 dark:bg-gray-800 p-4 rounded-xl shadow-md"
->
-    <p class="font-bold text-lg text-gray-800 dark:text-gray-200">
-        Phone Number: 
-        <span class="text-blue-600 dark:text-blue-400">{{ $data->phone_number }}</span>
-    </p>
-    
-    <button 
-        @click="
-            navigator.clipboard.writeText('{{ $data->phone_number }}')
-            .then(() => {
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Copied!',
-                    text: 'Phone number has been copied to clipboard',
-                    showConfirmButton: false,
-                    timer: 2000,
-                    toast: true,
-                    position: 'top-end'
-                });
-            })
-        " 
-        class="flex items-center space-x-2 px-4 py-2 text-base bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg shadow-lg transition transform hover:scale-105"
-    >
-        📋 Copy
-    </button>
+                          x-data 
+                          x-init="
+                              navigator.clipboard.writeText('{{ $data->phone_number }}')
+                                  .then(() => {
+                                      Swal.fire({
+                                          icon: 'success',
+                                          title: 'Phone Number Copied!',
+                                          text: 'Phone number has been copied to clipboard',
+                                          showConfirmButton: false,
+                                          timer: 2000,
+                                          toast: true,
+                                          position: 'top-end'
+                                      });
+                                  })
+                          "
+                          class="flex items-center space-x-3 bg-gray-100 dark:bg-gray-800 p-4 rounded-xl shadow-md"
+                      >
+                          <p class="font-bold text-lg text-gray-800 dark:text-gray-200">
+                              Phone Number: 
+                              <span class="text-blue-600 dark:text-blue-400">{{ $data->phone_number }}</span>
+                          </p>
+                          
+                          <button 
+                              @click="
+                                  navigator.clipboard.writeText('{{ $data->phone_number }}')
+                                  .then(() => {
+                                      Swal.fire({
+                                          icon: 'success',
+                                          title: 'Copied!',
+                                          text: 'Phone number has been copied to clipboard',
+                                          showConfirmButton: false,
+                                          timer: 2000,
+                                          toast: true,
+                                          position: 'top-end'
+                                      });
+                                  })
+                              " 
+                              class="flex items-center space-x-2 px-4 py-2 text-base bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg shadow-lg transition transform hover:scale-105"
+                          >
+                              📋 Copy
+                          </button>
                       </div>
 
 
@@ -251,6 +251,8 @@
                       ->where('visibility',1)
                       ->get();
 
+                      $ammount = $data->discounted_amount ?? $data->amount;
+
                         
                       @endphp
   
@@ -258,52 +260,59 @@
                         x-data="{
                             showModal: false,
                             selectedAutomation: null,
-                            processWith(automationId, automationName) {
+                            processWith(newPlanId, transactionId, automationId, automationName) {
                                 this.selectedAutomation = { id: automationId, name: automationName };
+                                this.selectedNewPlan = { id: newPlanId };
                                 this.showModal = true;
                             },
-                            confirmProcess() {
-                                // Example AJAX request (adjust route)
-                                fetch('', {
-                                    method: 'POST',
-                                    headers: {
-                                        'Content-Type': 'application/json',
-                                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                                    },
-                                    body: JSON.stringify({
-                                        transaction_id: '{{ $data->id }}',
-                                        automation_id: this.selectedAutomation.id,
-                                    }),
-                                })
-                                .then(res => res.json())
-                                .then(data => {
-                                    if (data.success) {
-                                        Swal.fire({
-                                            icon: 'success',
-                                            title: 'Processing Started',
-                                            text: 'Transaction is being processed with ' + this.selectedAutomation.name,
-                                            showConfirmButton: false,
-                                            timer: 2500
-                                        });
-                                    } else {
-                                        Swal.fire({
-                                            icon: 'error',
-                                            title: 'Error',
-                                            text: data.message || 'Something went wrong!',
-                                        });
-                                    }
-                                })
-                                .catch(() => {
+                         confirmProcess() {
+                            fetch('{{ route("transactions.reprocess_transaction") }}', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                                },
+                                body: JSON.stringify({
+                                    transaction_id: '{{ $data->id }}',
+                                    transaction_amount: '{{ $ammount }}',
+                                    plan_id: this.selectedNewPlan.id,
+                                    automation_id: this.selectedAutomation.id,
+                                    automation_name: this.selectedAutomation.name,
+                                    phone_number: '{{ $data->phone_number }}',
+                                    network_id: '{{ $data->product_plan->product_plan_category->network->id ?? NULL }}',
+                                }),
+                            })
+                            .then(res => res.json())
+                            .then(data => {
+                                 {{-- console.log(data) --}}
+                                if (data.status) {
+                                    Swal.fire({
+                                        icon: 'success',
+                                        title: 'Transaction Reprocessed',
+                                        text: 'Transaction was successfully processed with ' + this.selectedAutomation.name,
+                                        showConfirmButton: false,
+                                        timer: 2500
+                                    });
+                                } else {
                                     Swal.fire({
                                         icon: 'error',
-                                        title: 'Server Error',
-                                        text: 'Please try again later',
+                                        title: 'Error',
+                                        text: data.message || 'Something went wrong!',
                                     });
-                                })
-                                .finally(() => {
-                                    this.showModal = false;
+                                }
+                            })
+                            .catch(() => {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Server Error',
+                                    text: 'Please try again later',
                                 });
-                            }
+                            })
+                            .finally(() => {
+                                this.showModal = false;
+                            });
+                        }
+
                         }"
                         class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md space-y-3 mb-2"
                     >
@@ -311,7 +320,7 @@
   
                         @foreach ($product_plansss as $pdplan)
                             <button 
-                                @click="processWith('{{ $pdplan->automation->id }}', '{{ $pdplan->automation->automation_name }}')" 
+                                @click="processWith('{{ $pdplan->id }}','{{ $data->id }}','{{ $pdplan->automation->id }}', '{{ $pdplan->automation->automation_name }}')" 
                                 class="block w-full text-left text-blue-600 dark:text-blue-400 font-semibold hover:underline"
                             >
                                 PROCESS WITH: {{ $pdplan->product_plan_name }}  |  

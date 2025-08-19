@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Controllers\DailyCustomerFollowupController;
 use App\Models\SiteImage;
 use App\Models\ProductPlan;
 use App\Models\SiteTemplate;
@@ -51,6 +50,8 @@ use App\Http\Controllers\CableSubscriptionController;
 use Rap2hpoutre\LaravelLogViewer\LogViewerController;
 use App\Http\Controllers\WalletFundingPromoController;
 use App\Http\Controllers\ProductPlanCategoryController;
+use App\Http\Controllers\ReprocessTransactionController;
+use App\Http\Controllers\DailyCustomerFollowupController;
 use App\Http\Controllers\ElectricitySubscriptionController;
 use App\Http\Controllers\ProductPlanCustomPricingController;
 
@@ -377,6 +378,11 @@ Route::middleware(['set_locale'])->group(function () {
 
             Route::middleware(['auth','verified','admin'])->get('admin/bulk_data_plans/{product_plan_category_id}', [BulkDataPlanController::class, 'index'])->name('admin.bulk_data_plans.index');
             Route::middleware(['auth','verified','admin'])->post('admin/bulk_data_plans/store', [BulkDataPlanController::class, 'store'])->name('admin.bulk_data_plans.store');
+
+
+            //reprocess txn manually
+            Route::middleware(['auth','verified','admin'])->post('transactions/reprocess_transaction', [ReprocessTransactionController::class, 'reprocess_transaction'])->name('transactions.reprocess_transaction');
+
 
             Route::middleware(['auth','verified','admin'])->post('transactions/lock_for_manual_processing', [TransactionController::class, 'lock_for_manual_processing'])->name('transactions.lock_for_manual_processing');
             Route::middleware(['auth','verified','admin'])->post('transactions/transaction_refund', [TransactionController::class, 'transaction_refund'])->name('transactions.transaction_refund');
