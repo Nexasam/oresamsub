@@ -463,7 +463,13 @@ class TransactionController extends Controller
         //     // return $user_screen_message;
         // })
         ->addColumn('phone_number',function($data){
-            return $data->phone_number;
+            $ph = $data->phone_number;
+            if(env('APP_NAME') == 'OresamSub'){
+                // $cat .= '<br>screen message: <b>'.$data->product_plan->automation->automation_name.'<br>';
+                $ph .= '<br>screen message: <b>'.$data->admin_screen_message.'<br>';
+            }
+
+            return $ph;
         }) 
         ->addColumn('amount',function($data){
         return '&#8358;'.(number_format($data->amount,2));
@@ -545,10 +551,7 @@ class TransactionController extends Controller
         }) 
         ->addColumn('created_at',function($data){
             $cat = $data->created_at;
-            if(env('APP_NAME') == 'OresamSub'){
-                // $cat .= '<br>screen message: <b>'.$data->product_plan->automation->automation_name.'<br>';
-                $cat .= '<br>screen message: <b>'.$data->admin_screen_message.'<br>';
-            }
+          
 
             return $cat;
         }) 
