@@ -122,7 +122,7 @@
 
 
 <!-- 🚀 Join the Community Section -->
-{{-- <div class="mb-4">
+<div class="mb-4">
   <div class="bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 text-white p-5 rounded-2xl shadow-lg flex flex-col md:flex-row items-center justify-between gap-4">
     
     <!-- Text -->
@@ -136,19 +136,19 @@
     <!-- CTA Button -->
     <div>
       @if(auth()->user()->category_type === 'pos')
-          <a href="https://chat.whatsapp.com/YOUR_POS_COMMUNITY_LINK" target="_blank"
+          <a href="https://chat.whatsapp.com/GoIik4DCz0k1cH3zyEtFrk?mode=ac_t" target="_blank"
             class="px-4 py-2 bg-white text-indigo-700 font-semibold rounded-lg shadow hover:bg-gray-100 transition">
             Join POS Community
           </a>
       @else
-          <a href="https://chat.whatsapp.com/YOUR_GENERIC_COMMUNITY_LINK" target="_blank"
+          <a href="https://chat.whatsapp.com/DnFkmQ9cCYF0DomvyThHLq" target="_blank"
             class="px-4 py-2 bg-white text-indigo-700 font-semibold rounded-lg shadow hover:bg-gray-100 transition">
             Join Community
           </a>
       @endif
     </div>
   </div>
-</div> --}}
+</div>
 
   <div class="relative" x-data="{ isWalletLoading: false, showBalance: false }">
     <div class="bg-emerald-600 dark:bg-emerald-700 text-white p-4 rounded-xl shadow space-y-2">
