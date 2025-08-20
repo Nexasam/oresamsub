@@ -467,9 +467,22 @@ class TransactionController extends Controller
         
             if (env('APP_NAME') == 'OresamSub') {
                 $msg = e($data->admin_screen_message);
-                $ph .= '<div class="text-sm whitespace-normal break-words max-w-[150px]">
-                            screen message: <b>'.$msg.'</b>
-                        </div>';
+        
+                $ph .= '
+                <div x-data="{ expanded: false }" class="text-sm max-w-[200px]">
+                    <span x-show="!expanded" class="line-clamp-1">
+                        screen message: <b>'.$msg.'</b>
+                    </span>
+                    <span x-show="expanded">
+                        screen message: <b>'.$msg.'</b>
+                    </span>
+        
+                    <button @click="expanded = !expanded" 
+                            class="text-emerald-600 text-xs ml-1 underline focus:outline-none">
+                        <span x-show="!expanded">Show more</span>
+                        <span x-show="expanded">Show less</span>
+                    </button>
+                </div>';
             }
         
             return $ph;
