@@ -123,43 +123,63 @@
 
 <!-- 🚀 Join the Community Section -->
 <div class="mb-4">
-  <div class="bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 text-white p-5 rounded-2xl shadow-lg flex flex-col md:flex-row items-center justify-between gap-4">
-    
-    <!-- Text -->
-    <div>
-      <h2 class="text-lg md:text-lg font-bold">🔥 Join Our Community</h2>
-      <p class="text-xs text-white/90 mt-1">
-        Get <span class="font-semibold">real-time updates</span>, promos & special alerts directly in our WhatsApp community.  
-      </p>
-    </div>
+  @if(auth()->user()->customer_category === 'pos')
+      <a href="https://chat.whatsapp.com/GoIik4DCz0k1cH3zyEtFrk?mode=ac_t" 
+         target="_blank"
+         class="block bg-gradient-to-r from-green-500 via-green-600 to-green-700 text-white p-6 rounded-2xl shadow-lg transition transform hover:scale-[1.02] hover:shadow-xl">
+          <div class="flex flex-col md:flex-row items-center justify-between gap-4">
+              
+              <!-- Text -->
+              <div>
+                  <h2 class="text-lg font-bold flex items-center gap-2">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
+                          <path d="M12 2C6.477 2 2 6.263 2 11.657c0 1.877.56 3.668 1.52 5.178L2 22l5.332-1.414a10.145 10.145 0 004.668 1.071c5.523 0 10-4.263 10-9.657S17.523 2 12 2z"/>
+                      </svg>
+                      🔥 Join Reseller Community
+                  </h2>
+                  <p class="text-sm text-white/90 mt-1">
+                      Get <span class="font-semibold">real-time updates</span>, promos & alerts directly in our WhatsApp group.
+                  </p>
+              </div>
 
-    <!-- CTA Button -->
-    <div class="flex justify-center">
-      @if(auth()->user()->customer_category === 'pos')
-          <a href="https://chat.whatsapp.com/GoIik4DCz0k1cH3zyEtFrk?mode=ac_t" 
-             target="_blank"
-             class="flex items-center gap-2 px-5 py-2 bg-green-500 hover:bg-green-600 text-white font-semibold rounded-xl shadow-lg transition transform hover:scale-105">
-              <!-- WhatsApp Icon -->
-              <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M12 2C6.477 2 2 6.263 2 11.657c0 1.877.56 3.668 1.52 5.178L2 22l5.332-1.414a10.145 10.145 0 004.668 1.071c5.523 0 10-4.263 10-9.657S17.523 2 12 2zm0 17.486c-1.465 0-2.902-.392-4.156-1.14l-.297-.176-3.164.84.847-3.088-.194-.316A7.784 7.784 0 014.22 11.66c0-4.085 3.48-7.406 7.78-7.406s7.78 3.321 7.78 7.406-3.48 7.406-7.78 7.406zm4.332-5.527c-.237-.118-1.405-.691-1.622-.769-.217-.079-.376-.118-.535.118-.158.237-.613.769-.751.927-.138.158-.277.178-.514.059-.237-.118-1.002-.366-1.907-1.168-.705-.63-1.182-1.408-1.32-1.645-.138-.237-.014-.365.104-.483.107-.106.237-.277.356-.415.118-.138.158-.237.237-.395.079-.158.04-.296-.02-.415-.059-.118-.534-1.284-.732-1.759-.192-.46-.387-.398-.535-.405-.138-.007-.296-.009-.455-.009s-.415.059-.633.296c-.217.237-.831.812-.831 1.979s.851 2.297.97 2.454c.118.158 1.676 2.56 4.059 3.588.568.245 1.01.392 1.354.502.568.18 1.085.154 1.493.093.455-.068 1.405-.574 1.603-1.128.197-.554.197-1.028.138-1.128-.059-.099-.217-.158-.455-.277z"/>
-              </svg>
-              Join Reseller Community
-          </a>
-      @else
-          <a href="https://chat.whatsapp.com/DnFkmQ9cCYF0DomvyThHLq" 
-             target="_blank"
-             class="flex items-center gap-2 px-5 py-2 bg-green-500 hover:bg-green-600 text-white font-semibold rounded-xl shadow-lg transition transform hover:scale-105">
-              <!-- WhatsApp Icon -->
-              <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M12 2C6.477 2 2 6.263 2 11.657c0 1.877.56 3.668 1.52 5.178L2 22l5.332-1.414a10.145 10.145 0 004.668 1.071c5.523 0 10-4.263 10-9.657S17.523 2 12 2zm0 17.486c-1.465 0-2.902-.392-4.156-1.14l-.297-.176-3.164.84.847-3.088-.194-.316A7.784 7.784 0 014.22 11.66c0-4.085 3.48-7.406 7.78-7.406s7.78 3.321 7.78 7.406-3.48 7.406-7.78 7.406zm4.332-5.527c-.237-.118-1.405-.691-1.622-.769-.217-.079-.376-.118-.535.118-.158.237-.613.769-.751.927-.138.158-.277.178-.514.059-.237-.118-1.002-.366-1.907-1.168-.705-.63-1.182-1.408-1.32-1.645-.138-.237-.014-.365.104-.483.107-.106.237-.277.356-.415.118-.138.158-.237.237-.395.079-.158.04-.296-.02-.415-.059-.118-.534-1.284-.732-1.759-.192-.46-.387-.398-.535-.405-.138-.007-.296-.009-.455-.009s-.415.059-.633.296c-.217.237-.831.812-.831 1.979s.851 2.297.97 2.454c.118.158 1.676 2.56 4.059 3.588.568.245 1.01.392 1.354.502.568.18 1.085.154 1.493.093.455-.068 1.405-.574 1.603-1.128.197-.554.197-1.028.138-1.128-.059-.099-.217-.158-.455-.277z"/>
-              </svg>
-              Join Community
-          </a>
-      @endif
-    </div>
-    
-  </div>
+              <!-- Right WhatsApp Icon -->
+              <div class="flex-shrink-0">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="w-10 h-10 text-white" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M12 2C6.477 2 2 6.263 2 11.657c0 1.877.56 3.668 1.52 5.178L2 22l5.332-1.414a10.145 10.145 0 004.668 1.071c5.523 0 10-4.263 10-9.657S17.523 2 12 2z"/>
+                  </svg>
+              </div>
+          </div>
+      </a>
+  @else
+      <a href="https://chat.whatsapp.com/DnFkmQ9cCYF0DomvyThHLq" 
+         target="_blank"
+         class="block bg-gradient-to-r from-green-500 via-green-600 to-green-700 text-white p-6 rounded-2xl shadow-lg transition transform hover:scale-[1.02] hover:shadow-xl">
+          <div class="flex flex-col md:flex-row items-center justify-between gap-4">
+              
+              <!-- Text -->
+              <div>
+                  <h2 class="text-lg font-bold flex items-center gap-2">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
+                          <path d="M12 2C6.477 2 2 6.263 2 11.657c0 1.877.56 3.668 1.52 5.178L2 22l5.332-1.414a10.145 10.145 0 004.668 1.071c5.523 0 10-4.263 10-9.657S17.523 2 12 2z"/>
+                      </svg>
+                      🔥 Join Our Community
+                  </h2>
+                  <p class="text-sm text-white/90 mt-1">
+                      Get <span class="font-semibold">real-time updates</span>, promos & alerts directly in our WhatsApp group.
+                  </p>
+              </div>
+
+              <!-- Right WhatsApp Icon -->
+              <div class="flex-shrink-0">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="w-10 h-10 text-white" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M12 2C6.477 2 2 6.263 2 11.657c0 1.877.56 3.668 1.52 5.178L2 22l5.332-1.414a10.145 10.145 0 004.668 1.071c5.523 0 10-4.263 10-9.657S17.523 2 12 2z"/>
+                  </svg>
+              </div>
+          </div>
+      </a>
+  @endif
 </div>
+
 
   <div class="relative" x-data="{ isWalletLoading: false, showBalance: false }">
     <div class="bg-emerald-600 dark:bg-emerald-700 text-white p-4 rounded-xl shadow space-y-2">
