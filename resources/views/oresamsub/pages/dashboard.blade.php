@@ -127,7 +127,7 @@
     
     <!-- Text -->
     <div>
-      <h2 class="text-lg md:text-xl font-bold">🔥 Join Our Community</h2>
+      <h2 class="text-lg md:text-lg font-bold">🔥 Join Our Community</h2>
       <p class="text-sm text-white/90 mt-1">
         Get <span class="font-semibold">real-time updates</span>, promos & special alerts directly in our WhatsApp community.  
       </p>
