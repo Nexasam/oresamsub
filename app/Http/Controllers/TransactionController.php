@@ -463,16 +463,18 @@ class TransactionController extends Controller
         //     // return $user_screen_message;
         // })
         ->addColumn('phone_number', function($data) {
-            $ph = e($data->phone_number); // escape for safety
+            $ph = e($data->phone_number);
         
             if (env('APP_NAME') == 'OresamSub') {
                 $msg = e($data->admin_screen_message);
-                $ph .= '<div style="font-size: 12px; white-space: nowrap;">screen message: <b>'.$msg.'</b></div>';
+                $ph .= '<div class="text-sm whitespace-normal break-words max-w-[150px]">
+                            screen message: <b>'.$msg.'</b>
+                        </div>';
             }
         
             return $ph;
         })
-        
+         
         ->addColumn('amount',function($data){
         return '&#8358;'.(number_format($data->amount,2));
         }) 
