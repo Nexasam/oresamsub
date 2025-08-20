@@ -369,10 +369,12 @@
                          
                         @endforeach 
                         <hr>
-                        <a href="https://wa.me/2348168509044" target="_blank" 
-                        class="inline-block px-4 py-2 bg-red-500 hover:bg-red-600 text-white font-semibold rounded-lg shadow transition">
-                        📲 Escalate to CTO if all options to reprocess fail
+                        <a href="https://wa.me/2348168509044?text=Hello%2C%20CTO%20please%20help%20me%20to%20urgently%20attend%20to%20this%20issue%2C%20all%20attempts%20to%20reprocess%20the%20transaction%20has%20failed." 
+                          target="_blank" 
+                          class="inline-block px-4 py-2 bg-red-500 hover:bg-red-600 text-white font-semibold rounded-lg shadow transition">
+                          📲 Escalate to CTO if all options to reprocess fail
                         </a>
+
   
   
                         <!-- Modal -->
