@@ -121,14 +121,35 @@
 </div>
 
 
+<!-- 🚀 Join the Community Section -->
+<div class="mb-4">
+  <div class="bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 text-white p-5 rounded-2xl shadow-lg flex flex-col md:flex-row items-center justify-between gap-4">
+    
+    <!-- Text -->
+    <div>
+      <h2 class="text-lg md:text-xl font-bold">🔥 Join Our Community</h2>
+      <p class="text-sm text-white/90 mt-1">
+        Get <span class="font-semibold">real-time updates</span>, promos & special alerts directly in our WhatsApp community.  
+      </p>
+    </div>
 
-  
-  
-  
+    <!-- CTA Button -->
+    <div>
+      @if(auth()->user()->category_type === 'pos')
+          <a href="https://chat.whatsapp.com/YOUR_POS_COMMUNITY_LINK" target="_blank"
+            class="px-4 py-2 bg-white text-indigo-700 font-semibold rounded-lg shadow hover:bg-gray-100 transition">
+            Join POS Community
+          </a>
+      @else
+          <a href="https://chat.whatsapp.com/YOUR_GENERIC_COMMUNITY_LINK" target="_blank"
+            class="px-4 py-2 bg-white text-indigo-700 font-semibold rounded-lg shadow hover:bg-gray-100 transition">
+            Join Community
+          </a>
+      @endif
+    </div>
+  </div>
+</div>
 
-
-  
-  
   <div class="relative" x-data="{ isWalletLoading: false, showBalance: false }">
     <div class="bg-emerald-600 dark:bg-emerald-700 text-white p-4 rounded-xl shadow space-y-2">
       <div class="flex justify-between items-center">
@@ -160,17 +181,6 @@
             </button>
           </p>
         </div>
-  
-        <!-- Optional: Wallet Refresh Button -->
-        {{-- 
-        <button
-          @click="isWalletLoading = true; setTimeout(() => isWalletLoading = false, 2000)"
-          class="text-white hover:text-white/80 transition text-xl"
-          title="Refresh Balance"
-        >
-          🔄
-        </button> 
-        --}}
       </div>
   
       <!-- Top Up -->
@@ -183,12 +193,6 @@
       </div>
     </div>
   </div>
-  
-  
-  
-  
-  
-
   
 
 <!-- Action Buttons -->
