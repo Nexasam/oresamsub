@@ -462,15 +462,17 @@ class TransactionController extends Controller
         //     return  '<span style="white-space: normal;word-wrap: break-word;word-break: normal;width:auto">'.$data->admin_screen_message.'</span>';
         //     // return $user_screen_message;
         // })
-        ->addColumn('phone_number',function($data){
-            $ph = $data->phone_number;
-            if(env('APP_NAME') == 'OresamSub'){
-                // $cat .= '<br>screen message: <b>'.$data->product_plan->automation->automation_name.'<br>';
-                $ph .= '<br>screen message: <b>'.$data->admin_screen_message.'<br>';
+        ->addColumn('phone_number', function($data) {
+            $ph = e($data->phone_number); // escape for safety
+        
+            if (env('APP_NAME') == 'OresamSub') {
+                $msg = e($data->admin_screen_message);
+                $ph .= '<div style="font-size: 12px; white-space: nowrap;">screen message: <b>'.$msg.'</b></div>';
             }
-
+        
             return $ph;
-        }) 
+        })
+        
         ->addColumn('amount',function($data){
         return '&#8358;'.(number_format($data->amount,2));
         }) 
@@ -564,6 +566,7 @@ class TransactionController extends Controller
         })
 
         ->escapeColumns([])
+        ->rawColumns(['phone_number']) // allow HTML
         ->make(true);
 
 
