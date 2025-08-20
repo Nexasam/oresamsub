@@ -401,7 +401,7 @@ class TransactionController extends Controller
           $query->where('phone_number',$phone);
         })
         ->where('wallet_category','!=','data_wallet')
-        ->with(['user','product_plan'])->latest()->limit($limit)
+        ->with(['user','product_plan.automation'])->latest()->limit($limit)
         ->get();
 
 
@@ -544,7 +544,7 @@ class TransactionController extends Controller
 
         }) 
         ->addColumn('created_at',function($data){
-            return $data->created_at;
+            return $data->created_at.'<br>automation: '.$data->product_plan->automation->automation_name;
         }) 
         ->addColumn('action',function($data){
             $route = route('transactions.transaction_details',$data->id);
