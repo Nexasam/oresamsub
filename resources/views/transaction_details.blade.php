@@ -239,9 +239,9 @@
                         class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md space-y-3 mb-2"
                       >
                         <p><b>Other Automation Processing Same Plan</b></p>
-                        <p><b>Escalate to CTO if all options to reprocess fail</b></p>
+                        <p><b>Escalate  to CTO if all options to reprocess fail</b></p>
                         <a href="https://wa.me/2348168509044" target="_blank" 
-                          class="inline-block px-4 py-2 bg-green-500 hover:bg-green-600 text-white font-semibold rounded-lg shadow transition">
+                          class="inline-block px-4 py-2 bg-red-500 hover:bg-red-600 text-white font-semibold rounded-lg shadow transition">
                           📲 Escalate to CTO if all options to reprocess fail
                         </a>
 
