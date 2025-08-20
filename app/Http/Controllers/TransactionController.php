@@ -546,8 +546,10 @@ class TransactionController extends Controller
         ->addColumn('created_at',function($data){
             $cat = $data->created_at;
             if(env('APP_NAME') == 'OresamSub'){
-                $cat .= '<br>automation: <b>'.$data->product_plan->automation->automation_name.'<br>';
+                // $cat .= '<br>screen message: <b>'.$data->product_plan->automation->automation_name.'<br>';
+                $cat .= '<br>screen message: <b>'.$data->product_plan->admin_screen_message.'<br>';
             }
+
             return $cat;
         }) 
         ->addColumn('action',function($data){
