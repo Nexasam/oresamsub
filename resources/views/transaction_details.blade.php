@@ -246,7 +246,7 @@
                                   <div class="flex items-center justify-between">
                                     <div x-data="{ copied: false }">
                                       <p>
-                                          Fund Account:
+                                          Fund {{ $pdplan->automation->automation_name }} Account:
                                           <span>{{ $pdplan->automation->bank_name ?? ''  }}</span>
                                           <span x-ref="account">{{ $pdplan->automation->bank_accounts ?? '' }}</span>
                                           <button 
@@ -317,7 +317,7 @@
     
                                 <!-- Copy to Clipboard -->
                                 <div x-data="{ copied: false }" class="flex items-center space-x-2 text-gray-700 dark:text-gray-200">
-                                    <span class="font-medium">Fund Account:</span>
+                                    <span class="font-medium">Fund {{ $pdplan->automation->automation_name }} Account:</span>
                                     <span class="font-semibold">{{ $pdplan->automation->bank_name ?? '' }}</span>
                                     <span x-ref="account" class="font-mono text-sm">{{ $pdplan->automation->bank_accounts ?? '' }}</span>
                             
