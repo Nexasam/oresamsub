@@ -462,6 +462,7 @@ class TransactionController extends Controller
         //     return  '<span style="white-space: normal;word-wrap: break-word;word-break: normal;width:auto">'.$data->admin_screen_message.'</span>';
         //     // return $user_screen_message;
         // })
+        
         ->addColumn('phone_number', function($data) {
             $ph = e($data->phone_number);
         
@@ -469,19 +470,24 @@ class TransactionController extends Controller
                 $msg = e($data->admin_screen_message);
         
                 $ph .= '
-                <div x-data="{ expanded: false }" class="text-sm max-w-[200px]">
+                <div x-data="{ expanded: false }" class="text-sm max-w-[200px] cursor-pointer select-none"
+                     @click="expanded = !expanded">
+        
+                    <!-- Collapsed (clamped) -->
                     <span x-show="!expanded" class="line-clamp-1">
                         screen message: <b>'.$msg.'</b>
                     </span>
+        
+                    <!-- Expanded (full) -->
                     <span x-show="expanded">
                         screen message: <b>'.$msg.'</b>
                     </span>
         
-                    <button @click="expanded = !expanded" 
-                            class="text-emerald-600 text-xs ml-1 underline focus:outline-none">
+                    <!-- Optional toggle text -->
+                    <div class="text-emerald-600 text-xs underline mt-1">
                         <span x-show="!expanded">Show more</span>
                         <span x-show="expanded">Show less</span>
-                    </button>
+                    </div>
                 </div>';
             }
         
