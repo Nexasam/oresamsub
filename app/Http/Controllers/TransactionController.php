@@ -547,7 +547,7 @@ class TransactionController extends Controller
             $cat = $data->created_at;
             if(env('APP_NAME') == 'OresamSub'){
                 // $cat .= '<br>screen message: <b>'.$data->product_plan->automation->automation_name.'<br>';
-                $cat .= '<br>screen message: <b>'.$data->product_plan->admin_screen_message.'<br>';
+                $cat .= '<br>screen message: <b>'.$data->admin_screen_message.'<br>';
             }
 
             return $cat;
