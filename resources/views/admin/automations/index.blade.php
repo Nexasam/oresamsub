@@ -215,18 +215,20 @@
                                   <td>{{ $count++ }}</td>
                                   <td>{{ $automation->automation_name }} <br>
                                      @if (env('APP_NAME') == 'OresamSub')
-                                      <p>
-                                        Fund Account:
-                                        <span>{{ $automation->bank_name ?? ''  }}</span>
-                                        <span x-ref="account">{{ $automation->bank_accounts ?? '' }}</span>
-                                        <button 
-                                            @click="navigator.clipboard.writeText($refs.account.innerText).then(() => { copied = true; setTimeout(() => copied = false, 2000) })"
-                                            class="ml-2 bg-blue-500 text-white px-2 py-1 rounded"
-                                        >
-                                            Copy
-                                        </button>
-                                        <span x-show="copied" class="text-green-500 ml-2">Copied!</span>
-                                        </p>
+                                       <div x-data="{ copied: false }">
+                                        <p>
+                                          Fund Account:
+                                          <span>{{ $automation->bank_name ?? ''  }}</span>
+                                          <span x-ref="account">{{ $automation->bank_accounts ?? '' }}</span>
+                                          <button 
+                                              @click="navigator.clipboard.writeText($refs.account.innerText).then(() => { copied = true; setTimeout(() => copied = false, 2000) })"
+                                              class="ml-2 bg-blue-500 text-white px-2 py-1 rounded"
+                                          >
+                                              Copy
+                                          </button>
+                                          <span x-show="copied" class="text-green-500 ml-2">Copied!</span>
+                                          </p>
+                                       </div>
                                       @endif
                                   </td>
                                   <td>{{ $automation->created_at }}</td>
