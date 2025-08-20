@@ -296,7 +296,7 @@
                                     @click="processWith('{{ $pdplan->id }}','{{ $data->id }}','{{ $pdplan->automation->id }}', '{{ $pdplan->automation->automation_name }}')" 
                                     class="block w-full text-left text-blue-600 dark:text-blue-400 font-semibold hover:underline"
                                 >
-                                    PROCESS WITH: {{ $pdplan->product_plan_name }}  |  
+                                    USE: {{ $pdplan->product_plan_name }}  |  
                                     <b>{{ $pdplan->automation->automation_name }}</b>  |
                                     
                                     
