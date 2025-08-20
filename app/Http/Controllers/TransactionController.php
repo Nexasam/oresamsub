@@ -544,7 +544,11 @@ class TransactionController extends Controller
 
         }) 
         ->addColumn('created_at',function($data){
-            return $data->created_at.'<br>automation: '.$data->product_plan->automation->automation_name;
+            $cat = $data->created_at;
+            if(env('APP_NAME') == 'OresamSub'){
+                $cat .= '<br>automation: '.$data->product_plan->automation->automation_name;
+            }
+            return $cat;
         }) 
         ->addColumn('action',function($data){
             $route = route('transactions.transaction_details',$data->id);
