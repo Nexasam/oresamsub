@@ -244,7 +244,19 @@
                             @if (($pdplan->cost_price + 5) > $ammount && auth()->user()->email != 'adebsholey4real@gmail.com')
                             
                                   <div class="flex items-center justify-between">
-                                    <p>Automation Bank Account: {{ $pdplan->automation->bank_accounts ?? NULL  }}</p> 
+                                    <div x-data="{ copied: false }">
+                                      <p>
+                                          Fund Account: 
+                                          <span x-ref="account">{{ $pdplan->automation->bank_accounts ?? '' }}</span>
+                                          <button 
+                                              @click="navigator.clipboard.writeText($refs.account.innerText).then(() => { copied = true; setTimeout(() => copied = false, 2000) })"
+                                              class="ml-2 bg-blue-500 text-white px-2 py-1 rounded"
+                                          >
+                                              Copy
+                                          </button>
+                                          <span x-show="copied" class="text-green-500 ml-2">Copied!</span>
+                                      </p>
+                                   </div>
                                     <div>
                                       {{ $pdplan->product_plan_name }}  |  
                                       <b>{{ $pdplan->automation->automation_name }}</b> 
@@ -264,7 +276,20 @@
                             @else
 
                               <div class="flex items-center justify-between">
-                                <p>Automation Bank Account: {{ $pdplan->automation->bank_accounts ?? NULL  }}</p>
+                                <div x-data="{ copied: false }">
+                                  <p>
+                                      Fund Account: 
+                                      <span x-ref="account">{{ $pdplan->automation->bank_accounts ?? '' }}</span>
+                                      <button 
+                                          @click="navigator.clipboard.writeText($refs.account.innerText).then(() => { copied = true; setTimeout(() => copied = false, 2000) })"
+                                          class="ml-2 bg-blue-500 text-white px-2 py-1 rounded"
+                                      >
+                                          Copy
+                                      </button>
+                                      <span x-show="copied" class="text-green-500 ml-2">Copied!</span>
+                                  </p>
+                              </div>
+                              
                                 <button 
                                     @click="processWith('{{ $pdplan->id }}','{{ $data->id }}','{{ $pdplan->automation->id }}', '{{ $pdplan->automation->automation_name }}')" 
                                     class="block w-full text-left text-blue-600 dark:text-blue-400 font-semibold hover:underline"
