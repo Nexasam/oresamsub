@@ -122,7 +122,7 @@
 
 
 <!-- 🚀 Join the Community Section -->
-<div class="mb-4">
+{{-- <div class="mb-4">
   <div class="bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 text-white p-5 rounded-2xl shadow-lg flex flex-col md:flex-row items-center justify-between gap-4">
     
     <!-- Text -->
@@ -148,7 +148,7 @@
       @endif
     </div>
   </div>
-</div>
+</div> --}}
 
   <div class="relative" x-data="{ isWalletLoading: false, showBalance: false }">
     <div class="bg-emerald-600 dark:bg-emerald-700 text-white p-4 rounded-xl shadow space-y-2">
