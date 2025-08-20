@@ -135,7 +135,7 @@
 
     <!-- CTA Button -->
     <div>
-      @if(auth()->user()->category_type === 'pos')
+      @if(auth()->user()->customer_category === 'pos')
           <a href="https://chat.whatsapp.com/GoIik4DCz0k1cH3zyEtFrk?mode=ac_t" target="_blank"
             class="px-4 py-2 bg-white text-indigo-700 font-semibold rounded-lg shadow hover:bg-gray-100 transition">
             Join POS Community
