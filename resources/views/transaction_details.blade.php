@@ -276,7 +276,7 @@
                               
                             @else
 
-                              <div class="flex items-center justify-between">
+                              {{-- <div class="flex items-center justify-between">
                                 <div x-data="{ copied: false }">
                                   <p>
                                       Fund Account: 
@@ -290,7 +290,7 @@
                                       </button>
                                       <span x-show="copied" class="text-green-500 ml-2">Copied!</span>
                                   </p>
-                              </div>
+                                </div>
                               
                                 <button 
                                     @click="processWith('{{ $pdplan->id }}','{{ $data->id }}','{{ $pdplan->automation->id }}', '{{ $pdplan->automation->automation_name }}')" 
@@ -310,7 +310,58 @@
                                         (For MTN 5GB and 10GB)
                                     @endif 
                                   </button>
-                              </div>
+                              </div> --}}
+
+
+                              <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 p-4 border rounded-lg shadow-sm bg-white dark:bg-gray-800">
+    
+                                <!-- Copy to Clipboard -->
+                                <div x-data="{ copied: false }" class="flex items-center space-x-2 text-gray-700 dark:text-gray-200">
+                                    <span class="font-medium">Fund Account:</span>
+                                    <span class="font-semibold">{{ $pdplan->automation->bank_name ?? '' }}</span>
+                                    <span x-ref="account" class="font-mono text-sm">{{ $pdplan->automation->bank_accounts ?? '' }}</span>
+                            
+                                    <button 
+                                        @click="navigator.clipboard.writeText($refs.account.innerText).then(() => { 
+                                            copied = true; 
+                                            setTimeout(() => copied = false, 2000) 
+                                        })"
+                                        class="ml-2 px-3 py-1 text-sm rounded-lg bg-blue-600 hover:bg-blue-700 text-white transition"
+                                    >
+                                        Copy
+                                    </button>
+                            
+                                    <span 
+                                        x-show="copied" 
+                                        class="text-green-500 text-sm ml-2"
+                                    >
+                                        Copied!
+                                    </span>
+                                </div>
+                            
+                                <!-- Use Button -->
+                                <button 
+                                    @click="processWith('{{ $pdplan->id }}','{{ $data->id }}','{{ $pdplan->automation->id }}','{{ $pdplan->automation->automation_name }}')" 
+                                    class="w-full md:w-auto text-left text-blue-600 dark:text-blue-400 font-semibold hover:underline"
+                                >
+                                    USE: {{ $pdplan->product_plan_name }} |  
+                                    <b>{{ $pdplan->automation->automation_name }}</b> |
+                            
+                                    @if (auth()->user()->email == 'adebsholey4real@gmail.com')
+                                        | <b>Cost Price: {{ $pdplan->cost_price + 5 }}</b> |
+                                        | <b>Profitable? : {{ ($pdplan->cost_price + 5) < $ammount ? 'YES' : 'NOPE' }}</b> 
+                                    @endif
+                            
+                                    @if ($pdplan->automation->automation_name == 'samicsub')
+                                        (For MTN 5GB and 10GB)
+                                    @endif 
+                                </button>
+                            
+                            </div>
+                            
+
+
+
                             @endif
 
                          
