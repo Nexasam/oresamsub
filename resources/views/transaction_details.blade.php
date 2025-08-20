@@ -280,6 +280,7 @@
                                 <div x-data="{ copied: false }">
                                   <p>
                                       Fund Account: 
+                                      <span>{{ $pdplan->automation->bank_name ?? ''  }}</span>
                                       <span x-ref="account">{{ $pdplan->automation->bank_accounts ?? '' }}</span>
                                       <button 
                                           @click="navigator.clipboard.writeText($refs.account.innerText).then(() => { copied = true; setTimeout(() => copied = false, 2000) })"
