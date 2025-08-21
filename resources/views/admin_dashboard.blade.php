@@ -803,6 +803,7 @@ function walletBalance() {
             fetch("{{ route('admin.wallet.total_balances') }}")
                 .then(res => res.json())
                 .then(data => {
+                    console.log(data)
                     this.balance = Number(data.balance)
                         .toLocaleString('en-NG', { minimumFractionDigits: 2 });
                 })
