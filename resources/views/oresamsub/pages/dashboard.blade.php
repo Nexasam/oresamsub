@@ -59,98 +59,7 @@
 
 
 
-    <div 
-    x-data="{ open: false, copied: false }" 
-    class="border border-emerald-400 dark:border-emerald-600 rounded-xl shadow-md overflow-hidden"
->
-      <!-- Accordion Header -->
-      <button 
-      @click="open = !open" 
-      class="w-full flex justify-between items-center 
-            bg-gradient-to-r from-emerald-500 via-teal-500 to-emerald-600 
-            dark:from-emerald-600 dark:via-teal-600 dark:to-emerald-700
-            text-white px-3 py-2 text-xs font-semibold
-            shadow-sm hover:shadow-md transition-all duration-300
-            relative overflow-hidden rounded-md"
-      >
-      <!-- Shine Effect -->
-      <span class="absolute inset-0 bg-white/10 opacity-0 hover:opacity-100 transition-opacity duration-500"></span>
-
-      <!-- Left side (emoji + text) -->
-      <span class="relative flex items-center space-x-1.5">
-          <span class="animate-bounce text-sm">🎉</span>
-          <span class="text-[13px]">Invite & Earn</span>
-      </span>
-
-      <!-- Chevron -->
-      <svg 
-          :class="{ 'rotate-180': open }" 
-          class="w-4 h-4 transform transition-transform duration-300 ease-in-out" 
-          fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-      </svg>
-      </button>
-
-
-
-    <!-- Accordion Content -->
-    <div 
-        x-show="open" 
-        x-collapse 
-        x-cloak 
-        class="bg-white dark:bg-gray-800 px-4 py-3 space-y-3 text-sm"
-    >
-        <p class="text-gray-600 dark:text-gray-400">
-            Buy airtime, data, and pay bills at affordable rates — get started now! 🚀
-        </p>
-
-        <!-- Referral Link -->
-        <div class="flex items-center bg-gray-100 dark:bg-gray-700 rounded-md overflow-hidden">
-            <input 
-                x-ref="refInput"
-                type="text" 
-                readonly 
-                value="{{ url('/register?ref=' . auth()->user()->phone_number) }}"
-                class="flex-grow px-2 py-1 text-sm bg-transparent border-none focus:outline-none text-gray-700 dark:text-gray-200"
-            >
-            <button 
-                @click="navigator.clipboard.writeText($refs.refInput.value).then(() => { copied = true; setTimeout(() => copied = false, 2000) })"
-                class="px-2 py-1 bg-emerald-500 hover:bg-emerald-600 text-white text-xs font-medium flex items-center justify-center"
-                title="Copy link"
-            >
-                <i :class="copied ? 'fas fa-check' : 'fas fa-copy'"></i>
-            </button>
-        </div>
-
-        <span x-show="copied" x-transition x-cloak class="text-xs text-emerald-500 block">
-            ✅ Link copied!
-        </span>
-
-        <!-- Share Buttons -->
-        <div class="flex space-x-2">
-            <a href="https://wa.me/?text={{ urlencode('Join me on OresamSub 👉 ' . url('/register?ref=' . auth()->user()->phone_number)) }}"
-               target="_blank" 
-               class="flex items-center justify-center w-8 h-8 bg-green-500 hover:bg-green-600 rounded-full text-white">
-               <i class="fab fa-whatsapp"></i>
-            </a>
-            <a href="https://www.facebook.com/sharer/sharer.php?u={{ urlencode(url('/register?ref=' . auth()->user()->phone_number)) }}" 
-               target="_blank" 
-               class="flex items-center justify-center w-8 h-8 bg-blue-600 hover:bg-blue-700 rounded-full text-white">
-               <i class="fab fa-facebook-f"></i>
-            </a>
-            <a href="https://www.instagram.com/?url={{ urlencode(url('/register?ref=' . auth()->user()->phone_number)) }}" 
-               target="_blank" 
-               class="flex items-center justify-center w-8 h-8 bg-pink-500 hover:bg-pink-600 rounded-full text-white">
-               <i class="fab fa-instagram"></i>
-            </a>
-            <a href="https://www.tiktok.com/share?url={{ urlencode(url('/register?ref=' . auth()->user()->phone_number)) }}" 
-               target="_blank" 
-               class="flex items-center justify-center w-8 h-8 bg-black hover:bg-gray-800 rounded-full text-white">
-               <i class="fab fa-tiktok"></i>
-            </a>
-        </div>
-    </div>
-    </div>
+  
 
 
 
@@ -196,7 +105,98 @@
   </div>
 </div>
 
-  
+<div 
+x-data="{ open: false, copied: false }" 
+class="border border-emerald-400 dark:border-emerald-600 rounded-xl shadow-md overflow-hidden"
+>
+  <!-- Accordion Header -->
+  <button 
+  @click="open = !open" 
+  class="w-full flex justify-between items-center 
+        bg-gradient-to-r from-emerald-500 via-teal-500 to-emerald-600 
+        dark:from-emerald-600 dark:via-teal-600 dark:to-emerald-700
+        text-white px-3 py-2 text-xs font-semibold
+        shadow-sm hover:shadow-md transition-all duration-300
+        relative overflow-hidden rounded-md"
+  >
+  <!-- Shine Effect -->
+  <span class="absolute inset-0 bg-white/10 opacity-0 hover:opacity-100 transition-opacity duration-500"></span>
+
+  <!-- Left side (emoji + text) -->
+  <span class="relative flex items-center space-x-1.5">
+      <span class="animate-bounce text-sm">🎉</span>
+      <span class="text-[13px]">Invite & Earn</span>
+  </span>
+
+  <!-- Chevron -->
+  <svg 
+      :class="{ 'rotate-180': open }" 
+      class="w-4 h-4 transform transition-transform duration-300 ease-in-out" 
+      fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+  </svg>
+  </button>
+
+
+
+<!-- Accordion Content -->
+<div 
+    x-show="open" 
+    x-collapse 
+    x-cloak 
+    class="bg-white dark:bg-gray-800 px-4 py-3 space-y-3 text-sm"
+>
+    <p class="text-gray-600 dark:text-gray-400">
+        Buy airtime, data, and pay bills at affordable rates — get started now! 🚀
+    </p>
+
+    <!-- Referral Link -->
+    <div class="flex items-center bg-gray-100 dark:bg-gray-700 rounded-md overflow-hidden">
+        <input 
+            x-ref="refInput"
+            type="text" 
+            readonly 
+            value="{{ url('/register?ref=' . auth()->user()->phone_number) }}"
+            class="flex-grow px-2 py-1 text-sm bg-transparent border-none focus:outline-none text-gray-700 dark:text-gray-200"
+        >
+        <button 
+            @click="navigator.clipboard.writeText($refs.refInput.value).then(() => { copied = true; setTimeout(() => copied = false, 2000) })"
+            class="px-2 py-1 bg-emerald-500 hover:bg-emerald-600 text-white text-xs font-medium flex items-center justify-center"
+            title="Copy link"
+        >
+            <i :class="copied ? 'fas fa-check' : 'fas fa-copy'"></i>
+        </button>
+    </div>
+
+    <span x-show="copied" x-transition x-cloak class="text-xs text-emerald-500 block">
+        ✅ Link copied!
+    </span>
+
+    <!-- Share Buttons -->
+    <div class="flex space-x-2">
+        <a href="https://wa.me/?text={{ urlencode('Join me on OresamSub 👉 ' . url('/register?ref=' . auth()->user()->phone_number)) }}"
+           target="_blank" 
+           class="flex items-center justify-center w-8 h-8 bg-green-500 hover:bg-green-600 rounded-full text-white">
+           <i class="fab fa-whatsapp"></i>
+        </a>
+        <a href="https://www.facebook.com/sharer/sharer.php?u={{ urlencode(url('/register?ref=' . auth()->user()->phone_number)) }}" 
+           target="_blank" 
+           class="flex items-center justify-center w-8 h-8 bg-blue-600 hover:bg-blue-700 rounded-full text-white">
+           <i class="fab fa-facebook-f"></i>
+        </a>
+        <a href="https://www.instagram.com/?url={{ urlencode(url('/register?ref=' . auth()->user()->phone_number)) }}" 
+           target="_blank" 
+           class="flex items-center justify-center w-8 h-8 bg-pink-500 hover:bg-pink-600 rounded-full text-white">
+           <i class="fab fa-instagram"></i>
+        </a>
+        <a href="https://www.tiktok.com/share?url={{ urlencode(url('/register?ref=' . auth()->user()->phone_number)) }}" 
+           target="_blank" 
+           class="flex items-center justify-center w-8 h-8 bg-black hover:bg-gray-800 rounded-full text-white">
+           <i class="fab fa-tiktok"></i>
+        </a>
+    </div>
+</div>
+</div>  
 
 <!-- Action Buttons -->
 <!-- ACTION BUTTONS -->
