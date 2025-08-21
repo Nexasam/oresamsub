@@ -121,64 +121,7 @@
 </div>
 
 
-<!-- 🚀 Join the Community Section -->
-<div class="mb-4">
-  @if(auth()->user()->customer_category === 'pos')
-      <a href="https://chat.whatsapp.com/GoIik4DCz0k1cH3zyEtFrk?mode=ac_t" 
-         target="_blank"
-         class="block bg-gradient-to-r from-green-500 via-green-600 to-green-700 text-white p-6 rounded-2xl shadow-lg transition transform hover:scale-[1.02] hover:shadow-xl">
-          <div class="flex flex-col md:flex-row items-center justify-between gap-4">
-              
-              <!-- Text -->
-              <div>
-                  <h2 class="text-lg font-bold flex items-center gap-2">
-                      <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
-                          <path d="M12 2C6.477 2 2 6.263 2 11.657c0 1.877.56 3.668 1.52 5.178L2 22l5.332-1.414a10.145 10.145 0 004.668 1.071c5.523 0 10-4.263 10-9.657S17.523 2 12 2z"/>
-                      </svg>
-                      🔥 Join Reseller Community
-                  </h2>
-                  <p class="text-sm text-white/90 mt-1">
-                      Get <span class="font-semibold">real-time updates</span>, promos & alerts directly in our WhatsApp group.
-                  </p>
-              </div>
 
-              <!-- Right WhatsApp Icon -->
-              <div class="flex-shrink-0">
-                  <svg xmlns="http://www.w3.org/2000/svg" class="w-10 h-10 text-white" fill="currentColor" viewBox="0 0 24 24">
-                      <path d="M12 2C6.477 2 2 6.263 2 11.657c0 1.877.56 3.668 1.52 5.178L2 22l5.332-1.414a10.145 10.145 0 004.668 1.071c5.523 0 10-4.263 10-9.657S17.523 2 12 2z"/>
-                  </svg>
-              </div>
-          </div>
-      </a>
-  @else
-      <a href="https://chat.whatsapp.com/DnFkmQ9cCYF0DomvyThHLq" 
-         target="_blank"
-         class="block bg-gradient-to-r from-green-500 via-green-600 to-green-700 text-white p-6 rounded-2xl shadow-lg transition transform hover:scale-[1.02] hover:shadow-xl">
-          <div class="flex flex-col md:flex-row items-center justify-between gap-4">
-              
-              <!-- Text -->
-              <div>
-                  <h2 class="text-lg font-bold flex items-center gap-2">
-                      <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
-                          <path d="M12 2C6.477 2 2 6.263 2 11.657c0 1.877.56 3.668 1.52 5.178L2 22l5.332-1.414a10.145 10.145 0 004.668 1.071c5.523 0 10-4.263 10-9.657S17.523 2 12 2z"/>
-                      </svg>
-                      🔥 Join Our Community
-                  </h2>
-                  <p class="text-sm text-white/90 mt-1">
-                      Get <span class="font-semibold">real-time updates</span>, promos & alerts directly in our WhatsApp group.
-                  </p>
-              </div>
-
-              <!-- Right WhatsApp Icon -->
-              <div class="flex-shrink-0">
-                  <svg xmlns="http://www.w3.org/2000/svg" class="w-10 h-10 text-white" fill="currentColor" viewBox="0 0 24 24">
-                      <path d="M12 2C6.477 2 2 6.263 2 11.657c0 1.877.56 3.668 1.52 5.178L2 22l5.332-1.414a10.145 10.145 0 004.668 1.071c5.523 0 10-4.263 10-9.657S17.523 2 12 2z"/>
-                  </svg>
-              </div>
-          </div>
-      </a>
-  @endif
-</div>
 
 
 <div class="relative" x-data="{ isWalletLoading: false, showBalance: false }">
@@ -267,6 +210,64 @@
 
 
 
+<!-- 🚀 Join the Community Section -->
+<div class="mb-4">
+  @if(auth()->user()->customer_category === 'pos')
+      <a href="https://chat.whatsapp.com/GoIik4DCz0k1cH3zyEtFrk?mode=ac_t" 
+         target="_blank"
+         class="block bg-gradient-to-r from-green-500 via-green-600 to-green-700 text-white p-6 rounded-2xl shadow-lg transition transform hover:scale-[1.02] hover:shadow-xl">
+          <div class="flex flex-col md:flex-row items-center justify-between gap-4">
+              
+              <!-- Text -->
+              <div>
+                  <h2 class="text-lg font-bold flex items-center gap-2">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
+                          <path d="M12 2C6.477 2 2 6.263 2 11.657c0 1.877.56 3.668 1.52 5.178L2 22l5.332-1.414a10.145 10.145 0 004.668 1.071c5.523 0 10-4.263 10-9.657S17.523 2 12 2z"/>
+                      </svg>
+                      🔥 Join Reseller Community
+                  </h2>
+                  <p class="text-sm text-white/90 mt-1">
+                      Get <span class="font-semibold">real-time updates</span>, promos & alerts directly in our WhatsApp group.
+                  </p>
+              </div>
+
+              <!-- Right WhatsApp Icon -->
+              <div class="flex-shrink-0">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="w-10 h-10 text-white" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M12 2C6.477 2 2 6.263 2 11.657c0 1.877.56 3.668 1.52 5.178L2 22l5.332-1.414a10.145 10.145 0 004.668 1.071c5.523 0 10-4.263 10-9.657S17.523 2 12 2z"/>
+                  </svg>
+              </div>
+          </div>
+      </a>
+  @else
+      <a href="https://chat.whatsapp.com/DnFkmQ9cCYF0DomvyThHLq" 
+         target="_blank"
+         class="block bg-gradient-to-r from-green-500 via-green-600 to-green-700 text-white p-6 rounded-2xl shadow-lg transition transform hover:scale-[1.02] hover:shadow-xl">
+          <div class="flex flex-col md:flex-row items-center justify-between gap-4">
+              
+              <!-- Text -->
+              <div>
+                  <h2 class="text-lg font-bold flex items-center gap-2">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
+                          <path d="M12 2C6.477 2 2 6.263 2 11.657c0 1.877.56 3.668 1.52 5.178L2 22l5.332-1.414a10.145 10.145 0 004.668 1.071c5.523 0 10-4.263 10-9.657S17.523 2 12 2z"/>
+                      </svg>
+                      🔥 Join Our Community
+                  </h2>
+                  <p class="text-sm text-white/90 mt-1">
+                      Get <span class="font-semibold">real-time updates</span>, promos & alerts directly in our WhatsApp group.
+                  </p>
+              </div>
+
+              <!-- Right WhatsApp Icon -->
+              <div class="flex-shrink-0">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="w-10 h-10 text-white" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M12 2C6.477 2 2 6.263 2 11.657c0 1.877.56 3.668 1.52 5.178L2 22l5.332-1.414a10.145 10.145 0 004.668 1.071c5.523 0 10-4.263 10-9.657S17.523 2 12 2z"/>
+                  </svg>
+              </div>
+          </div>
+      </a>
+  @endif
+</div>
   
   
 
