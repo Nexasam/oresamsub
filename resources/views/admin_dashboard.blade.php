@@ -502,6 +502,12 @@
                         <h5 class="box-title my-auto">Recent Transactions</h5>
                         <div class="box-header">
                             <div class="flex">
+
+                              <button type="button"
+                                id="reload_txns_tbl"
+                                class="ti-dropdown-item">
+                                Refresh
+                              </button>
                              
                               <div class="hs-dropdown ti-dropdown block ms-auto my-auto  sm:flex items-center justify-between">
                                
