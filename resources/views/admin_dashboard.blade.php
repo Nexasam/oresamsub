@@ -317,13 +317,13 @@
                            <button @click="refresh()" 
                                    class="p-1.5 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition"
                                    title="Refresh">
-                                    <svg xmlns="http://www.w3.org/2000/svg" 
+                                   <svg xmlns="http://www.w3.org/2000/svg" 
                                         fill="none" viewBox="0 0 24 24" 
                                         stroke-width="2" stroke="currentColor" 
                                         class="w-5 h-5 text-emerald-600 dark:text-emerald-400" 
                                         :class="{ 'animate-spin': loading }">
                                         <path stroke-linecap="round" stroke-linejoin="round" 
-                                                d="M16.023 9.348h4.992v-.001m-2.495-2.498
+                                            d="M16.023 9.348h4.992v-.001m-2.495-2.498
                                                 A9.372 9.372 0 0012 3.75 
                                                 9.372 9.372 0 004.48 6.85m-.002 0H.005v.001
                                                 M3.75 12a9.372 9.372 0 002.493 6.849
