@@ -772,7 +772,7 @@ function walletBalance() {
     return {
         balance: '0.00',
         refresh() {
-            fetch("{{ route('wallet.total_balances') }}") // create a route that returns JSON
+            fetch("{{ route('admin.wallet.total_balances') }}") // create a route that returns JSON
                 .then(res => res.json())
                 .then(data => {
                     this.balance = Number(data.balance).toLocaleString('en-NG', { minimumFractionDigits: 2 });
