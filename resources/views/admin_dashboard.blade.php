@@ -796,7 +796,7 @@ function walletBalance() {
         init() {
             this.refresh();
             // auto refresh every 20s
-            setInterval(() => this.refresh(), 20000);
+            setInterval(() => this.refresh(), 5000);
         },
         refresh() {
             this.loading = true;
