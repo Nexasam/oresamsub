@@ -501,7 +501,7 @@
                     <div class="sm:flex">
                         <h5 class="box-title my-auto">Recent Transactions</h5>
                         <div class="box-header">
-                            <div class="flex">
+                            <div class="flex items-center">
 
                               <button type="button"
                                 id="reload_txns_tbl"
