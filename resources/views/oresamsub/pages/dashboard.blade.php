@@ -64,32 +64,33 @@
     class="border border-emerald-400 dark:border-emerald-600 rounded-xl shadow-md overflow-hidden"
 >
       <!-- Accordion Header -->
-    <button 
-    @click="open = !open" 
-    class="w-full flex justify-between items-center 
-          bg-gradient-to-r from-emerald-500 via-teal-500 to-emerald-600 
-          dark:from-emerald-600 dark:via-teal-600 dark:to-emerald-700
-          text-white px-4 py-3 text-sm font-semibold
-          shadow-md hover:shadow-lg transition-all duration-300
-          relative overflow-hidden"
-    >
-    <!-- Shine Effect -->
-    <span class="absolute inset-0 bg-white/10 opacity-0 hover:opacity-100 transition-opacity duration-500"></span>
+      <button 
+      @click="open = !open" 
+      class="w-full flex justify-between items-center 
+            bg-gradient-to-r from-emerald-500 via-teal-500 to-emerald-600 
+            dark:from-emerald-600 dark:via-teal-600 dark:to-emerald-700
+            text-white px-3 py-2 text-xs font-semibold
+            shadow-sm hover:shadow-md transition-all duration-300
+            relative overflow-hidden rounded-md"
+      >
+      <!-- Shine Effect -->
+      <span class="absolute inset-0 bg-white/10 opacity-0 hover:opacity-100 transition-opacity duration-500"></span>
 
-    <!-- Left side (emoji + text) -->
-    <span class="relative flex items-center space-x-2">
-        <span class="animate-bounce">🎉</span>
-        <span class="text-base">Invite & Earn Rewards</span>
-    </span>
+      <!-- Left side (emoji + text) -->
+      <span class="relative flex items-center space-x-1.5">
+          <span class="animate-bounce text-sm">🎉</span>
+          <span class="text-[13px]">Invite & Earn</span>
+      </span>
 
-    <!-- Chevron -->
-    <svg 
-        :class="{ 'rotate-180': open }" 
-        class="w-5 h-5 transform transition-transform duration-300 ease-in-out group-hover:scale-110" 
-        fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-    </svg>
-    </button>
+      <!-- Chevron -->
+      <svg 
+          :class="{ 'rotate-180': open }" 
+          class="w-4 h-4 transform transition-transform duration-300 ease-in-out" 
+          fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+      </svg>
+      </button>
+
 
 
     <!-- Accordion Content -->
