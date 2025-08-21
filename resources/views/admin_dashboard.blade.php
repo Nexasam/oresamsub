@@ -318,7 +318,7 @@
                                     Total User Main Balances
                                 </h3>
                                 <!-- Refresh Button -->
-                                <button @click="refresh()" 
+                                <button @click="refreshMainBalances()" 
                                         class="p-1.5 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition"
                                         title="Refresh">
                                     <svg xmlns="http://www.w3.org/2000/svg" 
