@@ -503,11 +503,15 @@
                         <div class="box-header">
                             <div class="flex items-center">
 
-                              <button type="button"
-                                id="reload_txns_tbl"
-                                class="ti-dropdown-item">
-                                Refresh
-                              </button>
+                              @if (env('APP_NAME') == 'OresamSub')
+                                    <!-- Refresh button -->
+                                    <button type="button"
+                                        id="reload_txns_tbl"
+                                        class="w-full text-white bg-emerald-600 hover:bg-emerald-700 focus:ring-2 focus:ring-emerald-400 
+                                            font-medium rounded-lg text-sm px-4 py-2 text-left">
+                                        Refresh
+                                    </button>
+                              @endif
                              
                               <div class="hs-dropdown ti-dropdown block ms-auto my-auto  sm:flex items-center justify-between">
                                
