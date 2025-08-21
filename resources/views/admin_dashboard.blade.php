@@ -295,6 +295,8 @@
             <div class="box">
                 <div class="box-body">
                     <div class="flex space-x-4 rtl:space-x-reverse">
+                        
+                        <!-- Icon -->
                         <div class="flex items-center justify-center ecommerce-icon px-0">
                             <span class="rounded-sm p-4 bg-warning/10">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="fill-white svg4" height="24px"
@@ -305,23 +307,25 @@
                                 </svg>
                             </span>
                         </div>
+        
+                        <!-- Balance Card -->
                         <div x-data="walletBalance()" x-init="init()" 
-                        class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm p-4 border border-gray-100 dark:border-gray-700">
-                       
-                       <!-- Header -->
-                       <div class="flex items-center justify-between mb-3">
-                           <h3 class="text-sm font-medium text-gray-600 dark:text-gray-300">
-                               Total User Main Balances
-                           </h3>
-                           <!-- RefreshMainBalances button -->
-                           <button @click="refreshMainBalances()" 
-                                   class="p-1.5 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition"
-                                   title="Refresh Main Balances">
-                                   <svg xmlns="http://www.w3.org/2000/svg" 
-                                        fill="none" viewBox="0 0 24 24" 
-                                        stroke-width="2" stroke="currentColor" 
-                                        class="w-5 h-5 text-emerald-600 dark:text-emerald-400" 
-                                        :class="{ 'animate-spin': loading }">
+                             class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm p-4 border border-gray-100 dark:border-gray-700 w-full">
+                            
+                            <!-- Header -->
+                            <div class="flex items-center justify-between mb-3">
+                                <h3 class="text-sm font-medium text-gray-600 dark:text-gray-300">
+                                    Total User Main Balances
+                                </h3>
+                                <!-- Refresh Button -->
+                                <button @click="refresh()" 
+                                        class="p-1.5 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition"
+                                        title="Refresh">
+                                    <svg xmlns="http://www.w3.org/2000/svg" 
+                                         fill="none" viewBox="0 0 24 24" 
+                                         stroke-width="2" stroke="currentColor" 
+                                         class="w-5 h-5 text-emerald-600 dark:text-emerald-400" 
+                                         :class="{ 'animate-spin': loading }">
                                         <path stroke-linecap="round" stroke-linejoin="round" 
                                             d="M16.023 9.348h4.992v-.001m-2.495-2.498
                                                 A9.372 9.372 0 0012 3.75 
@@ -330,26 +334,30 @@
                                                 9.372 9.372 0 006.757 2.901
                                                 9.372 9.372 0 006.757-2.901m.003 0h4.992v-.001"/>
                                     </svg>
-                           </button>
-                       </div>
-                   
-                       <!-- Balance -->
-                       <div class="text-gray-900 dark:text-white flex items-end gap-1">
-                           <span class="text-sm text-gray-500 dark:text-gray-400">₦</span>
-                           <span class="text-2xl font-bold leading-none" x-text="balance"></span>
-                       </div>
-                   
-                       <!-- Subtext (optional) -->
-                       <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
-                           Updated every 20 seconds
-                       </p>
-                      </div>
-                   
-                                         
+                                </button>
+                            </div>
+        
+                            <!-- Balance / Skeleton -->
+                            <template x-if="loading">
+                                <div class="h-6 w-24 bg-gray-200 dark:bg-gray-700 rounded-md animate-pulse"></div>
+                            </template>
+                            <template x-if="!loading">
+                                <div class="text-gray-900 dark:text-white flex items-end gap-1">
+                                    <span class="text-sm text-gray-500 dark:text-gray-400">₦</span>
+                                    <span class="text-2xl font-bold leading-none" x-text="balance"></span>
+                                </div>
+                            </template>
+        
+                            <!-- Subtext -->
+                            <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                                Updated every 20 seconds
+                            </p>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
+        
 
        
 
