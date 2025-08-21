@@ -800,7 +800,7 @@ function walletBalance() {
         },
         refresh() {
             this.loading = true;
-            fetch("{{ route('wallet.balance') }}")
+            fetch("{{ route('admin.wallet.total_balances') }}")
                 .then(res => res.json())
                 .then(data => {
                     this.balance = Number(data.balance)
