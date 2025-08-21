@@ -305,34 +305,46 @@
                                 </svg>
                             </span>
                         </div>
-                        <div x-data="walletBalance()" x-init="refresh()">
-                            <div class="mb-2 flex items-center justify-between">
-                                <span>Total User Main Balances</span>
-                                <!-- Refresh button -->
-                                <button @click="refresh()" 
-                                        class="text-emerald-600 hover:text-emerald-800 dark:hover:text-emerald-400"
-                                        title="Refresh">
-                                    <!-- Heroicons refresh -->
-                                    <svg xmlns="http://www.w3.org/2000/svg" 
-                                         fill="none" viewBox="0 0 24 24" 
-                                         stroke-width="1.5" stroke="currentColor" 
-                                         class="w-5 h-5" 
-                                         :class="{ 'animate-spin': loading }">
-                                        <path stroke-linecap="round" stroke-linejoin="round" 
-                                              d="M16.023 9.348h4.992v-.001m-2.495-2.498A9.372 9.372 0 0012 3.75 
-                                                 9.372 9.372 0 004.48 6.85m-.002 0H.005v.001M3.75 12
-                                                 a9.372 9.372 0 002.493 6.849 9.372 9.372 0 006.757 2.901
-                                                 9.372 9.372 0 006.757-2.901m.003 0h4.992v-.001"/>
-                                    </svg>
-                                </button>
-                            </div>
-                        
-                            <div class="text-gray-500 dark:text-white/70 mb-1 text-xs">
-                                <span class="text-gray-800 font-semibold text-xl leading-none align-bottom dark:text-gray-900">
-                                    ₦<span x-text="balance"></span>
-                                </span>
-                            </div>
-                        </div>
+                        <div x-data="walletBalance()" x-init="init()" 
+                        class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm p-4 border border-gray-100 dark:border-gray-700">
+                       
+                       <!-- Header -->
+                       <div class="flex items-center justify-between mb-3">
+                           <h3 class="text-sm font-medium text-gray-600 dark:text-gray-300">
+                               Total User Main Balances
+                           </h3>
+                           <!-- Refresh button -->
+                           <button @click="refresh()" 
+                                   class="p-1.5 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition"
+                                   title="Refresh">
+                               <svg xmlns="http://www.w3.org/2000/svg" 
+                                    fill="none" viewBox="0 0 24 24" 
+                                    stroke-width="1.5" stroke="currentColor" 
+                                    class="w-5 h-5 text-emerald-600 dark:text-emerald-400" 
+                                    :class="{ 'animate-spin': loading }">
+                                   <path stroke-linecap="round" stroke-linejoin="round" 
+                                         d="M16.023 9.348h4.992v-.001m-2.495-2.498
+                                            A9.372 9.372 0 0012 3.75 
+                                            9.372 9.372 0 004.48 6.85m-.002 0H.005v.001
+                                            M3.75 12a9.372 9.372 0 002.493 6.849
+                                            9.372 9.372 0 006.757 2.901
+                                            9.372 9.372 0 006.757-2.901m.003 0h4.992v-.001"/>
+                               </svg>
+                           </button>
+                       </div>
+                   
+                       <!-- Balance -->
+                       <div class="text-gray-900 dark:text-white flex items-end gap-1">
+                           <span class="text-sm text-gray-500 dark:text-gray-400">₦</span>
+                           <span class="text-2xl font-bold leading-none" x-text="balance"></span>
+                       </div>
+                   
+                       <!-- Subtext (optional) -->
+                       <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                           Updated every 20 seconds
+                       </p>
+                      </div>
+                   
                                          
                     </div>
                 </div>
@@ -798,7 +810,7 @@ function walletBalance() {
         init() {
             this.refresh();
             // auto refresh every 20s
-            setInterval(() => this.refresh(), 5000);
+            setInterval(() => this.refresh(), 20000);
         },
         refresh() {
             this.loading = true;
