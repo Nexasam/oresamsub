@@ -787,19 +787,27 @@
 
 </div>
 @endsection
-
+<script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
 <script>
 function walletBalance() {
     return {
         balance: '0.00',
         loading: false,
+        init() {
+            this.refresh();
+            // auto refresh every 20s
+            setInterval(() => this.refresh(), 20000);
+        },
         refresh() {
             this.loading = true;
-            fetch("{{ route('admin.wallet.total_balances') }}")
+            fetch("{{ route('wallet.balance') }}")
                 .then(res => res.json())
                 .then(data => {
                     this.balance = Number(data.balance)
                         .toLocaleString('en-NG', { minimumFractionDigits: 2 });
+                })
+                .catch(() => {
+                    this.balance = 'Error';
                 })
                 .finally(() => {
                     this.loading = false;
