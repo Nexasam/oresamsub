@@ -505,6 +505,9 @@ Route::middleware(['set_locale'])->group(function () {
             Route::middleware(['auth','verified','user','set_transaction_pin'])->get('user/generate_dynamic_account', [CrystalPayController::class, 'generate_dynamic_account'])->name('user.crystalpay.generate_dynamic_account');
             Route::middleware(['auth','verified','user','set_transaction_pin'])->post('user/generate_virtual_account', [CrystalPayController::class, 'generate_virtual_account'])->name('user.crystalpay.generate_virtual_account');
 
+
+            
+            Route::middleware(['auth','verified','set_transaction_pin'])->get('admin/wallet/total_balances', [WalletsController::class, 'admin_total_balances'])->name('admin.wallet.total_balances');
             Route::middleware(['auth','verified','user','set_transaction_pin'])->get('user/monnify_verifications', [WalletsController::class, 'monnify_verifications'])->name('user.wallet.monnify.verifications');
             Route::middleware(['auth','verified','user','set_transaction_pin'])->post('user/verify_monnify_account_via_nin', [WalletsController::class, 'verify_monnify_account_via_nin'])->name('user.wallets.verify_monnify_account_via_nin');
             Route::middleware(['auth','verified','user','set_transaction_pin'])->post('user/verify_monnify_account_via_bvn', [WalletsController::class, 'verify_monnify_account_via_bvn'])->name('user.wallets.verify_monnify_account_via_bvn');

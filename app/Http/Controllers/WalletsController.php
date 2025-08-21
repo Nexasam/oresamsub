@@ -51,6 +51,12 @@ class WalletsController extends Controller
     private $contract_code = '339854561147'; //live
     private $base_url = 'https://api.monnify.com/api/'; 
 
+    public function admin_total_balances(){
+        $total_balances = User::sum('main_wallet');
+
+        return $total_balances;
+    }
+
     public function xixapayhook($id,Request $request){
         header('Content-Type: application/json');
         $can_fund = '';

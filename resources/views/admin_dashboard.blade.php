@@ -305,19 +305,14 @@
                                 </svg>
                             </span>
                         </div>
-                        <div class="">
+                        <div x-data="walletBalance()" x-init="refresh()">
                             <div class="mb-2">Total User Main Balances</div>
                             <div class="text-gray-500 dark:text-white/70 mb-1 text-xs">
-                                <span
-                                    class="text-gray-800 font-semibold text-xl leading-none align-bottom dark:text-gray-900">
-                                    &#8358;{{  number_format($main_wallet_balances,2) ?? 0  }}
+                                <span class="text-gray-800 font-semibold text-xl leading-none align-bottom dark:text-gray-900">
+                                    ₦<span x-text="balance"></span>
                                 </span>
                             </div>
-                            {{-- <div>
-                                <span class="text-xs mb-0">Increased by <span
-                                        class="text-success">+2.58%</span></span>
-                            </div> --}}
-                        </div>
+                        </div>                        
                     </div>
                 </div>
             </div>
@@ -771,3 +766,21 @@
 
 </div>
 @endsection
+
+<script>
+function walletBalance() {
+    return {
+        balance: '0.00',
+        refresh() {
+            fetch("{{ route('wallet.total_balances') }}") // create a route that returns JSON
+                .then(res => res.json())
+                .then(data => {
+                    this.balance = Number(data.balance).toLocaleString('en-NG', { minimumFractionDigits: 2 });
+                })
+                .catch(() => {
+                    this.balance = 'Error';
+                });
+        }
+    }
+}
+</script>
