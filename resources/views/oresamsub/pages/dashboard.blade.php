@@ -181,49 +181,42 @@
 </div>
 
 
-  <div class="relative" x-data="{ isWalletLoading: false, showBalance: false }">
-    <div class="bg-emerald-600 dark:bg-emerald-700 text-white p-4 rounded-xl shadow space-y-2">
-      <div class="flex justify-between items-center">
-        <div>
-          <p class="text-xs text-white/80">Wallet Balance</p>
-          <p class="text-2xl font-semibold mt-1 flex items-center space-x-2" x-show="!isWalletLoading" x-cloak>
-            <!-- Hidden by default -->
-            <span x-show="showBalance" x-cloak>₦{{ number_format(auth()->user()->main_wallet, 2) }}</span>
-            <span x-show="!showBalance" x-cloak class="tracking-widest">•••••••</span>
-  
-            <!-- Toggle Button -->
-            <button
-              @click="showBalance = !showBalance"
-              class="ml-2 text-white hover:text-white/80 transition"
-              title="Toggle Balance"
-            >
-              <!-- Eye icon (show balance) -->
-              <svg x-show="!showBalance" x-cloak xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none"
-                viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                <path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                <path d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-1.274 4.057-5.065 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-              </svg>
-  
-              <!-- Eye-off icon (hide balance) -->
-              <svg x-show="showBalance" x-cloak xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none"
-                viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                <path d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.269-2.943-9.543-7a10.06 10.06 0 013.232-4.568M6.223 6.223A10.05 10.05 0 0112 5c4.478 0 8.269 2.943 9.543 7a10.06 10.06 0 01-4.676 5.316M15 12a3 3 0 00-3-3M3 3l18 18" />
-              </svg>
-            </button>
-          </p>
-        </div>
-      </div>
-  
-      <!-- Top Up -->
-      <div class="text-right">
-        <a href="{{ route('ore.virtual_accounts') }}"
-          @click.prevent="showLoader = true; setTimeout(() => window.location.href = '{{ route('ore.virtual_accounts') }}', 1000)"
-          class="text-xs font-bold underline text-white/90 hover:text-white transition">
-          + Top Up Wallet
-        </a>
+<div class="relative" x-data="{ isWalletLoading: false, showBalance: false }">
+  <div class="bg-emerald-600 dark:bg-emerald-700 text-white p-3 rounded-lg shadow flex items-center justify-between">
+    
+    <!-- Balance -->
+    <div>
+      <p class="text-[10px] text-white/70">Wallet Balance</p>
+      <div class="flex items-center space-x-1 text-lg font-semibold">
+        <span x-show="showBalance" x-cloak>₦{{ number_format(auth()->user()->main_wallet, 2) }}</span>
+        <span x-show="!showBalance" x-cloak class="tracking-widest">•••••</span>
+        
+        <!-- Toggle -->
+        <button @click="showBalance = !showBalance" class="ml-1 hover:text-white/80" title="Toggle Balance">
+          <!-- Eye -->
+          <svg x-show="!showBalance" x-cloak xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none"
+               viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+            <path d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-1.274 4.057-5.065 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+          </svg>
+          <!-- Eye-off -->
+          <svg x-show="showBalance" x-cloak xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none"
+               viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.269-2.943-9.543-7a10.06 10.06 0 013.232-4.568M6.223 6.223A10.05 10.05 0 0112 5c4.478 0 8.269 2.943 9.543 7a10.06 10.06 0 01-4.676 5.316M15 12a3 3 0 00-3-3M3 3l18 18"/>
+          </svg>
+        </button>
       </div>
     </div>
+
+    <!-- Top Up -->
+    <a href="{{ route('ore.virtual_accounts') }}"
+       @click.prevent="showLoader = true; setTimeout(() => window.location.href = '{{ route('ore.virtual_accounts') }}', 1000)"
+       class="text-[11px] font-medium underline hover:text-white/80">
+       + Top Up
+    </a>
   </div>
+</div>
+
   
 
 <!-- Action Buttons -->
