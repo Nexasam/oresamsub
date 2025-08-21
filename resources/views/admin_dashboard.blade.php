@@ -778,7 +778,7 @@ function walletBalance() {
                     this.balance = Number(data.balance).toLocaleString('en-NG', { minimumFractionDigits: 2 });
                 })
                 .catch(() => {
-                    this.balance = 'Error';
+                    this.balance = '0';
                 });
         }
     }
