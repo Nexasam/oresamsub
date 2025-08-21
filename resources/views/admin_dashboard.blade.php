@@ -313,10 +313,10 @@
                            <h3 class="text-sm font-medium text-gray-600 dark:text-gray-300">
                                Total User Main Balances
                            </h3>
-                           <!-- Refresh button -->
-                           <button @click="refresh()" 
+                           <!-- RefreshMainBalances button -->
+                           <button @click="refreshMainBalances()" 
                                    class="p-1.5 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition"
-                                   title="Refresh">
+                                   title="Refresh Main Balances">
                                    <svg xmlns="http://www.w3.org/2000/svg" 
                                         fill="none" viewBox="0 0 24 24" 
                                         stroke-width="2" stroke="currentColor" 
@@ -818,11 +818,11 @@ function walletBalance() {
         balance: '0.00',
         loading: false,
         init() {
-            this.refresh();
-            // auto refresh every 20s
-            setInterval(() => this.refresh(), 20000);
+            this.refreshMainBalances();
+            // auto refreshMainBalances every 20s
+            setInterval(() => this.refreshMainBalances(), 20000);
         },
-        refresh() {
+        refreshMainBalances() {
             this.loading = true;
             fetch("{{ route('admin.wallet.total_balances') }}")
                 .then(res => res.json())
