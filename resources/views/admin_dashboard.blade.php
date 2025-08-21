@@ -332,7 +332,8 @@
                                     ₦<span x-text="balance"></span>
                                 </span>
                             </div>
-                        {{-- </div> --}}
+                        </div>
+                    </div>
                                          
                     </div>
                 </div>
