@@ -54,7 +54,7 @@ class WalletsController extends Controller
     public function admin_total_balances(){
         $total_balances = User::sum('main_wallet');
 
-        response()->json([
+        return response()->json([
           'balance'=> $total_balances
         ]);
 
