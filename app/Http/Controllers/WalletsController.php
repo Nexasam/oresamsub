@@ -54,7 +54,11 @@ class WalletsController extends Controller
     public function admin_total_balances(){
         $total_balances = User::sum('main_wallet');
 
-        return $total_balances;
+        response()->json([
+          'balance'=> $total_balances
+        ]);
+
+        // return $total_balances;
     }
 
     public function xixapayhook($id,Request $request){
