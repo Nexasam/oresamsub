@@ -199,50 +199,52 @@ class="border border-emerald-400 dark:border-emerald-600 rounded-xl shadow-md ov
 </div>  
 
 <!-- Action Buttons -->
-<!-- ACTION BUTTONS -->
-<div class="grid grid-cols-3 md:grid-cols-3 gap-4 text-sm text-center">
+<div class="grid grid-cols-4 gap-3 text-center text-sm">
   @foreach ([
-    ['label' => 'Buy Airtime', 'icon' => '📞', 'route' => 'ore.airtime'],
-    ['label' => 'Buy Data', 'icon' => '📶', 'route' => 'ore.data'],
-    ['label' => 'Electricity', 'icon' => '⚡', 'route' => 'ore.electricity'],
-    ['label' => 'Subscribe Cable', 'icon' => '📺', 'route' => 'ore.cable'],
+    ['label' => 'Airtime', 'icon' => '📞', 'route' => 'ore.airtime'],
+    ['label' => 'Data', 'icon' => '📶', 'route' => 'ore.data'],
+    ['label' => 'Power', 'icon' => '⚡', 'route' => 'ore.electricity'],
+    ['label' => 'Cable', 'icon' => '📺', 'route' => 'ore.cable'],
   ] as $item)
-    <a
+    <a 
       href="{{ route($item['route']) }}"
       @click.prevent="showLoader = true; setTimeout(() => window.location.href = '{{ route($item['route']) }}', 150)"
-      class="group p-5 bg-white dark:bg-gray-900 rounded-2xl ring-2 ring-green-200 dark:ring-green-700 shadow-xl hover:shadow-2xl transition transform hover:scale-[1.02]"
+      class="group p-3 bg-white dark:bg-gray-900 rounded-xl ring-1 ring-emerald-200 dark:ring-emerald-700 shadow hover:shadow-md transition transform hover:scale-[1.05]"
     >
-      <div class="w-12 h-12 mx-auto rounded-full bg-gradient-to-r from-emerald-500 to-green-500 flex items-center justify-center text-white text-2xl shadow-sm group-hover:scale-110 transition duration-200 ease-in-out">
+      <div class="w-10 h-10 mx-auto rounded-full bg-gradient-to-r from-emerald-500 to-green-500 flex items-center justify-center text-white text-xl shadow-sm group-hover:scale-110 group-hover:rotate-3 transition duration-200">
         {{ $item['icon'] }}
       </div>
-      <div class="mt-3 font-semibold text-gray-800 dark:text-gray-100 group-hover:text-green-600">{{ $item['label'] }}</div>
+      <div class="mt-2 font-medium text-gray-700 dark:text-gray-200 group-hover:text-emerald-600 text-[13px]">{{ $item['label'] }}</div>
     </a>
   @endforeach
-  <form method="POST" action="{{ route('logout') }}"
-      x-data="{ isLoggingOut: false }"
-      @submit.prevent="isLoggingOut = true; $el.submit()"
-      class="p-5 bg-white dark:bg-gray-900 rounded-2xl ring-2 ring-red-200 dark:ring-red-800 shadow-xl hover:shadow-2xl transition transform hover:scale-[1.02] cursor-pointer">
-  @csrf
-  <button type="submit" class="w-full h-full text-center">
-    <div class="w-12 h-12 mx-auto rounded-full bg-gradient-to-r from-red-500 to-rose-500 text-white text-2xl flex items-center justify-center shadow-sm transition duration-200 ease-in-out"
-         :class="{ 'animate-pulse opacity-70 scale-90': isLoggingOut }">
-      <template x-if="!isLoggingOut">
-        <span>🚪</span>
-      </template>
-      <template x-if="isLoggingOut">
-        <svg class="h-6 w-6 animate-spin" viewBox="0 0 24 24" fill="none">
-          <circle class="opacity-25" cx="12" cy="12" r="10"
-                  stroke="currentColor" stroke-width="4" />
-          <path class="opacity-75" fill="currentColor"
-                d="M4 12a8 8 0 018-8v4l3-3-3-3v4a8 8 0 00-8 8z"/>
-        </svg>
-      </template>
-    </div>
-    <div class="mt-3 font-semibold text-red-600 dark:text-red-400" x-text="isLoggingOut ? 'Logging out...' : 'Logout'"></div>
-  </button>
-  </form>
 
+  <!-- Logout -->
+  <form method="POST" action="{{ route('logout') }}"
+        x-data="{ isLoggingOut: false }"
+        @submit.prevent="isLoggingOut = true; $el.submit()"
+        class="p-3 bg-white dark:bg-gray-900 rounded-xl ring-1 ring-red-300 dark:ring-red-700 shadow hover:shadow-md transition transform hover:scale-[1.05] cursor-pointer">
+    @csrf
+    <button type="submit" class="w-full h-full">
+      <div class="w-10 h-10 mx-auto rounded-full bg-gradient-to-r from-red-500 to-rose-500 flex items-center justify-center text-white text-xl shadow-sm transition duration-200"
+           :class="{ 'animate-pulse opacity-70 scale-90': isLoggingOut }">
+        <template x-if="!isLoggingOut">
+          <span>🚪</span>
+        </template>
+        <template x-if="isLoggingOut">
+          <svg class="h-5 w-5 animate-spin" viewBox="0 0 24 24" fill="none">
+            <circle class="opacity-25" cx="12" cy="12" r="10"
+                    stroke="currentColor" stroke-width="4" />
+            <path class="opacity-75" fill="currentColor"
+                  d="M4 12a8 8 0 018-8v4l3-3-3-3v4a8 8 0 00-8 8z"/>
+          </svg>
+        </template>
+      </div>
+      <div class="mt-2 font-medium text-red-600 dark:text-red-400 text-[13px]" 
+           x-text="isLoggingOut ? 'Logging out...' : 'Logout'"></div>
+    </button>
+  </form>
 </div>
+
 
 
 
