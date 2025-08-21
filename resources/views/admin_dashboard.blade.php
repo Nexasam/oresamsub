@@ -306,13 +306,34 @@
                             </span>
                         </div>
                         <div x-data="walletBalance()" x-init="refresh()">
-                            <div class="mb-2">Total User Main Balances</div>
+                            <div class="mb-2 flex items-center justify-between">
+                                <span>Total User Main Balances</span>
+                                <!-- Refresh button -->
+                                <button @click="refresh()" 
+                                        class="text-emerald-600 hover:text-emerald-800 dark:hover:text-emerald-400"
+                                        title="Refresh">
+                                    <!-- Heroicons refresh -->
+                                    <svg xmlns="http://www.w3.org/2000/svg" 
+                                         fill="none" viewBox="0 0 24 24" 
+                                         stroke-width="1.5" stroke="currentColor" 
+                                         class="w-5 h-5" 
+                                         :class="{ 'animate-spin': loading }">
+                                        <path stroke-linecap="round" stroke-linejoin="round" 
+                                              d="M16.023 9.348h4.992v-.001m-2.495-2.498A9.372 9.372 0 0012 3.75 
+                                                 9.372 9.372 0 004.48 6.85m-.002 0H.005v.001M3.75 12
+                                                 a9.372 9.372 0 002.493 6.849 9.372 9.372 0 006.757 2.901
+                                                 9.372 9.372 0 006.757-2.901m.003 0h4.992v-.001"/>
+                                    </svg>
+                                </button>
+                            </div>
+                        
                             <div class="text-gray-500 dark:text-white/70 mb-1 text-xs">
                                 <span class="text-gray-800 font-semibold text-xl leading-none align-bottom dark:text-gray-900">
                                     ₦<span x-text="balance"></span>
                                 </span>
                             </div>
-                        </div>                        
+                        </div>
+                                         
                     </div>
                 </div>
             </div>
@@ -771,14 +792,17 @@
 function walletBalance() {
     return {
         balance: '0.00',
+        loading: false,
         refresh() {
-            fetch("{{ route('admin.wallet.total_balances') }}") // create a route that returns JSON
+            this.loading = true;
+            fetch("{{ route('admin.wallet.total_balances') }}")
                 .then(res => res.json())
                 .then(data => {
-                    this.balance = Number(data.balance).toLocaleString('en-NG', { minimumFractionDigits: 2 });
+                    this.balance = Number(data.balance)
+                        .toLocaleString('en-NG', { minimumFractionDigits: 2 });
                 })
-                .catch(() => {
-                    this.balance = '0';
+                .finally(() => {
+                    this.loading = false;
                 });
         }
     }
