@@ -63,16 +63,34 @@
     x-data="{ open: false, copied: false }" 
     class="border border-emerald-400 dark:border-emerald-600 rounded-xl shadow-md overflow-hidden"
 >
-    <!-- Accordion Header -->
+      <!-- Accordion Header -->
     <button 
-        @click="open = !open" 
-        class="w-full flex justify-between items-center bg-emerald-500 dark:bg-emerald-600 text-white px-4 py-2 text-sm font-semibold"
+    @click="open = !open" 
+    class="w-full flex justify-between items-center 
+          bg-gradient-to-r from-emerald-500 via-teal-500 to-emerald-600 
+          dark:from-emerald-600 dark:via-teal-600 dark:to-emerald-700
+          text-white px-4 py-3 text-sm font-semibold
+          shadow-md hover:shadow-lg transition-all duration-300
+          relative overflow-hidden"
     >
-        <span>🎉 Invite & Earn Rewards</span>
-        <svg :class="{ 'rotate-180': open }" class="w-4 h-4 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-        </svg>
+    <!-- Shine Effect -->
+    <span class="absolute inset-0 bg-white/10 opacity-0 hover:opacity-100 transition-opacity duration-500"></span>
+
+    <!-- Left side (emoji + text) -->
+    <span class="relative flex items-center space-x-2">
+        <span class="animate-bounce">🎉</span>
+        <span class="text-base">Invite & Earn Rewards</span>
+    </span>
+
+    <!-- Chevron -->
+    <svg 
+        :class="{ 'rotate-180': open }" 
+        class="w-5 h-5 transform transition-transform duration-300 ease-in-out group-hover:scale-110" 
+        fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+    </svg>
     </button>
+
 
     <!-- Accordion Content -->
     <div 
