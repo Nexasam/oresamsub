@@ -10,6 +10,7 @@ use App\Console\Commands\SendNewRegistrationEmail;
 use App\Console\Commands\ZerorizeNegativeBalances;
 use App\Console\Commands\ComputeReferralCommission;
 use App\Console\Commands\SendFailedTransactionEmail;
+use App\Console\Commands\ReprocessPendingTransaction;
 use App\Console\Commands\SendPendingTransactionEmail;
 use App\Console\Commands\ProcessPendingAirtimeTransactions;
 
@@ -29,7 +30,10 @@ Schedule::command(ComputeReferralCommission::class)->everySixHours();
 
 Schedule::command(SendNewRegistrationEmail::class)->everyTwoMinutes()->withoutOverlapping();
 Schedule::command(SendFailedTransactionEmail::class)->everyThirtySeconds()->withoutOverlapping();
-Schedule::command(SendPendingTransactionEmail::class)->everyThirtySeconds()->withoutOverlapping();
+Schedule::command(SendPendingTransactionEmail::class)->everyTwoMinutes()->withoutOverlapping();
+
+Schedule::command(ReprocessPendingTransaction::class)->everyMinute()->withoutOverlapping();
+
 
 Schedule::command(ClearErrorLogs::class)->everyThirtyMinutes()->withoutOverlapping();
 

@@ -12,9 +12,10 @@ class Transaction extends Model
 
     protected $guarded = [];
 
-    // protected $casts = [
-    //     'created_at' => 'datetime:Africa/Lagos',
-    // ];
+    protected $casts = [
+        // 'created_at' => 'datetime:Africa/Lagos',
+        'retry_count' => 'integer',
+    ];
     
 
     public function user(){

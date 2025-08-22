@@ -34,6 +34,8 @@ class ReprocessTransactionController extends Controller
             return response()->json(['status'=>false, 'message'=>$validator->errors()->first() ]);
         }
 
+
+        //candidate for DRY
         $automation_details = Automation::where('id',$request->automation_id)->first();
 
         $product_plan = ProductPlan::with('product_plan_category.product')->where('id',$request->plan_id)->first();
@@ -61,7 +63,7 @@ class ReprocessTransactionController extends Controller
         $dataa['plan_id'] = $request->plan_id;
         $dataa['validatephonenetwork'] = 0;
         $sell_data = AutomationLogic::initiateDataPurchase($dataa);
-        $admin_message = $sell_data['admin_message'] ?? 'message';
+        $admin_message = $sell_data['admin_message'] ?? 'nil';
         $set_for_manual = $sell_data['set_for_manual'] ?? 0;
 
         if($sell_data['status'] != 1 ||  $set_for_manual == 1){

@@ -70,7 +70,8 @@ class SendPendingTransactionEmail extends Command
 
             $get_emails_to_notify_failed_transactions = Setting::where('field_name','emails_to_notify_failed_transactions')->first();  
             $date_param = '2025-04-04';
-            $transactioncount = Transaction::where('set_for_manual',1)->count();
+            $transactioncount = Transaction::where('set_for_manual',1)
+            ->count();
 
             $emails = $get_emails_to_notify_failed_transactions->field_value;
             $recipient_emails = explode(',',$emails);
