@@ -32,7 +32,7 @@ Schedule::command(SendNewRegistrationEmail::class)->everyTwoMinutes()->withoutOv
 Schedule::command(SendFailedTransactionEmail::class)->everyThirtySeconds()->withoutOverlapping();
 Schedule::command(SendPendingTransactionEmail::class)->everyTwoMinutes()->withoutOverlapping();
 
-// Schedule::command(ReprocessPendingTransaction::class)->everyTwoMinutes()->withoutOverlapping();
+Schedule::command(ReprocessPendingTransaction::class)->everyTwoMinutes()->withoutOverlapping();
 
 
 Schedule::command(ClearErrorLogs::class)->everyThirtyMinutes()->withoutOverlapping();
