@@ -81,6 +81,7 @@ class ReprocessPendingTransaction extends Command
                     ->where('validity_in_days', $fetch_transaction->product_plan->validity_in_days)
                     ->whereIn('product_plan_category_id', $network_plan_categories_arr)
                     ->where('visibility', 1)
+                    ->orderByRaw('CAST(cost_price AS UNSIGNED) ASC') // ✅ Sort numerically
                     ->get();
     
     
