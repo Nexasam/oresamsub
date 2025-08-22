@@ -170,7 +170,9 @@ Route::middleware(['set_locale'])->group(function () {
 
 
             Route::get('/test', function () {
-                return view('landing.indextest');
+                // return view('landing.indextest');
+                dd(function_exists('fastcgi_finish_request'));
+
             });
 
             Route::get('/delete_user_account', function () {
