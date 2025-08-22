@@ -165,7 +165,7 @@ class ReprocessPendingTransaction extends Command
                             'validatephonenetwork' => 0,
                         ];
 
-                        logger('Trying plan: '. $product_plannn->product_plan_name.'  automation: '.$$product_plannn->automation->id);
+                        logger('Trying plan: '. $product_plannn->product_plan_name.'  automation: '.$product_plannn->automation->id);
 
                         $sell_data = AutomationLogic::initiateDataPurchase($dataa);
 
