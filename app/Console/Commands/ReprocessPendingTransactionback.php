@@ -15,21 +15,21 @@ use Illuminate\Support\Facades\Mail;
 use App\Mail\PendingTransactionNotification;
 use App\Services\Automation\AutomationLogic;
 
-class ReprocessPendingTransactionb extends Command
+class ReprocessPendingTransactionback extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'app:reprocess-pending-transaction';
+    protected $signature = 'app:reprocess-pending-transactionnnn';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Reprocess Pending Transactions';
+    protected $description = 'Reprocess Pending Transactionssss';
 
     /**
      * Execute the console command.
