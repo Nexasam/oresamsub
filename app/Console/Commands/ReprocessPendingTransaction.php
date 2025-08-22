@@ -159,13 +159,13 @@ class ReprocessPendingTransaction extends Command
                         $dataa = [
                             'phone_number' => $fetch_transaction->phone_number,
                             'automation_details' => $product_plannn->automation,
-                            'automation_id' => $product_plannn->automation->automation_id,
+                            'automation_id' => $product_plannn->automation->id,
                             'network_id' => $product_plannn->product_plan_category->network->id,
                             'plan_id' => $product_plannn->id,
                             'validatephonenetwork' => 0,
                         ];
 
-                        logger('Trying plan: '.json_encode($dataa));
+                        logger('Trying plan: '. $product_plannn->product_plan_name.'  automation: '.$$product_plannn->automation->id);
 
                         $sell_data = AutomationLogic::initiateDataPurchase($dataa);
 
