@@ -95,7 +95,7 @@ class ReprocessPendingTransaction extends Command
                         'phone_number' => $fetch_transaction->phone_number,
                         'automation_details' => $product_plannn->automation,
                         'automation_id' => $product_plannn->automation->automation_id,
-                        'network_id' => $product_plannn->network_id,
+                        'network_id' => $product_plannn->product_plan_category->network->id,
                         'plan_id' => $product_plannn->id,
                         'validatephonenetwork' => 0,
                     ];
@@ -108,6 +108,7 @@ class ReprocessPendingTransaction extends Command
                     if ($sell_data['status'] != 1 || $set_for_manual == 1) {
                         // Still failed, increment retry count
                         $fetch_transaction->increment('retry_count');
+                        
                         logger('Still failed: '.$admin_message);
                         continue; // try next plan
                     }
