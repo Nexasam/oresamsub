@@ -47,7 +47,7 @@ class ReprocessPendingTransaction extends Command
                 'manual_processing_locker'
             ])
             ->where('set_for_manual', 1)
-            ->where('retry_count','<', 5)
+            ->where('retry_count','<', 10)
             // ->whereRaw('CAST(retry_count AS UNSIGNED) < ?', [5])
             ->limit(5)
             ->get();
@@ -206,7 +206,7 @@ class ReprocessPendingTransaction extends Command
     
                     // After checking all alternative plans:
                     if (!$success) {
-                        if ($fetch_transaction->retry_count >= 5) {
+                        if ($fetch_transaction->retry_count >= 8) {
                             // Max retries reached, remove from queue
                             // $fetch_transaction->update(['set_for_manual' => 0]);
                             // logger('Removed txn '.$fetch_transaction->id.' after max retries.');
