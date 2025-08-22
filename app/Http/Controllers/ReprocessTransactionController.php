@@ -78,7 +78,7 @@ class ReprocessTransactionController extends Controller
 
         $transaction_details->update([
             'status' => 1,
-            'retry_count' => DB::raw('retry_count + 1'),
+            // 'retry_count' => DB::raw('retry_count + 1'),
             'user_screen_message' => 'Transaction successfully processed',
             'admin_screen_message' => 'MANUAL: automation:'.$automation_details->automation_name.' by '.auth()->user()->email.' '.auth()->user()->first_name.'  message:'.$admin_message,
             'set_for_manual' => 0, #means it has been processed
