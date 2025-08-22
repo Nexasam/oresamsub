@@ -159,7 +159,7 @@ class ReprocessPendingTransaction extends Command
     
                 }
             } catch (\Exception $th) {
-                logger('Except:'. $th->getMessage().' on page '. $th->getFile().' on line '. $th->getLine();
+                logger('Except:'. $th->getMessage().' on page '. $th->getFile().' on line '. $th->getLine());
             }
            
 
