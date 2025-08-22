@@ -104,6 +104,8 @@ class ReprocessPendingTransaction extends Command
                         'validatephonenetwork' => 0,
                     ];
 
+                    logger('ee'.json_encode($dataa));
+
                     $sell_data = AutomationLogic::initiateDataPurchase($dataa);
 
                     $admin_message = $sell_data['admin_message'] ?? 'message';
