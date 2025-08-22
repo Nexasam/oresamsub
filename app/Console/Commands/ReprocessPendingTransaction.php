@@ -198,9 +198,9 @@ class ReprocessPendingTransaction extends Command
                     }
 
                     // After loop
-                    if (!$success) {
-                        logger('All plans failed for transaction: '.$fetch_transaction->id);
-                    }
+                    // if (!$success) {
+                    //     logger('All plans failed for transaction: '.$fetch_transaction->id);
+                    // }
     
     
     
@@ -210,6 +210,8 @@ class ReprocessPendingTransaction extends Command
                             // Max retries reached, remove from queue
                             // $fetch_transaction->update(['set_for_manual' => 0]);
                             // logger('Removed txn '.$fetch_transaction->id.' after max retries.');
+                            $fetch_transaction->update(['set_for_manual' => 1]);
+
                         } else {
                             // Put back in queue for next cron run
                             $fetch_transaction->update(['set_for_manual' => 1]);
