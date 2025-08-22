@@ -40,7 +40,12 @@ class ReprocessPendingTransaction extends Command
         if( env('APP_NAME') == 'OresamSub' ){
 
 
-            $affected_txns = Transaction::with(['user','product_plan.product_plan_category.network','manual_processing_locker'])
+            $affected_txns = Transaction::with([
+                'user',
+                'product_plan.product_plan_category.product',
+                'product_plan.product_plan_category.network',
+                'manual_processing_locker'
+            ])
             ->where('set_for_manual', 1)
             ->where('retry_count','<', 5)
             // ->whereRaw('CAST(retry_count AS UNSIGNED) < ?', [5])
