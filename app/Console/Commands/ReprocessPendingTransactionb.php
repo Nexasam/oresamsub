@@ -9,6 +9,7 @@ use App\Models\ProductPlan;
 use App\Models\Transaction;
 use App\Models\ConfigSetting;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\DB;
 use App\Models\ProductPlanCategory;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\PendingTransactionNotification;
@@ -92,6 +93,7 @@ class ReprocessPendingTransactionb extends Command
                                             
                                                 $fetch_transaction->update([
                                                     'status' => 1,
+                                                    'retry_count' => DB::raw('retry_count + 1'),
                                                     'user_screen_message' => 'Transaction successfully processed',
                                                     'admin_screen_message' => 'MANUAL: automation:'.$product_plannn->automation->automation_name.' by cron,  message:'.$admin_message,
                                                     'set_for_manual' => 0, #means it has been reprocessed
