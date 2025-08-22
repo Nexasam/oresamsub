@@ -10,6 +10,7 @@ use App\Models\SiteTemplate;
 use Illuminate\Http\Request;
 use App\Models\ConfigSetting;
 use App\Models\UserBulkDataWallet;
+use Illuminate\Support\Facades\DB;
 use App\Models\ProductPlanCategory;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\WalletFundingNotification;
@@ -629,12 +630,10 @@ class TransactionController extends Controller
        ->value('automation_name');
    
 
-       $transaction_details->increment('retry_count');
-
-
         //update user wallet
         $transaction_details->update([
             'status' => 1,
+            'retry_count' => DB::raw('retry_count + 1'),
             'user_screen_message' => 'Transaction successfully processed',
             'admin_screen_message' => 'MANUAL: automation:'.$automation_name.' by '.auth()->user()->email.' '.auth()->user()->first_name.'  message:'.$request->success_message,
             'set_for_manual' => 0,
