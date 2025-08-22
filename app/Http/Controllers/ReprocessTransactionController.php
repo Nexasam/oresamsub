@@ -68,6 +68,8 @@ class ReprocessTransactionController extends Controller
 
         if($sell_data['status'] != 1 ||  $set_for_manual == 1){
             //it means it still failed, you can update reprocessing count here
+            $transaction_details->increment('retry_count');
+
             return response()->json(['status'=>false,'message'=>$sell_data['admin_message'] ]);
         }
 
