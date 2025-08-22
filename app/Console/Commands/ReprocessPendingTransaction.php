@@ -194,7 +194,7 @@ class ReprocessPendingTransaction extends Command
                             'manually_processed_by' => NULL,
                         ]);
 
-                        logger('Plan failed: '.$admin_message.' | Moving to next plan...');
+                        logger('Plan failed with '.$product_plannn->automation->automation_name.': '.$admin_message.' | Moving to next plan...');
                     }
 
                     // After loop
