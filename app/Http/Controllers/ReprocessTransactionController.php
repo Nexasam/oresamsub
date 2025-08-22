@@ -69,7 +69,11 @@ class ReprocessTransactionController extends Controller
 
         if($sell_data['status'] != 1 ||  $set_for_manual == 1){
             //it means it still failed, you can update reprocessing count here
-            $transaction_details->increment('retry_count');
+            $transaction_details->update([
+                'retry_count' => $transaction_details->retry_count + 1,
+                'admin_screen_message' => 'cron: automation:'.$automation_details->automation_name.' '.$admin_message,
+                'manually_processed_by' => NULL,
+            ]);
 
             return response()->json(['status'=>false,'message'=>$sell_data['admin_message'] ]);
         }
@@ -78,7 +82,7 @@ class ReprocessTransactionController extends Controller
 
         $transaction_details->update([
             'status' => 1,
-            // 'retry_count' => DB::raw('retry_count + 1'),
+            'retry_count' => $transaction_details->retry_count + 1,
             'user_screen_message' => 'Transaction successfully processed',
             'admin_screen_message' => 'MANUAL: automation:'.$automation_details->automation_name.' by '.auth()->user()->email.' '.auth()->user()->first_name.'  message:'.$admin_message,
             'set_for_manual' => 0, #means it has been processed

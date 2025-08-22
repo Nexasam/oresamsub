@@ -66,12 +66,16 @@ class ReprocessPendingTransaction extends Command
                     ->pluck('id')
                     ->toArray();
 
-                $product_plansss = ProductPlan::with(['automation','product_plan_category.product'])
-                    ->where('data_size_in_mb', $fetch_transaction->product_plan->data_size_in_mb)
-                    ->where('validity_in_days', $fetch_transaction->product_plan->validity_in_days)
-                    ->whereIn('product_plan_category_id', $network_plan_categories_arr)
-                    ->where('visibility', 1)
-                    ->get();
+                $product_plansss = ProductPlan::with([
+                    'automation',
+                    'product_plan_category.product',
+                    'product_plan_category.network'
+                ])
+                ->where('data_size_in_mb', $fetch_transaction->product_plan->data_size_in_mb)
+                ->where('validity_in_days', $fetch_transaction->product_plan->validity_in_days)
+                ->whereIn('product_plan_category_id', $network_plan_categories_arr)
+                ->where('visibility', 1)
+                ->get();
 
 
                 $success = false;
@@ -107,16 +111,19 @@ class ReprocessPendingTransaction extends Command
 
                     if ($sell_data['status'] != 1 || $set_for_manual == 1) {
                         // Still failed, increment retry count
-                        $fetch_transaction->increment('retry_count');
-                        
-                        logger('Still failed: '.$admin_message);
+                        $fetch_transaction->update([
+                            'retry_count' => $fetch_transaction->retry_count + 1,
+                            'admin_screen_message' => 'cron: automation:'.$product_plannn->automation->automation_name.' '.$admin_message,
+                            'manually_processed_by' => NULL,
+                        ]);
+                        // logger('Still failed: '.$admin_message);
                         continue; // try next plan
                     }
 
                     // Success: Update transaction
                     $fetch_transaction->update([
                         'status' => 1,
-                        // 'retry_count' => DB::raw('retry_count + 1'),
+                        'retry_count' => $fetch_transaction->retry_count + 1,
                         'user_screen_message' => 'Transaction successfully processed',
                         'admin_screen_message' => 'MANUAL: automation: '.$product_plannn->automation->automation_name.' by cron, message: '.$admin_message,
                         'set_for_manual' => 0, // means reprocessed
