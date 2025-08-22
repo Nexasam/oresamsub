@@ -629,6 +629,9 @@ class TransactionController extends Controller
        ->value('automation_name');
    
 
+       $transaction_details->increment('retry_count');
+
+
         //update user wallet
         $transaction_details->update([
             'status' => 1,
