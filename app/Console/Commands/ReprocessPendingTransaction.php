@@ -48,7 +48,7 @@ class ReprocessPendingTransaction extends Command
             ])
             ->where('transaction_category','=','data')
             ->where('set_for_manual', 1)
-            ->where('retry_count','<', 10)
+            ->where('retry_count','<', 8)
             // ->whereRaw('CAST(retry_count AS UNSIGNED) < ?', [5])
             ->limit(5)
             ->get();
@@ -62,9 +62,9 @@ class ReprocessPendingTransaction extends Command
     
     
                     // Safety check (in case DB values changed)
-                    if ($fetch_transaction->retry_count >= 5) {
+                    if ($fetch_transaction->retry_count >= 10) {
                         logger('Max retries reached for txn ID: '.$fetch_transaction->id);
-                        $fetch_transaction->update(['set_for_manual' => 0]); // Remove from queue
+                        $fetch_transaction->update(['set_for_manual' => 1]); // Remove from queue
                         continue;
                     }
     
