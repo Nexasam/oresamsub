@@ -46,6 +46,7 @@ class ReprocessPendingTransaction extends Command
                 'product_plan.product_plan_category.network',
                 'manual_processing_locker'
             ])
+            ->where('transaction_category','=','data')
             ->where('set_for_manual', 1)
             ->where('retry_count','<', 10)
             // ->whereRaw('CAST(retry_count AS UNSIGNED) < ?', [5])
