@@ -295,6 +295,87 @@ class ProductPlanController extends Controller
     
     }
 
+
+
+    //single plan update
+    public function update_plan2(Request $request){
+
+        $validator = Validator::make($request->all(), [
+          'product_plan_id' => 'required|max:255|exists:product_plans,id',
+          'product_plan_name' => 'required|max:255',
+          'cost_price' => 'required|numeric|gt:0',
+          // 'data_size_in_mb' => 'required|numeric',
+          'validity_in_days' => 'required|numeric',
+          'default_selling_price' => 'required|numeric',
+          'user_level_1_selling_price' => 'required|numeric',
+          'user_level_2_selling_price' => 'required|numeric',
+          'user_level_3_selling_price' => 'required|numeric',
+          'user_level_4_selling_price' => 'required|numeric'
+
+        ]);
+
+        if ($validator->stopOnFirstFailure()->fails()) {
+          return response()->json(['status'=> false,'message'=> $validator->errors()->first()]);
+        }
+
+       
+        if(auth()->user()->email != 'adebsholey4real@gmail.com'){
+          return response()->json([
+            'status' => false,
+            'message'=> 'not authorized',
+           ]);
+        }
+         
+         $plan_id = $request->product_plan_id;
+         $cost_price = $request->cost_price;
+         $visibility = $request->visibility;
+         $default_selling_price =  $request->default_selling_price;
+         $user_level_1_selling_price =  $request->user_level_1_selling_price;
+         $user_level_2_selling_price =  $request->user_level_2_selling_price;
+         $user_level_3_selling_price =  $request->user_level_3_selling_price;
+         $user_level_4_selling_price =  $request->user_level_4_selling_price;
+         $data_size_in_mb =  $request->data_size_in_mb;
+         $product_plan_name =  $request->product_plan_name;
+         $validity_in_days =  $request->validity_in_days;
+
+
+        //  $user_level_1_commission =  $request->user_level_1_commission;
+        //  $user_level_2_commission =  $request->user_level_2_commission;
+        //  $user_level_3_commission =  $request->user_level_3_commission;
+        //  $user_level_4_commission =  $request->user_level_4_commission;
+        //  $commission_feature =  $request->commission_feature;
+
+
+         ProductPlan::where('id',$plan_id)->update([
+          "product_plan_name" =>  $product_plan_name,
+          "cost_price" =>  $cost_price,
+          "visibility" =>  $visibility,
+          "default_selling_price" =>  $default_selling_price,
+          "user_level_1_selling_price" =>  $user_level_1_selling_price,
+          "user_level_2_selling_price"=>  $user_level_2_selling_price,
+          "user_level_3_selling_price" =>  $user_level_3_selling_price,
+          "user_level_4_selling_price" =>  $user_level_4_selling_price,
+          // "user_level_1_commission" =>  $user_level_1_commission,
+          // "user_level_2_commission"=>  $user_level_2_commission,
+          // "user_level_3_commission" =>  $user_level_3_commission,
+          // "user_level_4_commission" =>  $user_level_4_commission,
+          // "commission_feature" =>  $commission_feature,
+          "data_size_in_mb" =>  $data_size_in_mb,
+          "validity_in_days" =>  $validity_in_days,
+         ]);
+     
+
+         sleep(2);
+  
+         return response()->json([
+          'status' => true,
+          'message'=> 'successfully updated plan',
+         ]);
+   }
+
+
+
+    //automation update
     public function update(Request $request){
        
       //  return $request->all();

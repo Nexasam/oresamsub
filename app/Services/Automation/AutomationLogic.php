@@ -18,6 +18,139 @@ use App\Services\Automation\MsOrgGroupAutomation\MsOrgGroupAutomation;
 
 class AutomationLogic{
 
+    // public static function productplanwrapper(){
+    //     $network_plan_categories_arr = ProductPlanCategory::where('network_id', $fetch_transaction->product_plan->product_plan_category->network->id)
+    //     ->where('product_id', $fetch_transaction->product_plan->product_plan_category->product->id)
+    //     ->pluck('id')
+    //     ->toArray();
+
+    // $product_plansss = ProductPlan::with([
+    //     'automation',
+    //     'product_plan_category.product',
+    //     'product_plan_category.network'
+    // ])
+    // ->where('data_size_in_mb', $fetch_transaction->product_plan->data_size_in_mb)
+    // ->where('validity_in_days', $fetch_transaction->product_plan->validity_in_days)
+    // ->whereIn('product_plan_category_id', $network_plan_categories_arr)
+    // ->where('visibility', 1)
+    // ->orderByRaw('CAST(cost_price AS UNSIGNED) ASC') // ✅ Sort numerically
+    // ->get();
+
+
+    // // $success = false;
+
+    // // foreach ($product_plansss as $product_plannn) {
+
+    // //     $product_slug = $product_plannn->product_plan_category->product->slug;
+
+    // //     if (($fetch_transaction->status == 1 && $fetch_transaction->set_for_manual == 0) || $fetch_transaction->status == 2) {
+    // //         logger('Already in good state: '.$fetch_transaction->id);
+    // //         $success = true;
+    // //         break; // move to next transaction
+    // //     }
+
+    // //     if ($product_slug != 'data') {
+    // //         logger('Applicable on DATA only for now: current slug: '.$product_slug);
+    // //         continue; // skip to next plan
+    // //     }
+
+    // //     $dataa = [
+    // //         'phone_number' => $fetch_transaction->phone_number,
+    // //         'automation_details' => $product_plannn->automation,
+    // //         'automation_id' => $product_plannn->automation->automation_id,
+    // //         'network_id' => $product_plannn->product_plan_category->network->id,
+    // //         'plan_id' => $product_plannn->id,
+    // //         'validatephonenetwork' => 0,
+    // //     ];
+
+    // //     logger('ee'.json_encode($dataa));
+
+    // //     $sell_data = AutomationLogic::initiateDataPurchase($dataa);
+
+    // //     $admin_message = $sell_data['admin_message'] ?? 'message';
+    // //     $set_for_manual = $sell_data['set_for_manual'] ?? 0;
+
+    // //     if ($sell_data['status'] != 1 || $set_for_manual == 1) {
+    // //         // Still failed, increment retry count
+    // //         $fetch_transaction->update([
+    // //             'retry_count' => $fetch_transaction->retry_count + 1,
+    // //             'admin_screen_message' => 'cron: automation:'.$product_plannn->automation->automation_name.' '.$admin_message,
+    // //             'manually_processed_by' => NULL,
+    // //         ]);
+    // //         // logger('Still failed: '.$admin_message);
+    // //         continue; // try next plan
+    // //     }
+
+    // //     // Success: Update transaction
+    // //     $fetch_transaction->update([
+    // //         'status' => 1,
+    // //         'retry_count' => $fetch_transaction->retry_count + 1,
+    // //         'user_screen_message' => 'Transaction successfully processed',
+    // //         'admin_screen_message' => 'MANUAL: automation: '.$product_plannn->automation->automation_name.' by cron, message: '.$admin_message,
+    // //         'set_for_manual' => 0, // means reprocessed
+    // //         'manually_processed_by' => NULL,
+    // //     ]);
+
+    // //     $success = true;
+    // //     break; // Stop trying more plans for this txn
+    // // }
+
+
+
+
+
+    // $success = false;
+
+    // foreach ($product_plansss as $product_plannn) {
+    //     $product_slug = $product_plannn->product_plan_category->product->slug;
+
+    //     if ($product_slug !== 'data') {
+    //         logger('Applicable on DATA only for now: current slug: '.$product_slug);
+    //         continue; // Skip if not data
+    //     }
+
+    //     $dataa = [
+    //         'phone_number' => $fetch_transaction->phone_number,
+    //         'automation_details' => $product_plannn->automation,
+    //         'automation_id' => $product_plannn->automation->id,
+    //         'network_id' => $product_plannn->product_plan_category->network->id,
+    //         'plan_id' => $product_plannn->id,
+    //         'validatephonenetwork' => 0,
+    //     ];
+
+    //     logger('Trying plan: '. $product_plannn->product_plan_name.'  automation: '.$product_plannn->automation->automation_name);
+
+    //     $sell_data = AutomationLogic::initiateDataPurchase($dataa);
+
+    //     $admin_message = $sell_data['admin_message'] ?? 'message';
+    //     $set_for_manual = $sell_data['set_for_manual'] ?? 0;
+
+    //     if ($sell_data['status'] == 1 && $set_for_manual != 1) {
+    //         // ✅ Success
+    //         $fetch_transaction->update([
+    //             'status' => 1,
+    //             'retry_count' => $fetch_transaction->retry_count + 1,
+    //             'user_screen_message' => 'Transaction successfully processed',
+    //             'admin_screen_message' => 'MANUAL: automation: '.$product_plannn->automation->automation_name.' by cron, message: '.$admin_message,
+    //             'set_for_manual' => 0,
+    //             'manually_processed_by' => NULL,
+    //         ]);
+
+    //         $success = true;
+    //         break; // Stop trying more plans for this txn
+    //     }
+
+    //     // ❌ Failed: Increment retry_count and try next plan
+    //     $fetch_transaction->update([
+    //         'retry_count' => $fetch_transaction->retry_count + 1,
+    //         'admin_screen_message' => 'cron: automation:'.$product_plannn->automation->automation_name.' '.$admin_message,
+    //         'manually_processed_by' => NULL,
+    //     ]);
+
+    //     logger('Plan failed with '.$product_plannn->automation->automation_name.': '.$admin_message.' | Moving to next plan...');
+    // }
+    // }
+
     public static function initiateDataPurchase($data){
 
         $phone_number = $data['phone_number'];
