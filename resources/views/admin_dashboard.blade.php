@@ -821,6 +821,13 @@
 @push('scripts')
 <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
 <script>
+
+
+setInterval(function () {
+    location.reload();
+}, 120000); // 120000 ms = 2 minutes
+
+
 function walletBalance() {
     return {
         balance: '0.00',
