@@ -825,7 +825,7 @@
 
 setInterval(function () {
     location.reload();
-}, 10000); // 120000 ms = 2 minutes
+}, 1800000); // 30 minutes (30 * 60 * 1000)
 
 
 function walletBalance() {
