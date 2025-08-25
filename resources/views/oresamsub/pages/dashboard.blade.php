@@ -426,7 +426,7 @@ class="border border-emerald-400 dark:border-emerald-600 rounded-xl shadow-md ov
             <!-- Transaction Category -->
             <div>
                 <span class="text-xs font-semibold text-gray-800 dark:text-gray-100">
-                    {{ strtoupper($transaction->transaction_category) }}
+                    {{ strtoupper($wlog->transaction_category) }}
                 </span>
             </div>
         
