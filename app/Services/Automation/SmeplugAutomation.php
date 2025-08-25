@@ -146,12 +146,14 @@ class SmeplugAutomation{
         $response = curl_exec($curl);
         $response_dec = json_decode($response,true);
         $httpcode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+
+        logger('smeplug resp: '.$response);
       
         if(isset($response_dec['status']) && $response_dec['status']){
             //success
             return [
                 'status' => 1,
-                'user_message' => $response_dec['msg'],
+                'user_message' => $response_dec['data']['msg'] ?? 'Airtime of '.$this->amount.' was successfully sent to '.$this->mobile_number,
                 'admin_message' => $response,
             ];
         }else{
