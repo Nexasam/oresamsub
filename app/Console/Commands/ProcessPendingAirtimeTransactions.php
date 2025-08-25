@@ -50,9 +50,7 @@ class ProcessPendingAirtimeTransactions extends Command
 
             if(count($pending_transactions) > 0){
                 foreach($pending_transactions as $pending_transaction){
-
                     // $network_name = $pending_transaction->product_plan->product_plan_category->network->id;
-
                     $user_balance = $pending_transaction->user->main_wallet;
                     $email = $pending_transaction->user->email;
                     $user_id = $pending_transaction->user_id;
@@ -141,6 +139,8 @@ class ProcessPendingAirtimeTransactions extends Command
                                 $network_error = 1;
                                 // logger('Airtime should not run based on network difference');
                             }
+
+                            logger($network_id.'ppppwwweee');
                     
                             
                             // && strtolower($selected_network2) != 'airtel'
