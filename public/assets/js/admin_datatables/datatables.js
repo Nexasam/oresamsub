@@ -17,6 +17,7 @@ $(document).ready(function(){
     getCrystalPayUserFundingTransactions();
     getCrystalPayUserPendingTransactions();
     getCommissions();
+    adminGetWalletLogs();
 
     function getPublicPlans(date_from ='', date_to =''){
 
@@ -194,6 +195,38 @@ $(document).ready(function(){
   
 
 
+    
+    function adminGetWalletLogs(date_from ='', date_to ='', product_plan_category_filter = '', phone_recharged = ''){
+      const data = {
+        date_from : date_from,
+        date_to : date_to,
+        product_plan_category_filter : product_plan_category_filter,
+        phone_recharged : phone_recharged
+      };
+      console.log(data);
+      // return;
+      $('#admin_wallet_logs_table').DataTable({
+                autoWidth: false,
+                processing: true,
+                searching: true,
+                bInfo: false,
+                bLengthChange: true,
+                pageLength: 10,
+                ajax: root_url + 'admin/walletlogs/admin_fetch_wallet_logs?date_from='+date_from+'&&date_to='+date_to+'&&product_plan_category_filter='+product_plan_category_filter+'&&phone_recharged='+phone_recharged,
+                columns: [
+                  {data: 'DT_RowIndex', name: 'DT_RowIndex'},
+                  {data: 'user_id', name: 'user_id'},
+                  {data: 'transaction_id', name: 'transaction_id'},
+                  {data: 'action_by', name: 'action_by'},
+                  {data: 'transaction_category', name: 'transaction_category'},
+                  {data: 'balance_before', name: 'balance_before'},
+                  {data: 'balance_after', name: 'balance_after'},
+                  {data: 'description', name: 'description'},
+                  {data: 'created_at', name: 'created_at'},
+                  {data: 'action', name: 'action'},
+                ]
+        });
+    }
 
     function adminGetTransactions(date_from ='', date_to ='', product_plan_category_filter = '', phone_recharged = ''){
       const data = {
@@ -524,6 +557,11 @@ $(document).ready(function(){
       $("#admin_transactions_table").DataTable().destroy();
       adminGetTransactions(date_from,date_to,product_plan_category_filter,phone_recharged);
 
+      $("#admin_wallet_logs_table").DataTable().destroy();
+      adminGetWalletLogs(date_from,date_to,product_plan_category_filter,phone_recharged);
+
+      
+
       $("#commissions_table").DataTable().destroy();
       getCommissions(date_from,date_to,limit);
 
@@ -565,6 +603,10 @@ $(document).ready(function(){
     })
 
     $('#reload_txns_tbl').click(function(){
+
+      $("#admin_wallet_logs_table").DataTable().destroy();
+      adminGetWalletLogs();
+
       $("#user_transactions_table").DataTable().destroy();
       userGetTransactions();
 

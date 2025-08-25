@@ -12,4 +12,16 @@ class WalletLog extends Model
 
     protected $guarded = [];
 
+    public function actionBy(){
+        return $this->belongsTo(User::class,'action_by','id');
+    }
+
+    public function user(){
+        return $this->belongsTo(User::class,'user_id','id');
+    }
+
+    public function transaction(){
+        return $this->belongsTo(User::class,'transaction_id','id');
+    }
+
 }

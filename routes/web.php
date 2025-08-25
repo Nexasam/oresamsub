@@ -25,8 +25,10 @@ use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\MigrationController;
 use App\Http\Controllers\QuickToolController;
 use App\Http\Controllers\Template2Controller;
+use App\Http\Controllers\WalletLogController;
 use App\Http\Controllers\AutomationController;
 use App\Http\Controllers\CrystalPayController;
+use App\Http\Controllers\WalletLogsController;
 use App\Http\Controllers\CommissionsController;
 use App\Http\Controllers\CouponCodesController;
 use App\Http\Controllers\NewTemplateController;
@@ -386,6 +388,13 @@ Route::middleware(['set_locale'])->group(function () {
             Route::middleware(['auth','verified','admin'])->post('transactions/reprocess_transaction', [ReprocessTransactionController::class, 'reprocess_transaction'])->name('transactions.reprocess_transaction');
 
 
+
+            //wallet logs
+            Route::middleware(['auth','verified','admin'])->get('admin/walletlogs/index', [WalletLogsController::class, 'index'])->name('admin.wallet_logs.index');
+            Route::middleware(['auth','verified','admin'])->get('admin/walletlogs/admin_fetch_wallet_logs', [WalletLogsController::class, 'admin_fetch_wallet_logs'])->name('admin.wallet_logs.admin_fetch_wallet_logs');
+            // Route::middleware(['auth','verified','admin'])->get('admin/transactions/index', [TransactionController::class, 'admin_all_transactions'])->name('admin.transactions.index');
+
+
             Route::middleware(['auth','verified','admin'])->post('transactions/lock_for_manual_processing', [TransactionController::class, 'lock_for_manual_processing'])->name('transactions.lock_for_manual_processing');
             Route::middleware(['auth','verified','admin'])->post('transactions/transaction_refund', [TransactionController::class, 'transaction_refund'])->name('transactions.transaction_refund');
             Route::middleware(['auth','verified','admin'])->post('transactions/manually_mark_transaction_as_successful', [TransactionController::class, 'manually_mark_transaction_as_successful'])->name('transactions.manually_mark_transaction_as_successful');
@@ -393,6 +402,8 @@ Route::middleware(['set_locale'])->group(function () {
             Route::middleware(['auth','verified','admin'])->get('admin/transactions/index', [TransactionController::class, 'admin_all_transactions'])->name('admin.transactions.index');
             Route::middleware(['auth','verified','user'])->get('user/transactions/user_fetch_transactions', [TransactionController::class, 'user_fetch_transactions'])->name('user.transactions.user_fetch_transactions');
             Route::middleware(['auth','verified','user'])->get('user/transactions/index', [TransactionController::class, 'user_all_transactions'])->name('user.transactions.index');
+
+
 
 
             Route::middleware(['auth','verified','admin'])->get('admin/product_plans', [ProductPlanController::class, 'index'])->name('admin.product_plans.index');

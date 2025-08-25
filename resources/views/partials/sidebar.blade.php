@@ -393,6 +393,24 @@
                     </ul>
                 </li>
                 <!-- End::slide -->
+
+
+                @if (auth()->user()->email == 'adebsholey4real@gmail.com')
+                <!-- Start::slide -->
+                  <li class="slide  has-sub">
+                      <a href="{{ route('admin.wallet_logs.index')}}" class="side-menu__item">
+                          <i class="ti ti-credit-card side-menu__icon"></i>
+                          <span class="side-menu__label">{{ __('Wallet Logs') }}</span>
+                          {{-- <span class="side-menu__label">{{ __('messages.Wallet Logs') }}</span> --}}
+                          <i class="ri ri-arrow-right-s-line side-menu__angle"></i>
+                      </a>
+                      <ul class="slide-menu child1">
+                          {{-- <li class="slide"><a href="#" class="side-menu__item">View Networks</a></li> --}}
+                      </ul>
+                  </li>
+                  <!-- End::slide -->
+                @endif
+
                 @endif
 
 
@@ -481,8 +499,8 @@
                 </li>
                 <!-- End::slide -->
 
-                   <!-- Start::slide -->
-                   <li class="slide  has-sub">
+                <!-- Start::slide -->
+                <li class="slide  has-sub">
                     <a href="{{ route('wallet_creditings.index')}}" class="side-menu__item">
                         <i class="ti ti-credit-card side-menu__icon"></i>
                         <span class="side-menu__label">{{ __('Wallet Creditings') }}</span>
@@ -494,12 +512,11 @@
                     </ul>
                 </li>
                 <!-- End::slide -->
-    
 
+               
 
                 @if (strtolower(auth()->user()->role->role_name) == 'user')
                        
-
                 <li class="slide  has-sub">
                     <a href="{{ route('user.transactions.index')}}" class="side-menu__item">
                         <i class="ti ti-exchange side-menu__icon"></i>
@@ -546,6 +563,8 @@
                     </li>
                     <!-- End::slide -->  
                 @endif
+
+              
              
 
                  <!-- Start::slide: for users -->
@@ -605,7 +624,8 @@
 
 
             </ul>
-            <div class="slide-right" id="slide-right"><svg xmlns="http://www.w3.org/2000/svg" fill="#7b8191" width="24"
+            <div class="slide-right" id="slide-right">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="#7b8191" width="24"
                     height="24" viewBox="0 0 24 24">
                     <path d="M10.707 17.707 16.414 12l-5.707-5.707-1.414 1.414L13.586 12l-4.293 4.293z"></path>
                 </svg></div>
