@@ -87,11 +87,11 @@ class WalletLogsController extends Controller
             return $cat;
         }) 
         ->addColumn('action',function($data){
-            $route = route('transactions.transaction_details',$data->id);
-            $actionBtn = '<a href="'.$route.'" type="button" class="hs-dropdown-toggle ti-btn ti-btn-primary" data-hs-overlay="#hs-vertically-centered-scrollable-modal'.$data->email.'">
-            Details
-            </a>';
-            return $actionBtn;
+            // $route = route('transactions.transaction_details',$data->id);
+            // $actionBtn = '<a href="'.$route.'" type="button" class="hs-dropdown-toggle ti-btn ti-btn-primary" data-hs-overlay="#hs-vertically-centered-scrollable-modal'.$data->email.'">
+            // Details
+            // </a>';
+            return '';
         })
         ->escapeColumns([])
         ->make(true);
