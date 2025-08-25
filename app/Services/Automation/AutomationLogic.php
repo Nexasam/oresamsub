@@ -293,6 +293,9 @@ class AutomationLogic{
         $url = $automation_details->airtime_url;
         $automation_id = $automation_details->id;
         $validatephonenetwork = $data['validatephonenetwork'] ?? '';
+        $data['url'] = $url;
+
+        
    
         if($validate_phone['status'] != 1){
             //something when wrong
@@ -314,7 +317,7 @@ class AutomationLogic{
             $data['mobile_number'] = $validated_phone_number;
             $buy_airtime = (new SimserverAutomation($data))->buyAirtime();
         }else if($automation_details->slug == 'smeplug'){
-            logger('smeplug ran');
+            logger('smeplug ran: '.json_encode($data));
             $buy_airtime = (new SmeplugAutomation($data))->buyAirtime();
         }
         else{
