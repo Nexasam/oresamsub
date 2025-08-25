@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use App\Models\UserPlan;
+use App\Models\WalletLog;
 use App\Models\ProductPlan;
 use App\Models\Transaction;
 use App\Models\SiteTemplate;
@@ -29,6 +30,7 @@ class UserDashboardController extends Controller
     $template = SiteTemplate::first();
     if((! $template || $template->template_name == 'template_1') && env('APP_NAME') == 'OresamSub' && auth()->user()->role->role_name == 'User'){
         $data['transactions'] = Transaction::with('product_plan')->where('user_id',auth()->id())->limit(10)->latest()->get();
+        $data['wallet_logs'] = WalletLog::with('user')->where('user_id',auth()->id())->limit(10)->latest()->get();
         return view('oresamsub.pages.dashboard')->with($data);
     }
 
