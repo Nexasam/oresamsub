@@ -140,7 +140,7 @@ class ProcessPendingAirtimeTransactions extends Command
                                 // logger('Airtime should not run based on network difference');
                             }
 
-                            logger($network_id.'ppppwwweee');
+                            logger($get_network_id->id.'ppppwwweee');
                     
                             
                             // && strtolower($selected_network2) != 'airtel'
