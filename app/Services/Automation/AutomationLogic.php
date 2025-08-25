@@ -5,6 +5,7 @@ namespace App\Services\Automation;
 use App\Models\ProductPlan;
 use App\Services\Utils\UtilService;
 use App\Services\Automation\VtpassAutomation;
+use App\Services\Automation\SmeplugAutomation;
 use App\Services\Automation\Twins10Automation;
 use App\Services\Automation\PaultechsAutomation;
 use App\Services\Automation\Nine9javtuAutomation;
@@ -312,6 +313,9 @@ class AutomationLogic{
         }else if($automation_details->slug == 'simserver'){
             $data['mobile_number'] = $validated_phone_number;
             $buy_airtime = (new SimserverAutomation($data))->buyAirtime();
+        }else if($automation_details->slug == 'smeplug'){
+            logger('smeplug ran');
+            $buy_airtime = (new SmeplugAutomation($data))->buyAirtime();
         }
         else{
             //this will be like this until other automations are processed
