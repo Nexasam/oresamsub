@@ -422,17 +422,21 @@ class="border border-emerald-400 dark:border-emerald-600 rounded-xl shadow-md ov
         <div x-data="{ showModal2: false }" class="relative">
           <!-- Trigger -->
           {{-- @click="showModal2 = true" --}}
-          <div  class="px-4 py-3 flex justify-between items-center bg-white dark:bg-gray-900 border-b border-gray-100 dark:border-gray-800 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800 rounded transition">
+          <div class="px-4 py-3 flex justify-between items-center bg-white dark:bg-gray-900 border-b border-gray-100 dark:border-gray-800 rounded hover:bg-gray-50 dark:hover:bg-gray-800 transition">
+            <!-- Transaction Category -->
             <div>
-              <div class="font-semibold text-xs text-gray-800 dark:text-gray-100">{{ strtoupper($transaction->transaction_category) }}</div>
-             
+                <span class="text-xs font-semibold text-gray-800 dark:text-gray-100">
+                    {{ strtoupper($transaction->transaction_category) }}
+                </span>
             </div>
-            <div class="text-right">
-              {{-- <div class="font-bold {{ $status['color'] }}">₦{{ number_format($transaction->discounted_amount ?? $transaction->amount)  }}</div> --}}
-              <div class="text-xs text-gray-500 dark:text-gray-400">₦{{ number_format($wlog->balance_before,2) }}</div>
-              <div class="text-xs text-gray-500 dark:text-gray-400">₦{{ number_format($wlog->balance_after,2) }}</div>
+        
+            <!-- Balances -->
+            <div class="text-right text-xs text-gray-500 dark:text-gray-400">
+                <div>Before: ₦{{ number_format($wlog->balance_before, 2) }}</div>
+                <div>After: ₦{{ number_format($wlog->balance_after, 2) }}</div>
             </div>
-          </div>
+        </div>
+        
       
           <!-- Modal -->
           <div x-show="showModal" x-cloak class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
