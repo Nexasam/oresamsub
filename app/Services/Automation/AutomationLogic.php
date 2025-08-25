@@ -294,6 +294,7 @@ class AutomationLogic{
         $automation_id = $automation_details->id;
         $validatephonenetwork = $data['validatephonenetwork'] ?? '';
         $data['url'] = $url;
+        $data['network_id'] = $network_id;
 
         
    

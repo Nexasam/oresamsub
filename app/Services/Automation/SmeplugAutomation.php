@@ -51,23 +51,25 @@ class SmeplugAutomation{
     }
 
     protected function getNetworkId($network_name){
+
         $network_name = strtolower($network_name);
+        logger($network_name.' ppss');
         if($network_name == 'mtn'){
             return 1;
         }
 
         //add others lalter
-        // if($network_name == 'glo'){
-        //     return 6;
-        // }
+        if($network_name == 'glo'){
+            return 4;
+        }
 
-        // if($network_name == 'airtel'){
-        //     return 7;
-        // }
+        if($network_name == 'airtel'){
+            return 2;
+        }
 
-        // if($network_name == '9mobile'){
-        //     return 8;
-        // }
+        if($network_name == '9mobile'){
+            return 3;
+        }
 
         return -1;
     }
