@@ -343,6 +343,12 @@ class="border border-emerald-400 dark:border-emerald-600 rounded-xl shadow-md ov
             <h2 class="text-lg font-bold text-gray-800 dark:text-gray-100 mb-4">Transaction Details</h2>
     
             <div class="space-y-2 text-sm text-gray-700 dark:text-gray-300">
+              @if ($transaction->status == 2 && $transaction->refund_reason)
+                <div class="flex justify-between">
+                  <span>Refund reason:</span>
+                  <span class="font-semibold">{{ $transaction->refund_reason }}</span>
+                </div>
+              @endif
               <div class="flex justify-between">
                 <span>Plan:</span>
                 <span class="font-semibold">{{ $transaction->product_plan->product_plan_name }}</span>
