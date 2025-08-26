@@ -251,9 +251,13 @@
                                       const price = dataList[child].selling_price;
                                       const commission = dataList[child].upline_commission;
 
-                                      let label = APP_NAME == 'OresamSub'
-                                        ? `${name}<br><span class='text-xs text-green-600'>₦${price} | Upline: ₦${commission}</span>`
-                                        : `${name}<br><span class='text-xs'>₦${price}</span>`;
+                                      // let label = APP_NAME == 'OresamSub'
+                                      //   ? `${name}<br><span class='text-xs text-green-600'>₦${price} | Upline: ₦${commission}</span>`
+                                      //   : `${name}<br><span class='text-xs'>₦${price}</span>`
+                                      // 
+                                      // ;
+
+                                      let label = `${name}<br><span class='text-xs'>₦${price}</span>`;
 
                                       planBoxes += `
                                         <div 
@@ -334,9 +338,11 @@
                                       const price = dataList[child].selling_price;
                                       const commission = dataList[child].upline_commission;
 
-                                      let label = APP_NAME == 'OresamSub'
-                                        ? `${name}<br><span class='text-xs text-green-600'>₦${price} | Upline: ₦${commission}</span>`
-                                        : `${name}<br><span class='text-xs'>₦${price}</span>`;
+                                      // let label = APP_NAME == 'OresamSub'
+                                      //   ? `${name}<br><span class='text-xs text-green-600'>₦${price} | Upline: ₦${commission}</span>`
+                                      //   : `${name}<br><span class='text-xs'>₦${price}</span>`;
+
+                                      let label = `${name}<br><span class='text-xs'>₦${price}</span>`;
 
                                         boxes += `
                                         <div 
@@ -392,9 +398,11 @@
                                   const price = dataList[child].selling_price;
                                   const commission = dataList[child].upline_commission;
 
-                                  let label = APP_NAME == 'OresamSub'
-                                    ? `${name}<br><span class='text-xs text-green-600'>₦${price} | Upline: ₦${commission}</span>`
-                                    : `${name}<br><span class='text-xs'>₦${price}</span>`;
+                                  // let label = APP_NAME == 'OresamSub'
+                                  //   ? `${name}<br><span class='text-xs text-green-600'>₦${price} | Upline: ₦${commission}</span>`
+                                  //   : `${name}<br><span class='text-xs'>₦${price}</span>`;
+
+                                    let label = `${name}<br><span class='text-xs'>₦${price}</span>`;
 
                                     boxes += `
                                     <div 
