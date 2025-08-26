@@ -1237,10 +1237,17 @@ class DataController extends Controller
         }
        
 
-        // logger($product_planss);
+        // Extract unique sizes from $product_planss
+        $data_sizes = collect($product_planss)
+        ->pluck('data_size_in_mb')
+        ->unique()
+        ->sort()
+        ->values()
+        ->toArray();
+
         
            
-        return response()->json(['status'=>'1','user_level'=>$plan_level ,'message'=>'Product plans fetched','counter' =>count($product_planss),'data' => $product_planss ]);
+        return response()->json(['status'=>'1','user_level'=>$plan_level ,'message'=>'Product plans fetched','counter' =>count($product_planss),'data' => $product_planss, 'sizes' => $data_sizes ]);
         // return response()->json(['status'=>'1','user_level'=>$user_plan_id ,'message'=>'Product plans fetched','counter' =>count($product_planss),'data' => $product_planss ]);
 
     }

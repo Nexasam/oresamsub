@@ -216,11 +216,44 @@
                         data: data,
                         dataType: 'json',
                         success: function(response) {
-                            console.log(response)
-                            // console.log(response.data)
+                            console.log(response);
                             var result = JSON.stringify(response.data);
                             var dataList = JSON.parse(result);
-                        
+                            var sizes = response.sizes || [];
+
+                            // ✅ Render size filters
+                           // ✅ Render size filters
+                          if (sizes.length > 0) {
+                              $('#size_filters').html('');
+
+                              // Add "All" button first (active)
+                              $('#size_filters').append(`
+                                  <button 
+                                      class="size-btn active px-3 py-1 border rounded text-sm bg-green-500 text-white hover:bg-green-600 transition"
+                                      data-size="all"
+                                      onclick="filterPlans('all', this)"
+                                  >
+                                      All
+                                  </button>
+                              `);
+
+                              sizes.forEach(function(size) {
+                                  let label = size >= 1000 ? (size / 1000) + 'GB' : size + 'MB';
+
+                                  $('#size_filters').append(`
+                                      <button 
+                                          class="size-btn px-3 py-1 border rounded text-sm bg-white text-gray-700 hover:bg-green-600 transition"
+                                          data-size="${size}"
+                                          onclick="filterPlans(${size}, this)"
+                                      >
+                                          ${label}
+                                      </button>
+                                  `);
+                              });
+                          }
+
+
+                            
                               $('#product_plan_id').html("");
                               $('#product_plan_id').append('<option value="">Select Product Plan</option>');
       
@@ -250,6 +283,7 @@
                                       const name = dataList[child].product_plan_name;
                                       const price = dataList[child].selling_price;
                                       const commission = dataList[child].upline_commission;
+                                      const planSize = dataList[child].data_size_in_mb; 
 
                                       // let label = APP_NAME == 'OresamSub'
                                       //   ? `${name}<br><span class='text-xs text-green-600'>₦${price} | Upline: ₦${commission}</span>`
@@ -261,8 +295,9 @@
 
                                       planBoxes += `
                                         <div 
-                                          class="border rounded-lg p-3 text-center cursor-pointer bg-white dark:bg-gray-800 hover:border-blue-600 transition"
+                                          class="plan-box border rounded-lg p-3 text-center cursor-pointer bg-white dark:bg-gray-600 hover:border-blue-600 transition"
                                           data-id="${idd}"
+                                          data-size="${planSize}"
                                           onclick="selectPlan(this)"
                                         >
                                           ${label}
@@ -271,10 +306,21 @@
                                     }
                                     $('#plan_grid').html(planBoxes);
 
-                                   
 
-                                  
-                                  
+                                    // ✅ Filter function
+                                    window.filterPlans = function(size, el) {
+                                        $('.size-btn').removeClass('bg-green-500 text-white').addClass('bg-white text-gray-700');
+                                        $(el).removeClass('bg-white text-gray-700').addClass('bg-green-500 text-white');
+
+                                        if (size === 'all') {
+                                            $('.plan-box').show();
+                                        } else {
+                                            $('.plan-box').hide();
+                                            $(`.plan-box[data-size='${size}']`).show();
+                                        }
+                                    };
+
+
                                   }
                                   else if(product_slug == 'airtime' && amount != ''){
 
@@ -304,6 +350,98 @@
                         }
                 });
     }
+
+
+ 
+
+  //   function getProductPlans(network_id = '', plan_category_id = '', product_slug = '', amount = '') {
+  //   let data = {};
+
+  //   if (network_id && product_slug && !plan_category_id) {
+  //       data = { network_id, product_slug, amount };
+  //   }
+
+  //   if (network_id && plan_category_id && product_slug) {
+  //       data = { network_id, plan_category_id, product_slug, amount };
+  //   }
+
+  //   $.ajax({
+  //       type: 'GET',
+  //       url: "{{ route('user.fetch_product_plans') }}",
+  //       data: data,
+  //       dataType: 'json',
+  //       success: function(response) {
+  //           let dataList = response.data;
+
+  //           // Sort plans so that <500MB are at the bottom, maintaining size → price order
+  //           dataList.sort((a, b) => {
+  //               const sizeA = parseInt(a.data_size_in_mb);
+  //               const sizeB = parseInt(b.data_size_in_mb);
+
+  //               // Push <500MB to bottom
+  //               if (sizeA < 500 && sizeB >= 500) return 1;
+  //               if (sizeA >= 500 && sizeB < 500) return -1;
+
+  //               // Otherwise, sort by size first
+  //               if (sizeA !== sizeB) return sizeA - sizeB;
+
+  //               // If size is same, sort by price
+  //               return parseFloat(a.selling_price) - parseFloat(b.selling_price);
+  //           });
+
+  //           $('#product_plan_id').html("");
+  //           $('#product_plan_id').append('<option value="">Select Product Plan</option>');
+
+  //           $('#plan_grid').html(""); // Clear previous
+  //           let planBoxes = '';
+
+  //           dataList.forEach(item => {
+  //               const idd = item.product_plan_id;
+  //               const name = item.product_plan_name;
+  //               const price = item.selling_price;
+  //               const commission = item.upline_commission;
+  //               const dataSize = item.data_size_in_mb;
+
+  //               if (product_slug === 'data') {
+  //                   let label = `
+  //                       ${name} 
+  //                       <br><span class="text-xs text-green-600">₦${price}</span>
+  //                       <br><span class="text-[10px] text-gray-500">${dataSize}MB</span>
+  //                   `;
+
+  //                   planBoxes += `
+  //                       <div 
+  //                           class="border rounded-lg p-3 text-center cursor-pointer bg-white dark:bg-gray-800 hover:border-blue-600 transition"
+  //                           data-id="${idd}"
+  //                           onclick="selectPlan(this)"
+  //                       >
+  //                           ${label}
+  //                       </div>
+  //                   `;
+  //               } else if (product_slug === 'airtime' && amount !== '') {
+  //                   option = `<option selected value="${idd}">${name} - ₦${price}</option>`;
+  //                   $('#product_plan_id').append(option);
+  //               } else if (product_slug === 'airtime' && amount === '') {
+  //                   option = `<option value="${idd}">${name}</option>`;
+  //                   $('#product_plan_id').append(option);
+  //               } else {
+  //                   option = APP_NAME === 'OresamSub'
+  //                       ? `<option value="${idd}">${name} &nbsp;&nbsp;Upline Commission: ₦${commission}</option>`
+  //                       : `<option value="${idd}">${name}</option>`;
+  //                   $('#product_plan_id').append(option);
+  //               }
+  //           });
+
+  //           if (product_slug === 'data') {
+  //               $('#plan_grid').html(planBoxes);
+  //           }
+  //       },
+  //       error: function(xhr, status, error) {
+  //           console.error(xhr.responseText);
+  //       }
+  //   });
+  //  }
+
 
     function getCableProductPlans(plan_category_id='', product_slug=''){
               
