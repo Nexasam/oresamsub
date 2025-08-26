@@ -299,7 +299,7 @@
                                         <span class='font-extrabold text-md text-gray-900 dark:text-white'>
                                           ${name}
                                         </span><br>
-                                        <span class='font-semibold text-base text-green-600'>
+                                        <span class='font-bold text-base text-green-200'>
                                           ₦${price}
                                         </span>
                                         `;
