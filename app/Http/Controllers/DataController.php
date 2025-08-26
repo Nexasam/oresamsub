@@ -1112,12 +1112,20 @@ class DataController extends Controller
                     ->limit(1)
                     ->get();
                 }else{
-                    $product_plans = ProductPlan::where('product_plan_category_id',$product_plan_category->id)
-                    ->where('visibility',1)
-                    // ->where('automation_id',$product_plan_category->automation_id)
-                    ->orderByRaw('CAST(data_size_in_mb AS UNSIGNED)')
-                    ->orderByRaw('CAST('.$sellingp.' AS UNSIGNED)')
-                    ->orderByRaw('CAST(validity_in_days AS UNSIGNED) DESC')
+                    // $product_plans = ProductPlan::where('product_plan_category_id',$product_plan_category->id)
+                    // ->where('visibility',1)
+                    // // ->where('automation_id',$product_plan_category->automation_id)
+                    // ->orderByRaw('CAST(data_size_in_mb AS UNSIGNED)')
+                    // ->orderByRaw('CAST('.$sellingp.' AS UNSIGNED)')
+                    // ->orderByRaw('CAST(validity_in_days AS UNSIGNED) DESC')
+                    // ->get();
+
+                    $product_plans = ProductPlan::where('product_plan_category_id', $product_plan_category->id)
+                    ->where('visibility', 1)
+                    ->orderByRaw('CASE WHEN CAST(data_size_in_mb AS UNSIGNED) < 500 THEN 1 ELSE 0 END') // Push <500MB to bottom
+                    ->orderByRaw('CAST(data_size_in_mb AS UNSIGNED)') // Then order by size
+                    ->orderByRaw('CAST(' . $sellingp . ' AS UNSIGNED)') // Then by price
+                    ->orderByRaw('CAST(validity_in_days AS UNSIGNED) DESC') // Then by validity
                     ->get();
                 }
     
@@ -1165,14 +1173,22 @@ class DataController extends Controller
             }
         }else{
 
-            $product_plans = ProductPlan::whereIn('product_plan_category_id',$product_plan_categories_id_arr)
-            ->where('visibility',1)
-            // ->where('automation_id',$product_plan_category->automation_id)
-            ->orderByRaw('CAST(data_size_in_mb AS UNSIGNED)')
-            ->orderByRaw('CAST('.$sellingp.' AS UNSIGNED)')
-            ->orderByRaw('CAST(validity_in_days AS UNSIGNED) DESC')
-            ->get();
+            // $product_plans = ProductPlan::whereIn('product_plan_category_id',$product_plan_categories_id_arr)
+            // ->where('visibility',1)
+            // // ->where('automation_id',$product_plan_category->automation_id)
+            // ->orderByRaw('CAST(data_size_in_mb AS UNSIGNED)')
+            // ->orderByRaw('CAST('.$sellingp.' AS UNSIGNED)')
+            // ->orderByRaw('CAST(validity_in_days AS UNSIGNED) DESC')
+            // ->get();
 
+
+            $product_plans = ProductPlan::whereIn('product_plan_category_id', $product_plan_categories_id_arr)
+            ->where('visibility', 1)
+            ->orderByRaw('CASE WHEN CAST(data_size_in_mb AS UNSIGNED) < 500 THEN 1 ELSE 0 END') // Push <500MB to bottom
+            ->orderByRaw('CAST(data_size_in_mb AS UNSIGNED)') // Then order by size
+            ->orderByRaw('CAST(' . $sellingp . ' AS UNSIGNED)') // Then by price
+            ->orderByRaw('CAST(validity_in_days AS UNSIGNED) DESC') // Then by validity
+            ->get();
 
             //here plan category is empty:
             if(count($product_plans) > 0){
