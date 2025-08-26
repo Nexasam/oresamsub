@@ -820,12 +820,16 @@
                                               </a>
                                             @endif
 
-                                            @if ($data->status == -1 || $data->status == 0)
+                                            @if ($data->status == -1 || $data->status == 0 || $data->status == 2)
                                                 <a href="https://wa.me/{{ $phoneFormatted }}?text={{ $message }}" 
                                                 target="_blank"
                                                 class="inline-flex items-center px-4 py-2 bg-red-600 text-white rounded-lg shadow hover:bg-red-700 transition">
                                                   Support customer on WhatsApp
                                                 </a>
+                                            @endif
+
+                                            @if ($data->status == 2)
+                                                <p>Refund reason: {{  $data->refund_reason ?? 'nil' }}</p>
                                             @endif
 
                                             <!-- Call Button -->
@@ -1240,9 +1244,9 @@
                                           <form class=" space-x-2" method="POST" action="{{ route('transactions.transaction_refund') }}">
                                             @csrf
                                             <div class="space-x-2">
+                                              <input type="text" name="refund_reason" id="refund_reason" value="" placeholder="Enter refund reason">
                                               <input type="hidden" name="transaction_id" id="transaction_id" value="{{  $data->id }}">
                                               <input type="password" required name="pin" id="pin" placeholder="Enter PIN" value="">
-  
                                             </div>
                                             <div class="space-y-2">
                                               <button type="submit" class="ti-btn ti-btn-danger w-full">Confirm refund</button>

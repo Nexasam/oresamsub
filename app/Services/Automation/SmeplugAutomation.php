@@ -69,7 +69,7 @@ class SmeplugAutomation{
 
         if($network_name == '9mobile'){
             return 3;
-        }
+        } 
 
         return -1;
     }

@@ -408,9 +408,9 @@ class="border border-emerald-400 dark:border-emerald-600 rounded-xl shadow-md ov
           $types = ['Data','Airtime', 'Electricity', 'Cable'];
           $type = $types[array_rand($types)];
           $amount = '₦' . number_format(rand(200, 5000), 2);
-          $time = Carbon\Carbon::parse($transaction->created_at)->subMinutes(($key+1) * 10)->format('M j, g:i A');
+          $time = Carbon\Carbon::parse($wlog->created_at)->subMinutes(($key+1) * 10)->format('M j, g:i A');
       
-          $status = match($transaction->status) {
+          $status = match($wlog->status) {
               '1' => ['text' => 'Success', 'color' => 'text-green-500', 'color2' => 'text-green-600'],
               '0' => ['text' => 'Pending', 'color' => 'text-yellow-500', 'color2' => 'text-yellow-600'],
               '-1' => ['text' => 'Unsuccessful', 'color' => 'text-red-500', 'color2' => 'text-red-600'],
@@ -435,7 +435,7 @@ class="border border-emerald-400 dark:border-emerald-600 rounded-xl shadow-md ov
                 <div>Before: ₦{{ number_format($wlog->balance_before, 2) }}</div>
                 <div>After: ₦{{ number_format($wlog->balance_after, 2) }}</div>
             </div>
-        </div>
+          </div>
         
       
           <!-- Modal -->
@@ -443,7 +443,7 @@ class="border border-emerald-400 dark:border-emerald-600 rounded-xl shadow-md ov
             <div @click.away="showModal = false" class="bg-white dark:bg-gray-800 rounded-lg shadow-lg max-w-sm w-full p-6">
               <h2 class="text-lg font-bold text-gray-800 dark:text-gray-100 mb-4">Wallet Log Details</h2>
       
-              <div class="space-y-2 text-sm text-gray-700 dark:text-gray-300">
+              {{-- <div class="space-y-2 text-sm text-gray-700 dark:text-gray-300">
                 <div class="flex justify-between">
                   <span>Plan:</span>
                   <span class="font-semibold">{{ $transaction->product_plan->product_plan_name }}</span>
@@ -467,14 +467,17 @@ class="border border-emerald-400 dark:border-emerald-600 rounded-xl shadow-md ov
                   <span>Status:</span>
                   <span class="{{ $status['color2'] }}">{{ $status['text'] }}</span>
                 </div>
+
                 <div class="flex justify-between">
                   <span>Date:</span>
                   <span>{{ $time }}</span>
                 </div>
+
                 <div class="flex justify-between">
                   <span>Category:</span>
                   <span>{{ strtoupper($transaction->transaction_category) }}</span>
                 </div>
+
               </div>
       
               <div class="mt-6 text-center">
@@ -482,7 +485,7 @@ class="border border-emerald-400 dark:border-emerald-600 rounded-xl shadow-md ov
                 class="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 text-sm">
                 Close
                 </button>
-              </div>
+              </div> --}}
             </div>
           </div>
         </div>

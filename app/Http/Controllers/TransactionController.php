@@ -94,6 +94,7 @@ class TransactionController extends Controller
     $validator = Validator::make($request->all(), [
         'pin' => ['required','string','regex:/^\d{4,5}$/'],
         'transaction_id' => 'required|exists:transactions,id',
+        'refund_reason' => 'required',
       ]);
 
       if ($validator->stopOnFirstFailure()->fails()) {
@@ -167,6 +168,7 @@ class TransactionController extends Controller
             'status' => 2, //i.e refunded
             'set_for_manual' => 0,
             'manually_processed_by' => $userinfooo,
+            'refund_reason' => $request->refund_reason,
          ]); 
 
          $walletLog['user_id'] = $user_id;
