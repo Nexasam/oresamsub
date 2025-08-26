@@ -12,15 +12,17 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('transactions', function (Blueprint $table) {
-            $table->text('refund_reason')->nullable()->change();
+            //
         });
     }
-    
+
+    /**
+     * Reverse the migrations.
+     */
     public function down(): void
     {
         Schema::table('transactions', function (Blueprint $table) {
-            $table->integer('refund_reason')->nullable()->change();
+            //
         });
     }
-    
 };
