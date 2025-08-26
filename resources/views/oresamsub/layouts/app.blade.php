@@ -296,7 +296,7 @@
                                       // let label = `${name}<br><span class='text-xs text-green-600'>₦${price}</span>`;
 
                                       let label = `
-                                        <span class='font-extrabold text-lg text-gray-900 dark:text-white'>
+                                        <span class='font-extrabold text-md text-gray-900 dark:text-white'>
                                           ${name}
                                         </span><br>
                                         <span class='font-semibold text-base text-green-600'>
