@@ -257,7 +257,7 @@
                                       // 
                                       // ;
 
-                                      let label = `${name}<br><span class='text-xs'>₦${price}</span>`;
+                                      let label = `${name}<br><span class='text-xs text-green-600'>₦${price}</span>`;
 
                                       planBoxes += `
                                         <div 
@@ -342,7 +342,7 @@
                                       //   ? `${name}<br><span class='text-xs text-green-600'>₦${price} | Upline: ₦${commission}</span>`
                                       //   : `${name}<br><span class='text-xs'>₦${price}</span>`;
 
-                                      let label = `${name}<br><span class='text-xs'>₦${price}</span>`;
+                                      let label = `${name}<br><span class='text-xs text-green-600'>₦${price}</span>`;
 
                                         boxes += `
                                         <div 
@@ -400,9 +400,9 @@
 
                                   // let label = APP_NAME == 'OresamSub'
                                   //   ? `${name}<br><span class='text-xs text-green-600'>₦${price} | Upline: ₦${commission}</span>`
-                                  //   : `${name}<br><span class='text-xs'>₦${price}</span>`;
+                                  //   : `${name}<br><span class='text-xs text-green-600'>₦${price}</span>`;
 
-                                    let label = `${name}<br><span class='text-xs'>₦${price}</span>`;
+                                    let label = `${name}<br><span class='text-xs text-green-600'>₦${price}</span>`;
 
                                     boxes += `
                                     <div 
