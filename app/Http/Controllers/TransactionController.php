@@ -94,7 +94,7 @@ class TransactionController extends Controller
     $validator = Validator::make($request->all(), [
         'pin' => ['required','string','regex:/^\d{4,5}$/'],
         'transaction_id' => 'required|exists:transactions,id',
-        'refund_reason' => 'required',
+        'refund_reason' => 'nullable',
       ]);
 
       if ($validator->stopOnFirstFailure()->fails()) {

@@ -845,12 +845,12 @@
                                       </p>
 
 
-                                      @if ($data->status == 2)
+                                      @if ($data->status == 2 && env('APP_NAME') == 'OresamSub')
                                       <p class="mt-2 text-sm text-gray-700 dark:text-gray-300">
                                           <span class="font-semibold text-red-600">Refund Reason:</span> 
                                           <span class="italic">{{ $data->refund_reason ?? 'Not provided' }}</span>
                                             </p>
-                                        @endif
+                                      @endif
                                   </td>
                                 </tr>
                               @endif
@@ -1250,7 +1250,9 @@
                                           <form class=" space-x-2" method="POST" action="{{ route('transactions.transaction_refund') }}">
                                             @csrf
                                             <div class="space-x-2">
-                                              <input type="text" name="refund_reason" id="refund_reason" value="" placeholder="Enter refund reason">
+                                              @if ($data->status == 2 && env('APP_NAME') == 'OresamSub')
+                                                  <input type="text" name="refund_reason" id="refund_reason" value="" placeholder="Enter refund reason">
+                                              @endif
                                               <input type="hidden" name="transaction_id" id="transaction_id" value="{{  $data->id }}">
                                               <input type="password" required name="pin" id="pin" placeholder="Enter PIN" value="">
                                             </div>
