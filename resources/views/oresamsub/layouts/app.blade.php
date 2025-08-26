@@ -295,14 +295,16 @@
 
                                       // let label = `${name}<br><span class='text-xs text-green-600'>₦${price}</span>`;
 
+                                      let formattedPrice = Number(price).toLocaleString('en-NG'); // ₦12,500
                                       let label = `
-                                        <span class='font-extrabold text-md text-gray-900 dark:text-white'>
+                                        <span class='font-extrabold text-lg text-gray-900 dark:text-white'>
                                           ${name}
                                         </span><br>
-                                        <span class='font-bold text-base text-green-200'>
-                                          ₦${price}
+                                        <span class='font-semibold text-base text-green-600 dark:text-green-300'>
+                                          ₦${formattedPrice}
                                         </span>
-                                        `;
+                                      `;
+
 
                                       planBoxes += `
                                         <div 
