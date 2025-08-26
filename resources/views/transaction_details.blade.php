@@ -821,22 +821,26 @@
                                             @endif
 
                                             @if ($data->status == -1 || $data->status == 0 || $data->status == 2)
-                                                <a href="https://wa.me/{{ $phoneFormatted }}?text={{ $message }}" 
+                                              <a href="https://wa.me/{{ $phoneFormatted }}?text={{ $message }}" 
                                                 target="_blank"
                                                 class="inline-flex items-center px-4 py-2 bg-red-600 text-white rounded-lg shadow hover:bg-red-700 transition">
                                                   Support customer on WhatsApp
-                                                </a>
+                                              </a>
                                             @endif
-
+                                        
                                             @if ($data->status == 2)
-                                                <p>Refund reason: {{  $data->refund_reason ?? 'nil' }}</p>
+                                                <p class="mt-2 text-sm text-gray-700 dark:text-gray-300">
+                                                    <span class="font-semibold text-red-600">Refund Reason:</span> 
+                                                    <span class="italic">{{ $data->refund_reason ?? 'Not provided' }}</span>
+                                                </p>
                                             @endif
-
+                                        
                                             <!-- Call Button -->
                                             <a href="tel:+{{ $phoneFormatted }}" 
-                                               class="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg shadow hover:bg-blue-700 transition">
+                                              class="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg shadow hover:bg-blue-700 transition mt-2">
                                                 📞 Call customer now
                                             </a>
+                                        
                                         </div>
                                         
                                         
