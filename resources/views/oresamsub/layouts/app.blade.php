@@ -229,6 +229,7 @@
                               // Add "All" button first (active)
                               $('#size_filters').append(`
                                   <button 
+                                     type="button"
                                       class="size-btn active px-3 py-1 border rounded text-sm bg-green-500 text-white hover:bg-green-600 transition"
                                       data-size="all"
                                       onclick="filterPlans('all', this)"
@@ -242,6 +243,7 @@
 
                                   $('#size_filters').append(`
                                       <button 
+                                          type="button"
                                           class="size-btn px-3 py-1 border rounded text-sm bg-white text-gray-700 hover:bg-green-600 transition"
                                           data-size="${size}"
                                           onclick="filterPlans(${size}, this)"
