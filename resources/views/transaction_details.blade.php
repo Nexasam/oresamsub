@@ -828,12 +828,6 @@
                                               </a>
                                             @endif
                                         
-                                            @if ($data->status == 2)
-                                                <p class="mt-2 text-sm text-gray-700 dark:text-gray-300">
-                                                    <span class="font-semibold text-red-600">Refund Reason:</span> 
-                                                    <span class="italic">{{ $data->refund_reason ?? 'Not provided' }}</span>
-                                                </p>
-                                            @endif
                                         
                                             <!-- Call Button -->
                                             <a href="tel:+{{ $phoneFormatted }}" 
@@ -849,6 +843,14 @@
                                         @endif
 
                                       </p>
+
+
+                                      @if ($data->status == 2)
+                                      <p class="mt-2 text-sm text-gray-700 dark:text-gray-300">
+                                          <span class="font-semibold text-red-600">Refund Reason:</span> 
+                                          <span class="italic">{{ $data->refund_reason ?? 'Not provided' }}</span>
+                                            </p>
+                                        @endif
                                   </td>
                                 </tr>
                               @endif
