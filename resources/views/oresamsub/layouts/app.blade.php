@@ -297,10 +297,10 @@
 
                                       let formattedPrice = Number(price).toLocaleString('en-NG'); // ₦12,500
                                       let label = `
-                                        <span class='font-extrabold text-lg text-gray-900 dark:text-white'>
+                                        <span class='font-bold text-md text-gray-900 dark:text-white'>
                                           ${name}
                                         </span><br>
-                                        <span class='font-semibold text-base text-green-600 dark:text-green-300'>
+                                        <span class='font-semibold text-md text-green-600 dark:text-green-300'>
                                           ₦${formattedPrice}
                                         </span>
                                       `;
