@@ -40,7 +40,7 @@
   <!-- Wallet Balance Display -->
   <div class="mb-1 text-center" x-data="{ showBalance: true }">
     {{-- <p class="text-sm text-gray-500 dark:text-gray-400">Your Wallet Balance</p> --}}
-    <div class="flex items-center justify-center space-x-2 mt-1 text-xl font-bold">
+    <div class="flex items-center justify-center space-x-2 mt-0 text-xl font-bold">
         <!-- Balance -->
         <span x-show="showBalance" x-cloak class="text-green-600 dark:text-green-400">
             ₦{{ number_format(auth()->user()->main_wallet, 2) }}
