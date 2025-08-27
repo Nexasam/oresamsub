@@ -24,7 +24,7 @@
   
   
 
-  <h2 class="text-xl font-bold text-center mb-2">Buy Data</h2>
+  <h2 class="text-xl font-bold text-center mb-1">Buy Data</h2>
 
   @if(session('success'))
     <div class="mb-4 bg-green-100 text-green-800 text-sm px-4 py-2 rounded-lg">
