@@ -16,13 +16,14 @@
   <!-- Login Card -->
   <div class="relative z-10 pt-10 pb-6 max-w-xs w-full mx-auto bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6" x-data="{ isLoggingIn: false }">
 
-    <a href="{{ route('ore.dashboard') }}" class="flex items-center space-x-2 mb-2">
+    <<a href="{{ route('ore.dashboard') }}" class="flex flex-col items-center mb-4">
       <img 
         src="{{ asset('assets/logo_imgs/oresamsublogo.jpeg') }}" 
         alt="OresamSub Logo" 
         class="h-20 w-20 rounded-full shadow-md"
       >
-      {{-- <span class="text-2xl font-bold text-gray-800 dark:text-gray-100">OresamSub</span> --}}
+      {{-- Optional text below logo --}}
+      {{-- <span class="text-2xl font-bold text-gray-800 dark:text-gray-100 mt-2">OresamSub</span> --}}
     </a>
 
     <h2 class="text-2xl font-bold text-center mb-6 text-gray-900 dark:text-white">Login to OresamSub</h2>
