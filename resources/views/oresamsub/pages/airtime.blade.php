@@ -65,7 +65,7 @@
     </div>
   </div>
 
-  <form id="airtimeWrapper" @submit.prevent="isSubmitting = true" method="POST">
+  <form class="pt-2" id="airtimeWrapper" @submit.prevent="isSubmitting = true" method="POST">
     @csrf
 
     <!-- Hidden Fields -->

@@ -65,7 +65,7 @@
   </div>
 
   {{-- {{ route('ore.cable.submit') }} --}}
-  <form id="cableWrapper" method="POST" @submit.prevent="isSubmitting = true" action="">
+  <form class="pt-2" id="cableWrapper" method="POST" @submit.prevent="isSubmitting = true" action="">
     @csrf
 
     <input type="hidden" name="product_slug" id="product_slug" value="cable_subscription">

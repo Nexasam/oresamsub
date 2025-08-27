@@ -64,7 +64,7 @@
     </div>
   </div>
 
-  <form id="electricityWrapper" method="POST" @submit.prevent="isSubmitting = true" action="">
+  <form class="pt-2" id="electricityWrapper" method="POST" @submit.prevent="isSubmitting = true" action="">
     @csrf
 
     <input type="hidden" name="product_slug" id="product_slug" value="utility_bills">
