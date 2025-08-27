@@ -36,6 +36,7 @@
     </div>
   @endif
 
+  {{-- CANDIDATE FOR DRY --}}
   <!-- Wallet Balance Display -->
   <div class="mb-1 text-center" x-data="{ showBalance: true }">
     {{-- <p class="text-sm text-gray-500 dark:text-gray-400">Your Wallet Balance</p> --}}
