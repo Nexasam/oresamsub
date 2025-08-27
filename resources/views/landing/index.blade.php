@@ -51,7 +51,7 @@
 
 
 
-    <title>{{ $site_title }}  - data</title>
+    <title>{{ $site_title }}  - Oresamsub</title>
 
     @php
        $hero1 = isset($hero_image1) ? env('APP_URL').'assets/landing_page_assets/img/hero_image1/'.$hero_image1 : env('APP_URL').'assets/landing_page_assets/img/bg_banner1.jpg';
