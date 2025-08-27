@@ -64,17 +64,31 @@
       </div>
 
       <!-- Password -->
-      <div class="mb-0">
+      <div class="mb-0" x-data="{ show: false }">
         <label for="password" class="block text-sm mb-1">Password</label>
-        <input
-          type="password"
-          name="password"
-          id="password"
-          required
-          class="w-full px-4 py-2 rounded-lg bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
-        >
+        
+        <div class="relative">
+          <input
+            :type="show ? 'text' : 'password'"
+            name="password"
+            id="password"
+            required
+            class="w-full px-4 py-2 rounded-lg bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          >
+      
+          <!-- Toggle Button -->
+          <button 
+            type="button"
+            @click="show = !show"
+            class="absolute inset-y-0 right-0 px-3 flex items-center text-gray-500 dark:text-gray-300 hover:text-gray-700 dark:hover:text-gray-100"
+          >
+            <span x-text="show ? '🙈' : '👁️'"></span>
+          </button>
+        </div>
+      
         <x-input-error :messages="$errors->get('password')" class="mt-2" />
       </div>
+      
 
       <!-- Forgot Password Link -->
       <div class="mb-2 text-right">
