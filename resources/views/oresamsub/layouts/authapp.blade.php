@@ -39,6 +39,17 @@
   <!-- App Container -->
   <div class="max-w-md mx-auto border border-gray-300 dark:border-gray-700 rounded-xl shadow-lg overflow-hidden bg-white dark:bg-gray-900">
 
+     <!-- Logo -->
+      <a href="{{ route('ore.dashboard') }}" class="flex items-center space-x-2">
+        <img 
+          src="{{ asset('assets/logo_imgs/oresamsublogo.jpeg') }}" 
+          alt="OresamSub Logo" 
+          class="h-10 w-10 rounded-full shadow-sm"
+        >
+        <span class="text-xl font-bold text-gray-800 dark:text-gray-100">OresamSub</span>
+      </a>
+
+
     <!-- Header -->
     <div class="p-4 flex justify-between items-center border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800">
       {{-- <h1 class="text-xl font-bold">OresamSub</h1> --}}
