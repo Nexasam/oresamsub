@@ -67,7 +67,7 @@
   </div>
 
 
-  <div class="pt-6 max-w-sm mx-auto pb-24" x-data="{ isSubmitting: false }">
+  <div class="max-w-sm mx-auto pb-24" x-data="{ isSubmitting: false }">
   <form id="dataWrapper" method="POST" @submit.prevent="isSubmitting = true" action="{{ route('ore.data.submit') }}">
     @csrf
 
