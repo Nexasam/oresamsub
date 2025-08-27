@@ -59,7 +59,7 @@
 
 
 
-<div class="relative" x-data="{ isWalletLoading: false, showBalance: false }">
+<div class="relative" x-data="{ isWalletLoading: false, showBalance: true }">
   <div class="bg-emerald-600 dark:bg-emerald-700 text-white p-4 rounded-xl shadow-md flex items-center justify-between">
     
     <!-- Balance -->

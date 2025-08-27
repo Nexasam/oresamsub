@@ -311,7 +311,7 @@
 
                                       planBoxes += `
                                         <div 
-                                          class="plan-box border rounded-lg p-3 text-center cursor-pointer bg-white dark:bg-gray-600 hover:border-blue-600 transition"
+                                          class="plan-box border rounded-lg p-3 text-center cursor-pointer bg-white dark:bg-gray-600 hover:border-green-600 transition"
                                           data-id="${idd}"
                                           data-size="${planSize}"
                                           onclick="selectPlan(this)"
