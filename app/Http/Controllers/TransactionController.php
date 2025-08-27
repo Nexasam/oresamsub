@@ -472,7 +472,9 @@ class TransactionController extends Controller
             if (env('APP_NAME') == 'OresamSub') {
                 $msg = e($data->admin_screen_message);
 
-                $ph .='<br>retry count: '.$data->retry_count.'<br>';
+                $ph .='<br>Retry count: '.$data->retry_count.'<br>';
+
+                $ph .='<br>First vendor: '.$data->automation->automation_name.'<br>';
         
                 $ph .= '
                 <div x-data="{ expanded: false }" class="text-sm max-w-[200px] cursor-pointer select-none"
