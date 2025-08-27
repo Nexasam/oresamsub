@@ -323,6 +323,21 @@
                                     $('#plan_grid').html(planBoxes);
 
 
+                                    // ✅ Filter function
+                                    // window.filterPlans = function(size, el) {
+                                      
+                                    //     $('.size-btn').removeClass('bg-green-500 text-white').addClass('bg-white text-gray-700');
+                                    //     $(el).removeClass('bg-white text-gray-700').addClass('bg-green-500 text-white');
+
+                                    //     if (size === 'all') {
+                                    //         $('.plan-box').show();
+                                    //     } else {
+                                    //         $('.plan-box').hide();
+                                    //         $(`.plan-box[data-size='${size}']`).show();
+                                    //     }
+                                    // };
+
+
                                     // ✅ Use event delegation to handle clicks and prevent focus jump
                                     // $(document).on('click', '.size-btn', function (e) {
                                     //     e.preventDefault();  // ✅ Stops browser from moving focus
@@ -355,7 +370,9 @@
                                           $(this).removeClass('bg-white text-gray-700').addClass('bg-green-500 text-white');
 
                                           // Clear selection from all plan boxes
-                                          $('.plan-box').removeClass('selected border-blue-600').addClass('border border-gray-300');
+                                          $('#plan_grid div').removeClass('border-blue-600 ring-2 ring-blue-200');
+                                          $('#product_plan_id').val(''); // Clear hidden input
+                                          $('#plan_error').addClass('hidden');
 
                                           // Show/hide plan boxes
                                           if (size === 'all') {
@@ -365,7 +382,6 @@
                                               $(`.plan-box[data-size='${size}']`).show();
                                           }
                                       });
-
 
 
                                   }
@@ -1213,8 +1229,22 @@
   </script>
 
   <script>
-     function selectPlan(element,idselector = 'product_plan_id') {
-        // alert('sdfsfd')
+    //  function selectPlan(element,idselector = 'product_plan_id') {
+    //     // alert('sdfsfd')
+    //     // Remove active class from others
+    //     $('#plan_grid div').removeClass('border-blue-600 ring-2 ring-blue-200');
+
+    //     // Add active class to selected
+    //     $(element).addClass('border-blue-600 ring-2 ring-blue-200');
+
+    //     // Set selected value
+    //     const planId = $(element).data('id');
+    //     $('#'+idselector).val(planId);
+    //     $('#plan_error').addClass('hidden');
+    //  }
+
+    // Plan box selection
+    function selectPlan(element, idselector = 'product_plan_id') {
         // Remove active class from others
         $('#plan_grid div').removeClass('border-blue-600 ring-2 ring-blue-200');
 
@@ -1223,9 +1253,10 @@
 
         // Set selected value
         const planId = $(element).data('id');
-        $('#'+idselector).val(planId);
+        $('#' + idselector).val(planId);
         $('#plan_error').addClass('hidden');
-     }
+    }
+    
   </script>
 
 
