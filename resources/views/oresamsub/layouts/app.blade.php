@@ -1246,17 +1246,17 @@
     // Plan box selection
     function selectPlan(element, idselector = 'product_plan_id') {
         // Remove active class from others
-        $('#plan_grid div').removeClass('border-blue-600 ring-2 ring-blue-200');
+        $('#plan_grid div').removeClass('border-green-800 ring-2 ring-green-200');
 
         // Add active class to selected
-        $(element).addClass('border-blue-600 ring-2 ring-blue-200');
+        $(element).addClass('border-green-800 ring-2 ring-green-200');
 
         // Set selected value
         const planId = $(element).data('id');
         $('#' + idselector).val(planId);
         $('#plan_error').addClass('hidden');
     }
-    
+
   </script>
 
 
