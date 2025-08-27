@@ -370,7 +370,7 @@
                                           $(this).removeClass('bg-white text-gray-700').addClass('bg-green-500 text-white');
 
                                           // Clear selection from all plan boxes
-                                          $('#plan_grid div').removeClass('border-blue-600 ring-2 ring-blue-200');
+                                          $('#plan_grid div').removeClass('border-green-800 ring-2 ring-green-200');
                                           $('#product_plan_id').val(''); // Clear hidden input
                                           $('#plan_error').addClass('hidden');
 
