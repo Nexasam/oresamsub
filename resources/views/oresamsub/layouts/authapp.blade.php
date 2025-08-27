@@ -52,9 +52,9 @@
 
     <!-- Main Content -->
     {{-- px-4 pt-4 pb-28 --}}
-    <main class="px-4 flex flex-col items-center py-8">
+    <main class="px-4 flex flex-col items-center">
       <!-- Logo -->
-      <a href="{{ route('ore.dashboard') }}" class="flex items-center space-x-2 mb-6">
+      <a href="{{ route('ore.dashboard') }}" class="flex items-center space-x-2 mb-2">
         <img 
           src="{{ asset('assets/logo_imgs/oresamsublogo.jpeg') }}" 
           alt="OresamSub Logo" 
