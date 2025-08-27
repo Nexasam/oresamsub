@@ -94,7 +94,7 @@
 
 
   <!-- Network Selection -->
-<div class="mb-4" x-data="{ selectedNetwork: '' }">
+<div class="mb-2" x-data="{ selectedNetwork: '' }">
   <label class="block text-sm mb-2">Networks</label>
 
   <!-- Hidden Select (for jQuery compatibility) -->
