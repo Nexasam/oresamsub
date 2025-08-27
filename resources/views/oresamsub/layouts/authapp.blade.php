@@ -39,15 +39,7 @@
   <!-- App Container -->
   <div class="max-w-md mx-auto border border-gray-300 dark:border-gray-700 rounded-xl shadow-lg overflow-hidden bg-white dark:bg-gray-900">
 
-     <!-- Logo -->
-      <a href="{{ route('ore.dashboard') }}" class="flex items-center space-x-2">
-        <img 
-          src="{{ asset('assets/logo_imgs/oresamsublogo.jpeg') }}" 
-          alt="OresamSub Logo" 
-          class="h-10 w-10 rounded-full shadow-sm"
-        >
-        <span class="text-xl font-bold text-gray-800 dark:text-gray-100">OresamSub</span>
-      </a>
+     
 
 
     <!-- Header -->
@@ -61,6 +53,15 @@
     <!-- Main Content -->
     {{-- px-4 pt-4 pb-28 --}}
     <main class="px-4 min-h-[calc(100vh-96px)]">
+      <!-- Logo -->
+      <a href="{{ route('ore.dashboard') }}" class="flex items-center space-x-2">
+        <img 
+          src="{{ asset('assets/logo_imgs/oresamsublogo.jpeg') }}" 
+          alt="OresamSub Logo" 
+          class="h-10 w-10 rounded-full shadow-sm"
+        >
+        <span class="text-xl font-bold text-gray-800 dark:text-gray-100">OresamSub</span>
+      </a>
       @yield('content')
     </main>
 
