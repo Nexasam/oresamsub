@@ -24,7 +24,7 @@
   
   
 
-  <h2 class="text-xl font-bold text-center mb-6">Buy Data</h2>
+  <h2 class="text-xl font-bold text-center mb-2">Buy Data</h2>
 
   @if(session('success'))
     <div class="mb-4 bg-green-100 text-green-800 text-sm px-4 py-2 rounded-lg">
@@ -35,6 +35,35 @@
       {{ session('error') }}
     </div>
   @endif
+
+  <!-- Wallet Balance Display -->
+  <div class="mb-6 text-center" x-data="{ showBalance: true }">
+    <p class="text-sm text-gray-500 dark:text-gray-400">Your Wallet Balance</p>
+    <div class="flex items-center justify-center space-x-2 mt-1 text-xl font-bold">
+        <!-- Balance -->
+        <span x-show="showBalance" x-cloak class="text-green-600 dark:text-green-400">
+            ₦{{ number_format(auth()->user()->main_balance, 2) }}
+        </span>
+        <span x-show="!showBalance" x-cloak class="tracking-widest text-gray-400">
+            •••••
+        </span>
+
+        <!-- Toggle Button -->
+        <button @click="showBalance = !showBalance" class="ml-2 hover:text-gray-600 dark:hover:text-gray-200 transition" title="Toggle Balance">
+            <!-- Eye icon -->
+            <svg x-show="!showBalance" x-cloak xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none"
+                viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                <path d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-1.274 4.057-5.065 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+            </svg>
+            <!-- Eye-off icon -->
+            <svg x-show="showBalance" x-cloak xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none"
+                viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.269-2.943-9.543-7a10.06 10.06 0 013.232-4.568M6.223 6.223A10.05 10.05 0 0112 5c4.478 0 8.269 2.943 9.543 7a10.06 10.06 0 01-4.676 5.316M15 12a3 3 0 00-3-3M3 3l18 18"/>
+            </svg>
+        </button>
+    </div>
+  </div>
 
 
   <div class="pt-6 max-w-sm mx-auto pb-24" x-data="{ isSubmitting: false }">
