@@ -323,40 +323,49 @@
                                     $('#plan_grid').html(planBoxes);
 
 
-                                    // ✅ Filter function
-                                    // window.filterPlans = function(size, el) {
-                                      
-                                    //     $('.size-btn').removeClass('bg-green-500 text-white').addClass('bg-white text-gray-700');
-                                    //     $(el).removeClass('bg-white text-gray-700').addClass('bg-green-500 text-white');
+                                    // ✅ Use event delegation to handle clicks and prevent focus jump
+                                    // $(document).on('click', '.size-btn', function (e) {
+                                    //     e.preventDefault();  // ✅ Stops browser from moving focus
+                                    //     e.stopPropagation(); // ✅ Prevents bubbling issues
 
+                                    //     var size = $(this).data('size');
+
+                                    //     // Toggle active state
+                                    //     $('.size-btn').removeClass('bg-green-500 text-white').addClass('bg-white text-gray-700');
+                                    //     $(this).removeClass('bg-white text-gray-700').addClass('bg-green-500 text-white');
+
+                                    //     // Show/hide plans
                                     //     if (size === 'all') {
                                     //         $('.plan-box').show();
                                     //     } else {
                                     //         $('.plan-box').hide();
                                     //         $(`.plan-box[data-size='${size}']`).show();
                                     //     }
-                                    // };
+                                    // });
 
+                                    // Delegated click for all size buttons (including dynamically added)
+                                      $(document).on('click', '.size-btn', function (e) {
+                                          e.preventDefault();
+                                          e.stopPropagation();
 
-                                    // ✅ Use event delegation to handle clicks and prevent focus jump
-                                    $(document).on('click', '.size-btn', function (e) {
-                                        e.preventDefault();  // ✅ Stops browser from moving focus
-                                        e.stopPropagation(); // ✅ Prevents bubbling issues
+                                          var size = $(this).data('size');
 
-                                        var size = $(this).data('size');
+                                          // Toggle active button
+                                          $('.size-btn').removeClass('bg-green-500 text-white').addClass('bg-white text-gray-700');
+                                          $(this).removeClass('bg-white text-gray-700').addClass('bg-green-500 text-white');
 
-                                        // Toggle active state
-                                        $('.size-btn').removeClass('bg-green-500 text-white').addClass('bg-white text-gray-700');
-                                        $(this).removeClass('bg-white text-gray-700').addClass('bg-green-500 text-white');
+                                          // Clear selection from all plan boxes
+                                          $('.plan-box').removeClass('selected border-blue-600').addClass('border border-gray-300');
 
-                                        // Show/hide plans
-                                        if (size === 'all') {
-                                            $('.plan-box').show();
-                                        } else {
-                                            $('.plan-box').hide();
-                                            $(`.plan-box[data-size='${size}']`).show();
-                                        }
-                                    });
+                                          // Show/hide plan boxes
+                                          if (size === 'all') {
+                                              $('.plan-box').show();
+                                          } else {
+                                              $('.plan-box').hide();
+                                              $(`.plan-box[data-size='${size}']`).show();
+                                          }
+                                      });
+
 
 
                                   }
