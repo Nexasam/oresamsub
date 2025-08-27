@@ -16,7 +16,7 @@
   <!-- Login Card -->
   <div class="relative z-10 pt-10 pb-6 max-w-xs w-full mx-auto bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6" x-data="{ isLoggingIn: false }">
 
-    <<a href="{{ route('ore.dashboard') }}" class="flex flex-col items-center mb-4">
+    <a href="{{ route('ore.dashboard') }}" class="flex flex-col items-center mb-4">
       <img 
         src="{{ asset('assets/logo_imgs/oresamsublogo.jpeg') }}" 
         alt="OresamSub Logo" 
