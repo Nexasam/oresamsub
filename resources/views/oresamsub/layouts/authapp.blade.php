@@ -52,20 +52,10 @@
 
     <!-- Main Content -->
     {{-- px-4 pt-4 pb-28 --}}
-    <main class="px-4 flex flex-col items-center">
+    <main class="px-4 min-h-[calc(100vh-96px)]">
       <!-- Logo -->
-      <a href="{{ route('ore.dashboard') }}" class="flex items-center space-x-2 mb-2">
-        <img 
-          src="{{ asset('assets/logo_imgs/oresamsublogo.jpeg') }}" 
-          alt="OresamSub Logo" 
-          class="h-14 w-14 rounded-full shadow-md"
-        >
-        <span class="text-2xl font-bold text-gray-800 dark:text-gray-100">OresamSub</span>
-      </a>
-    
       @yield('content')
     </main>
-    
 
     <!-- Bottom Navigation -->
     {{-- <nav class="fixed bottom-0 inset-x-0 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 shadow-lg">
