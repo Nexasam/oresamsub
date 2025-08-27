@@ -31,7 +31,7 @@ class SendFailedTransactionEmail extends Command
     public function handle()
     {
 
-        if( env('APP_NAME') == 'OresamSub' ){
+  
             // $user = User::where('new_user_alert',0)->where('username','emmanuel80')->first();
             $date_param = '2025-04-04';
             $transaction = Transaction::with(['user','product_plan'])->where('failure_notification',0)
@@ -99,8 +99,6 @@ class SendFailedTransactionEmail extends Command
             }else{
                 // logger('No pending failed transaction notification...');
             }
-        }   else{
-            // logger('na this place dey run');
-        }
+        
     }
 }

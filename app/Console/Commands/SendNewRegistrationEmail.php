@@ -30,7 +30,7 @@ class SendNewRegistrationEmail extends Command
     public function handle()
     {
 
-        if(env('APP_NAME') == 'OresamSub'){
+       
             // $user = User::where('new_user_alert',0)->where('username','emmanuel80')->first();
             $user = User::where('new_user_alert',0)->first();
             if( $user){
@@ -53,7 +53,7 @@ class SendNewRegistrationEmail extends Command
 
             }
     
-        }
+        
        
     }
 }

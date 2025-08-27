@@ -37,8 +37,7 @@ class ReprocessPendingTransaction extends Command
     public function handle()
     {
 
-        if( env('APP_NAME') == 'OresamSub' ){
-
+        
 
             $affected_txns = Transaction::with([
                 'user',
@@ -226,9 +225,6 @@ class ReprocessPendingTransaction extends Command
                 logger('Except:'. $th->getMessage().' on page '. $th->getFile().' on line '. $th->getLine());
             }
            
-
-
-        } 
 
     }
 

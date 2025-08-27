@@ -30,7 +30,7 @@ class ComputeReferralCommission extends Command
     public function handle()
     {
         //start adding commission from this date:
-       if(env('APP_NAME') == 'OresamSub'){
+     
                 $start_from_this_date = date('2025-07-08');
                 $today = date('Y-m-d');
                 $yesterday = date('Y-m-d', strtotime('-1 day'));
@@ -85,7 +85,7 @@ class ComputeReferralCommission extends Command
                 }else{
                     logger('no commissions recorded');
                 }
-       }
+       
 
     }
 }

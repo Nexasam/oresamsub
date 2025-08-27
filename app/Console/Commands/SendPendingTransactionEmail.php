@@ -32,8 +32,7 @@ class SendPendingTransactionEmail extends Command
     public function handle()
     {
 
-        if( env('APP_NAME') == 'OresamSub' ){
-           
+     
             //chhange this later
             $get_emails_to_notify_failed_transactions = Setting::where('field_name','emails_to_notify_failed_transactions')->first();
             if(! $get_emails_to_notify_failed_transactions){
@@ -93,8 +92,6 @@ class SendPendingTransactionEmail extends Command
             }else{
                 // logger('No pending pending transaction notification...');
             }
-        }   else{
-            // logger('na this place dey run');
-        }
+       
     }
 }

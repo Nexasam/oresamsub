@@ -37,7 +37,7 @@ class ReprocessPendingTransactionback extends Command
     public function handle()
     {
 
-        if( env('APP_NAME') == 'OresamSub' ){
+      
 
             // $affected_txns = Transaction::where('set_for_manual',1)->limit(5)->get();  #5 txns per call
             $affected_txns = Transaction::with(['user','product_plan.product_plan_category.network','manual_processing_locker'])
@@ -107,7 +107,7 @@ class ReprocessPendingTransactionback extends Command
                 
             }
 
-        } 
+         
 
     }
 
