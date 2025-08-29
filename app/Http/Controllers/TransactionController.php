@@ -475,7 +475,7 @@ class TransactionController extends Controller
                 $ph .='<br>Retry count: '.$data->retry_count.'<br>';
 
                 $ph .='First vendor: '.$data->product_plan->automation->automation_name.'<br>';
-                $ph .='Reprocessed by: '.$data->product_plan->reprocess_automation->automation_name.'<br>';
+                $ph .='Reprocessed by: '.$data->product_plan->reprocess_automation->automation_name ?? 'nil'.'<br>';
         
                 $ph .= '
                 <div x-data="{ expanded: false }" class="text-sm max-w-[200px] cursor-pointer select-none"
