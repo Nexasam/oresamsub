@@ -468,13 +468,14 @@ class TransactionController extends Controller
         
         ->addColumn('phone_number', function($data) {
             $ph = e($data->phone_number);
-        
-            if (env('APP_NAME') == 'OresamSub') {
-                $msg = e($data->admin_screen_message);
+ 
+                $msg = e($data->admin_screen_message).'<br>';
+                $msg2 = e($data->extra_info ?? 'no_extra_info');
 
                 $ph .='<br>Retry count: '.$data->retry_count.'<br>';
 
                 $ph .='First vendor: '.$data->product_plan->automation->automation_name.'<br>';
+                $ph .='Reprocessed by: '.$data->product_plan->reprocess_automation->automation_name.'<br>';
         
                 $ph .= '
                 <div x-data="{ expanded: false }" class="text-sm max-w-[200px] cursor-pointer select-none"
@@ -482,12 +483,13 @@ class TransactionController extends Controller
         
                     <!-- Collapsed (clamped) -->
                     <span x-show="!expanded" class="line-clamp-1">
-                        screen message: <b>'.$msg.'</b>
+                        screen message & info: <b>'.$msg.'</b><br>
                     </span>
         
                     <!-- Expanded (full) -->
                     <span x-show="expanded">
-                        screen message: <b>'.$msg.'</b>
+                         screen message: <b>'.$msg.'</b><br>
+                        extra info: <b>'.$msg2.'</b>
                     </span>
         
                     <!-- Optional toggle text -->
@@ -496,7 +498,7 @@ class TransactionController extends Controller
                         <span x-show="expanded">Show less</span>
                     </div>
                 </div>';
-            }
+        
         
             return $ph;
         })
@@ -639,9 +641,10 @@ class TransactionController extends Controller
             'status' => 1,
             'retry_count' => $transaction_details->retry_count + 1,
             'user_screen_message' => 'Transaction successfully processed',
-            'admin_screen_message' => 'MANUAL: automation:'.$automation_name.' by '.auth()->user()->email.' '.auth()->user()->first_name.'  message:'.$request->success_message,
+            'extra_info' => 'MANUAL: automation:'.$automation_name.' by '.auth()->user()->email.' '.auth()->user()->first_name.'  message:'.$request->success_message,
             'set_for_manual' => 0,
             'manually_processed_by' => $userinfooo,
+            'reprocess_automation_id' => $request->automation_id
         ]); 
 
 

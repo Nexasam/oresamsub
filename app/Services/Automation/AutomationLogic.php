@@ -216,6 +216,8 @@ class AutomationLogic{
         }
 
 
+        //get balance before, balance after, plan amount
+
         return $buy_data;
     }
 

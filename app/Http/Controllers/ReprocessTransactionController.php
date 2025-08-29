@@ -71,7 +71,7 @@ class ReprocessTransactionController extends Controller
             //it means it still failed, you can update reprocessing count here
             $transaction_details->update([
                 'retry_count' => $transaction_details->retry_count + 1,
-                'admin_screen_message' => 'cron: automation:'.$automation_details->automation_name.' '.$admin_message,
+                'extra_info' => 'cron: automation:'.$automation_details->automation_name.' '.$admin_message,
                 'manually_processed_by' => NULL,
             ]);
 
@@ -84,9 +84,10 @@ class ReprocessTransactionController extends Controller
             'status' => 1,
             'retry_count' => $transaction_details->retry_count + 1,
             'user_screen_message' => 'Transaction successfully processed',
-            'admin_screen_message' => 'MANUAL: automation:'.$automation_details->automation_name.' by '.auth()->user()->email.' '.auth()->user()->first_name.'  message:'.$admin_message,
+            'extra_info' => 'MANUAL: automation:'.$automation_details->automation_name.' by '.auth()->user()->email.' '.auth()->user()->first_name.'  message:'.$admin_message,
             'set_for_manual' => 0, #means it has been processed
             'manually_processed_by' => $userinfooo,
+            'reprocess_automation_id' => $request->automation_id
         ]); 
  
         return response()->json(['status'=>true,'message'=>'success' ]);
