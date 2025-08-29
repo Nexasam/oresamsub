@@ -471,11 +471,12 @@ class TransactionController extends Controller
  
                 $msg = e($data->admin_screen_message).'<br>';
                 $msg2 = e($data->extra_info ?? 'no_extra_info');
+                $reprocess_automation = $data->product_plan->reprocess_automation->automation_name ?? 'nil';
 
                 $ph .='<br>Retry count: '.$data->retry_count.'<br>';
 
                 $ph .='First vendor: '.$data->product_plan->automation->automation_name.'<br>';
-                $ph .='Reprocessed by: '.$data->product_plan->reprocess_automation->automation_name ?? 'nil'.'<br>';
+                $ph .='Reprocessed by: '.$reprocess_automation.'<br>';
         
                 $ph .= '
                 <div x-data="{ expanded: false }" class="text-sm max-w-[200px] cursor-pointer select-none"
