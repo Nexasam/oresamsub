@@ -33,14 +33,18 @@ class ProductPlan extends Model
         // return $this->belongsTo(ProductPlanCategory::class, 'product_plan_category_id', 'id')->where('active_status',1);
     }
 
-
-
-
     public function automation()
     {
         return $this->belongsTo(Automation::class, 'automation_id', 'id');
         // return $this->belongsTo(ProductPlanCategory::class, 'product_plan_category_id', 'id')->where('active_status',1);
     }
+
+    public function reprocess_automation()
+    {
+        return $this->belongsTo(Automation::class, 'automation_id', 'id');
+        // return $this->belongsTo(ProductPlanCategory::class, 'product_plan_category_id', 'id')->where('active_status',1);
+    }
+    
 
     
 }
