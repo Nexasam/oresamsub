@@ -469,8 +469,11 @@ class TransactionController extends Controller
         ->addColumn('phone_number', function($data) {
             $ph = e($data->phone_number);
  
+                $msg2 = 'nil';
                 $msg = e($data->admin_screen_message).'<br>';
-                $msg2 = e($data->extra_info ?? 'no_extra_info');
+                if($data->extra_info != NULL){
+                    $msg2 = e($data->extra_info ?? 'no_extra_info');
+                }
                 $reprocess_automation = $data->product_plan->reprocess_automation->automation_name ?? 'nil';
 
                 $ph .='<br>Retry count: '.$data->retry_count.'<br>';
