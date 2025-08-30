@@ -195,6 +195,8 @@ class BizProfitCalculationService{
         ->latest('updated_at')
         ->get();
 
+        $total_profit = 0;
+
        foreach($transactions as $key=>$transaction){
            $jsonstatus = $this->isObjectOrArrayJson($transaction->admin_screen_message) ? 'TRUE':'FALSE';
            $automation_details = $transaction->product_plan->automation;
@@ -234,6 +236,11 @@ class BizProfitCalculationService{
                     $actual_cost_price = $transaction->product_plan->cost_price ?? NULL;
                 }
            }
+
+
+        $purchase_amount = $transaction->discounted_amount ?? $transaction->amount;
+        $profit = $purchase_amount - $actual_cost_price;
+        $total_profit += $profit;
        
         $data[$key]['automation'] = $automation_details->automation_name;
         $data[$key]['plan'] = $transaction->product_plan->product_plan_name;
@@ -241,9 +248,16 @@ class BizProfitCalculationService{
         $data[$key]['first_automation_balance_before'] = $balance_before;
         $data[$key]['first_automation_balance_after'] = $balance_after;
         $data[$key]['automation_plan_amount'] = $actual_cost_price;
+        $data[$key]['purchase_amount'] = $purchase_amount;
+        $data[$key]['profit'] = $profit;
+        $data[$key]['accumulative_profit'] = $total_profit;
+        $data[$key]['profit_status'] = $profit < 0 ? 'NEGATIVE':'POSITIVE';
+        
         //    return $transaction->admin_screen_message. '========'.$balance_after.'======'.$balance_after.'======='.$actual_cost_price.'<br><br><br><hr><hr><hr>'; 
        
       }
+
+      
 
 
       return $data;
