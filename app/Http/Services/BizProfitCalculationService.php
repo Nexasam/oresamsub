@@ -188,7 +188,7 @@ class BizProfitCalculationService{
 
         $transactions = Transaction::with('product_plan.automation')->whereBetween('updated_at', [$start, $end])
         ->where('status',1)
-        ->where('retry_count',0) #was reprocessed once and normally
+        // ->where('retry_count',0) #was reprocessed once and normally
         ->where('set_for_manual',0)
         ->where('transaction_category','data') #data for now
         ->whereNull('automation_plan_amount')
