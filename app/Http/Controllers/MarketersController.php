@@ -51,10 +51,10 @@ class MarketersController extends Controller
     $users = $usersQuery->get(['id', 'first_name', 'phone_number', 'created_at']);
 
     return response()->json([
-        'totalRefs' => $totalRefs,
-        'totalTxns' => $totalTxns,
+        'totalRefs' => number_format($totalRefs),
+        'totalTxns' => number_format($totalTxns),
         'userTarget' => 70,
-        'txnTarget'  => 5000,
+        'txnTarget'  => number_format(5000,2),
         'users'      => $users,
     ]);
 }
