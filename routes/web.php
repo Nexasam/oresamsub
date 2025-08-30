@@ -128,8 +128,10 @@ Route::middleware(['set_locale'])->group(function () {
 
 
                 ///STRICTLY MARKETERS 
-                 Route::get('/marketer/dashboard', [MarketersController::class, 'index'])->name('marketer.dashboard');
-                 Route::get('/marketer/stats', [MarketersController::class, 'stats'])->name('marketer.stats'); // AJAX
+                 Route::middleware(['marketer'])->group(function () {
+                    Route::get('/marketer/dashboard', [MarketersController::class, 'index'])->name('marketer.dashboard');
+                    Route::get('/marketer/stats', [MarketersController::class, 'stats'])->name('marketer.stats'); // AJAX
+                });
 
 
              
