@@ -109,7 +109,13 @@
           <template x-for="user in stats.users" :key="user.id">
             <tr class="hover:bg-gray-50 dark:hover:bg-gray-900 transition">
               <td class="px-4 py-2 font-medium text-gray-800 dark:text-gray-100" x-text="user.first_name"></td>
-              <td class="px-4 py-2 text-gray-600 dark:text-gray-300" x-text="user.phone_number"></td>
+              <td class="px-4 py-2">
+                <a 
+                  :href="'tel:' + user.phone_number" 
+                  class="text-blue-600 dark:text-blue-400 hover:underline font-medium"
+                  x-text="user.phone_number"
+                ></a>
+              </td>
               <td class="px-4 py-2 text-center font-semibold text-emerald-600 dark:text-emerald-400" x-text="user.total_txn_month"></td>
               <td class="px-4 py-2 text-center font-semibold text-blue-600 dark:text-blue-400" x-text="user.total_txn_today"></td>
               <td class="px-4 py-2 text-gray-500 dark:text-gray-400" x-text="new Date(user.created_at).toLocaleDateString()"></td>
@@ -119,6 +125,7 @@
       </table>
     </div>
   </div>
+  
 
 </div>
 
