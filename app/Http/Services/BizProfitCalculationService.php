@@ -261,7 +261,7 @@ class BizProfitCalculationService{
       }
 
 
-      $total_funding_profit = $this->calculate_funding_profit();
+      $total_funding_profit = $this->calculate_funding_profit()['total_profit'];
       $total_profit = $total_txn_profit + $total_funding_profit;
       return  [
         'status' => 1,
