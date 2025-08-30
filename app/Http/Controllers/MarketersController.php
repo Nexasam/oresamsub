@@ -48,7 +48,7 @@ class MarketersController extends Controller
         });
     }
 
-    $users = $usersQuery->get(['id', 'name', 'phone', 'created_at']);
+    $users = $usersQuery->get(['id', 'first_name', 'phone_number', 'created_at']);
 
     return response()->json([
         'totalRefs' => $totalRefs,
