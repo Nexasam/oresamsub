@@ -186,6 +186,9 @@ class BizProfitCalculationService{
         $start = Carbon::now()->startOfMonth()->toDateString(); // e.g., 2025-08-01
         $end   = Carbon::now()->endOfMonth()->toDateString();   // e.g., 2025-08-31  
      
+        $total_txns_count = Transaction::with('product_plan.automation')->whereBetween('updated_at', [$start, $end])
+        ->where('transaction_category','data') #data for now
+        ->count();
 
     
         $transactions = Transaction::with('product_plan.automation')->whereBetween('updated_at', [$start, $end])
@@ -196,6 +199,11 @@ class BizProfitCalculationService{
         ->whereNull('automation_plan_amount') #if not null, we will overwrite what we have
         ->latest('updated_at')
         ->get();
+
+        $total_checked_txns = count($transactions);
+
+        $total_unchecked_txns = $total_txns_count - $total_checked_txns;
+
 
         $total_txn_profit = 0;
 
@@ -270,6 +278,9 @@ class BizProfitCalculationService{
         'txn_profit'=>$total_txn_profit,
         'total_funding_profit'=>$total_funding_profit,
         'total_profit'=>$total_profit,
+        'total_checked_txns' => $total_checked_txns,
+        'total_unchecked_txns' => $total_unchecked_txns,
+        'total_txns' => $total_txns_count,
         'data'=> $data,
       ];
     }
