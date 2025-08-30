@@ -188,6 +188,8 @@ class BizProfitCalculationService{
      
         $total_txns_count = Transaction::with('product_plan.automation')->whereBetween('updated_at', [$start, $end])
         ->where('transaction_category','data') #data for now
+        ->where('status',1)
+        // ->where('set_for_manual',0)
         ->count();
 
     
