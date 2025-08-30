@@ -310,7 +310,7 @@ class BizProfitCalculationService{
                 if($settled > $actual_paid){
                     $deficitbonus = $actual_paid - $settled; //e.g 1000 - 1100 = -100
                 }
-                $profit = $actual_paid - $deficitbonus - $actual_charged;
+                $profit = $actual_paid + $deficitbonus - $actual_charged;
                 $total_profit += $profit;
             }else if($funding_payload->funding_slug == 'xixapay'){
                 $actual_settled = $decode_payload['settlement_amount'];
@@ -320,7 +320,7 @@ class BizProfitCalculationService{
                 if($settled > $actual_paid){
                     $deficitbonus = $actual_paid - $settled; //e.g 1000 - 1100 = -100
                 }
-                $profit = $actual_paid - $deficitbonus - $actual_charged;
+                $profit = $actual_paid + $deficitbonus - $actual_charged;
                 $total_profit += $profit;
             }
         }   
