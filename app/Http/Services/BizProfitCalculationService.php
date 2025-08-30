@@ -199,10 +199,11 @@ class BizProfitCalculationService{
            $jsonstatus = $this->isObjectOrArrayJson($transaction->admin_screen_message) ? 'TRUE':'FALSE';
            $automation_details = $transaction->product_plan->automation;
            $non_msorgs = ['samicsub','9javtu','smeplug','directcoupon','megasubplug'];
+           $decode_admin_message = json_decode($transaction->admin_screen_message, true);
+
            
            if($jsonstatus == 'TRUE'){
                 if($automation_details->automation_group == 'msorg'){
-                    $decode_admin_message = json_decode($transaction->admin_screen_message, true);
                     $actual_cost_price = $decode_admin_message['plan_amount'] ?? NULL;
                     $balance_before = $decode_admin_message['balance_before'] ?? NULL;
                     $balance_after = $decode_admin_message['balance_after'] ?? NULL;
