@@ -53,8 +53,8 @@
     <template x-for="card in [
       { title: 'Total Downlines', value: stats.totalRefs, icon: '👥', color: 'from-indigo-500 to-blue-500' },
       { title: 'Total Txns', value: stats.totalTxns, icon: '💳', color: 'from-emerald-500 to-green-600' },
-      { title: 'Donwline Monthly Target', value: stats.userTarget, icon: '', color: 'from-pink-500 to-rose-600' },
-      { title: 'Txn Monthly Target', value: stats.txnTarget, icon: '📈', color: 'from-orange-500 to-yellow-500' }
+      { title: 'Downline Target', value: stats.userTarget, icon: '🎯', color: 'from-pink-500 to-rose-600' },
+      { title: 'Txn Target', value: stats.txnTarget, icon: '📈', color: 'from-orange-500 to-yellow-500' }
     ]" :key="card.title">
       <div class="p-4 rounded-xl shadow bg-white dark:bg-gray-900 ring-1 ring-gray-200 dark:ring-gray-700 hover:shadow-lg transition transform hover:scale-[1.03]">
         <div class="flex items-center space-x-3">
@@ -107,20 +107,25 @@
 
 <script>
 function marketerDashboard() {
-  return {
-    stats: { totalRefs: 0, totalTxns: 0, userTarget: 0, txnTarget: 0, users: [] },
-    filters: { start_date: '', end_date: '', search: '' },
+    return {
+        darkMode: document.documentElement.classList.contains('dark'),
+        stats: { totalRefs: 0, totalTxns: 0, userTarget: 0, txnTarget: 0, users: [] },
+        filters: { start_date: '', end_date: '', search: '' },
 
-    fetchStats() {
-      $.ajax({
-        url: "{{ route('marketer.stats') }}",
-        method: "GET",
-        data: this.filters,
-        success: (res) => this.stats = res,
-        error: (err) => console.error("Error fetching stats", err),
-      });
+        fetchStats() {
+            $.ajax({
+                url: "{{ route('marketer.stats') }}",
+                method: "GET",
+                data: this.filters,
+                success: (res) => {
+                    this.stats = res;
+                },
+                error: (err) => {
+                    console.error("Error fetching stats", err);
+                }
+            });
+        }
     }
-  }
 }
 </script>
 @endsection
