@@ -242,7 +242,7 @@ class BizProfitCalculationService{
 
         $purchase_amount = $transaction->discounted_amount ?? $transaction->amount;
         $profit = $purchase_amount - $actual_cost_price;
-        $total_profit += $profit;
+        $total_txn_profit += $profit;
        
         $data[$key]['automation'] = $automation_details->automation_name;
         $data[$key]['plan'] = $transaction->product_plan->product_plan_name;
@@ -260,6 +260,9 @@ class BizProfitCalculationService{
        
       }
 
+
+      $total_funding_profit = $this->calculate_funding_profit();
+      $total_profit = $total_txn_profit + $total_funding_profit;
       return  [
         'status' => 1,
         'start_date' => $start,
@@ -281,15 +284,33 @@ class BizProfitCalculationService{
         ->latest('updated_at')
         ->get();
 
-        foreach($funding_payloads as $funding_payload){
-
-        }
-
-
-
-
 
         $total_profit = 0;
+
+        foreach($funding_payloads as $funding_payload){
+             $decode_payload = json_decode($funding_payload->payload_content, true);
+
+            if($funding_payload->funding_slug == 'crystal_pay'){
+                $actual_settled = $decode_payload['event_data']['data']['settled'];
+                $actual_charged = $decode_payload['event_data']['data']['charged'];
+                $actual_paid = $decode_payload['event_data']['data']['paid'];
+                $settled = $funding_payload->amount_settled; //what was credited.
+                $profit = $actual_paid - $settled - $actual_charged;
+                $total_profit += $profit;
+            }else if($funding_payload->funding_slug == 'xixapay'){
+                $actual_settled = $decode_payload['settlement_amount'];
+                $actual_charged = $decode_payload['settlement_fee'];
+                $actual_paid = $decode_payload['amount_paid'];
+                $settled = $funding_payload->amount_settled; //what was credited.
+                $profit = $actual_paid - $settled - $actual_charged;
+                $total_profit += $profit;
+            }
+        }   
+
+        return [
+            'status' => 1,
+            'total_profit' => $total_profit,
+        ];
 
     }
 
