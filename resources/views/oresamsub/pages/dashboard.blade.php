@@ -21,7 +21,7 @@
 
   <div class="">
     
-            @if (auth()->user()->is_marketer || auth()->user()->role->role_name == 'Admin')
+            @if (auth()->user()->is_marketer == 1 || auth()->user()->role->role_name == 'Admin')
               <a href="{{route('marketer.dashboard')}}">
                 <div class="bg-green-800 text-white p-2 rounded-xl">
                   <h1>Go to Markter Dashboard</h1>

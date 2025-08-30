@@ -13,7 +13,7 @@ class MarketerMiddleware
     public function handle(Request $request, Closure $next)
     {
         // Assuming 'role' or 'is_marketer' determines if user is a marketer
-        if (auth()->check() && auth()->user()->is_marketer || auth()->user()->role->role_name == "Admin") {
+        if (auth()->check() && auth()->user()->is_marketer == 1 || auth()->user()->role->role_name == "Admin") {
             return $next($request);
         }
 
