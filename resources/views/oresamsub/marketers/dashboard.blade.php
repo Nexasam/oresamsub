@@ -100,8 +100,8 @@
           <tr>
             <th class="px-4 py-2 text-left">Name</th>
             <th class="px-4 py-2">Phone</th>
-            <th class="px-4 py-2">Txn This Month</th>
-            <th class="px-4 py-2">Txn Today</th>
+            <th class="px-4 py-2">Txns This Month</th>
+            <th class="px-4 py-2">Txns Today</th>
             <th class="px-4 py-2">Joined</th>
           </tr>
         </thead>
