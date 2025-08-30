@@ -300,19 +300,13 @@ class BizProfitCalculationService{
 
         foreach($funding_payloads as $funding_payload){
              $decode_payload = json_decode($funding_payload->payload_content, true);
-             $deficitbonus = 0;
-
+        
             if($funding_payload->funding_slug == 'crystal_pay'){
                 $actual_settled = $decode_payload['event_data']['data']['settled'];
                 $actual_charged = $decode_payload['event_data']['data']['charged'];
                 $actual_paid = $decode_payload['event_data']['data']['paid'];
                 $settled = $funding_payload->amount_settled; //what was credited. 
-                if($settled >= $actual_paid){
-                    $deficitbonus = $settled - $actual_paid; //e.g 1100 - 1000 = 100
-                }
-
-                $total_charge = $actual_charged + $deficitbonus;
-                $profit = $actual_paid - $total_charge - $actual_settled;
+                $profit = $actual_settled - $settled;
                 $total_profit += $profit;
             
             }else if($funding_payload->funding_slug == 'xixapay'){
@@ -320,12 +314,7 @@ class BizProfitCalculationService{
                 $actual_charged = $decode_payload['settlement_fee'];
                 $actual_paid = $decode_payload['amount_paid'];
                 $settled = $funding_payload->amount_settled; //what was credited to user wallet.
-                if($settled >= $actual_paid){
-                    $deficitbonus = $settled - $actual_paid; //e.g 1100 - 1000 = 100
-                }
-
-                $total_charge = $actual_charged + $deficitbonus;
-                $profit = $actual_paid - $total_charge - $actual_settled;
+                $profit = $actual_settled - $settled;
                 $total_profit += $profit;
             
             }
