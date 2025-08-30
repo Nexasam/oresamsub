@@ -230,6 +230,7 @@ class BizProfitCalculationService{
                 }
            }
        
+        $data[$key]['plan'] = $transaction->product_plan->product_plan_name;
         $data[$key]['admin_screen_message'] = $automation_details->admin_screen_message;
         $data[$key]['first_automation_balance_before'] = $balance_before;
         $data[$key]['first_automation_balance_after'] = $balance_after;
