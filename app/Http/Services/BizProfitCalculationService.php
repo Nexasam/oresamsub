@@ -198,7 +198,7 @@ class BizProfitCalculationService{
        foreach($transactions as $key=>$transaction){
            $jsonstatus = $this->isObjectOrArrayJson($transaction->admin_screen_message) ? 'TRUE':'FALSE';
            $automation_details = $transaction->product_plan->automation;
-           $non_msorgs = ['paultechs','samicsub','9javtu','smeplug','directcoupon','megasubplug'];
+           $non_msorgs = ['samicsub','9javtu','smeplug','directcoupon','megasubplug'];
            
            if($jsonstatus == 'TRUE'){
                 if($automation_details->automation_group == 'msorg'){
