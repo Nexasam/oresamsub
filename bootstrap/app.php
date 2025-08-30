@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Middleware\MarketerMiddleware;
 use App\Http\Middleware\RoleAssess;
 use App\Http\Middleware\AdminSettings;
 use Illuminate\Foundation\Application;
@@ -25,6 +26,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'template_setting'=>TemplateSetting::class,
             'admin' => RoleAdminAccess::class,
             'user' => RoleUserAccess::class, 
+            'markter' => MarketerMiddleware::class, 
             'validate_user' => ValidateSanctumUser::class,
             'set_transaction_pin' => SetTransactionPin::class,
             'set_locale' => \App\Http\Middleware\SetLocale::class,
