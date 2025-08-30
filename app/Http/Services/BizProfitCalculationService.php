@@ -186,7 +186,7 @@ class BizProfitCalculationService{
         $end   = Carbon::now()->endOfMonth()->toDateString();   // e.g., 2025-08-31  
      
 
-        $transactions = Transaction::whereBetween('updated_at', [$start, $end])
+        $transactions = Transaction::with('product_plan.automation')->whereBetween('updated_at', [$start, $end])
         ->where('status',1)
         ->where('retry_count',0) #was reprocessed once and normally
         ->where('set_for_manual',0)
@@ -211,7 +211,11 @@ class BizProfitCalculationService{
                     $balance_before = NULL;
                     $balance_after = NULL;
                     $actual_cost_price = $transaction->product_plan->cost_price ?? NULL;
-                }  
+                }  else{
+                    $balance_before = NULL;
+                    $balance_after = NULL;
+                    $actual_cost_price = $transaction->product_plan->cost_price ?? NULL;
+                }
            }else{
               //update has to be done manually, even if not json, you can update plan price
                 if( in_array($automation_details->slug ,$non_msorgs)){
@@ -219,7 +223,11 @@ class BizProfitCalculationService{
                     $balance_before = NULL;
                     $balance_after = NULL;
                     $actual_cost_price = $transaction->product_plan->cost_price ?? NULL;
-                }  
+                }  else{
+                    $balance_before = NULL;
+                    $balance_after = NULL;
+                    $actual_cost_price = $transaction->product_plan->cost_price ?? NULL;
+                }
            }
        
         $data[$key]['admin_screen_message'] = $automation_details->admin_screen_message;
