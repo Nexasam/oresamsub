@@ -93,13 +93,13 @@
   <!-- Referrals Table -->
   <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md overflow-hidden mx-3">
     <div class="p-4 border-b border-gray-200 dark:border-gray-700 font-semibold text-gray-700 dark:text-gray-200">
-      👥 Referred Users
+      👥 Referrals
     </div>
     <div class="overflow-x-auto">
       <table class="w-full text-sm">
         <thead class="bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200">
           <tr>
-            <th class="px-4 py-2 text-left">Name</th>
+            <th class="px-4 py-2 text-left">User</th>
             <th class="px-4 py-2">Phone</th>
             <th class="px-4 py-2">Txns This Month</th>
             <th class="px-4 py-2">Txns Today</th>
