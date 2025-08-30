@@ -192,7 +192,7 @@ class BizProfitCalculationService{
         // ->where('retry_count',0) #was reprocessed once and normally
         ->where('set_for_manual',0)
         ->where('transaction_category','data') #data for now
-        ->whereNull('automation_plan_amount')
+        ->whereNull('automation_plan_amount') #if not null, we will overwrite what we have
         ->latest('updated_at')
         ->get();
 
@@ -260,6 +260,8 @@ class BizProfitCalculationService{
 
       return  [
         'status' => 1,
+        'start_date' => $start,
+        'end_date' => $end,
         'profit'=>$total_profit,
         'data'=> $data,
       ];
