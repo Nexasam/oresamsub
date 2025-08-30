@@ -189,7 +189,6 @@ class BizProfitCalculationService{
         $total_txns_count = Transaction::with('product_plan.automation')->whereBetween('updated_at', [$start, $end])
         ->where('transaction_category','data') #data for now
         ->where('status',1)
-        // ->where('set_for_manual',0)
         ->count();
 
     
@@ -205,7 +204,6 @@ class BizProfitCalculationService{
         $total_checked_txns = count($transactions);
 
         $total_unchecked_txns = $total_txns_count - $total_checked_txns;
-
 
         $total_txn_profit = 0;
 
@@ -291,33 +289,38 @@ class BizProfitCalculationService{
     public function calculate_funding_profit(){
 
         $start = Carbon::now()->startOfMonth()->toDateString(); // e.g., 2025-08-01
-        $end   = Carbon::now()->endOfMonth()->toDateString();   // e.g., 2025-08-31  
-     
+        $end   = Carbon::now()->endOfMonth()->toDateString();   // e.g., 2025-08-31      
 
         $funding_payloads = FundingWebhookPayload::where('funding_status','success')
         ->whereBetween('updated_at', [$start, $end])
         ->latest('updated_at')
         ->get();
 
-
         $total_profit = 0;
 
         foreach($funding_payloads as $funding_payload){
              $decode_payload = json_decode($funding_payload->payload_content, true);
+             $excessbonus = 0;
 
             if($funding_payload->funding_slug == 'crystal_pay'){
                 $actual_settled = $decode_payload['event_data']['data']['settled'];
                 $actual_charged = $decode_payload['event_data']['data']['charged'];
                 $actual_paid = $decode_payload['event_data']['data']['paid'];
-                $settled = $funding_payload->amount_settled; //what was credited.
-                $profit = $actual_paid - $settled - $actual_charged;
+                $settled = $funding_payload->amount_settled; //what was credited. 
+                if($settled > $actual_paid){
+                    $excessbonus = $settled - $actual_paid; //e.g 1100 - 1000 = 100
+                }
+                $profit = $actual_paid - $excessbonus - $actual_charged;
                 $total_profit += $profit;
             }else if($funding_payload->funding_slug == 'xixapay'){
                 $actual_settled = $decode_payload['settlement_amount'];
                 $actual_charged = $decode_payload['settlement_fee'];
                 $actual_paid = $decode_payload['amount_paid'];
                 $settled = $funding_payload->amount_settled; //what was credited.
-                $profit = $actual_paid - $settled - $actual_charged;
+                if($settled > $actual_paid){
+                    $excessbonus = $settled - $actual_paid; //e.g 1100 - 1000 = 100
+                }
+                $profit = $actual_paid - $excessbonus - $actual_charged;
                 $total_profit += $profit;
             }
         }   
@@ -328,12 +331,5 @@ class BizProfitCalculationService{
         ];
 
     }
-
-
-
-
-
-
-    
 
 }
