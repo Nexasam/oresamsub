@@ -53,7 +53,7 @@
     <template x-for="card in [
       { title: 'Total Downlines', value: stats.totalRefs, icon: '👥', color: 'from-indigo-500 to-blue-500' },
       { title: 'Total Txns', value: stats.totalTxns, icon: '💳', color: 'from-emerald-500 to-green-600' },
-      { title: 'Donwline Monthly Target', value: stats.userTarget, icon: '🎯', color: 'from-pink-500 to-rose-600' },
+      { title: 'Donwline Monthly Target', value: stats.userTarget, icon: '', color: 'from-pink-500 to-rose-600' },
       { title: 'Txn Monthly Target', value: stats.txnTarget, icon: '📈', color: 'from-orange-500 to-yellow-500' }
     ]" :key="card.title">
       <div class="p-4 rounded-xl shadow bg-white dark:bg-gray-900 ring-1 ring-gray-200 dark:ring-gray-700 hover:shadow-lg transition transform hover:scale-[1.03]">
