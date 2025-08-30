@@ -293,6 +293,7 @@ class BizProfitCalculationService{
 
         $funding_payloads = FundingWebhookPayload::where('funding_status','success')
         ->whereBetween('updated_at', [$start, $end])
+        ->where('amount_paid','<=','amount_settled')
         ->latest('updated_at')
         ->get();
 
