@@ -8,6 +8,7 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Fortify\TwoFactorAuthenticatable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
@@ -71,6 +72,11 @@ class User extends Authenticatable implements MustVerifyEmail
     public function latestTransaction()
     {
     return $this->hasOne(Transaction::class)->orderBy('created_at', 'desc');
+    }
+
+    public function referrals(): HasMany
+    {
+        return $this->hasMany(User::class, 'upline_id');
     }
 
 

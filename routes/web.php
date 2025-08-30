@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Services\BizProfitCalculationService;
 use App\Models\SiteImage;
 use App\Models\ProductPlan;
 use App\Models\SiteTemplate;
@@ -23,6 +22,7 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\WalletsController;
 use App\Http\Controllers\SettingsController;
+use App\Http\Controllers\MarketersController;
 use App\Http\Controllers\MigrationController;
 use App\Http\Controllers\QuickToolController;
 use App\Http\Controllers\Template2Controller;
@@ -44,6 +44,7 @@ use App\Http\Controllers\AnnouncementsController;
 use App\Http\Controllers\MultilanguageController;
 use App\Http\Controllers\UserDashboardController;
 use App\Http\Controllers\UserTwoFactorController;
+use App\Http\Services\BizProfitCalculationService;
 use App\Http\Controllers\DynamicAccountsController;
 use App\Http\Controllers\ProductCategoryController;
 use App\Http\Controllers\UserProductPlanController;
@@ -71,6 +72,11 @@ Route::middleware(['set_locale'])->group(function () {
 
             Route::get('oresamsub/set_pin', fn () => view('oresamsub.pages.set_pin'))->name('ore.set_pin');
            
+            Route::get('/profit', function (): array {
+                $updateplan = (new BizProfitCalculationService())->calculate_profit();
+                return $updateplan;
+            });
+
 
             // ORESAMSUB WEBPWA V1: ROUTES (wrapped in auth middleware)
             Route::middleware(['auth','set_transaction_pin'])->group(function () {
@@ -119,6 +125,13 @@ Route::middleware(['set_locale'])->group(function () {
                     // dd($data);
                     return view('oresamsub.pages.virtual_accounts')->with($data);
                 })->name('ore.virtual_accounts');
+
+
+                ///STRICTLY MARKETERS 
+                 Route::get('/marketer/dashboard', [MarketersController::class, 'index'])->name('marketer.dashboard');
+                 Route::get('/marketer/stats', [MarketersController::class, 'stats'])->name('marketer.stats'); // AJAX
+
+
              
             });
 
@@ -171,10 +184,7 @@ Route::middleware(['set_locale'])->group(function () {
                 return redirect()->route('login');
             })->name('artisan.clear_cache');
 
-            Route::get('/profit', function (): array {
-                $updateplan = (new BizProfitCalculationService())->calculate_profit();
-                return $updateplan;
-            });
+
 
             Route::get('/test', function (): array {
                 dd('test');
