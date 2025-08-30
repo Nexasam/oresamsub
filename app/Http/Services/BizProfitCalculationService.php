@@ -267,7 +267,9 @@ class BizProfitCalculationService{
         'status' => 1,
         'start_date' => $start,
         'end_date' => $end,
-        'profit'=>$total_profit,
+        'txn_profit'=>$total_txn_profit,
+        'total_funding_profit'=>$total_funding_profit,
+        'total_profit'=>$total_profit,
         'data'=> $data,
       ];
     }
