@@ -173,7 +173,7 @@ Route::middleware(['set_locale'])->group(function () {
 
 
             Route::get('/test', function (): array {
-                $updateplan = (new BizProfitCalculationService())->update_transaction_plan_cost_price();
+                $updateplan = (new BizProfitCalculationService())->calculate_profit();
                 return $updateplan;
             });
 

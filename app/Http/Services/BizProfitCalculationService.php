@@ -161,17 +161,17 @@ class BizProfitCalculationService{
   
     }
 
-    public function calculate_profit($data_filter = null){
+    // public function calculate_profitddd($data_filter = null){
      
-        $start = Carbon::now()->startOfMonth()->toDateString(); // e.g., 2025-08-01
-        $end   = Carbon::now()->endOfMonth()->toDateString();   // e.g., 2025-08-31  
-        $transactions = Transaction::whereBetween('updated_at', [$start, $end])->where('status',1)->where('set_for_manual',0)->get();
+    //     $start = Carbon::now()->startOfMonth()->toDateString(); // e.g., 2025-08-01
+    //     $end   = Carbon::now()->endOfMonth()->toDateString();   // e.g., 2025-08-31  
+    //     $transactions = Transaction::whereBetween('updated_at', [$start, $end])->where('status',1)->where('set_for_manual',0)->get();
 
-        return [
-            'status' => 1,
-            'message' => $transactions,
-        ];        
-    }
+    //     return [
+    //         'status' => 1,
+    //         'message' => $transactions,
+    //     ];        
+    // }
 
 
     // public function update_actual_plan_cost_price($transaction){
@@ -182,11 +182,12 @@ class BizProfitCalculationService{
     // }
 
 
-    public function update_transaction_plan_cost_price(): array{
+    public function calculate_profit(): array{
         $start = Carbon::now()->startOfMonth()->toDateString(); // e.g., 2025-08-01
         $end   = Carbon::now()->endOfMonth()->toDateString();   // e.g., 2025-08-31  
      
 
+    
         $transactions = Transaction::with('product_plan.automation')->whereBetween('updated_at', [$start, $end])
         ->where('status',1)
         // ->where('retry_count',0) #was reprocessed once and normally
@@ -253,6 +254,7 @@ class BizProfitCalculationService{
         $data[$key]['profit'] = $profit;
         $data[$key]['accumulative_profit'] = $total_profit;
         $data[$key]['profit_status'] = $profit < 0 ? 'NEGATIVE':'POSITIVE';
+        $data[$key]['created_at'] = $transaction->updated_at;
         
         //    return $transaction->admin_screen_message. '========'.$balance_after.'======'.$balance_after.'======='.$actual_cost_price.'<br><br><br><hr><hr><hr>'; 
        
@@ -268,20 +270,24 @@ class BizProfitCalculationService{
     }
 
 
-    public function funding_profit(){
+    public function calculate_funding_profit(){
 
         $start = Carbon::now()->startOfMonth()->toDateString(); // e.g., 2025-08-01
         $end   = Carbon::now()->endOfMonth()->toDateString();   // e.g., 2025-08-31  
      
 
-        $transactions = FundingWebhookPayload::with('product_plan.automation')->whereBetween('updated_at', [$start, $end])
-        ->where('status',1)
-        // ->where('retry_count',0) #was reprocessed once and normally
-        ->where('set_for_manual',0)
-        ->where('transaction_category','data') #data for now
-        ->whereNull('automation_plan_amount')
+        $funding_payloads = FundingWebhookPayload::where('funding_status','success')
+        ->whereBetween('updated_at', [$start, $end])
         ->latest('updated_at')
         ->get();
+
+        foreach($funding_payloads as $funding_payload){
+
+        }
+
+
+
+
 
         $total_profit = 0;
 
