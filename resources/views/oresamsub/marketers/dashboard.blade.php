@@ -48,7 +48,8 @@
 
 
   <!-- Stats Cards -->
-  <div class="grid grid-cols-2 md:grid-cols-4 gap-4 px-3">
+   <!-- Stats Cards -->
+   <div class="grid grid-cols-2 gap-4 px-3">
     <template x-for="card in [
       { title: 'Total Referrals', value: stats.totalRefs, icon: '👥', color: 'from-indigo-500 to-blue-500' },
       { title: 'Total Transactions', value: stats.totalTxns, icon: '💳', color: 'from-emerald-500 to-green-600' },
