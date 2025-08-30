@@ -184,11 +184,23 @@ class BizProfitCalculationService{
     public function update_transaction_plan_cost_price($date=null,$data_filter = null): string{
         $start = Carbon::now()->startOfMonth()->toDateString(); // e.g., 2025-08-01
         $end   = Carbon::now()->endOfMonth()->toDateString();   // e.g., 2025-08-31  
-        $transactions = Transaction::whereBetween('updated_at', [$start, $end])->where('status',1)->where('set_for_manual',0)->get();
+        // $transactions = Transaction::whereBetween('updated_at', [$start, $end])
+        //                 ->where('status',1)
+        //                 ->where('retry_count',0)
+        //                 ->where('set_for_manual',0)
+        //                 ->get();
+
+        $transactions = Transaction::whereBetween('updated_at', [$start, $end])
+        ->where('status',1)
+        ->where('retry_count',0)
+        ->where('set_for_manual',0)
+        ->get();
+
        foreach($transactions as $transaction){
            $jsonstatus = $this->isObjectOrArrayJson($transaction->admin_screen_message) ? 'TRUE':'FALSE';
            echo $transaction->admin_screen_message. '========'.$jsonstatus.'<br>'; 
        }
+       
     }
 
 
