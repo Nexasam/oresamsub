@@ -21,6 +21,9 @@
       </a>
     </div>
 
+  <h2 class="text-xl font-bold text-center mb-1">Marketer Dashboard</h2>
+
+
   <!-- Greeting -->
   <div class="flex items-center justify-between px-3">
     <h1 class="text-sm font-semibold text-gray-800 dark:text-gray-100">
