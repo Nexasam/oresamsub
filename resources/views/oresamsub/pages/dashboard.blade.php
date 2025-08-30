@@ -19,6 +19,17 @@
     </a>
   </div>
 
+  <div class="">
+    
+            @if (auth()->user()->is_marketer || auth()->user()->role->role_name == 'Admin')
+              <a href="{{route('marketer.dashboard')}}">
+                <div class="bg-green-800 text-white p-2 rounded-xl">
+                  <h1>Go to Markter Dashboard</h1>
+              </a>
+            @endif
+
+  </div>
+
 
 <!-- Alpine (only include if not already loaded in your layout) -->
 <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
