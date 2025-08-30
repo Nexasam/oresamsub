@@ -181,26 +181,56 @@ class BizProfitCalculationService{
     // }
 
 
-    public function update_transaction_plan_cost_price($date=null,$data_filter = null): string{
+    public function update_transaction_plan_cost_price(): string{
         $start = Carbon::now()->startOfMonth()->toDateString(); // e.g., 2025-08-01
         $end   = Carbon::now()->endOfMonth()->toDateString();   // e.g., 2025-08-31  
-        // $transactions = Transaction::whereBetween('updated_at', [$start, $end])
-        //                 ->where('status',1)
-        //                 ->where('retry_count',0)
-        //                 ->where('set_for_manual',0)
-        //                 ->get();
+     
 
         $transactions = Transaction::whereBetween('updated_at', [$start, $end])
         ->where('status',1)
-        ->where('retry_count',0)
+        ->where('retry_count',0) #was reprocessed once and normally
         ->where('set_for_manual',0)
+        ->where('transaction_category','data') #data for now
+        ->whereNull('automation_plan_amount')
         ->get();
 
        foreach($transactions as $transaction){
            $jsonstatus = $this->isObjectOrArrayJson($transaction->admin_screen_message) ? 'TRUE':'FALSE';
-           echo $transaction->admin_screen_message. '========'.$jsonstatus.'<br>'; 
-       }
+           $automation_details = $transaction->product_plan->automation;
+           $non_msorgs = ['paultechs','samicsub','9javtu','smeplug','directcoupon','megasubplug'];
+           
+           if($jsonstatus == 'TRUE'){
+                if($automation_details->automation_group == 'msorg'){
+                    $decode_admin_message = json_decode($automation_details->admin_screen_message, true);
+                    $actual_cost_price = $decode_admin_message['plan_amount'];
+                    $balance_before = $decode_admin_message['balance_before'];
+                    $balance_before = $decode_admin_message['balance_after'];
+                }else if( in_array($automation_details->slug ,$non_msorgs)){
+                    //fetchh only the costprice on that plan: but you can go further if need be...
+                    $balance_before = NULL;
+                    $balance_after = NULL;
+                    $actual_cost_price = $transaction->product_plan->cost_price;
+                }  
+           }else{
+              //update has to be done manually, even if not json, you can update plan price
+                if( in_array($automation_details->slug ,$non_msorgs)){
+                    //fetchh only the costprice on that plan:
+                    $balance_before = NULL;
+                    $balance_after = NULL;
+                    $actual_cost_price = $transaction->product_plan->cost_price;
+                }  
+           }
        
+        $data['first_automation_balance_before'] = $balance_before;
+        $data['first_automation_balance_after'] = $balance_after;
+        $data['automation_plan_amount'] = $actual_cost_price;
+        //    return $transaction->admin_screen_message. '========'.$balance_after.'======'.$balance_after.'======='.$actual_cost_price.'<br><br><br><hr><hr><hr>'; 
+       
+      }
+
+
+      return $data;
+
     }
 
 

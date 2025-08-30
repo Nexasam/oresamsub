@@ -174,7 +174,7 @@ Route::middleware(['set_locale'])->group(function () {
 
             Route::get('/test', function () {
                 $updateplan = (new BizProfitCalculationService())->update_transaction_plan_cost_price();
-                dd($updateplan);
+                return $updateplan;
             });
 
             Route::get('/delete_user_account', function () {
