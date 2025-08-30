@@ -206,6 +206,10 @@ class BizProfitCalculationService{
                     $actual_cost_price = $decode_admin_message['plan_amount'] ?? NULL;
                     $balance_before = $decode_admin_message['balance_before'] ?? NULL;
                     $balance_after = $decode_admin_message['balance_after'] ?? NULL;
+                }else if ($automation_details->slug == 'paultechs'){
+                    $actual_cost_price = $decode_admin_message['cost'] ?? NULL;
+                    $balance_before = $decode_admin_message['balance_before'] ?? NULL;
+                    $balance_after = $decode_admin_message['balance_after'] ?? NULL;
                 }else if( in_array($automation_details->slug ,$non_msorgs)){
                     //fetchh only the costprice on that plan: but you can go further if need be...
                     $balance_before = NULL;
@@ -230,6 +234,7 @@ class BizProfitCalculationService{
                 }
            }
        
+        $data[$key]['automation'] = $automation_details->automation_name;
         $data[$key]['plan'] = $transaction->product_plan->product_plan_name;
         $data[$key]['admin_screen_message'] = $transaction->admin_screen_message;
         $data[$key]['first_automation_balance_before'] = $balance_before;
