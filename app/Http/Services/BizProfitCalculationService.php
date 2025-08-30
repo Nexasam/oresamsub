@@ -186,7 +186,7 @@ class BizProfitCalculationService{
         $end   = Carbon::now()->endOfMonth()->toDateString();   // e.g., 2025-08-31  
         $transactions = Transaction::whereBetween('updated_at', [$start, $end])->where('status',1)->where('set_for_manual',0)->get();
        foreach($transactions as $transaction){
-           $jsonstatus = $this->isObjectOrArrayJson($transaction->admin_screen_message);
+           $jsonstatus = $this->isObjectOrArrayJson($transaction->admin_screen_message) ? 'TRUE':'FALSE';
            echo $transaction->admin_screen_message. '========'.$jsonstatus.'<br>'; 
        }
     }
