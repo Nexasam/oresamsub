@@ -197,7 +197,7 @@ class BizProfitCalculationService{
         ->latest('updated_at')
         ->get();
 
-        $total_profit = 0;
+        $total_txn_profit = 0;
 
        foreach($transactions as $key=>$transaction){
            $jsonstatus = $this->isObjectOrArrayJson($transaction->admin_screen_message) ? 'TRUE':'FALSE';
@@ -252,7 +252,7 @@ class BizProfitCalculationService{
         $data[$key]['automation_plan_amount'] = $actual_cost_price;
         $data[$key]['purchase_amount'] = $purchase_amount;
         $data[$key]['profit'] = $profit;
-        $data[$key]['accumulative_profit'] = $total_profit;
+        $data[$key]['accumulative_profit'] = $total_txn_profit;
         $data[$key]['profit_status'] = $profit < 0 ? 'NEGATIVE':'POSITIVE';
         $data[$key]['created_at'] = $transaction->updated_at;
         
