@@ -302,7 +302,7 @@ class BizProfitCalculationService{
         foreach($funding_payloads as $funding_payload){
              $decode_payload = json_decode($funding_payload->payload_content, true);
 
-             if($funding_payload->amount_paid <= $funding_payload->amount_settled){
+             if($funding_payload->amount_settled <= $funding_payload->amount_paid){
                 if($funding_payload->funding_slug == 'crystal_pay'){
                     $actual_settled = $decode_payload['event_data']['data']['settled'];
                     $actual_charged = $decode_payload['event_data']['data']['charged'];
