@@ -194,7 +194,7 @@ class BizProfitCalculationService{
         ->whereNull('automation_plan_amount')
         ->get();
 
-       foreach($transactions as $transaction){
+       foreach($transactions as $key=>$transaction){
            $jsonstatus = $this->isObjectOrArrayJson($transaction->admin_screen_message) ? 'TRUE':'FALSE';
            $automation_details = $transaction->product_plan->automation;
            $non_msorgs = ['paultechs','samicsub','9javtu','smeplug','directcoupon','megasubplug'];
@@ -221,10 +221,10 @@ class BizProfitCalculationService{
                 }  
            }
        
-        $data['admin_screen_message'] = $automation_details->admin_screen_message;
-        $data['first_automation_balance_before'] = $balance_before;
-        $data['first_automation_balance_after'] = $balance_after;
-        $data['automation_plan_amount'] = $actual_cost_price;
+        $data[$key]['admin_screen_message'] = $automation_details->admin_screen_message;
+        $data[$key]['first_automation_balance_before'] = $balance_before;
+        $data[$key]['first_automation_balance_after'] = $balance_after;
+        $data[$key]['automation_plan_amount'] = $actual_cost_price;
         //    return $transaction->admin_screen_message. '========'.$balance_after.'======'.$balance_after.'======='.$actual_cost_price.'<br><br><br><hr><hr><hr>'; 
        
       }
