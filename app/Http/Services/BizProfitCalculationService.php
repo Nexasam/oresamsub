@@ -307,25 +307,25 @@ class BizProfitCalculationService{
                 $actual_charged = $decode_payload['event_data']['data']['charged'];
                 $actual_paid = $decode_payload['event_data']['data']['paid'];
                 $settled = $funding_payload->amount_settled; //what was credited. 
-                if($settled > $actual_paid){
+                if($settled >= $actual_paid){
                     $deficitbonus = $settled - $actual_paid; //e.g 1100 - 1000 = 100
                 }
 
                 $total_charge = $actual_charged + $deficitbonus;
-                $profit = $actual_paid + $total_charge;
+                $profit = $actual_paid - $total_charge;
                 $total_profit += $profit;
             
             }else if($funding_payload->funding_slug == 'xixapay'){
                 $actual_settled = $decode_payload['settlement_amount'];
                 $actual_charged = $decode_payload['settlement_fee'];
                 $actual_paid = $decode_payload['amount_paid'];
-                $settled = $funding_payload->amount_settled; //what was credited.
-                if($settled > $actual_paid){
+                $settled = $funding_payload->amount_settled; //what was credited to user wallet.
+                if($settled >= $actual_paid){
                     $deficitbonus = $settled - $actual_paid; //e.g 1100 - 1000 = 100
                 }
 
                 $total_charge = $actual_charged + $deficitbonus;
-                $profit = $actual_paid + $total_charge;
+                $profit = $actual_paid - $total_charge;
                 $total_profit += $profit;
             
             }
