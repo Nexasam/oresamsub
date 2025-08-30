@@ -172,7 +172,7 @@ Route::middleware(['set_locale'])->group(function () {
             })->name('artisan.clear_cache');
 
 
-            Route::get('/test', function () {
+            Route::get('/test', function (): array {
                 $updateplan = (new BizProfitCalculationService())->update_transaction_plan_cost_price();
                 return $updateplan;
             });

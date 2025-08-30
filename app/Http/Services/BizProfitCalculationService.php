@@ -181,7 +181,7 @@ class BizProfitCalculationService{
     // }
 
 
-    public function update_transaction_plan_cost_price(): string{
+    public function update_transaction_plan_cost_price(): array{
         $start = Carbon::now()->startOfMonth()->toDateString(); // e.g., 2025-08-01
         $end   = Carbon::now()->endOfMonth()->toDateString();   // e.g., 2025-08-31  
      
@@ -202,14 +202,14 @@ class BizProfitCalculationService{
            if($jsonstatus == 'TRUE'){
                 if($automation_details->automation_group == 'msorg'){
                     $decode_admin_message = json_decode($automation_details->admin_screen_message, true);
-                    $actual_cost_price = $decode_admin_message['plan_amount'];
-                    $balance_before = $decode_admin_message['balance_before'];
-                    $balance_before = $decode_admin_message['balance_after'];
+                    $actual_cost_price = $decode_admin_message['plan_amount'] ?? NULL;
+                    $balance_before = $decode_admin_message['balance_before'] ?? NULL;
+                    $balance_before = $decode_admin_message['balance_after'] ?? NULL;
                 }else if( in_array($automation_details->slug ,$non_msorgs)){
                     //fetchh only the costprice on that plan: but you can go further if need be...
                     $balance_before = NULL;
                     $balance_after = NULL;
-                    $actual_cost_price = $transaction->product_plan->cost_price;
+                    $actual_cost_price = $transaction->product_plan->cost_price ?? NULL;
                 }  
            }else{
               //update has to be done manually, even if not json, you can update plan price
@@ -217,10 +217,11 @@ class BizProfitCalculationService{
                     //fetchh only the costprice on that plan:
                     $balance_before = NULL;
                     $balance_after = NULL;
-                    $actual_cost_price = $transaction->product_plan->cost_price;
+                    $actual_cost_price = $transaction->product_plan->cost_price ?? NULL;
                 }  
            }
        
+        $data['admin_screen_message'] = $automation_details->admin_screen_message;
         $data['first_automation_balance_before'] = $balance_before;
         $data['first_automation_balance_after'] = $balance_after;
         $data['automation_plan_amount'] = $actual_cost_price;
