@@ -5,6 +5,7 @@ namespace App\Http\Services;
 use Carbon\Carbon;
 use App\Models\User;
 use App\Models\Transaction;
+use App\Traits\CheckIfJson;
 use App\Models\SiteTemplate;
 use App\Models\FundingOption;
 use App\Models\UserVirtualAccount;
@@ -12,6 +13,8 @@ use App\Models\LandingPagesSetting;
 use App\Models\FundingOptionBankCodes;
 
 class BizProfitCalculationService{
+    
+    use CheckIfJson;
 
     public function generate_accounts($data){
         $user = $data['user'];
@@ -170,16 +173,23 @@ class BizProfitCalculationService{
     }
 
 
-    public function update_actual_plan_cost_price($transaction){
+    // public function update_actual_plan_cost_price($transaction){
+    //     $start = Carbon::now()->startOfMonth()->toDateString(); // e.g., 2025-08-01
+    //     $end   = Carbon::now()->endOfMonth()->toDateString();   // e.g., 2025-08-31  
+    //     $transactions = Transaction::whereBetween('updated_at', [$start, $end])->where('status',1)->where('set_for_manual',0)->get();
+    //     // if( in_array())
+    // }
+
+
+    public function update_transaction_plan_cost_price($date=null,$data_filter = null): string{
         $start = Carbon::now()->startOfMonth()->toDateString(); // e.g., 2025-08-01
         $end   = Carbon::now()->endOfMonth()->toDateString();   // e.g., 2025-08-31  
         $transactions = Transaction::whereBetween('updated_at', [$start, $end])->where('status',1)->where('set_for_manual',0)->get();
-
-        // if( in_array())
-        
+       foreach($transactions as $transaction){
+           $jsonstatus = $this->isObjectOrArrayJson($transaction->admin_screen_message);
+           echo $transaction->admin_screen_message. '========'.$jsonstatus.'<br>'; 
+       }
     }
-
-
 
 
 

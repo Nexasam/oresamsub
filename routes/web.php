@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Services\BizProfitCalculationService;
 use App\Models\SiteImage;
 use App\Models\ProductPlan;
 use App\Models\SiteTemplate;
@@ -172,8 +173,8 @@ Route::middleware(['set_locale'])->group(function () {
 
 
             Route::get('/test', function () {
-                // return view('landing.indextest');
-                dd(function_exists('fastcgi_finish_request'));
+                $updateplan = (new BizProfitCalculationService())->update_transaction_plan_cost_price();
+                dd($updateplan);
 
             });
 
