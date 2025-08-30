@@ -312,7 +312,7 @@ class BizProfitCalculationService{
                 }
 
                 $total_charge = $actual_charged + $deficitbonus;
-                $profit = $actual_paid - $total_charge;
+                $profit = $actual_paid - $total_charge - $actual_settled;
                 $total_profit += $profit;
             
             }else if($funding_payload->funding_slug == 'xixapay'){
@@ -325,7 +325,7 @@ class BizProfitCalculationService{
                 }
 
                 $total_charge = $actual_charged + $deficitbonus;
-                $profit = $actual_paid - $total_charge;
+                $profit = $actual_paid - $total_charge - $actual_settled;
                 $total_profit += $profit;
             
             }
