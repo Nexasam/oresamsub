@@ -25,6 +25,7 @@
               <a href="{{route('marketer.dashboard')}}">
                 <div class="bg-green-800 text-white p-2 rounded-xl">
                   <h1>Go to Markter Dashboard</h1>
+                </div>
               </a>
             @endif
 
