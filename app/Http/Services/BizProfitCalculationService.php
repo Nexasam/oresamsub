@@ -202,7 +202,7 @@ class BizProfitCalculationService{
            
            if($jsonstatus == 'TRUE'){
                 if($automation_details->automation_group == 'msorg'){
-                    $decode_admin_message = json_decode($automation_details->admin_screen_message, true);
+                    $decode_admin_message = json_decode($transaction->admin_screen_message, true);
                     $actual_cost_price = $decode_admin_message['plan_amount'] ?? NULL;
                     $balance_before = $decode_admin_message['balance_before'] ?? NULL;
                     $balance_after = $decode_admin_message['balance_after'] ?? NULL;
