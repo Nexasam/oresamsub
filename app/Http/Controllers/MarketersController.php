@@ -53,8 +53,8 @@ class MarketersController extends Controller
     return response()->json([
         'totalRefs' => $totalRefs,
         'totalTxns' => $totalTxns,
-        'userTarget' => $user->user_target,
-        'txnTarget'  => $user->txn_target,
+        'userTarget' => 70,
+        'txnTarget'  => 5000,
         'users'      => $users,
     ]);
 }
