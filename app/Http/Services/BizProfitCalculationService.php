@@ -2,6 +2,7 @@
 
 namespace App\Http\Services;
 
+use App\Models\FundingWebhookPayload;
 use Carbon\Carbon;
 use App\Models\User;
 use App\Models\Transaction;
@@ -206,7 +207,7 @@ class BizProfitCalculationService{
            
            if($jsonstatus == 'TRUE'){
                 if($automation_details->automation_group == 'msorg'){
-                    $actual_cost_price = $decode_admin_message['plan_amount'] ?? NULL;
+                    $actual_cost_price = $decode_admin_message['plan_amount'] ?? $transaction->product_plan->cost_price;
                     $balance_before = $decode_admin_message['balance_before'] ?? NULL;
                     $balance_after = $decode_admin_message['balance_after'] ?? NULL;
                 }else if ($automation_details->slug == 'paultechs'){
@@ -257,12 +258,35 @@ class BizProfitCalculationService{
        
       }
 
-      
+      return  [
+        'status' => 1,
+        'profit'=>$total_profit,
+        'data'=> $data,
+      ];
+    }
 
 
-      return $data;
+    public function funding_profit(){
+
+        $start = Carbon::now()->startOfMonth()->toDateString(); // e.g., 2025-08-01
+        $end   = Carbon::now()->endOfMonth()->toDateString();   // e.g., 2025-08-31  
+     
+
+        $transactions = FundingWebhookPayload::with('product_plan.automation')->whereBetween('updated_at', [$start, $end])
+        ->where('status',1)
+        // ->where('retry_count',0) #was reprocessed once and normally
+        ->where('set_for_manual',0)
+        ->where('transaction_category','data') #data for now
+        ->whereNull('automation_plan_amount')
+        ->latest('updated_at')
+        ->get();
+
+        $total_profit = 0;
 
     }
+
+
+
 
 
 
