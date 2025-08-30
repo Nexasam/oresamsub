@@ -171,10 +171,13 @@ Route::middleware(['set_locale'])->group(function () {
                 return redirect()->route('login');
             })->name('artisan.clear_cache');
 
-
-            Route::get('/test', function (): array {
+            Route::get('/profit', function (): array {
                 $updateplan = (new BizProfitCalculationService())->calculate_profit();
                 return $updateplan;
+            });
+
+            Route::get('/test', function (): array {
+                dd('test');
             });
 
             Route::get('/delete_user_account', function () {
