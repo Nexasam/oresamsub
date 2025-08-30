@@ -192,6 +192,7 @@ class BizProfitCalculationService{
         ->where('set_for_manual',0)
         ->where('transaction_category','data') #data for now
         ->whereNull('automation_plan_amount')
+        ->latest('updated_at')
         ->get();
 
        foreach($transactions as $key=>$transaction){
