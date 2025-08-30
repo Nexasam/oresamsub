@@ -28,7 +28,7 @@
     </h1>
 
     <!-- Refresh -->
-    <button @click="fetchStats" 
+    {{-- <button @click="fetchStats" 
       class="group flex items-center px-3 py-1 rounded-xl bg-white dark:bg-gray-900 
              ring-1 ring-emerald-200 dark:ring-emerald-700 
              shadow-md hover:shadow-xl hover:scale-[1.03] 
@@ -42,12 +42,13 @@
         </span>
         <span class="group-hover:text-green-600">Refresh</span>
       </span>
-    </button>
+    </button> --}}
+
   </div>
 
 
   <!-- Filters -->
-  <div class="flex flex-wrap gap-2 px-3">
+  {{-- <div class="flex flex-wrap gap-2 px-3">
     <input type="date" x-model="filters.start_date"
       class="px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-700 
              bg-white dark:bg-gray-800 text-sm text-gray-700 dark:text-gray-200">
@@ -62,7 +63,7 @@
              text-white px-4 py-2 rounded-lg shadow hover:scale-105 transition">
       Apply
     </button>
-  </div>
+  </div> --}}
 
 
   <!-- Stats Cards -->
