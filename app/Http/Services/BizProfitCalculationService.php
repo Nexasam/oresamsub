@@ -204,7 +204,7 @@ class BizProfitCalculationService{
                     $decode_admin_message = json_decode($automation_details->admin_screen_message, true);
                     $actual_cost_price = $decode_admin_message['plan_amount'] ?? NULL;
                     $balance_before = $decode_admin_message['balance_before'] ?? NULL;
-                    $balance_before = $decode_admin_message['balance_after'] ?? NULL;
+                    $balance_after = $decode_admin_message['balance_after'] ?? NULL;
                 }else if( in_array($automation_details->slug ,$non_msorgs)){
                     //fetchh only the costprice on that plan: but you can go further if need be...
                     $balance_before = NULL;
