@@ -3,10 +3,28 @@
 @section('content')
 <div x-data="marketerDashboard()" x-init="fetchStats()" class="space-y-6 pt-2">
 
+
+    <div class="mb-4">
+        <a 
+        href="{{ route('dashboard') }}"
+        @click.prevent="showLoader = true; setTimeout(() => window.location.href = '{{ route('dashboard') }}', 1000)"
+        class="inline-flex items-center px-3 py-1.5 rounded-md 
+               bg-emerald-600 hover:bg-emerald-700 
+               text-white 
+               text-xs font-semibold 
+               transition-all duration-200 shadow"
+      >
+        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+        </svg>
+        Back to Dashboard
+      </a>
+    </div>
+
   <!-- Greeting -->
   <div class="flex items-center justify-between px-3">
     <h1 class="text-sm font-semibold text-gray-800 dark:text-gray-100">
-      👋 Hi, {{ auth()->user()->username }} — Welcome Back!
+      👋 Hi, {{ auth()->user()->username }}
     </h1>
 
     <!-- Refresh -->
