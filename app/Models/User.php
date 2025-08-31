@@ -11,6 +11,8 @@ use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Support\Str;
+
 
 
 class User extends Authenticatable implements MustVerifyEmail
@@ -77,6 +79,13 @@ class User extends Authenticatable implements MustVerifyEmail
     public function referrals(): HasMany
     {
         return $this->hasMany(User::class, 'upline_id');
+    }
+
+    public function generateApiToken()
+    {
+        $this->api_token = Str::random(60);
+        $this->save();
+        return $this->api_token;
     }
 
 

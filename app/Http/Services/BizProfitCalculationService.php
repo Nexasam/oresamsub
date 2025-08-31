@@ -183,8 +183,8 @@ class BizProfitCalculationService{
 
 
     public function calculate_profit(): array{
-        $start = Carbon::now()->startOfMonth()->toDateString(); // e.g., 2025-08-01
-        $end   = Carbon::now()->endOfMonth()->toDateString();   // e.g., 2025-08-31  
+        $start = Carbon::now()->startOfMonth()->startOfDay(); // 2025-08-01 00:00:00
+        $end   = Carbon::now()->endOfMonth()->endOfDay();     // 2025-08-31 23:59:59 
      
         $total_txns_count = Transaction::with('product_plan.automation')->whereBetween('updated_at', [$start, $end])
         ->where('transaction_category','data') #data for now
@@ -300,7 +300,7 @@ class BizProfitCalculationService{
         $total_profit = 0;
 
         foreach($funding_payloads as $funding_payload){
-             $decode_payload = json_decode($funding_payload->payload_content, true);
+            $decode_payload = json_decode($funding_payload->payload_content, true);
 
             //  if($funding_payload->amount_settled > $funding_payload->amount_paid){
                 if($funding_payload->funding_slug == 'crystal_pay'){
