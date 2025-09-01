@@ -174,35 +174,46 @@
                                                     <th class="border px-3 py-2">Visible</th>
                                                 </tr>
                                             </thead>
-                                            
+                                            {{-- <tbody>
+                                                <template x-for="plan in plans" :key="plan.unique_plan">
+                                                    <template x-for="automation in plan.automations" :key="automation.product_plan">
+                                                        <tr>
+                                                            <td class="border px-3 py-2" x-text="plan.unique_plan"></td>
+                                                            <td class="border px-3 py-2" x-text="automation.product_plan"></td>
+                                                            <td class="border px-3 py-2" x-text="automation.size"></td>
+                                                            <td class="border px-3 py-2" x-text="automation.validity"></td>
+                                                            <td class="border px-3 py-2" x-text="automation.network"></td>
+                                                            <td class="border px-3 py-2" x-text="automation.automation"></td>
+                                                            <td class="border px-3 py-2" x-text="automation.visibility == 1 ? 'Yes' : 'No'"></td>
+                                                        </tr>
+                                                    </template>
+                                                </template>
+                                            </tbody> --}}
+
                                             <tbody>
                                               <template x-for="(plan, idx) in plans" :key="plan.unique_plan">
-                                                <template x-data="{ open: false }">
-                                                  <!-- Parent Row -->
-                                                  <tr class="bg-gray-100 cursor-pointer" @click="open = !open">
-                                                    <td class="border px-3 py-2 font-bold text-blue-700" x-text="plan.unique_plan"></td>
-                                                    <td colspan="6" class="border px-3 py-2 text-right">
-                                                      <span x-text="open ? '− Hide' : '+ Show'"></span>
-                                                    </td>
+                                                  <tr class="bg-gray-100 cursor-pointer" @click="plan.show = !plan.show" x-data="{ show: true }">
+                                                      <td class="border px-3 py-2 font-bold text-blue-700" x-text="plan.unique_plan"></td>
+                                                      <td colspan="6" class="border px-3 py-2 text-right">
+                                                          <span x-text="show ? '− Hide' : '+ Show'"></span>
+                                                      </td>
                                                   </tr>
-                                            
-                                                  <!-- Automations -->
-                                                  <template x-if="open">
-                                                    <template x-for="automation in plan.automations" :key="automation.product_plan">
-                                                      <tr>
-                                                        <td class="border px-3 py-2 text-sm italic text-gray-500">↳</td>
-                                                        <td class="border px-3 py-2" x-text="automation.product_plan"></td>
-                                                        <td class="border px-3 py-2" x-text="automation.size"></td>
-                                                        <td class="border px-3 py-2" x-text="automation.validity"></td>
-                                                        <td class="border px-3 py-2" x-text="automation.network"></td>
-                                                        <td class="border px-3 py-2" x-text="automation.automation"></td>
-                                                        <td class="border px-3 py-2" x-text="automation.visibility == 1 ? 'Yes' : 'No'"></td>
-                                                      </tr>
-                                                    </template>
+                                          
+                                                  <template x-if="show">
+                                                      <template x-for="automation in plan.automations" :key="automation.product_plan">
+                                                          <tr>
+                                                              <td class="border px-3 py-2 text-sm italic text-gray-500">↳</td>
+                                                              <td class="border px-3 py-2" x-text="automation.product_plan"></td>
+                                                              <td class="border px-3 py-2" x-text="automation.size"></td>
+                                                              <td class="border px-3 py-2" x-text="automation.validity"></td>
+                                                              <td class="border px-3 py-2" x-text="automation.network"></td>
+                                                              <td class="border px-3 py-2" x-text="automation.automation"></td>
+                                                              <td class="border px-3 py-2" x-text="automation.visibility == 1 ? 'Yes' : 'No'"></td>
+                                                          </tr>
+                                                      </template>
                                                   </template>
-                                                </template>
                                               </template>
-                                            </tbody>
+                                          </tbody>
                                           
 
 
@@ -360,59 +371,68 @@
 @endsection
 
 <script>
-function plansComponent() {
-    return {
-        filters: { size: '', network: '', validity: '' },
-        customSize: '',
-        plans: [],
-        pagination: { total: 0, per_page: 10, current_page: 1, last_page: 1 },
-        loading: false,
+  function plansComponent() {
+      return {
+          filters: {
+              size: '',
+              network: '',
+              validity: ''
+          },
+          customSize: '',   // for manual input when "Other" is selected
+          plans: [],
+          pagination: { total: 0, per_page: 10, current_page: 1, last_page: 1 },
+          loading: false,
+  
+          fetchPlans(page = 1) {
+              this.loading = true;
+              this.pagination.current_page = page;
 
-        fetchPlans(page = 1) {
-            this.loading = true;
-            this.pagination.current_page = page;
+              // If "Other" is chosen, use custom size value
+              let sizeParam = (this.filters.size === 'other') ? this.customSize : this.filters.size;
 
-            // If "Other" is chosen, replace filters.size with customSize
-            let sizeParam = this.filters.size === 'other' ? this.customSize : this.filters.size;
+              let params = new URLSearchParams({ 
+                  ...this.filters, 
+                  size: sizeParam, 
+                  page 
+              }).toString();
+  
+              fetch("{{ route('admin.unique_product_plans.index') }}?" + params, {
+                  headers: { 'X-Requested-With': 'XMLHttpRequest' }
+              })
+              .then(res => res.json())
+              .then(data => {
+                  this.plans = data.plans;
+                  this.pagination = data.pagination;
+                  this.loading = false;
+              })
+              .catch(() => this.loading = false);
+          },
+  
+          changePage(page) {
+              if (page >= 1 && page <= this.pagination.last_page) {
+                  this.fetchPlans(page);
+              }
+          },
+          
+          // updateSize(event) {
+          //     if (event.target.value === 'other') {
+          //         this.filters.size = 'other';
+          //     } else {
+          //         this.filters.size = event.target.value;
+          //         this.customSize = '';
+          //         this.fetchPlans();
+          //     }
+          // }
 
-            let params = new URLSearchParams({
-                ...this.filters,
-                size: sizeParam,
-                page
-            }).toString();
-
-            fetch("{{ route('admin.unique_product_plans.index') }}?" + params, {
-                headers: { 'X-Requested-With': 'XMLHttpRequest' }
-            })
-            .then(res => res.json())
-            .then(data => {
-                this.plans = data.plans;
-                this.pagination = data.pagination;
-                this.loading = false;
-            })
-            .catch(() => this.loading = false);
-        },
-
-        updateSize(event) {
-            if (event.target.value !== 'other') {
-                this.customSize = '';
-                this.fetchPlans();
-            }
-        },
-
-        applyCustomSize() {
-            if (this.customSize) {
-                this.fetchPlans();
-            }
-        },
-
-        changePage(page) {
-            if (page >= 1 && page <= this.pagination.last_page) {
-                this.fetchPlans(page);
-            }
-        }
-    }
-}
-
-
+          updateSize(event) {
+              if (event.target.value === 'other') {
+                  this.filters.size = 'other';
+              } else {
+                  this.filters.size = event.target.value;
+                  this.customSize = '';
+                  this.fetchPlans();
+              }
+          }
+      }
+  }
 </script>
