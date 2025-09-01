@@ -188,6 +188,9 @@
 
 
 @push('scripts')
+<script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+<meta name="csrf-token" content="{{ csrf_token() }}">
+
 <script>
 document.addEventListener('alpine:init', () => {
     Alpine.store('pricingModal', {
