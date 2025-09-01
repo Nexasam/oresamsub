@@ -158,7 +158,7 @@ class UniqueProductPlansController extends Controller
                 data-price-11="'.$price_11.'" 
                 data-price-12="'.$price_12.'" 
                 onclick="openPricingModal(this)">
-              Manage Pricing
+              Manage Plan
             </button>
           ';
 

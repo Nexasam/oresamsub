@@ -125,63 +125,82 @@
 
 
                    <!-- Pricing Modal -->
-                   <div id="pricingModal" class="hidden fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-                    <div class="bg-white p-6 rounded-lg shadow-lg w-[800px]">
-                        <h2 id="pricingModalTitle" class="text-lg font-semibold mb-4">
-                            Manage Plan Pricing
-                        </h2>
-                        <form id="pricingForm">
-                            @csrf
-                            <input type="hidden" id="planId" name="plan_id">
-                
-                            <div class="mb-4">
-                                <label class="block text-sm font-medium">Cost Price</label>
-                                <input type="number" id="costPrice" name="cost" 
-                                       class="w-full border rounded p-2 bg-gray-100" readonly>
-                            </div>
-                
-                            <div class="grid grid-cols-4 gap-4">
-                                @for ($i = 1; $i <= 12; $i++)
-                                    <div>
-                                        <label class="block text-sm font-medium">Price {{ $i }}</label>
-                                        <input type="number" id="price{{ $i }}" name="price{{ $i }}" 
-                                               class="w-full border rounded p-2">
-                                    </div>
-                                @endfor
-                            </div>
-                
-                            <div class="flex justify-end space-x-2 mt-6">
-                                <button type="button" onclick="closePricingModal()" 
-                                        class="px-4 py-2 bg-gray-300 rounded">Cancel</button>
-                                <button type="submit" 
-                                        class="px-4 py-2 bg-blue-600 text-white rounded">Save</button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
+                  <div x-data="pricingModalComponent()" x-show="open" x-cloak
+                      x-on:keydown.escape.window="open = false"
+                      class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50"
+                      x-on:click.self="open = false">
+
+                      <div class="bg-white p-6 rounded-lg shadow-lg w-[800px]">
+                          <h2 class="text-lg font-semibold mb-4" x-text="title">Manage Plan Pricing</h2>
+
+                          <form @submit.prevent="savePricing">
+                              <input type="hidden" x-model="planId" name="plan_id">
+
+                              <div class="mb-4">
+                                  <label class="block text-sm font-medium">Cost Price</label>
+                                  <input type="number" x-model="costPrice" name="cost" 
+                                        class="w-full border rounded p-2 bg-gray-100" readonly>
+                              </div>
+
+                              <div class="grid grid-cols-4 gap-4">
+                                  <template x-for="i in 12" :key="i">
+                                      <div>
+                                          <label class="block text-sm font-medium" x-text="'Price ' + i"></label>
+                                          <input type="number" :id="'price' + i" :name="'price' + i"
+                                                x-model="prices[i-1]" class="w-full border rounded p-2">
+                                      </div>
+                                  </template>
+                              </div>
+
+                              <div class="flex justify-end space-x-2 mt-6">
+                                  <button type="button" @click="open = false" 
+                                          class="px-4 py-2 bg-gray-300 rounded">Cancel</button>
+                                  <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded">Save</button>
+                              </div>
+                          </form>
+                      </div>
+                  </div>   
+                  
+                  
+                  <script>
+                    function pricingModalComponent() {
+                        return {
+                            open: false,
+                            planId: null,
+                            title: '',
+                            costPrice: 0,
+                            prices: Array(12).fill(''),
+                    
+                            openModal(button) {
+                                this.planId = button.dataset.id;
+                                this.costPrice = button.dataset.cost;
+                                this.title = `Manage Pricing for: ${button.dataset.planName}`;
+                    
+                                for (let i = 1; i <= 12; i++) {
+                                    this.prices[i-1] = button.dataset[`price${i}`] || '';
+                                }
+                    
+                                this.open = true;
+                            },
+                    
+                            savePricing() {
+                                // handle form submission via AJAX or regular submit
+                                console.log('Saving:', this.planId, this.costPrice, this.prices);
+                                this.open = false;
+                            }
+                        }
+                    }
+                    </script>
+
+
+
                 
                 
       
                   </div>
                 </div>
               </div>
-              {{-- <div class="box-body">
-                <div class="overflow-auto table-bordered p-4">
-                  <table id="basic-table" class="ti-custom-table ti-striped-table ti-custom-table-hover">
-                    <thead>
-                        <tr>
-                       
-                            <td>First Name</td>
-                            <td>Last Name</td>
-                            <td>Action</td>
-                        </tr>
-                    </thead>
-                    <tbody>
-                    </tbody>
-                  </table>
-                </div>
-               
-              </div> --}}
+             
                
                 
             </div>
@@ -200,6 +219,14 @@
 
 @push('scripts')
     <script>
+
+        function closeModalOnOutsideClick(event) {
+            // Check if click is on the overlay, not inside the modal content
+            if (event.target.id === 'pricingModal') {
+                closePricingModal();
+            }
+        }
+
         function openPricingModal(button) {
           // Get plan info from button data attributes
           let planId = button.getAttribute("data-id");
