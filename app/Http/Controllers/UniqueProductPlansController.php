@@ -9,7 +9,12 @@ use App\Models\UniqueProductPlan;
 class UniqueProductPlansController extends Controller
 {
     public function index(){
-        $generalproductplans = UniqueProductPlan::all();
+        // $generalproductplans = UniqueProductPlan::all();
+        $generalproductplans = UniqueProductPlan::orderBy('size', 'asc')
+        ->orderBy('validity', 'asc')
+        ->orderBy('network', 'asc')
+        ->get();
+
         
         foreach($generalproductplans as $keyy=>$productplan){
             $size = $productplan->data_size_in_mb;
