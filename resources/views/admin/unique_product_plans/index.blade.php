@@ -82,7 +82,7 @@
                               {{-- {{ json_encode($data) }} --}}
                               
                               @foreach ($data as $dat)
-                                  {{ $data->unique_plan }} <br>
+                                  {{ $dat->unique_plan }} <br>
                               @endforeach
 
                             </tbody>
