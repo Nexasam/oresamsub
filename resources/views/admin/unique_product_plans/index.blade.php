@@ -72,11 +72,30 @@
                                       <div x-data="plansComponent()" x-init="fetchPlans()" class="p-4">
                                         <!-- Filters -->
                                         <div class="flex flex-wrap gap-4 mb-4">
-                                            <div>
-                                                <label class="block text-sm font-medium">Size (MB)</label>
-                                                <input type="number" x-model="filters.size" @input.debounce.500ms="fetchPlans"
-                                                       class="border rounded px-2 py-1 w-32">
-                                            </div>
+                                          <div x-data="{ customSize: '' }">
+                                            <label class="block text-sm font-medium">Size (MB)</label>
+                                            <select x-model="filters.size" @change="if($event.target.value !== 'other'){ customSize=''; fetchPlans(); }"
+                                                    class="border rounded px-2 py-1 w-40">
+                                                <option value="">All</option>
+                                                <option value="500">500 MB</option>
+                                                <option value="1000">1,000 MB</option>
+                                                <option value="2000">2,000 MB</option>
+                                                <option value="3000">3,000 MB</option>
+                                                <option value="5000">5,000 MB</option>
+                                                <option value="10000">10,000 MB</option>
+                                                <option value="other">Other</option>
+                                            </select>
+                                        
+                                            <!-- Show input only if "Other" is selected -->
+                                            <template x-if="filters.size === 'other'">
+                                                <input type="number" x-model="customSize" @input.debounce.500ms="
+                                                    filters.size = customSize;
+                                                    fetchPlans();
+                                                " placeholder="Enter size in MB"
+                                                   class="border rounded px-2 py-1 w-40 mt-2">
+                                            </template>
+                                        </div>
+                                        
                                     
                                             <div>
                                                 <label class="block text-sm font-medium">Network</label>
@@ -312,6 +331,7 @@
               network: '',
               validity: ''
           },
+          customSize: '',   // for manual input when "Other" is selected
           plans: [],
           pagination: { total: 0, per_page: 10, current_page: 1, last_page: 1 },
           loading: false,
@@ -319,7 +339,15 @@
           fetchPlans(page = 1) {
               this.loading = true;
               this.pagination.current_page = page;
-              let params = new URLSearchParams({ ...this.filters, page }).toString();
+
+              // If "Other" is chosen, use custom size value
+              let sizeParam = (this.filters.size === 'other') ? this.customSize : this.filters.size;
+
+              let params = new URLSearchParams({ 
+                  ...this.filters, 
+                  size: sizeParam, 
+                  page 
+              }).toString();
   
               fetch("{{ route('admin.unique_product_plans.index') }}?" + params, {
                   headers: { 'X-Requested-With': 'XMLHttpRequest' }
@@ -337,7 +365,17 @@
               if (page >= 1 && page <= this.pagination.last_page) {
                   this.fetchPlans(page);
               }
+          },
+          
+          updateSize(event) {
+              if (event.target.value === 'other') {
+                  this.filters.size = 'other';
+              } else {
+                  this.filters.size = event.target.value;
+                  this.customSize = '';
+                  this.fetchPlans();
+              }
           }
       }
   }
-  </script>
+</script>
