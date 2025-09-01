@@ -222,7 +222,7 @@
           .then(data => {
               alert(data.message);
               closePricingModal();
-              $('#yourDatatableId').DataTable().ajax.reload();
+              $('#admin_unique_product_plans_table').DataTable().ajax.reload();
           })
           .catch(err => console.error(err));
       });
