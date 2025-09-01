@@ -174,46 +174,35 @@
                                                     <th class="border px-3 py-2">Visible</th>
                                                 </tr>
                                             </thead>
-                                            {{-- <tbody>
-                                                <template x-for="plan in plans" :key="plan.unique_plan">
-                                                    <template x-for="automation in plan.automations" :key="automation.product_plan">
-                                                        <tr>
-                                                            <td class="border px-3 py-2" x-text="plan.unique_plan"></td>
-                                                            <td class="border px-3 py-2" x-text="automation.product_plan"></td>
-                                                            <td class="border px-3 py-2" x-text="automation.size"></td>
-                                                            <td class="border px-3 py-2" x-text="automation.validity"></td>
-                                                            <td class="border px-3 py-2" x-text="automation.network"></td>
-                                                            <td class="border px-3 py-2" x-text="automation.automation"></td>
-                                                            <td class="border px-3 py-2" x-text="automation.visibility == 1 ? 'Yes' : 'No'"></td>
-                                                        </tr>
-                                                    </template>
-                                                </template>
-                                            </tbody> --}}
-
+                                            
                                             <tbody>
                                               <template x-for="(plan, idx) in plans" :key="plan.unique_plan">
-                                                  <tr class="bg-gray-100 cursor-pointer" @click="plan.show = !plan.show" x-data="{ show: true }">
-                                                      <td class="border px-3 py-2 font-bold text-blue-700" x-text="plan.unique_plan"></td>
-                                                      <td colspan="6" class="border px-3 py-2 text-right">
-                                                          <span x-text="show ? '− Hide' : '+ Show'"></span>
-                                                      </td>
+                                                <template x-data="{ open: false }">
+                                                  <!-- Parent Row -->
+                                                  <tr class="bg-gray-100 cursor-pointer" @click="open = !open">
+                                                    <td class="border px-3 py-2 font-bold text-blue-700" x-text="plan.unique_plan"></td>
+                                                    <td colspan="6" class="border px-3 py-2 text-right">
+                                                      <span x-text="open ? '− Hide' : '+ Show'"></span>
+                                                    </td>
                                                   </tr>
-                                          
-                                                  <template x-if="show">
-                                                      <template x-for="automation in plan.automations" :key="automation.product_plan">
-                                                          <tr>
-                                                              <td class="border px-3 py-2 text-sm italic text-gray-500">↳</td>
-                                                              <td class="border px-3 py-2" x-text="automation.product_plan"></td>
-                                                              <td class="border px-3 py-2" x-text="automation.size"></td>
-                                                              <td class="border px-3 py-2" x-text="automation.validity"></td>
-                                                              <td class="border px-3 py-2" x-text="automation.network"></td>
-                                                              <td class="border px-3 py-2" x-text="automation.automation"></td>
-                                                              <td class="border px-3 py-2" x-text="automation.visibility == 1 ? 'Yes' : 'No'"></td>
-                                                          </tr>
-                                                      </template>
+                                            
+                                                  <!-- Automations -->
+                                                  <template x-if="open">
+                                                    <template x-for="automation in plan.automations" :key="automation.product_plan">
+                                                      <tr>
+                                                        <td class="border px-3 py-2 text-sm italic text-gray-500">↳</td>
+                                                        <td class="border px-3 py-2" x-text="automation.product_plan"></td>
+                                                        <td class="border px-3 py-2" x-text="automation.size"></td>
+                                                        <td class="border px-3 py-2" x-text="automation.validity"></td>
+                                                        <td class="border px-3 py-2" x-text="automation.network"></td>
+                                                        <td class="border px-3 py-2" x-text="automation.automation"></td>
+                                                        <td class="border px-3 py-2" x-text="automation.visibility == 1 ? 'Yes' : 'No'"></td>
+                                                      </tr>
+                                                    </template>
                                                   </template>
+                                                </template>
                                               </template>
-                                          </tbody>
+                                            </tbody>
                                           
 
 
