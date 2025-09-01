@@ -79,7 +79,7 @@
                                   </tr>
                                </thead>
                             <tbody>
-                              {{$data}}
+                              {{ json_encode($data) }}
                                 
                             </tbody>
                         </table>     
