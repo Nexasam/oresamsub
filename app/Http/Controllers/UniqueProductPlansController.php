@@ -143,15 +143,16 @@ class UniqueProductPlansController extends Controller
             <button 
                 class="px-3 py-1 text-xs font-medium text-white bg-indigo-600 rounded hover:bg-indigo-700 focus:outline-none"
                 @click="openModal(
-                    '.$id.',
-                    \''.$unique_plan.'\',
-                    '.$cost_price.',
-                    ['.$price_1.','.$price_2.','.$price_3.','.$price_4.','.$price_5.','.$price_6.','.$price_7.','.$price_8.','.$price_9.','.$price_10.','.$price_11.','.$price_12.']
+                    '.(int)$id.',
+                    \'' . addslashes($unique_plan) . '\',
+                    '.(float)$cost_price.',
+                    ['.(float)$price_1.','.(float)$price_2.','.(float)$price_3.','.(float)$price_4.','.(float)$price_5.','.(float)$price_6.','.(float)$price_7.','.(float)$price_8.','.(float)$price_9.','.(float)$price_10.','.(float)$price_11.','.(float)$price_12.']
                 )"
             >
-              Manage Plan
+                Manage Plan
             </button>
-            ';
+        ';
+        
         
 
         })
