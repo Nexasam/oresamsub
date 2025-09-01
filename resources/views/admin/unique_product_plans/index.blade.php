@@ -67,76 +67,7 @@
                     <div id="pills-with-brand-color-2" class="" role="tabpanel" aria-labelledby="pills-with-brand-color-item-2">
                       <div class="overflow-auto">
                        
-                                        {{-- <table id="product_plans_tableee" class="ti-custom-table ti-custom-table-head">    
-                                              <thead class="bg-gray-50 dark:bg-black/20">
-                                                <tr>
-                                                  <th>ID</th>
-                                                  <th>Plan name</th>
-                                                  <th>Created At</th>
-                                                  <th>Last Updated</th>
-                                                  <th>Action</th>
-                                                </tr>
-                                            </thead>
-                                          <tbody>
-                                            @foreach ($plans as $plan)
-                                                <h2 class="font-bold text-lg">{{ $plan['unique_plan'] }}</h2>
-
-                                                <ul class="ml-5 list-disc">
-                                                    @foreach ($plan['automations'] as $key => $automation)
-                                                        <li>
-                                                            <strong>{{ $automation['product_plan'] }}</strong>  
-                                                            ({{ $automation['size'] }}MB / {{ $automation['validity'] }} days)  
-                                                            - Provider: {{ $automation['automation'] }}  
-                                                            - Network: {{ $automation['network'] }}  
-                                                            - Visible: {{ $automation['visibility'] == '1' ? 'Yes' : 'No' }}
-                                                        </li>
-                                                    @endforeach
-                                                </ul>
-                                            @endforeach
-
-                                          </tbody>
-                                      </table>      --}}
-
-
-
-                                      {{-- @foreach ($plans as $plan)
-                                              <h2 class="font-bold text-lg mb-3">{{ $plan['unique_plan'] }}</h2>
-
-                                              <div class="overflow-x-auto mb-6">
-                                                  <table class="min-w-full border border-gray-200 dark:border-gray-700 rounded-lg">
-                                                      <thead class="bg-gray-100 dark:bg-gray-800">
-                                                          <tr>
-                                                              <th class="px-4 py-2 text-left text-sm font-semibold">Product Plan</th>
-                                                              <th class="px-4 py-2 text-left text-sm font-semibold">Size (MB)</th>
-                                                              <th class="px-4 py-2 text-left text-sm font-semibold">Validity (Days)</th>
-                                                              <th class="px-4 py-2 text-left text-sm font-semibold">Provider</th>
-                                                              <th class="px-4 py-2 text-left text-sm font-semibold">Network</th>
-                                                              <th class="px-4 py-2 text-left text-sm font-semibold">Visible</th>
-                                                          </tr>
-                                                      </thead>
-                                                      <tbody>
-                                                          @foreach ($plan['automations'] as $automation)
-                                                              <tr class="border-t border-gray-200 dark:border-gray-700">
-                                                                  <td class="px-4 py-2">{{ $automation['product_plan'] }}</td>
-                                                                  <td class="px-4 py-2">{{ $automation['size'] }}</td>
-                                                                  <td class="px-4 py-2">{{ $automation['validity'] }}</td>
-                                                                  <td class="px-4 py-2">{{ $automation['automation'] }}</td>
-                                                                  <td class="px-4 py-2">{{ $automation['network'] }}</td>
-                                                                  <td class="px-4 py-2">
-                                                                      <span class="px-2 py-1 rounded text-xs
-                                                                          {{ $automation['visibility'] == '1' 
-                                                                              ? 'bg-green-100 text-green-700 dark:bg-green-700 dark:text-white' 
-                                                                              : 'bg-red-100 text-red-700 dark:bg-red-700 dark:text-white' }}">
-                                                                          {{ $automation['visibility'] == '1' ? 'Yes' : 'No' }}
-                                                                      </span>
-                                                                  </td>
-                                                              </tr>
-                                                          @endforeach
-                                                      </tbody>
-                                                  </table>
-                                              </div>
-                                      @endforeach --}}
-
+                                
 
                                       <div x-data="plansComponent()" x-init="fetchPlans()" class="p-4">
                                         <!-- Filters -->
@@ -193,6 +124,19 @@
                                                 </template>
                                             </tbody>
                                         </table>
+                                    
+                                        <!-- Pagination -->
+                                        <div class="flex justify-between items-center mt-4" x-show="pagination.last_page > 1">
+                                            <button @click="changePage(pagination.current_page - 1)"
+                                                    :disabled="pagination.current_page === 1"
+                                                    class="px-3 py-1 bg-gray-200 rounded disabled:opacity-50">Prev</button>
+                                    
+                                            <span>Page <span x-text="pagination.current_page"></span> of <span x-text="pagination.last_page"></span></span>
+                                    
+                                            <button @click="changePage(pagination.current_page + 1)"
+                                                    :disabled="pagination.current_page === pagination.last_page"
+                                                    class="px-3 py-1 bg-gray-200 rounded disabled:opacity-50">Next</button>
+                                        </div>
                                     
                                         <!-- Loading -->
                                         <div x-show="loading" class="mt-3 text-blue-600">Loading...</div>
@@ -295,52 +239,7 @@
         <!-- End::row-1 -->
 
 
-        <!-- Start::row-3 -->
-        {{-- <div class="grid grid-cols-12 gap-6">
-          <div class="col-span-12">
-            <div class="box">
-              <div class="box-header">
-                <h5 class="box-title">Reactivity DataTable</h5>
-              </div>
-              <div class="box-body space-y-3">
-                <div class="reactivity-data">
-                  <button type="button" class="ti-btn ti-btn-primary" id="reactivity-add">Add New Row</button>
-                  <button type="button" class="ti-btn ti-btn-primary" id="reactivity-delete">Remove Row</button>
-                  <button type="button" class="ti-btn ti-btn-primary" id="clear">Empty the table</button>
-                  <button type="button" class="ti-btn ti-btn-primary" id="reset">Reset</button>
-                </div>
-                <div class="overflow-hidden table-bordered">
-                  <div id="reactivity-table" class="ti-custom-table ti-striped-table ti-custom-table-hover"></div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div> --}}
-        <!-- End::row-3 -->
-
-        <!-- Start::row-3 -->
-        {{-- <div class="grid grid-cols-12 gap-6">
-          <div class="col-span-12">
-            <div class="box">
-              <div class="box-header">
-                <h5 class="box-title">Download DataTable</h5>
-              </div>
-              <div class="box-body space-y-3">
-                <div class="download-data">
-                    <button type="button" class="ti-btn ti-btn-primary" id="download-csv">Download CSV</button>
-                    <button type="button" class="ti-btn ti-btn-primary" id="download-json">Download JSON</button>
-                    <button type="button" class="ti-btn ti-btn-primary" id="download-xlsx">Download XLSX</button>
-                    <button type="button" class="ti-btn ti-btn-primary" id="download-pdf">Download PDF</button>
-                    <button type="button" class="ti-btn ti-btn-primary" id="download-html">Download HTML</button>
-                </div>
-                <div class="overflow-hidden table-bordered">
-                  <div id="download-table" class="ti-custom-table ti-striped-table ti-custom-table-hover"></div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div> --}}
-        <!-- End::row-3 -->
+     
 
       </div>
       <!-- Start::main-content -->

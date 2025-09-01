@@ -8,131 +8,78 @@ use App\Models\UniqueProductPlan;
 
 class UniqueProductPlansController extends Controller
 {
-    // public function index(){
-    //     // $generalproductplans = UniqueProductPlan::all();
-    //     $generalproductplans = UniqueProductPlan::orderByRaw("CASE WHEN data_size_in_mb < 500 THEN 1 ELSE 0 END ASC")
-    //     ->orderBy('data_size_in_mb', 'asc')
-    //     ->orderBy('validity_in_days', 'asc')
-    //     ->orderBy('network_id', 'asc')
-    //     ->get();
+    public function index(Request $request)
+    {
+        $query = UniqueProductPlan::query()
+            ->orderByRaw("CASE WHEN data_size_in_mb < 500 THEN 1 ELSE 0 END ASC")
+            ->orderBy('data_size_in_mb', 'asc')
+            ->orderBy('validity_in_days', 'asc')
+            ->orderBy('network_id', 'asc');
     
-        
-    //     foreach($generalproductplans as $keyy=>$productplan){
-    //         $size = $productplan->data_size_in_mb;
-    //         $validity = $productplan->validity_in_days;
-    //         $network_id = $productplan->network_id;
-    //         $product_id = $productplan->product_id;
-    //         $cost_price = $productplan->cost_price;
-         
-           
-    //         $associated_automationplans = ProductPlan::with(['product_plan_category.network','product_plan_category.product','automation'])
-    //         ->where('validity_in_days',$validity)
-    //         ->where('data_size_in_mb',$size)
-    //         ->get(); 
-
-    //         $data[$keyy]['unique_plan'] = $productplan->product_plan_name;
-    //         //@tlest there should be one...
-    //         if(count($associated_automationplans) > 0){
-    //             foreach($associated_automationplans as $key=>$associated_automationplan){
-    //                 $getnetworkid = $associated_automationplan->product_plan_category->network->id ?? 'nil';
-    //                 $network_namee = $associated_automationplan->product_plan_category->network->network_name ?? 'nil';
-    //                 $productid = $associated_automationplan->product_plan_category->product->id ?? 'nil';
-    //                 $sizee = $associated_automationplan->data_size_in_mb;
-    //                 $vall = $associated_automationplan->validity_in_days;
-    //                 if($getnetworkid == $network_id && $productid == $product_id && $size == $sizee && $validity == $vall){
-    //                     $dataa[$key]['product_plan'] = $associated_automationplan->product_plan_name;
-    //                     $dataa[$key]['size'] = $associated_automationplan->data_size_in_mb;
-    //                     $dataa[$key]['validity'] = $associated_automationplan->validity_in_days;
-    //                     $dataa[$key]['visibility'] = $associated_automationplan->visibility;
-    //                     $dataa[$key]['automation'] = $associated_automationplan->automation->automation_name;
-    //                     $dataa[$key]['network'] = $network_namee;
-    //                 }     
-    //             }
-    //             $data[$keyy]['automations'] = $dataa;
-    //         }
-            
-            
-    //         $dataa= [];
-    //     }
-
-
-    //     // $plans = json_decode($data, true); // decode JSON to array
-    //     $plans = $data; // decode JSON to array
-    //     // $dat['data'] = $data;
-
-    //     return view('admin.unique_product_plans.index',compact('plans'));
-
-    // }
-
-
-    public function index(Request $request){
-    $query = UniqueProductPlan::query();
-
-    // ✅ Apply filters dynamically
-    if ($request->filled('size')) {
-        $query->where('data_size_in_mb', $request->size);
-    }
-
-    if ($request->filled('network')) {
-        $query->where('network_id', $request->network);
-    }
-
-    if ($request->filled('validity')) {
-        $query->where('validity_in_days', $request->validity);
-    }
-
-    // ✅ Ordering (plans >=500MB first, then the rest)
-    $generalproductplans = $query
-        ->orderByRaw("CASE WHEN data_size_in_mb < 500 THEN 1 ELSE 0 END ASC")
-        ->orderBy('data_size_in_mb', 'asc')
-        ->orderBy('validity_in_days', 'asc')
-        ->orderBy('network_id', 'asc')
-        ->get();
-
-    $data = [];
-
-    foreach ($generalproductplans as $keyy => $productplan) {
-        $size = $productplan->data_size_in_mb;
-        $validity = $productplan->validity_in_days;
-        $network_id = $productplan->network_id;
-        $product_id = $productplan->product_id;
-
-        $associated_automationplans = ProductPlan::with(['product_plan_category.network','product_plan_category.product','automation'])
-            ->where('validity_in_days', $validity)
-            ->where('data_size_in_mb', $size)
-            ->get(); 
-
-        $data[$keyy]['unique_plan'] = $productplan->product_plan_name;
-        $data[$keyy]['automations'] = [];
-
-        foreach ($associated_automationplans as $key => $associated_automationplan) {
-            $getnetworkid = $associated_automationplan->product_plan_category->network->id ?? null;
-            $network_namee = $associated_automationplan->product_plan_category->network->network_name ?? null;
-            $productid = $associated_automationplan->product_plan_category->product->id ?? null;
-
-            if ($getnetworkid == $network_id && $productid == $product_id 
-                && $size == $associated_automationplan->data_size_in_mb 
-                && $validity == $associated_automationplan->validity_in_days) {
-
-                $data[$keyy]['automations'][] = [
-                    'product_plan' => $associated_automationplan->product_plan_name,
-                    'size'         => $associated_automationplan->data_size_in_mb,
-                    'validity'     => $associated_automationplan->validity_in_days,
-                    'visibility'   => $associated_automationplan->visibility,
-                    'automation'   => $associated_automationplan->automation->automation_name,
-                    'network'      => $network_namee,
-                ];
-            }
+        // Filters
+        if ($request->filled('size')) {
+            $query->where('data_size_in_mb', $request->size);
         }
+        if ($request->filled('network')) {
+            $query->where('network_id', $request->network);
+        }
+        if ($request->filled('validity')) {
+            $query->where('validity_in_days', $request->validity);
+        }
+    
+        $generalproductplans = $query->paginate(10); // paginate instead of get()
+    
+        $data = [];
+        foreach ($generalproductplans as $keyy => $productplan) {
+            $size = $productplan->data_size_in_mb;
+            $validity = $productplan->validity_in_days;
+            $network_id = $productplan->network_id;
+            $product_id = $productplan->product_id;
+    
+            $associated_automationplans = ProductPlan::with(['product_plan_category.network','product_plan_category.product','automation'])
+                ->where('validity_in_days', $validity)
+                ->where('data_size_in_mb', $size)
+                ->get();
+    
+            $data[$keyy]['unique_plan'] = $productplan->product_plan_name;
+            $dataa = [];
+    
+            foreach ($associated_automationplans as $key => $associated_automationplan) {
+                $getnetworkid = $associated_automationplan->product_plan_category->network->id ?? null;
+                $network_namee = $associated_automationplan->product_plan_category->network->network_name ?? 'nil';
+                $productid = $associated_automationplan->product_plan_category->product->id ?? null;
+                $sizee = $associated_automationplan->data_size_in_mb;
+                $vall = $associated_automationplan->validity_in_days;
+    
+                if ($getnetworkid == $network_id && $productid == $product_id && $size == $sizee && $validity == $vall) {
+                    $dataa[$key] = [
+                        'product_plan' => $associated_automationplan->product_plan_name,
+                        'size' => $sizee,
+                        'validity' => $vall,
+                        'visibility' => $associated_automationplan->visibility,
+                        'automation' => $associated_automationplan->automation->automation_name,
+                        'network' => $network_namee,
+                    ];
+                }
+            }
+    
+            $data[$keyy]['automations'] = $dataa;
+        }
+    
+        if ($request->ajax()) {
+            return response()->json([
+                'plans' => $data,
+                'pagination' => [
+                    'total' => $generalproductplans->total(),
+                    'per_page' => $generalproductplans->perPage(),
+                    'current_page' => $generalproductplans->currentPage(),
+                    'last_page' => $generalproductplans->lastPage(),
+                ]
+            ]);
+        }
+    
+        return view('admin.unique_product_plans.index', compact('data'));
     }
-
-    // AJAX request → return JSON
-    if ($request->ajax()) {
-        return response()->json(['plans' => $data]);
-    }
-
-    // Normal page load → Blade view
-    return view('admin.unique_product_plans.index', ['plans' => $data]);
-    }
+    
 
 }
