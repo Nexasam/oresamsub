@@ -240,8 +240,10 @@ Route::middleware(['set_locale'])->group(function () {
                         }else{
 
                             //exists..UPDATE
-                            if($cost_price < $checkunique_plan->cost_price){
-                                $cost_price = $checkunique_plan->cost_price; 
+                            if($cost_price > $checkunique_plan->cost_price){
+                               
+                            }else{
+                                $cost_price = $checkunique_plan + 200;
                             }
 
                             $dataupp['cost_price'] = $cost_price;
