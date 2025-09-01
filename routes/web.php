@@ -290,7 +290,7 @@ Route::middleware(['set_locale'])->group(function () {
                     $size = $productplan->data_size_in_mb;
                     $validity = $productplan->validity_in_days;
                     $network_id = $productplan->network_id;
-                    $product_id = $productplan->product_plan_category->product->id;
+                    $product_id = $productplan->product_id;
                     $cost_price = $productplan->cost_price;
                     if($product_slug == 'data'){
                    
