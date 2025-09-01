@@ -17,15 +17,20 @@ class UniqueProductPlansController extends Controller
             ->orderBy('network_id', 'asc');
     
         // Filters
-        if ($request->filled('size')) {
+   
+        // Filters
+        if ($request->filled('size') && is_numeric($request->size)) {
             $query->where('data_size_in_mb', $request->size);
         }
+
         if ($request->filled('network')) {
             $query->where('network_id', $request->network);
         }
+
         if ($request->filled('validity')) {
             $query->where('validity_in_days', $request->validity);
         }
+
     
         $generalproductplans = $query->paginate(10); // paginate instead of get()
     
