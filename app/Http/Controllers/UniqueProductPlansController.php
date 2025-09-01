@@ -57,9 +57,13 @@ class UniqueProductPlansController extends Controller
                 ->get();
 
             $data[$keyy]['id'] = $productplan->id;
+            $data[$keyy]['unique_plan'] = $productplan->product_plan_name;
             $data[$keyy]['product_id'] = $productplan->product_id;
             $data[$keyy]['network_id'] = $productplan->network_id;
-            $data[$keyy]['unique_plan'] = $productplan->product_plan_name;
+            $data[$keyy]['data_size_in_mb'] = $productplan->data_size_in_mb;
+            $data[$keyy]['validity_in_days'] = $productplan->validity_in_days;
+            
+            
             $dataa = [];
 
             foreach ($associated_automationplans as $key => $associated_automationplan) {
