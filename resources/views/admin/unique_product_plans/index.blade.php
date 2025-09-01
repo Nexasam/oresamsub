@@ -125,32 +125,42 @@
 
 
                    <!-- Pricing Modal -->
-                    <div id="pricingModal" class="hidden fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-                    <div class="bg-white p-6 rounded-lg shadow-lg w-96">
-                        <h2 class="text-lg font-semibold mb-4">Manage Plan Pricing</h2>
+                   <div id="pricingModal" class="hidden fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+                    <div class="bg-white p-6 rounded-lg shadow-lg w-[800px]">
+                        <h2 id="pricingModalTitle" class="text-lg font-semibold mb-4">
+                            Manage Plan Pricing
+                        </h2>
                         <form id="pricingForm">
                             @csrf
                             <input type="hidden" id="planId" name="plan_id">
                 
-                            <div class="mb-3">
+                            <div class="mb-4">
                                 <label class="block text-sm font-medium">Cost Price</label>
-                                <input type="number" id="costPrice" name="cost" class="w-full border rounded p-2 bg-gray-100" readonly>
+                                <input type="number" id="costPrice" name="cost" 
+                                       class="w-full border rounded p-2 bg-gray-100" readonly>
                             </div>
                 
-                            @for ($i = 1; $i <= 12; $i++)
-                                <div class="mb-3">
-                                    <label class="block text-sm font-medium">Price {{ $i }}</label>
-                                    <input type="number" id="price{{ $i }}" name="price{{ $i }}" class="w-full border rounded p-2">
-                                </div>
-                            @endfor
+                            <div class="grid grid-cols-4 gap-4">
+                                @for ($i = 1; $i <= 12; $i++)
+                                    <div>
+                                        <label class="block text-sm font-medium">Price {{ $i }}</label>
+                                        <input type="number" id="price{{ $i }}" name="price{{ $i }}" 
+                                               class="w-full border rounded p-2">
+                                    </div>
+                                @endfor
+                            </div>
                 
-                            <div class="flex justify-end space-x-2 mt-4">
-                                <button type="button" onclick="closePricingModal()" class="px-4 py-2 bg-gray-300 rounded">Cancel</button>
-                                <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded">Save</button>
+                            <div class="flex justify-end space-x-2 mt-6">
+                                <button type="button" onclick="closePricingModal()" 
+                                        class="px-4 py-2 bg-gray-300 rounded">Cancel</button>
+                                <button type="submit" 
+                                        class="px-4 py-2 bg-blue-600 text-white rounded">Save</button>
                             </div>
                         </form>
                     </div>
-                   </div>
+                </div>
+                
+                
       
                   </div>
                 </div>
@@ -190,17 +200,27 @@
 
 @push('scripts')
     <script>
-      function openPricingModal(button) {
-          // get values from data-attributes
-          document.getElementById("planId").value = button.getAttribute("data-id");
-          document.getElementById("costPrice").value = button.getAttribute("data-cost");
+        function openPricingModal(button) {
+          // Get plan info from button data attributes
+          let planId = button.getAttribute("data-id");
+          let costPrice = button.getAttribute("data-cost");
+          let planName = button.getAttribute("data-plan-name"); // NEW: unique plan name
 
+          // Set the modal title dynamically
+          document.getElementById("pricingModalTitle").textContent = 
+              `Manage Pricing for: ${planName}`;
+
+          // Set hidden input and cost
+          document.getElementById("planId").value = planId;
+          document.getElementById("costPrice").value = costPrice;
+
+          // Populate pricing fields
           for (let i = 1; i <= 12; i++) {
-              let priceVal = button.getAttribute("data-price-" + i);
-              document.getElementById("price" + i).value = priceVal || "";
+              let price = button.getAttribute(`data-price-${i}`) || '';
+              document.getElementById(`price${i}`).value = price;
           }
 
-          // show modal
+          // Show the modal
           document.getElementById("pricingModal").classList.remove("hidden");
       }
 

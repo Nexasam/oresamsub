@@ -143,6 +143,7 @@ class UniqueProductPlansController extends Controller
             <button 
                 class="px-3 py-1 text-xs font-medium text-white bg-indigo-600 rounded hover:bg-indigo-700 focus:outline-none"
                 data-id="'.$id.'" 
+                 data-plan-name="'.$unique_plan.'" 
                 data-cost="'.$cost_price.'" 
                 data-price-1="'.$price_1.'" 
                 data-price-2="'.$price_2.'" 
