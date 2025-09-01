@@ -260,6 +260,6 @@
       //         alert('Pricing saved!');
       //         alpine.open = false;
       //     });
-      }
+      // }
     </script> 
 @endpush
