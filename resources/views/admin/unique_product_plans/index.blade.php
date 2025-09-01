@@ -125,38 +125,42 @@
 
 
                    <!-- Pricing Modal -->
-                   <div x-show="$store.pricingModal.open" x-cloak
-                   x-on:keydown.escape.window="$store.pricingModal.closeModal()"
-                   class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50"
-                   x-on:click.self="$store.pricingModal.closeModal()">
-              
-                  <div class="bg-white p-6 rounded-lg shadow-lg w-[800px]">
-                      <h2 class="text-lg font-semibold mb-4" x-text="'Manage Pricing for: ' + $store.pricingModal.planName"></h2>
-              
-                      <form @submit.prevent="$store.pricingModal.savePricing">
-                          <input type="hidden" x-model="$store.pricingModal.planId" name="plan_id">
-              
-                          <div class="mb-4">
-                              <label class="block text-sm font-medium">Cost Price</label>
-                              <input type="number" x-model="$store.pricingModal.costPrice" name="cost" class="w-full border rounded p-2 bg-gray-100" readonly>
-                          </div>
-              
-                          <div class="grid grid-cols-4 gap-4">
-                              <template x-for="i in 12" :key="i">
-                                  <div>
-                                      <label class="block text-sm font-medium" x-text="'Price ' + i"></label>
-                                      <input type="number" :id="'price' + i" :name="'price' + i" x-model="$store.pricingModal.prices[i-1]" class="w-full border rounded p-2">
-                                  </div>
-                              </template>
-                          </div>
-              
-                          <div class="flex justify-end space-x-2 mt-6">
-                              <button type="button" @click="$store.pricingModal.closeModal()" class="px-4 py-2 bg-gray-300 rounded">Cancel</button>
-                              <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded">Save</button>
-                          </div>
-                      </form>
+                  <div x-data x-show="$store.pricingModal.open" x-cloak
+                    x-on:keydown.escape.window="$store.pricingModal.closeModal()"
+                    class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50"
+                    x-on:click.self="$store.pricingModal.closeModal()">
+
+                    <div class="bg-white p-6 rounded-lg shadow-lg w-[800px]">
+                        <h2 class="text-lg font-semibold mb-4" x-text="'Manage Pricing for: ' + $store.pricingModal.planName"></h2>
+
+                        <form @submit.prevent="$store.pricingModal.savePricing">
+                            <input type="hidden" x-model="$store.pricingModal.planId" name="plan_id">
+
+                            <div class="mb-4">
+                                <label class="block text-sm font-medium">Cost Price</label>
+                                <input type="number" x-model="$store.pricingModal.costPrice"
+                                      class="w-full border rounded p-2 bg-gray-100" readonly>
+                            </div>
+
+                            <div class="grid grid-cols-4 gap-4">
+                                <template x-for="i in 12" :key="i">
+                                    <div>
+                                        <label class="block text-sm font-medium" x-text="'Price ' + i"></label>
+                                        <input type="number" :id="'price' + i" x-model="$store.pricingModal.prices[i-1]"
+                                              class="w-full border rounded p-2">
+                                    </div>
+                                </template>
+                            </div>
+
+                            <div class="flex justify-end space-x-2 mt-6">
+                                <button type="button" @click="$store.pricingModal.closeModal()" class="px-4 py-2 bg-gray-300 rounded">Cancel</button>
+                                <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded">Save</button>
+                            </div>
+                        </form>
+                    </div>
                   </div>
-              </div>
+
+              
               
   
                   
@@ -194,68 +198,72 @@
 
 <script>
 document.addEventListener('alpine:init', () => {
-  Alpine.store('pricingModal', {
-      open: false,
-      planId: null,
-      planName: '',
-      costPrice: 0,
-      prices: Array(12).fill(''),
-      loading: false,
+    Alpine.store('pricingModal', {
+        open: false,
+        planId: null,
+        planName: '',
+        costPrice: 0,
+        prices: Array(12).fill(''),
+        loading: false,
 
-      openModal(id, planName, costPrice, pricesArray) {
-          this.planId = id;
-          this.planName = planName;
-          this.costPrice = costPrice;
-          this.prices = pricesArray || Array(12).fill('');
-          this.open = true;
-      },
+        openModal(id, planName, costPrice, pricesArray) {
+            this.planId = id;
+            this.planName = planName;
+            this.costPrice = costPrice;
+            this.prices = pricesArray || Array(12).fill('');
+            this.open = true;
+        },
 
-      closeModal() {
-          this.open = false;
-      },
+        closeModal() {
+            this.open = false;
+        },
 
-      savePricing() {
-          this.loading = true;
-          let formData = new FormData();
-          formData.append('plan_id', this.planId);
-          formData.append('cost', this.costPrice);
+        savePricing() {
+            this.loading = true;
 
-          this.prices.forEach((price, index) => {
-              formData.append(`price${index+1}`, price);
-          });
+            let formData = new FormData();
+            formData.append('plan_id', this.planId);
+            formData.append('cost', this.costPrice);
 
-          formData.append('_token', document.querySelector('meta[name="csrf-token"]').getAttribute('content'));
+            this.prices.forEach((price, index) => {
+                formData.append(`price${index+1}`, price);
+            });
 
-          fetch("{{ route('admin.save_unique_plan_pricing') }}", {
-              method: 'POST',
-              body: formData
-          })
-          .then(res => res.json())
-          .then(data => {
-              this.loading = false;
-              if (data.success) {
-                  alert('Pricing updated successfully!');
-                  this.open = false;
+            // CSRF token
+            formData.append('_token', document.querySelector('meta[name="csrf-token"]').getAttribute('content'));
 
-                  if (window.LaravelDataTables && window.LaravelDataTables['admin_unique_product_plans_table']) {
-                      window.LaravelDataTables['admin_unique_product_plans_table'].ajax.reload(null, false);
-                  }
-              } else {
-                  alert('Error: ' + (data.message || 'Unknown error'));
-              }
-          })
-          .catch(err => {
-              this.loading = false;
-              console.error(err);
-              alert('Something went wrong!');
-          });
-      }
-  });
+            fetch("{{ route('admin.save_unique_plan_pricing') }}", {
+                method: 'POST',
+                body: formData
+            })
+            .then(res => res.json())
+            .then(data => {
+                this.loading = false;
+                if (data.success) {
+                    alert('Pricing updated successfully!');
+                    this.open = false;
+
+                    // Refresh your DataTable
+                    if (window.LaravelDataTables && window.LaravelDataTables['admin_unique_product_plans_table']) {
+                        window.LaravelDataTables['admin_unique_product_plans_table'].ajax.reload(null, false);
+                    }
+                } else {
+                    alert('Error: ' + (data.message || 'Unknown error'));
+                }
+            })
+            .catch(err => {
+                this.loading = false;
+                console.error(err);
+                alert('Something went wrong!');
+            });
+        }
+    });
 });
 
-// Global JS function to open modal
+// Global JS function to open modal from your button
 function openPricingModal(id, planName, costPrice, pricesArray) {
-  Alpine.store('pricingModal').openModal(id, planName, costPrice, pricesArray);
+    Alpine.store('pricingModal').openModal(id, planName, costPrice, pricesArray);
 }
 </script>
 @endpush
+

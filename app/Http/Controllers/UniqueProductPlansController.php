@@ -138,26 +138,25 @@ class UniqueProductPlansController extends Controller
             //     </button>
             // ';
 
+            $pricesArray = [
+                (float)$price_1,(float)$price_2,(float)$price_3,(float)$price_4,
+                (float)$price_5,(float)$price_6,(float)$price_7,(float)$price_8,
+                (float)$price_9,(float)$price_10,(float)$price_11,(float)$price_12
+            ];
+            
             return '
-                '.$unique_plan.' <br>
-                <button 
-                    class="px-3 py-1 text-xs font-medium text-white bg-indigo-600 rounded hover:bg-indigo-700 focus:outline-none"
-                    onclick="openPricingModal(
-                        \''.addslashes($id).'\',
-                        \''.addslashes($unique_plan).'\',
-                        '.(float)$cost_price.',
-                        ['.
-                            implode(',', [
-                                (float)$price_1, (float)$price_2, (float)$price_3, (float)$price_4,
-                                (float)$price_5, (float)$price_6, (float)$price_7, (float)$price_8,
-                                (float)$price_9, (float)$price_10, (float)$price_11, (float)$price_12
-                            ])
-                        .']
-                    )"
-                >
-                    Manage Plan
-                </button>
-                ';
+            '.$unique_plan.' <br>
+            <button 
+                class="px-3 py-1 text-xs font-medium text-white bg-indigo-600 rounded hover:bg-indigo-700 focus:outline-none"
+                onclick="openPricingModal(
+                    \''.addslashes($id).'\',
+                    \''.addslashes($unique_plan).'\',
+                    '.(float)$cost_price.',
+                    ['.implode(',', $pricesArray).']
+                )"
+            >
+                Manage Plan
+            </button>';
 
             
             
