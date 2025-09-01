@@ -89,10 +89,10 @@ class UniqueProductPlansController extends Controller
             $data[$keyy]['automations'] = $dataa;
         }
 
-        $dataas = collect($data);
+        $data = collect($data);
         // return $data;
 
-        return DataTables::of($dataas)
+        return DataTables::of($data)
         ->addIndexColumn()
         ->addColumn('DT_RowIndex',function($data){
         return $data['id'];

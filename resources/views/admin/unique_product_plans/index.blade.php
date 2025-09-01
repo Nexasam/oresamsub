@@ -102,20 +102,20 @@
                     {{-- <div id="basic-tablee" class="ti-custom-table ti-striped-table ti-custom-table-hover"> --}}
                       <table  id="admin_unique_product_plans_table" class="ti-custom-table ti-custom-table-head">    
                         <thead class="bg-gray-50 dark:bg-black/20">
-                        <tr>
+                          <tr>
+                              
                             
+                            <th class="px-4 py-2">ID</th>
+                            <th class="px-4 py-2">Product Plan</th>
+                            <th class="px-4 py-2">Size (MB)</th>
+                            <th class="px-4 py-2">Validity</th>
+                            <th class="px-4 py-2">Network</th>
+                            <th class="px-4 py-2">Provider</th>
+                            <th class="px-4 py-2">Visible</th>
                           
-                          <th class="px-4 py-2">ID</th>
-                          <th class="px-4 py-2">Product Plan</th>
-                          <th class="px-4 py-2">Size (MB)</th>
-                          <th class="px-4 py-2">Validity</th>
-                          <th class="px-4 py-2">Network</th>
-                          <th class="px-4 py-2">Provider</th>
-                          <th class="px-4 py-2">Visible</th>
-                        
-                            
-                        </tr>
-                    </thead>
+                              
+                          </tr>
+                      </thead>
                    
                     <tbody>
 
