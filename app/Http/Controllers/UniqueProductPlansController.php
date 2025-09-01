@@ -89,38 +89,38 @@ class UniqueProductPlansController extends Controller
             $data[$keyy]['automations'] = $dataa;
         }
 
-        $data = collect($data);
+        $datad = collect($data);
         // return $data;
 
-        return DataTables::of($data)
+        return DataTables::of($datad)
         ->addIndexColumn()
-        ->addColumn('DT_RowIndex',function($data){
-        return $data['id'];
+        ->addColumn('DT_RowIndex',function($datad){
+        return $datad['id'];
         })
-        ->addColumn('product_id',function($data){
-            return $data['product_id'];
+        ->addColumn('product_id',function($datad){
+            return $datad['product_id'];
         })
-        ->addColumn('size',function($data){
-           return $data['data_size_in_mb'];
+        ->addColumn('size',function($datad){
+           return $datad['datad_size_in_mb'];
         })
-        ->addColumn('validity',function($data){
-            return $data['validity_in_days'];
+        ->addColumn('validity',function($datad){
+            return $datad['validity_in_days'];
          })
-        ->addColumn('network_id',function($data){
-            return $data['network_id'];
+        ->addColumn('network_id',function($datad){
+            return $datad['network_id'];
          })
-         ->addColumn('automations', function ($data) {
+         ->addColumn('automations', function ($datad) {
             // $rows = [];
         
-            // foreach ($data['automations'] as $a) {
+            // foreach ($datad['automations'] as $a) {
             //     $rows[] = $a['automation'] . ' (' . $a['network'] . ', ' . $a['size'] . 'MB, ' . $a['validity'] . ' day(s))';
             // }
         
             // return implode('<br>', $rows); // show each on new line
             return 1;
         })
-         ->addColumn('visibility',function($data){
-           $visibility = $data['visibility'];
+         ->addColumn('visibility',function($datad){
+           $visibility = $datad['visibility'];
 
            return $visibility;
          })     
