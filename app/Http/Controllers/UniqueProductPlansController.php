@@ -145,32 +145,35 @@ class UniqueProductPlansController extends Controller
         
             $count = count($autos);
         
-            // build inline badges for all automations (shown when expanded)
+            // build badges for all automations (shown when expanded)
             $allBadges = '';
             foreach ($autos as $a) {
-                $allBadges .= '<span class="inline-flex items-center px-2 py-1 mr-2 text-xs font-medium rounded-full bg-blue-50 text-blue-800 shadow-sm">'
+                $allBadges .= '<div><span class="inline-flex items-center px-2 py-1 text-xs font-medium rounded-full bg-blue-50 text-blue-800 shadow-sm">'
                             . $esc($a['automation'] ?? 'N/A')
                             . ' <span class="ml-1 text-gray-600">('
                             . $esc($a['network'] ?? '-')
                             . ' · ' . $esc($a['size'] ?? '-') . 'MB · ' . $esc($a['validity'] ?? '-') . 'd)</span>'
-                            . '</span>';
+                            . '</span></div>';
             }
         
-            // return a single-line summary with togglable inline list
+            // return summary with togglable vertical list
             return '
-              <div x-data="{ open: false }" class="flex items-center">
-                <div class="flex-shrink-0">' . $summary . '</div>
-                ' . ($count > 1
-                    ? '<button @click="open = !open" class="ml-2 text-xs text-indigo-600 hover:underline focus:outline-none">'
-                      . ($count - 1) . ' more</button>'
-                    : ''
-                  ) . '
-                <div x-show="open" x-cloak x-transition class="ml-3 flex-nowrap flex overflow-x-auto" style="max-width:40ch;">
+              <div x-data="{ open: false }" class="flex flex-col">
+                <div class="flex items-center">
+                  <div>' . $summary . '</div>
+                  ' . ($count > 1
+                      ? '<button @click="open = !open" class="ml-2 text-xs text-indigo-600 hover:underline focus:outline-none">'
+                        . ($count - 1) . ' more</button>'
+                      : ''
+                    ) . '
+                </div>
+                <div x-show="open" x-cloak x-transition class="mt-2 flex flex-col space-y-1">
                     ' . $allBadges . '
                 </div>
               </div>
             ';
-        })   
+        })
+        
         ->escapeColumns([])
         ->make(true);
 
