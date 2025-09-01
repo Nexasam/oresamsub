@@ -120,51 +120,57 @@ class UniqueProductPlansController extends Controller
         
         })
         ->addColumn('automations', function ($datad) {
-            if (empty($datad['automations'])) {
+            // safety checks
+            if (empty($datad['automations']) || !is_array($datad['automations'])) {
                 return '<span class="text-gray-400 italic">No automation</span>';
             }
         
-            // Build rows
-            $rows = [];
-            foreach ($datad['automations'] as $a) {
-                $rows[] = '
-                    <div class="px-2 py-1 my-1 rounded bg-blue-50 text-blue-700 text-xs">
-                        '.$a['automation'].' 
-                        <span class="ml-1 text-gray-600">
-                            ('.$a['network'].' · '.$a['size'].'MB · '.$a['validity'].'d)
-                        </span>
-                    </div>
-                ';
+            // reindex to ensure numeric keys starting from 0
+            $autos = array_values($datad['automations']);
+            if (!isset($autos[0]) || !is_array($autos[0])) {
+                return '<span class="text-gray-400 italic">No automation</span>';
             }
         
-            // Summary (first automation only)
-            $first = $datad['automations'][0];
-            $summary = '
-                <span class="inline-flex items-center px-2 py-1 text-xs font-medium rounded bg-blue-100 text-blue-800">
-                    '.$first['automation'].' ('.$first['network'].')
-                </span>
-            ';
+            // escape helper
+            $esc = function($v) {
+                return htmlspecialchars((string)$v, ENT_QUOTES, 'UTF-8');
+            };
         
-            // Alpine.js toggle container
+            // first (summary) badge
+            $first = $autos[0];
+            $summary = '<span class="inline-flex items-center px-2 py-1 text-xs font-medium rounded-full bg-blue-100 text-blue-800 shadow-sm">'
+                     . $esc($first['automation'] ?? 'N/A')
+                     . ' <span class="ml-1 text-gray-600">(' . $esc($first['network'] ?? '-') . ')</span>'
+                     . '</span>';
+        
+            $count = count($autos);
+        
+            // build inline badges for all automations (shown when expanded)
+            $allBadges = '';
+            foreach ($autos as $a) {
+                $allBadges .= '<span class="inline-flex items-center px-2 py-1 mr-2 text-xs font-medium rounded-full bg-blue-50 text-blue-800 shadow-sm">'
+                            . $esc($a['automation'] ?? 'N/A')
+                            . ' <span class="ml-1 text-gray-600">('
+                            . $esc($a['network'] ?? '-')
+                            . ' · ' . $esc($a['size'] ?? '-') . 'MB · ' . $esc($a['validity'] ?? '-') . 'd)</span>'
+                            . '</span>';
+            }
+        
+            // return a single-line summary with togglable inline list
             return '
-                <div x-data="{ open: false }" class="space-y-1">
-                    <div>
-                        '.$summary.'
-                        '.(count($datad['automations']) > 1 ? '
-                            <button @click="open = !open" 
-                                class="ml-2 text-xs text-indigo-600 hover:underline focus:outline-none">
-                                <span x-show="!open">+'.(count($datad['automations'])-1).' more</span>
-                                <span x-show="open">Hide</span>
-                            </button>
-                        ' : '').'
-                    </div>
-                    <div x-show="open" class="mt-1 space-y-1">
-                        '.implode('', $rows).'
-                    </div>
+              <div x-data="{ open: false }" class="flex items-center">
+                <div class="flex-shrink-0">' . $summary . '</div>
+                ' . ($count > 1
+                    ? '<button @click="open = !open" class="ml-2 text-xs text-indigo-600 hover:underline focus:outline-none">'
+                      . ($count - 1) . ' more</button>'
+                    : ''
+                  ) . '
+                <div x-show="open" x-cloak x-transition class="ml-3 flex-nowrap flex overflow-x-auto" style="max-width:40ch;">
+                    ' . $allBadges . '
                 </div>
+              </div>
             ';
-        })
-        
+        })   
         ->escapeColumns([])
         ->make(true);
 
