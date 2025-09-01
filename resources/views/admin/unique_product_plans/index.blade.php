@@ -81,9 +81,9 @@
                             <tbody>
                               {{ json_encode($data) }}
                               
-                              @foreach ($data as $dat)
+                              {{-- @foreach ($data as $dat)
                                   {{ $dat->unique_plan }} <br>
-                              @endforeach
+                              @endforeach --}}
 
                             </tbody>
                         </table>     
