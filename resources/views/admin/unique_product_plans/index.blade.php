@@ -66,37 +66,80 @@
                   <div class="mt-3">
                     <div id="pills-with-brand-color-2" class="" role="tabpanel" aria-labelledby="pills-with-brand-color-item-2">
                       <div class="overflow-auto">
-                        {{-- <table  class="ti-custom-table ti-custom-table-head ti-striped-table ti-custom-table-hover ">
-                            <thead> --}}
-                              <table id="product_plans_tableee" class="ti-custom-table ti-custom-table-head">    
-                                <thead class="bg-gray-50 dark:bg-black/20">
-                                  <tr>
-                                    <th>ID</th>
-                                    <th>Plan name</th>
-                                    <th>Created At</th>
-                                    <th>Last Updated</th>
-                                    <th>Action</th>
-                                  </tr>
-                               </thead>
-                            <tbody>
-                              @foreach ($plans as $plan)
-                                  <h2 class="font-bold text-lg">{{ $plan['unique_plan'] }}</h2>
+                       
+                                        {{-- <table id="product_plans_tableee" class="ti-custom-table ti-custom-table-head">    
+                                              <thead class="bg-gray-50 dark:bg-black/20">
+                                                <tr>
+                                                  <th>ID</th>
+                                                  <th>Plan name</th>
+                                                  <th>Created At</th>
+                                                  <th>Last Updated</th>
+                                                  <th>Action</th>
+                                                </tr>
+                                            </thead>
+                                          <tbody>
+                                            @foreach ($plans as $plan)
+                                                <h2 class="font-bold text-lg">{{ $plan['unique_plan'] }}</h2>
 
-                                  <ul class="ml-5 list-disc">
-                                      @foreach ($plan['automations'] as $key => $automation)
-                                          <li>
-                                              <strong>{{ $automation['product_plan'] }}</strong>  
-                                              ({{ $automation['size'] }}MB / {{ $automation['validity'] }} days)  
-                                              - Provider: {{ $automation['automation'] }}  
-                                              - Network: {{ $automation['network'] }}  
-                                              - Visible: {{ $automation['visibility'] == '1' ? 'Yes' : 'No' }}
-                                          </li>
-                                      @endforeach
-                                  </ul>
-                              @endforeach
+                                                <ul class="ml-5 list-disc">
+                                                    @foreach ($plan['automations'] as $key => $automation)
+                                                        <li>
+                                                            <strong>{{ $automation['product_plan'] }}</strong>  
+                                                            ({{ $automation['size'] }}MB / {{ $automation['validity'] }} days)  
+                                                            - Provider: {{ $automation['automation'] }}  
+                                                            - Network: {{ $automation['network'] }}  
+                                                            - Visible: {{ $automation['visibility'] == '1' ? 'Yes' : 'No' }}
+                                                        </li>
+                                                    @endforeach
+                                                </ul>
+                                            @endforeach
 
-                            </tbody>
-                        </table>     
+                                          </tbody>
+                                      </table>      --}}
+
+
+
+                                      @foreach ($plans as $plan)
+                                              <h2 class="font-bold text-lg mb-3">{{ $plan['unique_plan'] }}</h2>
+
+                                              <div class="overflow-x-auto mb-6">
+                                                  <table class="min-w-full border border-gray-200 dark:border-gray-700 rounded-lg">
+                                                      <thead class="bg-gray-100 dark:bg-gray-800">
+                                                          <tr>
+                                                              <th class="px-4 py-2 text-left text-sm font-semibold">Product Plan</th>
+                                                              <th class="px-4 py-2 text-left text-sm font-semibold">Size (MB)</th>
+                                                              <th class="px-4 py-2 text-left text-sm font-semibold">Validity (Days)</th>
+                                                              <th class="px-4 py-2 text-left text-sm font-semibold">Provider</th>
+                                                              <th class="px-4 py-2 text-left text-sm font-semibold">Network</th>
+                                                              <th class="px-4 py-2 text-left text-sm font-semibold">Visible</th>
+                                                          </tr>
+                                                      </thead>
+                                                      <tbody>
+                                                          @foreach ($plan['automations'] as $automation)
+                                                              <tr class="border-t border-gray-200 dark:border-gray-700">
+                                                                  <td class="px-4 py-2">{{ $automation['product_plan'] }}</td>
+                                                                  <td class="px-4 py-2">{{ $automation['size'] }}</td>
+                                                                  <td class="px-4 py-2">{{ $automation['validity'] }}</td>
+                                                                  <td class="px-4 py-2">{{ $automation['automation'] }}</td>
+                                                                  <td class="px-4 py-2">{{ $automation['network'] }}</td>
+                                                                  <td class="px-4 py-2">
+                                                                      <span class="px-2 py-1 rounded text-xs
+                                                                          {{ $automation['visibility'] == '1' 
+                                                                              ? 'bg-green-100 text-green-700 dark:bg-green-700 dark:text-white' 
+                                                                              : 'bg-red-100 text-red-700 dark:bg-red-700 dark:text-white' }}">
+                                                                          {{ $automation['visibility'] == '1' ? 'Yes' : 'No' }}
+                                                                      </span>
+                                                                  </td>
+                                                              </tr>
+                                                          @endforeach
+                                                      </tbody>
+                                                  </table>
+                                              </div>
+                                          @endforeach
+
+
+
+
                       </div>                
                     </div>
                     <div id="pills-with-brand-color-1" class="hidden"  role="tabpanel" aria-labelledby="pills-with-brand-color-item-1">
