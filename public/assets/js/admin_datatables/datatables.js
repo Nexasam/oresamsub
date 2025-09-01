@@ -252,7 +252,7 @@ $(document).ready(function(){
                   {data: 'size', name: 'size'},
                   {data: 'validity', name: 'validity'},
                   {data: 'network_id', name: 'network_id'},
-                  {data: 'automation', name: 'automation'},
+                  {data: 'automations', name: 'automations'},
                   {data: 'visibility', name: 'visibility'},
                 ]
         });
