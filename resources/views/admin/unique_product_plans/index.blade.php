@@ -79,11 +79,21 @@
                                   </tr>
                                </thead>
                             <tbody>
-                              {{ json_encode($data) }}
-                              
-                              {{-- @foreach ($data as $dat)
-                                  {{ $dat->unique_plan }} <br>
-                              @endforeach --}}
+                              @foreach ($plans as $plan)
+                                  <h2 class="font-bold text-lg">{{ $plan['unique_plan'] }}</h2>
+
+                                  <ul class="ml-5 list-disc">
+                                      @foreach ($plan['automations'] as $key => $automation)
+                                          <li>
+                                              <strong>{{ $automation['product_plan'] }}</strong>  
+                                              ({{ $automation['size'] }}MB / {{ $automation['validity'] }} days)  
+                                              - Provider: {{ $automation['automation'] }}  
+                                              - Network: {{ $automation['network'] }}  
+                                              - Visible: {{ $automation['visibility'] == '1' ? 'Yes' : 'No' }}
+                                          </li>
+                                      @endforeach
+                                  </ul>
+                              @endforeach
 
                             </tbody>
                         </table>     
