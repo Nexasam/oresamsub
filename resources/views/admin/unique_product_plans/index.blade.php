@@ -100,7 +100,7 @@
 
                   <div class="overflow-auto">
                     {{-- <div id="basic-tablee" class="ti-custom-table ti-striped-table ti-custom-table-hover"> --}}
-                      <table  id="admin_wallet_logs_table" class="ti-custom-table ti-custom-table-head">    
+                      <table  id="admin_unique_product_plans_table" class="ti-custom-table ti-custom-table-head">    
                         <thead class="bg-gray-50 dark:bg-black/20">
                         <tr>
                             

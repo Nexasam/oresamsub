@@ -18,6 +18,7 @@ $(document).ready(function(){
     getCrystalPayUserPendingTransactions();
     getCommissions();
     adminGetWalletLogs();
+    adminGetUniqueProductPlans();
 
     function getPublicPlans(date_from ='', date_to =''){
 
@@ -224,6 +225,35 @@ $(document).ready(function(){
                   {data: 'description', name: 'description'},
                   {data: 'created_at', name: 'created_at'},
                   {data: 'action', name: 'action'},
+                ]
+        });
+    }
+
+    function adminGetUniqueProductPlans(date_from ='', date_to ='', product_plan_category_filter = '', phone_recharged = ''){
+      const data = {
+        date_from : date_from,
+        date_to : date_to,
+        product_plan_category_filter : product_plan_category_filter,
+        phone_recharged : phone_recharged
+      };
+      console.log(data);
+      // return;
+      $('#admin_unique_product_plans_table').DataTable({
+                autoWidth: false,
+                processing: true,
+                searching: true,
+                bInfo: false,
+                bLengthChange: true,
+                pageLength: 10,
+                ajax: root_url + 'admin/unique_product_plans/admin_fetch_unique_product_plans?date_from='+date_from+'&&date_to='+date_to+'&&product_plan_category_filter='+product_plan_category_filter+'&&phone_recharged='+phone_recharged,
+                columns: [
+                  {data: 'DT_RowIndex', name: 'DT_RowIndex'},
+                  {data: 'product_id', name: 'product_id'},
+                  {data: 'size', name: 'size'},
+                  {data: 'validity', name: 'validity'},
+                  {data: 'network_id', name: 'network_id'},
+                  {data: 'automation', name: 'automation'},
+                  {data: 'visibility', name: 'visibility'},
                 ]
         });
     }
