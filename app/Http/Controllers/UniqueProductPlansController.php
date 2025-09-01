@@ -64,6 +64,18 @@ class UniqueProductPlansController extends Controller
             $data[$keyy]['validity_in_days'] = $productplan->validity_in_days;
             $data[$keyy]['visibility'] = $productplan->visibility;
             $data[$keyy]['cost_price'] = $productplan->cost_price;
+            $data[$keyy]['price_1'] = $productplan->price_1;
+            $data[$keyy]['price_2'] = $productplan->price_2;
+            $data[$keyy]['price_3'] = $productplan->price_3;
+            $data[$keyy]['price_4'] = $productplan->price_4;
+            $data[$keyy]['price_5'] = $productplan->price_5;
+            $data[$keyy]['price_6'] = $productplan->price_6;
+            $data[$keyy]['price_7'] = $productplan->price_7;
+            $data[$keyy]['price_8'] = $productplan->price_8;
+            $data[$keyy]['price_9'] = $productplan->price_9;
+            $data[$keyy]['price_10'] = $productplan->price_10;
+            $data[$keyy]['price_11'] = $productplan->price_11;
+            $data[$keyy]['price_12'] = $productplan->price_12;
             
             
             $dataa = [];
