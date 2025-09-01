@@ -371,68 +371,60 @@
 @endsection
 
 <script>
-  function plansComponent() {
-      return {
-          filters: {
-              size: '',
-              network: '',
-              validity: ''
-          },
-          customSize: '',   // for manual input when "Other" is selected
-          plans: [],
-          pagination: { total: 0, per_page: 10, current_page: 1, last_page: 1 },
-          loading: false,
-  
-          fetchPlans(page = 1) {
-              this.loading = true;
-              this.pagination.current_page = page;
 
-              // If "Other" is chosen, use custom size value
-              let sizeParam = (this.filters.size === 'other') ? this.customSize : this.filters.size;
+function plansComponent() {
+    return {
+        filters: { size: '', network: '', validity: '' },
+        customSize: '',
+        plans: [],
+        pagination: { total: 0, per_page: 10, current_page: 1, last_page: 1 },
+        loading: false,
 
-              let params = new URLSearchParams({ 
-                  ...this.filters, 
-                  size: sizeParam, 
-                  page 
-              }).toString();
-  
-              fetch("{{ route('admin.unique_product_plans.index') }}?" + params, {
-                  headers: { 'X-Requested-With': 'XMLHttpRequest' }
-              })
-              .then(res => res.json())
-              .then(data => {
-                  this.plans = data.plans;
-                  this.pagination = data.pagination;
-                  this.loading = false;
-              })
-              .catch(() => this.loading = false);
-          },
-  
-          changePage(page) {
-              if (page >= 1 && page <= this.pagination.last_page) {
-                  this.fetchPlans(page);
-              }
-          },
-          
-          // updateSize(event) {
-          //     if (event.target.value === 'other') {
-          //         this.filters.size = 'other';
-          //     } else {
-          //         this.filters.size = event.target.value;
-          //         this.customSize = '';
-          //         this.fetchPlans();
-          //     }
-          // }
+        fetchPlans(page = 1) {
+            this.loading = true;
+            this.pagination.current_page = page;
 
-          updateSize(event) {
-              if (event.target.value === 'other') {
-                  this.filters.size = 'other';
-              } else {
-                  this.filters.size = event.target.value;
-                  this.customSize = '';
-                  this.fetchPlans();
-              }
-          }
-      }
-  }
+            // If "Other" is chosen, replace filters.size with customSize
+            let sizeParam = this.filters.size === 'other' ? this.customSize : this.filters.size;
+
+            let params = new URLSearchParams({
+                ...this.filters,
+                size: sizeParam,
+                page
+            }).toString();
+
+            fetch("{{ route('admin.unique_product_plans.index') }}?" + params, {
+                headers: { 'X-Requested-With': 'XMLHttpRequest' }
+            })
+            .then(res => res.json())
+            .then(data => {
+                this.plans = data.plans;
+                this.pagination = data.pagination;
+                this.loading = false;
+            })
+            .catch(() => this.loading = false);
+        },
+
+        updateSize(event) {
+            if (event.target.value !== 'other') {
+                this.customSize = '';
+                this.fetchPlans();
+            }
+        },
+
+        applyCustomSize() {
+            if (this.customSize) {
+                this.fetchPlans();
+            }
+        },
+
+        changePage(page) {
+            if (page >= 1 && page <= this.pagination.last_page) {
+                this.fetchPlans(page);
+            }
+        }
+    }
+}
+
+
 </script>
