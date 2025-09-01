@@ -4,9 +4,9 @@ use App\Models\SiteImage;
 use App\Models\ProductPlan;
 use App\Models\SiteTemplate;
 use App\Models\AdminColorSetting;
+use App\Models\UniqueProductPlan;
 use App\Http\Middleware\RoleAssess;
 use App\Models\LandingPagesSetting;
-use App\Models\UniqueProductPlan;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Session;
@@ -53,6 +53,7 @@ use App\Http\Controllers\VirtualAccountsController;
 use App\Http\Controllers\UserVerificationController;
 use App\Http\Controllers\CableSubscriptionController;
 use Rap2hpoutre\LaravelLogViewer\LogViewerController;
+use App\Http\Controllers\UniqueProductPlansController;
 use App\Http\Controllers\WalletFundingPromoController;
 use App\Http\Controllers\ProductPlanCategoryController;
 use App\Http\Controllers\ReprocessTransactionController;
@@ -189,7 +190,7 @@ Route::middleware(['set_locale'])->group(function () {
 
 
 
-            Route::get('/test', function (): array {
+            Route::get('/unique-plans', function (): array {
                 //fetch unique plans: network, size, validity
                 $productplans = ProductPlan::all();
 
@@ -277,10 +278,14 @@ Route::middleware(['set_locale'])->group(function () {
                 // dd('test');
             });
 
+            Route::get('/test', function (): array {
+                //fetch unique plans: network, size, validity
+                dd('test');
+            });
+
             Route::get('/test2', function (): array {
                 //fetch unique plans: network, size, validity
                 $generalproductplans = UniqueProductPlan::all();
-
 
                 $checkunique = UniqueProductPlan::latest()->first();
                 $lastkey = $checkunique->api_id ?? 0;
@@ -561,6 +566,7 @@ Route::middleware(['set_locale'])->group(function () {
 
 
 
+            Route::middleware(['auth','verified','admin'])->get('admin/unique_product_plans', [UniqueProductPlansController::class, 'index'])->name('admin.unique_product_plans.index');
             Route::middleware(['auth','verified','admin'])->get('admin/product_plans', [ProductPlanController::class, 'index'])->name('admin.product_plans.index');
             Route::middleware(['auth','verified','admin'])->get('admin/product_plans/product_plan_details/{id}', [ProductPlanController::class, 'product_plan_details'])->name('admin.product_plans.product_plan_details');
             Route::middleware(['auth','verified','admin'])->post('admin/product_plans/store', [ProductPlanController::class, 'store'])->name('admin.product_plans.store');
