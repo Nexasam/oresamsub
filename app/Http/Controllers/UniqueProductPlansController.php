@@ -49,7 +49,9 @@ class UniqueProductPlansController extends Controller
             $dataa= [];
         }
 
-        return view('admin.unique_product_plans.index')->with($data);
+        $dat['data'] = $data;
+
+        return view('admin.unique_product_plans.index')->with($dat);
 
     }
 }
