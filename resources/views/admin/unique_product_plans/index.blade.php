@@ -96,108 +96,107 @@
                                         </div>
                                     
                                         <!-- Results Table -->
-                                        <table class="table-auto w-full border-collapse border">
-                                            <thead class="bg-gray-200">
-                                                <tr>
-                                                    <th class="border px-3 py-2">Unique Plan</th>
-                                                    <th class="border px-3 py-2">Product Plan</th>
-                                                    <th class="border px-3 py-2">Size (MB)</th>
-                                                    <th class="border px-3 py-2">Validity (days)</th>
-                                                    <th class="border px-3 py-2">Network</th>
-                                                    <th class="border px-3 py-2">Automation</th>
-                                                    <th class="border px-3 py-2">Visible</th>
-                                                </tr>
-                                            </thead>
-                                            {{-- <tbody>
-                                                <template x-for="plan in plans" :key="plan.unique_plan">
-                                                    <template x-for="automation in plan.automations" :key="automation.product_plan">
-                                                        <tr>
-                                                            <td class="border px-3 py-2" x-text="plan.unique_plan"></td>
-                                                            <td class="border px-3 py-2" x-text="automation.product_plan"></td>
-                                                            <td class="border px-3 py-2" x-text="automation.size"></td>
-                                                            <td class="border px-3 py-2" x-text="automation.validity"></td>
-                                                            <td class="border px-3 py-2" x-text="automation.network"></td>
-                                                            <td class="border px-3 py-2" x-text="automation.automation"></td>
-                                                            <td class="border px-3 py-2" x-text="automation.visibility == 1 ? 'Yes' : 'No'"></td>
-                                                        </tr>
+                                              <!-- Results Table -->
+                                      <table class="table-auto w-full border-collapse border">
+                                        <thead class="bg-gray-200">
+                                            <tr>
+                                                <th class="border px-3 py-2 text-left">Unique Plan</th>
+                                                <th class="border px-3 py-2 text-left">Product Plan</th>
+                                                <th class="border px-3 py-2 text-left">Size (MB)</th>
+                                                <th class="border px-3 py-2 text-left">Validity (days)</th>
+                                                <th class="border px-3 py-2 text-left">Network</th>
+                                                <th class="border px-3 py-2 text-left">Automation</th>
+                                                <th class="border px-3 py-2 text-left">Visible</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <!-- Loop through plans; pIndex used to toggle show state -->
+                                            <template x-for="(plan, pIndex) in plans" :key="pIndex">
+                                                <template>
+                                                    <!-- Unique Plan header (click to toggle) -->
+                                                    <tr class="bg-gray-100 cursor-pointer hover:bg-gray-50" @click="plans[pIndex].show = !plans[pIndex].show">
+                                                        <td class="border px-3 py-2 font-semibold text-gray-800" x-text="plan.unique_plan"></td>
+                                                        <td class="border px-3 py-2 text-right" colspan="6">
+                                                            <span class="inline-flex items-center gap-2 text-sm text-gray-600">
+                                                                <svg x-show="plans[pIndex].show" xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4" />
+                                                                </svg>
+                                                                <svg x-show="!plans[pIndex].show" xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16M4 12h16" />
+                                                                </svg>
+                                                                <span x-text="plans[pIndex].show ? 'Hide associated plans' : 'Show associated plans'"></span>
+                                                            </span>
+                                                        </td>
+                                                    </tr>
+
+                                                    <!-- Automations (visible when show === true) -->
+                                                    <template x-if="plans[pIndex].show">
+                                                        <template x-if="plan.automations && plan.automations.length > 0">
+                                                            <template x-for="(automation, aIndex) in plan.automations" :key="aIndex">
+                                                                <tr class="hover:bg-gray-50">
+                                                                    <!-- First column is a small arrow to indicate child row -->
+                                                                    <td class="border px-3 py-2 text-sm text-gray-500">↳</td>
+
+                                                                    <td class="border px-3 py-2" x-text="automation.product_plan"></td>
+                                                                    <td class="border px-3 py-2" x-text="automation.size"></td>
+                                                                    <td class="border px-3 py-2" x-text="automation.validity"></td>
+                                                                    <td class="border px-3 py-2" x-text="automation.network"></td>
+                                                                    <td class="border px-3 py-2" x-text="automation.automation"></td>
+                                                                    <td class="border px-3 py-2">
+                                                                        <span class="px-2 py-1 rounded text-xs"
+                                                                              :class="Number(automation.visibility) === 1 ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'"
+                                                                              x-text="Number(automation.visibility) === 1 ? 'Yes' : 'No'">
+                                                                        </span>
+                                                                    </td>
+                                                                </tr>
+                                                            </template>
+                                                        </template>
+
+                                                        <!-- If no automations -->
+                                                        <template x-if="!plan.automations || plan.automations.length === 0">
+                                                            <tr>
+                                                                <td class="border px-3 py-2 text-sm text-gray-500">—</td>
+                                                                <td class="border px-3 py-2 italic text-gray-500" colspan="6">No associated plans found.</td>
+                                                            </tr>
+                                                        </template>
                                                     </template>
                                                 </template>
-                                            </tbody> --}}
-
-                                            <tbody>
-                                              <template x-for="(plan, idx) in plans" :key="plan.unique_plan">
-                                                  <tr class="bg-gray-100 cursor-pointer" @click="plan.show = !plan.show" x-data="{ show: true }">
-                                                      <td class="border px-3 py-2 font-bold text-blue-700" x-text="plan.unique_plan"></td>
-                                                      <td colspan="6" class="border px-3 py-2 text-right">
-                                                          <span x-text="show ? '− Hide' : '+ Show'"></span>
-                                                      </td>
-                                                  </tr>
-                                          
-                                                  <template x-if="show">
-                                                      <template x-for="automation in plan.automations" :key="automation.product_plan">
-                                                          <tr>
-                                                              <td class="border px-3 py-2 text-sm italic text-gray-500">↳</td>
-                                                              <td class="border px-3 py-2" x-text="automation.product_plan"></td>
-                                                              <td class="border px-3 py-2" x-text="automation.size"></td>
-                                                              <td class="border px-3 py-2" x-text="automation.validity"></td>
-                                                              <td class="border px-3 py-2" x-text="automation.network"></td>
-                                                              <td class="border px-3 py-2" x-text="automation.automation"></td>
-                                                              <td class="border px-3 py-2" x-text="automation.visibility == 1 ? 'Yes' : 'No'"></td>
-                                                          </tr>
-                                                      </template>
-                                                  </template>
-                                              </template>
-                                          </tbody>
-                                          
-                                          
-
-
-                                        </table>
+                                            </template>
+                                        </tbody>
+                                      </table>
                                     
-                                        <!-- Pagination -->
-                                        {{-- <div class="flex justify-between items-center mt-4" x-show="pagination.last_page > 1">
-                                            <button @click="changePage(pagination.current_page - 1)"
-                                                    :disabled="pagination.current_page === 1"
-                                                    class="px-3 py-1 bg-gray-200 rounded disabled:opacity-50">Prev</button>
                                     
-                                            <span>Page <span x-text="pagination.current_page"></span> of <span x-text="pagination.last_page"></span></span>
+                                    <!-- Numbered, centered pagination -->
+                                    <div class="flex justify-center mt-4 space-x-1" x-show="pagination.last_page > 1">
+                                      <!-- Prev -->
+                                      <button @click="changePage(pagination.current_page - 1)"
+                                              :disabled="pagination.current_page === 1"
+                                              class="px-3 py-1 rounded border bg-gray-100 disabled:opacity-50">
+                                          ‹
+                                      </button>
+
+                                      <!-- Page Numbers (for small-last_page this renders all; we can add ellipsis later if needed) -->
+                                      <template x-for="page in Array.from({length: pagination.last_page}, (_, i) => i + 1)" :key="page">
+                                          <button @click="changePage(page)"
+                                                  class="px-3 py-1 rounded border"
+                                                  :class="page === pagination.current_page ? 'bg-blue-500 text-white' : 'bg-white hover:bg-gray-100'">
+                                              <span x-text="page"></span>
+                                          </button>
+                                      </template>
+
+                                      <!-- Next -->
+                                      <button @click="changePage(pagination.current_page + 1)"
+                                              :disabled="pagination.current_page === pagination.last_page"
+                                              class="px-3 py-1 rounded border bg-gray-100 disabled:opacity-50">
+                                          ›
+                                      </button>
+                                    </div>
+
+                                    <!-- Loading -->
+                                    <div x-show="loading" class="mt-3 text-blue-600">Loading...</div>
                                     
-                                            <button @click="changePage(pagination.current_page + 1)"
-                                                    :disabled="pagination.current_page === pagination.last_page"
-                                                    class="px-3 py-1 bg-gray-200 rounded disabled:opacity-50">Next</button>
-                                        </div>
-                                        --}}
-                                        
-                                        <!-- Pagination -->
-                                      <div class="flex justify-center mt-4 space-x-1" x-show="pagination.last_page > 1">
-                                        <!-- Prev -->
-                                        <button @click="changePage(pagination.current_page - 1)"
-                                                :disabled="pagination.current_page === 1"
-                                                class="px-3 py-1 rounded border bg-gray-100 disabled:opacity-50">
-                                            ‹
-                                        </button>
-
-                                        <!-- Page Numbers -->
-                                        <template x-for="page in Array.from({length: pagination.last_page}, (_, i) => i + 1)" :key="page">
-                                            <button @click="changePage(page)"
-                                                    class="px-3 py-1 rounded border"
-                                                    :class="page === pagination.current_page ? 'bg-blue-500 text-white' : 'bg-white hover:bg-gray-100'">
-                                                <span x-text="page"></span>
-                                            </button>
-                                        </template>
-
-                                        <!-- Next -->
-                                        <button @click="changePage(pagination.current_page + 1)"
-                                                :disabled="pagination.current_page === pagination.last_page"
-                                                class="px-3 py-1 rounded border bg-gray-100 disabled:opacity-50">
-                                            ›
-                                        </button>
-                                      </div>
-
-                                        
-                                        
-                                        <!-- Loading -->
-                                        <div x-show="loading" class="mt-3 text-blue-600">Loading...</div>
+                                    
+                                    
                                     </div>
 
 
