@@ -305,8 +305,8 @@ Route::middleware(['set_locale'])->group(function () {
                     //@tlest there should be one...
                     if(count($associated_automationplans) > 0){
                         foreach($associated_automationplans as $key=>$associated_automationplan){
-                            $getnetworkid = $associated_automationplan->product_plan_category->network->id;
-                            $productid = $associated_automationplan->product_plan_category->product->id;
+                            $getnetworkid = $associated_automationplan->product_plan_category->network->id ?? 'nil';
+                            $productid = $associated_automationplan->product_plan_category->product->id ?? 'nil';
                             if($getnetworkid == $network_id && $productid == $product_id){
                                 $dataa[$key]['pl'] = $associated_automationplan->product_plan_name.PHP_EOL;
                                 $dataa[$key]['size'] = $associated_automationplan->data_size_in_mb.PHP_EOL;
