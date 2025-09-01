@@ -82,7 +82,7 @@ class UniqueProductPlansController extends Controller
         }
 
         $data = (object) $data;
-        // return $data;
+        return $data;
 
         return DataTables::of($data)
         ->addIndexColumn()
