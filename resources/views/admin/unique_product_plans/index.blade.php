@@ -125,43 +125,33 @@
 
 
                    <!-- Pricing Modal -->
-                  <div id="pricingModal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-                    <div class="bg-white rounded-lg shadow-lg w-full max-w-lg p-6">
-                      <h2 class="text-lg font-semibold mb-4">Set User Pricing</h2>
-
-                      <div class="mb-3">
-                        <label class="block text-sm font-medium text-gray-700">Cost Price</label>
-                        <input id="costPrice" type="text" readonly 
-                              class="mt-1 w-full border rounded px-3 py-2 bg-gray-100 text-gray-600">
-                      </div>
-
-                      <div class="grid grid-cols-2 gap-3">
-                        @for ($i = 1; $i <= 12; $i++)
-                          <div>
-                            <label class="text-xs font-medium text-gray-600">Price {{ $i }}</label>
-                            <input type="number" name="pricing[]" class="w-full border rounded px-2 py-1 text-sm" />
-                          </div>
-                        @endfor
-                      </div>
-
-                      <div class="flex justify-end mt-4 space-x-2">
-                        <button onclick="closePricingModal()" 
-                                class="px-3 py-1 text-sm bg-gray-200 rounded hover:bg-gray-300">
-                          Cancel
-                        </button>
-                        <button id="savePricingBtn" 
-                                class="px-3 py-1 text-sm bg-indigo-600 text-white rounded hover:bg-indigo-700">
-                          Save
-                        </button>
-                      </div>
+                    <div id="pricingModal" class="hidden fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+                    <div class="bg-white p-6 rounded-lg shadow-lg w-96">
+                        <h2 class="text-lg font-semibold mb-4">Manage Plan Pricing</h2>
+                        <form id="pricingForm">
+                            @csrf
+                            <input type="hidden" id="planId" name="plan_id">
+                
+                            <div class="mb-3">
+                                <label class="block text-sm font-medium">Cost Price</label>
+                                <input type="number" id="costPrice" name="cost" class="w-full border rounded p-2 bg-gray-100" readonly>
+                            </div>
+                
+                            @for ($i = 1; $i <= 12; $i++)
+                                <div class="mb-3">
+                                    <label class="block text-sm font-medium">Price {{ $i }}</label>
+                                    <input type="number" id="price{{ $i }}" name="price{{ $i }}" class="w-full border rounded p-2">
+                                </div>
+                            @endfor
+                
+                            <div class="flex justify-end space-x-2 mt-4">
+                                <button type="button" onclick="closePricingModal()" class="px-4 py-2 bg-gray-300 rounded">Cancel</button>
+                                <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded">Save</button>
+                            </div>
+                        </form>
                     </div>
-                  </div>
-
-
-
-
-
-
+                   </div>
+      
                   </div>
                 </div>
               </div>
@@ -190,52 +180,6 @@
         <!-- End::row-1 -->
 
 
-        <!-- Start::row-3 -->
-        {{-- <div class="grid grid-cols-12 gap-6">
-          <div class="col-span-12">
-            <div class="box">
-              <div class="box-header">
-                <h5 class="box-title">Reactivity DataTable</h5>
-              </div>
-              <div class="box-body space-y-3">
-                <div class="reactivity-data">
-                  <button type="button" class="ti-btn ti-btn-primary" id="reactivity-add">Add New Row</button>
-                  <button type="button" class="ti-btn ti-btn-primary" id="reactivity-delete">Remove Row</button>
-                  <button type="button" class="ti-btn ti-btn-primary" id="clear">Empty the table</button>
-                  <button type="button" class="ti-btn ti-btn-primary" id="reset">Reset</button>
-                </div>
-                <div class="overflow-hidden table-bordered">
-                  <div id="reactivity-table" class="ti-custom-table ti-striped-table ti-custom-table-hover"></div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div> --}}
-        <!-- End::row-3 -->
-
-        <!-- Start::row-3 -->
-        {{-- <div class="grid grid-cols-12 gap-6">
-          <div class="col-span-12">
-            <div class="box">
-              <div class="box-header">
-                <h5 class="box-title">Download DataTable</h5>
-              </div>
-              <div class="box-body space-y-3">
-                <div class="download-data">
-                    <button type="button" class="ti-btn ti-btn-primary" id="download-csv">Download CSV</button>
-                    <button type="button" class="ti-btn ti-btn-primary" id="download-json">Download JSON</button>
-                    <button type="button" class="ti-btn ti-btn-primary" id="download-xlsx">Download XLSX</button>
-                    <button type="button" class="ti-btn ti-btn-primary" id="download-pdf">Download PDF</button>
-                    <button type="button" class="ti-btn ti-btn-primary" id="download-html">Download HTML</button>
-                </div>
-                <div class="overflow-hidden table-bordered">
-                  <div id="download-table" class="ti-custom-table ti-striped-table ti-custom-table-hover"></div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div> --}}
-        <!-- End::row-3 -->
 
       </div>
       <!-- Start::main-content -->
@@ -246,40 +190,42 @@
 
 @push('scripts')
     <script>
-     function openPricingModal(button) {
-          let id = button.getAttribute("data-id");
-          let cost = button.getAttribute("data-cost");
+      function openPricingModal(button) {
+          // get values from data-attributes
+          document.getElementById("planId").value = button.getAttribute("data-id");
+          document.getElementById("costPrice").value = button.getAttribute("data-cost");
 
-          // Fill modal values
-          document.getElementById("costPrice").value = cost;
+          for (let i = 1; i <= 12; i++) {
+              let priceVal = button.getAttribute("data-price-" + i);
+              document.getElementById("price" + i).value = priceVal || "";
+          }
+
+          // show modal
           document.getElementById("pricingModal").classList.remove("hidden");
-
-          // Save button handler
-          document.getElementById("savePricingBtn").onclick = function() {
-              let pricings = [];
-              document.querySelectorAll("#pricingModal input[name='pricing[]']").forEach(el => {
-                  pricings.push(el.value);
-              });
-
-              // Example AJAX
-              // $.ajax({
-              //     url: "/admin/set-pricing/" + id,
-              //     method: "POST",
-              //     data: {
-              //         _token: "{{ csrf_token() }}",
-              //         pricings: pricings
-              //     },
-              //     success: function(resp) {
-              //         alert("Pricing saved!");
-              //         closePricingModal();
-              //     }
-              // });
-          };
       }
 
       function closePricingModal() {
           document.getElementById("pricingModal").classList.add("hidden");
       }
+
+      // handle submit
+      document.getElementById("pricingForm").addEventListener("submit", function(e) {
+          e.preventDefault();
+
+          let formData = new FormData(this);
+
+          // fetch("{{ route('admin.save-pricing') }}", {
+          //     method: "POST",
+          //     body: formData
+          // })
+          // .then(res => res.json())
+          // .then(data => {
+          //     alert(data.message);
+          //     closePricingModal();
+          //     $('#yourDatatableId').DataTable().ajax.reload();
+          // })
+          // .catch(err => console.error(err));
+      });
 
     </script> 
 @endpush

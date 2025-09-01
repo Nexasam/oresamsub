@@ -100,14 +100,25 @@ class UniqueProductPlansController extends Controller
         })
         ->addColumn('product_id',function($datad){
             $unique_plan = $datad['unique_plan'];
-            
+            $price_1 = $datad['price_1'];
+            $price_2 = $datad['price_2'];
+            $price_3 = $datad['price_3'];
+            $price_4 = $datad['price_4'];
+            $price_5 = $datad['price_5'];
+            $price_6 = $datad['price_6'];
+            $price_7 = $datad['price_7'];
+            $price_8 = $datad['price_8'];
+            $price_9 = $datad['price_9'];
+            $price_10 = $datad['price_10'];
+            $price_11 = $datad['price_11'];
+            $price_12 = $datad['price_12'];
+           
 
             $id = $datad['id'];
             $unique_plan = htmlspecialchars($datad['unique_plan'], ENT_QUOTES, 'UTF-8');
             $cost_price = htmlspecialchars($datad['cost_price'] ?? '0', ENT_QUOTES, 'UTF-8'); // assuming cost_price field exists
-
+          
             // return '
-
             //     <button 
             //         class="px-3 py-1 text-xs bg-indigo-600 text-white rounded hover:bg-indigo-700"
             //         onclick="openPricingModal(' . $id . ', \'' . $unique_plan . '\', \'' . $cost_price . '\')">
@@ -121,6 +132,18 @@ class UniqueProductPlansController extends Controller
                 class="px-3 py-1 text-xs font-medium text-white bg-indigo-600 rounded hover:bg-indigo-700 focus:outline-none"
                 data-id="'.$id.'" 
                 data-cost="'.$cost_price.'" 
+                data-price-1="'.$price_1.'" 
+                data-price-2="'.$price_2.'" 
+                data-price-3="'.$price_3.'" 
+                data-price-4="'.$price_4.'" 
+                data-price-5="'.$price_5.'" 
+                data-price-6="'.$price_6.'" 
+                data-price-7="'.$price_7.'" 
+                data-price-8="'.$price_8.'" 
+                data-price-9="'.$price_9.'" 
+                data-price-10="'.$price_10.'" 
+                data-price-11="'.$price_11.'" 
+                data-price-12="'.$price_12.'" 
                 onclick="openPricingModal(this)">
               Manage Pricing
             </button>
