@@ -84,7 +84,7 @@ class UniqueProductPlansController extends Controller
         //     ]);
         // }
     
-        return view('admin.unique_product_plans.index', compact('data'));
+        return view('admin.unique_product_plans.index');
     }
 
 
@@ -152,64 +152,32 @@ class UniqueProductPlansController extends Controller
             $data[$keyy]['automations'] = $dataa;
         }
 
-
         $data = (object) $data;
+        // return $data;
 
-        return $data;
- 
         return DataTables::of($data)
         ->addIndexColumn()
         ->addColumn('DT_RowIndex',function($data){
         return $data->id;
         })
-        ->addColumn('user_id',function($data){
-            $first_name = $data->user->first_name  ?? 'nil';
-            $last_name = $data->user->last_name  ?? 'nil';
-            $phone_number = $data->user->phone_number  ?? 'nil';
-            $user_details =  $first_name.'<br>'.$last_name.'<br>'.$phone_number.'<br>';
-            return $user_details;
+        ->addColumn('product_id',function($data){
+            return $data->product_id;
         })
-        ->addColumn('transaction_id',function($data){
-           return $data->transaction_id;
+        ->addColumn('size',function($data){
+           return $data->size;
         })
-        ->addColumn('action_by',function($data){
-            $first_name = $data->actionBy->first_name  ?? 'nil';
-            $last_name = $data->actionBy->last_name  ?? 'nil';
-            $phone_number = $data->actionBy->phone_number  ?? 'nil';
-            $user_details =  $first_name.'<br>'.$last_name.'<br>'.$phone_number.'<br>';
-            return $user_details;
-        })
-        ->addColumn('transaction_category',function($data){
-            return $data->transaction_category;
+        ->addColumn('validity',function($data){
+            return $data->validity;
          })
-         ->addColumn('balance_before',function($data){
-            return '₦' . number_format($data->balance_before, 2);
-
+        ->addColumn('network_id',function($data){
+            return $data->network_id;
          })
-         ->addColumn('balance_after',function($data){
-            // return $data->balance_after;
-            return '₦' . number_format($data->balance_after, 2);
-
-
+        ->addColumn('automation',function($data){
+            return $data->automation;
          })
-    
-         ->addColumn('description',function($data){
-            return $data->description;
-         })
-     
-        ->addColumn('created_at',function($data){
-            $cat = $data->created_at;
-          
-
-            return $cat;
-        }) 
-        ->addColumn('action',function($data){
-            // $route = route('transactions.transaction_details',$data->id);
-            // $actionBtn = '<a href="'.$route.'" type="button" class="hs-dropdown-toggle ti-btn ti-btn-primary" data-hs-overlay="#hs-vertically-centered-scrollable-modal'.$data->email.'">
-            // Details
-            // </a>';
-            return '';
-        })
+         ->addColumn('visibility',function($data){
+            return $data->visibility;
+         })     
         ->escapeColumns([])
         ->make(true);
 
