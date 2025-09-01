@@ -262,18 +262,18 @@
               });
 
               // Example AJAX
-              $.ajax({
-                  url: "/admin/set-pricing/" + id,
-                  method: "POST",
-                  data: {
-                      _token: "{{ csrf_token() }}",
-                      pricings: pricings
-                  },
-                  success: function(resp) {
-                      alert("Pricing saved!");
-                      closePricingModal();
-                  }
-              });
+              // $.ajax({
+              //     url: "/admin/set-pricing/" + id,
+              //     method: "POST",
+              //     data: {
+              //         _token: "{{ csrf_token() }}",
+              //         pricings: pricings
+              //     },
+              //     success: function(resp) {
+              //         alert("Pricing saved!");
+              //         closePricingModal();
+              //     }
+              // });
           };
       }
 
