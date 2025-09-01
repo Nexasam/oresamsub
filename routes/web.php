@@ -307,15 +307,15 @@ Route::middleware(['set_locale'])->group(function () {
                             $getnetworkid = $associated_automationplan->product_plan_category->network->id;
                             $productid = $associated_automationplan->product_plan_category->product->id;
                             if($getnetworkid == $network_id && $productid == $product_id){
-                                $mess .= $associated_automationplan->product_plan_name.'<br>';
-                                $mess .= $associated_automationplan->data_size_in_mb.'<br>';
-                                $mess .= $associated_automationplan->validity_in_days.'<br>';
-                                $mess .= $associated_automationplan->automation->automation_name.'<br>';
+                                $mess .= $associated_automationplan->product_plan_name.PHP_EOL;
+                                $mess .= $associated_automationplan->data_size_in_mb.PHP_EOL;
+                                $mess .= $associated_automationplan->validity_in_days.PHP_EOL;
+                                $mess .= $associated_automationplan->automation->automation_name.PHP_EOL;
                             }     
                         }  
                     }  
                     
-                     $mess .= '<hr><hr>';
+                     $mess .= PHP_EOL;
                 }
 
 
