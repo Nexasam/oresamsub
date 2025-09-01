@@ -110,7 +110,7 @@ class UniqueProductPlansController extends Controller
             return $data['network_id'];
          })
         ->addColumn('automation',function($data){
-           $aut = $data['automations'];
+           $aut = json_decode($data['automations'],true);
            foreach($aut as $a){
             $aaa[] = $a['product_plan']['automation'];
            }
