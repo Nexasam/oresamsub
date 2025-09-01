@@ -200,7 +200,6 @@ document.addEventListener('alpine:init', () => {
         costPrice: 0,
         prices: Array(12).fill(''),
         loading: false,
-
         openModal(id, planName, costPrice, pricesArray) {
             this.planId = id;
             this.planName = planName;
@@ -208,7 +207,6 @@ document.addEventListener('alpine:init', () => {
             this.prices = pricesArray || Array(12).fill('');
             this.open = true;
         },
-
         closeModal() {
             this.open = false;
         },
@@ -250,7 +248,15 @@ document.addEventListener('alpine:init', () => {
                 alert('Something went wrong!');
             });
         }
-    });
+      });
 });
+
+
+
+// Global JS function to open modal from dynamically generated buttons
+function openPricingModal(id, planName, costPrice, pricesArray) {
+    Alpine.store('pricingModal').openModal(id, planName, costPrice, pricesArray);
+}
+
 </script>
 @endpush
