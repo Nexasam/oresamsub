@@ -302,7 +302,7 @@ Route::middleware(['set_locale'])->group(function () {
 
                     $data[$keyy]['unique'] = $productplan->product_plan_name;
                     //@tlest there should be one...
-                    if(count($associated_automationplans) <= 0){
+                    if(count($associated_automationplans) > 0){
                         foreach($associated_automationplans as $key=>$associated_automationplan){
                             $getnetworkid = $associated_automationplan->product_plan_category->network->id;
                             $productid = $associated_automationplan->product_plan_category->product->id;
