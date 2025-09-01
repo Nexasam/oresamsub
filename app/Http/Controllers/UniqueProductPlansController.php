@@ -124,20 +124,47 @@ class UniqueProductPlansController extends Controller
                 return '<span class="text-gray-400 italic">No automation</span>';
             }
         
+            // Build rows
             $rows = [];
             foreach ($datad['automations'] as $a) {
                 $rows[] = '
-                    <span class="inline-block m-1 px-3 py-1 text-xs font-medium rounded-full bg-blue-100 text-blue-800 shadow-sm">
-                        '.$a['automation'].'
+                    <div class="px-2 py-1 my-1 rounded bg-blue-50 text-blue-700 text-xs">
+                        '.$a['automation'].' 
                         <span class="ml-1 text-gray-600">
                             ('.$a['network'].' · '.$a['size'].'MB · '.$a['validity'].'d)
                         </span>
-                    </span>
+                    </div>
                 ';
             }
         
-            return implode('', $rows);
+            // Summary (first automation only)
+            $first = $datad['automations'][0];
+            $summary = '
+                <span class="inline-flex items-center px-2 py-1 text-xs font-medium rounded bg-blue-100 text-blue-800">
+                    '.$first['automation'].' ('.$first['network'].')
+                </span>
+            ';
+        
+            // Alpine.js toggle container
+            return '
+                <div x-data="{ open: false }" class="space-y-1">
+                    <div>
+                        '.$summary.'
+                        '.(count($datad['automations']) > 1 ? '
+                            <button @click="open = !open" 
+                                class="ml-2 text-xs text-indigo-600 hover:underline focus:outline-none">
+                                <span x-show="!open">+'.(count($datad['automations'])-1).' more</span>
+                                <span x-show="open">Hide</span>
+                            </button>
+                        ' : '').'
+                    </div>
+                    <div x-show="open" class="mt-1 space-y-1">
+                        '.implode('', $rows).'
+                    </div>
+                </div>
+            ';
         })
+        
         ->escapeColumns([])
         ->make(true);
 
