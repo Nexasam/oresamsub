@@ -11,4 +11,12 @@ class UniqueProductPlan extends Model
 
     protected $guarded = [];
 
+    public function product(){
+        return $this->belongsTo(Product::class,'product_id','id');
+    }
+
+    public function network(){
+        return $this->belongsTo(Network::class,'network_id','id');
+    }
+
 }

@@ -58,8 +58,8 @@ class UniqueProductPlansController extends Controller
 
             $data[$keyy]['id'] = $productplan->id;
             $data[$keyy]['unique_plan'] = $productplan->product_plan_name;
-            $data[$keyy]['product_id'] = $productplan->product_id;
-            $data[$keyy]['network_id'] = $productplan->network_id;
+            $data[$keyy]['product_id'] = $productplan->product->product_id;
+            $data[$keyy]['network_id'] = $productplan->network->network_id;
             $data[$keyy]['data_size_in_mb'] = $productplan->data_size_in_mb;
             $data[$keyy]['validity_in_days'] = $productplan->validity_in_days;
             $data[$keyy]['visibility'] = $productplan->visibility;
@@ -110,20 +110,34 @@ class UniqueProductPlansController extends Controller
             return $datad['network_id'];
          })
          ->addColumn('automations', function ($datad) {
-            // $rows = [];
+            $rows = [];
         
-            // foreach ($datad['automations'] as $a) {
-            //     $rows[] = $a['automation'] . ' (' . $a['network'] . ', ' . $a['size'] . 'MB, ' . $a['validity'] . ' day(s))';
-            // }
+            foreach ($datad['automations'] as $a) {
+                $rows[] = $a['automation'] . ' (' . $a['network'] . ', ' . $a['size'] . 'MB, ' . $a['validity'] . ' day(s))';
+            }
         
-            // return implode('<br>', $rows); // show each on new line
-            return 1;
+            return implode('<br>', $rows); // show each on new line
+        
         })
-         ->addColumn('visibility',function($datad){
-           $visibility = $datad['visibility'];
-
-           return $visibility;
-         })     
+        ->addColumn('automations', function ($datad) {
+            if (empty($datad['automations'])) {
+                return '<span class="text-gray-400 italic">No automation</span>';
+            }
+        
+            $rows = [];
+            foreach ($datad['automations'] as $a) {
+                $rows[] = '
+                    <span class="inline-block m-1 px-3 py-1 text-xs font-medium rounded-full bg-blue-100 text-blue-800 shadow-sm">
+                        '.$a['automation'].'
+                        <span class="ml-1 text-gray-600">
+                            ('.$a['network'].' · '.$a['size'].'MB · '.$a['validity'].'d)
+                        </span>
+                    </span>
+                ';
+            }
+        
+            return implode('', $rows);
+        })
         ->escapeColumns([])
         ->make(true);
 
