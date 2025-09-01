@@ -245,6 +245,7 @@ class UniqueProductPlansController extends Controller
 
     public function save_unique_plan_pricing(Request $request){
         return response()->json([
+            'success' =>true,
             'message' => 'test'
         ]);
     }
