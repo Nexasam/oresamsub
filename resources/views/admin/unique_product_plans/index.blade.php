@@ -162,69 +162,7 @@
                   </div>   
                   
                   
-                  <script>
-                    function pricingModalComponent() {
-                        return {
-                            open: false,
-                            planId: null,
-                            title: '',
-                            costPrice: 0,
-                            prices: Array(12).fill(''),
-                    
-                            openModal(button) {
-                                this.planId = button.dataset.id;
-                                this.costPrice = button.dataset.cost;
-                                this.title = `Manage Pricing for: ${button.dataset.planName}`;
-                    
-                                for (let i = 1; i <= 12; i++) {
-                                    this.prices[i-1] = button.dataset[`price${i}`] || '';
-                                }
-                    
-                                this.open = true;
-                            },
-                    
-                            savePricing() {
-                                this.loading = true;
-
-                                let formData = new FormData();
-                                formData.append('plan_id', this.planId);
-                                formData.append('cost', this.costPrice);
-                                
-                                this.prices.forEach((price, index) => {
-                                    formData.append(`price${index+1}`, price);
-                                });
-
-                                // CSRF token (Laravel)
-                                formData.append('_token', document.querySelector('meta[name="csrf-token"]').getAttribute('content'));
-
-                                fetch({{route('admin.save_unique_plan_pricing')}}, {
-                                    method: 'POST',
-                                    body: formData
-                                })
-                                .then(res => res.json())
-                                .then(data => {
-                                    this.loading = false;
-                                    if (data.success) {
-                                        alert('Pricing updated successfully!');
-                                        this.open = false;
-                                        // optionally refresh your DataTable
-                                        if (window.LaravelDataTables) {
-                                            window.LaravelDataTables['plans-table'].ajax.reload(null, false);
-                                        }
-                                    } else {
-                                        alert('Error: ' + (data.message || 'Unknown error'));
-                                    }
-                                })
-                                .catch(err => {
-                                    this.loading = false;
-                                    console.error(err);
-                                    alert('Something went wrong!');
-                                });
-                            }
-
-                        }
-                    }
-                    </script>
+                 
 
 
 
@@ -252,61 +190,67 @@
 
 
 @push('scripts')
-    <script>
+<script>
+  function pricingModalComponent() {
+      return {
+          open: false,
+          planId: null,
+          title: '',
+          costPrice: 0,
+          prices: Array(12).fill(''),
+  
+          openModal(button) {
+              this.planId = button.dataset.id;
+              this.costPrice = button.dataset.cost;
+              this.title = `Manage Pricing for: ${button.dataset.planName}`;
+  
+              for (let i = 1; i <= 12; i++) {
+                  this.prices[i-1] = button.dataset[`price${i}`] || '';
+              }
+  
+              this.open = true;
+          },
+  
+          savePricing() {
+              this.loading = true;
 
-        function closeModalOnOutsideClick(event) {
-            // Check if click is on the overlay, not inside the modal content
-            if (event.target.id === 'pricingModal') {
-                closePricingModal();
-            }
-        }
+              let formData = new FormData();
+              formData.append('plan_id', this.planId);
+              formData.append('cost', this.costPrice);
+              
+              this.prices.forEach((price, index) => {
+                  formData.append(`price${index+1}`, price);
+              });
 
-        function openPricingModal(button) {
-          // Get plan info from button data attributes
-          let planId = button.getAttribute("data-id");
-          let costPrice = button.getAttribute("data-cost");
-          let planName = button.getAttribute("data-plan-name"); // NEW: unique plan name
+              // CSRF token (Laravel)
+              formData.append('_token', document.querySelector('meta[name="csrf-token"]').getAttribute('content'));
 
-          // Set the modal title dynamically
-          document.getElementById("pricingModalTitle").textContent = 
-              `Manage Pricing for: ${planName}`;
-
-          // Set hidden input and cost
-          document.getElementById("planId").value = planId;
-          document.getElementById("costPrice").value = costPrice;
-
-          // Populate pricing fields
-          for (let i = 1; i <= 12; i++) {
-              let price = button.getAttribute(`data-price-${i}`) || '';
-              document.getElementById(`price${i}`).value = price;
+              fetch({{route('admin.save_unique_plan_pricing')}}, {
+                  method: 'POST',
+                  body: formData
+              })
+              .then(res => res.json())
+              .then(data => {
+                  this.loading = false;
+                  if (data.success) {
+                      alert('Pricing updated successfully!');
+                      this.open = false;
+                      // optionally refresh your DataTable
+                      if (window.LaravelDataTables) {
+                          window.LaravelDataTables['plans-table'].ajax.reload(null, false);
+                      }
+                  } else {
+                      alert('Error: ' + (data.message || 'Unknown error'));
+                  }
+              })
+              .catch(err => {
+                  this.loading = false;
+                  console.error(err);
+                  alert('Something went wrong!');
+              });
           }
 
-          // Show the modal
-          document.getElementById("pricingModal").classList.remove("hidden");
       }
-
-      function closePricingModal() {
-          document.getElementById("pricingModal").classList.add("hidden");
-      }
-
-      // handle submit
-      document.getElementById("pricingForm").addEventListener("submit", function(e) {
-          e.preventDefault();
-
-          let formData = new FormData(this);
-
-          fetch("{{ route('admin.save_unique_plan_pricing') }}", {
-              method: "POST",
-              body: formData
-          })
-          .then(res => res.json())
-          .then(data => {
-              alert(data.message);
-              closePricingModal();
-              $('#admin_unique_product_plans_table').DataTable().ajax.reload();
-          })
-          .catch(err => console.error(err));
-      });
-
-    </script> 
+  }
+  </script>
 @endpush
