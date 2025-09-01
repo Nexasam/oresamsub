@@ -236,7 +236,7 @@
                     this.open = false;
 
                     // Refresh DataTable if exists
-                    if (window.LaravelDataTables && window.LaravelDataTables['plans-table']) {
+                    if (window.LaravelDataTables && window.LaravelDataTables['admin_unique_product_plans_table']) {
                         window.LaravelDataTables['plans-table'].ajax.reload(null, false);
                     }
                 } else {
