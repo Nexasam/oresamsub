@@ -63,6 +63,7 @@ class UniqueProductPlansController extends Controller
             $data[$keyy]['data_size_in_mb'] = $productplan->data_size_in_mb;
             $data[$keyy]['validity_in_days'] = $productplan->validity_in_days;
             $data[$keyy]['visibility'] = $productplan->visibility;
+            $data[$keyy]['cost_price'] = $productplan->cost_price;
             
             
             $dataa = [];
@@ -99,6 +100,7 @@ class UniqueProductPlansController extends Controller
         })
         ->addColumn('product_id',function($datad){
             $unique_plan = $datad['unique_plan'];
+            
 
             $id = $datad['id'];
             $unique_plan = htmlspecialchars($datad['unique_plan'], ENT_QUOTES, 'UTF-8');
