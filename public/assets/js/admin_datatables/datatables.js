@@ -245,7 +245,7 @@ $(document).ready(function(){
                 bInfo: false,
                 bLengthChange: true,
                 pageLength: 10,
-                ajax: root_url + 'admin/unique_product_plans/admin_fetch_unique_product_plans?date_from='+date_from+'&&date_to='+date_to+'&&product_plan_category_filter='+product_plan_category_filter+'&&phone_recharged='+phone_recharged,
+                ajax: root_url + 'admin/unique_product_plans/fetch?date_from='+date_from+'&&date_to='+date_to+'&&product_plan_category_filter='+product_plan_category_filter+'&&phone_recharged='+phone_recharged,
                 columns: [
                   {data: 'DT_RowIndex', name: 'DT_RowIndex'},
                   {data: 'product_id', name: 'product_id'},
