@@ -56,6 +56,9 @@ class UniqueProductPlansController extends Controller
                 ->where('data_size_in_mb', $size)
                 ->get();
 
+            $data[$keyy]['id'] = $productplan->id;
+            $data[$keyy]['product_id'] = $productplan->product_id;
+            $data[$keyy]['network_id'] = $productplan->network_id;
             $data[$keyy]['unique_plan'] = $productplan->product_plan_name;
             $dataa = [];
 
