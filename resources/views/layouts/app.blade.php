@@ -29,7 +29,9 @@
     
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="csrf_token" content="{{ csrf_token() }}">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <meta name="save-pricing-route" content="{{ route('admin.save_unique_plan_pricing') }}">
+    
     <title> Dashboard - {{ env('APP_NAME') }} </title>
     <meta name="description" content="We are a data website selling data related products at affordable prices with quality">
     <meta name="keywords" content="data purchase, mtn, airtel, utility bills, cable subscription">
@@ -77,6 +79,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap" rel="stylesheet">
+
+
 
     @php
        $admin_site_color =  App\Models\AdminColorSetting::where('color_name','admin_site_color')->first();

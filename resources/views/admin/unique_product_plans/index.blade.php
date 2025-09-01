@@ -152,6 +152,8 @@
                                 </template>
                             </div>
 
+
+
                             <div class="flex justify-end space-x-2 mt-6">
                                 <button type="button" @click="$store.pricingModal.closeModal()" class="px-4 py-2 bg-gray-300 rounded">Cancel</button>
                                 <button type="submit"
@@ -206,7 +208,8 @@
 
 @push('scripts')
 <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
-<meta name="csrf-token" content="{{ csrf_token() }}">
+
+
 
 <script>
 document.addEventListener('alpine:init', () => {
