@@ -251,6 +251,7 @@ document.addEventListener('alpine:init', () => {
             .then(res => res.json())
             .then(data => {
                 this.loading = false;
+                alert('aa');
                 if (data.success) {
                     alert('Pricing updated successfully!');
                     this.open = false;
