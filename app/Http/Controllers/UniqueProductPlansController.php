@@ -116,12 +116,13 @@ class UniqueProductPlansController extends Controller
             // ';
 
             return '
+            '.$unique_plan.' <br>
             <button 
                 class="px-3 py-1 text-xs font-medium text-white bg-indigo-600 rounded hover:bg-indigo-700 focus:outline-none"
                 data-id="'.$id.'" 
                 data-cost="'.$cost_price.'" 
                 onclick="openPricingModal(this)">
-              Set Pricing
+              Manage Pricing
             </button>
           ';
 
