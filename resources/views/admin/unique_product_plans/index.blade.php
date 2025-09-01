@@ -233,32 +233,32 @@
 @endsection
 
 
-<script>
-function openPricingModal(id, name, costPrice) {
-    const modal = document.getElementById('pricingModal');
-    const alpine = Alpine.$data(modal);
+@push('scripts')
+    <script>
+          function openPricingModal(id, name, costPrice) {
+          const modal = document.getElementById('pricingModal');
+          const alpine = Alpine.$data(modal);
 
-    alpine.open = true;
-    alpine.planId = id;
-    alpine.planName = name;
-    alpine.costPrice = costPrice;
-    alpine.pricing = {}; // reset inputs
-}
+          alpine.open = true;
+          alpine.planId = id;
+          alpine.planName = name;
+          alpine.costPrice = costPrice;
+          alpine.pricing = {}; // reset inputs
+      }
 
-// Example save function (AJAX)
-function savePricing() {
-    const modal = document.getElementById('pricingModal');
-    const alpine = Alpine.$data(modal);
+      // Example save function (AJAX)
+      function savePricing() {
+          const modal = document.getElementById('pricingModal');
+          const alpine = Alpine.$data(modal);
 
-    fetch(`/admin/unique-plans/${alpine.planId}/pricing`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': '{{ csrf_token() }}' },
-        body: JSON.stringify({ pricing: alpine.pricing })
-    }).then(res => res.json()).then(res => {
-        alert('Pricing saved!');
-        alpine.open = false;
-    });
-}
-
-</script>
-
+          fetch(`/admin/unique-plans/${alpine.planId}/pricing`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': '{{ csrf_token() }}' },
+              body: JSON.stringify({ pricing: alpine.pricing })
+          }).then(res => res.json()).then(res => {
+              alert('Pricing saved!');
+              alpine.open = false;
+          });
+      }
+    </script> 
+@endpush
