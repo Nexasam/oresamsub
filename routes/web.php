@@ -298,25 +298,25 @@ Route::middleware(['set_locale'])->group(function () {
                     ->where('data_size_in_mb',$size)
                     ->get(); 
 
-                    $dataa[$key]['uniqueplan'] = $productplan->product_plan_name;
+                    $mess .= $productplan->product_plan_name;
                     //@tlest there should be one...
                     if(count($associated_automationplans) <= 0){
                         foreach($associated_automationplans as $keyy=>$associated_automationplan){
                             $getnetworkid = $associated_automationplan->product_plan_category->network->id;
                             $productid = $associated_automationplan->product_plan_category->product->id;
                             if($getnetworkid == $network_id && $productid == $product_id){
-                                $dataa[$keyy]['product_plan_name'] = $associated_automationplan->product_plan_name;
-                                $dataa[$keyy]['data_size_in_mb'] = $associated_automationplan->data_size_in_mb;
-                                $dataa[$keyy]['validity_in_days'] = $associated_automationplan->validity_in_days;
-                                $dataa[$keyy]['automation'] = $associated_automationplan->automation->automation_name;
-                            }
-
-                           
+                                $mess .= $associated_automationplan->product_plan_name.'<br>';
+                                $mess .= $associated_automationplan->data_size_in_mb.'<br>';
+                                $mess .= $associated_automationplan->validity_in_days.'<br>';
+                                $mess .= $associated_automationplan->automation->automation_name.'<br>';
+                            }     
                         }  
-                    }                               
-                
-
+                    }  
+                    
+                    echo '<hr><hr>';
                 }
+
+
 
 
                 return $dataa;
