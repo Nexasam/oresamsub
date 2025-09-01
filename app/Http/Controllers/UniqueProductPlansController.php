@@ -62,6 +62,7 @@ class UniqueProductPlansController extends Controller
             $data[$keyy]['network_id'] = $productplan->network_id;
             $data[$keyy]['data_size_in_mb'] = $productplan->data_size_in_mb;
             $data[$keyy]['validity_in_days'] = $productplan->validity_in_days;
+            $data[$keyy]['visibility'] = $productplan->visibility;
             
             
             $dataa = [];
@@ -114,7 +115,7 @@ class UniqueProductPlansController extends Controller
             $aaa[] = $a['product_plan']['automation'];
            }
 
-           return json_encode($aaa);
+           return $aaa;
          })
          ->addColumn('visibility',function($data){
            $visibility = $data['visibility'];
