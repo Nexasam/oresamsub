@@ -264,7 +264,7 @@
               this.pagination.current_page = page;
               let params = new URLSearchParams({ ...this.filters, page }).toString();
   
-              fetch("{{ route('unique_product_plans.index') }}?" + params, {
+              fetch("{{ route('admin.unique_product_plans.index') }}?" + params, {
                   headers: { 'X-Requested-With': 'XMLHttpRequest' }
               })
               .then(res => res.json())
