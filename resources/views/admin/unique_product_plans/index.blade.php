@@ -303,7 +303,6 @@
 
        
 @endsection
-
 <script>
   function plansComponent() {
       return {
@@ -316,21 +315,27 @@
           pagination: { total: 0, per_page: 10, current_page: 1, last_page: 1 },
           loading: false,
   
-          fetchPlans(page = 1) {
+          async fetchPlans(page = 1) {
               this.loading = true;
               this.pagination.current_page = page;
-              let params = new URLSearchParams({ ...this.filters, page }).toString();
+              const params = new URLSearchParams({ ...this.filters, page }).toString();
   
-              fetch("{{ route('admin.unique_product_plans.index') }}?" + params, {
-                  headers: { 'X-Requested-With': 'XMLHttpRequest' }
-              })
-              .then(res => res.json())
-              .then(data => {
-                  this.plans = data.plans;
-                  this.pagination = data.pagination;
+              try {
+                  const res = await fetch("{{ route('admin.unique_product_plans.index') }}?" + params, {
+                      headers: { 'X-Requested-With': 'XMLHttpRequest' }
+                  });
+                  const data = await res.json();
+  
+                  // Ensure each plan has a `show` flag (default visible)
+                  this.plans = (data.plans || []).map(p => ({ ...p, show: true }));
+  
+                  // Pagination info from controller
+                  this.pagination = data.pagination || { total: 0, per_page: 10, current_page: 1, last_page: 1 };
+              } catch (e) {
+                  console.error(e);
+              } finally {
                   this.loading = false;
-              })
-              .catch(() => this.loading = false);
+              }
           },
   
           changePage(page) {
@@ -341,3 +346,4 @@
       }
   }
   </script>
+  
