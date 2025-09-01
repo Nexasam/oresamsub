@@ -90,19 +90,19 @@ class UniqueProductPlansController extends Controller
         return DataTables::of($dataas)
         ->addIndexColumn()
         ->addColumn('DT_RowIndex',function($data){
-        return $data->id;
+        return $data['id'];
         })
         ->addColumn('product_id',function($data){
-            return $data->product_id;
+            return $data['product_id'];
         })
         ->addColumn('size',function($data){
-           return $data->size;
+           return $data['data_size_in_mb'];
         })
         ->addColumn('validity',function($data){
-            return $data->validity;
+            return $data['validity_in_days'];
          })
         ->addColumn('network_id',function($data){
-            return $data->network_id;
+            return $data['network_id'];
          })
         ->addColumn('automation',function($data){
             return $data->automation;
