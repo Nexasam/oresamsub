@@ -10,9 +10,9 @@ class UniqueProductPlansController extends Controller
 {
     public function index(){
         // $generalproductplans = UniqueProductPlan::all();
-        $generalproductplans = UniqueProductPlan::orderBy('size', 'asc')
-        ->orderBy('validity', 'asc')
-        ->orderBy('network', 'asc')
+        $generalproductplans = UniqueProductPlan::orderBy('data_size_in_mb', 'asc')
+        ->orderBy('validity_in_days', 'asc')
+        ->orderBy('network_id', 'asc')
         ->get();
 
         
