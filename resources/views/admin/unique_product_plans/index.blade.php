@@ -247,7 +247,6 @@
        
 @endsection
 
-
 <script>
   function plansComponent() {
       return {
@@ -257,23 +256,31 @@
               validity: ''
           },
           plans: [],
+          pagination: { total: 0, per_page: 10, current_page: 1, last_page: 1 },
           loading: false,
   
-          fetchPlans() {
+          fetchPlans(page = 1) {
               this.loading = true;
-              let params = new URLSearchParams(this.filters).toString();
+              this.pagination.current_page = page;
+              let params = new URLSearchParams({ ...this.filters, page }).toString();
   
-              fetch("{{ route('admin.unique_product_plans.index') }}?" + params, {
+              fetch("{{ route('unique_product_plans.index') }}?" + params, {
                   headers: { 'X-Requested-With': 'XMLHttpRequest' }
               })
               .then(res => res.json())
               .then(data => {
                   this.plans = data.plans;
+                  this.pagination = data.pagination;
                   this.loading = false;
               })
               .catch(() => this.loading = false);
+          },
+  
+          changePage(page) {
+              if (page >= 1 && page <= this.pagination.last_page) {
+                  this.fetchPlans(page);
+              }
           }
       }
   }
   </script>
-
