@@ -296,7 +296,7 @@ Route::middleware(['set_locale'])->group(function () {
                     $cost_price = $productplan->cost_price;
                  
                    
-                    $associated_automationplans = ProductPlan::where('validity_in_days',$validity)
+                    $associated_automationplans = ProductPlan::with('product_plan_category.network','product_plan_category.product','automation')->where('validity_in_days',$validity)
                     ->where('data_size_in_mb',$size)
                     ->get(); 
 
