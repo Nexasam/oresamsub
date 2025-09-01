@@ -105,7 +105,7 @@ class UniqueProductPlansController extends Controller
             $cost_price = htmlspecialchars($datad['cost_price'] ?? '0', ENT_QUOTES, 'UTF-8'); // assuming cost_price field exists
 
             return '
-                '.$unique_plan.'<br>
+
                 <button 
                     class="px-3 py-1 text-xs bg-indigo-600 text-white rounded hover:bg-indigo-700"
                     onclick="openPricingModal(' . $id . ', \'' . $unique_plan . '\', \'' . $cost_price . '\')">
