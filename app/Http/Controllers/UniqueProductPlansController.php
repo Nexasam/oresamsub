@@ -50,7 +50,8 @@ class UniqueProductPlansController extends Controller
         }
 
 
-        $plans = json_decode($data, true); // decode JSON to array
+        // $plans = json_decode($data, true); // decode JSON to array
+        $plans = $data; // decode JSON to array
         // $dat['data'] = $data;
 
         return view('admin.unique_product_plans.index',compact('plans'));
