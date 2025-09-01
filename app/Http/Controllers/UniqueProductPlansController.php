@@ -10,10 +10,12 @@ class UniqueProductPlansController extends Controller
 {
     public function index(){
         // $generalproductplans = UniqueProductPlan::all();
-        $generalproductplans = UniqueProductPlan::orderBy('data_size_in_mb', 'asc')
+        $generalproductplans = UniqueProductPlan::orderByRaw("CASE WHEN data_size_in_mb < 500 THEN 1 ELSE 0 END ASC")
+        ->orderBy('data_size_in_mb', 'asc')
         ->orderBy('validity_in_days', 'asc')
         ->orderBy('network_id', 'asc')
         ->get();
+    
 
         
         foreach($generalproductplans as $keyy=>$productplan){
