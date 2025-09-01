@@ -567,6 +567,9 @@ Route::middleware(['set_locale'])->group(function () {
 
 
             Route::middleware(['auth','verified','admin'])->get('admin/unique_product_plans', [UniqueProductPlansController::class, 'index'])->name('admin.unique_product_plans.index');
+            Route::middleware(['auth','verified','admin'])->get('admin/walletlogs/admin_fetch_wallet_logs', [UniqueProductPlansController::class, 'admin_fetch_unique_product_plans'])->name('admin.unique_product_plans.admin_fetch_wallet_logs');
+
+
             Route::middleware(['auth','verified','admin'])->get('admin/product_plans', [ProductPlanController::class, 'index'])->name('admin.product_plans.index');
             Route::middleware(['auth','verified','admin'])->get('admin/product_plans/product_plan_details/{id}', [ProductPlanController::class, 'product_plan_details'])->name('admin.product_plans.product_plan_details');
             Route::middleware(['auth','verified','admin'])->post('admin/product_plans/store', [ProductPlanController::class, 'store'])->name('admin.product_plans.store');

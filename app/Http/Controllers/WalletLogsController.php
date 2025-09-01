@@ -97,5 +97,5 @@ class WalletLogsController extends Controller
         ->make(true);
 
 
-  }
+    }
 }
