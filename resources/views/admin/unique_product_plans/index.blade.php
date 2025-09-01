@@ -371,7 +371,6 @@
 @endsection
 
 <script>
-
 function plansComponent() {
     return {
         filters: { size: '', network: '', validity: '' },
