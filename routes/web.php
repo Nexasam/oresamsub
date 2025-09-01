@@ -315,7 +315,7 @@ Route::middleware(['set_locale'])->group(function () {
                         }  
                     }  
                     
-                    echo $mess .= '<hr><hr>';
+                     $mess .= '<hr><hr>';
                 }
 
 
