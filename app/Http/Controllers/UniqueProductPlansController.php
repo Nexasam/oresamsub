@@ -142,25 +142,17 @@ class UniqueProductPlansController extends Controller
             '.$unique_plan.' <br>
             <button 
                 class="px-3 py-1 text-xs font-medium text-white bg-indigo-600 rounded hover:bg-indigo-700 focus:outline-none"
-                data-id="'.$id.'" 
-                 data-plan-name="'.$unique_plan.'" 
-                data-cost="'.$cost_price.'" 
-                data-price-1="'.$price_1.'" 
-                data-price-2="'.$price_2.'" 
-                data-price-3="'.$price_3.'" 
-                data-price-4="'.$price_4.'" 
-                data-price-5="'.$price_5.'" 
-                data-price-6="'.$price_6.'" 
-                data-price-7="'.$price_7.'" 
-                data-price-8="'.$price_8.'" 
-                data-price-9="'.$price_9.'" 
-                data-price-10="'.$price_10.'" 
-                data-price-11="'.$price_11.'" 
-                data-price-12="'.$price_12.'" 
-                onclick="openPricingModal(this)">
+                @click="openModal(
+                    '.$id.',
+                    \''.$unique_plan.'\',
+                    '.$cost_price.',
+                    ['.$price_1.','.$price_2.','.$price_3.','.$price_4.','.$price_5.','.$price_6.','.$price_7.','.$price_8.','.$price_9.','.$price_10.','.$price_11.','.$price_12.']
+                )"
+            >
               Manage Plan
             </button>
-          ';
+            ';
+        
 
         })
         ->addColumn('size',function($datad){

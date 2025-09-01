@@ -131,7 +131,9 @@
                       x-on:click.self="open = false">
 
                       <div class="bg-white p-6 rounded-lg shadow-lg w-[800px]">
-                          <h2 class="text-lg font-semibold mb-4" x-text="title">Manage Plan Pricing</h2>
+                        
+                          <h2 class="text-lg font-semibold mb-4" x-text="'Manage Pricing for: ' + planName"></h2>
+
 
                           <form @submit.prevent="savePricing">
                               <input type="hidden" x-model="planId" name="plan_id">
@@ -191,6 +193,8 @@
 
 @push('scripts')
 <script>
+  
+
   function pricingModalComponent() {
       return {
           open: false,
@@ -199,17 +203,13 @@
           costPrice: 0,
           prices: Array(12).fill(''),
   
-          openModal(button) {
-              this.planId = button.dataset.id;
-              this.costPrice = button.dataset.cost;
-              this.title = `Manage Pricing for: ${button.dataset.planName}`;
-  
-              for (let i = 1; i <= 12; i++) {
-                  this.prices[i-1] = button.dataset[`price${i}`] || '';
-              }
-  
+          openModal(id, planName, costPrice, pricesArray) {
+              this.planId = id;
+              this.planName = planName; // Display in modal header
+              this.costPrice = costPrice;
+              this.prices = pricesArray;
               this.open = true;
-          },
+            },
   
           savePricing() {
               this.loading = true;
