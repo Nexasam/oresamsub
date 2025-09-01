@@ -106,14 +106,24 @@ class UniqueProductPlansController extends Controller
             $unique_plan = htmlspecialchars($datad['unique_plan'], ENT_QUOTES, 'UTF-8');
             $cost_price = htmlspecialchars($datad['cost_price'] ?? '0', ENT_QUOTES, 'UTF-8'); // assuming cost_price field exists
 
-            return '
+            // return '
 
-                <button 
-                    class="px-3 py-1 text-xs bg-indigo-600 text-white rounded hover:bg-indigo-700"
-                    onclick="openPricingModal(' . $id . ', \'' . $unique_plan . '\', \'' . $cost_price . '\')">
-                    Set Pricing
-                </button>
-            ';
+            //     <button 
+            //         class="px-3 py-1 text-xs bg-indigo-600 text-white rounded hover:bg-indigo-700"
+            //         onclick="openPricingModal(' . $id . ', \'' . $unique_plan . '\', \'' . $cost_price . '\')">
+            //         Set Pricing
+            //     </button>
+            // ';
+
+            return '
+            <button 
+                class="px-3 py-1 text-xs font-medium text-white bg-indigo-600 rounded hover:bg-indigo-700 focus:outline-none"
+                data-id="'.$id.'" 
+                data-cost="'.$cost_price.'" 
+                onclick="openPricingModal(this)">
+              Set Pricing
+            </button>
+          ';
 
         })
         ->addColumn('size',function($datad){

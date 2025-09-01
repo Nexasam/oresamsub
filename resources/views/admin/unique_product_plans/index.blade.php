@@ -124,28 +124,39 @@
                     {{-- </div> --}}
 
 
-                    <div id="pricingModal" x-data="{ open: false, planId: null, planName: '', costPrice: 0 }"
-                      x-show="open" x-cloak class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+                   <!-- Pricing Modal -->
+                  <div id="pricingModal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+                    <div class="bg-white rounded-lg shadow-lg w-full max-w-lg p-6">
+                      <h2 class="text-lg font-semibold mb-4">Set User Pricing</h2>
 
-                    <div class="bg-white rounded-lg shadow-lg w-full max-w-2xl p-6">
-                      <h2 class="text-lg font-bold mb-4">Set Pricing for <span x-text="planName"></span></h2>
-                      <p class="text-sm text-gray-600 mb-2">Cost Price: ₦<span x-text="costPrice"></span></p>
-
-                      <div class="grid grid-cols-2 gap-3">
-                        <template x-for="i in 12" :key="i">
-                          <div>
-                            <label class="block text-xs font-medium">Price @ Slot <span x-text="i"></span></label>
-                            <input type="number" x-model="pricing[i]" class="w-full border rounded px-2 py-1">
-                          </div>
-                        </template>
+                      <div class="mb-3">
+                        <label class="block text-sm font-medium text-gray-700">Cost Price</label>
+                        <input id="costPrice" type="text" readonly 
+                              class="mt-1 w-full border rounded px-3 py-2 bg-gray-100 text-gray-600">
                       </div>
 
-                      <div class="mt-4 flex justify-end gap-2">
-                        <button @click="open = false" class="px-3 py-1 text-sm bg-gray-200 rounded hover:bg-gray-300">Cancel</button>
-                        <button @click="savePricing()" class="px-3 py-1 text-sm bg-green-600 text-white rounded hover:bg-green-700">Save</button>
+                      <div class="grid grid-cols-2 gap-3">
+                        @for ($i = 1; $i <= 12; $i++)
+                          <div>
+                            <label class="text-xs font-medium text-gray-600">Price {{ $i }}</label>
+                            <input type="number" name="pricing[]" class="w-full border rounded px-2 py-1 text-sm" />
+                          </div>
+                        @endfor
+                      </div>
+
+                      <div class="flex justify-end mt-4 space-x-2">
+                        <button onclick="closePricingModal()" 
+                                class="px-3 py-1 text-sm bg-gray-200 rounded hover:bg-gray-300">
+                          Cancel
+                        </button>
+                        <button id="savePricingBtn" 
+                                class="px-3 py-1 text-sm bg-indigo-600 text-white rounded hover:bg-indigo-700">
+                          Save
+                        </button>
                       </div>
                     </div>
                   </div>
+
 
 
 
@@ -247,19 +258,19 @@
       }
 
       // Example save function (AJAX)
-      // function savePricing() {
-      //     const modal = document.getElementById('pricingModal');
-      //     const alpine = Alpine.$data(modal);
+      function savePricing() {
+          const modal = document.getElementById('pricingModal');
+          const alpine = Alpine.$data(modal);
 
          
-      //     fetch(`/admin/unique-plans/${alpine.planId}/pricing`, {
-      //         method: 'POST',
-      //         headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': '{{ csrf_token() }}' },
-      //         body: JSON.stringify({ pricing: alpine.pricing })
-      //     }).then(res => res.json()).then(res => {
-      //         alert('Pricing saved!');
-      //         alpine.open = false;
-      //     });
-      // }
+          // fetch(`/admin/unique-plans/${alpine.planId}/pricing`, {
+          //     method: 'POST',
+          //     headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': '{{ csrf_token() }}' },
+          //     body: JSON.stringify({ pricing: alpine.pricing })
+          // }).then(res => res.json()).then(res => {
+          //     alert('Pricing saved!');
+          //     alpine.open = false;
+          // });
+      }
     </script> 
 @endpush
