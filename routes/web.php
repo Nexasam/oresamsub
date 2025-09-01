@@ -6,6 +6,7 @@ use App\Models\SiteTemplate;
 use App\Models\AdminColorSetting;
 use App\Http\Middleware\RoleAssess;
 use App\Models\LandingPagesSetting;
+use App\Models\UniqueProductPlan;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Session;
@@ -189,7 +190,89 @@ Route::middleware(['set_locale'])->group(function () {
 
 
             Route::get('/test', function (): array {
-                dd('test');
+                //fetch unique plans: network, size, validity
+                $productplans = ProductPlan::all();
+
+
+                $checkunique = UniqueProductPlan::latest()->first();
+                $lastkey = $checkunique->api_id ?? 0;
+                $nextcount = $lastkey + 1;
+
+                foreach($productplans as $key=>$productplan){
+                    $size = $productplan->data_size_in_mb;
+                    $validity = $productplan->validity_in_days;
+                    $network_id = $productplan->product_plan_category->network->id ?? 'nil';
+                    $network_name = $productplan->product_plan_category->network->network_name ?? 'nil';
+                    $product_slug = $productplan->product_plan_category->product->slug;
+                    $product_id = $productplan->product_plan_category->product->id;
+                    $cost_price = $productplan->cost_price;
+                    if($product_slug == 'data'){
+                   
+                        $checkunique_plan = UniqueProductPlan::where('network_id',$network_id)
+                        ->where('product_id',$product_id)
+                        ->where('validity_in_days',$validity)
+                        ->where('data_size_in_mb',$size)
+                        ->first(); 
+
+                        if(! $checkunique_plan){
+                            $dataup['api_id'] = $nextcount;
+                            $dataup['product_plan_name'] = $productplan->product_plan_name;
+                            $dataup['data_size_in_mb'] = $size;
+                            $dataup['validity_in_days'] = $validity;
+                            $dataup['network_id'] = $network_id;
+                            $dataup['product_id'] = $product_id;
+                            $dataup['cost_price'] = $productplan->cost_price;
+                            $dataup['price_1'] = $productplan->cost_price + 100;
+                            $dataup['price_2'] = $productplan->cost_price + 95;
+                            $dataup['price_3'] = $productplan->cost_price + 90;
+                            $dataup['price_4'] = $productplan->cost_price + 85;
+                            $dataup['price_5'] = $productplan->cost_price + 80;
+                            $dataup['price_6'] = $productplan->cost_price + 75;
+                            $dataup['price_7'] = $productplan->cost_price + 70;
+                            $dataup['price_8'] = $productplan->cost_price + 65;
+                            $dataup['price_9'] = $productplan->cost_price + 60;
+                            $dataup['price_10'] = $productplan->cost_price + 55;
+                            $dataup['price_11'] = $productplan->cost_price + 50;
+                            $dataup['price_12'] = $productplan->cost_price + 45;
+                            $dataup['price_12'] = $productplan->cost_price + 45;
+                            UniqueProductPlan::create($dataup);
+                    
+                        }else{
+
+                            //exists..UPDATE
+                            if($cost_price < $checkunique_plan->cost_price){
+                                $cost_price = $checkunique_plan->cost_price; 
+                            }
+
+                            $dataupp['cost_price'] = $cost_price;
+                            $dataupp['price_1'] = $cost_price + 100;
+                            $dataupp['price_2'] = $cost_price + 95;
+                            $dataupp['price_3'] = $cost_price + 90;
+                            $dataupp['price_4'] = $cost_price + 85;
+                            $dataupp['price_5'] = $cost_price + 80;
+                            $dataupp['price_6'] = $cost_price + 75;
+                            $dataupp['price_7'] = $cost_price + 70;
+                            $dataupp['price_8'] = $cost_price + 65;
+                            $dataupp['price_9'] = $cost_price + 60;
+                            $dataupp['price_10'] = $cost_price + 55;
+                            $dataupp['price_11'] = $cost_price + 50;
+                            $dataupp['price_12'] = $cost_price + 45;
+                            $dataupp['price_12'] = $cost_price + 45;
+                            UniqueProductPlan::where('id',$checkunique_plan->id)->update($dataupp);
+
+                        
+                        }
+                    }
+
+                    $nextcount++;
+                }
+
+
+                return [
+                    'message' => 'success'
+                ];
+                // return $dataup;
+                // dd('test');
             });
 
             Route::get('/delete_user_account', function () {
