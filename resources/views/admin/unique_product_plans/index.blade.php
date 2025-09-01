@@ -79,7 +79,7 @@
                                   </tr>
                                </thead>
                             <tbody>
-                              {{-- {{ json_encode($data) }} --}}
+                              {{ json_encode($data) }}
                               
                               @foreach ($data as $dat)
                                   {{ $dat->unique_plan }} <br>
