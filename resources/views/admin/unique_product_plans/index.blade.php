@@ -246,31 +246,40 @@
 
 @push('scripts')
     <script>
-          function openPricingModal(id, name, costPrice) {
-          const modal = document.getElementById('pricingModal');
-          const alpine = Alpine.$data(modal);
+     function openPricingModal(button) {
+          let id = button.getAttribute("data-id");
+          let cost = button.getAttribute("data-cost");
 
-          alpine.open = true;
-          alpine.planId = id;
-          alpine.planName = name;
-          alpine.costPrice = costPrice;
-          alpine.pricing = {}; // reset inputs
+          // Fill modal values
+          document.getElementById("costPrice").value = cost;
+          document.getElementById("pricingModal").classList.remove("hidden");
+
+          // Save button handler
+          document.getElementById("savePricingBtn").onclick = function() {
+              let pricings = [];
+              document.querySelectorAll("#pricingModal input[name='pricing[]']").forEach(el => {
+                  pricings.push(el.value);
+              });
+
+              // Example AJAX
+              $.ajax({
+                  url: "/admin/set-pricing/" + id,
+                  method: "POST",
+                  data: {
+                      _token: "{{ csrf_token() }}",
+                      pricings: pricings
+                  },
+                  success: function(resp) {
+                      alert("Pricing saved!");
+                      closePricingModal();
+                  }
+              });
+          };
       }
 
-      // Example save function (AJAX)
-      function savePricing() {
-          const modal = document.getElementById('pricingModal');
-          const alpine = Alpine.$data(modal);
-
-         
-          // fetch(`/admin/unique-plans/${alpine.planId}/pricing`, {
-          //     method: 'POST',
-          //     headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': '{{ csrf_token() }}' },
-          //     body: JSON.stringify({ pricing: alpine.pricing })
-          // }).then(res => res.json()).then(res => {
-          //     alert('Pricing saved!');
-          //     alpine.open = false;
-          // });
+      function closePricingModal() {
+          document.getElementById("pricingModal").classList.add("hidden");
       }
+
     </script> 
 @endpush
