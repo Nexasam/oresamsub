@@ -17,7 +17,7 @@ class UniqueProductPlansController extends Controller
     }
 
 
-    public function admin_fetch_unique_product_plans(Request $request){
+    public function fetch(Request $request){
 
        
         $query = UniqueProductPlan::query()
