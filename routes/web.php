@@ -314,7 +314,7 @@ Route::middleware(['set_locale'])->group(function () {
                                 $dataa[$key]['automa'] = $associated_automationplan->automation->automation_name.PHP_EOL;
                             }     
                         }
-                        $data[$keyy]['others'] = $dataa;
+                        $data[$keyy]['automations'] = $dataa;
                     }  
                     
                 }
