@@ -125,43 +125,43 @@
 
 
                    <!-- Pricing Modal -->
-                  <div x-data="pricingModalComponent()" x-show="open" x-cloak
-                      x-on:keydown.escape.window="open = false"
-                      class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50"
-                      x-on:click.self="open = false">
-
-                      <div class="bg-white p-6 rounded-lg shadow-lg w-[800px]">
-                        
-                          <h2 class="text-lg font-semibold mb-4" x-text="'Manage Pricing for: ' + planName"></h2>
-
-
-                          <form @submit.prevent="savePricing">
-                              <input type="hidden" x-model="planId" name="plan_id">
-
-                              <div class="mb-4">
-                                  <label class="block text-sm font-medium">Cost Price</label>
-                                  <input type="number" x-model="costPrice" name="cost" 
-                                        class="w-full border rounded p-2 bg-gray-100" readonly>
-                              </div>
-
-                              <div class="grid grid-cols-4 gap-4">
-                                  <template x-for="i in 12" :key="i">
-                                      <div>
-                                          <label class="block text-sm font-medium" x-text="'Price ' + i"></label>
-                                          <input type="number" :id="'price' + i" :name="'price' + i"
-                                                x-model="prices[i-1]" class="w-full border rounded p-2">
-                                      </div>
-                                  </template>
-                              </div>
-
-                              <div class="flex justify-end space-x-2 mt-6">
-                                  <button type="button" @click="open = false" 
-                                          class="px-4 py-2 bg-gray-300 rounded">Cancel</button>
-                                  <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded">Save</button>
-                              </div>
-                          </form>
-                      </div>
-                  </div>   
+                   <div x-data="pricingModalComponent()" x-show="open" x-cloak
+                   x-on:keydown.escape.window="open = false"
+                   class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50"
+                   x-on:click.self="open = false">
+              
+                  <div class="bg-white p-6 rounded-lg shadow-lg w-[800px]">
+                      <h2 class="text-lg font-semibold mb-4" x-text="'Manage Pricing for: ' + planName"></h2>
+              
+                      <form @submit.prevent="savePricing">
+                          <input type="hidden" x-model="planId" name="plan_id">
+              
+                          <div class="mb-4">
+                              <label class="block text-sm font-medium">Cost Price</label>
+                              <input type="number" x-model="costPrice" name="cost" 
+                                     class="w-full border rounded p-2 bg-gray-100" readonly>
+                          </div>
+              
+                          <div class="grid grid-cols-4 gap-4">
+                              <template x-for="i in 12" :key="i">
+                                  <div>
+                                      <label class="block text-sm font-medium" x-text="'Price ' + i"></label>
+                                      <input type="number" :id="'price' + i" :name="'price' + i"
+                                             x-model="prices[i-1]" class="w-full border rounded p-2">
+                                  </div>
+                              </template>
+                          </div>
+              
+                          <div class="flex justify-end space-x-2 mt-6">
+                              <button type="button" @click="open = false" 
+                                      class="px-4 py-2 bg-gray-300 rounded">Cancel</button>
+                              <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded" :disabled="loading">
+                                  <span x-text="loading ? 'Saving...' : 'Save'"></span>
+                              </button>
+                          </div>
+                      </form>
+                  </div>
+              </div>   
                   
                   
                  
@@ -193,64 +193,63 @@
 
 @push('scripts')
 <script>
-  
+ function pricingModalComponent() {
+    return {
+        open: false,
+        planId: null,
+        planName: '',
+        costPrice: 0,
+        prices: Array(12).fill(''),
+        loading: false,
 
-  function pricingModalComponent() {
-      return {
-          open: false,
-          planId: null,
-          title: '',
-          costPrice: 0,
-          prices: Array(12).fill(''),
-  
-          openModal(id, planName, costPrice, pricesArray) {
-              this.planId = id;
-              this.planName = planName; // Display in modal header
-              this.costPrice = costPrice;
-              this.prices = pricesArray;
-              this.open = true;
-            },
-  
-          savePricing() {
-              this.loading = true;
+        openModal(id, planName, costPrice, pricesArray) {
+            this.planId = id;
+            this.planName = planName; // Display in modal header
+            this.costPrice = costPrice;
+            this.prices = pricesArray || Array(12).fill('');
+            this.open = true;
+        },
 
-              let formData = new FormData();
-              formData.append('plan_id', this.planId);
-              formData.append('cost', this.costPrice);
-              
-              this.prices.forEach((price, index) => {
-                  formData.append(`price${index+1}`, price);
-              });
+        savePricing() {
+            this.loading = true;
 
-              // CSRF token (Laravel)
-              formData.append('_token', document.querySelector('meta[name="csrf-token"]').getAttribute('content'));
+            let formData = new FormData();
+            formData.append('plan_id', this.planId);
+            formData.append('cost', this.costPrice);
 
-              fetch({{route('admin.save_unique_plan_pricing')}}, {
-                  method: 'POST',
-                  body: formData
-              })
-              .then(res => res.json())
-              .then(data => {
-                  this.loading = false;
-                  if (data.success) {
-                      alert('Pricing updated successfully!');
-                      this.open = false;
-                      // optionally refresh your DataTable
-                      if (window.LaravelDataTables) {
-                          window.LaravelDataTables['plans-table'].ajax.reload(null, false);
-                      }
-                  } else {
-                      alert('Error: ' + (data.message || 'Unknown error'));
-                  }
-              })
-              .catch(err => {
-                  this.loading = false;
-                  console.error(err);
-                  alert('Something went wrong!');
-              });
-          }
+            this.prices.forEach((price, index) => {
+                formData.append(`price${index+1}`, price);
+            });
 
-      }
-  }
-  </script>
+            // CSRF token (Laravel)
+            formData.append('_token', document.querySelector('meta[name="csrf-token"]').getAttribute('content'));
+
+            fetch("{{ route('admin.save_unique_plan_pricing') }}", {
+                method: 'POST',
+                body: formData
+            })
+            .then(res => res.json())
+            .then(data => {
+                this.loading = false;
+                if (data.success) {
+                    alert('Pricing updated successfully!');
+                    this.open = false;
+
+                    // Refresh DataTable if exists
+                    if (window.LaravelDataTables && window.LaravelDataTables['plans-table']) {
+                        window.LaravelDataTables['plans-table'].ajax.reload(null, false);
+                    }
+                } else {
+                    alert('Error: ' + (data.message || 'Unknown error'));
+                }
+            })
+            .catch(err => {
+                this.loading = false;
+                console.error(err);
+                alert('Something went wrong!');
+            });
+        }
+    }
+} 
+</script>
 @endpush
