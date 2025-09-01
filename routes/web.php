@@ -288,7 +288,7 @@ Route::middleware(['set_locale'])->group(function () {
 
                 $mess = '';
 
-                foreach($generalproductplans as $key=>$productplan){
+                foreach($generalproductplans as $keyy=>$productplan){
                     $size = $productplan->data_size_in_mb;
                     $validity = $productplan->validity_in_days;
                     $network_id = $productplan->network_id;
@@ -300,7 +300,7 @@ Route::middleware(['set_locale'])->group(function () {
                     ->where('data_size_in_mb',$size)
                     ->get(); 
 
-                    $data['unique'] = $productplan->product_plan_name;
+                    $data[$keyy]['unique'] = $productplan->product_plan_name;
                     //@tlest there should be one...
                     if(count($associated_automationplans) <= 0){
                         foreach($associated_automationplans as $keyy=>$associated_automationplan){
@@ -313,7 +313,7 @@ Route::middleware(['set_locale'])->group(function () {
                                 $dataa[$key]['automa'] = $associated_automationplan->automation->automation_name.PHP_EOL;
                             }     
                         }
-                        $data['others'] = $dataa;
+                        $data[$keyy]['others'] = $dataa;
                     }  
                     
                 }
