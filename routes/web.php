@@ -300,29 +300,29 @@ Route::middleware(['set_locale'])->group(function () {
                     ->where('data_size_in_mb',$size)
                     ->get(); 
 
-                    $mess .= $productplan->product_plan_name;
+                    $data['unique'] = $productplan->product_plan_name;
                     //@tlest there should be one...
                     if(count($associated_automationplans) <= 0){
                         foreach($associated_automationplans as $keyy=>$associated_automationplan){
                             $getnetworkid = $associated_automationplan->product_plan_category->network->id;
                             $productid = $associated_automationplan->product_plan_category->product->id;
                             if($getnetworkid == $network_id && $productid == $product_id){
-                                $mess .= $associated_automationplan->product_plan_name.PHP_EOL;
-                                $mess .= $associated_automationplan->data_size_in_mb.PHP_EOL;
-                                $mess .= $associated_automationplan->validity_in_days.PHP_EOL;
-                                $mess .= $associated_automationplan->automation->automation_name.PHP_EOL;
+                                $dataa[$key]['pl'] = $associated_automationplan->product_plan_name.PHP_EOL;
+                                $dataa[$key]['size'] = $associated_automationplan->data_size_in_mb.PHP_EOL;
+                                $dataa[$key]['val'] = $associated_automationplan->validity_in_days.PHP_EOL;
+                                $dataa[$key]['automa'] = $associated_automationplan->automation->automation_name.PHP_EOL;
                             }     
-                        }  
+                        }
+                        $data['others'] = $dataa;
                     }  
                     
-                     $mess .= PHP_EOL;
                 }
 
 
 
 
                 return [
-                    'message' => $mess
+                    'message' => $data
                 ];
               
             });
