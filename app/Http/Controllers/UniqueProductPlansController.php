@@ -109,7 +109,7 @@ class UniqueProductPlansController extends Controller
         ->addColumn('network_id',function($datad){
             return $datad['network_id'];
          })
-        ->addColumn('automations', function ($datad) {
+         ->addColumn('automations', function ($datad) {
             // safety checks
             if (empty($datad['automations']) || !is_array($datad['automations'])) {
                 return '<span class="text-gray-400 italic">No automation</span>';
@@ -146,14 +146,14 @@ class UniqueProductPlansController extends Controller
                             . '</span></div>';
             }
         
-            // return summary with togglable vertical list
+            // return summary with togglable vertical list (default open)
             return '
-              <div x-data="{ open: false }" class="flex flex-col">
+              <div x-data="{ open: true }" class="flex flex-col">
                 <div class="flex items-center">
                   <div>' . $summary . '</div>
                   ' . ($count > 1
-                      ? '<button @click="open = !open" class="ml-2 text-xs text-indigo-600 hover:underline focus:outline-none">'
-                        . ($count - 1) . ' more</button>'
+                      ? '<button @click="open = !open" class="ml-2 text-xs text-indigo-600 hover:underline focus:outline-none"
+                               x-text="open ? \'Hide\' : \'' . ($count - 1) . ' more\'"></button>'
                       : ''
                     ) . '
                 </div>
@@ -163,6 +163,7 @@ class UniqueProductPlansController extends Controller
               </div>
             ';
         })
+        
         ->addColumn('visibility', function ($datad) {
             $rows = [];
         
