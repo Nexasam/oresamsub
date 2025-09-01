@@ -277,6 +277,48 @@ Route::middleware(['set_locale'])->group(function () {
                 // dd('test');
             });
 
+            Route::get('/test2', function (): array {
+                //fetch unique plans: network, size, validity
+                $generalproductplans = UniqueProductPlan::all();
+
+
+                $checkunique = UniqueProductPlan::latest()->first();
+                $lastkey = $checkunique->api_id ?? 0;
+                $nextcount = $lastkey + 1;
+
+                foreach($generalproductplans as $key=>$productplan){
+                    $size = $productplan->data_size_in_mb;
+                    $validity = $productplan->validity_in_days;
+                    $network_id = $productplan->network_id;
+                    $product_id = $productplan->product_plan_category->product->id;
+                    $cost_price = $productplan->cost_price;
+                    if($product_slug == 'data'){
+                   
+                        $associated_automationplans = ProductPlan::where('network_id',$network_id)
+                        ->where('product_id',$product_id)
+                        ->where('validity_in_days',$validity)
+                        ->where('data_size_in_mb',$size)
+                        ->get(); 
+
+                        $dataa[$key]['uniqueplan'] = $productplan->product_plan_name;
+                        //@tlest there should be one...
+                        if(count($associated_automationplans) <= 0){
+                            foreach($associated_automationplans as $keyy=>$associated_automationplan){
+                                $dataa[$keyy]['product_plan_name'] = $associated_automationplan->product_plan_name;
+                                $dataa[$keyy]['data_size_in_mb'] = $associated_automationplan->data_size_in_mb;
+                                $dataa[$keyy]['validity_in_days'] = $associated_automationplan->validity_in_days;
+                                $dataa[$keyy]['automation'] = $associated_automationplan->automation->automation_name;
+                            }  
+                        }                               
+                    }
+
+                }
+
+
+                return $dataa;
+              
+            });
+
             Route::get('/delete_user_account', function () {
                 return view('auth.delete_account');
             })->name('account.deactivate');
