@@ -109,10 +109,17 @@ class UniqueProductPlansController extends Controller
             return $data['network_id'];
          })
         ->addColumn('automation',function($data){
-            return $data->automation;
+           $aut = $data['automation'];
+           foreach($aut as $a){
+            $aaa[] = $a['product_plan']['automation'];
+           }
+
+           return json_encode($aaa);
          })
          ->addColumn('visibility',function($data){
-            return $data->visibility;
+           $visibility = $data['visibility'];
+
+           return $visibility;
          })     
         ->escapeColumns([])
         ->make(true);
