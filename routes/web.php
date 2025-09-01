@@ -321,7 +321,9 @@ Route::middleware(['set_locale'])->group(function () {
 
 
 
-                echo $mess;
+                return [
+                    'message' => $mess
+                ];
               
             });
 
