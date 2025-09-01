@@ -99,7 +99,7 @@
 
 
 
-                                      @foreach ($plans as $plan)
+                                      {{-- @foreach ($plans as $plan)
                                               <h2 class="font-bold text-lg mb-3">{{ $plan['unique_plan'] }}</h2>
 
                                               <div class="overflow-x-auto mb-6">
@@ -135,8 +135,68 @@
                                                       </tbody>
                                                   </table>
                                               </div>
-                                          @endforeach
+                                      @endforeach --}}
 
+
+                                      <div x-data="plansComponent()" x-init="fetchPlans()" class="p-4">
+                                        <!-- Filters -->
+                                        <div class="flex flex-wrap gap-4 mb-4">
+                                            <div>
+                                                <label class="block text-sm font-medium">Size (MB)</label>
+                                                <input type="number" x-model="filters.size" @input.debounce.500ms="fetchPlans"
+                                                       class="border rounded px-2 py-1 w-32">
+                                            </div>
+                                    
+                                            <div>
+                                                <label class="block text-sm font-medium">Network</label>
+                                                <select x-model="filters.network" @change="fetchPlans" class="border rounded px-2 py-1">
+                                                    <option value="">All</option>
+                                                    @foreach(\App\Models\Network::all() as $network)
+                                                        <option value="{{ $network->id }}">{{ $network->network_name }}</option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                    
+                                            <div>
+                                                <label class="block text-sm font-medium">Validity (days)</label>
+                                                <input type="number" x-model="filters.validity" @input.debounce.500ms="fetchPlans"
+                                                       class="border rounded px-2 py-1 w-32">
+                                            </div>
+                                        </div>
+                                    
+                                        <!-- Results Table -->
+                                        <table class="table-auto w-full border-collapse border">
+                                            <thead class="bg-gray-200">
+                                                <tr>
+                                                    <th class="border px-3 py-2">Unique Plan</th>
+                                                    <th class="border px-3 py-2">Product Plan</th>
+                                                    <th class="border px-3 py-2">Size (MB)</th>
+                                                    <th class="border px-3 py-2">Validity (days)</th>
+                                                    <th class="border px-3 py-2">Network</th>
+                                                    <th class="border px-3 py-2">Automation</th>
+                                                    <th class="border px-3 py-2">Visible</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <template x-for="plan in plans" :key="plan.unique_plan">
+                                                    <template x-for="automation in plan.automations" :key="automation.product_plan">
+                                                        <tr>
+                                                            <td class="border px-3 py-2" x-text="plan.unique_plan"></td>
+                                                            <td class="border px-3 py-2" x-text="automation.product_plan"></td>
+                                                            <td class="border px-3 py-2" x-text="automation.size"></td>
+                                                            <td class="border px-3 py-2" x-text="automation.validity"></td>
+                                                            <td class="border px-3 py-2" x-text="automation.network"></td>
+                                                            <td class="border px-3 py-2" x-text="automation.automation"></td>
+                                                            <td class="border px-3 py-2" x-text="automation.visibility == 1 ? 'Yes' : 'No'"></td>
+                                                        </tr>
+                                                    </template>
+                                                </template>
+                                            </tbody>
+                                        </table>
+                                    
+                                        <!-- Loading -->
+                                        <div x-show="loading" class="mt-3 text-blue-600">Loading...</div>
+                                    </div>
 
 
 
@@ -287,4 +347,34 @@
 
        
 @endsection
+
+
+<script>
+  function plansComponent() {
+      return {
+          filters: {
+              size: '',
+              network: '',
+              validity: ''
+          },
+          plans: [],
+          loading: false,
+  
+          fetchPlans() {
+              this.loading = true;
+              let params = new URLSearchParams(this.filters).toString();
+  
+              fetch("{{ route('admin.unique_product_plans.index') }}?" + params, {
+                  headers: { 'X-Requested-With': 'XMLHttpRequest' }
+              })
+              .then(res => res.json())
+              .then(data => {
+                  this.plans = data.plans;
+                  this.loading = false;
+              })
+              .catch(() => this.loading = false);
+          }
+      }
+  }
+  </script>
 
