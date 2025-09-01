@@ -184,10 +184,44 @@
                             },
                     
                             savePricing() {
-                                // handle form submission via AJAX or regular submit
-                                console.log('Saving:', this.planId, this.costPrice, this.prices);
-                                this.open = false;
+                                this.loading = true;
+
+                                let formData = new FormData();
+                                formData.append('plan_id', this.planId);
+                                formData.append('cost', this.costPrice);
+                                
+                                this.prices.forEach((price, index) => {
+                                    formData.append(`price${index+1}`, price);
+                                });
+
+                                // CSRF token (Laravel)
+                                formData.append('_token', document.querySelector('meta[name="csrf-token"]').getAttribute('content'));
+
+                                fetch({{route('admin.save_unique_plan_pricing')}}, {
+                                    method: 'POST',
+                                    body: formData
+                                })
+                                .then(res => res.json())
+                                .then(data => {
+                                    this.loading = false;
+                                    if (data.success) {
+                                        alert('Pricing updated successfully!');
+                                        this.open = false;
+                                        // optionally refresh your DataTable
+                                        if (window.LaravelDataTables) {
+                                            window.LaravelDataTables['plans-table'].ajax.reload(null, false);
+                                        }
+                                    } else {
+                                        alert('Error: ' + (data.message || 'Unknown error'));
+                                    }
+                                })
+                                .catch(err => {
+                                    this.loading = false;
+                                    console.error(err);
+                                    alert('Something went wrong!');
+                                });
                             }
+
                         }
                     }
                     </script>
