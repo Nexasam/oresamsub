@@ -286,6 +286,8 @@ Route::middleware(['set_locale'])->group(function () {
                 $lastkey = $checkunique->api_id ?? 0;
                 $nextcount = $lastkey + 1;
 
+                $mess = '';
+
                 foreach($generalproductplans as $key=>$productplan){
                     $size = $productplan->data_size_in_mb;
                     $validity = $productplan->validity_in_days;
@@ -313,13 +315,13 @@ Route::middleware(['set_locale'])->group(function () {
                         }  
                     }  
                     
-                    echo '<hr><hr>';
+                    echo $mess .= '<hr><hr>';
                 }
 
 
 
 
-                return $dataa;
+                echo $mess;
               
             });
 
