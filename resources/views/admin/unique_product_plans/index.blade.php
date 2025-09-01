@@ -122,6 +122,35 @@
                    </tbody>
                     </table>  
                     {{-- </div> --}}
+
+
+                    <div id="pricingModal" x-data="{ open: false, planId: null, planName: '', costPrice: 0 }"
+                      x-show="open" x-cloak class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+
+                    <div class="bg-white rounded-lg shadow-lg w-full max-w-2xl p-6">
+                      <h2 class="text-lg font-bold mb-4">Set Pricing for <span x-text="planName"></span></h2>
+                      <p class="text-sm text-gray-600 mb-2">Cost Price: ₦<span x-text="costPrice"></span></p>
+
+                      <div class="grid grid-cols-2 gap-3">
+                        <template x-for="i in 12" :key="i">
+                          <div>
+                            <label class="block text-xs font-medium">Price @ Slot <span x-text="i"></span></label>
+                            <input type="number" x-model="pricing[i]" class="w-full border rounded px-2 py-1">
+                          </div>
+                        </template>
+                      </div>
+
+                      <div class="mt-4 flex justify-end gap-2">
+                        <button @click="open = false" class="px-3 py-1 text-sm bg-gray-200 rounded hover:bg-gray-300">Cancel</button>
+                        <button @click="savePricing()" class="px-3 py-1 text-sm bg-green-600 text-white rounded hover:bg-green-700">Save</button>
+                      </div>
+                    </div>
+                  </div>
+
+
+
+
+
                   </div>
                 </div>
               </div>
@@ -202,4 +231,34 @@
 
        
 @endsection
+
+
+<script>
+function openPricingModal(id, name, costPrice) {
+    const modal = document.getElementById('pricingModal');
+    const alpine = Alpine.$data(modal);
+
+    alpine.open = true;
+    alpine.planId = id;
+    alpine.planName = name;
+    alpine.costPrice = costPrice;
+    alpine.pricing = {}; // reset inputs
+}
+
+// Example save function (AJAX)
+function savePricing() {
+    const modal = document.getElementById('pricingModal');
+    const alpine = Alpine.$data(modal);
+
+    fetch(`/admin/unique-plans/${alpine.planId}/pricing`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': '{{ csrf_token() }}' },
+        body: JSON.stringify({ pricing: alpine.pricing })
+    }).then(res => res.json()).then(res => {
+        alert('Pricing saved!');
+        alpine.open = false;
+    });
+}
+
+</script>
 

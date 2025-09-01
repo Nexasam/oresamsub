@@ -98,7 +98,21 @@ class UniqueProductPlansController extends Controller
         return $datad['id'];
         })
         ->addColumn('product_id',function($datad){
-            return $datad['unique_plan'];
+            $unique_plan = $datad['unique_plan'];
+
+            $id = $datad['id'];
+            $unique_plan = htmlspecialchars($datad['unique_plan'], ENT_QUOTES, 'UTF-8');
+            $cost_price = htmlspecialchars($datad['cost_price'] ?? '0', ENT_QUOTES, 'UTF-8'); // assuming cost_price field exists
+
+            return '
+                '.$unique_plan.'<br>
+                <button 
+                    class="px-3 py-1 text-xs bg-indigo-600 text-white rounded hover:bg-indigo-700"
+                    onclick="openPricingModal(' . $id . ', \'' . $unique_plan . '\', \'' . $cost_price . '\')">
+                    Set Pricing
+                </button>
+            ';
+
         })
         ->addColumn('size',function($datad){
            return $datad['data_size_in_mb'];
