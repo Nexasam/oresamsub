@@ -294,8 +294,7 @@ Route::middleware(['set_locale'])->group(function () {
                     $cost_price = $productplan->cost_price;
                  
                    
-                    $associated_automationplans = ProductPlan::where('product_id',$product_id)
-                    ->where('validity_in_days',$validity)
+                    $associated_automationplans = ProductPlan::where('validity_in_days',$validity)
                     ->where('data_size_in_mb',$size)
                     ->get(); 
 
@@ -304,7 +303,8 @@ Route::middleware(['set_locale'])->group(function () {
                     if(count($associated_automationplans) <= 0){
                         foreach($associated_automationplans as $keyy=>$associated_automationplan){
                             $getnetworkid = $associated_automationplan->product_plan_category->network->id;
-                            if($getnetworkid == $network_id){
+                            $productid = $associated_automationplan->product_plan_category->product->id;
+                            if($getnetworkid == $network_id && $productid == $product_id){
                                 $dataa[$keyy]['product_plan_name'] = $associated_automationplan->product_plan_name;
                                 $dataa[$keyy]['data_size_in_mb'] = $associated_automationplan->data_size_in_mb;
                                 $dataa[$keyy]['validity_in_days'] = $associated_automationplan->validity_in_days;
