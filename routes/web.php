@@ -243,7 +243,7 @@ Route::middleware(['set_locale'])->group(function () {
                             if($cost_price > $checkunique_plan->cost_price){
                                
                             }else{
-                                $cost_price = $checkunique_plan->cost_price + 200;
+                                $cost_price = (int) $checkunique_plan->cost_price + 200;
                             }
 
                             $dataupp['cost_price'] = $cost_price;
