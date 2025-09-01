@@ -565,7 +565,8 @@ Route::middleware(['set_locale'])->group(function () {
 
 
 
-
+            
+            Route::middleware(['auth','verified','admin'])->post('admin/save_unique_plan_pricing', [UniqueProductPlansController::class, 'save_unique_plan_pricing'])->name('admin.save_unique_plan_pricing');
             Route::middleware(['auth','verified','admin'])->get('admin/unique_product_plans/index', [UniqueProductPlansController::class, 'index'])->name('admin.unique_product_plans.index');
             Route::middleware(['auth','verified','admin'])->get('admin/unique_product_plans/fetch', [UniqueProductPlansController::class, 'fetch'])->name('admin.unique_product_plans.admin_fetch_unique_product_plans');
 

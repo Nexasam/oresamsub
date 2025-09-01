@@ -214,17 +214,17 @@
 
           let formData = new FormData(this);
 
-          // fetch("{{ route('admin.save-pricing') }}", {
-          //     method: "POST",
-          //     body: formData
-          // })
-          // .then(res => res.json())
-          // .then(data => {
-          //     alert(data.message);
-          //     closePricingModal();
-          //     $('#yourDatatableId').DataTable().ajax.reload();
-          // })
-          // .catch(err => console.error(err));
+          fetch("{{ route('admin.save_unique_plan_pricing') }}", {
+              method: "POST",
+              body: formData
+          })
+          .then(res => res.json())
+          .then(data => {
+              alert(data.message);
+              closePricingModal();
+              $('#yourDatatableId').DataTable().ajax.reload();
+          })
+          .catch(err => console.error(err));
       });
 
     </script> 
