@@ -317,8 +317,10 @@ Route::middleware(['set_locale'])->group(function () {
                             }     
                         }
                         $data[$keyy]['automations'] = $dataa;
-                    }  
+                    }
                     
+                    
+                    $dataa= [];
                 }
 
 
