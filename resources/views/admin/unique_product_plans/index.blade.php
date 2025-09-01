@@ -72,29 +72,51 @@
                                       <div x-data="plansComponent()" x-init="fetchPlans()" class="p-4">
                                         <!-- Filters -->
                                         <div class="flex flex-wrap gap-4 mb-4">
-                                          <div x-data="{ customSize: '' }">
-                                            <label class="block text-sm font-medium">Size (MB)</label>
-                                            <select x-model="filters.size" @change="if($event.target.value !== 'other'){ customSize=''; fetchPlans(); }"
-                                                    class="border rounded px-2 py-1 w-40">
-                                                <option value="">All</option>
-                                                <option value="500">500 MB</option>
-                                                <option value="1000">1,000 MB</option>
-                                                <option value="2000">2,000 MB</option>
-                                                <option value="3000">3,000 MB</option>
-                                                <option value="5000">5,000 MB</option>
-                                                <option value="10000">10,000 MB</option>
-                                                <option value="other">Other</option>
-                                            </select>
-                                        
-                                            <!-- Show input only if "Other" is selected -->
-                                            <template x-if="filters.size === 'other'">
-                                                <input type="number" x-model="customSize" @input.debounce.500ms="
-                                                    filters.size = customSize;
-                                                    fetchPlans();
-                                                " placeholder="Enter size in MB"
-                                                   class="border rounded px-2 py-1 w-40 mt-2">
-                                            </template>
-                                        </div>
+                                           {{-- <div x-data="{ customSize: '' }">
+                                                <label class="block text-sm font-medium">Size (MB)</label>
+                                                <select x-model="filters.size" @change="if($event.target.value !== 'other'){ customSize=''; fetchPlans(); }"
+                                                        class="border rounded px-2 py-1 w-40">
+                                                    <option value="">All</option>
+                                                    <option value="500">500 MB</option>
+                                                    <option value="1000">1,000 MB</option>
+                                                    <option value="2000">2,000 MB</option>
+                                                    <option value="3000">3,000 MB</option>
+                                                    <option value="5000">5,000 MB</option>
+                                                    <option value="10000">10,000 MB</option>
+                                                    <option value="other">Other</option>
+                                                </select>
+                                            
+                                                <!-- Show input only if "Other" is selected -->
+                                                <template x-if="filters.size === 'other'">
+                                                    <input type="number" x-model="customSize" @input.debounce.500ms="
+                                                        filters.size = customSize;
+                                                        fetchPlans();
+                                                    " placeholder="Enter size in MB"
+                                                      class="border rounded px-2 py-1 w-40 mt-2">
+                                                </template>
+                                            </div> --}}
+
+                                            <div>
+                                              <label class="block text-sm font-medium">Size (MB)</label>
+                                              <select x-model="filters.size" @change="updateSize($event)"
+                                                      class="border rounded px-2 py-1 w-40">
+                                                  <option value="">All</option>
+                                                  <option value="500">500 MB</option>
+                                                  <option value="1000">1,000 MB</option>
+                                                  <option value="2000">2,000 MB</option>
+                                                  <option value="3000">3,000 MB</option>
+                                                  <option value="5000">5,000 MB</option>
+                                                  <option value="10000">10,000 MB</option>
+                                                  <option value="other">Other</option>
+                                              </select>
+                                            
+                                              <!-- Show input only if "Other" is selected -->
+                                              <template x-if="filters.size === 'other'">
+                                                  <input type="number" x-model="customSize" @input.debounce.500ms="fetchPlans"
+                                                         placeholder="Enter size in MB"
+                                                         class="border rounded px-2 py-1 w-40 mt-2">
+                                              </template>
+                                            </div>
                                         
                                     
                                             <div>
@@ -367,6 +389,16 @@
               }
           },
           
+          // updateSize(event) {
+          //     if (event.target.value === 'other') {
+          //         this.filters.size = 'other';
+          //     } else {
+          //         this.filters.size = event.target.value;
+          //         this.customSize = '';
+          //         this.fetchPlans();
+          //     }
+          // }
+
           updateSize(event) {
               if (event.target.value === 'other') {
                   this.filters.size = 'other';
