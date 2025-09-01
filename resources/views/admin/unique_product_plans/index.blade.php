@@ -96,7 +96,7 @@
                                                 </template>
                                             </div> --}}
 
-                                            <div>
+                                            {{-- <div>
                                               <label class="block text-sm font-medium">Size (MB)</label>
                                               <select x-model="filters.size" @change="updateSize($event)"
                                                       class="border rounded px-2 py-1 w-40">
@@ -117,6 +117,31 @@
                                                          class="border rounded px-2 py-1 w-40 mt-2">
                                               </template>
                                             </div>
+                                         --}}
+
+                                         <div>
+                                          <label class="block text-sm font-medium">Size (MB)</label>
+                                          <select x-model="filters.size" @change="updateSize($event)"
+                                                  class="border rounded px-2 py-1 w-40">
+                                              <option value="">All</option>
+                                              <option value="500">500 MB</option>
+                                              <option value="1000">1,000 MB</option>
+                                              <option value="2000">2,000 MB</option>
+                                              <option value="3000">3,000 MB</option>
+                                              <option value="5000">5,000 MB</option>
+                                              <option value="10000">10,000 MB</option>
+                                              <option value="other">Other</option>
+                                          </select>
+                                        
+                                          <!-- Show input only if "Other" is selected -->
+                                          <template x-if="filters.size === 'other'">
+                                              <input type="number"
+                                                     x-model="customSize"
+                                                     @input.debounce.500ms="applyCustomSize"
+                                                     placeholder="Enter size in MB"
+                                                     class="border rounded px-2 py-1 w-40 mt-2">
+                                          </template>
+                                        </div>
                                         
                                     
                                             <div>
