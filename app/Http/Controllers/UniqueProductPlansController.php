@@ -110,13 +110,14 @@ class UniqueProductPlansController extends Controller
             return $data['network_id'];
          })
          ->addColumn('automations', function ($data) {
-            $rows = [];
+            // $rows = [];
         
-            foreach ($data['automations'] as $a) {
-                $rows[] = $a['automation'] . ' (' . $a['network'] . ', ' . $a['size'] . 'MB, ' . $a['validity'] . ' day(s))';
-            }
+            // foreach ($data['automations'] as $a) {
+            //     $rows[] = $a['automation'] . ' (' . $a['network'] . ', ' . $a['size'] . 'MB, ' . $a['validity'] . ' day(s))';
+            // }
         
-            return implode('<br>', $rows); // show each on new line
+            // return implode('<br>', $rows); // show each on new line
+            return 1;
         })
          ->addColumn('visibility',function($data){
            $visibility = $data['visibility'];
