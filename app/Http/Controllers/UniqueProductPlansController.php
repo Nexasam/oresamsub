@@ -109,7 +109,7 @@ class UniqueProductPlansController extends Controller
             return $data['network_id'];
          })
         ->addColumn('automation',function($data){
-           $aut = $data['automation'];
+           $aut = $data['automations'];
            foreach($aut as $a){
             $aaa[] = $a['product_plan']['automation'];
            }
