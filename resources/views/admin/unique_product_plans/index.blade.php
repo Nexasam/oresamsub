@@ -165,38 +165,50 @@
                                         </tbody>
                                       </table>
                                     
+                                        <!-- Pagination -->
+                                        {{-- <div class="flex justify-between items-center mt-4" x-show="pagination.last_page > 1">
+                                            <button @click="changePage(pagination.current_page - 1)"
+                                                    :disabled="pagination.current_page === 1"
+                                                    class="px-3 py-1 bg-gray-200 rounded disabled:opacity-50">Prev</button>
                                     
-                                    <!-- Numbered, centered pagination -->
-                                  <div class="flex justify-center mt-4 space-x-1" x-show="pagination.last_page > 1">
-                                    <!-- Prev -->
-                                    <button @click="changePage(pagination.current_page - 1)"
-                                            :disabled="pagination.current_page === 1"
-                                            class="px-3 py-1 rounded border bg-gray-100 disabled:opacity-50">
-                                        ‹
-                                    </button>
-
-                                    <!-- Page Numbers (for small-last_page this renders all; we can add ellipsis later if needed) -->
-                                    <template x-for="page in Array.from({length: pagination.last_page}, (_, i) => i + 1)" :key="page">
-                                        <button @click="changePage(page)"
-                                                class="px-3 py-1 rounded border"
-                                                :class="page === pagination.current_page ? 'bg-blue-500 text-white' : 'bg-white hover:bg-gray-100'">
-                                            <span x-text="page"></span>
+                                            <span>Page <span x-text="pagination.current_page"></span> of <span x-text="pagination.last_page"></span></span>
+                                    
+                                            <button @click="changePage(pagination.current_page + 1)"
+                                                    :disabled="pagination.current_page === pagination.last_page"
+                                                    class="px-3 py-1 bg-gray-200 rounded disabled:opacity-50">Next</button>
+                                        </div>
+                                        --}}
+                                        
+                                        <!-- Pagination -->
+                                      <div class="flex justify-center mt-4 space-x-1" x-show="pagination.last_page > 1">
+                                        <!-- Prev -->
+                                        <button @click="changePage(pagination.current_page - 1)"
+                                                :disabled="pagination.current_page === 1"
+                                                class="px-3 py-1 rounded border bg-gray-100 disabled:opacity-50">
+                                            ‹
                                         </button>
-                                    </template>
 
-                                    <!-- Next -->
-                                    <button @click="changePage(pagination.current_page + 1)"
-                                            :disabled="pagination.current_page === pagination.last_page"
-                                            class="px-3 py-1 rounded border bg-gray-100 disabled:opacity-50">
-                                        ›
-                                    </button>
-                                  </div>
+                                        <!-- Page Numbers -->
+                                        <template x-for="page in Array.from({length: pagination.last_page}, (_, i) => i + 1)" :key="page">
+                                            <button @click="changePage(page)"
+                                                    class="px-3 py-1 rounded border"
+                                                    :class="page === pagination.current_page ? 'bg-blue-500 text-white' : 'bg-white hover:bg-gray-100'">
+                                                <span x-text="page"></span>
+                                            </button>
+                                        </template>
 
-                                  <!-- Loading -->
-                                  <div x-show="loading" class="mt-3 text-blue-600">Loading...</div>
-                                    
-                                    
-                                    
+                                        <!-- Next -->
+                                        <button @click="changePage(pagination.current_page + 1)"
+                                                :disabled="pagination.current_page === pagination.last_page"
+                                                class="px-3 py-1 rounded border bg-gray-100 disabled:opacity-50">
+                                            ›
+                                        </button>
+                                      </div>
+
+                                        
+                                        
+                                        <!-- Loading -->
+                                        <div x-show="loading" class="mt-3 text-blue-600">Loading...</div>
                                     </div>
 
 
