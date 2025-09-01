@@ -167,33 +167,33 @@
                                     
                                     
                                     <!-- Numbered, centered pagination -->
-                                    <div class="flex justify-center mt-4 space-x-1" x-show="pagination.last_page > 1">
-                                      <!-- Prev -->
-                                      <button @click="changePage(pagination.current_page - 1)"
-                                              :disabled="pagination.current_page === 1"
-                                              class="px-3 py-1 rounded border bg-gray-100 disabled:opacity-50">
-                                          ‹
-                                      </button>
+                                  <div class="flex justify-center mt-4 space-x-1" x-show="pagination.last_page > 1">
+                                    <!-- Prev -->
+                                    <button @click="changePage(pagination.current_page - 1)"
+                                            :disabled="pagination.current_page === 1"
+                                            class="px-3 py-1 rounded border bg-gray-100 disabled:opacity-50">
+                                        ‹
+                                    </button>
 
-                                      <!-- Page Numbers (for small-last_page this renders all; we can add ellipsis later if needed) -->
-                                      <template x-for="page in Array.from({length: pagination.last_page}, (_, i) => i + 1)" :key="page">
-                                          <button @click="changePage(page)"
-                                                  class="px-3 py-1 rounded border"
-                                                  :class="page === pagination.current_page ? 'bg-blue-500 text-white' : 'bg-white hover:bg-gray-100'">
-                                              <span x-text="page"></span>
-                                          </button>
-                                      </template>
+                                    <!-- Page Numbers (for small-last_page this renders all; we can add ellipsis later if needed) -->
+                                    <template x-for="page in Array.from({length: pagination.last_page}, (_, i) => i + 1)" :key="page">
+                                        <button @click="changePage(page)"
+                                                class="px-3 py-1 rounded border"
+                                                :class="page === pagination.current_page ? 'bg-blue-500 text-white' : 'bg-white hover:bg-gray-100'">
+                                            <span x-text="page"></span>
+                                        </button>
+                                    </template>
 
-                                      <!-- Next -->
-                                      <button @click="changePage(pagination.current_page + 1)"
-                                              :disabled="pagination.current_page === pagination.last_page"
-                                              class="px-3 py-1 rounded border bg-gray-100 disabled:opacity-50">
-                                          ›
-                                      </button>
-                                    </div>
+                                    <!-- Next -->
+                                    <button @click="changePage(pagination.current_page + 1)"
+                                            :disabled="pagination.current_page === pagination.last_page"
+                                            class="px-3 py-1 rounded border bg-gray-100 disabled:opacity-50">
+                                        ›
+                                    </button>
+                                  </div>
 
-                                    <!-- Loading -->
-                                    <div x-show="loading" class="mt-3 text-blue-600">Loading...</div>
+                                  <!-- Loading -->
+                                  <div x-show="loading" class="mt-3 text-blue-600">Loading...</div>
                                     
                                     
                                     
@@ -303,6 +303,7 @@
 
        
 @endsection
+
 <script>
   function plansComponent() {
       return {
@@ -315,27 +316,21 @@
           pagination: { total: 0, per_page: 10, current_page: 1, last_page: 1 },
           loading: false,
   
-          async fetchPlans(page = 1) {
+          fetchPlans(page = 1) {
               this.loading = true;
               this.pagination.current_page = page;
-              const params = new URLSearchParams({ ...this.filters, page }).toString();
+              let params = new URLSearchParams({ ...this.filters, page }).toString();
   
-              try {
-                  const res = await fetch("{{ route('admin.unique_product_plans.index') }}?" + params, {
-                      headers: { 'X-Requested-With': 'XMLHttpRequest' }
-                  });
-                  const data = await res.json();
-  
-                  // Ensure each plan has a `show` flag (default visible)
-                  this.plans = (data.plans || []).map(p => ({ ...p, show: true }));
-  
-                  // Pagination info from controller
-                  this.pagination = data.pagination || { total: 0, per_page: 10, current_page: 1, last_page: 1 };
-              } catch (e) {
-                  console.error(e);
-              } finally {
+              fetch("{{ route('admin.unique_product_plans.index') }}?" + params, {
+                  headers: { 'X-Requested-With': 'XMLHttpRequest' }
+              })
+              .then(res => res.json())
+              .then(data => {
+                  this.plans = data.plans;
+                  this.pagination = data.pagination;
                   this.loading = false;
-              }
+              })
+              .catch(() => this.loading = false);
           },
   
           changePage(page) {
@@ -346,4 +341,3 @@
       }
   }
   </script>
-  
