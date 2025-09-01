@@ -98,7 +98,7 @@ class UniqueProductPlansController extends Controller
         return $datad['id'];
         })
         ->addColumn('product_id',function($datad){
-            return $datad['product_id'];
+            return $datad['unique_plan'];
         })
         ->addColumn('size',function($datad){
            return $datad['data_size_in_mb'];
@@ -109,16 +109,6 @@ class UniqueProductPlansController extends Controller
         ->addColumn('network_id',function($datad){
             return $datad['network_id'];
          })
-         ->addColumn('automations', function ($datad) {
-            $rows = [];
-        
-            foreach ($datad['automations'] as $a) {
-                $rows[] = $a['automation'] . ' (' . $a['network'] . ', ' . $a['size'] . 'MB, ' . $a['validity'] . ' day(s))';
-            }
-        
-            return implode('<br>', $rows); // show each on new line
-        
-        })
         ->addColumn('automations', function ($datad) {
             // safety checks
             if (empty($datad['automations']) || !is_array($datad['automations'])) {
@@ -173,7 +163,21 @@ class UniqueProductPlansController extends Controller
               </div>
             ';
         })
+        ->addColumn('visibility', function ($datad) {
+            $rows = [];
         
+            $visibility = $datad['visibility'] ?? null;
+        
+            if ($visibility === '1' || $visibility === 1) {
+                $rows[] = '<span class="inline-flex items-center px-2 py-1 text-xs font-medium rounded-full bg-green-100 text-green-800 shadow-sm">Visible</span>';
+            } elseif ($visibility === '0' || $visibility === 0) {
+                $rows[] = '<span class="inline-flex items-center px-2 py-1 text-xs font-medium rounded-full bg-red-100 text-red-800 shadow-sm">Hidden</span>';
+            } else {
+                $rows[] = '<span class="inline-flex items-center px-2 py-1 text-xs font-medium rounded-full bg-gray-100 text-gray-600 shadow-sm">Unknown</span>';
+            }
+        
+            return implode('<br>', $rows);
+        })
         ->escapeColumns([])
         ->make(true);
 
