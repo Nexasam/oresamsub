@@ -247,18 +247,19 @@
       }
 
       // Example save function (AJAX)
-      function savePricing() {
-          const modal = document.getElementById('pricingModal');
-          const alpine = Alpine.$data(modal);
+      // function savePricing() {
+      //     const modal = document.getElementById('pricingModal');
+      //     const alpine = Alpine.$data(modal);
 
-          fetch(`/admin/unique-plans/${alpine.planId}/pricing`, {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': '{{ csrf_token() }}' },
-              body: JSON.stringify({ pricing: alpine.pricing })
-          }).then(res => res.json()).then(res => {
-              alert('Pricing saved!');
-              alpine.open = false;
-          });
+         
+      //     fetch(`/admin/unique-plans/${alpine.planId}/pricing`, {
+      //         method: 'POST',
+      //         headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': '{{ csrf_token() }}' },
+      //         body: JSON.stringify({ pricing: alpine.pricing })
+      //     }).then(res => res.json()).then(res => {
+      //         alert('Pricing saved!');
+      //         alpine.open = false;
+      //     });
       }
     </script> 
 @endpush
