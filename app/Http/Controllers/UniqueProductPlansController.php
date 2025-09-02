@@ -287,12 +287,36 @@ class UniqueProductPlansController extends Controller
 
          })
          ->addColumn('automations', function ($datad) {
+            // $dataaa = [];
+            // $product_plans = $datad->product_plans;
+            // foreach($product_plans as $key=>$pp){
+            //     $dataaa[] = $pp->automation->automation_name;
+            // }
+            // return json_encode($dataaa);
+
             $dataaa = [];
             $product_plans = $datad->product_plans;
-            foreach($product_plans as $key=>$pp){
-                $dataaa[] = $pp->automation->automation_name;
+
+            foreach ($product_plans as $pp) {
+                // Safety check: make sure automation exists
+                $automationName = $pp->automation->automation_name ?? 'N/A';
+
+                $dataaa[] = '
+                    <div class="flex items-center justify-between gap-2 py-1">
+                        <span class="font-medium">'.$automationName.'</span>
+                        <span class="text-sm text-gray-600">₦'.$pp->costprice.'</span>
+                        <button 
+                            class="px-2 py-1 text-xs text-white bg-blue-600 rounded hover:bg-blue-700 update-btn"
+                            data-id="'.$pp->id.'"
+                        >
+                            Update
+                        </button>
+                    </div>
+                ';
             }
-            return json_encode($dataaa);
+
+            return implode('', $dataaa);
+
            
         })
         
