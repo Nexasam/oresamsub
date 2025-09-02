@@ -274,7 +274,7 @@ class UniqueProductPlansController extends Controller
             return $datad['id'];
         })
         ->addColumn('product_id',function($datad){
-            return $datad->product_name ?? 'nil';
+            return $datad->product_plan_name ?? 'nil';
         })
         ->addColumn('size',function($datad){
             return number_format($datad->data_size_in_mb).'MB  ('.($datad->data_size_in_mb/1000).'GB)';
