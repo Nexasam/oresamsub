@@ -255,7 +255,7 @@ class UniqueProductPlansController extends Controller
 
     public function fetch(Request $request){
 
-       $productplans = UniqueProductPlan::with('product_plans')
+       $productplans = UniqueProductPlan::with('product_plans.automation')
         ->orderByRaw("CASE WHEN data_size_in_mb < 500 THEN 1 ELSE 0 END ASC")
         ->orderBy('data_size_in_mb', 'asc')
         ->orderBy('validity_in_days', 'asc')
@@ -290,7 +290,7 @@ class UniqueProductPlansController extends Controller
             $dataaa = [];
             $product_plans = $datad->product_plans;
             foreach($product_plans as $key=>$pp){
-                $dataaa[] = $pp;
+                $dataaa[] = $pp->automation->automation_name;
             }
             return json_encode($dataaa);
            
