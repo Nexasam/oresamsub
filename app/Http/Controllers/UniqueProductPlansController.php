@@ -277,8 +277,48 @@ class UniqueProductPlansController extends Controller
             $productName = $datad->product_plan_name ?? 'nil';
             $productId   = $datad->id;
         
+            // vendors
+            $vendorRows = '';
+            foreach ($datad->product_plans as $pp) {
+                $automationName = $pp->automation->automation_name ?? 'N/A';
+                $apiid = $pp->automation_product_plan_id ?? 'N/A';
+        
+                $vendorRows .= '
+                    <div class="flex items-center justify-between bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 mb-2">
+                        <div>
+                            <p class="text-sm font-semibold text-gray-800">'.$automationName.' <span class="text-xs text-gray-500">(API: '.$apiid.')</span></p>
+                            <input 
+                                type="number" 
+                                value="'.$pp->cost_price.'" 
+                                class="mt-1 w-28 px-2 py-1 text-xs border rounded-md focus:ring focus:ring-blue-300 cost-price-input" 
+                                data-vendor-id="'.$pp->id.'"
+                            />
+                        </div>
+                    </div>
+                ';
+            }
+        
+            // unique plan prices (price_1 - price_12)
+            $uniquePrices = '';
+            for ($i = 1; $i <= 12; $i++) {
+                $field = "price_$i";
+                $value = $datad->$field ?? '';
+                $uniquePrices .= '
+                    <div class="flex items-center justify-between mb-2">
+                        <label class="text-sm font-medium text-gray-700">Price '.$i.'</label>
+                        <input 
+                            type="number" 
+                            value="'.$value.'" 
+                            class="ml-2 w-32 px-2 py-1 text-xs border rounded-md focus:ring focus:ring-blue-300 unique-price-input" 
+                            data-field="'.$field.'" 
+                            data-id="'.$productId.'"
+                        />
+                    </div>
+                ';
+            }
+        
             return '
-                <div x-data="{ openModal: false, name: \''.$productName.'\' }">
+                <div x-data="{ openModal: false }">
                     <!-- Trigger -->
                     <button 
                         @click="openModal = true" 
@@ -293,14 +333,20 @@ class UniqueProductPlansController extends Controller
                         x-cloak 
                         class="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50"
                     >
-                        <div class="bg-white rounded-lg shadow-lg w-96 p-6">
-                            <h2 class="text-lg font-semibold mb-4">Edit Product Name</h2>
+                        <div class="bg-white rounded-lg shadow-lg w-[500px] max-h-[90vh] overflow-y-auto p-6">
+                            <h2 class="text-lg font-semibold mb-4">Edit '.$productName.'</h2>
         
-                            <input 
-                                type="text" 
-                                x-model="name" 
-                                class="w-full border px-3 py-2 rounded-md focus:ring focus:ring-blue-300 focus:outline-none"
-                            />
+                            <!-- Unique Plan Prices -->
+                            <div class="mb-6">
+                                <h3 class="text-md font-semibold mb-2">Unique Plan Prices</h3>
+                                '.$uniquePrices.'
+                            </div>
+        
+                            <!-- Vendor Plans -->
+                            <div>
+                                <h3 class="text-md font-semibold mb-2">Vendor Plans</h3>
+                                '.$vendorRows.'
+                            </div>
         
                             <div class="flex justify-end gap-2 mt-4">
                                 <button 
@@ -310,18 +356,17 @@ class UniqueProductPlansController extends Controller
                                     Cancel
                                 </button>
                                 <button 
-                                    @click="$dispatch(\'update-product\', {id: '.$productId.', name: name}); openModal = false;" 
+                                    @click="$dispatch(\'update-plan\', {id: '.$productId.'}); openModal = false;" 
                                     class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
                                 >
-                                    Save
+                                    Save Changes
                                 </button>
                             </div>
                         </div>
                     </div>
                 </div>
             ';
-        })
-        
+        })            
         ->addColumn('size',function($datad){
             return number_format($datad->data_size_in_mb).'MB  ('.($datad->data_size_in_mb/1000).'GB)';
         })
