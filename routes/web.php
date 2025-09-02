@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Services\UniqueProductPlansService;
 use App\Models\SiteImage;
 use App\Models\ProductPlan;
 use App\Models\SiteTemplate;
@@ -279,7 +280,9 @@ Route::middleware(['set_locale'])->group(function () {
             });
 
             Route::get('/test', function (): array {
-                //fetch unique plans: network, size, validity
+    
+                $updat = (new UniqueProductPlansService())->updateUniqueIdsInProductPlan();
+                return $updat;
                 dd('test');
             });
 
