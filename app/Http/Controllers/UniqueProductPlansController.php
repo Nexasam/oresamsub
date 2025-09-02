@@ -20,12 +20,14 @@ class UniqueProductPlansController extends Controller
     public function fetch(Request $request){
 
        
-        $query = UniqueProductPlan::query()
+
+        $query = UniqueProductPlan::with('product_plans')->query()
         ->orderByRaw("CASE WHEN data_size_in_mb < 500 THEN 1 ELSE 0 END ASC")
         ->orderBy('data_size_in_mb', 'asc')
         ->orderBy('validity_in_days', 'asc')
         ->orderBy('network_id', 'asc');
 
+        return $query;
            
         // Filters
         if ($request->filled('size') && is_numeric($request->size)) {

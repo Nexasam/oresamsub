@@ -279,66 +279,20 @@ Route::middleware(['set_locale'])->group(function () {
                 // dd('test');
             });
 
-            Route::get('/test', function (): array {
+            Route::get('/update-product-plans', function (): array {
     
                 $updat = (new UniqueProductPlansService())->updateUniqueIdsInProductPlan();
                 return $updat;
-                dd('test');
+                
             });
 
-            Route::get('/test2', function (): array {
-                //fetch unique plans: network, size, validity
-                $generalproductplans = UniqueProductPlan::all();
-
-                $checkunique = UniqueProductPlan::latest()->first();
-                $lastkey = $checkunique->api_id ?? 0;
-                $nextcount = $lastkey + 1;
-
-                $mess = '';
-
-                foreach($generalproductplans as $keyy=>$productplan){
-                    $size = $productplan->data_size_in_mb;
-                    $validity = $productplan->validity_in_days;
-                    $network_id = $productplan->network_id;
-                    $product_id = $productplan->product_id;
-                    $cost_price = $productplan->cost_price;
-                 
-                   
-                    $associated_automationplans = ProductPlan::with(['product_plan_category.network','product_plan_category.product','automation'])
-                    ->where('validity_in_days',$validity)
-                    ->where('data_size_in_mb',$size)
-                    ->get(); 
-
-                    $data[$keyy]['unique'] = $productplan->product_plan_name;
-                    //@tlest there should be one...
-                    if(count($associated_automationplans) > 0){
-                        foreach($associated_automationplans as $key=>$associated_automationplan){
-                            $getnetworkid = $associated_automationplan->product_plan_category->network->id ?? 'nil';
-                            $productid = $associated_automationplan->product_plan_category->product->id ?? 'nil';
-                            $sizee = $associated_automationplan->data_size_in_mb;
-                            $vall = $associated_automationplan->validity_in_days;
-                            if($getnetworkid == $network_id && $productid == $product_id && $size == $sizee && $validity == $vall){
-                                $dataa[$key]['pl'] = $associated_automationplan->product_plan_name;
-                                $dataa[$key]['size'] = $associated_automationplan->data_size_in_mb;
-                                $dataa[$key]['val'] = $associated_automationplan->validity_in_days;
-                                $dataa[$key]['automa'] = $associated_automationplan->automation->automation_name;
-                            }     
-                        }
-                        $data[$keyy]['automations'] = $dataa;
-                    }
-                    
-                    
-                    $dataa= [];
-                }
-
-
-
-
-                return [
-                    'message' => $data
-                ];
-              
+            Route::get('/test', function (): array {
+    
+              dd('test');
+                
             });
+
+
 
             Route::get('/delete_user_account', function () {
                 return view('auth.delete_account');
