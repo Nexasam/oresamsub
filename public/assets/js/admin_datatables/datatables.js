@@ -244,7 +244,7 @@ $(document).ready(function(){
                     searching: true,
                     bInfo: false,
                     bLengthChange: true,
-                    pageLength: 50,
+                    pageLength: 100,
                     ajax: root_url + 'admin/unique_product_plans/fetch?date_from='+date_from+'&&date_to='+date_to+'&&product_plan_category_filter='+product_plan_category_filter+'&&phone_recharged='+phone_recharged,
                     columns: [
                       {data: 'DT_RowIndex', name: 'DT_RowIndex'},
