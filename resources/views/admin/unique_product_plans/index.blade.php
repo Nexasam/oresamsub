@@ -212,74 +212,26 @@
 
 
 <script>
-document.addEventListener('alpine:init', () => {
-    Alpine.store('pricingModal', {
-        open: false,
-        planId: null,
-        planName: '',
-        costPrice: 0,
-        prices: Array(12).fill(''),
-        loading: false,
+document.addEventListener('update-product', function(e) {
+    let { id, name } = e.detail;
 
-        openModal(id, planName, costPrice, pricesArray) {
-            this.planId = id;
-            this.planName = planName;
-            this.costPrice = costPrice;
-            this.prices = pricesArray || Array(12).fill('');
-            this.open = true;
+    // Example: send via fetch or AJAX
+    fetch('/products/update-name/' + id, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
         },
-
-        closeModal() {
-            this.open = false;
-        },
-
-        savePricing() {
-            this.loading = true;
-
-            let formData = new FormData();
-            formData.append('plan_id', this.planId);
-            formData.append('cost', this.costPrice);
-
-            this.prices.forEach((price, index) => {
-                formData.append(`price${index+1}`, price);
-            });
-
-            // CSRF token
-            formData.append('_token', document.querySelector('meta[name="csrf-token"]').getAttribute('content'));
-
-            fetch("{{ route('admin.save_unique_plan_pricing') }}", {
-                method: 'POST',
-                body: formData
-            })
-            .then(res => res.json())
-            .then(data => {
-                this.loading = false;
-                alert('aa');
-                if (data.success) {
-                    alert('Pricing updated successfully!');
-                    this.open = false;
-
-                    // Refresh your DataTable
-                    if (window.LaravelDataTables && window.LaravelDataTables['admin_unique_product_plans_table']) {
-                        window.LaravelDataTables['admin_unique_product_plans_table'].ajax.reload(null, false);
-                    }
-                } else {
-                    alert('Error: ' + (data.message || 'Unknown error'));
-                }
-            })
-            .catch(err => {
-                this.loading = false;
-                console.error(err);
-                alert('Something went wrong!');
-            });
+        body: JSON.stringify({ name: name })
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.success) {
+            alert('Product updated!');
         }
     });
 });
 
-// Global JS function to open modal from your button
-function openPricingModal(id, planName, costPrice, pricesArray) {
-    Alpine.store('pricingModal').openModal(id, planName, costPrice, pricesArray);
-}
 </script>
 @endpush
 

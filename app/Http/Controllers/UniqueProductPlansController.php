@@ -273,9 +273,55 @@ class UniqueProductPlansController extends Controller
         ->addColumn('DT_RowIndex',function($datad){
             return $datad['id'];
         })
-        ->addColumn('product_id',function($datad){
-            return $datad->product_plan_name ?? 'nil';
+        ->addColumn('product_id', function($datad) {
+            $productName = $datad->product_plan_name ?? 'nil';
+            $productId   = $datad->id;
+        
+            return '
+                <div x-data="{ openModal: false, name: \''.$productName.'\' }">
+                    <!-- Trigger -->
+                    <button 
+                        @click="openModal = true" 
+                        class="text-blue-600 hover:underline font-medium"
+                    >
+                        '.$productName.'
+                    </button>
+        
+                    <!-- Modal -->
+                    <div 
+                        x-show="openModal" 
+                        x-cloak 
+                        class="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50"
+                    >
+                        <div class="bg-white rounded-lg shadow-lg w-96 p-6">
+                            <h2 class="text-lg font-semibold mb-4">Edit Product Name</h2>
+        
+                            <input 
+                                type="text" 
+                                x-model="name" 
+                                class="w-full border px-3 py-2 rounded-md focus:ring focus:ring-blue-300 focus:outline-none"
+                            />
+        
+                            <div class="flex justify-end gap-2 mt-4">
+                                <button 
+                                    @click="openModal = false" 
+                                    class="px-4 py-2 bg-gray-200 rounded-lg hover:bg-gray-300"
+                                >
+                                    Cancel
+                                </button>
+                                <button 
+                                    @click="$dispatch(\'update-product\', {id: '.$productId.', name: name}); openModal = false;" 
+                                    class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+                                >
+                                    Save
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            ';
         })
+        
         ->addColumn('size',function($datad){
             return number_format($datad->data_size_in_mb).'MB  ('.($datad->data_size_in_mb/1000).'GB)';
         })
@@ -288,37 +334,6 @@ class UniqueProductPlansController extends Controller
          })
          ->addColumn('automations', function ($datad) {
           
-            // $dataaa = [];
-            // $product_plans = $datad->product_plans;
-
-            // foreach ($product_plans as $pp) {
-            //     $automationName = $pp->automation->automation_name ?? 'N/A';
-            //     $apiid = $pp->automation_product_plan_id ?? 'N/A';
-            //     $dataaa[] = '
-            //     <div class="flex items-center justify-between bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 mb-2 shadow-sm">
-            //         <div>
-            //             <p class="text-sm font-semibold text-gray-800">'.$automationName.' api:'.$apiid.'</p>
-            //             <input 
-            //                 type="number" 
-            //                 value="'.$pp->cost_price.'" 
-            //                 class="mt-1 w-28 px-2 py-1 text-xs border rounded-md focus:ring focus:ring-blue-300 focus:outline-none cost-price-input" 
-            //                 data-id="'.$pp->id.'"
-            //             />
-            //         </div>
-            //         <button 
-            //             class="px-3 py-1.5 text-xs font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 focus:ring-2 focus:ring-blue-400 update-btn"
-            //             data-id="'.$pp->id.'"
-            //         >
-            //             Update
-            //         </button>
-            //     </div>
-            //     ';
-            
-            // }
-
-            // return implode('', $dataaa);
-
-
             $dataaa = [];
             $product_plans = $datad->product_plans;
 
