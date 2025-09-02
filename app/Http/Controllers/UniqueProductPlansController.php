@@ -287,8 +287,13 @@ class UniqueProductPlansController extends Controller
 
          })
          ->addColumn('automations', function ($datad) {
-            // safety checks
-           return 'ss';
+            $dataaa = [];
+            $product_plans = $datad->product_plans;
+            foreach($product_plans as $key=>$pp){
+                $dataaa[] = $pp;
+            }
+            return json_encode($dataaa);
+           
         })
         
         ->addColumn('visibility', function ($datad) {
