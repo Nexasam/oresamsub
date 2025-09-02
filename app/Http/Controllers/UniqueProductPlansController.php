@@ -274,16 +274,17 @@ class UniqueProductPlansController extends Controller
             return $datad['id'];
         })
         ->addColumn('product_id',function($datad){
-            return 'sdfsdfs';
+            return $datad->product->product_name ?? 'nil';
         })
         ->addColumn('size',function($datad){
-            return $datad['data_size_in_mb'];
+            return $datad->data_size_in_mb;
         })
         ->addColumn('validity',function($datad){
             return $datad['validity_in_days'];
          })
         ->addColumn('network_id',function($datad){
-            return $datad['network_id'];
+            return $datad->network->network_name ?? 'nil';
+
          })
          ->addColumn('automations', function ($datad) {
             // safety checks
