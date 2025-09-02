@@ -15,6 +15,8 @@ class UniqueProductPlansService{
 
     public function updateUniqueIdsInProductPlan(){
         $unique_plans = UniqueProductPlan::all();
+        $dataa = [];
+
         foreach($unique_plans as $key=>$unique_plan){
             //we want to update with the unique plan id
             $network_id = $unique_plan->network_id;
@@ -27,7 +29,6 @@ class UniqueProductPlansService{
             ->where('data_size_in_mb', $datasize)
             ->get();
 
-            $dataa = [];
 
             foreach ($associated_automationplans as $key => $associated_automationplan) {
                 $getnetworkid = $associated_automationplan->product_plan_category->network->id ?? null;
@@ -37,7 +38,7 @@ class UniqueProductPlansService{
                 $vall = $associated_automationplan->validity_in_days;
 
                 if ($getnetworkid == $network_id && $productid == $product_id && $datasize == $sizee && $validity == $vall) {
-                    $dataa[$key] = [
+                    $dataa[] = [
                         'product_plan' => $associated_automationplan->product_plan_name,
                         'size' => $sizee,
                         'validity' => $vall,
