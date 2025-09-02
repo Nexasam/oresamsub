@@ -276,14 +276,14 @@ class UniqueProductPlansController extends Controller
         ->addColumn('product_id', function($datad) {
             $productName = $datad->product_plan_name ?? 'nil';
             $productId   = $datad->id;
-        
+         
            // vendors
             // $vendorRows = '<div class="grid grid-cols-2 gap-3">';
             $vendorRows = '<div class="space-y-3">';
             foreach ($datad->product_plans as $pp) {
                 $automationName = $pp->automation->automation_name ?? 'N/A';
                 $apiid = $pp->automation_product_plan_id ?? 'N/A';
-                $active = $pp->active ?? 0; // assuming vendor plan has "active" column (1 = active, 0 = inactive)
+                $active = $pp->visibility ?? 0; // assuming vendor plan has "active" column (1 = active, 0 = inactive)
 
                 $statusToggle = '
                     <label class="inline-flex items-center cursor-pointer">
