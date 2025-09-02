@@ -25,7 +25,8 @@ class UniqueProductPlansController extends Controller
         ->orderByRaw("CASE WHEN data_size_in_mb < 500 THEN 1 ELSE 0 END ASC")
         ->orderBy('data_size_in_mb', 'asc')
         ->orderBy('validity_in_days', 'asc')
-        ->orderBy('network_id', 'asc');
+        ->orderBy('network_id', 'asc')
+        ->get();
 
         return $query;
            
