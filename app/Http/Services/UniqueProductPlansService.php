@@ -46,6 +46,10 @@ class UniqueProductPlansService{
                         'automation' => $associated_automationplan->automation->automation_name,
                         'network' => $network_namee,
                     ];
+
+                    $associated_automationplan->update([
+                        'unique_product_plan_id' => $$unique_plan->id
+                    ]);
                 }
             }
 
