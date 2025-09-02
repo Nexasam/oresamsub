@@ -278,24 +278,52 @@ class UniqueProductPlansController extends Controller
             $productId   = $datad->id;
         
            // vendors
-            $vendorRows = '<div class="grid grid-cols-2 gap-3">';
+            // $vendorRows = '<div class="grid grid-cols-2 gap-3">';
+            $vendorRows = '<div class="space-y-3">';
             foreach ($datad->product_plans as $pp) {
                 $automationName = $pp->automation->automation_name ?? 'N/A';
                 $apiid = $pp->automation_product_plan_id ?? 'N/A';
+                $active = $pp->active ?? 0; // assuming vendor plan has "active" column (1 = active, 0 = inactive)
+
+                $statusToggle = '
+                    <label class="inline-flex items-center cursor-pointer">
+                        <input type="checkbox" '.($active ? 'checked' : '').' 
+                            class="sr-only vendor-status" 
+                            data-vendor-id="'.$pp->id.'">
+                        <div class="w-10 h-5 bg-gray-300 rounded-full peer-checked:bg-green-500 relative">
+                            <div class="dot absolute left-1 top-1 w-3 h-3 bg-white rounded-full transition"></div>
+                        </div>
+                        <span class="ml-2 text-xs text-gray-600">'.($active ? 'Active' : 'Inactive').'</span>
+                    </label>
+                ';
 
                 $vendorRows .= '
-                    <div class="bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 shadow-sm">
-                        <p class="text-sm font-semibold text-gray-800">'.$automationName.' <span class="text-xs text-gray-500">(API: '.$apiid.')</span></p>
-                        <input 
-                            type="number" 
-                            value="'.$pp->cost_price.'" 
-                            class="mt-1 w-full px-2 py-1 text-xs border rounded-md focus:ring focus:ring-blue-300 cost-price-input" 
-                            data-vendor-id="'.$pp->id.'"
-                        />
+                    <div class="flex items-center justify-between bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 shadow-sm">
+                        <div>
+                            <p class="text-sm font-semibold text-gray-800">'.$automationName.' 
+                                <span class="text-xs text-gray-500">(API: '.$apiid.')</span>
+                            </p>
+                            <input 
+                                type="number" 
+                                value="'.$pp->cost_price.'" 
+                                class="mt-1 w-28 px-2 py-1 text-xs border rounded-md focus:ring focus:ring-blue-300 cost-price-input" 
+                                data-vendor-id="'.$pp->id.'"
+                            />
+                        </div>
+                        <div class="flex items-center gap-3">
+                            '.$statusToggle.'
+                            <button 
+                                class="px-3 py-1.5 text-xs font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 vendor-update-btn"
+                                data-vendor-id="'.$pp->id.'"
+                            >
+                                Update
+                            </button>
+                        </div>
                     </div>
                 ';
             }
             $vendorRows .= '</div>';
+
         
             // unique plan prices (price_1 - price_12)
             $uniquePrices = '';
