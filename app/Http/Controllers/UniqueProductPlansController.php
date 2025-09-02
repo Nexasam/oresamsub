@@ -288,35 +288,94 @@ class UniqueProductPlansController extends Controller
          })
          ->addColumn('automations', function ($datad) {
           
+            // $dataaa = [];
+            // $product_plans = $datad->product_plans;
+
+            // foreach ($product_plans as $pp) {
+            //     $automationName = $pp->automation->automation_name ?? 'N/A';
+            //     $apiid = $pp->automation_product_plan_id ?? 'N/A';
+            //     $dataaa[] = '
+            //     <div class="flex items-center justify-between bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 mb-2 shadow-sm">
+            //         <div>
+            //             <p class="text-sm font-semibold text-gray-800">'.$automationName.' api:'.$apiid.'</p>
+            //             <input 
+            //                 type="number" 
+            //                 value="'.$pp->cost_price.'" 
+            //                 class="mt-1 w-28 px-2 py-1 text-xs border rounded-md focus:ring focus:ring-blue-300 focus:outline-none cost-price-input" 
+            //                 data-id="'.$pp->id.'"
+            //             />
+            //         </div>
+            //         <button 
+            //             class="px-3 py-1.5 text-xs font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 focus:ring-2 focus:ring-blue-400 update-btn"
+            //             data-id="'.$pp->id.'"
+            //         >
+            //             Update
+            //         </button>
+            //     </div>
+            //     ';
+            
+            // }
+
+            // return implode('', $dataaa);
+
+
             $dataaa = [];
             $product_plans = $datad->product_plans;
 
-            foreach ($product_plans as $pp) {
-                $automationName = $pp->automation->automation_name ?? 'N/A';
-                $apiid = $pp->automation_product_plan_id ?? 'N/A';
+            if (count($product_plans)) {
                 $dataaa[] = '
-                <div class="flex items-center justify-between bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 mb-2 shadow-sm">
-                    <div>
-                        <p class="text-sm font-semibold text-gray-800">'.$automationName.' api:'.$apiid.'</p>
-                        <input 
-                            type="number" 
-                            value="'.$pp->cost_price.'" 
-                            class="mt-1 w-28 px-2 py-1 text-xs border rounded-md focus:ring focus:ring-blue-300 focus:outline-none cost-price-input" 
-                            data-id="'.$pp->id.'"
-                        />
-                    </div>
-                    <button 
-                        class="px-3 py-1.5 text-xs font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 focus:ring-2 focus:ring-blue-400 update-btn"
-                        data-id="'.$pp->id.'"
-                    >
-                        Update
-                    </button>
-                </div>
+                    <div x-data="{ open: false }" class="mb-4">
+                        <!-- Toggle Button -->
+                        <button 
+                            @click="open = !open" 
+                            class="w-full flex items-center justify-between px-4 py-2 bg-gray-200 text-gray-800 font-semibold rounded-md hover:bg-gray-300"
+                        >
+                            <span>Vendors ('.count($product_plans).')</span>
+                            <svg x-show="!open" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                            </svg>
+                            <svg x-show="open" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4"/>
+                            </svg>
+                        </button>
+
+                        <!-- Vendor Items -->
+                        <div x-show="open" x-collapse class="mt-2 space-y-2">
                 ';
-            
+
+                foreach ($product_plans as $pp) {
+                    $automationName = $pp->automation->automation_name ?? 'N/A';
+                    $apiid = $pp->automation_product_plan_id ?? 'N/A';
+
+                    $dataaa[] = '
+                        <div class="flex items-center justify-between bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 shadow-sm">
+                            <div>
+                                <p class="text-sm font-semibold text-gray-800">'.$automationName.' <span class="text-xs text-gray-500">API: '.$apiid.'</span></p>
+                                <input 
+                                    type="number" 
+                                    value="'.$pp->cost_price.'" 
+                                    class="mt-1 w-28 px-2 py-1 text-xs border rounded-md focus:ring focus:ring-blue-300 focus:outline-none cost-price-input" 
+                                    data-id="'.$pp->id.'"
+                                />
+                            </div>
+                            <button 
+                                class="px-3 py-1.5 text-xs font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 focus:ring-2 focus:ring-blue-400 update-btn"
+                                data-id="'.$pp->id.'"
+                            >
+                                Update
+                            </button>
+                        </div>
+                    ';
+                }
+
+                $dataaa[] = '
+                        </div>
+                    </div>
+                ';
             }
 
             return implode('', $dataaa);
+
 
 
            
