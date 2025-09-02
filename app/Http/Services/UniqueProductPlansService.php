@@ -48,7 +48,7 @@ class UniqueProductPlansService{
                     ];
 
                     $associated_automationplan->update([
-                        'unique_product_plan_id' => $$unique_plan->id
+                        'unique_product_plan_id' => $unique_plan->id
                     ]);
                 }
             }
