@@ -277,10 +277,10 @@ class UniqueProductPlansController extends Controller
             return $datad->product->product_name ?? 'nil';
         })
         ->addColumn('size',function($datad){
-            return $datad->data_size_in_mb;
+            return $datad->data_size_in_mb.'('.($datad->data_size_in_mb/1000).'GB)';
         })
         ->addColumn('validity',function($datad){
-            return $datad['validity_in_days'];
+            return $datad->validity_in_days;
          })
         ->addColumn('network_id',function($datad){
             return $datad->network->network_name ?? 'nil';
