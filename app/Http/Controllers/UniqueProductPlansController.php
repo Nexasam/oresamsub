@@ -21,7 +21,8 @@ class UniqueProductPlansController extends Controller
 
        
 
-        $query = UniqueProductPlan::with('product_plans')->query()
+        // ->query()
+        $query = UniqueProductPlan::with('product_plans')
         ->orderByRaw("CASE WHEN data_size_in_mb < 500 THEN 1 ELSE 0 END ASC")
         ->orderBy('data_size_in_mb', 'asc')
         ->orderBy('validity_in_days', 'asc')
