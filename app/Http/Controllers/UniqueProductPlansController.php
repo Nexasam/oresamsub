@@ -298,15 +298,16 @@ class UniqueProductPlansController extends Controller
             $product_plans = $datad->product_plans;
 
             foreach ($product_plans as $pp) {
-                // Safety check: make sure automation exists
                 $automationName = $pp->automation->automation_name ?? 'N/A';
 
                 $dataaa[] = '
-                    <div class="flex items-center justify-between gap-2 py-1">
-                        <span class="font-medium">'.$automationName.'</span>
-                        <span class="text-sm text-gray-600">₦'.$pp->costprice.'</span>
+                    <div class="flex items-center justify-between bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 mb-2 shadow-sm">
+                        <div>
+                            <p class="text-sm font-semibold text-gray-800">'.$automationName.'</p>
+                            <p class="text-xs text-gray-500">₦'.$pp->costprice.'</p>
+                        </div>
                         <button 
-                            class="px-2 py-1 text-xs text-white bg-blue-600 rounded hover:bg-blue-700 update-btn"
+                            class="px-3 py-1.5 text-xs font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 focus:ring-2 focus:ring-blue-400 update-btn"
                             data-id="'.$pp->id.'"
                         >
                             Update
@@ -316,6 +317,7 @@ class UniqueProductPlansController extends Controller
             }
 
             return implode('', $dataaa);
+
 
            
         })
