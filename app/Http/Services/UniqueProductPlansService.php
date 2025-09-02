@@ -37,7 +37,7 @@ class UniqueProductPlansService{
                 $vall = $associated_automationplan->validity_in_days;
 
                 if ($getnetworkid == $network_id && $productid == $product_id && $datasize == $sizee && $validity == $vall) {
-                    $dataa[] = [
+                    $dataa[$key] = [
                         'product_plan' => $associated_automationplan->product_plan_name,
                         'size' => $sizee,
                         'validity' => $vall,
