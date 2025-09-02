@@ -304,7 +304,7 @@ class UniqueProductPlansController extends Controller
                     <div class="flex items-center justify-between bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 mb-2 shadow-sm">
                         <div>
                             <p class="text-sm font-semibold text-gray-800">'.$automationName.'</p>
-                            <p class="text-xs text-gray-500">₦'.$pp->costprice.'</p>
+                            <p class="text-xs text-gray-500">₦'.$pp->cost_price.'</p>
                         </div>
                         <button 
                             class="px-3 py-1.5 text-xs font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 focus:ring-2 focus:ring-blue-400 update-btn"
