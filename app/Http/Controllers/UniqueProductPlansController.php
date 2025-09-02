@@ -287,33 +287,32 @@ class UniqueProductPlansController extends Controller
 
          })
          ->addColumn('automations', function ($datad) {
-            // $dataaa = [];
-            // $product_plans = $datad->product_plans;
-            // foreach($product_plans as $key=>$pp){
-            //     $dataaa[] = $pp->automation->automation_name;
-            // }
-            // return json_encode($dataaa);
-
+          
             $dataaa = [];
             $product_plans = $datad->product_plans;
 
             foreach ($product_plans as $pp) {
                 $automationName = $pp->automation->automation_name ?? 'N/A';
-
                 $dataaa[] = '
-                    <div class="flex items-center justify-between bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 mb-2 shadow-sm">
-                        <div>
-                            <p class="text-sm font-semibold text-gray-800">'.$automationName.'</p>
-                            <p class="text-xs text-gray-500">₦'.$pp->cost_price.'</p>
-                        </div>
-                        <button 
-                            class="px-3 py-1.5 text-xs font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 focus:ring-2 focus:ring-blue-400 update-btn"
+                <div class="flex items-center justify-between bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 mb-2 shadow-sm">
+                    <div>
+                        <p class="text-sm font-semibold text-gray-800">'.$automationName.'</p>
+                        <input 
+                            type="number" 
+                            value="'.$pp->cost_price.'" 
+                            class="mt-1 w-28 px-2 py-1 text-xs border rounded-md focus:ring focus:ring-blue-300 focus:outline-none cost-price-input" 
                             data-id="'.$pp->id.'"
-                        >
-                            Update
-                        </button>
+                        />
                     </div>
+                    <button 
+                        class="px-3 py-1.5 text-xs font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 focus:ring-2 focus:ring-blue-400 update-btn"
+                        data-id="'.$pp->id.'"
+                    >
+                        Update
+                    </button>
+                </div>
                 ';
+            
             }
 
             return implode('', $dataaa);
