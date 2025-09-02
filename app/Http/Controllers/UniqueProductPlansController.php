@@ -277,26 +277,25 @@ class UniqueProductPlansController extends Controller
             $productName = $datad->product_plan_name ?? 'nil';
             $productId   = $datad->id;
         
-            // vendors
-            $vendorRows = '';
+           // vendors
+            $vendorRows = '<div class="grid grid-cols-2 gap-3">';
             foreach ($datad->product_plans as $pp) {
                 $automationName = $pp->automation->automation_name ?? 'N/A';
                 $apiid = $pp->automation_product_plan_id ?? 'N/A';
-        
+
                 $vendorRows .= '
-                    <div class="flex items-center justify-between bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 mb-2">
-                        <div>
-                            <p class="text-sm font-semibold text-gray-800">'.$automationName.' <span class="text-xs text-gray-500">(API: '.$apiid.')</span></p>
-                            <input 
-                                type="number" 
-                                value="'.$pp->cost_price.'" 
-                                class="mt-1 w-28 px-2 py-1 text-xs border rounded-md focus:ring focus:ring-blue-300 cost-price-input" 
-                                data-vendor-id="'.$pp->id.'"
-                            />
-                        </div>
+                    <div class="bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 shadow-sm">
+                        <p class="text-sm font-semibold text-gray-800">'.$automationName.' <span class="text-xs text-gray-500">(API: '.$apiid.')</span></p>
+                        <input 
+                            type="number" 
+                            value="'.$pp->cost_price.'" 
+                            class="mt-1 w-full px-2 py-1 text-xs border rounded-md focus:ring focus:ring-blue-300 cost-price-input" 
+                            data-vendor-id="'.$pp->id.'"
+                        />
                     </div>
                 ';
             }
+            $vendorRows .= '</div>';
         
             // unique plan prices (price_1 - price_12)
             $uniquePrices = '';
