@@ -17,7 +17,7 @@ class UniqueProductPlansController extends Controller
     }
 
 
-    public function fetch(Request $request){
+    public function fetchold(Request $request){
 
        
 
@@ -29,82 +29,82 @@ class UniqueProductPlansController extends Controller
         ->orderBy('network_id', 'asc')
         ->get();
 
-        return $query;
+        // return $query;
            
         // Filters
-        if ($request->filled('size') && is_numeric($request->size)) {
-            $query->where('data_size_in_mb', $request->size);
-        }
+        // if ($request->filled('size') && is_numeric($request->size)) {
+        //     $query->where('data_size_in_mb', $request->size);
+        // }
 
-        if ($request->filled('network')) {
-            $query->where('network_id', $request->network);
-        }
+        // if ($request->filled('network')) {
+        //     $query->where('network_id', $request->network);
+        // }
 
-        if ($request->filled('validity')) {
-            $query->where('validity_in_days', $request->validity);
-        }
+        // if ($request->filled('validity')) {
+        //     $query->where('validity_in_days', $request->validity);
+        // }
 
 
-        $generalproductplans = $query->get(); // paginate instead of get()
+        // $generalproductplans = $query->get(); // paginate instead of get()
 
         $data = [];
     
-        foreach ($generalproductplans as $keyy => $productplan) {
-            $size = $productplan->data_size_in_mb;
-            $validity = $productplan->validity_in_days;
-            $network_id = $productplan->network_id;
-            $product_id = $productplan->product_id;
+        // foreach ($generalproductplans as $keyy => $productplan) {
+        //     $size = $productplan->data_size_in_mb;
+        //     $validity = $productplan->validity_in_days;
+        //     $network_id = $productplan->network_id;
+        //     $product_id = $productplan->product_id;
 
-            $associated_automationplans = ProductPlan::with(['product_plan_category.network','product_plan_category.product','automation'])
-                ->where('validity_in_days', $validity)
-                ->where('data_size_in_mb', $size)
-                ->get();
+        //     $associated_automationplans = ProductPlan::with(['product_plan_category.network','product_plan_category.product','automation'])
+        //         ->where('validity_in_days', $validity)
+        //         ->where('data_size_in_mb', $size)
+        //         ->get();
 
-            $data[$keyy]['id'] = $productplan->id;
-            $data[$keyy]['unique_plan'] = $productplan->product_plan_name;
-            $data[$keyy]['product_id'] = $productplan->product->product_id;
-            $data[$keyy]['network_id'] = $productplan->network->network_id;
-            $data[$keyy]['data_size_in_mb'] = $productplan->data_size_in_mb;
-            $data[$keyy]['validity_in_days'] = $productplan->validity_in_days;
-            $data[$keyy]['visibility'] = $productplan->visibility;
-            $data[$keyy]['cost_price'] = $productplan->cost_price;
-            $data[$keyy]['price_1'] = $productplan->price_1;
-            $data[$keyy]['price_2'] = $productplan->price_2;
-            $data[$keyy]['price_3'] = $productplan->price_3;
-            $data[$keyy]['price_4'] = $productplan->price_4;
-            $data[$keyy]['price_5'] = $productplan->price_5;
-            $data[$keyy]['price_6'] = $productplan->price_6;
-            $data[$keyy]['price_7'] = $productplan->price_7;
-            $data[$keyy]['price_8'] = $productplan->price_8;
-            $data[$keyy]['price_9'] = $productplan->price_9;
-            $data[$keyy]['price_10'] = $productplan->price_10;
-            $data[$keyy]['price_11'] = $productplan->price_11;
-            $data[$keyy]['price_12'] = $productplan->price_12;
+        //     $data[$keyy]['id'] = $productplan->id;
+        //     $data[$keyy]['unique_plan'] = $productplan->product_plan_name;
+        //     $data[$keyy]['product_id'] = $productplan->product->product_id;
+        //     $data[$keyy]['network_id'] = $productplan->network->network_id;
+        //     $data[$keyy]['data_size_in_mb'] = $productplan->data_size_in_mb;
+        //     $data[$keyy]['validity_in_days'] = $productplan->validity_in_days;
+        //     $data[$keyy]['visibility'] = $productplan->visibility;
+        //     $data[$keyy]['cost_price'] = $productplan->cost_price;
+        //     $data[$keyy]['price_1'] = $productplan->price_1;
+        //     $data[$keyy]['price_2'] = $productplan->price_2;
+        //     $data[$keyy]['price_3'] = $productplan->price_3;
+        //     $data[$keyy]['price_4'] = $productplan->price_4;
+        //     $data[$keyy]['price_5'] = $productplan->price_5;
+        //     $data[$keyy]['price_6'] = $productplan->price_6;
+        //     $data[$keyy]['price_7'] = $productplan->price_7;
+        //     $data[$keyy]['price_8'] = $productplan->price_8;
+        //     $data[$keyy]['price_9'] = $productplan->price_9;
+        //     $data[$keyy]['price_10'] = $productplan->price_10;
+        //     $data[$keyy]['price_11'] = $productplan->price_11;
+        //     $data[$keyy]['price_12'] = $productplan->price_12;
             
             
-            $dataa = [];
+        //     $dataa = [];
 
-            foreach ($associated_automationplans as $key => $associated_automationplan) {
-                $getnetworkid = $associated_automationplan->product_plan_category->network->id ?? null;
-                $network_namee = $associated_automationplan->product_plan_category->network->network_name ?? 'nil';
-                $productid = $associated_automationplan->product_plan_category->product->id ?? null;
-                $sizee = $associated_automationplan->data_size_in_mb;
-                $vall = $associated_automationplan->validity_in_days;
+        //     foreach ($associated_automationplans as $key => $associated_automationplan) {
+        //         $getnetworkid = $associated_automationplan->product_plan_category->network->id ?? null;
+        //         $network_namee = $associated_automationplan->product_plan_category->network->network_name ?? 'nil';
+        //         $productid = $associated_automationplan->product_plan_category->product->id ?? null;
+        //         $sizee = $associated_automationplan->data_size_in_mb;
+        //         $vall = $associated_automationplan->validity_in_days;
 
-                if ($getnetworkid == $network_id && $productid == $product_id && $size == $sizee && $validity == $vall) {
-                    $dataa[$key] = [
-                        'product_plan' => $associated_automationplan->product_plan_name,
-                        'size' => $sizee,
-                        'validity' => $vall,
-                        'visibility' => $associated_automationplan->visibility,
-                        'automation' => $associated_automationplan->automation->automation_name,
-                        'network' => $network_namee,
-                    ];
-                }
-            }
+        //         if ($getnetworkid == $network_id && $productid == $product_id && $size == $sizee && $validity == $vall) {
+        //             $dataa[$key] = [
+        //                 'product_plan' => $associated_automationplan->product_plan_name,
+        //                 'size' => $sizee,
+        //                 'validity' => $vall,
+        //                 'visibility' => $associated_automationplan->visibility,
+        //                 'automation' => $associated_automationplan->automation->automation_name,
+        //                 'network' => $network_namee,
+        //             ];
+        //         }
+        //     }
 
-            $data[$keyy]['automations'] = $dataa;
-        }
+        //     $data[$keyy]['automations'] = $dataa;
+        // }
 
         $datad = collect($data);
         // return $data;
@@ -230,6 +230,64 @@ class UniqueProductPlansController extends Controller
                 </div>
               </div>
             ';
+        })
+        
+        ->addColumn('visibility', function ($datad) {
+            $rows = [];
+        
+            $visibility = $datad['visibility'] ?? null;
+        
+            if ($visibility === '1' || $visibility === 1) {
+                $rows[] = '<span class="inline-flex items-center px-2 py-1 text-xs font-medium rounded-full bg-green-100 text-green-800 shadow-sm">Visible</span>';
+            } elseif ($visibility === '0' || $visibility === 0) {
+                $rows[] = '<span class="inline-flex items-center px-2 py-1 text-xs font-medium rounded-full bg-red-100 text-red-800 shadow-sm">Hidden</span>';
+            } else {
+                $rows[] = '<span class="inline-flex items-center px-2 py-1 text-xs font-medium rounded-full bg-gray-100 text-gray-600 shadow-sm">Unknown</span>';
+            }
+        
+            return implode('<br>', $rows);
+        })
+        ->escapeColumns([])
+        ->make(true);
+
+
+    }
+
+    public function fetch(Request $request){
+
+       $productplans = UniqueProductPlan::with('product_plans')
+        ->orderByRaw("CASE WHEN data_size_in_mb < 500 THEN 1 ELSE 0 END ASC")
+        ->orderBy('data_size_in_mb', 'asc')
+        ->orderBy('validity_in_days', 'asc')
+        ->orderBy('network_id', 'asc')
+        ->get();
+
+        $datad = $productplans;
+  
+
+        // $datad = collect($data);
+        // // return $data;
+
+        return DataTables::of($datad)
+        ->addIndexColumn()
+        ->addColumn('DT_RowIndex',function($datad){
+            return $datad['id'];
+        })
+        ->addColumn('product_id',function($datad){
+            return 'sdfsdfs';
+        })
+        ->addColumn('size',function($datad){
+            return $datad['data_size_in_mb'];
+        })
+        ->addColumn('validity',function($datad){
+            return $datad['validity_in_days'];
+         })
+        ->addColumn('network_id',function($datad){
+            return $datad['network_id'];
+         })
+         ->addColumn('automations', function ($datad) {
+            // safety checks
+           return 'ss';
         })
         
         ->addColumn('visibility', function ($datad) {
