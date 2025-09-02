@@ -280,7 +280,7 @@ class UniqueProductPlansController extends Controller
             return number_format($datad->data_size_in_mb).'MB  ('.($datad->data_size_in_mb/1000).'GB)';
         })
         ->addColumn('validity',function($datad){
-            return $datad->validity_in_days;
+            return $datad->validity_in_days.' days';
          })
         ->addColumn('network_id',function($datad){
             return $datad->network->network_name ?? 'nil';
@@ -293,10 +293,11 @@ class UniqueProductPlansController extends Controller
 
             foreach ($product_plans as $pp) {
                 $automationName = $pp->automation->automation_name ?? 'N/A';
+                $apiid = $pp->automation_product_plan_id ?? 'N/A';
                 $dataaa[] = '
                 <div class="flex items-center justify-between bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 mb-2 shadow-sm">
                     <div>
-                        <p class="text-sm font-semibold text-gray-800">'.$automationName.'</p>
+                        <p class="text-sm font-semibold text-gray-800">'.$automationName.' api:'.$apiid.'</p>
                         <input 
                             type="number" 
                             value="'.$pp->cost_price.'" 
