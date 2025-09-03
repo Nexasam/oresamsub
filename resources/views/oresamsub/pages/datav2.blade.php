@@ -176,20 +176,38 @@
         >
     </div>
 
-    <div class="space-y-2">
-        <label class="p-3 flex w-full bg-white border border-gray-200 rounded-sm text-sm focus:border-primary focus:ring-primary dark:bg-bgdark dark:border-white/10 dark:text-white/70">
-              <input type="checkbox" class="ti-form-checkbox mt-0.5 pointer-events-none" id="filter_by_plan_category">
-              <span class="text-sm text-gray-500 ms-2 dark:text-white/70">Filter by plan categories</span>
+    <div class="mb-4">
+        <label for="filter_by_plan_category" class="flex items-center gap-2 px-4 py-2 rounded-lg 
+               bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 
+               cursor-pointer hover:border-emerald-500 transition">
+          <input 
+            type="checkbox" 
+            name="filter_by_plan_category" 
+            id="filter_by_plan_category" 
+            class="rounded border-gray-300 text-emerald-600 focus:ring-emerald-500"
+          >
+          <span class="text-sm text-gray-700 dark:text-gray-300">
+            Filter by plan categories
+          </span>
         </label>
     </div>
+      
 
-    <div id="product_plan_category_div" class="space-y-2 hidden">
-        <label class="ti-form-label mb-0">{{ __('Product Plan Category') }}</label>
-        <select data-trigger required name="product_plan_category_id" id="product_plan_category_id" class="my-auto ti-form-select">
-            <option value="all">Select</option>
-
-          </select>
-    </div>
+    <div id="product_plan_category_div" class="mb-4 hidden">
+        <label for="product_plan_category_id" class="block text-sm mb-1">
+          {{ __('Product Plan Category') }}
+        </label>
+        <select 
+          required 
+          name="product_plan_category_id" 
+          id="product_plan_category_id"
+          class="w-full px-4 py-2 rounded-lg bg-white dark:bg-gray-800 
+                 border border-gray-300 dark:border-gray-600 
+                 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        >
+          <option value="all">Select</option>
+        </select>
+      </div>
 
    <!-- Hidden field for selected product_plan_id -->
     <input type="hidden" name="product_plan_id" id="product_plan_id">

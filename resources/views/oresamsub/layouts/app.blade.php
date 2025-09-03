@@ -1186,20 +1186,22 @@
                   success: function(response) {
                         console.log('testing',response)
                       // showDisplayButton(id);
-                      if(response.status == '1'){
-                        let dataResult = response?.data;
-                        $('#product_plan_category_id').html('<option value="all">Select category</option>');
+                      if (response.status === '1') {
+                            let dataResult = response?.data ?? [];
 
+                            // Reset dropdown with default option
+                            $('#product_plan_category_id').html('<option value="all">Select category</option>');
 
-                        dataResult.forEach(element => {
-                            const idd = element.id;
-                            const category_name = element.product_plan_category_name;
-                            option = "<option value="+idd+">"+category_name+"</option>"
-                            $('#product_plan_category_id').append(option);
-                            // console.log(category_name);
+                            // Append categories
+                            dataResult.forEach(element => {
+                                const idd = element.id;
+                                const categoryName = element.product_plan_category_name;
 
-                        });
-                      }
+                                const option = `<option value="${idd}">${categoryName}</option>`;
+                                $('#product_plan_category_id').append(option);
+                            });
+                        }
+
                       // console.log(response.data);
                       //$('#notify_span'+id).text('successfully saved...');
                       // showDisplayButton(id);
