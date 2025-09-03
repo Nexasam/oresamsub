@@ -176,7 +176,7 @@
         >
     </div>
 
-    <div class="mb-4">
+    {{-- <div class="mb-4">
         <label for="filter_by_plan_category" class="flex items-center gap-2 px-4 py-2 rounded-lg 
                bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 
                cursor-pointer hover:border-emerald-500 transition">
@@ -190,7 +190,7 @@
             Filter by plan categories
           </span>
         </label>
-    </div>
+    </div> --}}
       
 
     <div id="product_plan_category_div" class="mb-4 hidden">
