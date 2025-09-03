@@ -277,12 +277,10 @@ class UniqueProductPlansController extends Controller
         ->addColumn('product_id', function($datad) {
             $productName = $datad->product_plan_name ?? 'nil';
             $productId   = $datad->id;
-        
-            $planTitle = $productName;
+            $planTitle   = $productName;
         
             // vendors
             $vendorRows = '<div class="space-y-3">';
-        
             $vendors = collect($datad->product_plans)->sortByDesc(fn($pp) => $pp->visibility);
         
             foreach ($vendors as $pp) {
@@ -330,25 +328,7 @@ class UniqueProductPlansController extends Controller
                     </div>
                 ';
             }
-        
             $vendorRows .= '</div>';
-        
-            // compute highest active vendor cost
-            $highestActive = collect($datad->product_plans)
-                ->filter(fn($pp) => $pp->visibility)
-                ->max('cost_price');
-        
-            // auto default prices
-            $defaults = [];
-            if ($highestActive) {
-                $defaults[12] = $highestActive + 20;
-                // cascade down from price_12 to price_3
-                for ($i = 11; $i >= 3; $i--) {
-                    $defaults[$i] = $defaults[$i + 1] + 5;
-                }
-                // special case price_1 = price_12 + 5
-                $defaults[1] = $defaults[12] + 5;
-            }
         
             // unique plan fields
             $uniqueFields = '
@@ -378,20 +358,35 @@ class UniqueProductPlansController extends Controller
                 </div>
             ';
         
+            // compute highest active vendor cost
+            $highestActive = collect($datad->product_plans)
+                ->filter(fn($pp) => $pp->visibility)
+                ->max('cost_price');
+        
+            // auto default prices for 12 → 1
+            $defaults = [];
+            if ($highestActive) {
+                $defaults[12] = $highestActive + 20;
+                for ($i = 11; $i >= 1; $i--) {
+                    $defaults[$i] = $defaults[$i + 1] + 5;
+                }
+            }
+        
+            // Alpine prices object
+            $pricesObj = collect(range(1,12))->map(function($i) use ($datad, $defaults) {
+                $field = "price_$i";
+                if (isset($defaults[$i])) {
+                    return "$field: ".$defaults[$i];
+                }
+                return "$field: ".($datad->$field ?? 0);
+            })->implode(',');
+        
             return '
             <div 
                 x-data="{
                     openModal: false,
-                    highestVendor: '.($highestActive ?? 0).',
-                    prices: {
-                        '.collect(range(1,12))->map(function($i) use ($datad, $defaults) {
-                            $field = "price_$i";
-                            if (isset($defaults[$i])) {
-                                return "$field: ".$defaults[$i];
-                            }
-                            return "$field: ".($datad->$field ?? 0);
-                        })->implode(',').'
-                    },
+                    highestVendor: '.($highestActive ?: 0).',
+                    prices: { '.$pricesObj.' },
                     get invalidPrices() {
                         for (let key in this.prices) {
                             if (this.prices[key] < (this.highestVendor + 10)) {
@@ -409,7 +404,7 @@ class UniqueProductPlansController extends Controller
                 >
                     '.$planTitle.'
                 </button>
-            
+        
                 <!-- Modal -->
                 <div 
                     x-show="openModal" 
@@ -419,22 +414,20 @@ class UniqueProductPlansController extends Controller
                 >
                     <div class="bg-white rounded-lg shadow-lg w-[500px] max-h-[90vh] overflow-y-auto p-6 modal-body">
                         <h2 class="text-lg font-semibold mb-4">Edit '.$planTitle.'</h2>
-            
+        
                         <!-- Unique Plan Settings -->
                         <div class="mb-6">
                             <h3 class="text-md font-semibold mb-2">Unique Plan Settings</h3>
                             '.$uniqueFields.'
         
                             <!-- Unique Plan Prices -->
-                            '.collect(range(1,12))->map(function($i) use ($datad, $productId) {
+                            '.collect(range(1,12))->map(function($i) use ($productId) {
                                 $field = "price_$i";
-                                $value = $datad->$field ?? '';
                                 return '
                                     <div class="flex items-center justify-between mb-2">
                                         <label class="text-sm font-medium text-gray-700">Price '.$i.'</label>
                                         <input 
                                             type="number" 
-                                            value="'.$value.'" 
                                             class="ml-2 w-32 px-2 py-1 text-xs border rounded-md focus:ring focus:ring-blue-300 unique-price-input"
                                             data-field="'.$field.'" 
                                             data-id="'.$productId.'" 
@@ -454,7 +447,7 @@ class UniqueProductPlansController extends Controller
         
                             <!-- Unique Plan Save Button -->
                             <div class="flex justify-end mt-3">
-                               <button 
+                                <button 
                                     class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 save-unique-plan"
                                     data-id="'.$productId.'"
                                     :disabled="invalidPrices"
@@ -464,13 +457,13 @@ class UniqueProductPlansController extends Controller
                                 </button>
                             </div>
                         </div>
-            
+        
                         <!-- Vendor Plans -->
                         <div>
                             <h3 class="text-md font-semibold mb-2">Vendor Plans</h3>
                             '.$vendorRows.'
                         </div>
-            
+        
                         <!-- Bottom Cancel -->
                         <div class="flex justify-end gap-2 mt-4">
                             <button 
@@ -484,10 +477,7 @@ class UniqueProductPlansController extends Controller
                 </div>
             </div>
             ';
-        })
-        
-        
-                    
+        })           
         ->addColumn('size',function($datad){
             return number_format($datad->data_size_in_mb).'MB  ('.($datad->data_size_in_mb/1000).'GB)';
         })
