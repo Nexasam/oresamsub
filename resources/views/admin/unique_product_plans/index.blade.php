@@ -234,13 +234,15 @@ document.addEventListener('update-product', function(e) {
 
 $(document).on("click", ".vendor-update-btn", function () {
     let id = $(this).data("vendor-id");
-    let row = $(this).closest("div");
+    // scope to the vendor row only
+    let row = $(this).closest(".flex.items-center.justify-between");
+
     let cost_price = row.find(".cost-price-input").val();
     let visibility = row.find(".vendor-status").is(":checked") ? 1 : 0;
 
-    alert(id);
-    alert(cost_price);
-    alert(visibility);
+    console.log("Vendor ID:", id);
+    console.log("Cost Price:", cost_price);
+    console.log("Visibility:", visibility);
 
     $.ajax({
         url: `/unique_plans_automation/${id}/quick_update`,
@@ -255,6 +257,7 @@ $(document).on("click", ".vendor-update-btn", function () {
         },
     });
 });
+
 
 $(document).on("click", ".save-unique-plan", function () {
     let id = $(this).data("id");
