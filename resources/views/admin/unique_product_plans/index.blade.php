@@ -268,15 +268,20 @@ $(document).on("click", ".save-unique-plan", function () {
     alert(prices);
     alert( $('meta[name="csrf-token"]').attr("content"));
 
+    let payload = {
+        name: name,
+        visibility: visibility,
+        _token: $('meta[name="csrf-token"]').attr("content"),
+    };
+
+    modal.find(".unique-price-input").each(function () {
+        payload[$(this).data("field")] = $(this).val();
+    });
+
     $.ajax({
         url: `/unique_plans/${id}/quick_update`,
         type: "POST",
-        data: {
-            name: name,
-            visibility: visibility,
-            ...prices,
-            _token: $('meta[name="csrf-token"]').attr("content"),
-        },
+        data: payload,
         success: function (res) {
             alert(res.message);
         },
