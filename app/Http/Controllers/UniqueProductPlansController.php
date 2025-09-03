@@ -282,13 +282,17 @@ class UniqueProductPlansController extends Controller
         
             // vendors
             $vendorRows = '<div class="space-y-3">';
-            foreach ($datad->product_plans as $pp) {
+
+            // sort active vendors above inactive ones
+            $vendors = collect($datad->product_plans)->sortByDesc(fn($pp) => $pp->visibility);
+
+            foreach ($vendors as $pp) {
                 $automationName = $pp->automation->automation_name ?? 'N/A';
                 $apiid = $pp->automation_product_plan_id ?? 'N/A';
                 $active = $pp->visibility ?? 0;
-        
+
                 $statusToggle = '
-                         <label class="inline-flex items-center cursor-pointer">
+                        <label class="inline-flex items-center cursor-pointer">
                             <input 
                                 type="checkbox" 
                                 '.($active ? 'checked' : '').' 
@@ -301,9 +305,9 @@ class UniqueProductPlansController extends Controller
                             <span class="ml-2 text-xs text-gray-600 status-text">'.($active ? 'Active' : 'Inactive').'</span>
                         </label>
                 ';
-        
+
                 $vendorRows .= '
-                    <div class="flex items-center justify-between bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 shadow-sm">
+                    <div class="flex items-center justify-between bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 shadow-sm vendor-row">
                         <div>
                             <p class="text-sm font-semibold text-gray-800">'.$automationName.' 
                                 <span class="text-xs text-gray-500">(API: '.$apiid.')</span>
@@ -327,8 +331,10 @@ class UniqueProductPlansController extends Controller
                     </div>
                 ';
             }
+
             $vendorRows .= '</div>';
-        
+
+                    
             // unique plan fields
             $uniqueFields = '
                 <div class="mb-4">
