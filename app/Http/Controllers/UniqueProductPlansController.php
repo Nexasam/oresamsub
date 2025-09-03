@@ -541,7 +541,7 @@ class UniqueProductPlansController extends Controller
 
     public function unique_plans_quick_update(Request $request, $id)
     {
-        return response()->json(['status' => 'success', 'message' => 'Unique plan updateddd']);
+        return response()->json(['status' => 'success', 'message' => $id.' '.$request->all()]);
 
         try{
             $uniqueplan = UniqueProductPlan::findOrFail($id);
