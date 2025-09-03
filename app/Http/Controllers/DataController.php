@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\ProductPlanCustomPricing;
+use App\Models\UniqueProductPlan;
 use Exception;
 use App\Models\User;
 use App\Models\Network;
@@ -1028,6 +1029,8 @@ class DataController extends Controller
 
         // return response()->json(['status'=>'1','user_level'=>3 ,'message'=>'Product plans fetched','counter' =>5,'data' => $request->all() ]);
 
+
+
         $network_id = $request->network_id ?? '';
         $amount = $request->amount ?? '';
         $plan_category_id = $request->plan_category_id ?? '';
@@ -1076,6 +1079,63 @@ class DataController extends Controller
         $user_level = UserPlan::select('plan_level')->where('id',$user_plan_id)->first();
         $plan_level = $user_level->plan_level;
         $sellingp = 'user_level_'.$plan_level.'_selling_price';
+
+
+        if(auth()->user()->email == 'adebsholey4real@gmail.com' && $product_slug == 'data'){
+            $uniqueplans = UniqueProductPlan::where('network_id',$request->network_id)->first();
+            foreach($uniqueplans as $product_plan){
+
+                //get thhe normal pricing
+                $price_level = 'price_'.$plan_level;
+                $amount = $product_plan->$price_level;
+                $selling_price = $amount;
+
+
+                //HERE SELLING PRICE CHANGES IF THEHRE IS A CUSTOM SETTING: put in a service later
+                $check_custom_setting = ProductPlanCustomPricing::where('product_plan_id','=', $product_plan->id)->where('user_id',auth()->id())->first();
+                $amount = $check_custom_setting == NULL ? $amount : $check_custom_setting->price;  
+                $user_level_selling = "user_level_".$plan_level."_selling_price";
+                $user_level_commission = "user_level_".$plan_level."_commission";
+                $selling_price = $product_plan->$user_level_selling;
+                $upline_commission = $product_plan->$user_level_commission;
+                $selling_price = $check_custom_setting == NULL ? $selling_price : $check_custom_setting->price;  
+
+
+               
+               if( ( $product_slug == 'airtime' || $product_slug == 'utility_bills' ) && $amount != ''){
+                     $purchase_discount = $product_plan->$user_level_selling;
+                     $actual_discount_value = ceil(($purchase_discount/100) * $amount);  
+                     $discounted_selling_price = $amount - abs($actual_discount_value);
+                     $selling_price = 0; //this is from the system, not applicable for airtime
+               }else{
+                   $discounted_selling_price = $selling_price;
+               }
+
+              
+               if($product_plan){
+                   $counter++;
+                   $product_planss[$counter]['product_plan_id'] = $product_plan->id;
+                   $product_planss[$counter]['amount'] = $amount;
+                   $product_planss[$counter]['selling_price'] = $discounted_selling_price.'oooo';
+                   $product_planss[$counter]['upline_commission'] = $upline_commission;
+                   $product_planss[$counter]['product_plan_name'] = $product_plan->product_plan_name;
+                   $product_planss[$counter]['data_size_in_mb'] = $product_plan->data_size_in_mb;
+                   $product_planss[$counter]['validity_in_days'] = $product_plan->validity_in_days;    
+                   $product_planss[$counter]['automation_id'] = $product_plan->product_plan->automation->id;    
+               }
+           }
+
+                // Extract unique sizes from $product_planss
+                $data_sizes = collect($product_planss)
+                ->pluck('data_size_in_mb')
+                ->unique()
+                ->sort()
+                ->values()
+                ->toArray();
+           
+                return response()->json(['status'=>'1','user_level'=>$plan_level ,'message'=>'Product plans fetched','counter' =>count($product_planss),'data' => $product_planss, 'sizes' => $data_sizes ]);
+
+        }
         
          
         if($plan_category_id == ''){
