@@ -1081,6 +1081,7 @@ class DataController extends Controller
         $sellingp = 'user_level_'.$plan_level.'_selling_price';
 
 
+        ///NEW VERSION 1
         if(auth()->user()->email == 'adebsholey4real@gmail.com' && $product_slug == 'data'){
             $uniqueplans = UniqueProductPlan::where('network_id',$request->network_id)->first();
             foreach($uniqueplans as $product_plan){
