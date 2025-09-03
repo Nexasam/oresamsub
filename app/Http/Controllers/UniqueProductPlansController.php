@@ -287,15 +287,18 @@ class UniqueProductPlansController extends Controller
                 $active = $pp->visibility ?? 0;
         
                 $statusToggle = '
-                    <label class="inline-flex items-center cursor-pointer">
-                        <input type="checkbox" '.($active ? 'checked' : '').' 
-                            class="sr-only vendor-status" 
-                            data-vendor-id="'.$pp->id.'">
-                        <div class="w-10 h-5 bg-gray-300 rounded-full peer-checked:bg-green-500 relative">
-                            <div class="dot absolute left-1 top-1 w-3 h-3 bg-white rounded-full transition"></div>
-                        </div>
-                        <span class="ml-2 text-xs text-gray-600">'.($active ? 'Active' : 'Inactive').'</span>
-                    </label>
+                         <label class="inline-flex items-center cursor-pointer">
+                            <input 
+                                type="checkbox" 
+                                '.($active ? 'checked' : '').' 
+                                class="sr-only peer vendor-status" 
+                                data-vendor-id="'.$pp->id.'"
+                            >
+                            <div class="w-10 h-5 bg-gray-300 rounded-full peer-checked:bg-green-500 relative">
+                                <div class="dot absolute left-1 top-1 w-3 h-3 bg-white rounded-full transition peer-checked:translate-x-5"></div>
+                            </div>
+                            <span class="ml-2 text-xs text-gray-600 status-text">'.($active ? 'Active' : 'Inactive').'</span>
+                        </label>
                 ';
         
                 $vendorRows .= '
@@ -337,17 +340,21 @@ class UniqueProductPlansController extends Controller
                     />
                 </div>
         
-                <div class="mb-4">
-                    <label class="inline-flex items-center cursor-pointer">
-                        <input type="checkbox" '.($datad->visibility ? 'checked' : '').' 
-                            class="sr-only unique-plan-visibility" 
-                            data-id="'.$productId.'">
-                        <div class="w-11 h-6 bg-gray-300 rounded-full peer-checked:bg-green-500 relative">
-                            <div class="dot absolute left-1 top-1 w-4 h-4 bg-white rounded-full transition"></div>
-                        </div>
-                        <span class="ml-2 text-sm text-gray-700">'.($datad->visibility ? 'Visible' : 'Hidden').'</span>
-                    </label>
-                </div>
+               <div class="mb-4">
+                <label class="inline-flex items-center cursor-pointer">
+                    <input 
+                        type="checkbox" 
+                        '.($datad->visibility ? 'checked' : '').' 
+                        class="sr-only peer unique-plan-visibility" 
+                        data-id="'.$productId.'"
+                    >
+                    <div class="w-11 h-6 bg-gray-300 rounded-full peer-checked:bg-green-500 relative">
+                        <div class="dot absolute left-1 top-1 w-4 h-4 bg-white rounded-full transition peer-checked:translate-x-5"></div>
+                    </div>
+                    <span class="ml-2 text-sm text-gray-700 visibility-text">'.($datad->visibility ? 'Visible' : 'Hidden').'</span>
+                </label>
+            </div>
+
             ';
         
             // unique plan prices
