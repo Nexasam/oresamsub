@@ -522,7 +522,9 @@ Route::middleware(['set_locale'])->group(function () {
 
 
 
-            
+            Route::middleware(['auth','verified','admin'])->post('/unique_plans/{id}/quick_update', [UniqueProductPlansController::class, 'unique_plans_quick_update'])->name('unique_plans.quick_update');
+            Route::middleware(['auth','verified','admin'])->post('/unique_plans_automation/{id}/quick_update', [UniqueProductPlansController::class, 'unique_plan_automation_quick_update'])->name('unique_plans_automation.quick_update');
+
             Route::middleware(['auth','verified','admin'])->post('admin/save_unique_plan_pricing', [UniqueProductPlansController::class, 'save_unique_plan_pricing'])->name('admin.save_unique_plan_pricing');
             Route::middleware(['auth','verified','admin'])->get('admin/unique_product_plans/index', [UniqueProductPlansController::class, 'index'])->name('admin.unique_product_plans.index');
             Route::middleware(['auth','verified','admin'])->get('admin/unique_product_plans/fetch', [UniqueProductPlansController::class, 'fetch'])->name('admin.unique_product_plans.admin_fetch_unique_product_plans');

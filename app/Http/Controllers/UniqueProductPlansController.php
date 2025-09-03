@@ -390,9 +390,9 @@ class UniqueProductPlansController extends Controller
                 <div 
                     x-show="openModal" 
                     x-cloak 
-                    class="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50"
+                    class="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50 modal-overlay"
                 >
-                    <div class="bg-white rounded-lg shadow-lg w-[500px] max-h-[90vh] overflow-y-auto p-6">
+                    <div class="bg-white rounded-lg shadow-lg w-[500px] max-h-[90vh] overflow-y-auto p-6 modal-body">
                         <h2 class="text-lg font-semibold mb-4">Edit '.$planTitle.'</h2>
         
                         <!-- Unique Plan Settings -->
@@ -403,12 +403,13 @@ class UniqueProductPlansController extends Controller
         
                             <!-- Unique Plan Save Button -->
                             <div class="flex justify-end mt-3">
-                                <button 
-                                    @click="$dispatch(\'update-plan\', {id: '.$productId.'})" 
-                                    class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+                               <button 
+                                    class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 save-unique-plan"
+                                    data-id="'.$productId.'"
                                 >
                                     Save Unique Plan
                                 </button>
+
                             </div>
                         </div>
         
@@ -536,6 +537,38 @@ class UniqueProductPlansController extends Controller
             'message' => 'test'
         ]);
     }
+
+    public function unique_plans_quick_update(Request $request, $id)
+    {
+        $uniqueplan = UniqueProductPlan::findOrFail($id);
+
+        $uniqueplan->product_plan_name = $request->input('plan_name');
+        $uniqueplan->visibility        = $request->boolean('visibility');
+
+        // update prices dynamically
+        for ($i = 1; $i <= 12; $i++) {
+            $field = "price_$i";
+            if ($request->has($field)) {
+                $uniqueplan->$field = $request->input($field);
+            }
+        }
+
+        $uniqueplan->save();
+
+        return response()->json(['status' => 'success', 'message' => 'Unique plan updated']);
+    }
+
+    public function unique_plan_automation_quick_update(Request $request, $id)
+    {
+        $vendor = ProductPlan::findOrFail($id);
+
+        $vendor->cost_price = $request->input('cost_price');
+        $vendor->visibility = $request->boolean('visibility');
+        $vendor->save();
+
+        return response()->json(['success' => true, 'message' => 'Automation updated']);
+    }
+
     
 
 }

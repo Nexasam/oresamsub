@@ -232,6 +232,60 @@ document.addEventListener('update-product', function(e) {
     });
 });
 
+$(document).on("click", ".vendor-update-btn", function () {
+    let id = $(this).data("vendor-id");
+    let row = $(this).closest("div");
+    let cost_price = row.find(".cost-price-input").val();
+    let visibility = row.find(".vendor-status").is(":checked") ? 1 : 0;
+
+    $.ajax({
+        url: `/unique_plans_automation/${id}/quick_update`,
+        type: "POST",
+        data: {
+            cost_price: cost_price,
+            visibility: visibility,
+            _token: $('meta[name="csrf-token"]').attr("content"),
+        },
+        success: function (res) {
+            alert(res.message);
+        },
+    });
+});
+
+$(document).on("click", ".save-unique-plan", function () {
+    let id = $(this).data("id");
+    let modal = $(this).closest(".modal-body");
+
+    let name = modal.find(".unique-plan-name").val();
+    let visibility = modal.find(".unique-plan-visibility").is(":checked") ? 1 : 0;
+    let prices = {};
+
+    modal.find(".unique-price-input").each(function () {
+        prices[$(this).data("field")] = $(this).val();
+    });
+
+    $.ajax({
+        url: `/unique_plans/${id}/quick_update`,
+        type: "POST",
+        data: {
+            name: name,
+            visibility: visibility,
+            ...prices,
+            _token: $('meta[name="csrf-token"]').attr("content"),
+        },
+        success: function (res) {
+            alert(res.message);
+        },
+    });
+});
+
+// Close modal on outside click
+$(document).on("click", ".modal-overlay", function (e) {
+    if (e.target === this) {
+        $(this).hide();
+    }
+});
+
 </script>
 @endpush
 
