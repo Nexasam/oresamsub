@@ -377,14 +377,28 @@ class UniqueProductPlansController extends Controller
                 ';
             }
         
+        
             return '
             <div 
                 x-data="{
                     openModal: false,
-                    highestVendor: Math.max(...['.collect($datad->product_plans)->pluck('cost_price')->implode(',').']),
-                    price12: '.$datad->price_12.',
-                    get invalidPrice12() {
-                        return this.price12 < (this.highestVendor + 10);
+                    // compute highest active vendor price
+                    highestVendor: Math.max(...['.
+                        collect($datad->product_plans)
+                            ->filter(fn($pp) => $pp->visibility) // only active vendors
+                            ->pluck('cost_price')
+                            ->implode(',') . '
+                    ]),
+                    prices: {
+                        '.collect(range(1,12))->map(fn($i) => "price_$i: ".($datad->{"price_$i"} ?? 0))->implode(',').'
+                    },
+                    get invalidPrices() {
+                        for (let key in this.prices) {
+                            if (this.prices[key] < (this.highestVendor + 10)) {
+                                return true;
+                            }
+                        }
+                        return false;
                     }
                 }"
             >
@@ -411,12 +425,30 @@ class UniqueProductPlansController extends Controller
                             <h3 class="text-md font-semibold mb-2">Unique Plan Settings</h3>
                             '.$uniqueFields.'
             
-                            '.$uniquePrices.'
+                            <!-- Unique Plan Prices -->
+                            '.collect(range(1,12))->map(function($i) use ($datad, $productId) {
+                                $field = "price_$i";
+                                $value = $datad->$field ?? '';
+                                return '
+                                    <div class="flex items-center justify-between mb-2">
+                                        <label class="text-sm font-medium text-gray-700">Price '.$i.'</label>
+                                        <input 
+                                            type="number" 
+                                            value="'.$value.'" 
+                                            class="ml-2 w-32 px-2 py-1 text-xs border rounded-md focus:ring focus:ring-blue-300 unique-price-input"
+                                            data-field="'.$field.'" 
+                                            data-id="'.$productId.'" 
+                                            x-model.number="prices.'.$field.'"
+                                        />
+                                    </div>
+                                ';
+                            })->implode(' ').'
             
-                            <!-- Warning for price_12 -->
-                            <template x-if="invalidPrice12">
+                            <!-- Warning for invalid prices -->
+                            <template x-if="invalidPrices">
                                 <p class="text-red-600 text-sm mt-2">
-                                    ⚠️ Price 12 must be at least 10 more than highest vendor price (₦<span x-text="highestVendor"></span>).
+                                    ⚠️ All prices must be at least 10 more than highest active vendor price 
+                                    (₦<span x-text="highestVendor"></span>).
                                 </p>
                             </template>
             
@@ -425,8 +457,8 @@ class UniqueProductPlansController extends Controller
                                <button 
                                     class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 save-unique-plan"
                                     data-id="'.$productId.'"
-                                    :disabled="invalidPrice12"
-                                    :class="{\'opacity-50 cursor-not-allowed\': invalidPrice12}"
+                                    :disabled="invalidPrices"
+                                    :class="{\'opacity-50 cursor-not-allowed\': invalidPrices}"
                                 >
                                     Save Unique Plan
                                 </button>
@@ -452,6 +484,7 @@ class UniqueProductPlansController extends Controller
                 </div>
             </div>
         ';
+            
             
         
         })
