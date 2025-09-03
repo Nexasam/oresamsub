@@ -1156,6 +1156,64 @@
               return;
             }      
     })
+
+
+    $('#filter_by_plan_category').change(function(e){
+          e.preventDefault();
+      
+          
+          if(this.checked){
+            $("#product_plan_category_div").removeClass('hidden');
+            //display product plans categories
+            const network_id = $('#network_id').val();
+            const product_slug = $('#product_slug').val();
+
+            if(network_id == ''){
+              sweetAlertDisplay("Please select network",'Network required','error');
+              $(this).prop('checked', false); // Unchecks it
+              return;
+            }
+            const data = {
+              network_id : network_id,
+              product_slug : product_slug
+            };
+
+              $.ajax({
+                  type: 'GET',
+                  url: "{{ route('user.fetch_product_plan_categories') }}",
+                  data: data,
+                  dataType: 'json',
+                  success: function(response) {
+                        console.log('testing',response)
+                      // showDisplayButton(id);
+                      if(response.status == '1'){
+                        let dataResult = response?.data;
+                        $('#product_plan_category_id').html('<option value="all">Select category</option>');
+
+
+                        dataResult.forEach(element => {
+                            const idd = element.id;
+                            const category_name = element.product_plan_category_name;
+                            option = "<option value="+idd+">"+category_name+"</option>"
+                            $('#product_plan_category_id').append(option);
+                            // console.log(category_name);
+
+                        });
+                      }
+                      // console.log(response.data);
+                      //$('#notify_span'+id).text('successfully saved...');
+                      // showDisplayButton(id);
+                  },
+                  error: function(xhr, status, error) {
+                      // Handle errors if needed
+                      console.error(xhr.responseText);
+                  }
+              });
+          }else{
+            $('#product_plan_category_id').html('<option value="all">All categories selected</option>');
+            $("#product_plan_category_div").addClass('hidden');
+          }
+        })
  
   
     $('#network_id').change(function(){

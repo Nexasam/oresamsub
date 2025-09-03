@@ -249,8 +249,6 @@
                                                   </div>
                                                 @endif
                                             
-
-                                             
                     
                                                 {{-- single_select --}}
                                                 <div id="product_plan_category_div" class="space-y-2 hidden">

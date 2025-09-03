@@ -104,6 +104,12 @@ Route::middleware(['set_locale'])->group(function () {
                     return view('oresamsub.pages.data')->with($data);
                 })->name('ore.data');
 
+
+                Route::get('oresamsub/datav2', function () {
+                    $data['networks'] = App\Models\Network::get();
+                    return view('oresamsub.pages.datav2')->with($data);
+                })->name('ore.datav2');
+
                 Route::post('oresamsub/data/submit', fn () => view('oresamsub.pages.data.submit'))->name('ore.data.submit');
 
                 Route::get('oresamsub/cable', function () {
