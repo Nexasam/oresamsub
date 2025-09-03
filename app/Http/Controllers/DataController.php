@@ -1083,7 +1083,7 @@ class DataController extends Controller
 
         ///NEW VERSION 1
         if(auth()->user()->email == 'oreofe@gmail.com' && $product_slug == 'data'){
-            $uniqueplans = UniqueProductPlan::where('network_id',$request->network_id)->first();
+            $uniqueplans = UniqueProductPlan::where('network_id',$request->network_id)->get();
             foreach($uniqueplans as $product_plan){
 
                 //get thhe normal pricing
