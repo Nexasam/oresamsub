@@ -238,6 +238,10 @@ $(document).on("click", ".vendor-update-btn", function () {
     let cost_price = row.find(".cost-price-input").val();
     let visibility = row.find(".vendor-status").is(":checked") ? 1 : 0;
 
+    alert(id);
+    alert(cost_price);
+    alert(visibility);
+
     $.ajax({
         url: `/unique_plans_automation/${id}/quick_update`,
         type: "POST",
@@ -263,10 +267,6 @@ $(document).on("click", ".save-unique-plan", function () {
     modal.find(".unique-price-input").each(function () {
         prices[$(this).data("field")] = $(this).val();
     });
-
-    alert(visibility);
-    alert(prices);
-    alert( $('meta[name="csrf-token"]').attr("content"));
 
     let payload = {
         name: name,
