@@ -265,6 +265,8 @@ $(document).on("click", ".save-unique-plan", function () {
     });
 
     alert(visibility);
+    alert(prices);
+    alert( $('meta[name="csrf-token"]').attr("content"));
 
     $.ajax({
         url: `/unique_plans/${id}/quick_update`,
