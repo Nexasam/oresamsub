@@ -193,7 +193,7 @@
     </div> --}}
       
 
-    <div id="product_plan_category_div" class="mb-4 hidden">
+    <div id="product_plan_category_div" class="mt-4 mb-4 hidden">
         <label for="product_plan_category_id" class="block text-sm mb-1">
           {{ __('Product Plan Category') }}
         </label>
