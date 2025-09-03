@@ -264,6 +264,8 @@ $(document).on("click", ".save-unique-plan", function () {
         prices[$(this).data("field")] = $(this).val();
     });
 
+    alert(name,visibility,prices);
+
     $.ajax({
         url: `/unique_plans/${id}/quick_update`,
         type: "POST",
