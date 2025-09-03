@@ -378,7 +378,16 @@ class UniqueProductPlansController extends Controller
             }
         
             return '
-            <div x-data="{ openModal: false }">
+            <div 
+                x-data="{
+                    openModal: false,
+                    highestVendor: Math.max(...['.collect($datad->product_plans)->pluck('cost_price')->implode(',').']),
+                    price12: '.$datad->price_12.',
+                    get invalidPrice12() {
+                        return this.price12 < (this.highestVendor + 10);
+                    }
+                }"
+            >
                 <!-- Trigger -->
                 <button 
                     @click="openModal = true" 
@@ -386,40 +395,50 @@ class UniqueProductPlansController extends Controller
                 >
                     '.$planTitle.'
                 </button>
-        
+            
                 <!-- Modal -->
                 <div 
                     x-show="openModal" 
                     x-cloak 
                     class="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50 modal-overlay"
+                    @click.self="openModal = false"
                 >
                     <div class="bg-white rounded-lg shadow-lg w-[500px] max-h-[90vh] overflow-y-auto p-6 modal-body">
                         <h2 class="text-lg font-semibold mb-4">Edit '.$planTitle.'</h2>
-        
+            
                         <!-- Unique Plan Settings -->
                         <div class="mb-6">
                             <h3 class="text-md font-semibold mb-2">Unique Plan Settings</h3>
                             '.$uniqueFields.'
+            
                             '.$uniquePrices.'
-        
+            
+                            <!-- Warning for price_12 -->
+                            <template x-if="invalidPrice12">
+                                <p class="text-red-600 text-sm mt-2">
+                                    ⚠️ Price 12 must be at least 10 more than highest vendor price (₦<span x-text="highestVendor"></span>).
+                                </p>
+                            </template>
+            
                             <!-- Unique Plan Save Button -->
                             <div class="flex justify-end mt-3">
                                <button 
                                     class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 save-unique-plan"
                                     data-id="'.$productId.'"
+                                    :disabled="invalidPrice12"
+                                    :class="{\'opacity-50 cursor-not-allowed\': invalidPrice12}"
                                 >
                                     Save Unique Plan
                                 </button>
-
                             </div>
                         </div>
-        
+            
                         <!-- Vendor Plans -->
                         <div>
                             <h3 class="text-md font-semibold mb-2">Vendor Plans</h3>
                             '.$vendorRows.'
                         </div>
-        
+            
                         <!-- Bottom Cancel -->
                         <div class="flex justify-end gap-2 mt-4">
                             <button 
@@ -433,6 +452,7 @@ class UniqueProductPlansController extends Controller
                 </div>
             </div>
         ';
+            
         
         })
                     
