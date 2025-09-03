@@ -283,7 +283,6 @@ class UniqueProductPlansController extends Controller
             // vendors
             $vendorRows = '<div class="space-y-3">';
         
-            // sort active vendors above inactive ones
             $vendors = collect($datad->product_plans)->sortByDesc(fn($pp) => $pp->visibility);
         
             foreach ($vendors as $pp) {
@@ -292,18 +291,18 @@ class UniqueProductPlansController extends Controller
                 $active = $pp->visibility ?? 0;
         
                 $statusToggle = '
-                        <label class="inline-flex items-center cursor-pointer">
-                            <input 
-                                type="checkbox" 
-                                '.($active ? 'checked' : '').' 
-                                class="sr-only peer vendor-status" 
-                                data-vendor-id="'.$pp->id.'"
-                            >
-                            <div class="w-10 h-5 bg-gray-300 rounded-full peer-checked:bg-green-500 relative">
-                                <div class="dot absolute left-1 top-1 w-3 h-3 bg-white rounded-full transition peer-checked:translate-x-5"></div>
-                            </div>
-                            <span class="ml-2 text-xs text-gray-600 status-text">'.($active ? 'Active' : 'Inactive').'</span>
-                        </label>
+                    <label class="inline-flex items-center cursor-pointer">
+                        <input 
+                            type="checkbox" 
+                            '.($active ? 'checked' : '').' 
+                            class="sr-only peer vendor-status" 
+                            data-vendor-id="'.$pp->id.'"
+                        >
+                        <div class="w-10 h-5 bg-gray-300 rounded-full peer-checked:bg-green-500 relative">
+                            <div class="dot absolute left-1 top-1 w-3 h-3 bg-white rounded-full transition peer-checked:translate-x-5"></div>
+                        </div>
+                        <span class="ml-2 text-xs text-gray-600 status-text">'.($active ? 'Active' : 'Inactive').'</span>
+                    </label>
                 ';
         
                 $vendorRows .= '
@@ -340,8 +339,16 @@ class UniqueProductPlansController extends Controller
                 ->max('cost_price');
         
             // auto default prices
-            $defaultPrice12 = $highestActive ? $highestActive + 20 : ($datad->price_12 ?? 0);
-            $defaultPrice1  = $defaultPrice12 + 5;
+            $defaults = [];
+            if ($highestActive) {
+                $defaults[12] = $highestActive + 20;
+                // cascade down from price_12 to price_3
+                for ($i = 11; $i >= 3; $i--) {
+                    $defaults[$i] = $defaults[$i + 1] + 5;
+                }
+                // special case price_1 = price_12 + 5
+                $defaults[1] = $defaults[12] + 5;
+            }
         
             // unique plan fields
             $uniqueFields = '
@@ -355,20 +362,20 @@ class UniqueProductPlansController extends Controller
                     />
                 </div>
         
-               <div class="mb-4">
-                <label class="inline-flex items-center cursor-pointer">
-                    <input 
-                        type="checkbox" 
-                        '.($datad->visibility ? 'checked' : '').' 
-                        class="sr-only peer unique-plan-visibility" 
-                        data-id="'.$productId.'"
-                    >
-                    <div class="w-11 h-6 bg-gray-300 rounded-full peer-checked:bg-green-500 relative">
-                        <div class="dot absolute left-1 top-1 w-4 h-4 bg-white rounded-full transition peer-checked:translate-x-5"></div>
-                    </div>
-                    <span class="ml-2 text-sm text-gray-700 visibility-text">'.($datad->visibility ? 'Visible' : 'Hidden').'</span>
-                </label>
-            </div>
+                <div class="mb-4">
+                    <label class="inline-flex items-center cursor-pointer">
+                        <input 
+                            type="checkbox" 
+                            '.($datad->visibility ? 'checked' : '').' 
+                            class="sr-only peer unique-plan-visibility" 
+                            data-id="'.$productId.'"
+                        >
+                        <div class="w-11 h-6 bg-gray-300 rounded-full peer-checked:bg-green-500 relative">
+                            <div class="dot absolute left-1 top-1 w-4 h-4 bg-white rounded-full transition peer-checked:translate-x-5"></div>
+                        </div>
+                        <span class="ml-2 text-sm text-gray-700 visibility-text">'.($datad->visibility ? 'Visible' : 'Hidden').'</span>
+                    </label>
+                </div>
             ';
         
             return '
@@ -377,14 +384,12 @@ class UniqueProductPlansController extends Controller
                     openModal: false,
                     highestVendor: '.($highestActive ?? 0).',
                     prices: {
-                        '.collect(range(1,12))->map(function($i) use ($datad, $defaultPrice12, $defaultPrice1) {
+                        '.collect(range(1,12))->map(function($i) use ($datad, $defaults) {
                             $field = "price_$i";
-                            if ($i === 12) {
-                                return "price_12: ".($defaultPrice12 ?? 0);
-                            } elseif ($i === 1) {
-                                return "price_1: ".($defaultPrice1 ?? 0);
+                            if (isset($defaults[$i])) {
+                                return "$field: ".$defaults[$i];
                             }
-                            return "price_$i: ".($datad->$field ?? 0);
+                            return "$field: ".($datad->$field ?? 0);
                         })->implode(',').'
                     },
                     get invalidPrices() {
@@ -480,6 +485,7 @@ class UniqueProductPlansController extends Controller
             </div>
             ';
         })
+        
         
                     
         ->addColumn('size',function($datad){
