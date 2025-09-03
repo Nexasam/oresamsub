@@ -1096,7 +1096,7 @@ class DataController extends Controller
                 $amount = $check_custom_setting == NULL ? $amount : $check_custom_setting->price;  
                 $user_level_selling = "user_level_".$plan_level."_selling_price";
                 $user_level_commission = "user_level_".$plan_level."_commission";
-                $selling_price = $product_plan->$user_level_selling;
+                // $selling_price = $product_plan->$user_level_selling;
                 $upline_commission = $product_plan->$user_level_commission;
                 $selling_price = $check_custom_setting == NULL ? $selling_price : $check_custom_setting->price;  
             
@@ -1108,8 +1108,7 @@ class DataController extends Controller
                }else{
                    $discounted_selling_price = $selling_price;
                }
-
-              
+ 
                if($product_plan){
                    $counter++;
                    $product_planss[$counter]['product_plan_id'] = $product_plan->id;
@@ -1121,6 +1120,7 @@ class DataController extends Controller
                    $product_planss[$counter]['validity_in_days'] = $product_plan->validity_in_days;    
                    $product_planss[$counter]['automation_id'] = NULL;    
                }
+
            }
 
             // Extract unique sizes from $product_planss
