@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\ProductPlan;
+use Exception;
 use Illuminate\Http\Request;
 use Yajra\DataTables\Facades\DataTables;
 use App\Models\UniqueProductPlan;
@@ -540,20 +541,28 @@ class UniqueProductPlansController extends Controller
 
     public function unique_plans_quick_update(Request $request, $id)
     {
-        $uniqueplan = UniqueProductPlan::findOrFail($id);
+        return response()->json(['status' => 'success', 'message' => 'Unique plan updateddd']);
 
-        $uniqueplan->product_plan_name = $request->input('plan_name');
-        $uniqueplan->visibility        = $request->boolean('visibility');
+        try{
+            $uniqueplan = UniqueProductPlan::findOrFail($id);
 
-        // update prices dynamically
-        for ($i = 1; $i <= 12; $i++) {
-            $field = "price_$i";
-            if ($request->has($field)) {
-                $uniqueplan->$field = $request->input($field);
+            $uniqueplan->product_plan_name = $request->input('plan_name');
+            $uniqueplan->visibility        = $request->boolean('visibility');
+    
+            // update prices dynamically
+            for ($i = 1; $i <= 12; $i++) {
+                $field = "price_$i";
+                if ($request->has($field)) {
+                    $uniqueplan->$field = $request->input($field);
+                }
             }
-        }
+    
+            $uniqueplan->save();
 
-        $uniqueplan->save();
+        }catch(Exception $ex){
+          return response()->json(['status' => 'success', 'message' => $ex->getMessage().' line: '.$ex->getLine()]);
+        }
+       
 
         return response()->json(['status' => 'success', 'message' => 'Unique plan updated']);
     }
