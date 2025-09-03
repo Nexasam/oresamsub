@@ -377,55 +377,61 @@ class UniqueProductPlansController extends Controller
             }
         
             return '
-                <div x-data="{ openModal: false }">
-                    <!-- Trigger -->
-                    <button 
-                        @click="openModal = true" 
-                        class="text-blue-600 hover:underline font-medium"
-                    >
-                        '.$planTitle.'
-                    </button>
+            <div x-data="{ openModal: false }">
+                <!-- Trigger -->
+                <button 
+                    @click="openModal = true" 
+                    class="text-blue-600 hover:underline font-medium"
+                >
+                    '.$planTitle.'
+                </button>
         
-                    <!-- Modal -->
-                    <div 
-                        x-show="openModal" 
-                        x-cloak 
-                        class="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50"
-                    >
-                        <div class="bg-white rounded-lg shadow-lg w-[500px] max-h-[90vh] overflow-y-auto p-6">
-                            <h2 class="text-lg font-semibold mb-4">Edit '.$planTitle.'</h2>
+                <!-- Modal -->
+                <div 
+                    x-show="openModal" 
+                    x-cloak 
+                    class="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50"
+                >
+                    <div class="bg-white rounded-lg shadow-lg w-[500px] max-h-[90vh] overflow-y-auto p-6">
+                        <h2 class="text-lg font-semibold mb-4">Edit '.$planTitle.'</h2>
         
-                            <!-- Unique Plan Settings -->
-                            <div class="mb-6">
-                                <h3 class="text-md font-semibold mb-2">Unique Plan Settings</h3>
-                                '.$uniqueFields.'
-                                '.$uniquePrices.'
-                            </div>
+                        <!-- Unique Plan Settings -->
+                        <div class="mb-6">
+                            <h3 class="text-md font-semibold mb-2">Unique Plan Settings</h3>
+                            '.$uniqueFields.'
+                            '.$uniquePrices.'
         
-                            <!-- Vendor Plans -->
-                            <div>
-                                <h3 class="text-md font-semibold mb-2">Vendor Plans</h3>
-                                '.$vendorRows.'
-                            </div>
-        
-                            <div class="flex justify-end gap-2 mt-4">
+                            <!-- Unique Plan Save Button -->
+                            <div class="flex justify-end mt-3">
                                 <button 
-                                    @click="openModal = false" 
-                                    class="px-4 py-2 bg-gray-200 rounded-lg hover:bg-gray-300"
-                                >
-                                    Cancel
-                                </button>
-                                <button 
-                                    @click="$dispatch(\'update-plan\', {id: '.$productId.'}); openModal = false;" 
+                                    @click="$dispatch(\'update-plan\', {id: '.$productId.'})" 
                                     class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
                                 >
                                     Save Unique Plan
                                 </button>
                             </div>
                         </div>
+        
+                        <!-- Vendor Plans -->
+                        <div>
+                            <h3 class="text-md font-semibold mb-2">Vendor Plans</h3>
+                            '.$vendorRows.'
+                        </div>
+        
+                        <!-- Bottom Cancel -->
+                        <div class="flex justify-end gap-2 mt-4">
+                            <button 
+                                @click="openModal = false" 
+                                class="px-4 py-2 bg-gray-200 rounded-lg hover:bg-gray-300"
+                            >
+                                Cancel
+                            </button>
+                        </div>
                     </div>
                 </div>
-            ';
+            </div>
+        ';
+        
         })
                     
         ->addColumn('size',function($datad){
