@@ -1087,7 +1087,7 @@ class DataController extends Controller
             foreach($uniqueplans as $product_plan){
 
                 //get thhe normal pricing
-                $price_level = "price_$plan_level";
+                $price_level = "price_".$plan_level;
                 $amount = $product_plan->$price_level;
                 $selling_price = $amount;
 
@@ -1100,7 +1100,7 @@ class DataController extends Controller
                 $upline_commission = $product_plan->$user_level_commission;
                 $selling_price = $check_custom_setting == NULL ? $selling_price : $check_custom_setting->price;  
             
-               if( ( $product_slug == 'airtime' || $product_slug == 'utility_bills' ) && $amount != ''){
+               if( ($product_slug == 'airtime' || $product_slug == 'utility_bills') && $amount != '' ){
                      $purchase_discount = $product_plan->$user_level_selling;
                      $actual_discount_value = ceil(($purchase_discount/100) * $amount);  
                      $discounted_selling_price = $amount - abs($actual_discount_value);
@@ -1114,7 +1114,7 @@ class DataController extends Controller
                    $counter++;
                    $product_planss[$counter]['product_plan_id'] = $product_plan->id;
                    $product_planss[$counter]['amount'] = $amount;
-                   $product_planss[$counter]['selling_price'] = $discounted_selling_price.'oooo';
+                   $product_planss[$counter]['selling_price'] = $discounted_selling_price;
                    $product_planss[$counter]['upline_commission'] = $upline_commission;
                    $product_planss[$counter]['product_plan_name'] = $product_plan->product_plan_name;
                    $product_planss[$counter]['data_size_in_mb'] = $product_plan->data_size_in_mb;
