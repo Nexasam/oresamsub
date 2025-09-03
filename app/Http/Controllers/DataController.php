@@ -1087,10 +1087,9 @@ class DataController extends Controller
             foreach($uniqueplans as $product_plan){
 
                 //get thhe normal pricing
-                $price_level = 'price_'.$plan_level;
+                $price_level = "price_$plan_level";
                 $amount = $product_plan->$price_level;
                 $selling_price = $amount;
-
 
                 //HERE SELLING PRICE CHANGES IF THEHRE IS A CUSTOM SETTING: put in a service later
                 $check_custom_setting = ProductPlanCustomPricing::where('product_plan_id','=', $product_plan->id)->where('user_id',auth()->id())->first();
@@ -1124,15 +1123,15 @@ class DataController extends Controller
                }
            }
 
-                // Extract unique sizes from $product_planss
-                $data_sizes = collect($product_planss)
-                ->pluck('data_size_in_mb')
-                ->unique()
-                ->sort()
-                ->values()
-                ->toArray();
-           
-                return response()->json(['status'=>'1','user_level'=>$plan_level ,'message'=>'Product plans fetched','counter' =>count($product_planss),'data' => $product_planss, 'sizes' => $data_sizes ]);
+            // Extract unique sizes from $product_planss
+            $data_sizes = collect($product_planss)
+            ->pluck('data_size_in_mb')
+            ->unique()
+            ->sort()
+            ->values()
+            ->toArray();
+        
+            return response()->json(['status'=>'1','user_level'=>$plan_level ,'message'=>'Product plans fetched','counter' =>count($product_planss),'data' => $product_planss, 'sizes' => $data_sizes ]);
 
         }
         
