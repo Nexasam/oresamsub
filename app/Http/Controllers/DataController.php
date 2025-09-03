@@ -1119,7 +1119,7 @@ class DataController extends Controller
                    $product_planss[$counter]['product_plan_name'] = $product_plan->product_plan_name;
                    $product_planss[$counter]['data_size_in_mb'] = $product_plan->data_size_in_mb;
                    $product_planss[$counter]['validity_in_days'] = $product_plan->validity_in_days;    
-                   $product_planss[$counter]['automation_id'] = $product_plan->product_plan->automation->id;    
+                   $product_planss[$counter]['automation_id'] = NULL;    
                }
            }
 
