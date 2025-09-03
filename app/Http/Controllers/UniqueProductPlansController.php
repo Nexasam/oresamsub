@@ -277,7 +277,7 @@ class UniqueProductPlansController extends Controller
             $productName = $datad->product_plan_name ?? 'nil';
             $productId   = $datad->id;
         
-            $planTitle = $productName.' | '.$datad->size.' | '.$datad->validity.' | '.$datad->network;
+            $planTitle = $productName;
         
             // vendors
             $vendorRows = '<div class="space-y-3">';
