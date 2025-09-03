@@ -541,12 +541,10 @@ class UniqueProductPlansController extends Controller
 
     public function unique_plans_quick_update(Request $request, $id)
     {
-        return response()->json(['status' => 'success', 'message' => $request->prices]);
-
-        try{
+        try {
             $uniqueplan = UniqueProductPlan::findOrFail($id);
-
-            $uniqueplan->product_plan_name = $request->input('plan_name');
+    
+            $uniqueplan->product_plan_name = $request->input('name'); // matches AJAX
             $uniqueplan->visibility        = $request->boolean('visibility');
     
             // update prices dynamically
@@ -558,14 +556,20 @@ class UniqueProductPlansController extends Controller
             }
     
             $uniqueplan->save();
-
-        }catch(Exception $ex){
-          return response()->json(['status' => 'success', 'message' => $ex->getMessage().' line: '.$ex->getLine()]);
+    
+        } catch (\Exception $ex) {
+            return response()->json([
+                'status'  => 'error',
+                'message' => $ex->getMessage() . ' line: ' . $ex->getLine()
+            ]);
         }
-       
-
-        return response()->json(['status' => 'success', 'message' => 'Unique plan updated']);
+    
+        return response()->json([
+            'status'  => 'success',
+            'message' => 'Unique plan updated'
+        ]);
     }
+    
 
     public function unique_plan_automation_quick_update(Request $request, $id)
     {
