@@ -276,15 +276,16 @@ class UniqueProductPlansController extends Controller
         ->addColumn('product_id', function($datad) {
             $productName = $datad->product_plan_name ?? 'nil';
             $productId   = $datad->id;
-         
-           // vendors
-            // $vendorRows = '<div class="grid grid-cols-2 gap-3">';
+        
+            $planTitle = $productName.' | '.$datad->size.' | '.$datad->validity.' | '.$datad->network;
+        
+            // vendors
             $vendorRows = '<div class="space-y-3">';
             foreach ($datad->product_plans as $pp) {
                 $automationName = $pp->automation->automation_name ?? 'N/A';
                 $apiid = $pp->automation_product_plan_id ?? 'N/A';
-                $active = $pp->visibility ?? 0; // assuming vendor plan has "active" column (1 = active, 0 = inactive)
-
+                $active = $pp->visibility ?? 0;
+        
                 $statusToggle = '
                     <label class="inline-flex items-center cursor-pointer">
                         <input type="checkbox" '.($active ? 'checked' : '').' 
@@ -296,7 +297,7 @@ class UniqueProductPlansController extends Controller
                         <span class="ml-2 text-xs text-gray-600">'.($active ? 'Active' : 'Inactive').'</span>
                     </label>
                 ';
-
+        
                 $vendorRows .= '
                     <div class="flex items-center justify-between bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 shadow-sm">
                         <div>
@@ -316,16 +317,40 @@ class UniqueProductPlansController extends Controller
                                 class="px-3 py-1.5 text-xs font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 vendor-update-btn"
                                 data-vendor-id="'.$pp->id.'"
                             >
-                                Update
+                                Update Vendor
                             </button>
                         </div>
                     </div>
                 ';
             }
             $vendorRows .= '</div>';
-
         
-            // unique plan prices (price_1 - price_12)
+            // unique plan fields
+            $uniqueFields = '
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700">Plan Name</label>
+                    <input 
+                        type="text" 
+                        value="'.$productName.'" 
+                        class="mt-1 w-full px-3 py-2 text-sm border rounded-md focus:ring focus:ring-blue-300 unique-plan-name" 
+                        data-id="'.$productId.'"
+                    />
+                </div>
+        
+                <div class="mb-4">
+                    <label class="inline-flex items-center cursor-pointer">
+                        <input type="checkbox" '.($datad->visibility ? 'checked' : '').' 
+                            class="sr-only unique-plan-visibility" 
+                            data-id="'.$productId.'">
+                        <div class="w-11 h-6 bg-gray-300 rounded-full peer-checked:bg-green-500 relative">
+                            <div class="dot absolute left-1 top-1 w-4 h-4 bg-white rounded-full transition"></div>
+                        </div>
+                        <span class="ml-2 text-sm text-gray-700">'.($datad->visibility ? 'Visible' : 'Hidden').'</span>
+                    </label>
+                </div>
+            ';
+        
+            // unique plan prices
             $uniquePrices = '';
             for ($i = 1; $i <= 12; $i++) {
                 $field = "price_$i";
@@ -351,7 +376,7 @@ class UniqueProductPlansController extends Controller
                         @click="openModal = true" 
                         class="text-blue-600 hover:underline font-medium"
                     >
-                        '.$productName.'
+                        '.$planTitle.'
                     </button>
         
                     <!-- Modal -->
@@ -361,11 +386,12 @@ class UniqueProductPlansController extends Controller
                         class="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50"
                     >
                         <div class="bg-white rounded-lg shadow-lg w-[500px] max-h-[90vh] overflow-y-auto p-6">
-                            <h2 class="text-lg font-semibold mb-4">Edit '.$productName.'</h2>
+                            <h2 class="text-lg font-semibold mb-4">Edit '.$planTitle.'</h2>
         
-                            <!-- Unique Plan Prices -->
+                            <!-- Unique Plan Settings -->
                             <div class="mb-6">
-                                <h3 class="text-md font-semibold mb-2">Unique Plan Prices</h3>
+                                <h3 class="text-md font-semibold mb-2">Unique Plan Settings</h3>
+                                '.$uniqueFields.'
                                 '.$uniquePrices.'
                             </div>
         
@@ -386,14 +412,15 @@ class UniqueProductPlansController extends Controller
                                     @click="$dispatch(\'update-plan\', {id: '.$productId.'}); openModal = false;" 
                                     class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
                                 >
-                                    Save Changes
+                                    Save Unique Plan
                                 </button>
                             </div>
                         </div>
                     </div>
                 </div>
             ';
-        })            
+        })
+                    
         ->addColumn('size',function($datad){
             return number_format($datad->data_size_in_mb).'MB  ('.($datad->data_size_in_mb/1000).'GB)';
         })
