@@ -282,15 +282,15 @@ class UniqueProductPlansController extends Controller
         
             // vendors
             $vendorRows = '<div class="space-y-3">';
-
+        
             // sort active vendors above inactive ones
             $vendors = collect($datad->product_plans)->sortByDesc(fn($pp) => $pp->visibility);
-
+        
             foreach ($vendors as $pp) {
                 $automationName = $pp->automation->automation_name ?? 'N/A';
                 $apiid = $pp->automation_product_plan_id ?? 'N/A';
                 $active = $pp->visibility ?? 0;
-
+        
                 $statusToggle = '
                         <label class="inline-flex items-center cursor-pointer">
                             <input 
@@ -305,7 +305,7 @@ class UniqueProductPlansController extends Controller
                             <span class="ml-2 text-xs text-gray-600 status-text">'.($active ? 'Active' : 'Inactive').'</span>
                         </label>
                 ';
-
+        
                 $vendorRows .= '
                     <div class="flex items-center justify-between bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 shadow-sm vendor-row">
                         <div>
@@ -331,10 +331,18 @@ class UniqueProductPlansController extends Controller
                     </div>
                 ';
             }
-
+        
             $vendorRows .= '</div>';
-
-                    
+        
+            // compute highest active vendor cost
+            $highestActive = collect($datad->product_plans)
+                ->filter(fn($pp) => $pp->visibility)
+                ->max('cost_price');
+        
+            // auto default prices
+            $defaultPrice12 = $highestActive ? $highestActive + 20 : ($datad->price_12 ?? 0);
+            $defaultPrice1  = $defaultPrice12 + 5;
+        
             // unique plan fields
             $uniqueFields = '
                 <div class="mb-4">
@@ -361,42 +369,23 @@ class UniqueProductPlansController extends Controller
                     <span class="ml-2 text-sm text-gray-700 visibility-text">'.($datad->visibility ? 'Visible' : 'Hidden').'</span>
                 </label>
             </div>
-
             ';
-        
-            // unique plan prices
-            $uniquePrices = '';
-            for ($i = 1; $i <= 12; $i++) {
-                $field = "price_$i";
-                $value = $datad->$field ?? '';
-                $uniquePrices .= '
-                    <div class="flex items-center justify-between mb-2">
-                        <label class="text-sm font-medium text-gray-700">Price '.$i.'</label>
-                        <input 
-                            type="number" 
-                            value="'.$value.'" 
-                            class="ml-2 w-32 px-2 py-1 text-xs border rounded-md focus:ring focus:ring-blue-300 unique-price-input" 
-                            data-field="'.$field.'" 
-                            data-id="'.$productId.'"
-                        />
-                    </div>
-                ';
-            }
-        
         
             return '
             <div 
                 x-data="{
                     openModal: false,
-                    // compute highest active vendor price
-                    highestVendor: Math.max(...['.
-                        collect($datad->product_plans)
-                            ->filter(fn($pp) => $pp->visibility) // only active vendors
-                            ->pluck('cost_price')
-                            ->implode(',') . '
-                    ]),
+                    highestVendor: '.($highestActive ?? 0).',
                     prices: {
-                        '.collect(range(1,12))->map(fn($i) => "price_$i: ".($datad->{"price_$i"} ?? 0))->implode(',').'
+                        '.collect(range(1,12))->map(function($i) use ($datad, $defaultPrice12, $defaultPrice1) {
+                            $field = "price_$i";
+                            if ($i === 12) {
+                                return "price_12: ".($defaultPrice12 ?? 0);
+                            } elseif ($i === 1) {
+                                return "price_1: ".($defaultPrice1 ?? 0);
+                            }
+                            return "price_$i: ".($datad->$field ?? 0);
+                        })->implode(',').'
                     },
                     get invalidPrices() {
                         for (let key in this.prices) {
@@ -430,7 +419,7 @@ class UniqueProductPlansController extends Controller
                         <div class="mb-6">
                             <h3 class="text-md font-semibold mb-2">Unique Plan Settings</h3>
                             '.$uniqueFields.'
-            
+        
                             <!-- Unique Plan Prices -->
                             '.collect(range(1,12))->map(function($i) use ($datad, $productId) {
                                 $field = "price_$i";
@@ -449,7 +438,7 @@ class UniqueProductPlansController extends Controller
                                     </div>
                                 ';
                             })->implode(' ').'
-            
+        
                             <!-- Warning for invalid prices -->
                             <template x-if="invalidPrices">
                                 <p class="text-red-600 text-sm mt-2">
@@ -457,7 +446,7 @@ class UniqueProductPlansController extends Controller
                                     (₦<span x-text="highestVendor"></span>).
                                 </p>
                             </template>
-            
+        
                             <!-- Unique Plan Save Button -->
                             <div class="flex justify-end mt-3">
                                <button 
@@ -489,11 +478,9 @@ class UniqueProductPlansController extends Controller
                     </div>
                 </div>
             </div>
-        ';
-            
-            
-        
+            ';
         })
+        
                     
         ->addColumn('size',function($datad){
             return number_format($datad->data_size_in_mb).'MB  ('.($datad->data_size_in_mb/1000).'GB)';
