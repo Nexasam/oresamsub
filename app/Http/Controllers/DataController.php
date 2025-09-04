@@ -840,6 +840,7 @@ class DataController extends Controller
         $unique_plan_id = $data['plan_id'];
         $get_associated_plans = ProductPlan::with('automation')
         ->where('unique_product_plan_id', $unique_plan_id)
+        ->where('visibility', 1)
         ->orderByRaw('CAST(cost_price AS UNSIGNED) ASC') // sort as numbers
         ->get();
     
