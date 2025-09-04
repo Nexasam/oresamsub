@@ -13,7 +13,7 @@
 
       <!-- Manifest -->
       <link rel="manifest" href="{{ asset('manifest.json') }}">
-      <meta name="theme-color" content="#4f46e5">
+      <meta name="theme-color" content="#047857">
 
       <!-- iOS support -->
       <link rel="apple-touch-icon" href="{{ asset('assets/logo_imgs/favicon/android-chrome-192x192.png') }}">
