@@ -839,6 +839,7 @@ class DataController extends Controller
                 'set_for_manual' => 1,
                 'user_message' => 'Transaction is being processed',
                 'admin_message' => 'No automation found',
+                'plan_id' => NULL,
             ];
         } 
 
@@ -869,7 +870,7 @@ class DataController extends Controller
                         'case_critical' => 0,
                         'user_message' => $sell_data['user_message'],
                         'admin_message' => $sell_data['admin_message'],
-                        'plan_id' => $sell_data['plan_id'],
+                        'plan_id' => $get_related_plan->id,
                     ];
                 }
 
@@ -885,7 +886,7 @@ class DataController extends Controller
             'case_critical' => 0,
             'user_message' => $sell_data['user_message'],
             'admin_message' => $sell_data['admin_message'],
-            'plan_id' => $sell_data['plan_id'], //this will be the last tried automation
+            'plan_id' => $get_related_plan->id, //this will be the last tried automation
         ];
 
     }
