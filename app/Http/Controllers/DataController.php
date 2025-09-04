@@ -469,6 +469,7 @@ class DataController extends Controller
         $message = 'Pending';
         $display_results = [];
         $coupon_count = 0;
+        $remaining_slots = NULL;
 
         if(auth()->user()->email == 'oreofe@gmail.com'){
             $plan_details = UniqueProductPlan::where('id',$request->product_plan_id)->where('visibility',1)->first();
@@ -583,8 +584,6 @@ class DataController extends Controller
                                     $coupon = $get_deducted_amount['coupon'];
                                     $remaining_slots = $get_deducted_amount['remaining_slots'];
                                     $dataa['coupon'] = $coupon;
-
-
                                     $sell_data = AutomationLogic::initiateDataPurchase($dataa);
                                 }
 
