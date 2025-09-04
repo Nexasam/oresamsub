@@ -469,6 +469,7 @@ class DataController extends Controller
         $message = 'Pending';
         $display_results = [];
         $coupon_count = 0;
+        $coupon = NULL;
         $remaining_slots = NULL;
 
         if(auth()->user()->email == 'oreofe@gmail.com'){
