@@ -147,10 +147,9 @@
                             </thead>
                             <tbody>
                               @php
-                                  $count = 1;
-
-                                 
+                                  $count = 1;                                 
                               @endphp
+                             
                               @foreach ($announcements as $ann)
                                   <tr>
                                     <td>{{ $count++ }}</td>
@@ -247,8 +246,8 @@
                               
                             <div class="col-span-12">
                               @if (Session::has('success'))
-                              <div class="bg-success/10 border border-success/10 alert text-success" role="alert">
-                                Great! {{ Session::get('success') }}
+                                <div class="bg-success/10 border border-success/10 alert text-success" role="alert">
+                                  Great! {{ Session::get('success') }}
                                 </div>
                               @endif
               

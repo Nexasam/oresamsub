@@ -2,6 +2,8 @@
 
 @section('content')
 
+@include('partials.announcements')  
+
 <div class="space-y-6 pt-2" x-data="{ isWalletLoading: false, isRefreshing: false }">
 
 
