@@ -472,6 +472,7 @@ class DataController extends Controller
         $plan_details = ProductPlan::where('id',$request->product_plan_id)->where('visibility',1)->first();
         $automation_id = $plan_details->automation_id;
         $data_value_mb = $plan_details->data_size_in_mb ?? 0;
+        $product_plan_id = $plan_details->id;
 
         $user_plan_id = auth()->user()->user_plan_id;
         $user_level = UserPlan::select('plan_level')->where('id',$user_plan_id)->first();
@@ -545,9 +546,27 @@ class DataController extends Controller
                                 $dataa['network_id'] = $request->network_id;
                                 $dataa['plan_id'] = $request->product_plan_id;
                                 $dataa['validatephonenetwork'] = $request->validatephonenetwork;
-                                $sell_data = AutomationLogic::initiateDataPurchase($dataa);
+                                
+                                
+                                //NEW SWITCH HERE
+                                if(auth()->user()->email == 'oreofe@gmail.com'){
+                                    $retry_count = 0;
+                                    $sell_data = $this->processDataViaAutomations($dataa);
+                                    $product_plan_id = $sell_data['plan_id'];
+                                    $retry_count = $sell_data['retry_count'] ?? 0;
+
+                                    //incase there are no plans to use.
+                                    if($sell_data['case_critical'] == 1){
+                                     return response()->json(['status'=>'-1', 'message'=>'Sorry this plan is currently not available.' ]);
+                                    }
+
+
+                                }else{
+                                    $sell_data = AutomationLogic::initiateDataPurchase($dataa);
+                                }
+
                                 $set_for_manual = $sell_data['set_for_manual'] ?? 0;
-                                // logger('DATAAA: '.json_encode($sell_data));
+                                // logger('DATAAA: '.json_encode($sell_data));    
 
 
                                 if($sell_data['status'] == 1){
@@ -620,7 +639,7 @@ class DataController extends Controller
                                 $creationData['set_for_manual'] = $set_for_manual ?? 0;
                                 $creationData['user_id'] = $user_id;
                                 $creationData['wallet_category'] = $request->wallet_category;
-                                $creationData['product_plan_id'] = $request->product_plan_id;
+                                $creationData['product_plan_id'] = $product_plan_id;
                                 $creationData['phone_number'] = $validated_phone_number;
                                 $creationData['amount'] = $amount;
                                 $creationData['coupon_code_id'] = $coupon;
@@ -747,7 +766,7 @@ class DataController extends Controller
                                 $creationData['transaction_category'] = 'data';
                                 $creationData['user_id'] = $user_id;
                                 $creationData['wallet_category'] = $request->wallet_category;
-                                $creationData['product_plan_id'] = $request->product_plan_id;
+                                $creationData['product_plan_id'] = $product_plan_id;
                                 $creationData['phone_number'] = $phone_numbers_array[$i];
                                 $creationData['amount'] = $amount;
                                 $creationData['status'] = $status;
@@ -785,14 +804,86 @@ class DataController extends Controller
             DB::rollBack();
             return response()->json(['status'=>'-1', 'message'=>'Something went wrong... Please try again', 'data'=>[]]);
         }
-
-      
-       
-        
-
     }
 
-        /**
+
+
+
+    public function processDataViaAutomations($data){
+
+        // $phone_number = $data['phone_number'];
+        // $dataa['phone_number'] = $phone_number;
+        // $dataa['automation_details'] = $data['automation_details'];
+        // $dataa['network_id'] = $data[''];
+        // $dataa['plan_id'] = $request->product_plan_id;
+        // $dataa['validatephonenetwork'] = $request->validatephonenetwork;
+        
+        $unique_plan_id = $data['plan_id'];
+        $get_related_plans = ProductPlan::with('automation')->where('unique_plan_id',$unique_plan_id)->get();
+        if(count($get_related_plans) <= 0){
+            logger('no vendor found for: '. json_encode($data));
+            return [
+                'status' => 1,
+                'case_critical' => 1,
+                'set_for_manual' => 1,
+                'user_message' => 'Transaction is being processed',
+                'admin_message' => 'No automation found',
+            ];
+        } 
+
+        
+        //NEW SWITCH HERE
+        $retry_count = 0;
+        foreach($get_related_plans  as $get_related_plan){
+            if(auth()->user()->email == 'oreofe@gmail.com'){
+                // $dataa['phone_number'] = $phone_number; //fixed, dont change
+                // $dataa['network_id'] = $request->network_id;//fixed, dont change
+                // $data['validatephonenetwork'] = $request->validatephonenetwork; //fixed dont change
+
+                //only these changes
+                $data['automation_details'] = $get_related_plan->automation;
+                $data['plan_id'] = $get_related_plan->id;
+
+                $sell_data = AutomationLogic::initiateDataPurchase($data);
+                $status = $sell_data['status'];
+                $set_for_manual = $sell_data['set_for_manual'] ?? 0;
+
+                if($set_for_manual == 0 && $status == 1){
+                    //it shows its  a success
+                    //lets get the actual automation and plan id
+
+                    return [
+                        'status' => 1,
+                        'set_for_manual' => 0,
+                        'case_critical' => 0,
+                        'user_message' => $sell_data['user_message'],
+                        'admin_message' => $sell_data['admin_message'],
+                        'plan_id' => $sell_data['plan_id'],
+                    ];
+                }
+
+            }
+            sleep(2);
+        }
+
+
+        //no automation went through
+        return [
+            'status' => 1,
+            'set_for_manual' => 1,
+            'case_critical' => 0,
+            'user_message' => $sell_data['user_message'],
+            'admin_message' => $sell_data['admin_message'],
+            'plan_id' => $sell_data['plan_id'], //this will be the last tried automation
+        ];
+
+    }
+        
+
+    
+
+
+    /**
      * Store a newly created resource in storage.
      */
     public function buy_bulk_data_action(Request $request)
@@ -1081,7 +1172,7 @@ class DataController extends Controller
         $sellingp = 'user_level_'.$plan_level.'_selling_price';
 
 
-        ///NEW VERSION 1
+        ///NEW VERSION 1 starts here
         if(auth()->user()->email == 'oreofe@gmail.com' && $product_slug == 'data'){
             $uniqueplans = UniqueProductPlan::where('network_id',$request->network_id)->get();
             foreach($uniqueplans as $product_plan){
@@ -1134,6 +1225,8 @@ class DataController extends Controller
             return response()->json(['status'=>'1','user_level'=>$plan_level ,'message'=>'Product plans fetched','counter' =>count($product_planss),'data' => $product_planss, 'sizes' => $data_sizes ]);
 
         }
+        ///NEW VERSION 1 ends here
+
         
          
         if($plan_category_id == ''){
