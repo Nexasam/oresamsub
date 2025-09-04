@@ -475,19 +475,28 @@ class DataController extends Controller
             // $automation_id = $plan_details->automation_id ?? null;
             $data_value_mb = $plan_details->data_size_in_mb ?? 0;
             $product_plan_id = $plan_details->id;
+
+            $user_plan_id = auth()->user()->user_plan_id;
+            $user_level = UserPlan::select('plan_level')->where('id',$user_plan_id)->first();
+            $plan_level = $user_level->plan_level;
+            $user_plan_selling_price = 'price_'.$plan_level;
+            $amount = abs($plan_details->$user_plan_selling_price);
+
         }else{
             $plan_details = ProductPlan::with('automation')->where('id',$request->product_plan_id)->where('visibility',1)->first();
             // $automation_id = $plan_details->automation_id;
             $data_value_mb = $plan_details->data_size_in_mb ?? 0;
             $product_plan_id = $plan_details->id;
+
+            $user_plan_id = auth()->user()->user_plan_id;
+            $user_level = UserPlan::select('plan_level')->where('id',$user_plan_id)->first();
+            $plan_level = $user_level->plan_level;
+            $user_plan_selling_price = 'user_level_'.$plan_level.'_selling_price';
+            $amount = abs($plan_details->$user_plan_selling_price);
         }
       
 
-        $user_plan_id = auth()->user()->user_plan_id;
-        $user_level = UserPlan::select('plan_level')->where('id',$user_plan_id)->first();
-        $plan_level = $user_level->plan_level;
-        $user_plan_selling_price = 'user_level_'.$plan_level.'_selling_price';
-        $amount = abs($plan_details->$user_plan_selling_price);
+   
         $user_details = auth()->user();
         if(! $user_details){
             //end session and redirect to login
@@ -517,9 +526,12 @@ class DataController extends Controller
             }
         }
 
-        //HERE SELLING PRICE CHANGES IF THEHRE IS A CUSTOM SETTING: put in a service later
-        $check_custom_setting = ProductPlanCustomPricing::where('product_plan_id','=', $request->product_plan_id)->where('user_id',$user_id)->first();
-        $amount = $check_custom_setting == NULL ? $amount : $check_custom_setting->price;  
+
+        if(auth()->user()->email != 'oreofe@gmail.com'){
+            //HERE SELLING PRICE CHANGES IF THEHRE IS A CUSTOM SETTING: put in a service later
+            $check_custom_setting = ProductPlanCustomPricing::where('product_plan_id','=', $request->product_plan_id)->where('user_id',$user_id)->first();
+            $amount = $check_custom_setting == NULL ? $amount : $check_custom_setting->price;  
+        }
 
         DB::beginTransaction();
         try{
@@ -532,22 +544,10 @@ class DataController extends Controller
                                 return response()->json(['status'=>'-1', 'message'=>'Insufficient wallet balance' ]);
                             }
                     
-                            //calling the actual vending via the automation:
+                            //calling the actual vending via the automation: null for v2
                             $automation_details = $plan_details->automation ?? NULL;
                             //TODO: candidate for separation:
                             for($i = 0; $i < count($phone_numbers_array); $i++ ){
-
-
-                                $datacoupon['product_plan_id'] = $request->product_plan_id;
-                                $datacoupon['amount'] = $amount; //original amount
-                                $datacoupon['user'] = $user_details; 
-                                $get_deducted_amount = (new CouponCodeService())->get_coupon_information($datacoupon);
-                                $amount_after_coupon = $get_deducted_amount['amount'];
-                                $amount = $amount_after_coupon; //this is the new amount
-                                $coupon = $get_deducted_amount['coupon'];
-                                $remaining_slots = $get_deducted_amount['remaining_slots'];
-                                $dataa['coupon'] = $coupon;
-
 
                                 $phone_number = $phone_numbers_array[$i];
                                 $dataa['phone_number'] = $phone_number;
@@ -559,6 +559,7 @@ class DataController extends Controller
                                 
                                 //NEW SWITCH HERE
                                 if(auth()->user()->email == 'oreofe@gmail.com'){
+                                    //NEW ROUTE
                                     $retry_count = 0;
                                     $sell_data = $this->processDataViaAutomations($dataa);
                                     $product_plan_id = $sell_data['plan_id'];
@@ -571,6 +572,19 @@ class DataController extends Controller
 
 
                                 }else{
+
+                                    //OLD ROUTE
+                                    $datacoupon['product_plan_id'] = $request->product_plan_id;
+                                    $datacoupon['amount'] = $amount; //original amount
+                                    $datacoupon['user'] = $user_details; 
+                                    $get_deducted_amount = (new CouponCodeService())->get_coupon_information($datacoupon);
+                                    $amount_after_coupon = $get_deducted_amount['amount'];
+                                    $amount = $amount_after_coupon; //this is the new amount
+                                    $coupon = $get_deducted_amount['coupon'];
+                                    $remaining_slots = $get_deducted_amount['remaining_slots'];
+                                    $dataa['coupon'] = $coupon;
+
+
                                     $sell_data = AutomationLogic::initiateDataPurchase($dataa);
                                 }
 
