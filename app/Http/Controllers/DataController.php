@@ -830,7 +830,7 @@ class DataController extends Controller
         // $dataa['validatephonenetwork'] = $request->validatephonenetwork;
         
         $unique_plan_id = $data['plan_id'];
-        $get_related_plans = ProductPlan::with('automation')->where('unique_plan_id',$unique_plan_id)->get();
+        $get_related_plans = ProductPlan::with('automation')->where('unique_product_plan_id',$unique_plan_id)->get();
         if(count($get_related_plans) <= 0){
             logger('no vendor found for: '. json_encode($data));
             return [
