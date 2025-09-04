@@ -659,6 +659,7 @@ class DataController extends Controller
                                 
                                 $description = 'Purchase of data';
                                 $creationData['transaction_category'] = 'data';
+                                $creationData['retry_count'] = $retry_count ?? 0;
                                 $creationData['set_for_manual'] = $set_for_manual ?? 0;
                                 $creationData['user_id'] = $user_id;
                                 $creationData['wallet_category'] = $request->wallet_category;
@@ -835,22 +836,20 @@ class DataController extends Controller
 
 
     public function processDataViaAutomations($data){
-
-        // $phone_number = $data['phone_number'];
-        // $dataa['phone_number'] = $phone_number;
-        // $dataa['automation_details'] = $data['automation_details'];
-        // $dataa['network_id'] = $data[''];
-        // $dataa['plan_id'] = $request->product_plan_id;
-        // $dataa['validatephonenetwork'] = $request->validatephonenetwork;
-        
+  
         $unique_plan_id = $data['plan_id'];
-        $get_related_plans = ProductPlan::with('automation')->where('unique_product_plan_id',$unique_plan_id)->get();
-        if(count($get_related_plans) <= 0){
+        $get_associated_plans = ProductPlan::with('automation')
+        ->where('unique_product_plan_id', $unique_plan_id)
+        ->orderByRaw('CAST(cost_price AS UNSIGNED) ASC') // sort as numbers
+        ->get();
+    
+        if(count($get_associated_plans) <= 0){
             logger('no vendor found for: '. json_encode($data));
             return [
                 'status' => 1,
                 'case_critical' => 1,
                 'set_for_manual' => 1,
+                'retry_count' => 0,
                 'user_message' => 'Transaction is being processed',
                 'admin_message' => 'No automation found',
                 'plan_id' => NULL,
@@ -860,15 +859,15 @@ class DataController extends Controller
         
         //NEW SWITCH HERE
         $retry_count = 0;
-        foreach($get_related_plans  as $get_related_plan){
+        foreach($get_associated_plans  as $get_associated_plan){
             if(auth()->user()->email == 'oreofe@gmail.com'){
                 // $dataa['phone_number'] = $phone_number; //fixed, dont change
                 // $dataa['network_id'] = $request->network_id;//fixed, dont change
                 // $data['validatephonenetwork'] = $request->validatephonenetwork; //fixed dont change
 
                 //only these changes
-                $data['automation_details'] = $get_related_plan->automation;
-                $data['plan_id'] = $get_related_plan->id;
+                $data['automation_details'] = $get_associated_plan->automation;
+                $data['plan_id'] = $get_associated_plan->id;
 
                 $sell_data = AutomationLogic::initiateDataPurchase($data);
                 $status = $sell_data['status'];
@@ -882,13 +881,15 @@ class DataController extends Controller
                         'status' => 1,
                         'set_for_manual' => 0,
                         'case_critical' => 0,
+                        'retry_count' => $retry_count,
                         'user_message' => $sell_data['user_message'],
                         'admin_message' => $sell_data['admin_message'],
-                        'plan_id' => $get_related_plan->id,
+                        'plan_id' => $get_associated_plan->id,
                     ];
                 }
 
             }
+            $retry_count++;
             sleep(2);
         }
 
@@ -898,9 +899,10 @@ class DataController extends Controller
             'status' => 1,
             'set_for_manual' => 1,
             'case_critical' => 0,
+            'retry_count' => $retry_count,
             'user_message' => $sell_data['user_message'],
             'admin_message' => $sell_data['admin_message'],
-            'plan_id' => $get_related_plan->id, //this will be the last tried automation
+            'plan_id' => $get_associated_plan->id, //this will be the last tried automation
         ];
 
     }
