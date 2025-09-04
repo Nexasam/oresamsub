@@ -4,8 +4,25 @@
   <meta charset="UTF-8">
   <title>{{ $title ?? 'OresamSub' }}</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
   <link rel="icon" type="image/png" href="{{ asset('assets/logo_imgs/favicon/android-chrome-192x192.png') }}">
+
+
+{{-- new content --}}
+      <!-- Favicon -->
+      <link rel="icon" type="image/png" href="{{ asset('assets/logo_imgs/favicon/android-chrome-192x192.png') }}">
+
+      <!-- Manifest -->
+      <link rel="manifest" href="{{ asset('manifest.json') }}">
+      <meta name="theme-color" content="#4f46e5">
+
+      <!-- iOS support -->
+      <link rel="apple-touch-icon" href="{{ asset('assets/logo_imgs/favicon/android-chrome-192x192.png') }}">
+      <link rel="apple-touch-icon" sizes="512x512" href="{{ asset('assets/logo_imgs/favicon/android-chrome-512x512.png') }}">
+      <meta name="apple-mobile-web-app-capable" content="yes">
+      <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+      <meta name="apple-mobile-web-app-title" content="OresamSub">
+{{-- new content ends --}}
+
 
 
   <!-- DARK MODE PREVENT FLASH -->
@@ -1320,5 +1337,17 @@
   </script>
 
 
+
+
+{{-- this is for pwa --}}
+<script>
+  if ("serviceWorker" in navigator) {
+      window.addEventListener("load", function () {
+          navigator.serviceWorker.register("/service-worker.js")
+              .then(reg => console.log("Service Worker registered:", reg))
+              .catch(err => console.log("Service Worker registration failed:", err));
+      });
+  }
+</script>
 </body>
 </html>

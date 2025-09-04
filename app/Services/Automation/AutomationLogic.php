@@ -223,6 +223,7 @@ class AutomationLogic{
 
 
     public static function initiateCablePurchase($data){
+        
         $automation_details = $data['automation_details'];
         $smart_card_number = $data['smart_card_number'];
         $cable_product_plan_id = $data['plan_id'];
@@ -249,6 +250,7 @@ class AutomationLogic{
             $buy_cable_subscription['admin_message'] = 'Cable subscription failed.';
         }
         return $buy_cable_subscription;
+
     }
 
 
