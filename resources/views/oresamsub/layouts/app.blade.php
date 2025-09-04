@@ -1358,7 +1358,7 @@
             Not now
           </button>
           <button id="confirmInstall" 
-            class="px-4 py-2 rounded-xl bg-indigo-600 text-white font-medium shadow hover:bg-indigo-700">
+            class="px-4 py-2 rounded-xl bg-emerald-600 text-white font-medium shadow hover:bg-emerald-700">
             Install
           </button>
         </div>
