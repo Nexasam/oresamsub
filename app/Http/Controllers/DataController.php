@@ -2,8 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\ProductPlanCustomPricing;
-use App\Models\UniqueProductPlan;
 use Exception;
 use App\Models\User;
 use App\Models\Network;
@@ -18,6 +16,8 @@ use Illuminate\Http\Request;
 use App\Models\ProductCategory;
 use Illuminate\Validation\Rule;
 use Yajra\DataTables\DataTables;
+use App\Models\UniqueProductPlan;
+use Illuminate\Http\JsonResponse;
 use App\Models\UsedUserCouponCode;
 use App\Models\UserBulkDataWallet;
 use App\Models\UserVirtualAccount;
@@ -29,6 +29,7 @@ use App\Models\UserBulkDataPurchase;
 use App\Traits\WalletTransactionLogs;
 use Illuminate\Support\Facades\Route;
 use App\Http\Services\CouponCodeService;
+use App\Models\ProductPlanCustomPricing;
 use Illuminate\Support\Facades\Validator;
 use App\Services\Automation\AutomationLogic;
 use App\Traits\Dashboard\UserDashboardDataTrait;
@@ -435,7 +436,7 @@ class DataController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function buy_data_action(Request $request)
+    public function buy_data_action(Request $request)       
     {
         $validator = Validator::make($request->all(), [
             'network_id' => 'required',
@@ -469,10 +470,18 @@ class DataController extends Controller
         $display_results = [];
         $coupon_count = 0;
 
-        $plan_details = ProductPlan::where('id',$request->product_plan_id)->where('visibility',1)->first();
-        $automation_id = $plan_details->automation_id;
-        $data_value_mb = $plan_details->data_size_in_mb ?? 0;
-        $product_plan_id = $plan_details->id;
+        if(auth()->user()->email == 'oreofe@gmail.com'){
+            $plan_details = UniqueProductPlan::where('id',$request->product_plan_id)->where('visibility',1)->first();
+            // $automation_id = $plan_details->automation_id ?? null;
+            $data_value_mb = $plan_details->data_size_in_mb ?? 0;
+            $product_plan_id = $plan_details->id;
+        }else{
+            $plan_details = ProductPlan::with('automation')->where('id',$request->product_plan_id)->where('visibility',1)->first();
+            // $automation_id = $plan_details->automation_id;
+            $data_value_mb = $plan_details->data_size_in_mb ?? 0;
+            $product_plan_id = $plan_details->id;
+        }
+      
 
         $user_plan_id = auth()->user()->user_plan_id;
         $user_level = UserPlan::select('plan_level')->where('id',$user_plan_id)->first();
@@ -524,7 +533,7 @@ class DataController extends Controller
                             }
                     
                             //calling the actual vending via the automation:
-                            $automation_details = Automation::where('id',$automation_id)->first();
+                            $automation_details = $plan_details->automation ?? NULL;
                             //TODO: candidate for separation:
                             for($i = 0; $i < count($phone_numbers_array); $i++ ){
 
@@ -700,7 +709,9 @@ class DataController extends Controller
                             }
                     
                             //calling the actual vending via the automation:
-                            $automation_details = Automation::where('id',$automation_id)->first();
+                            // $automation_details = Automation::where('id',$automation_id)->first();
+                            $automation_details = $plan_details->automation ?? NULL;
+
                     
                             //TODO: candidate for separation
                             for($i = 0; $i < count($phone_numbers_array); $i++ ){
