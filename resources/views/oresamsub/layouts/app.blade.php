@@ -1339,6 +1339,74 @@
 
 
 
+
+
+
+{{-- pop to encourage app installation --}}
+    <!-- Install Popup -->
+    <div id="installPopup" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/50">
+      <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl max-w-sm w-full p-6 text-center">
+        <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-3">
+          Install OresamSub
+        </h2>
+        <p class="text-gray-600 dark:text-gray-300 mb-6">
+          Add this app to your home screen for a faster, app-like experience.
+        </p>
+        <div class="flex gap-3 justify-center">
+          <button id="dismissInstall" 
+            class="px-4 py-2 rounded-xl bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-white hover:bg-gray-300 dark:hover:bg-gray-600">
+            Not now
+          </button>
+          <button id="confirmInstall" 
+            class="px-4 py-2 rounded-xl bg-indigo-600 text-white font-medium shadow hover:bg-indigo-700">
+            Install
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script>
+    let deferredPrompt;
+    const cooldownDays = 4;
+    const cooldownMs = cooldownDays * 24 * 60 * 60 * 1000;
+
+    // Check if user dismissed earlier
+    window.addEventListener("beforeinstallprompt", (e) => {
+        const dismissedAt = localStorage.getItem("installDismissedAt");
+
+        if (dismissedAt && Date.now() - dismissedAt < cooldownMs) {
+            return; // Still in cooldown, don't show
+        }
+
+        e.preventDefault();
+        deferredPrompt = e;
+
+        // Show popup
+        const popup = document.getElementById("installPopup");
+        popup.classList.remove("hidden");
+        popup.classList.add("flex");
+    });
+
+    // Handle Install button
+    document.getElementById("confirmInstall").addEventListener("click", async () => {
+        if (deferredPrompt) {
+            deferredPrompt.prompt();
+            const { outcome } = await deferredPrompt.userChoice;
+            console.log("User choice:", outcome);
+            deferredPrompt = null;
+        }
+        document.getElementById("installPopup").classList.add("hidden");
+    });
+
+    // Handle Not Now button
+    document.getElementById("dismissInstall").addEventListener("click", () => {
+        localStorage.setItem("installDismissedAt", Date.now()); // Save timestamp
+        document.getElementById("installPopup").classList.add("hidden");
+    });
+    </script>
+
+
+
 {{-- this is for pwa --}}
 <script>
   if ("serviceWorker" in navigator) {
