@@ -1367,7 +1367,7 @@
 
     <script>
     let deferredPrompt;
-    const cooldownDays = 4;
+    const cooldownDays = 2;
     const cooldownMs = cooldownDays * 24 * 60 * 60 * 1000;
 
     // Check if user dismissed earlier
