@@ -6,6 +6,22 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="icon" type="image/png" href="{{ asset('assets/logo_imgs/favicon/android-chrome-192x192.png') }}">
 
+  {{-- new content --}}
+      <!-- Favicon -->
+      <link rel="icon" type="image/png" href="{{ asset('assets/logo_imgs/favicon/android-chrome-192x192.png') }}">
+
+      <!-- Manifest -->
+      <link rel="manifest" href="{{ asset('manifest.json') }}">
+      <meta name="theme-color" content="#047857">
+
+      <!-- iOS support -->
+      <link rel="apple-touch-icon" href="{{ asset('assets/logo_imgs/favicon/android-chrome-192x192.png') }}">
+      <link rel="apple-touch-icon" sizes="512x512" href="{{ asset('assets/logo_imgs/favicon/android-chrome-512x512.png') }}">
+      <meta name="apple-mobile-web-app-capable" content="yes">
+      <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+      <meta name="apple-mobile-web-app-title" content="OresamSub">
+{{-- new content ends --}}
+
 
   <!-- DARK MODE PREVENT FLASH -->
   <script>
