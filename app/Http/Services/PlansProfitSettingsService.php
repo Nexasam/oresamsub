@@ -15,7 +15,7 @@ use App\Models\FundingOptionBankCodes;
 class PlansProfitSettingsService{
 
     public function getSellingPriceForCustomer(){
-        $plans = ProductPlan::with('product','automation')->get();
+        $plans = ProductPlan::with('product_plan_category.product','automation')->get();
         $dataa = [];
 
         foreach($plans as $key=>$plan){
