@@ -315,18 +315,18 @@ Route::middleware(['set_locale'])->group(function () {
                             $dataup['network_id'] = $network_id;
                             $dataup['product_id'] = $product_id;
                             $dataup['lowest_cost_price'] = $productplan->cost_price;
-                            $dataup['proft_1'] = 100;
-                            $dataup['proft_2'] = 75;
-                            $dataup['proft_3'] = 50;
-                            $dataup['proft_4'] = 40;
-                            $dataup['proft_5'] = 30;
-                            $dataup['proft_6'] = 25;
-                            $dataup['proft_7'] = 20;
-                            $dataup['proft_8'] = 15;
-                            $dataup['proft_9'] = 14;
-                            $dataup['proft_10'] = 10;
-                            $dataup['proft_11'] = 7;
-                            $dataup['proft_12'] = 5;
+                            $dataup['profit_1'] = 100;
+                            $dataup['profit_2'] = 75;
+                            $dataup['profit_3'] = 50;
+                            $dataup['profit_4'] = 40;
+                            $dataup['profit_5'] = 30;
+                            $dataup['profit_6'] = 25;
+                            $dataup['profit_7'] = 20;
+                            $dataup['profit_8'] = 15;
+                            $dataup['profit_9'] = 14;
+                            $dataup['profit_10'] = 10;
+                            $dataup['profit_11'] = 7;
+                            $dataup['profit_12'] = 5;
                             PlanProfitSetting::create($dataup);
                     
                         }else{
@@ -339,18 +339,18 @@ Route::middleware(['set_locale'])->group(function () {
                             }
 
                             $dataupp['lowest_cost_price'] = $cost_price;
-                            $dataup['proft_1'] = 100;
-                            $dataup['proft_2'] = 75;
-                            $dataup['proft_3'] = 50;
-                            $dataup['proft_4'] = 40;
-                            $dataup['proft_5'] = 30;
-                            $dataup['proft_6'] = 25;
-                            $dataup['proft_7'] = 20;
-                            $dataup['proft_8'] = 15;
-                            $dataup['proft_9'] = 14;
-                            $dataup['proft_10'] = 10;
-                            $dataup['proft_11'] = 7;
-                            $dataup['proft_12'] = 5;
+                            $dataup['profit_1'] = 100;
+                            $dataup['profit_2'] = 75;
+                            $dataup['profit_3'] = 50;
+                            $dataup['profit_4'] = 40;
+                            $dataup['profit_5'] = 30;
+                            $dataup['profit_6'] = 25;
+                            $dataup['profit_7'] = 20;
+                            $dataup['profit_8'] = 15;
+                            $dataup['profit_9'] = 14;
+                            $dataup['profit_10'] = 10;
+                            $dataup['profit_11'] = 7;
+                            $dataup['profit_12'] = 5;
                             PlanProfitSetting::where('id',$profit_setting->id)->update($dataupp);
                         }
                     }
