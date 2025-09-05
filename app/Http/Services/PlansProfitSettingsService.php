@@ -20,9 +20,9 @@ class PlansProfitSettingsService{
 
         foreach($plans as $key=>$plan){
 
-            if($plan->product->product_name == 'DATA'){
+            if($plan->product_plan_category->product->product_name == 'DATA'){
                 $profit_setting = PlanProfitSetting::where('data_size_in_mb',$plan->data_size_in_mb)
-                ->where('product_id',$plan->product->id)
+                ->where('product_id',$plan->product_plan_category->product->id)
                 ->where('validity_in_days',$plan->validity_in_days)
                 ->where('data_size_in_mb',$plan->data_size_in_mb)
                 ->where('is_social',$plan->is_social)
