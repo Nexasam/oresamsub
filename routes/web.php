@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Services\UniqueProductPlansService;
+use App\Models\PlanProfitSetting;
 use App\Models\SiteImage;
 use App\Models\ProductPlan;
 use App\Models\SiteTemplate;
@@ -244,7 +245,6 @@ Route::middleware(['set_locale'])->group(function () {
                             $dataup['price_10'] = $productplan->cost_price + 55;
                             $dataup['price_11'] = $productplan->cost_price + 50;
                             $dataup['price_12'] = $productplan->cost_price + 45;
-                            $dataup['price_12'] = $productplan->cost_price + 45;
                             UniqueProductPlan::create($dataup);
                     
                         }else{
@@ -269,10 +269,89 @@ Route::middleware(['set_locale'])->group(function () {
                             $dataupp['price_10'] = $cost_price + 55;
                             $dataupp['price_11'] = $cost_price + 50;
                             $dataupp['price_12'] = $cost_price + 45;
-                            $dataupp['price_12'] = $cost_price + 45;
                             UniqueProductPlan::where('id',$checkunique_plan->id)->update($dataupp);
 
                         
+                        }
+                    }
+
+                    $nextcount++;
+                }
+
+
+                return [
+                    'message' => 'success'
+                ];
+                // return $dataup;
+                // dd('test');
+            });
+
+            Route::get('/plans-profit-settings', function (): array {
+                //fetch unique plans: network, size, validity
+                $productplans = ProductPlan::all();
+
+                foreach($productplans as $key=>$productplan){
+                    $size = $productplan->data_size_in_mb;
+                    $validity = $productplan->validity_in_days;
+                    $network_id = $productplan->product_plan_category->network->id ?? 'nil';
+                    $network_name = $productplan->product_plan_category->network->network_name ?? 'nil';
+                    $product_slug = $productplan->product_plan_category->product->slug;
+                    $product_id = $productplan->product_plan_category->product->id;
+                    $cost_price = $productplan->cost_price;
+                    $is_social = $productplan->is_social;
+                    if($product_slug == 'data'){
+                   
+                        $profit_setting = PlanProfitSetting::where('network_id',$network_id)
+                        ->where('product_id',$product_id)
+                        ->where('validity_in_days',$validity)
+                        ->where('data_size_in_mb',$size)
+                        ->where('is_social',$is_social)
+                        ->first(); 
+
+                        if(! $profit_setting){
+                            $dataup['api_id'] = $nextcount;
+                            $dataup['data_size_in_mb'] = $size;
+                            $dataup['validity_in_days'] = $validity;
+                            $dataup['network_id'] = $network_id;
+                            $dataup['product_id'] = $product_id;
+                            $dataup['cost_price'] = $productplan->cost_price;
+                            $dataup['proft_1'] = 100;
+                            $dataup['proft_2'] = 75;
+                            $dataup['proft_3'] = 50;
+                            $dataup['proft_4'] = 40;
+                            $dataup['proft_5'] = 30;
+                            $dataup['proft_6'] = 25;
+                            $dataup['proft_7'] = 20;
+                            $dataup['proft_8'] = 15;
+                            $dataup['proft_9'] = 14;
+                            $dataup['proft_10'] = 10;
+                            $dataup['proft_11'] = 7;
+                            $dataup['proft_12'] = 5;
+                            PlanProfitSetting::create($dataup);
+                    
+                        }else{
+
+                            //exists..UPDATE
+                            if($cost_price > $profit_setting->cost_price){
+                               
+                            }else{
+                                $cost_price = $profit_setting->cost_price;
+                            }
+
+                            $dataupp['cost_price'] = $cost_price;
+                            $dataup['proft_1'] = 100;
+                            $dataup['proft_2'] = 75;
+                            $dataup['proft_3'] = 50;
+                            $dataup['proft_4'] = 40;
+                            $dataup['proft_5'] = 30;
+                            $dataup['proft_6'] = 25;
+                            $dataup['proft_7'] = 20;
+                            $dataup['proft_8'] = 15;
+                            $dataup['proft_9'] = 14;
+                            $dataup['proft_10'] = 10;
+                            $dataup['proft_11'] = 7;
+                            $dataup['proft_12'] = 5;
+                            PlanProfitSetting::where('id',$profit_setting->id)->update($dataupp);
                         }
                     }
 
