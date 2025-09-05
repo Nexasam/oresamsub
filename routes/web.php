@@ -355,7 +355,7 @@ Route::middleware(['set_locale'])->group(function () {
                         }
                     }
 
-                    $nextcount++;
+                    // $nextcount++;
                 }
 
 
