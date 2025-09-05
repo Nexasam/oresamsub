@@ -220,6 +220,7 @@ Route::middleware(['set_locale'])->group(function () {
                         ->where('product_id',$product_id)
                         ->where('validity_in_days',$validity)
                         ->where('data_size_in_mb',$size)
+                        ->where('is_social',0)
                         ->first(); 
 
                         if(! $checkunique_plan){

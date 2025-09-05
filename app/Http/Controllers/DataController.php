@@ -478,9 +478,10 @@ class DataController extends Controller
             $data_value_mb = $plan_details->data_size_in_mb ?? 0;
             $product_plan_id = $plan_details->id;
 
-            $user_plan_id = auth()->user()->user_plan_id;
-            $user_level = UserPlan::select('plan_level')->where('id',$user_plan_id)->first();
-            $plan_level = $user_level->plan_level;
+            // $user_plan_id = auth()->user()->user_plan_id;
+            // $user_level = UserPlan::select('plan_level')->where('id',$user_plan_id)->first();
+            // $plan_level = $user_level->plan_level;
+            $plan_level = auth()->user()->user_plan->plan_level ?? 1;
             $user_plan_selling_price = 'price_'.$plan_level;
             $amount = abs($plan_details->$user_plan_selling_price);
 
@@ -490,9 +491,10 @@ class DataController extends Controller
             $data_value_mb = $plan_details->data_size_in_mb ?? 0;
             $product_plan_id = $plan_details->id;
 
-            $user_plan_id = auth()->user()->user_plan_id;
-            $user_level = UserPlan::select('plan_level')->where('id',$user_plan_id)->first();
-            $plan_level = $user_level->plan_level;
+            // $user_plan_id = auth()->user()->user_plan_id;
+            // $user_level = UserPlan::select('plan_level')->where('id',$user_plan_id)->first();
+            $plan_level = auth()->user()->user_plan->plan_level ?? 1;
+            // $plan_level = $user_level->plan_level;
             $user_plan_selling_price = 'user_level_'.$plan_level.'_selling_price';
             $amount = abs($plan_details->$user_plan_selling_price);
         }

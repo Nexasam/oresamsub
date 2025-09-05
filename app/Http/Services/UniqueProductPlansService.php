@@ -23,10 +23,12 @@ class UniqueProductPlansService{
             $product_id = $unique_plan->product_id;
             $datasize = $unique_plan->data_size_in_mb;
             $validity = $unique_plan->validity_in_days;
+            $issocial  = $unique_plan->is_social;
 
             $associated_automationplans = ProductPlan::with(['product_plan_category.network','product_plan_category.product','automation'])
             ->where('validity_in_days', $validity)
             ->where('data_size_in_mb', $datasize)
+            ->where('is_social', $issocial)
             ->get();
 
 
@@ -36,8 +38,9 @@ class UniqueProductPlansService{
                 $productid = $associated_automationplan->product_plan_category->product->id ?? null;
                 $sizee = $associated_automationplan->data_size_in_mb;
                 $vall = $associated_automationplan->validity_in_days;
+                $issocial2 = $associated_automationplan->is_social;
 
-                if ($getnetworkid == $network_id && $productid == $product_id && $datasize == $sizee && $validity == $vall) {
+                if ($getnetworkid == $network_id && $productid == $product_id && $datasize == $sizee && $validity == $vall && $issocial == $issocial2) {
                     $dataa[] = [
                         'product_plan' => $associated_automationplan->product_plan_name,
                         'size' => $sizee,
