@@ -298,8 +298,12 @@
 
 
                       {{-- PROCESSING WITH OTHER AUTOMATION --}}
+
+
+                      
                       @php
-                      $network_plan_categories_arr = App\Models\ProductPlanCategory::where('network_id',$data->product_plan->product_plan_category->network->id)
+                      $networkkk = $data->product_plan->product_plan_category->network->id;
+                      $network_plan_categories_arr = App\Models\ProductPlanCategory::where('network_id',$networkkk)
                       ->where('product_id',$data->product_plan->product_plan_category->product->id)
                       ->pluck('id')
                       ->toArray();
@@ -311,6 +315,7 @@
                       ->get();
 
                       $ammount = $data->discounted_amount ?? $data->amount;
+                      $networrrk = $data->product_plan->product_plan_category->network->id ?? NULL;
 
                         
                       @endphp
@@ -341,7 +346,7 @@
                                         automation_id: this.selectedAutomation.id,
                                         automation_name: this.selectedAutomation.name,
                                         phone_number: '{{ $data->phone_number }}',
-                                        network_id: '{{ $data->product_plan->product_plan_category->network->id ?? NULL }}',
+                                        network_id: '{{ $networrrk }}',
                                     }),
                                 })
                                 .then(res => res.json())
@@ -554,7 +559,7 @@
                             </div>
                         </div>
                     </div>
-                    </div>
+                        </div>
 
                      
                   
@@ -708,6 +713,8 @@
                           </div>
                       @endif
                      @endif
+
+
 
                   </div>
     

@@ -1180,7 +1180,7 @@ class DataController extends Controller
             }
 
             else{
-                // $product_slug = '';
+                $product_slug = 'data';
             }
             
         }
