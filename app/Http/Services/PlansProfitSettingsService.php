@@ -15,7 +15,7 @@ use App\Models\FundingOptionBankCodes;
 class PlansProfitSettingsService{
 
     public function getSellingPriceForCustomer(){
-        $plans = ProductPlan::with('product_plan_category.product','automation')->get();
+        $plans = ProductPlan::with('product_plan_category.network','product_plan_category.product','automation')->get();
         $dataa = [];
 
         foreach($plans as $key=>$plan){
@@ -24,7 +24,7 @@ class PlansProfitSettingsService{
                 $profit_setting = PlanProfitSetting::where('data_size_in_mb',$plan->data_size_in_mb)
                 ->where('product_id',$plan->product_plan_category->product->id)
                 ->where('validity_in_days',$plan->validity_in_days)
-                ->where('data_size_in_mb',$plan->data_size_in_mb)
+                ->where('network_id',$plan->network_id)
                 ->where('is_social',$plan->is_social)
                 ->first(); 
     
