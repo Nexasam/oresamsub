@@ -29,10 +29,10 @@ class PlansProfitSettingsService{
 
             $dataa[$key]['cost_price'] = $plan->cost_price;
             $userplan_level = auth()->user()->user_plan->plan_level;
-            $profit_level = "profit_".$userplan_level;
+            $profit_level = "profit_$userplan_level";
             $dataa[$key]['profit_level'] = $userplan_level;
             $dataa[$key]['profit'] = abs($profit_setting->$profit_level);
-            $dataa[$key]['selling_price'] = $profit_setting->$profit_level + 50;
+            $dataa[$key]['selling_price'] = $profit_setting->$profit_level;
         }
 
         return [
