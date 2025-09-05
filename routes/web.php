@@ -204,7 +204,7 @@ Route::middleware(['set_locale'])->group(function () {
 
                 $checkunique = UniqueProductPlan::latest()->first();
                 $lastkey = $checkunique->api_id ?? 0;
-                $nextcount = $lastkey + 50;
+                $nextcount = $lastkey + 5;
 
                 foreach($productplans as $key=>$productplan){
                     $size = $productplan->data_size_in_mb;
@@ -214,13 +214,14 @@ Route::middleware(['set_locale'])->group(function () {
                     $product_slug = $productplan->product_plan_category->product->slug;
                     $product_id = $productplan->product_plan_category->product->id;
                     $cost_price = $productplan->cost_price;
+                    $is_social = $productplan->is_social;
                     if($product_slug == 'data'){
                    
                         $checkunique_plan = UniqueProductPlan::where('network_id',$network_id)
                         ->where('product_id',$product_id)
                         ->where('validity_in_days',$validity)
                         ->where('data_size_in_mb',$size)
-                        ->where('is_social',0)
+                        ->where('is_social',$is_social)
                         ->first(); 
 
                         if(! $checkunique_plan){
