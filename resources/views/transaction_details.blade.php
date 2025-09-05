@@ -302,7 +302,7 @@
 
                       
                       @php
-                      $networkkk = $data->product_plan->product_plan_category->network->id;
+                      $networkkk = $data->product_plan->product_plan_category->network->id ?? NULL;
                       $network_plan_categories_arr = App\Models\ProductPlanCategory::where('network_id',$networkkk)
                       ->where('product_id',$data->product_plan->product_plan_category->product->id)
                       ->pluck('id')
