@@ -24,7 +24,7 @@ class PlansProfitSettingsService{
                 $profit_setting = PlanProfitSetting::where('data_size_in_mb',$plan->data_size_in_mb)
                 ->where('product_id',$plan->product_plan_category->product->id)
                 ->where('validity_in_days',$plan->validity_in_days)
-                ->where('network_id',$plan->network_id)
+                ->where('network_id',$plan->product_plan_category->network->id)
                 ->where('is_social',$plan->is_social)
                 ->first(); 
     
