@@ -20,19 +20,22 @@ class PlansProfitSettingsService{
 
         foreach($plans as $key=>$plan){
 
-            $profit_setting = PlanProfitSetting::where('data_size_in_mb',$plan->data_size_in_mb)
-            ->where('product_id',$plan->product->id)
-            ->where('validity_in_days',$plan->validity_in_days)
-            ->where('data_size_in_mb',$plan->data_size_in_mb)
-            ->where('is_social',$plan->is_social)
-            ->first(); 
-
-            $dataa[$key]['cost_price'] = $plan->cost_price;
-            $userplan_level = auth()->user()->user_plan->plan_level;
-            $profit_level = "profit_$userplan_level";
-            $dataa[$key]['profit_level'] = $userplan_level;
-            $dataa[$key]['profit'] = abs($profit_setting->$profit_level);
-            $dataa[$key]['selling_price'] = $profit_setting->$profit_level;
+            if($plan->product->product_name == 'DATA'){
+                $profit_setting = PlanProfitSetting::where('data_size_in_mb',$plan->data_size_in_mb)
+                ->where('product_id',$plan->product->id)
+                ->where('validity_in_days',$plan->validity_in_days)
+                ->where('data_size_in_mb',$plan->data_size_in_mb)
+                ->where('is_social',$plan->is_social)
+                ->first(); 
+    
+                $dataa[$key]['cost_price'] = $plan->cost_price;
+                $userplan_level = auth()->user()->user_plan->plan_level;
+                $profit_level = "profit_$userplan_level";
+                $dataa[$key]['profit_level'] = $userplan_level;
+                $dataa[$key]['profit'] = abs($profit_setting->$profit_level);
+                $dataa[$key]['selling_price'] = $profit_setting->$profit_level;
+            }
+          
         }
 
         return [
