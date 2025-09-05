@@ -309,7 +309,7 @@ Route::middleware(['set_locale'])->group(function () {
                         ->first(); 
 
                         if(! $profit_setting){
-                            $dataup['api_id'] = $nextcount;
+                            // $dataup['api_id'] = $nextcount;
                             $dataup['data_size_in_mb'] = $size;
                             $dataup['validity_in_days'] = $validity;
                             $dataup['network_id'] = $network_id;
