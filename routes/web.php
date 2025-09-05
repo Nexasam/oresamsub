@@ -204,7 +204,7 @@ Route::middleware(['set_locale'])->group(function () {
 
                 $checkunique = UniqueProductPlan::latest()->first();
                 $lastkey = $checkunique->api_id ?? 0;
-                $nextcount = $lastkey + 1;
+                $nextcount = $lastkey + 5;
 
                 foreach($productplans as $key=>$productplan){
                     $size = $productplan->data_size_in_mb;
