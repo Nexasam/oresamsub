@@ -10,5 +10,5 @@ class PlanProfitSetting extends Model
 {
     use HasFactory, HasUuids;
 
-    protected $guarded = ['id'];
+    protected $guarded = [];
 }
