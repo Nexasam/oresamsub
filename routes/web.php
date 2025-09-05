@@ -338,7 +338,7 @@ Route::middleware(['set_locale'])->group(function () {
                                 $cost_price = $profit_setting->cost_price;
                             }
 
-                            $dataupp['cost_price'] = $cost_price;
+                            $dataupp['lowest_cost_price'] = $cost_price;
                             $dataup['proft_1'] = 100;
                             $dataup['proft_2'] = 75;
                             $dataup['proft_3'] = 50;
