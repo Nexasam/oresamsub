@@ -2,6 +2,7 @@
 
 namespace App\Http\Services;
 
+use App\Models\PlanProfitSetting;
 use App\Models\User;
 use App\Models\ProductPlan;
 use App\Models\SiteTemplate;
@@ -18,13 +19,20 @@ class PlansProfitSettingsService{
         $dataa = [];
 
         foreach($plans as $key=>$plan){
-            $dataa[$key]['cost_price'] = $plan->cost_price;
 
+            $profit_setting = PlanProfitSetting::where('data_size_in_mb',$plan->data_size_in_mb)
+            ->where('product_id',$plan->product_id)
+            ->where('validity_in_days',$plan->validity)
+            ->where('data_size_in_mb',$plan->size)
+            ->where('is_social',$plan->is_social)
+            ->first(); 
+
+            $dataa[$key]['cost_price'] = $plan->cost_price;
             $userplan_level = auth()->user()->user_plan->plan_level;
-            $profit_level = "profit_$userplan_level";
+            $profit_level = "profit_".$userplan_level;
             $dataa[$key]['profit_level'] = $userplan_level;
-            $dataa[$key]['profit'] = abs($plan->$profit_level);
-            $dataa[$key]['selling_price'] = $plan->$profit_level + $plan->cost_price;
+            $dataa[$key]['profit'] = abs($profit_setting->$profit_level);
+            $dataa[$key]['selling_price'] = $profit_setting->$profit_level + $plan->cost_price;
         }
 
         return [
