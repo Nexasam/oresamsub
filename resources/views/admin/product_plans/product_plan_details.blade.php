@@ -41,7 +41,7 @@
           
               <div class="box">
                 <div class="box-header">
-                  <h5 class="box-title">Product Plan: {{ $product_plan->product_plan_name }} Automation: {{ $product_plan->automation->automation_name }} </h5>
+                  <h5 class="box-title">Product Plan: {{ $product_plan->product_plan_name }} Automation: {{ $product_plan->automation->automation_name }} PLAN ID: {{ $product_plan->automation_product_plan_id }}</h5>
               
                   <span>Last updated:  <b>{{  date('d F, Y H:i:s',strtotime($product_plan->updated_at)) }}</b></span>
                   <hr>
