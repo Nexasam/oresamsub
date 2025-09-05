@@ -314,7 +314,7 @@ Route::middleware(['set_locale'])->group(function () {
                             $dataup['validity_in_days'] = $validity;
                             $dataup['network_id'] = $network_id;
                             $dataup['product_id'] = $product_id;
-                            $dataup['cost_price'] = $productplan->cost_price;
+                            $dataup['lowest_cost_price'] = $productplan->cost_price;
                             $dataup['proft_1'] = 100;
                             $dataup['proft_2'] = 75;
                             $dataup['proft_3'] = 50;
