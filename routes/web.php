@@ -1,11 +1,10 @@
 <?php
 
-use App\Http\Services\UniqueProductPlansService;
-use App\Models\PlanProfitSetting;
 use App\Models\SiteImage;
 use App\Models\ProductPlan;
 use App\Models\SiteTemplate;
 use App\Models\AdminColorSetting;
+use App\Models\PlanProfitSetting;
 use App\Models\UniqueProductPlan;
 use App\Http\Middleware\RoleAssess;
 use App\Models\LandingPagesSetting;
@@ -42,11 +41,13 @@ use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\BulkDataPlanController;
 use App\Http\Controllers\ResellerPlanController;
 use App\Http\Controllers\UserSettingsController;
+use App\Http\Services\UniqueProductPlansService;
 use App\Http\Controllers\AdminSettingsController;
 use App\Http\Controllers\AnnouncementsController;
 use App\Http\Controllers\MultilanguageController;
 use App\Http\Controllers\UserDashboardController;
 use App\Http\Controllers\UserTwoFactorController;
+use App\Http\Services\PlansProfitSettingsService;
 use App\Http\Services\BizProfitCalculationService;
 use App\Http\Controllers\DynamicAccountsController;
 use App\Http\Controllers\ProductCategoryController;
@@ -366,11 +367,16 @@ Route::middleware(['set_locale'])->group(function () {
                 // dd('test');
             });
 
+            
+
+            Route::get('/getsp', function (): array {
+                $getsp = (new PlansProfitSettingsService())->getSellingPriceForCustomer();
+                return $getsp;
+            });
+
             Route::get('/update-product-plans', function (): array {
-    
                 $updat = (new UniqueProductPlansService())->updateUniqueIdsInProductPlan();
                 return $updat;
-                
             });
 
             Route::get('/test', function (): array {
