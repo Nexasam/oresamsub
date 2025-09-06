@@ -280,37 +280,53 @@ class PlanProfitSettingsController extends Controller
             ]);
         
             $html = '
-                <div x-data="{ open: false }">
-                    <button @click="open = !open" class="btn btn-sm btn-primary">
+                <div x-data="{ open: false }" class="space-y-2">
+                    <!-- Toggle button -->
+                    <button @click="open = !open" 
+                        class="px-3 py-1.5 text-sm rounded-lg font-medium 
+                               transition bg-blue-600 text-white hover:bg-blue-700 focus:ring-2 focus:ring-blue-400">
                         <span x-show="!open">Edit Profits</span>
                         <span x-show="open">Close</span>
                     </button>
         
-                    <div x-show="open" x-transition class="border rounded p-3 mt-2 bg-light">
-                        <form class="profitsForm">
-                            <input type="hidden" name="id" value="'.$datad->id.'">
-                            <div class="row">';
+                    <!-- Hidden profit form -->
+                    <div x-show="open" x-transition 
+                        class="border rounded-xl p-4 mt-2 bg-gray-50 shadow-sm">
         
+                        <form class="profitsForm space-y-4">
+                            <input type="hidden" name="id" value="'.$datad->id.'">
+        
+                            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">';
+            
             for ($i = 1; $i <= 12; $i++) {
+                $value = $profits["profit_$i"] ?? '';
                 $html .= '
-                    <div class="col-md-4 mb-2">
-                        <label>Profit '.$i.'</label>
-                        <input type="text" name="profit_'.$i.'" class="form-control" value="'.($profits["profit_$i"] ?? '').'">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">
+                            Profit '.$i.'
+                        </label>
+                        <input type="text" 
+                               name="profit_'.$i.'" 
+                               value="'.$value.'" 
+                               class="w-full px-3 py-2 text-sm border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-400" />
                     </div>';
             }
         
             $html .= '
                             </div>
-                            <div class="mt-3 text-right">
-                                <button type="submit" class="btn btn-success btn-sm">Save</button>
+        
+                            <div class="flex justify-end">
+                                <button type="submit" 
+                                    class="px-4 py-2 text-sm font-medium rounded-lg bg-green-600 text-white hover:bg-green-700 focus:ring-2 focus:ring-green-400">
+                                    Save
+                                </button>
                             </div>
                         </form>
                     </div>
                 </div>';
         
             return $html;
-        })         
-        ->rawColumns(['profits'])
+        })        
         ->addColumn('size',function($datad){
             return number_format($datad->data_size_in_mb).'MB  ('.($datad->data_size_in_mb/1000).'GB)';
         })
