@@ -138,8 +138,6 @@ class DataPlansService{
         $plan_level = $user_level->plan_level;
 
 
-
-
         $get_planprofit = PlanProfitSetting::where('network_id',$network_id)
         ->where('product_id',$product_id)
         ->where('data_size_in_mb',$data_size_in_mb)
