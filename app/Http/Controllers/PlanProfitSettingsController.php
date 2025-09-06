@@ -397,22 +397,12 @@ class PlanProfitSettingsController extends Controller
 
         
         return response()->json([
-            'status'  => 'success',
+            'success'  => true,
             'message' => 'Profits of plan updated successfully'
         ]);
     }
     
 
-    public function unique_plan_automation_quick_update(Request $request, $id)
-    {
-        $vendor = ProductPlan::findOrFail($id);
-
-        $vendor->cost_price = $request->input('cost_price');
-        $vendor->visibility = $request->boolean('visibility');
-        $vendor->save();
-
-        return response()->json(['success' => true, 'message' => 'Automation updated']);
-    }
 
     
 
