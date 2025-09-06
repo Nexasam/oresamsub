@@ -205,13 +205,11 @@
 @push('scripts')
 <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
 
-
-
 <script>
 function profitForm(initialProfits) {
     return {
         open: false,
-        profits: initialProfits.map(p => p ?? ""), // force empty string if null
+        profits: initialProfits.map(p => p ?? ""), 
         init() {
             this.$watch("profits[0]", value => {
                 if (!value || value <= 0) return;
@@ -220,16 +218,14 @@ function profitForm(initialProfits) {
                 let fixed = 100;
 
                 for (let i = 0; i < 12; i++) {
-                    if (i === 0) continue; // keep first as is
-                    // only fill if empty
-                    if (!this.profits[i] || this.profits[i] == 0) {
-                        if (i < 5) {
-                            let multiplier = 1 - (i * 0.25);
-                            let calc = base * multiplier;
-                            this.profits[i] = calc > fixed ? Math.round(calc) : fixed;
-                        } else {
-                            this.profits[i] = fixed;
-                        }
+                    if (i === 0) continue; // leave first as entered
+
+                    if (i < 5) {
+                        let multiplier = 1 - (i * 0.25);
+                        let calc = base * multiplier;
+                        this.profits[i] = calc > fixed ? Math.round(calc) : fixed;
+                    } else {
+                        this.profits[i] = fixed;
                     }
                 }
             });
