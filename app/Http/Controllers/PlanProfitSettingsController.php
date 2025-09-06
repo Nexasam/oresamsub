@@ -326,7 +326,7 @@ class PlanProfitSettingsController extends Controller
             
             for ($i = 1; $i <= 12; $i++) {
                $profitfor = '';
-               $generateProfitsValue = $this->generateProfits(100,10);
+               $generateProfitsValue = $this->generateProfits(1000,10);
                $value = $generateProfitsValue[$i];
                $userplan = UserPlan::where('plan_level',$i)->first();
                if($userplan){
