@@ -208,25 +208,34 @@
 
 
 <script>
-// $(document).on('submit', '.profitsForm', function (e) {
-//     e.preventDefault();
-//     let form = $(this);
+function profitForm(initialProfits) {
+    return {
+        open: false,
+        profits: initialProfits.map(p => p ?? ""), // force empty string if null
+        init() {
+            this.$watch("profits[0]", value => {
+                if (!value || value <= 0) return;
 
-//     $.ajax({
-//         url: '/update-profits',
-//         type: 'POST',
-//         data: form.serialize(),
-//         success: function (response) {
-//             form.closest('.modal').modal('hide');
-//             $('#plansTable').DataTable().ajax.reload(null, false);
-//             alert('Profits updated successfully!');
-//         },
-//         error: function () {
-//             alert('Error saving profits');
-//         }
-//     });
-// });
+                let base = parseFloat(value);
+                let fixed = 100;
 
+                for (let i = 0; i < 12; i++) {
+                    if (i === 0) continue; // keep first as is
+                    // only fill if empty
+                    if (!this.profits[i] || this.profits[i] == 0) {
+                        if (i < 5) {
+                            let multiplier = 1 - (i * 0.25);
+                            let calc = base * multiplier;
+                            this.profits[i] = calc > fixed ? Math.round(calc) : fixed;
+                        } else {
+                            this.profits[i] = fixed;
+                        }
+                    }
+                }
+            });
+        }
+    }
+}
 </script>
 @endpush
 

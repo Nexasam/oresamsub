@@ -301,14 +301,19 @@ class PlanProfitSettingsController extends Controller
                 "profit_11","profit_12"
             ]);
         
+            // make sure no nulls
+            $profitsArray = [];
+            for ($i=1; $i<=12; $i++) {
+                $profitsArray[] = $profits["profit_$i"] ?? "";
+            }
+        
+            $profitsJson = htmlspecialchars(json_encode($profitsArray), ENT_QUOTES, 'UTF-8');
+        
             $sizee = $datad->data_size_in_mb >= 1000
                 ? ($datad->data_size_in_mb / 1000) . 'GB'
                 : $datad->data_size_in_mb . 'MB';
         
             $plan_details = $sizee.' '.$datad->network->network_name.' '.$datad->validity_in_days. ' Days Validity';
-        
-            // Encode PHP array into JS array safely
-            $profitsJson = htmlspecialchars(json_encode(array_values($profits)), ENT_QUOTES, 'UTF-8');
         
             $html = '
                 <div x-data="profitForm('.$profitsJson.')" class="space-y-2">
@@ -320,10 +325,9 @@ class PlanProfitSettingsController extends Controller
                         <span x-show="open">Close</span>
                     </button>
         
-                    <!-- Hidden profit form -->
+                    <!-- Profit form -->
                     <div x-show="open" x-transition 
                         class="border rounded-xl p-4 mt-2 bg-gray-50 shadow-sm">
-                        <h1 class="text-base font-semibold mb-2">Editing Profits For: '.$plan_details.'</h1>
                         <form class="profitsForm space-y-4">
                             <input type="hidden" name="id" value="'.$datad->id.'">
         
@@ -356,42 +360,12 @@ class PlanProfitSettingsController extends Controller
                             </div>
                         </form>
                     </div>
-                </div>
-        
-                <script>
-                function profitForm(initialProfits) {
-                    return {
-                        open: false,
-                        profits: initialProfits.map(p => p ?? ""), // load DB values first
-                        init() {
-                            this.$watch("profits[0]", value => {
-                                if (!value || value <= 0) return;
-        
-                                let base = parseFloat(value);
-                                let fixed = 100;
-        
-                                for (let i = 0; i < 12; i++) {
-                                    if (i === 0) continue; // first stays as entered
-                                    if (!this.profits[i] || this.profits[i] == 0) {
-                                        if (i < 5) {
-                                            let multiplier = 1 - (i * 0.25);
-                                            let calc = base * multiplier;
-                                            this.profits[i] = calc > fixed ? Math.round(calc) : fixed;
-                                        } else {
-                                            this.profits[i] = fixed;
-                                        }
-                                    }
-                                }
-                            });
-                        }
-                    }
-                }
-                </script>
-            ';
+                </div>';
         
             return $html;
         })
         ->rawColumns(['profits'])
+        
         ->addColumn('size',function($datad){
             return number_format($datad->data_size_in_mb).'MB  ('.($datad->data_size_in_mb/1000).'GB)';
         })
