@@ -307,7 +307,7 @@ Route::middleware(['set_locale'])->group(function () {
                         ->where('product_id',$product_id)
                         ->where('validity_in_days',$validity)
                         ->where('data_size_in_mb',$size)
-                        ->where('is_social',$is_social)
+                        // ->where('is_social',$is_social)
                         ->first(); 
 
                         if(! $profit_setting){
@@ -331,29 +331,6 @@ Route::middleware(['set_locale'])->group(function () {
                             $dataup['profit_12'] = 5;
                             PlanProfitSetting::create($dataup);
                     
-                        }else{
-
-                            //exists..UPDATE
-                            if($cost_price > $profit_setting->cost_price){
-                               
-                            }else{
-                                $cost_price = $profit_setting->cost_price;
-                            }
-
-                            $dataupp['lowest_cost_price'] = $cost_price;
-                            $dataup['profit_1'] = 100;
-                            $dataup['profit_2'] = 75;
-                            $dataup['profit_3'] = 50;
-                            $dataup['profit_4'] = 40;
-                            $dataup['profit_5'] = 30;
-                            $dataup['profit_6'] = 25;
-                            $dataup['profit_7'] = 20;
-                            $dataup['profit_8'] = 15;
-                            $dataup['profit_9'] = 14;
-                            $dataup['profit_10'] = 10;
-                            $dataup['profit_11'] = 7;
-                            $dataup['profit_12'] = 5;
-                            PlanProfitSetting::where('id',$profit_setting->id)->update($dataupp);
                         }
                     }
 
