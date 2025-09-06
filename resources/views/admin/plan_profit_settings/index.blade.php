@@ -210,13 +210,13 @@ function roundTo5(num) {
     return Math.round(num / 5) * 5;
 }
 
-
 function profitForm(initialProfits) {
     return {
         open: false,
         profits: initialProfits.map(p => p ?? ""),
 
         init() {
+            // Auto-calc when profit_1 changes
             this.$watch("profits[0]", value => this.recalculate(value));
         },
 
@@ -246,16 +246,39 @@ function profitForm(initialProfits) {
             this.profits[3] = p4;
             this.profits[4] = p5;
 
-            // profits 6–12 fixed at 80, rounded to nearest 5
+            // profits 6–12 fixed at 80 (rounded to nearest 5)
             for (let i = 5; i < 12; i++) {
                 this.profits[i] = this.roundTo5(80);
             }
+        },
+
+        submitForm(event) {
+            event.preventDefault();
+            let form = event.target;
+
+            // Collect form data
+            let formData = $(form).serializeArray();
+            this.profits.forEach((val, index) => {
+                formData.push({ name: 'profit_' + (index + 1), value: val });
+            });
+
+            $.ajax({
+                url: '/admin/save_plan_profit_settings',
+                type: 'POST',
+                data: formData,
+                success: function (response) {
+                    $('#plan_profit_settings_table').DataTable().ajax.reload(null, false);
+                    alert('Profits updated successfully!');
+                },
+                error: function () {
+                    alert('Error saving profits');
+                }
+            });
         }
     }
 }
 
 </script>
-  
-  
+    
 @endpush
 

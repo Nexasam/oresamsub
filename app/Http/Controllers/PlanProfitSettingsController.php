@@ -324,7 +324,7 @@ class PlanProfitSettingsController extends Controller
                     </button>
         
                     <div x-show="open" x-transition class="border rounded-xl p-4 mt-2 bg-gray-50 shadow-sm">
-                        <form class="profitsForm space-y-4">
+                        <form class="profitsForm space-y-4" @submit.prevent="submitForm($event)">
                             <input type="hidden" name="id" value="'.$datad->id.'">
         
                             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">';
@@ -384,34 +384,21 @@ class PlanProfitSettingsController extends Controller
         ]);
     }
 
-    public function unique_plans_quick_update(Request $request, $id)
+    public function save_plan_profit_setting(Request $request)
     {
-        try {
-            $uniqueplan = UniqueProductPlan::findOrFail($id);
-    
-            $uniqueplan->product_plan_name = $request->input('name'); // matches AJAX
-            $uniqueplan->visibility        = $request->boolean('visibility');
-    
-            // update prices dynamically
-            for ($i = 1; $i <= 12; $i++) {
-                $field = "price_$i";
-                if ($request->has($field)) {
-                    $uniqueplan->$field = $request->input($field);
-                }
-            }
-    
-            $uniqueplan->save();
-    
-        } catch (\Exception $ex) {
-            return response()->json([
-                'status'  => 'error',
-                'message' => $ex->getMessage() . ' line: ' . $ex->getLine()
-            ]);
+        $plan = PlanProfitSetting::findOrFail($request->id);
+
+        for ($i = 1; $i <= 12; $i++) {
+            $col = "profit_$i";
+            $plan->$col = $request->$col ?? 0;
         }
-    
+
+        $plan->save();
+
+        
         return response()->json([
             'status'  => 'success',
-            'message' => 'Unique plan updated'
+            'message' => 'Profits of plan updated successfully'
         ]);
     }
     
