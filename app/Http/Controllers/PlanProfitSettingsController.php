@@ -324,8 +324,10 @@ class PlanProfitSettingsController extends Controller
                     </button>
         
                     <div x-show="open" x-transition class="border rounded-xl p-4 mt-2 bg-gray-50 shadow-sm">
-                        <form class="profitsForm space-y-4" @submit.prevent="submitForm($event)">
-                            <input type="hidden" name="id" value="'.$datad->id.'">
+                    <h1>'.$plan_details.'</h1>
+                    <form class="profitsForm space-y-4" @submit.prevent="submitForm($event)">
+        
+                        <input type="hidden" name="id" value="'.$datad->id.'">
         
                             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">';
         
