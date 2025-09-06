@@ -262,26 +262,26 @@ function profitForm(initialProfits) {
                 formData.push({ name: 'profit_' + (index + 1), value: val });
             });
 
-            $.ajax({
-                url: '/admin/save_plan_profit_settings',
-                type: 'POST',
-                data: formData,
-                success: function (response) {
+            fetch('/admin/save_plan_profit_settings', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                },
+                body: JSON.stringify(formData)
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
                     $('#plan_profit_settings_table').DataTable().ajax.reload(null, false);
                     alert('Profits updated successfully!');
-                },
-                error: function (xhr, status, error) {
-                    console.error('Error details:', xhr.responseText); // log full error in console
-                    let message = "Error saving profits";
-
-                    if (xhr.responseJSON && xhr.responseJSON.message) {
-                        message = xhr.responseJSON.message; // Laravel validation / exception message
-                    } else if (xhr.responseText) {
-                        message = xhr.responseText; // fallback: raw server response
-                    }
-
-                    alert(message);
+                } else {
+                    alert(data.message || 'Error saving profits');
                 }
+            })
+            .catch(error => {
+                console.error('Error details:', error);
+                alert('Something went wrong while saving profits.');
             });
 
         }
