@@ -272,7 +272,7 @@ class PlanProfitSettingsController extends Controller
         ->addColumn('DT_RowIndex',function($datad){
             return $datad['id'];
         })
-        ->addColumn('product_id', function ($datad) {
+        ->addColumn('profits', function ($datad) {
             $profits = $datad->only([
                 "profit_1","profit_2","profit_3","profit_4","profit_5",
                 "profit_6","profit_7","profit_8","profit_9","profit_10",
@@ -327,7 +327,7 @@ class PlanProfitSettingsController extends Controller
             return $datad->network->network_name ?? 'nil';
 
          })
-         ->rawColumns(['product_id'])
+         ->rawColumns(['profits'])
         ->escapeColumns([])
         ->make(true);
     }

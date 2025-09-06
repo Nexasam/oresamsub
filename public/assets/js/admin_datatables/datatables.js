@@ -251,7 +251,7 @@ $(document).ready(function(){
                     ajax: root_url + 'admin/plan_profit_settings/fetch?date_from='+date_from+'&&date_to='+date_to+'&&product_plan_category_filter='+product_plan_category_filter+'&&phone_recharged='+phone_recharged,
                     columns: [
                       {data: 'DT_RowIndex', name: 'DT_RowIndex'},
-                      {data: 'product_id', name: 'product_id'},
+                      {data: 'profits', name: 'profits'},
                       {data: 'size', name: 'size'},
                       {data: 'validity', name: 'validity'},
                       {data: 'network_id', name: 'network_id'}
