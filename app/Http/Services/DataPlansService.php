@@ -87,7 +87,7 @@ class DataPlansService{
                 $dat['user'] = $user_details;
                 $dat['plan_details'] = $product_plan;
                 $dat['network_id'] = $network_id;
-                $selling_price = $this->get_customer_price_per_plan($dat);
+                $selling_price = $this->get_customer_price_per_plan($dat)['message'];
     
                 $product_planss[$key]['product_plan_id'] = $product_plan->id;
                 $product_planss[$key]['selling_price'] = $selling_price;
