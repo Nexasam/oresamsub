@@ -1,0 +1,176 @@
+<?php
+
+namespace App\Http\Services;
+
+use App\Models\User;
+use App\Models\UserPlan;
+use App\Models\ProductPlan;
+use App\Models\PlanProfitSetting;
+use App\Models\ProductPlanCategory;
+use Illuminate\Support\Facades\Hash;
+use App\Models\ProductPlanCustomPricing;
+
+class DataPlansService{
+
+    public function fetch_user_data_plans($data){
+        $user_details = $data['user'];
+        $network_id = $data['network_id'];
+        $product_plan_category_id = $data['product_plan_category_id'] ?? NULL;
+        $product_id = $data['product_id'];
+
+        //selling plan level
+        $user_plan_id = $user_details->user_plan_id;
+        $user_id = $user_details->id;
+        $user_level = UserPlan::select('plan_level')->where('id',$user_plan_id)->first();
+        $plan_level = $user_level->plan_level;
+        $costprice_order = 'cost_price'; //
+
+        //you need to note later if the user selelcted a type:
+        if($product_plan_category_id == NULL){
+            //do i need this sef?
+            // $product_plan_categories = ProductPlanCategory::select('id','automation_id')
+            // ->where('product_id',$product_id)
+            // ->where('network_id',$network_id)
+            // ->get();
+
+            $product_plan_categories_id_arr = ProductPlanCategory::where('product_id',$product_id)
+            ->where('network_id',$network_id)
+            ->pluck('id')
+            ->toArray();
+            
+        }else{
+            //do i need this sef?
+            // $product_plan_categories = ProductPlanCategory::when(!empty($network_id), function($query) use ($network_id) {
+            //     $query->where('network_id',$network_id);
+            // })
+            // ->select('id','automation_id')
+            // ->where('product_id',$product_id)
+            // ->where('id',$product_plan_category_id)
+            // ->get();
+
+            $product_plan_categories_id_arr = [$product_plan_category_id];
+        }
+
+
+        $product_plans = ProductPlan::whereIn('product_plan_category_id', $product_plan_categories_id_arr)
+        ->where('visibility', 1)
+        ->orderByRaw('CASE WHEN CAST(data_size_in_mb AS UNSIGNED) < 500 THEN 1 ELSE 0 END') // Push <500MB to bottom
+        ->orderByRaw('CAST(data_size_in_mb AS UNSIGNED)') // Then order by size
+        ->orderByRaw('CAST(' . $costprice_order . ' AS UNSIGNED)') // Then by price
+        ->orderByRaw('CAST(validity_in_days AS UNSIGNED) DESC') // Then by validity
+        ->get();
+        
+        $product_planss = [];
+
+        if(count($product_plans) >= 1){
+
+            foreach($product_plans as $key=>$product_plan){
+                $cost_price = $product_plan['cost_price'];
+                $data_size_in_mb = $product_plan['data_size_in_mb'];
+                $get_planprofit = PlanProfitSetting::where('network_id',$network_id)
+                ->where('product_id',$product_id)
+                ->where('data_size_in_mb',$data_size_in_mb)
+                ->first();
+                $profitlevel_for_user = "profit_$plan_level"; 
+                $profit = $get_planprofit->$profitlevel_for_user;
+                $selling_price = $cost_price + abs($profit);
+
+                //custom case
+                //HERE SELLING PRICE CHANGES IF THEHRE IS A CUSTOM SETTING: put in a service later
+                $check_custom_setting = ProductPlanCustomPricing::where('product_plan_id','=', $product_plan->id)
+                ->where('user_id',$user_details->id)
+                ->first();
+                $selling_price = $check_custom_setting == NULL ? $selling_price : $check_custom_setting->price;  
+    
+                $product_planss[$key]['product_plan_id'] = $product_plan->id;
+                $product_planss[$key]['selling_price'] = $selling_price;
+                $product_planss[$key]['product_plan_name'] = $product_plan->product_plan_name;
+                $product_planss[$key]['data_size_in_mb'] = $product_plan->data_size_in_mb;
+                $product_planss[$key]['validity_in_days'] = $product_plan->validity_in_days;    
+                $product_planss[$key]['automation_id'] = $product_plan->automation_id;  
+             
+            }
+
+        }else{
+            $product_planss[0]['product_plan_id'] = NULL;
+            $product_planss[0]['selling_price'] = NULL;
+            $product_planss[0]['product_plan_name'] = NULL;
+            $product_planss[0]['data_size_in_mb'] = NULL;
+            $product_planss[0]['validity_in_days'] = NULL;    
+            $product_planss[0]['automation_id'] = NULL;  
+        }
+
+
+        $data_sizes = collect($product_planss)
+        ->pluck('data_size_in_mb')
+        ->unique()
+        ->sort()
+        ->values()
+        ->toArray();
+        
+        return [
+            'status' => 1,
+            'message' => $product_planss,
+            'plans' => $product_planss,
+            'sizes' => $data_sizes,
+            'plan_level' => $plan_level
+        ];
+    }
+
+
+
+    // version1
+      // if(auth()->user()->email == 'oreofe@gmail.com' && $product_slug == 'data'){
+        //     $uniqueplans = UniqueProductPlan::where('network_id',$request->network_id)->get();
+        //     foreach($uniqueplans as $product_plan){
+
+        //         //get thhe normal pricing
+        //         $price_level = "price_".$plan_level;
+        //         $amount = $product_plan->$price_level;
+        //         $selling_price = $amount;
+
+        //         //HERE SELLING PRICE CHANGES IF THEHRE IS A CUSTOM SETTING: put in a service later
+        //         $check_custom_setting = ProductPlanCustomPricing::where('product_plan_id','=', $product_plan->id)->where('user_id',auth()->id())->first();
+        //         $amount = $check_custom_setting == NULL ? $amount : $check_custom_setting->price;  
+        //         $user_level_selling = "user_level_".$plan_level."_selling_price";
+        //         $user_level_commission = "user_level_".$plan_level."_commission";
+        //         // $selling_price = $product_plan->$user_level_selling;
+        //         $upline_commission = $product_plan->$user_level_commission;
+        //         $selling_price = $check_custom_setting == NULL ? $selling_price : $check_custom_setting->price;  
+            
+        //        if( ($product_slug == 'airtime' || $product_slug == 'utility_bills') && $amount != '' ){
+        //              $purchase_discount = $product_plan->$user_level_selling;
+        //              $actual_discount_value = ceil(($purchase_discount/100) * $amount);  
+        //              $discounted_selling_price = $amount - abs($actual_discount_value);
+        //              $selling_price = 0; //this is from the system, not applicable for airtime
+        //        }else{
+        //            $discounted_selling_price = $selling_price;
+        //        }
+ 
+        //        if($product_plan){
+        //            $counter++;
+        //            $product_planss[$counter]['product_plan_id'] = $product_plan->id;
+        //            $product_planss[$counter]['amount'] = $amount;
+        //            $product_planss[$counter]['selling_price'] = $discounted_selling_price;
+        //            $product_planss[$counter]['upline_commission'] = $upline_commission;
+        //            $product_planss[$counter]['product_plan_name'] = $product_plan->product_plan_name;
+        //            $product_planss[$counter]['data_size_in_mb'] = $product_plan->data_size_in_mb;
+        //            $product_planss[$counter]['validity_in_days'] = $product_plan->validity_in_days;    
+        //            $product_planss[$counter]['automation_id'] = NULL;    
+        //        }
+
+        //    }
+
+        //     // Extract unique sizes from $product_planss
+        //     $data_sizes = collect($product_planss)
+        //     ->pluck('data_size_in_mb')
+        //     ->unique()
+        //     ->sort()
+        //     ->values()
+        //     ->toArray();
+        
+        //     return response()->json(['status'=>'1','user_level'=>$plan_level ,'message'=>'Product plans fetched','counter' =>count($product_planss),'data' => $product_planss, 'sizes' => $data_sizes ]);
+
+        // }
+
+}

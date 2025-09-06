@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Services\DataPlansService;
 use Exception;
 use App\Models\User;
 use App\Models\Network;
@@ -1149,10 +1150,6 @@ class DataController extends Controller
     public function fetch_product_plans(Request $request)
     {
 
-        // return response()->json(['status'=>'1','user_level'=>3 ,'message'=>'Product plans fetched','counter' =>5,'data' => $request->all() ]);
-
-
-
         $network_id = $request->network_id ?? '';
         $amount = $request->amount ?? '';
         $plan_category_id = $request->plan_category_id ?? '';
@@ -1203,60 +1200,18 @@ class DataController extends Controller
         $sellingp = 'user_level_'.$plan_level.'_selling_price';
 
 
-        ///NEW VERSION 1 starts here
+        ///NEW VERSION 2 test starts here
         if(auth()->user()->email == 'oreofe@gmail.com' && $product_slug == 'data'){
-            $uniqueplans = UniqueProductPlan::where('network_id',$request->network_id)->get();
-            foreach($uniqueplans as $product_plan){
-
-                //get thhe normal pricing
-                $price_level = "price_".$plan_level;
-                $amount = $product_plan->$price_level;
-                $selling_price = $amount;
-
-                //HERE SELLING PRICE CHANGES IF THEHRE IS A CUSTOM SETTING: put in a service later
-                $check_custom_setting = ProductPlanCustomPricing::where('product_plan_id','=', $product_plan->id)->where('user_id',auth()->id())->first();
-                $amount = $check_custom_setting == NULL ? $amount : $check_custom_setting->price;  
-                $user_level_selling = "user_level_".$plan_level."_selling_price";
-                $user_level_commission = "user_level_".$plan_level."_commission";
-                // $selling_price = $product_plan->$user_level_selling;
-                $upline_commission = $product_plan->$user_level_commission;
-                $selling_price = $check_custom_setting == NULL ? $selling_price : $check_custom_setting->price;  
-            
-               if( ($product_slug == 'airtime' || $product_slug == 'utility_bills') && $amount != '' ){
-                     $purchase_discount = $product_plan->$user_level_selling;
-                     $actual_discount_value = ceil(($purchase_discount/100) * $amount);  
-                     $discounted_selling_price = $amount - abs($actual_discount_value);
-                     $selling_price = 0; //this is from the system, not applicable for airtime
-               }else{
-                   $discounted_selling_price = $selling_price;
-               }
- 
-               if($product_plan){
-                   $counter++;
-                   $product_planss[$counter]['product_plan_id'] = $product_plan->id;
-                   $product_planss[$counter]['amount'] = $amount;
-                   $product_planss[$counter]['selling_price'] = $discounted_selling_price;
-                   $product_planss[$counter]['upline_commission'] = $upline_commission;
-                   $product_planss[$counter]['product_plan_name'] = $product_plan->product_plan_name;
-                   $product_planss[$counter]['data_size_in_mb'] = $product_plan->data_size_in_mb;
-                   $product_planss[$counter]['validity_in_days'] = $product_plan->validity_in_days;    
-                   $product_planss[$counter]['automation_id'] = NULL;    
-               }
-
-           }
-
-            // Extract unique sizes from $product_planss
-            $data_sizes = collect($product_planss)
-            ->pluck('data_size_in_mb')
-            ->unique()
-            ->sort()
-            ->values()
-            ->toArray();
-        
+            $dataplans_arr['product_id'] = $product_id;
+            $dataplans_arr['product_id'] = $product_id;
+            $dataplans_arr['product_id'] = $product_id;
+            $fetch_data_plans = (new DataPlansService())->fetch_user_data_plans($dataplans_arr);
+            $product_planss = $fetch_data_plans['plans'];
+            $data_sizes = $fetch_data_plans['sizes']; 
+            $plan_level = $fetch_data_plans['plan_level']; 
             return response()->json(['status'=>'1','user_level'=>$plan_level ,'message'=>'Product plans fetched','counter' =>count($product_planss),'data' => $product_planss, 'sizes' => $data_sizes ]);
-
         }
-        ///NEW VERSION 1 ends here
+        ///NEW VERSION 2 test ends here
 
         
          
@@ -1355,15 +1310,6 @@ class DataController extends Controller
             }
         }else{
 
-            // $product_plans = ProductPlan::whereIn('product_plan_category_id',$product_plan_categories_id_arr)
-            // ->where('visibility',1)
-            // // ->where('automation_id',$product_plan_category->automation_id)
-            // ->orderByRaw('CAST(data_size_in_mb AS UNSIGNED)')
-            // ->orderByRaw('CAST('.$sellingp.' AS UNSIGNED)')
-            // ->orderByRaw('CAST(validity_in_days AS UNSIGNED) DESC')
-            // ->get();
-
-
             $product_plans = ProductPlan::whereIn('product_plan_category_id', $product_plan_categories_id_arr)
             ->where('visibility', 1)
             ->orderByRaw('CASE WHEN CAST(data_size_in_mb AS UNSIGNED) < 500 THEN 1 ELSE 0 END') // Push <500MB to bottom
@@ -1375,10 +1321,7 @@ class DataController extends Controller
             //here plan category is empty:
             if(count($product_plans) > 0){
                 foreach($product_plans as $product_plan){
-
-
-                   
-
+              
                     $user_level_selling = "user_level_".$plan_level."_selling_price";
                     $user_level_commission = "user_level_".$plan_level."_commission";
                     // $user_level_selling = "{user_level_$user_level_selling_price}";
@@ -1414,8 +1357,6 @@ class DataController extends Controller
                     }
                 }
             }   
-
-
         }
        
 
