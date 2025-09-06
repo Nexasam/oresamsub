@@ -253,38 +253,50 @@ function profitForm(initialProfits) {
         },
 
         submitForm(event) {
-            event.preventDefault();
-            let form = event.target;
+          event.preventDefault();
+          let form = event.target;
 
-            // Collect form data
-            let formData = $(form).serializeArray();
-            this.profits.forEach((val, index) => {
-                formData.push({ name: 'profit_' + (index + 1), value: val });
-            });
+          // Convert form fields to an object
+          let formData = {};
+          $(form).serializeArray().forEach(item => {
+              formData[item.name] = item.value;
+          });
 
-            fetch('/admin/save_plan_profit_settings', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
-                },
-                body: JSON.stringify(formData)
-            })
-            .then(res => res.json())
-            .then(data => {
-                if (data.success) {
-                    $('#plan_profit_settings_table').DataTable().ajax.reload(null, false);
-                    alert('Profits updated successfully!');
-                } else {
-                    alert(data.message || 'Error saving profits');
-                }
-            })
-            .catch(error => {
-                console.error('Error details:', error);
-                alert('Something went wrong while saving profits...');
-            });
+          // Add profits explicitly
+          this.profits.forEach((val, index) => {
+              formData['profit_' + (index + 1)] = val;
+          });
 
-        }
+          fetch('/admin/save_plan_profit_settings', {
+              method: 'POST',
+              headers: {
+                  'Content-Type': 'application/json',
+                  'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+              },
+              body: JSON.stringify(formData) // ✅ now it's a proper object
+          })
+          .then(async res => {
+              if (!res.ok) {
+                  // Handle HTTP errors (like 419, 500, etc.)
+                  const text = await res.text();
+                  throw new Error(text || `HTTP error ${res.status}`);
+              }
+              return res.json();
+          })
+          .then(data => {
+              if (data.success) {
+                  $('#plan_profit_settings_table').DataTable().ajax.reload(null, false);
+                  alert('Profits updated successfully!');
+              } else {
+                  alert(data.message || 'Error saving profits');
+              }
+          })
+          .catch(error => {
+              console.error('Error details:', error);
+              alert('Something went wrong while saving profits...');
+          });
+      }
+
     }
 }
 
