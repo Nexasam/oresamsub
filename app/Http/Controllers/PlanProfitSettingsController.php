@@ -17,6 +17,27 @@ class PlanProfitSettingsController extends Controller
         return view('admin.plan_profit_settings.index');
     }
 
+    function generateProfits($firstProfit, $fixedProfit = 20) {
+        $profits = [];
+    
+        for ($i = 1; $i <= 12; $i++) {
+            if ($i <= 5) {
+                // Decreasing by 25% each step
+                $multiplier = 1 - (($i - 1) * 0.25);
+                $value = $firstProfit * $multiplier;
+    
+                // If it goes below fixed profit, clamp to fixed
+                $profits[$i] = max($value, $fixedProfit);
+            } else {
+                // From 6th profit onward, use fixed
+                $profits[$i] = $fixedProfit;
+            }
+        }
+    
+        return $profits;
+    }
+    
+
 
     public function fetchold(Request $request){
 
@@ -305,6 +326,8 @@ class PlanProfitSettingsController extends Controller
             
             for ($i = 1; $i <= 12; $i++) {
                $profitfor = '';
+               $generateProfitsValue = $this->generateProfits(100,10);
+               $value = $generateProfitsValue[$i];
                $userplan = UserPlan::where('plan_level',$i)->first();
                if($userplan){
                  $profitfor = ' For '.$userplan->updated_user_plan_name ?? $userplan->user_plan_name;
