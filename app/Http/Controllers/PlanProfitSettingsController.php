@@ -300,13 +300,15 @@ class PlanProfitSettingsController extends Controller
                 "profit_6","profit_7","profit_8","profit_9","profit_10",
                 "profit_11","profit_12"
             ]);
+        
             $sizee = $datad->data_size_in_mb >= 1000
-            ? ($datad->data_size_in_mb / 1000) . 'GB'
-            : $datad->data_size_in_mb . 'MB';
+                ? ($datad->data_size_in_mb / 1000) . 'GB'
+                : $datad->data_size_in_mb . 'MB';
+        
             $plan_details = $sizee.' '.$datad->network->network_name.' '.$datad->validity_in_days. ' Days Validity';
         
             $html = '
-                <div x-data="{ open: false }" class="space-y-2">
+                <div x-data="profitForm()" class="space-y-2">
                     <!-- Toggle button -->
                     <button @click="open = !open" 
                         class="px-3 py-1.5 text-sm rounded-lg font-medium 
@@ -318,29 +320,26 @@ class PlanProfitSettingsController extends Controller
                     <!-- Hidden profit form -->
                     <div x-show="open" x-transition 
                         class="border rounded-xl p-4 mt-2 bg-gray-50 shadow-sm">
-                        <h1>Editing Profits For: '.$plan_details.'</h1>
+                        <h1 class="text-base font-semibold mb-2">Editing Profits For: '.$plan_details.'</h1>
                         <form class="profitsForm space-y-4">
                             <input type="hidden" name="id" value="'.$datad->id.'">
         
                             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">';
-            
+        
             for ($i = 1; $i <= 12; $i++) {
-               $profitfor = '';
-               $generateProfitsValue = $this->generateProfits(1000,10);
-               $value = $generateProfitsValue[$i];
-               $userplan = UserPlan::where('plan_level',$i)->first();
-               if($userplan){
-                 $profitfor = ' For '.$userplan->updated_user_plan_name ?? $userplan->user_plan_name;
-               }
+                $userplan = UserPlan::where('plan_level',$i)->first();
+                $profitfor = $userplan ? ' For '.($userplan->updated_user_plan_name ?? $userplan->user_plan_name) : '';
+        
                 $value = $profits["profit_$i"] ?? '';
+        
                 $html .= '
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">
                             Profit '.$i.$profitfor.'
                         </label>
-                        <input type="text" 
+                        <input type="number" 
                                name="profit_'.$i.'" 
-                               value="'.$value.'" 
+                               x-model="profits['.($i-1).']"
                                class="w-full px-3 py-2 text-sm border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-400" />
                     </div>';
             }
@@ -356,10 +355,41 @@ class PlanProfitSettingsController extends Controller
                             </div>
                         </form>
                     </div>
-                </div>';
+                </div>
+        
+                <script>
+                function profitForm() {
+                    return {
+                        open: false,
+                        profits: Array(12).fill(""),
+                        // Watcher for first profit
+                        init() {
+                            this.$watch("profits[0]", value => {
+                                if (!value || value <= 0) return;
+        
+                                let base = parseFloat(value);
+                                let fixed = 100;
+        
+                                for (let i = 0; i < 12; i++) {
+                                    if (i < 5) {
+                                        let multiplier = 1 - (i * 0.25);
+                                        let calc = base * multiplier;
+                                        this.profits[i] = calc > fixed ? Math.round(calc) : fixed;
+                                    } else {
+                                        this.profits[i] = fixed;
+                                    }
+                                }
+                            });
+                        }
+                    }
+                }
+                </script>
+            ';
         
             return $html;
-        })        
+        })
+        ->rawColumns(['profits'])
+        
         ->addColumn('size',function($datad){
             return number_format($datad->data_size_in_mb).'MB  ('.($datad->data_size_in_mb/1000).'GB)';
         })
