@@ -285,7 +285,7 @@ function profitForm(initialProfits) {
           })
           .then(data => {
               if (data.success) {
-                  $('#plan_profit_settings_table').DataTable().ajax.reload(null, false);
+                  // $('#plan_profit_settings_table').DataTable().ajax.reload(null, false);
                   alert('Profits updated successfully!');
               } else {
                   alert(data.message || 'Error saving profits');
