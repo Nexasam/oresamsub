@@ -278,6 +278,7 @@ class PlanProfitSettingsController extends Controller
                 "profit_6","profit_7","profit_8","profit_9","profit_10",
                 "profit_11","profit_12"
             ]);
+            $plan_details = $datad->network->data_size_in_mb.' | '.$datad->network->network_name.' | '.$datad->validity_in_days;
         
             $html = '
                 <div x-data="{ open: false }" class="space-y-2">
@@ -285,14 +286,14 @@ class PlanProfitSettingsController extends Controller
                     <button @click="open = !open" 
                         class="px-3 py-1.5 text-sm rounded-lg font-medium 
                                transition bg-blue-600 text-white hover:bg-blue-700 focus:ring-2 focus:ring-blue-400">
-                        <span x-show="!open">Edit Profits</span>
+                        <span x-show="!open">Edit Profits For '.$plan_details.'</span>
                         <span x-show="open">Close</span>
                     </button>
         
                     <!-- Hidden profit form -->
                     <div x-show="open" x-transition 
                         class="border rounded-xl p-4 mt-2 bg-gray-50 shadow-sm">
-        
+                        <h1>Editing Profits For: '.$plan_details.'</h1>
                         <form class="profitsForm space-y-4">
                             <input type="hidden" name="id" value="'.$datad->id.'">
         
