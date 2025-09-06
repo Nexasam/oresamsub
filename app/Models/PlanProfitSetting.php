@@ -11,4 +11,12 @@ class PlanProfitSetting extends Model
     use HasFactory, HasUuids;
 
     protected $guarded = [];
+
+     /**
+     * each product belongs to product category 
+    **/
+    public function product()
+    {
+        return $this->belongsTo(Product::class, 'product_id', 'id');
+    }
 }
