@@ -279,44 +279,38 @@ class PlanProfitSettingsController extends Controller
                 "profit_11","profit_12"
             ]);
         
-            $modalId = "profitsModal_".$datad->id;
+            $html = '
+                <div x-data="{ open: false }">
+                    <button @click="open = !open" class="btn btn-sm btn-primary">
+                        <span x-show="!open">Edit Profits</span>
+                        <span x-show="open">Close</span>
+                    </button>
         
-            $modalHtml = '
-                <button class="btn btn-sm btn-primary" data-toggle="modal" data-target="#'.$modalId.'">
-                    Edit Profits
-                </button>
-        
-                <div class="modal fade" id="'.$modalId.'" tabindex="-1" role="dialog">
-                  <div class="modal-dialog modal-lg" role="document">
-                    <div class="modal-content">
-                      <form class="profitsForm">
-                        <div class="modal-header">
-                          <h5 class="modal-title">Update Profits ('.$datad->product->product_name.')</h5>
-                          <button type="button" class="close" data-dismiss="modal">&times;</button>
-                        </div>
-                        <div class="modal-body row">
-                          <input type="hidden" name="id" value="'.$datad->id.'">';
+                    <div x-show="open" x-transition class="border rounded p-3 mt-2 bg-light">
+                        <form class="profitsForm">
+                            <input type="hidden" name="id" value="'.$datad->id.'">
+                            <div class="row">';
         
             for ($i = 1; $i <= 12; $i++) {
-                $modalHtml .= '
+                $html .= '
                     <div class="col-md-4 mb-2">
                         <label>Profit '.$i.'</label>
                         <input type="text" name="profit_'.$i.'" class="form-control" value="'.($profits["profit_$i"] ?? '').'">
                     </div>';
             }
         
-            $modalHtml .= '
-                        </div>
-                        <div class="modal-footer">
-                          <button type="submit" class="btn btn-success">Save Changes</button>
-                        </div>
-                      </form>
+            $html .= '
+                            </div>
+                            <div class="mt-3 text-right">
+                                <button type="submit" class="btn btn-success btn-sm">Save</button>
+                            </div>
+                        </form>
                     </div>
-                  </div>
                 </div>';
         
-            return $modalHtml;
-        })           
+            return $html;
+        })         
+        ->rawColumns(['profits'])
         ->addColumn('size',function($datad){
             return number_format($datad->data_size_in_mb).'MB  ('.($datad->data_size_in_mb/1000).'GB)';
         })
@@ -327,7 +321,6 @@ class PlanProfitSettingsController extends Controller
             return $datad->network->network_name ?? 'nil';
 
          })
-         ->rawColumns(['profits'])
         ->escapeColumns([])
         ->make(true);
     }
