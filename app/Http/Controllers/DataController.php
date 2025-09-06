@@ -536,18 +536,18 @@ class DataController extends Controller
         }
 
 
-        if(auth()->user()->email != 'oreofe@gmail.com'){
-            //HERE SELLING PRICE CHANGES IF THEHRE IS A CUSTOM SETTING: put in a service later
-            $check_custom_setting = ProductPlanCustomPricing::where('product_plan_id','=', $request->product_plan_id)->where('user_id',$user_id)->first();
-            $amount = $check_custom_setting == NULL ? $amount : $check_custom_setting->price;  
-        }else{
+        // if(auth()->user()->email != 'oreofe@gmail.com'){
+        //     //HERE SELLING PRICE CHANGES IF THEHRE IS A CUSTOM SETTING: put in a service later
+        //     $check_custom_setting = ProductPlanCustomPricing::where('product_plan_id','=', $request->product_plan_id)->where('user_id',$user_id)->first();
+        //     $amount = $check_custom_setting == NULL ? $amount : $check_custom_setting->price;  
+        // }else{
             ///NEW selling PRICING TEST
             $dat['product_id'] = $plan_details->product_plan_category->product->id;
             $dat['network_id'] = $plan_details->product_plan_category->network->id;
             $dat['user'] = $user_details;
             $dat['plan_details'] = $plan_details;
             $amount = (new DataPlansService())->get_customer_price_per_plan($dat)['message'];
-        }
+        // }
 
 
      
@@ -1215,7 +1215,7 @@ class DataController extends Controller
 
 
         ///NEW VERSION 2 test starts here
-        if(auth()->user()->email == 'oreofe@gmail.com' && $product_slug == 'data'){
+        if(auth()->user()->email != 'oreofe@gmail.comasfa' && $product_slug == 'data'){
             $dataplans_arr['user'] = $user_details;
             $dataplans_arr['product_id'] = $product_id;
             $dataplans_arr['network_id'] = $network_id;
