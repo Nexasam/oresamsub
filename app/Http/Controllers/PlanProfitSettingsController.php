@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\PlanProfitSetting;
 use App\Models\ProductPlan;
 use Exception;
 use Illuminate\Http\Request;
@@ -254,8 +255,7 @@ class PlanProfitSettingsController extends Controller
 
     public function fetch(Request $request){
 
-       $productplans = UniqueProductPlan::with('product_plans.automation')
-        ->orderByRaw("CASE WHEN data_size_in_mb < 500 THEN 1 ELSE 0 END ASC")
+       $productplans = PlanProfitSetting::orderByRaw("CASE WHEN data_size_in_mb < 500 THEN 1 ELSE 0 END ASC")
         ->orderBy('data_size_in_mb', 'asc')
         ->orderBy('validity_in_days', 'asc')
         ->orderBy('network_id', 'asc')
