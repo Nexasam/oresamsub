@@ -547,7 +547,7 @@ class DataController extends Controller
         $dat['product_id'] = $plan_details->product_plan_category->product->id;
         $dat['network_id'] = $plan_details->product_plan_category->network->id;
         $dat['user'] = $user_details;
-        $dat['plan_detaills'] = $plan_details;
+        $dat['plan_details'] = $plan_details;
         $amount = (new DataPlansService())->get_customer_price_per_plan($dat);
 
         DB::beginTransaction();
