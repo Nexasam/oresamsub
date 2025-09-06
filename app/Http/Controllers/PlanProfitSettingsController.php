@@ -307,8 +307,11 @@ class PlanProfitSettingsController extends Controller
         
             $plan_details = $sizee.' '.$datad->network->network_name.' '.$datad->validity_in_days. ' Days Validity';
         
+            // Encode PHP array into JS array safely
+            $profitsJson = htmlspecialchars(json_encode(array_values($profits)), ENT_QUOTES, 'UTF-8');
+        
             $html = '
-                <div x-data="profitForm()" class="space-y-2">
+                <div x-data="profitForm('.$profitsJson.')" class="space-y-2">
                     <!-- Toggle button -->
                     <button @click="open = !open" 
                         class="px-3 py-1.5 text-sm rounded-lg font-medium 
@@ -329,8 +332,6 @@ class PlanProfitSettingsController extends Controller
             for ($i = 1; $i <= 12; $i++) {
                 $userplan = UserPlan::where('plan_level',$i)->first();
                 $profitfor = $userplan ? ' For '.($userplan->updated_user_plan_name ?? $userplan->user_plan_name) : '';
-        
-                $value = $profits["profit_$i"] ?? '';
         
                 $html .= '
                     <div>
@@ -358,11 +359,10 @@ class PlanProfitSettingsController extends Controller
                 </div>
         
                 <script>
-                function profitForm() {
+                function profitForm(initialProfits) {
                     return {
                         open: false,
-                        profits: Array(12).fill(""),
-                        // Watcher for first profit
+                        profits: initialProfits.map(p => p ?? ""), // load DB values first
                         init() {
                             this.$watch("profits[0]", value => {
                                 if (!value || value <= 0) return;
@@ -371,12 +371,15 @@ class PlanProfitSettingsController extends Controller
                                 let fixed = 100;
         
                                 for (let i = 0; i < 12; i++) {
-                                    if (i < 5) {
-                                        let multiplier = 1 - (i * 0.25);
-                                        let calc = base * multiplier;
-                                        this.profits[i] = calc > fixed ? Math.round(calc) : fixed;
-                                    } else {
-                                        this.profits[i] = fixed;
+                                    if (i === 0) continue; // first stays as entered
+                                    if (!this.profits[i] || this.profits[i] == 0) {
+                                        if (i < 5) {
+                                            let multiplier = 1 - (i * 0.25);
+                                            let calc = base * multiplier;
+                                            this.profits[i] = calc > fixed ? Math.round(calc) : fixed;
+                                        } else {
+                                            this.profits[i] = fixed;
+                                        }
                                     }
                                 }
                             });
@@ -389,7 +392,6 @@ class PlanProfitSettingsController extends Controller
             return $html;
         })
         ->rawColumns(['profits'])
-        
         ->addColumn('size',function($datad){
             return number_format($datad->data_size_in_mb).'MB  ('.($datad->data_size_in_mb/1000).'GB)';
         })
