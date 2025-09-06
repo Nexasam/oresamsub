@@ -1202,7 +1202,7 @@ class DataController extends Controller
 
         ///NEW VERSION 2 test starts here
         if(auth()->user()->email == 'oreofe@gmail.com' && $product_slug == 'data'){
-            $dataplans_arr['product_id'] = $product_id;
+            $dataplans_arr['user'] = $user_details;
             $dataplans_arr['product_id'] = $product_id;
             $dataplans_arr['product_id'] = $product_id;
             $fetch_data_plans = (new DataPlansService())->fetch_user_data_plans($dataplans_arr);
