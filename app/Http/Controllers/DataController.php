@@ -540,15 +540,17 @@ class DataController extends Controller
             //HERE SELLING PRICE CHANGES IF THEHRE IS A CUSTOM SETTING: put in a service later
             $check_custom_setting = ProductPlanCustomPricing::where('product_plan_id','=', $request->product_plan_id)->where('user_id',$user_id)->first();
             $amount = $check_custom_setting == NULL ? $amount : $check_custom_setting->price;  
+
+               ///NEW selling PRICING TEST
+                $dat['product_id'] = $plan_details->product_plan_category->product->id;
+                $dat['network_id'] = $plan_details->product_plan_category->network->id;
+                $dat['user'] = $user_details;
+                $dat['plan_details'] = $plan_details;
+                $amount = (new DataPlansService())->get_customer_price_per_plan($dat);
         }
 
 
-        ///NEW selling PRICING TEST
-        $dat['product_id'] = $plan_details->product_plan_category->product->id;
-        $dat['network_id'] = $plan_details->product_plan_category->network->id;
-        $dat['user'] = $user_details;
-        $dat['plan_details'] = $plan_details;
-        $amount = (new DataPlansService())->get_customer_price_per_plan($dat);
+     
 
         DB::beginTransaction();
         try{
