@@ -208,24 +208,24 @@
 
 
 <script>
-$(document).on('submit', '.profitsForm', function (e) {
-    e.preventDefault();
-    let form = $(this);
+// $(document).on('submit', '.profitsForm', function (e) {
+//     e.preventDefault();
+//     let form = $(this);
 
-    $.ajax({
-        url: '/update-profits',
-        type: 'POST',
-        data: form.serialize(),
-        success: function (response) {
-            form.closest('.modal').modal('hide');
-            $('#plansTable').DataTable().ajax.reload(null, false);
-            alert('Profits updated successfully!');
-        },
-        error: function () {
-            alert('Error saving profits');
-        }
-    });
-});
+//     $.ajax({
+//         url: '/update-profits',
+//         type: 'POST',
+//         data: form.serialize(),
+//         success: function (response) {
+//             form.closest('.modal').modal('hide');
+//             $('#plansTable').DataTable().ajax.reload(null, false);
+//             alert('Profits updated successfully!');
+//         },
+//         error: function () {
+//             alert('Error saving profits');
+//         }
+//     });
+// });
 
 </script>
 @endpush
