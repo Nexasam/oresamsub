@@ -104,7 +104,7 @@
                         <thead class="bg-gray-50 dark:bg-black/20">
                           <tr>
                             <th class="px-4 py-2">ID</th>
-                            <th class="px-4 py-2">Product Plan</th>
+                            <th class="px-4 py-2">Profits</th>
                             <th class="px-4 py-2">Size (MB)</th>
                             <th class="px-4 py-2">Validity</th>
                             <th class="px-4 py-2">Network</th>
