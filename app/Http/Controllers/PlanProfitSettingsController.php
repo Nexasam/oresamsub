@@ -301,7 +301,6 @@ class PlanProfitSettingsController extends Controller
                 "profit_11","profit_12"
             ]);
         
-            // make sure no nulls
             $profitsArray = [];
             for ($i=1; $i<=12; $i++) {
                 $profitsArray[] = $profits["profit_$i"] ?? "";
@@ -313,21 +312,18 @@ class PlanProfitSettingsController extends Controller
                 ? ($datad->data_size_in_mb / 1000) . 'GB'
                 : $datad->data_size_in_mb . 'MB';
         
-            $plan_details = $sizee.' '.$datad->network->network_name.' '.$datad->validity_in_days. ' Days Validity';
+            $plan_details = $sizee.' '.$datad->network->network_name.' '.$datad->validity_in_days.' Days Validity';
         
             $html = '
                 <div x-data="profitForm('.$profitsJson.')" class="space-y-2">
-                    <!-- Toggle button -->
-                    <button @click="open = !open" 
+                    <button @click="open = !open"
                         class="px-3 py-1.5 text-sm rounded-lg font-medium 
                                transition bg-blue-600 text-white hover:bg-blue-700 focus:ring-2 focus:ring-blue-400">
                         <span x-show="!open">Edit Profits For '.$plan_details.'</span>
                         <span x-show="open">Close</span>
                     </button>
         
-                    <!-- Profit form -->
-                    <div x-show="open" x-transition 
-                        class="border rounded-xl p-4 mt-2 bg-gray-50 shadow-sm">
+                    <div x-show="open" x-transition class="border rounded-xl p-4 mt-2 bg-gray-50 shadow-sm">
                         <form class="profitsForm space-y-4">
                             <input type="hidden" name="id" value="'.$datad->id.'">
         
@@ -352,8 +348,8 @@ class PlanProfitSettingsController extends Controller
             $html .= '
                             </div>
         
-                            <div class="flex justify-end">
-                                <button type="submit" 
+                            <div class="flex justify-end mt-4">
+                                <button type="submit"
                                     class="px-4 py-2 text-sm font-medium rounded-lg bg-green-600 text-white hover:bg-green-700 focus:ring-2 focus:ring-green-400">
                                     Save
                                 </button>
@@ -364,7 +360,8 @@ class PlanProfitSettingsController extends Controller
         
             return $html;
         })
-        ->rawColumns(['profits'])        
+        ->rawColumns(['profits'])
+        
         ->addColumn('size',function($datad){
             return number_format($datad->data_size_in_mb).'MB  ('.($datad->data_size_in_mb/1000).'GB)';
         })

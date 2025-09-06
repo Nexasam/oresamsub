@@ -204,34 +204,46 @@
 
 @push('scripts')
 <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
-
 <script>
-function profitForm(initialProfits) {
-    return {
-        open: false,
-        profits: initialProfits.map(p => p ?? ""), 
-        init() {
-            this.$watch("profits[0]", value => {
-                if (!value || value <= 0) return;
-
-                let base = parseFloat(value);
-                let fixed = 100;
-
-                for (let i = 0; i < 12; i++) {
-                    if (i === 0) continue; // leave first as entered
-
-                    if (i < 5) {
-                        let multiplier = 1 - (i * 0.25);
-                        let calc = base * multiplier;
-                        this.profits[i] = calc > fixed ? Math.round(calc) : fixed;
-                    } else {
-                        this.profits[i] = fixed;
-                    }
-                }
-            });
-        }
-    }
-}
-</script>
+  function profitForm(initialProfits) {
+      return {
+          open: false,
+          profits: initialProfits.map(p => p ?? ""),
+  
+          init() {
+              this.$watch("profits[0]", value => this.recalculate(value));
+          },
+  
+          recalculate(baseValue) {
+              let p1 = parseFloat(baseValue);
+              if (!p1 || p1 <= 0) return;
+  
+              // profit 2 → 20% less than profit 1
+              let p2 = p1 * 0.8;
+  
+              // profit 3 → 25% less than profit 2
+              let p3 = p2 * 0.75;
+  
+              // profit 4 → 15% less than profit 3
+              let p4 = p3 * 0.85;
+  
+              // profit 5 → 10% less than profit 4
+              let p5 = p4 * 0.90;
+  
+              // assign
+              this.profits[1] = Math.round(p2);
+              this.profits[2] = Math.round(p3);
+              this.profits[3] = Math.round(p4);
+              this.profits[4] = Math.round(p5);
+  
+              // profits 6–12 fixed
+              for (let i = 5; i < 12; i++) {
+                  this.profits[i] = 80;
+              }
+          }
+      }
+  }
+  </script>
+  
 @endpush
 
