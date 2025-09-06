@@ -327,6 +327,7 @@ class PlanProfitSettingsController extends Controller
             return $datad->network->network_name ?? 'nil';
 
          })
+         ->rawColumns(['product_id'])
         ->escapeColumns([])
         ->make(true);
     }
