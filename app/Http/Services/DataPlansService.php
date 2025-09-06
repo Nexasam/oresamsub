@@ -61,26 +61,33 @@ class DataPlansService{
         ->get();
         
         $product_planss = [];
+        $dat = [];
 
         if(count($product_plans) >= 1){
 
             foreach($product_plans as $key=>$product_plan){
-                $cost_price = $product_plan['cost_price'];
-                $data_size_in_mb = $product_plan['data_size_in_mb'];
-                $get_planprofit = PlanProfitSetting::where('network_id',$network_id)
-                ->where('product_id',$product_id)
-                ->where('data_size_in_mb',$data_size_in_mb)
-                ->first();
-                $profitlevel_for_user = "profit_$plan_level"; 
-                $profit = $get_planprofit->$profitlevel_for_user;
-                $selling_price = $cost_price + abs($profit);
+                // $cost_price = $product_plan['cost_price'];
+                // $data_size_in_mb = $product_plan['data_size_in_mb'];
+                // $get_planprofit = PlanProfitSetting::where('network_id',$network_id)
+                // ->where('product_id',$product_id)
+                // ->where('data_size_in_mb',$data_size_in_mb)
+                // ->first();
+                // $profitlevel_for_user = "profit_$plan_level"; 
+                // $profit = $get_planprofit->$profitlevel_for_user;
+                // $selling_price = $cost_price + abs($profit);
 
-                //custom case
-                //HERE SELLING PRICE CHANGES IF THEHRE IS A CUSTOM SETTING: put in a service later
-                $check_custom_setting = ProductPlanCustomPricing::where('product_plan_id','=', $product_plan->id)
-                ->where('user_id',$user_details->id)
-                ->first();
-                $selling_price = $check_custom_setting == NULL ? $selling_price : $check_custom_setting->price;  
+                // //custom case
+                // //HERE SELLING PRICE CHANGES IF THEHRE IS A CUSTOM SETTING: put in a service later
+                // $check_custom_setting = ProductPlanCustomPricing::where('product_plan_id','=', $product_plan->id)
+                // ->where('user_id',$user_details->id)
+                // ->first();
+                // $selling_price = $check_custom_setting == NULL ? $selling_price : $check_custom_setting->price;  
+
+                $dat['product_id'] = $product_id;
+                $dat['user'] = $user_details;
+                $dat['plan_detaills'] = $product_plan;
+                $dat['network_id'] = $network_id;
+                $selling_price = $this->get_customer_price_per_plan($dat);
     
                 $product_planss[$key]['product_plan_id'] = $product_plan->id;
                 $product_planss[$key]['selling_price'] = $selling_price;
@@ -114,6 +121,46 @@ class DataPlansService{
             'plans' => $product_planss,
             'sizes' => $data_sizes,
             'plan_level' => $plan_level
+        ];
+    }
+
+    public function get_customer_price_per_plan($data){
+        $product_plan = $data['plan_details'];
+        $cost_price = $data['plan_details']->cost_price;
+        $data_size_in_mb = $data['plan_details']->data_size_in_mb;
+        $network_id = $data['network_id'];
+        $product_id = $data['product_id'];
+        $user_details = $data['user'];
+
+        $user_plan_id = $user_details->user_plan_id;
+        $user_id = $user_details->id;
+        $user_level = UserPlan::select('plan_level')->where('id',$user_plan_id)->first();
+        $plan_level = $user_level->plan_level;
+
+
+
+
+        $get_planprofit = PlanProfitSetting::where('network_id',$network_id)
+        ->where('product_id',$product_id)
+        ->where('data_size_in_mb',$data_size_in_mb)
+        ->first();
+        $profitlevel_for_user = "profit_$plan_level"; 
+        $profit = $get_planprofit->$profitlevel_for_user;
+        $selling_price = $cost_price + abs($profit);
+
+        //custom case
+        //HERE SELLING PRICE CHANGES IF THEHRE IS A CUSTOM SETTING: put in a service later
+        $check_custom_setting = ProductPlanCustomPricing::where('product_plan_id','=', $product_plan->id)
+        ->where('user_id',$user_details->id)
+        ->first();
+        $selling_price = $check_custom_setting == NULL ? $selling_price : $check_custom_setting->price; 
+
+
+        $augmentsp = $cost_price + 50;
+
+        return [
+            'status' => 1,
+            'message' => $selling_price ?? $augmentsp
         ];
     }
 

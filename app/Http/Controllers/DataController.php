@@ -473,6 +473,8 @@ class DataController extends Controller
         $coupon = NULL;
         $remaining_slots = NULL;
 
+        $dat = [];
+
         // if(auth()->user()->email == 'oreofe@gmail.com'){
         //     $plan_details = ProductPlan::where('id',$request->product_plan_id)->where('visibility',1)->first();
         //     // $automation_id = $plan_details->automation_id ?? null;
@@ -487,20 +489,21 @@ class DataController extends Controller
         //     $amount = abs($plan_details->$user_plan_selling_price);
 
         // }else{
-
-            $plan_details = ProductPlan::with('automation')->where('id',$request->product_plan_id)->where('visibility',1)->first();
+          
+            $plan_details = ProductPlan::with(['automation','product_plan_category.network','product_plan_category.product'])
+            ->where('id',$request->product_plan_id)->where('visibility',1)->first();
             // $automation_id = $plan_details->automation_id;
             $data_value_mb = $plan_details->data_size_in_mb ?? 0;
             $product_plan_id = $plan_details->id;
-
             // $user_plan_id = auth()->user()->user_plan_id;
             // $user_level = UserPlan::select('plan_level')->where('id',$user_plan_id)->first();
             $plan_level = auth()->user()->user_plan->plan_level ?? 1;
             // $plan_level = $user_level->plan_level;
             $user_plan_selling_price = 'user_level_'.$plan_level.'_selling_price';
-            $amount = abs($plan_details->$user_plan_selling_price);
+            $amount = abs($plan_details->$user_plan_selling_price); 
         // }
-      
+
+
 
    
         $user_details = auth()->user();
@@ -538,6 +541,14 @@ class DataController extends Controller
             $check_custom_setting = ProductPlanCustomPricing::where('product_plan_id','=', $request->product_plan_id)->where('user_id',$user_id)->first();
             $amount = $check_custom_setting == NULL ? $amount : $check_custom_setting->price;  
         }
+
+
+        ///NEW selling PRICING TEST
+        $dat['product_id'] = $plan_details->product_plan_category->product->id;
+        $dat['network_id'] = $plan_details->product_plan_category->network->id;
+        $dat['user'] = $user_details;
+        $dat['plan_detaills'] = $plan_details;
+        $amount = (new DataPlansService())->get_customer_price_per_plan($dat);
 
         DB::beginTransaction();
         try{
