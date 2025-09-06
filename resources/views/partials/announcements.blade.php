@@ -8,11 +8,11 @@
 <div 
     x-data="{ open: true }" 
     x-show="open"
-    class="fixed inset-0 z-50 flex items-start justify-center pt-20 bg-black bg-opacity-40"
+    class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm"
     @click.self="open = false"
 >
     <div 
-        class="bg-white dark:bg-gray-900 rounded-xl shadow-lg w-full max-w-md p-4 space-y-3 text-gray-800 dark:text-gray-100"
+        class="bg-white dark:bg-gray-900 rounded-xl shadow-lg w-full max-w-md p-6 space-y-3 text-gray-800 dark:text-gray-100"
         @click.stop
     >
         <!-- Header -->
