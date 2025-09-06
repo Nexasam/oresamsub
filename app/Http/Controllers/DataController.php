@@ -546,7 +546,7 @@ class DataController extends Controller
             $dat['network_id'] = $plan_details->product_plan_category->network->id;
             $dat['user'] = $user_details;
             $dat['plan_details'] = $plan_details;
-            $amount = (new DataPlansService())->get_customer_price_per_plan($dat);
+            $amount = (new DataPlansService())->get_customer_price_per_plan($dat)['message'];
         }
 
 
