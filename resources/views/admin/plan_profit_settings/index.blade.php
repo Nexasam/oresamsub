@@ -208,90 +208,23 @@
 
 
 <script>
-document.addEventListener('update-product', function(e) {
-    let { id, name } = e.detail;
+$(document).on('submit', '.profitsForm', function (e) {
+    e.preventDefault();
+    let form = $(this);
 
-    // Example: send via fetch or AJAX
-    fetch('/products/update-name/' + id, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+    $.ajax({
+        url: '/update-profits',
+        type: 'POST',
+        data: form.serialize(),
+        success: function (response) {
+            form.closest('.modal').modal('hide');
+            $('#plansTable').DataTable().ajax.reload(null, false);
+            alert('Profits updated successfully!');
         },
-        body: JSON.stringify({ name: name })
-    })
-    .then(res => res.json())
-    .then(data => {
-        if (data.success) {
-            alert('Product updated!');
+        error: function () {
+            alert('Error saving profits');
         }
     });
-});
-
-$(document).on("click", ".vendor-update-btn", function () {
-    let id = $(this).data("vendor-id");
-    // scope to the vendor row only
-    let row = $(this).closest(".flex.items-center.justify-between");
-
-    let cost_price = row.find(".cost-price-input").val();
-    let visibility = row.find(".vendor-status").is(":checked") ? 1 : 0;
-
-    console.log("Vendor ID:", id);
-    console.log("Cost Price:", cost_price);
-    console.log("Visibility:", visibility);
-
-    $.ajax({
-        url: `/unique_plans_automation/${id}/quick_update`,
-        type: "POST",
-        data: {
-            cost_price: cost_price,
-            visibility: visibility,
-            _token: $('meta[name="csrf-token"]').attr("content"),
-        },
-        success: function (res) {
-            alert(res.message);
-        },
-    });
-});
-
-
-$(document).on("click", ".save-unique-plan", function () {
-    let id = $(this).data("id");
-    let modal = $(this).closest(".modal-body");
-
-    let name = modal.find(".unique-plan-name").val();
-    let visibility = modal.find(".unique-plan-visibility").is(":checked") ? 1 : 0;
-    let prices = {};
-
-    modal.find(".unique-price-input").each(function () {
-        prices[$(this).data("field")] = $(this).val();
-    });
-
-    let payload = {
-        name: name,
-        visibility: visibility,
-        _token: $('meta[name="csrf-token"]').attr("content"),
-    };
-
-    modal.find(".unique-price-input").each(function () {
-        payload[$(this).data("field")] = $(this).val();
-    });
-
-    $.ajax({
-        url: `/unique_plans/${id}/quick_update`,
-        type: "POST",
-        data: payload,
-        success: function (res) {
-            alert(res.message);
-        },
-    });
-});
-
-// Close modal on outside click
-$(document).on("click", ".modal-overlay", function (e) {
-    if (e.target === this) {
-        $(this).hide();
-    }
 });
 
 </script>
