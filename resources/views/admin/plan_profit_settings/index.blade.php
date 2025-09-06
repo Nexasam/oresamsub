@@ -205,45 +205,56 @@
 @push('scripts')
 <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
 <script>
-  function profitForm(initialProfits) {
-      return {
-          open: false,
-          profits: initialProfits.map(p => p ?? ""),
-  
-          init() {
-              this.$watch("profits[0]", value => this.recalculate(value));
-          },
-  
-          recalculate(baseValue) {
-              let p1 = parseFloat(baseValue);
-              if (!p1 || p1 <= 0) return;
-  
-              // profit 2 → 20% less than profit 1
-              let p2 = Math.round(p1 * 0.8);
-  
-              // profit 3 → 25% less than profit 2
-              let p3 = Math.round(p2 * 0.75);
-  
-              // profit 4 → 15% less than profit 3
-              let p4 = Math.round(p3 * 0.85);
-  
-              // profit 5 → 10% less than profit 4
-              let p5 = Math.round(p4 * 0.90);
-  
-              // assign calculated
-              this.profits[1] = p2;
-              this.profits[2] = p3;
-              this.profits[3] = p4;
-              this.profits[4] = p5;
-  
-              // profits 6–12 fixed at 80 (whole number already)
-              for (let i = 5; i < 12; i++) {
-                  this.profits[i] = 80;
-              }
-          }
-      }
-  }
-  </script>
+
+function roundTo5(num) {
+    return Math.round(num / 5) * 5;
+}
+
+
+function profitForm(initialProfits) {
+    return {
+        open: false,
+        profits: initialProfits.map(p => p ?? ""),
+
+        init() {
+            this.$watch("profits[0]", value => this.recalculate(value));
+        },
+
+        roundTo5(num) {
+            return Math.round(num / 5) * 5;
+        },
+
+        recalculate(baseValue) {
+            let p1 = parseFloat(baseValue);
+            if (!p1 || p1 <= 0) return;
+
+            // profit 2 → 20% less than profit 1
+            let p2 = this.roundTo5(p1 * 0.8);
+
+            // profit 3 → 25% less than profit 2
+            let p3 = this.roundTo5(p2 * 0.75);
+
+            // profit 4 → 15% less than profit 3
+            let p4 = this.roundTo5(p3 * 0.85);
+
+            // profit 5 → 10% less than profit 4
+            let p5 = this.roundTo5(p4 * 0.90);
+
+            // assign calculated
+            this.profits[1] = p2;
+            this.profits[2] = p3;
+            this.profits[3] = p4;
+            this.profits[4] = p5;
+
+            // profits 6–12 fixed at 80, rounded to nearest 5
+            for (let i = 5; i < 12; i++) {
+                this.profits[i] = this.roundTo5(80);
+            }
+        }
+    }
+}
+
+</script>
   
   
 @endpush
