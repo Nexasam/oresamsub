@@ -473,20 +473,21 @@ class DataController extends Controller
         $coupon = NULL;
         $remaining_slots = NULL;
 
-        if(auth()->user()->email == 'oreofe@gmail.com'){
-            $plan_details = UniqueProductPlan::where('id',$request->product_plan_id)->where('visibility',1)->first();
-            // $automation_id = $plan_details->automation_id ?? null;
-            $data_value_mb = $plan_details->data_size_in_mb ?? 0;
-            $product_plan_id = $plan_details->id;
+        // if(auth()->user()->email == 'oreofe@gmail.com'){
+        //     $plan_details = ProductPlan::where('id',$request->product_plan_id)->where('visibility',1)->first();
+        //     // $automation_id = $plan_details->automation_id ?? null;
+        //     $data_value_mb = $plan_details->data_size_in_mb ?? 0;
+        //     $product_plan_id = $plan_details->id;
 
-            // $user_plan_id = auth()->user()->user_plan_id;
-            // $user_level = UserPlan::select('plan_level')->where('id',$user_plan_id)->first();
-            // $plan_level = $user_level->plan_level;
-            $plan_level = auth()->user()->user_plan->plan_level ?? 1;
-            $user_plan_selling_price = 'price_'.$plan_level;
-            $amount = abs($plan_details->$user_plan_selling_price);
+        //     // $user_plan_id = auth()->user()->user_plan_id;
+        //     // $user_level = UserPlan::select('plan_level')->where('id',$user_plan_id)->first();
+        //     // $plan_level = $user_level->plan_level;
+        //     $plan_level = auth()->user()->user_plan->plan_level ?? 1;
+        //     $user_plan_selling_price = 'price_'.$plan_level;
+        //     $amount = abs($plan_details->$user_plan_selling_price);
 
-        }else{
+        // }else{
+
             $plan_details = ProductPlan::with('automation')->where('id',$request->product_plan_id)->where('visibility',1)->first();
             // $automation_id = $plan_details->automation_id;
             $data_value_mb = $plan_details->data_size_in_mb ?? 0;
@@ -498,7 +499,7 @@ class DataController extends Controller
             // $plan_level = $user_level->plan_level;
             $user_plan_selling_price = 'user_level_'.$plan_level.'_selling_price';
             $amount = abs($plan_details->$user_plan_selling_price);
-        }
+        // }
       
 
    
@@ -563,20 +564,20 @@ class DataController extends Controller
                                 
                                 
                                 //NEW SWITCH HERE
-                                if(auth()->user()->email == 'oreofe@gmail.com'){
-                                    //NEW ROUTE
-                                    $retry_count = 0;
-                                    $sell_data = $this->processDataViaAutomations($dataa);
-                                    $product_plan_id = $sell_data['plan_id'];
-                                    $retry_count = $sell_data['retry_count'] ?? 0;
+                                // if(auth()->user()->email == 'oreofe@gmail.com'){
+                                //     //NEW ROUTE
+                                //     $retry_count = 0;
+                                //     $sell_data = $this->processDataViaAutomations($dataa);
+                                //     $product_plan_id = $sell_data['plan_id'];
+                                //     $retry_count = $sell_data['retry_count'] ?? 0;
 
-                                    //incase there are no plans to use.
-                                    if($sell_data['case_critical'] == 1){
-                                     return response()->json(['status'=>'-1', 'message'=>'Sorry this plan is currently not available.' ]);
-                                    }
+                                //     //incase there are no plans to use.
+                                //     if($sell_data['case_critical'] == 1){
+                                //      return response()->json(['status'=>'-1', 'message'=>'Sorry this plan is currently not available.' ]);
+                                //     }
 
 
-                                }else{
+                                // }else{
 
                                     //OLD ROUTE
                                     $datacoupon['product_plan_id'] = $request->product_plan_id;
@@ -589,7 +590,7 @@ class DataController extends Controller
                                     $remaining_slots = $get_deducted_amount['remaining_slots'];
                                     $dataa['coupon'] = $coupon;
                                     $sell_data = AutomationLogic::initiateDataPurchase($dataa);
-                                }
+                                // }
 
                                 $set_for_manual = $sell_data['set_for_manual'] ?? 0;
                                 // logger('DATAAA: '.json_encode($sell_data));    
