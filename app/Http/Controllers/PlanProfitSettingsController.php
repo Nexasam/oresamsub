@@ -279,8 +279,8 @@ class PlanProfitSettingsController extends Controller
                 "profit_11","profit_12"
             ]);
             $sizee = $datad->data_size_in_mb >= 1000
-            ? ($datad->data_size_in_mb / 1000) . ' GB'
-            : $datad->data_size_in_mb . ' MB';
+            ? ($datad->data_size_in_mb / 1000) . 'GB'
+            : $datad->data_size_in_mb . 'MB';
             $plan_details = $sizee.' '.$datad->network->network_name.' '.$datad->validity_in_days. ' Days Validity';
         
             $html = '
