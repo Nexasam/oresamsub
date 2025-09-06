@@ -270,10 +270,20 @@ function profitForm(initialProfits) {
                     $('#plan_profit_settings_table').DataTable().ajax.reload(null, false);
                     alert('Profits updated successfully!');
                 },
-                error: function () {
-                    alert('Error saving profits');
+                error: function (xhr, status, error) {
+                    console.error('Error details:', xhr.responseText); // log full error in console
+                    let message = "Error saving profits";
+
+                    if (xhr.responseJSON && xhr.responseJSON.message) {
+                        message = xhr.responseJSON.message; // Laravel validation / exception message
+                    } else if (xhr.responseText) {
+                        message = xhr.responseText; // fallback: raw server response
+                    }
+
+                    alert(message);
                 }
             });
+
         }
     }
 }
