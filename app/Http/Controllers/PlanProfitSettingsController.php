@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\PlanProfitSetting;
 use App\Models\ProductPlan;
+use App\Models\UserPlan;
 use Exception;
 use Illuminate\Http\Request;
 use Yajra\DataTables\Facades\DataTables;
@@ -303,11 +304,16 @@ class PlanProfitSettingsController extends Controller
                             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">';
             
             for ($i = 1; $i <= 12; $i++) {
+               $profitfor = '';
+               $userplan = UserPlan::where('plan_level',$i)->first();
+               if($userplan){
+                 $profitfor = ' For '.$userplan->updated_user_plan_name ?? $userplan->user_plan_name;
+               }
                 $value = $profits["profit_$i"] ?? '';
                 $html .= '
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">
-                            Profit '.$i.'
+                            Profit '.$i.$profitfor.'
                         </label>
                         <input type="text" 
                                name="profit_'.$i.'" 
