@@ -1202,7 +1202,7 @@ class DataController extends Controller
 
 
         ///NEW VERSION 2 test starts here
-        if(auth()->user()->email != 'oreofe@gmail.comm' && $product_slug == 'data'){
+        if(auth()->user()->email == 'oreofe@gmail.com' && $product_slug == 'data'){
             $dataplans_arr['user'] = $user_details;
             $dataplans_arr['product_id'] = $product_id;
             $dataplans_arr['network_id'] = $network_id;
