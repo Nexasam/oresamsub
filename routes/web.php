@@ -56,6 +56,7 @@ use App\Http\Controllers\VirtualAccountsController;
 use App\Http\Controllers\UserVerificationController;
 use App\Http\Controllers\CableSubscriptionController;
 use Rap2hpoutre\LaravelLogViewer\LogViewerController;
+use App\Http\Controllers\PlanProfitSettingsController;
 use App\Http\Controllers\UniqueProductPlansController;
 use App\Http\Controllers\WalletFundingPromoController;
 use App\Http\Controllers\ProductPlanCategoryController;
@@ -621,6 +622,10 @@ Route::middleware(['set_locale'])->group(function () {
             Route::middleware(['auth','verified','admin'])->post('admin/save_unique_plan_pricing', [UniqueProductPlansController::class, 'save_unique_plan_pricing'])->name('admin.save_unique_plan_pricing');
             Route::middleware(['auth','verified','admin'])->get('admin/unique_product_plans/index', [UniqueProductPlansController::class, 'index'])->name('admin.unique_product_plans.index');
             Route::middleware(['auth','verified','admin'])->get('admin/unique_product_plans/fetch', [UniqueProductPlansController::class, 'fetch'])->name('admin.unique_product_plans.admin_fetch_unique_product_plans');
+
+            Route::middleware(['auth','verified','admin'])->post('admin/save_plan_profit_settings', [PlanProfitSettingsController::class, 'save_plan_profit_setting'])->name('admin.save_plan_profit_setting');
+            Route::middleware(['auth','verified','admin'])->get('admin/plan_profit_settings/index', [PlanProfitSettingsController::class, 'index'])->name('admin.plan_profit_settings.index');
+            Route::middleware(['auth','verified','admin'])->get('admin/plan_profit_settings/fetch', [PlanProfitSettingsController::class, 'fetch'])->name('admin.plan_profit_settings.fetch');
 
 
             Route::middleware(['auth','verified','admin'])->get('admin/product_plans', [ProductPlanController::class, 'index'])->name('admin.product_plans.index');
