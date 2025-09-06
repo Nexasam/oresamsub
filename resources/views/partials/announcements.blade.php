@@ -27,10 +27,15 @@
         </div>
 
         <!-- Announcements List -->
-        <div class="space-y-2 max-h-60 overflow-y-auto pr-2">
+        <div class="space-y-3 max-h-60 overflow-y-auto pr-2">
             @foreach ($announcements as $ann)
                 <div class="p-3 rounded-lg border border-emerald-200 dark:border-emerald-600 bg-emerald-50 dark:bg-emerald-900 text-emerald-900 dark:text-emerald-200 text-sm">
-                    {!! $ann->description !!}
+                    <h3 class="font-semibold text-emerald-700 dark:text-emerald-300 mb-1">
+                        {{ $ann->title }}
+                    </h3>
+                    <div class="text-gray-700 dark:text-gray-200">
+                        {!! $ann->description !!}
+                    </div>
                 </div>
             @endforeach
         </div>
