@@ -13,10 +13,18 @@ class PlanProfitSetting extends Model
     protected $guarded = [];
 
      /**
-     * each product belongs to product category 
+     * each profit belongs to product 
     **/
     public function product()
     {
         return $this->belongsTo(Product::class, 'product_id', 'id');
+    }
+
+      /**
+     * each profit belongs to a network 
+    **/
+    public function network()
+    {
+        return $this->belongsTo(Network::class, 'network_id', 'id');
     }
 }

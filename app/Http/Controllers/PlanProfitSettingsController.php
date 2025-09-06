@@ -255,7 +255,7 @@ class PlanProfitSettingsController extends Controller
 
     public function fetch(Request $request){
 
-       $productplans = PlanProfitSetting::with('product')->orderByRaw("CASE WHEN data_size_in_mb < 500 THEN 1 ELSE 0 END ASC")
+       $productplans = PlanProfitSetting::with('product','network')->orderByRaw("CASE WHEN data_size_in_mb < 500 THEN 1 ELSE 0 END ASC")
         ->orderBy('data_size_in_mb', 'asc')
         ->orderBy('validity_in_days', 'asc')
         ->orderBy('network_id', 'asc')
