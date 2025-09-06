@@ -281,7 +281,7 @@ function profitForm(initialProfits) {
             })
             .catch(error => {
                 console.error('Error details:', error);
-                alert('Something went wrong while saving profits.'.error);
+                alert('Something went wrong while saving profits...');
             });
 
         }

@@ -394,8 +394,7 @@ class PlanProfitSettingsController extends Controller
         }
 
         $plan->save();
-
-        
+   
         return response()->json([
             'success'  => true,
             'message' => 'Profits of plan updated successfully'
