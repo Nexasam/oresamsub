@@ -364,8 +364,7 @@ class PlanProfitSettingsController extends Controller
         
             return $html;
         })
-        ->rawColumns(['profits'])
-        
+        ->rawColumns(['profits'])        
         ->addColumn('size',function($datad){
             return number_format($datad->data_size_in_mb).'MB  ('.($datad->data_size_in_mb/1000).'GB)';
         })
