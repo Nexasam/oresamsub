@@ -30,7 +30,7 @@ Schedule::command(ComputeReferralCommission::class)->everySixHours();
 
 Schedule::command(SendNewRegistrationEmail::class)->everyTwoMinutes()->withoutOverlapping();
 Schedule::command(SendFailedTransactionEmail::class)->everyThirtySeconds()->withoutOverlapping();
-Schedule::command(SendPendingTransactionEmail::class)->everyTwoMinutes()->withoutOverlapping();
+Schedule::command(SendPendingTransactionEmail::class)->everyMinute()->withoutOverlapping();
 
 Schedule::command(ReprocessPendingTransaction::class)->everyTwoMinutes()->withoutOverlapping();
 

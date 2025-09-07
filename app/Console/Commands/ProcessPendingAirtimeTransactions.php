@@ -181,13 +181,13 @@ class ProcessPendingAirtimeTransactions extends Command
 
                                 //update to refunded here for now
                                 Transaction::where('id',$pending_transaction->id)->update([
-                                    'status' => -1,
+                                    'status' => 2,
                                     'user_screen_message' => $user_message,
                                     'admin_screen_message' => $admin_message,
                                     'balance_after' => $balance_before,
-
+                                    'set_for_manual' => 0
                                 ]);
-                                // logger('Airtime Transaction FAILED & REVERSED for txn: '. $pending_transaction->id);
+                                // logger('Airtime Transaction FAILED & REFUNDEDA for txn: '. $pending_transaction->id);
 
                             }
                             
