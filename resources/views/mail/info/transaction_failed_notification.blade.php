@@ -8,14 +8,16 @@
 <p>Thank you.</p> --}}
 
 <x-mail::message>
-# Failed Transaction Notification
+# Failed/Pending/Refunded Transaction Notification
 
-A transaction has failed and needs attention.
+A transaction has either failed,pending or refunded and needs attention.
 
 User: {{ $data['email'] }} <br>
 Transaction ID: {{ $data['id'] }} <br>
 Phone Number: {{ $data['phone_number'] }} <br>
-Reason: {{ $data['admin_message'] }} <br>
+Admin Reason: {{ $data['admin_message'] }} <br>
+{{-- Extra info: {{ $data['extra_info'] }} <br> --}}
+Refund Reason: {{ $data['refund_reason'] }} <br>
 Product: {{ $data['transaction_category'] }} <br>
 Product Plan: {{ $data['product_plan_name'] }} <br>
 Date: {{ date('F d, Y',strtotime($data['created_at']) ) }} <br>

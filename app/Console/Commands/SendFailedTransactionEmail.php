@@ -37,7 +37,8 @@ class SendFailedTransactionEmail extends Command
             $transaction = Transaction::with(['user','product_plan'])->where('failure_notification',0)
             ->where(function($query){
                 $query->where('status',-1)
-                      ->orWhere('status',0);
+                        ->orWhere('status',0)
+                        ->orWhere('status',2); //failed,pending,refunded should notify users
             })
             // ->where('transaction_category','airtime')
             ->whereDate('created_at','>=',$date_param)
@@ -68,6 +69,7 @@ class SendFailedTransactionEmail extends Command
                     $dataaa['id'] = $transaction->id;
                     $dataaa['created_at'] = $transaction->created_at;
                     $dataaa['admin_message'] = $transaction->admin_screen_message;
+                    $dataaa['refund_reason'] = $transaction->refund_reason ?? NULL;
                     $dataaa['product_plan_name'] = $transaction->product_plan->product_plan_name ?? 'NA';
                     $dataaa['transaction_category'] = strtoupper($transaction->transaction_category);
                     $dataaa['url'] = config('app.url').'transactions/details/'.$transaction->id;

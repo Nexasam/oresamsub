@@ -30,7 +30,7 @@ class FailedTransactionNotification extends Mailable
     {
         return new Envelope(
             from: new Address(env('MAIL_FROM_ADDRESS'), env('APP_NAME')),
-            subject: 'A transaction just failed '. env('APP_NAME'),
+            subject: 'A transaction just failed or pending or refunded '. env('APP_NAME'),
         );
     }
 
