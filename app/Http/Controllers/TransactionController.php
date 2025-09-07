@@ -169,6 +169,7 @@ class TransactionController extends Controller
             'set_for_manual' => 0,
             'manually_processed_by' => $userinfooo,
             'refund_reason' => $request->refund_reason,
+            'balance_after' => $transaction_details->balance_before,
          ]); 
 
          $walletLog['user_id'] = $user_id;

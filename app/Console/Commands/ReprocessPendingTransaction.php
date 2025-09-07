@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Http\Services\TransactionService;
 use App\Models\User;
 use App\Models\Setting;
 use App\Models\Automation;
@@ -55,6 +56,10 @@ class ReprocessPendingTransaction extends Command
 
             try {
                 foreach ($affected_txns as $fetch_transaction) {
+
+                    $amount_deducted = $fetch_transaction->discounted_amount ?? $fetch_transaction->amount;
+                    $refund_reason = NULL;
+                   
 
                     // Lock transaction to avoid double processing
                     $fetch_transaction->update(['set_for_manual' => 2]); // 2 = processing
@@ -121,7 +126,6 @@ class ReprocessPendingTransaction extends Command
                                 'manually_processed_by' => NULL,
                                 'reprocess_automation_id' => $product_plannn->automation->id
                             ]);
-
                             $success = true;
                             break; // Stop trying more plans for this txn
                         }
@@ -143,18 +147,21 @@ class ReprocessPendingTransaction extends Command
     
     
     
-                    // After checking all alternative plans:
+                    // After checking all alternative plans: LETS DO THIS FOR NOW... PEACE OF MIND IS KEY
                     if (!$success) {
-                        if ($fetch_transaction->retry_count >= 8) {
-                            // Max retries reached, remove from queue
-                            // $fetch_transaction->update(['set_for_manual' => 0]);
-                            // logger('Removed txn '.$fetch_transaction->id.' after max retries.');
-                            $fetch_transaction->update(['set_for_manual' => 1]);
+                        // if ($fetch_transaction->retry_count >= 8) {
+                        //     // Max retries reached, remove from queue
+                        //     // $fetch_transaction->update(['set_for_manual' => 0]);
+                        //     // logger('Removed txn '.$fetch_transaction->id.' after max retries.');
+                        //     $fetch_transaction->update(['set_for_manual' => 1]);
 
-                        } else {
-                            // Put back in queue for next cron run
-                            $fetch_transaction->update(['set_for_manual' => 1]);
-                        }
+                        // } else {
+                        // All plans processed, refund now...
+                        // $fetch_transaction->update(['set_for_manual' => 0, 'status' => 2]);
+                            logger('THIS RAAAAAN FOR '. $fetch_transaction->id);
+                            $refund_reason = 'All vendor options have been exhausted...';
+                            (new TransactionService())->transaction_refund($fetch_transaction,$amount_deducted,$refund_reason,'cron');
+                        // }
                     }
     
     
