@@ -39,7 +39,7 @@ class TransactionService{
              $walletLog['balance_before'] = $former_wallet_balance;
              $walletLog['balance_after'] = $new_wallet_balance;
              $walletLog['transaction_id'] = $transaction_details->id;
-             $walletLog['action_by'] = auth()->user()->id;
+             $walletLog['action_by'] = $who_processed;
              $walletLog['description'] = 'Transaction was refunded for the ID: '. $transaction_details->id;
              $this->log_wallet_transactions($walletLog);
             //log: refund
