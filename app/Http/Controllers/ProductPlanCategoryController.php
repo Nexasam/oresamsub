@@ -226,10 +226,10 @@ class ProductPlanCategoryController extends Controller
 
 
     public function store_plan(Request $request){
-      
+      // |unique:product_plan_categories,product_plan_category_name
       $validator = Validator::make($request->all(), [
-         'product_plan_name' => 'required|max:255|unique:product_plans,product_plan_name',
-          "product_plan_category_id" => "required|max:255|unique:product_plan_categories,product_plan_category_name",
+         'product_plan_name' => 'required|max:255',
+          "product_plan_category_id" => "required|max:255",
           "automation_id" => "exists:automations,id",
           "automation_product_plan_id" => "required",
           "cost_price" => "required|integer",

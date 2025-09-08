@@ -93,6 +93,20 @@
 
 
 
+
+  <!-- Phone Number -->
+  <div class="mb-4">
+    <label for="phone_number" class="block text-sm mb-1">Phone Number</label>
+    <input
+      type="tel"
+      name="phone_number"
+      id="phone_number"
+      required
+      placeholder="e.g. 08012345678"
+      class="w-full px-4 py-2 rounded-lg bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+    >
+  </div>
+
   <!-- Network Selection -->
 <div class="mb-2" x-data="{ selectedNetwork: '' }">
   <label class="block text-sm mb-2">Networks</label>
@@ -162,19 +176,6 @@
 
 
 
-
-    <!-- Phone Number -->
-    <div class="mb-4">
-      <label for="phone_number" class="block text-sm mb-1">Phone Number</label>
-      <input
-        type="tel"
-        name="phone_number"
-        id="phone_number"
-        required
-        placeholder="e.g. 08012345678"
-        class="w-full px-4 py-2 rounded-lg bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
-      >
-    </div>
 
    <!-- Hidden field for selected product_plan_id -->
     <input type="hidden" name="product_plan_id" id="product_plan_id">
