@@ -160,14 +160,14 @@ class ProductsService{
 
 
                     //new pricing flow
-                    // if($product_slug == 'data'){
-                    //     $dat['product_id'] = $product_plan->product_plan_category->product->id;
-                    //     $dat['user'] = $user_details;
-                    //     $dat['plan_details'] = $product_plan;
-                    //     $dat['network_id'] = $product_plan->product_plan_category->network->id;
-                    //     $selling_price = (new DataPlansService())->get_customer_price_per_plan($dat)['message'];
-                    //     $discounted_selling_price = $selling_price;
-                    // }
+                    if($product_slug == 'data'){
+                        $dat['product_id'] = $product_plan->product_plan_category->product->id;
+                        $dat['user'] = $user_details;
+                        $dat['plan_details'] = $product_plan;
+                        $dat['network_id'] = $product_plan->product_plan_category->network->id;
+                        $selling_price = (new DataPlansService())->get_customer_price_per_plan($dat)['message'];
+                        $discounted_selling_price = $selling_price;
+                    }
  
             
                     if($product_plan){
@@ -310,12 +310,14 @@ class ProductsService{
         $product_plan_category_id = $plan_details->product_plan_category->id; 
         
         //new pricing
-        // $dat['product_id'] = $plan_details->product_plan_category->product->id;
-        // $dat['user'] = $user_details;
-        // $dat['plan_details'] = $plan_details;
-        // $dat['network_id'] = $network_id;
-        // $get_selling_price = (new DataPlansService())->get_customer_price_per_plan($dat);
-        // $amount = $get_selling_price['message'];
+        $dat['product_id'] = $plan_details->product_plan_category->product->id;
+        $dat['user'] = $user_details;
+        $dat['plan_details'] = $plan_details;
+        $dat['network_id'] = $network_id;
+        $get_selling_price = (new DataPlansService())->get_customer_price_per_plan($dat);
+        $amount = $get_selling_price['message'];
+
+
 
 
         $success = 0;
