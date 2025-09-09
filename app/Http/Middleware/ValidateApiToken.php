@@ -3,16 +3,22 @@
 namespace App\Http\Middleware;
 
 use Closure;
-use Illuminate\Http\Request;
 use App\Models\User;
+use Illuminate\Http\Request;
+use Symfony\Component\HttpFoundation\Response;
 
-class ApiTokenMiddleware
+class ValidateApiToken
 {
-    public function handle(Request $request, Closure $next)
+    /**
+     * Handle an incoming request.
+     *
+     * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
+     */
+    public function handle(Request $request, Closure $next): Response
     {
         $token = str_replace('Token ', '', $request->header('Authorization'));
 
-        $user = User::where('api_token', $token)->first();
+        $user = User::with('user_plan')->where('api_token', $token)->first();
 
         if (!$user) {
             return response()->json([

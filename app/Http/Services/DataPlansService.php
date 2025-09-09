@@ -17,6 +17,7 @@ class DataPlansService{
         $network_id = $data['network_id'];
         $product_plan_category_id = $data['product_plan_category_id'] ?? NULL;
         $product_id = $data['product_id'];
+        $is_api = $data['is_api'] ?? NULL;
 
         //selling plan level
         $user_plan_id = $user_details->user_plan_id;
@@ -66,7 +67,7 @@ class DataPlansService{
         if(count($product_plans) >= 1){
 
             foreach($product_plans as $key=>$product_plan){
-                // $cost_price = $product_plan['cost_price'];
+                $cost_price = $product_plan['cost_price'];
                 // $data_size_in_mb = $product_plan['data_size_in_mb'];
                 // $get_planprofit = PlanProfitSetting::where('network_id',$network_id)
                 // ->where('product_id',$product_id)
@@ -89,17 +90,28 @@ class DataPlansService{
                 $dat['network_id'] = $network_id;
                 $selling_price = $this->get_customer_price_per_plan($dat)['message'];
     
-                $product_planss[$key]['product_plan_id'] = $product_plan->id;
-                $product_planss[$key]['selling_price'] = $selling_price;
+             
+                if($is_api != NULL){
+                  //api route
+                  $product_planss[$key]['cost_price'] = $selling_price; //their cost price will be selling price 
+                  $product_planss[$key]['api_id'] =  (int)$product_plan->api_id ?? NULL;
+                 }else{
+                  //likely web/mobile route
+                  $product_planss[$key]['product_plan_id'] = $product_plan->id;
+                  $product_planss[$key]['selling_price'] = $selling_price;
+                  $product_planss[$key]['automation_id'] = $product_plan->automation_id;  
+                }
+
                 $product_planss[$key]['product_plan_name'] = $product_plan->product_plan_name;
                 $product_planss[$key]['data_size_in_mb'] = $product_plan->data_size_in_mb;
-                $product_planss[$key]['validity_in_days'] = $product_plan->validity_in_days;    
-                $product_planss[$key]['automation_id'] = $product_plan->automation_id;  
-             
+                $product_planss[$key]['validity_in_days'] = $product_plan->validity_in_days; 
+                             
             }
 
         }else{
+            $product_planss[0]['cost_price'] = NULL;
             $product_planss[0]['product_plan_id'] = NULL;
+            $product_planss[0]['api_id'] = NULL;
             $product_planss[0]['selling_price'] = NULL;
             $product_planss[0]['product_plan_name'] = NULL;
             $product_planss[0]['data_size_in_mb'] = NULL;
@@ -107,14 +119,20 @@ class DataPlansService{
             $product_planss[0]['automation_id'] = NULL;  
         }
 
-
+        if($is_api != NULL){
+            return [
+                'status' => 1,
+                'message' => $product_planss,
+                'plans' => $product_planss,
+            ];
+        }
+        
         $data_sizes = collect($product_planss)
         ->pluck('data_size_in_mb')
         ->unique()
         ->sort()
         ->values()
         ->toArray();
-        
         return [
             'status' => 1,
             'message' => $product_planss,
@@ -135,15 +153,16 @@ class DataPlansService{
         $user_plan_id = $user_details->user_plan_id;
         $user_id = $user_details->id;
         $user_level = UserPlan::select('plan_level')->where('id',$user_plan_id)->first();
-        $plan_level = $user_level->plan_level;
+        $plan_level = $user_level->plan_level  ??  1;
 
 
         $get_planprofit = PlanProfitSetting::where('network_id',$network_id)
         ->where('product_id',$product_id)
         ->where('data_size_in_mb',$data_size_in_mb)
         ->first();
-        $profitlevel_for_user = "profit_$plan_level"; 
-        $profit = $get_planprofit->$profitlevel_for_user;
+
+        $profitlevel_for_user = "profit_$plan_level" ?? 'profit_1'; 
+        $profit = $get_planprofit->$profitlevel_for_user ?? 50;
         $selling_price = $cost_price + abs($profit);
 
         //custom case

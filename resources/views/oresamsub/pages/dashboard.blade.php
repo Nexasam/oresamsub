@@ -360,7 +360,8 @@ class="border border-emerald-400 dark:border-emerald-600 rounded-xl shadow-md ov
               @if ($transaction->status == 2 && $transaction->refund_reason)
                 <div class="flex justify-between">
                   <span>Refund reason:</span>
-                  <span class="font-semibold">{{ $transaction->refund_reason }}</span>
+                  {{-- {{ $transaction->refund_reason }} --}}
+                  <span class="font-semibold">Downtime from provider</span>
                 </div>
               @endif
               <div class="flex justify-between">

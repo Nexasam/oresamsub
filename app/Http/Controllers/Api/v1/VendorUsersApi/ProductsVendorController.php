@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Api\v1\VendorUsersApi;
 
+use App\Http\Services\DataPlansService;
+use App\Models\ProductPlanCategory;
 use App\Models\User;
 use App\Models\Network;
 use App\Models\Product;
@@ -24,6 +26,62 @@ class ProductsVendorController extends Controller
  
     use JsonResponseWrapper;
 
+
+
+    public function fetch_networks(Request $request){  
+        $data = Network::where('visibility',1)->pluck('network_name','api_id');
+        return $this->success('Networks successfully fetched',data: $data);    
+     }
+
+     public function fetch_data_plans(Request $request){  
+        $network = $request->network_id ?? '';
+        if($network == ''){
+
+        }
+
+        $networkuuid = Network::where('api_id',$network)
+        ->pluck('id');
+        
+        $product_id = Product::where('slug','data')
+        ->pluck('id');
+        
+        // $arr_product_plan_categories_for_data = ProductPlanCategory::where('network_id',$networkuuid)
+        // ->pluck('id')
+        // ->toArray();
+        
+        // $product_plans_data = ProductPlan::select('product_plan_name','visibility','data_size_in_mb','validity_in_days','default_selling_price','cost_price')
+        // ->whereIn('product_plan_category_id',$arr_product_plan_categories_for_data)
+        // ->get();
+
+        $dataservice['user'] = $request->api_user;
+        $dataservice['network_id'] = $networkuuid;
+        $dataservice['product_id'] = $product_id;
+        $dataservice['is_api'] = 'yes';
+
+        $response = (new DataPlansService())->fetch_user_data_plans($dataservice)['plans'];
+
+        $newData = [];
+        foreach ($response as $plan) {
+            // Make a safe key (remove spaces and special chars)
+            $key = strtoupper(str_replace([' ', '(', ')', '.', '-'], '_', $plan['product_plan_name']));
+            $newData[$key] = $plan;
+        }
+
+        // Replace array with object
+        // $response['data'] = $newData;
+
+        // Convert to JSON
+        // $response = json_encode($response, JSON_PRETTY_PRINT);
+
+
+        return $this->success('Data plans successfully fetched',data: $newData);    
+     }
+
+     
+
+
+    ////////////////////////////BELOW ARE NOT REALLY USED YET
+
     public function fetch_user_records_with_token($bearer_token){
         $user_details = User::where('api_token',$bearer_token)->first();
         if($user_details){
@@ -33,18 +91,7 @@ class ProductsVendorController extends Controller
         return false;
     }
 
-    public function fetch_networks(Request $request){
-        $bearer_token = $request->bearerToken();
-       
-        //TODO: revamp to make better
-        $user_details = $this->fetch_user_records_with_token($bearer_token);
-        if(! $user_details){
-            return $this->error('Authentication failed', data: [], code: 403 );    
-        }
-         
-        $data = Network::where('visibility',1)->get();
-        return $this->success('Networks successfully fetched',data: $data);    
-     }
+  
   
      public function fetch_products(Request $request){
         $bearer_token = $request->bearerToken();

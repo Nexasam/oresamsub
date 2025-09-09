@@ -1,13 +1,15 @@
 <?php
 
-use App\Http\Middleware\MarketerMiddleware;
 use App\Http\Middleware\RoleAssess;
 use App\Http\Middleware\AdminSettings;
 use Illuminate\Foundation\Application;
 use App\Http\Middleware\RoleUserAccess;
 use App\Http\Middleware\RoleAdminAccess;
 use App\Http\Middleware\TemplateSetting;
+use App\Http\Middleware\ValidateApiToken;
 use App\Http\Middleware\SetTransactionPin;
+use App\Http\Middleware\ApiTokenMiddleware;
+use App\Http\Middleware\MarketerMiddleware;
 use App\Http\Middleware\ValidateSanctumUser;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -28,6 +30,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'user' => RoleUserAccess::class, 
             'marketer' => MarketerMiddleware::class, 
             'validate_user' => ValidateSanctumUser::class,
+            'api_token' => ValidateApiToken::class,
             'set_transaction_pin' => SetTransactionPin::class,
             'set_locale' => \App\Http\Middleware\SetLocale::class,
          ]);

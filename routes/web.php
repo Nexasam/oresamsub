@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\User;
 use App\Models\SiteImage;
 use App\Models\ProductPlan;
 use App\Models\SiteTemplate;
@@ -343,6 +344,43 @@ Route::middleware(['set_locale'])->group(function () {
                 ];
                 // return $dataup;
                 // dd('test');
+            });
+
+            Route::get('/populate-user-token', function (): array {
+                $users = User::all();
+                foreach($users as $user){
+                    $token = hash('sha1', $user->id . Str::random(40) . time());
+                    if($user->api_token == NULL){
+                        $user->update([
+                            'api_token' => $token
+                        ]);
+                    }
+                    
+                }
+                return [
+                    'completed' => 1
+                ];
+            });
+
+            Route::get('/populate-plans-api-id', function (): array {
+                $productplan = ProductPlan::all();
+                $lastplan = ProductPlan::select('api_id')->latest()->first();
+                $lastapiid = $lastplan && $lastplan->api_id != NULL ?  $lastplan->api_id : 0;
+                $nextapiid = $lastapiid + 1;
+
+                foreach($productplan as $plan){
+                 
+                    if($plan->api_token == NULL){
+                        $plan->update([
+                            'api_id' => $nextapiid
+                        ]);
+                        $nextapiid++;
+                    }
+                    
+                }
+                return [
+                    'completed' => 1
+                ];
             });
 
             

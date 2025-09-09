@@ -38,10 +38,9 @@ class ReprocessPendingTransaction extends Command
     public function handle()
     {
 
-        
-
             $affected_txns = Transaction::with([
                 'user',
+                'product_plan.automation',
                 'product_plan.product_plan_category.product',
                 'product_plan.product_plan_category.network',
                 'manual_processing_locker'
