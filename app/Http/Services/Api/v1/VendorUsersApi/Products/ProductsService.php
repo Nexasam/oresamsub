@@ -160,14 +160,14 @@ class ProductsService{
 
 
                     //new pricing flow
-                    if($product_slug == 'data'){
-                        $dat['product_id'] = $product_plan->product_plan_category->product->id;
-                        $dat['user'] = $user_details;
-                        $dat['plan_details'] = $product_plan;
-                        $dat['network_id'] = $product_plan->product_plan_category->network->id;
-                        $selling_price = (new DataPlansService())->get_customer_price_per_plan($dat)['message'];
-                        $discounted_selling_price = $selling_price;
-                    }
+                    // if($product_slug == 'data'){
+                    //     $dat['product_id'] = $product_plan->product_plan_category->product->id;
+                    //     $dat['user'] = $user_details;
+                    //     $dat['plan_details'] = $product_plan;
+                    //     $dat['network_id'] = $product_plan->product_plan_category->network->id;
+                    //     $selling_price = (new DataPlansService())->get_customer_price_per_plan($dat)['message'];
+                    //     $discounted_selling_price = $selling_price;
+                    // }
  
             
                     if($product_plan){
