@@ -285,7 +285,7 @@ class ProductsService{
         $user_level = UserPlan::select('plan_level')->where('id',$user_plan->id)->first();
         $plan_level = $user_plan->plan_level;
         $user_plan_selling_price = 'user_level_'.$plan_level.'_selling_price';
-        $amount = abs($user_plan->$user_plan_selling_price);
+        $amount = abs($plan_details->$user_plan_selling_price);
 
        
         
