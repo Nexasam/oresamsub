@@ -521,6 +521,7 @@ class ProductsService{
                                 'txn_reference'=>$txn_reference,
                                 'status'=>1,
                                 'actual_status' => $status,
+                                'message' => $user_message,
                                 'apiresponse' => $user_message,
                                 'user_message' => $user_message,
                                 'admin_message' => $admin_message,
