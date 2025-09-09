@@ -92,7 +92,17 @@ class ReprocessPendingTransaction extends Command
 
                     foreach ($product_plansss as $product_plannn) {
                         $product_slug = $product_plannn->product_plan_category->product->slug;
+                        $cost_price = $product_plannn->cost_price;
 
+                        
+                        //check if the cost price of the current automation is greater than the price of customer
+                        $amounnt_paid = $amount_deducted;
+                        $automation_cost_price = $cost_price;
+                        if ($automation_cost_price > $amounnt_paid) {
+                            logger('Automation cost price is greater than the amount customer paid: Skip....dont process..');
+                            continue; // Skip to next product plan if its a loss game
+                        }
+                        
                         if ($product_slug !== 'data') {
                             logger('Applicable on DATA only for now: current slug: '.$product_slug);
                             continue; // Skip if not data

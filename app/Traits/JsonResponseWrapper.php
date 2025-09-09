@@ -9,7 +9,7 @@ trait JsonResponseWrapper{
             'status' => true,
             'message' => $message,
             $datakey => $data
-        ]);
+        ],200);
     }
 
     public function error($message, $datakey = 'data', $message2 = '', $data = [], $code = 404)
@@ -18,6 +18,6 @@ trait JsonResponseWrapper{
             'status' => false,
             'message' => $message,
              $datakey => $data
-        ]);
+        ],$code);
     }
 }

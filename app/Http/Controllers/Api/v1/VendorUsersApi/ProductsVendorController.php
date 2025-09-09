@@ -29,7 +29,7 @@ class ProductsVendorController extends Controller
 
 
     public function fetch_networks(Request $request){  
-        $data = Network::where('visibility',1)->pluck('network_name','api_id');
+        $data = Network::where('visibility',1)->select('network_name','api_id')->get();
         return $this->success('Networks successfully fetched',data: $data);    
      }
 
@@ -44,38 +44,137 @@ class ProductsVendorController extends Controller
         
         $product_id = Product::where('slug','data')
         ->pluck('id');
-        
-        // $arr_product_plan_categories_for_data = ProductPlanCategory::where('network_id',$networkuuid)
-        // ->pluck('id')
-        // ->toArray();
-        
-        // $product_plans_data = ProductPlan::select('product_plan_name','visibility','data_size_in_mb','validity_in_days','default_selling_price','cost_price')
-        // ->whereIn('product_plan_category_id',$arr_product_plan_categories_for_data)
-        // ->get();
-
+      
         $dataservice['user'] = $request->api_user;
         $dataservice['network_id'] = $networkuuid;
         $dataservice['product_id'] = $product_id;
         $dataservice['is_api'] = 'yes';
 
-        $response = (new DataPlansService())->fetch_user_data_plans($dataservice)['plans'];
+        $plans = (new DataPlansService())->fetch_user_data_plans($dataservice)['plans'];
 
-        $newData = [];
-        foreach ($response as $plan) {
-            // Make a safe key (remove spaces and special chars)
-            $key = strtoupper(str_replace([' ', '(', ')', '.', '-'], '_', $plan['product_plan_name']));
-            $newData[$key] = $plan;
+        return $this->success('Data plans successfully fetched',data: $plans);    
+     }
+
+     public function fetch_data_transactions(Request $request){
+        $validator = Validator::make($request->all(), [
+            'date_from' => ['nullable', 'string'],
+            'date_to' => ['nullable', 'string'],
+            'phone_recharged' => ['nullable', 'string'],
+        ]);
+
+        if ($validator->stopOnFirstFailure()->fails()) {
+            return $this->error('Validation failed', data: $validator->errors()->first(), code: 403 );    
         }
 
-        // Replace array with object
-        // $response['data'] = $newData;
+        $user_details = $request->api_user;
 
-        // Convert to JSON
-        // $response = json_encode($response, JSON_PRETTY_PRINT);
+        $date_from = $request->date_from ?? date('Y-m-d', strtotime('-2 days'));
+        
+        $date_to= $request->date_to ?? date('Y-m-d');
+
+        $phone = $request->phone_recharged ?? '';
 
 
-        return $this->success('Data plans successfully fetched',data: $newData);    
+        if(strtotime($date_from) > strtotime($date_to)){
+            return $this->error('Date from cannot be greater than Date to', data: $validator->errors()->first(), code: 403 );    
+        }
+        
+
+        $limit = $request->limit ?? 500;
+        $product_plan_category_filter = $request->product_plan_category_filter ?? '';
+
+        $transactions = Transaction::when(!empty($date_from) && !empty($date_to), function ($query) use ($date_from, $date_to) {
+            $date_to = date('Y-m-d', strtotime('+1 day', strtotime($date_to)));
+            $query->where('created_at', '>=', $date_from)->where('created_at', '<=', $date_to);
+        })
+        ->when(!empty($phone), function ($query) use ($phone) {
+            $query->where('phone_number', $phone);
+        })
+        ->with(['product_plan:id,product_plan_name']) // only load what you need
+        ->where('wallet_category', '!=', 'data_wallet')
+        ->where('transaction_category', 'data')
+        ->where('user_id', $user_details->id)
+        ->latest()
+        ->limit(200)
+        ->get([
+            'id',
+            'product_plan_id',
+            'transaction_category',
+            'status',
+            'balance_before',
+            'balance_after',
+            'user_screen_message',
+            'phone_number'
+        ])
+        ->map(function ($t) {
+          
+            return [
+                "status" => match($t->status) {
+                        "1"   => "success",
+                        "2 "  => "refunded",
+                        "-1"  => "failed",
+                        default => "unknown"
+                },
+                "product_name"      => $t->product_plan->product_plan_name ?? null,
+                "balance_before"    => $t->balance_before,
+                "balance_after"     => $t->balance_after,
+                "user_screen_message" => $t->user_screen_message,
+                "phone_number"      => $t->phone_number,
+            ];
+        });
+        
+        return $this->success('Data Transactions successfully fetched',data: $transactions);    
      }
+
+
+    /**
+     * Store a newly created resource in storage.
+     */
+    public function buy_data(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'network' => 'required',
+            'mobile_number' => 'required',
+            'plan' => 'required',
+            'reference' => 'required|unique:transactions,txn_reference'
+        ]);
+        
+        if ($validator->stopOnFirstFailure()->fails()) {
+            return $this->error($validator->errors()->first(), code: 403 );    
+        }
+
+        //TODO: revamp to make better
+        // $bearer_token = $request->bearerToken(); 
+        // $user_details = $this->fetch_user_records_with_token($bearer_token);
+        // if(! $user_details){
+        //     return $this->error('Authentication failed', data: [], code: 403 );    
+        // }
+
+        $network_id = Network::where('api_id',$request->network)->value('id');
+        $product_plan_id = ProductPlan::with('product_plan_category')->where('api_id',$request->plan)->value('id');
+
+        $data['network_id'] = $network_id;
+        $data['reference'] = $request->reference ?? NULL;
+        $data['phone_number'] = $request->mobile_number;
+        $data['product_plan_category_id'] = NULL;
+        $data['product_plan_id'] = $product_plan_id;
+        $data['pin'] = $request->api_user->pin;
+        $data['wallet_category'] = $request->wallet_category ?? 'main_wallet';
+        $data['validatephonenetwork'] = $request->validatephonenetwork ?? 1;
+        $data['user_id'] = $request->api_user->id;//this is required
+        $data['user'] = $request->api_user;//this is required
+
+        $buy_data = (new ProductsService())->buy_data_service($data);
+
+        $status = $buy_data['status'];
+        $message = $buy_data['message'];
+        $data = $buy_data['data'] ?? [];
+        if($status == 1){
+            return $this->success('Data was successfully processed',data: $data);    
+        }
+
+        return $this->error( $message ,data: $data, code: 500);     
+    }
 
      
 
@@ -271,7 +370,7 @@ class ProductsVendorController extends Controller
      /**
      * Store a newly created resource in storage.
      */
-    public function buy_data(Request $request)
+    public function buy_dataold(Request $request)
     {
         $validator = Validator::make($request->all(), [
             // 'network_id' => 'required',

@@ -1,6 +1,7 @@
 <?php
 namespace App\Http\Services\Api\v1\VendorUsersApi\Products;
 
+use App\Http\Services\DataPlansService;
 use Exception;
 use App\Models\User;
 use App\Models\Network;
@@ -223,20 +224,88 @@ class ProductsService{
           
     }
 
+    function generateTxnReference($prefix, $userUuid) {
+        // Take a shortened, hashed version of UUID (to avoid super long refs)
+        $userHash = substr(hash('sha1', $userUuid), 0, 8); 
+        
+        $timestamp = date('Ymd_His_u'); // precise timestamp with microseconds
+        $random    = bin2hex(random_bytes(3)); // 6 random hex chars
+        
+        return "{$prefix}_{$timestamp}_{$userHash}_{$random}";
+    }
+
     public function buy_data_service($data){
        
         $network_id = $data['network_id'];
         $phone_number = $data['phone_number'];
-        $product_plan_category_id = $data['product_plan_category_id'];
+        $product_plan_category_id = $data['product_plan_category_id'] ?? NULL;
         $product_plan_id = $data['product_plan_id'];
         $pin = $data['pin'];
         $wallet_category = $data['wallet_category'];
         $validatephonenetwork = $data['validatephonenetwork'];
         $user_id = $data['user_id'];//this is required
+        $user = $data['user'];//this is required
         $coupon_code = $data['coupon_code'] ?? NULL;
+        $txn_reference = $data['reference'] ?? NULL;
+
+        if($txn_reference == NULL){
+            //generate a unique one
+            $txn_reference = $this->generateTxnReference('DATA',$user_id);
+        }
+
+        //safe check
+        $checktxn = Transaction::where('txn_reference',$txn_reference)->first();
+        if($checktxn){
+            return ['status'=>'-1', 'message'=>'Duplicate reference found' ]; //data removed
+        }
 
 
-     
+        if($user == NULL){
+            $user_details = User::with('user_plan')->where('id',$user_id)->first();;
+            if(! $user_details){
+                //end session and redirect to login
+                return ['status'=>'-1', 'message'=>'User record not found' ]; //data removed
+            }
+        }else{
+            $user_details = $user;
+        }
+
+
+        $user_plan = $user_details->user_plan ?? NULL;
+        if($user_plan == NULL){
+            //end session and redirect to login
+            return ['status'=>'-1', 'message'=>'User plan ID is null'];  //'data' => $data
+        }
+
+        // $plan_details = ProductPlan::with('automation')->where('id',$product_plan_id)->where('visibility',1)->first();
+        $plan_details = ProductPlan::with(['automation','product_plan_category.network','product_plan_category.product'])
+        ->where('id',$product_plan_id)->where('visibility',1)
+        ->first();
+
+        $user_level = UserPlan::select('plan_level')->where('id',$user_plan->id)->first();
+        $plan_level = $user_plan->plan_level;
+        $user_plan_selling_price = 'user_level_'.$plan_level.'_selling_price';
+        $amount = abs($user_plan->$user_plan_selling_price);
+
+       
+        
+        if(! $plan_details){
+            //end session and redirect to login
+            return ['status'=>'-1', 'message'=>'Invalid Plan ID or Currently Unavailable' ];
+        }
+       
+        $automation_id = $plan_details->automation->id;
+        $data_value_mb = $plan_details->data_size_in_mb ?? 0;
+        $product_plan_category_id = $plan_details->product_plan_category->id; 
+        
+        //new pricing
+        // $dat['product_id'] = $plan_details->product_plan_category->product->id;
+        // $dat['user'] = $user_details;
+        // $dat['plan_details'] = $plan_details;
+        // $dat['network_id'] = $network_id;
+        // $get_selling_price = (new DataPlansService())->get_customer_price_per_plan($dat);
+        // $amount = $get_selling_price['message'];
+
 
         $success = 0;
         $failure = 0;
@@ -248,37 +317,11 @@ class ProductsService{
         $data1['user_id'] = $user_id;
         $data1['product'] = 'data';
         $check_purchase_limit =  ProductsService::check_purchase_limit($data1);
-    
-
-        $plan_details = ProductPlan::where('id',$product_plan_id)->where('visibility',1)->first();
-        if(! $plan_details){
-            //end session and redirect to login
-            return ['status'=>'-1', 'message'=>'Invalid Plan ID' ];
-        }
-        $automation_id = $plan_details->automation_id;
-        $data_value_mb = $plan_details->data_size_in_mb ?? 0;
-
-        $user_details = User::where('id',$user_id)->first();
-        if(! $user_details){
-            //end session and redirect to login
-            return ['status'=>'-1', 'message'=>'User record not found', 'data' => $data ];
-        }
-
-        $user_plan_id = $user_details->user_plan_id;
-        if($user_plan_id == NULL){
-            //end session and redirect to login
-            return ['status'=>'-1', 'message'=>'User plan ID is null', 'data' => $data];
-        }
-
-        $user_level = UserPlan::select('plan_level')->where('id',$user_plan_id)->first();
-        $plan_level = $user_level->plan_level;
-        $user_plan_selling_price = 'user_level_'.$plan_level.'_selling_price';
-        $amount = abs($plan_details->$user_plan_selling_price);
-
         if($check_purchase_limit['status'] == -1){
             
             $description = 'Purchase of data';
             $creationData['transaction_category'] = 'data';
+            $creationData['txn_reference'] = $txn_reference;
             $creationData['user_id'] = $user_id;
             $creationData['set_for_manual'] = 0;
             $creationData['wallet_category'] = $wallet_category;
@@ -311,24 +354,20 @@ class ProductsService{
             //end session and redirect to login
             return ['status'=>'-1', 'message'=>'Incorrect PIN' ];
         }
-
-
-
+    
         $user_id = $user_details->id;
         $phone_numbers = $phone_number;
         $phone_numbers = trim($phone_numbers);
         $phone_numbers_array = explode(',',$phone_numbers);
         $phone_numbers_count = count($phone_numbers_array);
 
-
-
         DB::beginTransaction();
         try{
 
 
                     //HERE SELLING PRICE CHANGES IF THEHRE IS A CUSTOM SETTING: put in a service later
-                    $check_custom_setting = ProductPlanCustomPricing::where('product_plan_id','=', $product_plan_id)->where('user_id',$user_id)->first();
-                    $amount = $check_custom_setting == NULL ? $amount : $check_custom_setting->price;  
+                    // $check_custom_setting = ProductPlanCustomPricing::where('product_plan_id','=', $product_plan_id)->where('user_id',$user_id)->first();
+                    // $amount = $check_custom_setting == NULL ? $amount : $check_custom_setting->price;  
                     
                     ////validate wallet
                         if($wallet_category == 'main_wallet'){
@@ -339,7 +378,8 @@ class ProductsService{
                             }
                     
                             //calling the actual vending via the automation:
-                            $automation_details = Automation::where('id',$automation_id)->first();
+                            // $automation_details = Automation::where('id',$automation_id)->first();
+                            $automation_details = $plan_details->automation;
                     
                             //TODO: candidate for separation:
                             for($i = 0; $i < count($phone_numbers_array); $i++ ){
@@ -367,9 +407,7 @@ class ProductsService{
 
                                 // logger('DATAAA SERVICE: '.json_encode($sell_data));
                                 $coupon_count  = 0;
-
-
-                                
+                
                                 if($sell_data['status'] == 1){
                                     $coupon_count  = 1;
 
@@ -386,8 +424,8 @@ class ProductsService{
                                     $wallet_before = User::where('id',$user_id)->first()->main_wallet;
                                     $wallet_after = $wallet_before;
                                 }
-                                //simulate success
 
+                                //simulate success
                                 $user_message = $sell_data['user_message'];
                                 $admin_message = $sell_data['admin_message'];
                                 $display_results[$i] = array(
@@ -427,6 +465,8 @@ class ProductsService{
                                 $description = 'Purchase of data';
                                 $creationData['transaction_category'] = 'data';
                                 $creationData['user_id'] = $user_id;
+                                $creationData['txn_reference'] = $txn_reference;
+                                $creationData['retry_count'] = $retry_count ?? 0;
                                 $creationData['set_for_manual'] = $set_for_manual ?? 0;
                                 $creationData['wallet_category'] = $wallet_category;
                                 $creationData['product_plan_id'] = $product_plan_id;
@@ -462,13 +502,52 @@ class ProductsService{
                             DB::commit();
                     
                             if($failure > 0){
-                              return ['status'=>2, 'user_message' => $user_message,'admin_message' => $admin_message,'message'=>" $failure issue(s) found. Check transaction history", 'data' => $display_results];   
+                                return [ 
+                                'status'=>2, 
+                                'user_message' => $user_message,
+                                'admin_message' => $admin_message,
+                                'message'=>" $failure issue(s) found. Check transaction history", 
+                                'data' => $display_results
+                              ];  
+
                             }
-                            return ['status'=>1, 'message'=>'Transaction was successfully processed', 'data' => $display_results ];
+
+
+
+
+
+                            return [
+                                'id'=>$transaction->id,
+                                'txn_reference'=>$txn_reference,
+                                'status'=>1,
+                                'actual_status' => $status,
+                                'apiresponse' => $user_message,
+                                'user_message' => $user_message,
+                                'admin_message' => $admin_message,
+                                "balance_before" => $wallet_before,
+                                "balance_after" => $wallet_after,
+                                "plan" => $plan_details->api_id,
+                                "Status" => match($status) {
+                                    "1"   => "successful",
+                                    "2 "  => "refunded",
+                                    "-1"  => "failed",
+                                    default => "unknown"
+                                },
+                                "plan_network" => Network::where('id',$network_id)->value('network_name'),
+                                "plan_name" => $plan_details->product_plan_name,
+                                'plan_amount'=>$amount, 
+                                'create_date'=>date('Y-m-d H:i:s'), 
+                                'data' => $display_results
+                            ];
                     
                         } 
 
+
                         if($wallet_category == 'data_wallet'){
+                            return [
+                                'status' => -1,
+                                'message' => 'not available at the moment'
+                            ];
                             $get_bulk_data_wallet_details = UserBulkDataWallet::where('user_id',$user_id)->where('product_plan_category_id',$product_plan_category_id)->first();
                             
                             if(! $get_bulk_data_wallet_details ){
@@ -556,6 +635,7 @@ class ProductsService{
                         
                                 $description = 'Purchase of data via data wallet';
                                 $creationData['transaction_category'] = 'data';
+                                $creationData['txn_reference'] = $txn_reference;
                                 $creationData['user_id'] = $user_id;
                                 $creationData['wallet_category'] = $wallet_category;
                                 $creationData['product_plan_id'] = $product_plan_id;

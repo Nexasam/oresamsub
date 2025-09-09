@@ -93,8 +93,8 @@ class DataPlansService{
              
                 if($is_api != NULL){
                   //api route
+                  $product_planss[$key]['plan_id'] =  (int)$product_plan->api_id ?? NULL; //api for api calls
                   $product_planss[$key]['cost_price'] = $selling_price; //their cost price will be selling price 
-                  $product_planss[$key]['api_id'] =  (int)$product_plan->api_id ?? NULL;
                  }else{
                   //likely web/mobile route
                   $product_planss[$key]['product_plan_id'] = $product_plan->id;
@@ -167,10 +167,10 @@ class DataPlansService{
 
         //custom case
         //HERE SELLING PRICE CHANGES IF THEHRE IS A CUSTOM SETTING: put in a service later
-        $check_custom_setting = ProductPlanCustomPricing::where('product_plan_id','=', $product_plan->id)
-        ->where('user_id',$user_details->id)
-        ->first();
-        $selling_price = $check_custom_setting == NULL ? $selling_price : $check_custom_setting->price; 
+        // $check_custom_setting = ProductPlanCustomPricing::where('product_plan_id','=', $product_plan->id)
+        // ->where('user_id',$user_details->id)
+        // ->first();
+        // $selling_price = $check_custom_setting == NULL ? $selling_price : $check_custom_setting->price; 
 
 
         $augmentsp = $cost_price + 50;

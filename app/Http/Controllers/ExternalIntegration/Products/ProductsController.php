@@ -311,6 +311,7 @@ class ProductsController extends Controller
         $data['wallet_category'] = $request->wallet_category;
         $data['validatephonenetwork'] = $request->validatephonenetwork;
         $data['user_id'] = $request->user_id;//this is required
+        $data['user'] = NULL;//this is required
         $data['coupon_code'] = $request->coupon_code ?? NULL;//this is nullable
 
         

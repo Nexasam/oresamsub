@@ -835,7 +835,7 @@ function walletBalance() {
         init() {
             this.refreshMainBalances();
             // auto refreshMainBalances every 20s
-            setInterval(() => this.refreshMainBalances(), 20000);
+            setInterval(() => this.refreshMainBalances(), 500000);
         },
         refreshMainBalances() {
             this.loading = true;

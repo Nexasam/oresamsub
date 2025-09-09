@@ -16,11 +16,15 @@ use App\Http\Controllers\ExternalIntegration\Products\ProductsController;
 
 Route::middleware('api_token')->group(function () {
     Route::get('user/fetch_networks', [ProductsVendorController::class, 'fetch_networks'])->name('api.user.fetch_networks');
+    Route::get('user/fetch_data_plans', [ProductsVendorController::class, 'fetch_data_plans'])->name('api.user.fetch_data_plans');
+    Route::get('user/fetch_data_transactions', [ProductsVendorController::class, 'fetch_data_transactions'])->name('api.user.fetch_data_transactions');
+
+    
+
     Route::get('user/fetch_products', [ProductsVendorController::class, 'fetch_products'])->name('api.user.fetch_products');
     Route::get('user/fetch_transactions', [ProductsVendorController::class, 'fetch_transactions'])->name('api.user.fetch_transactions');
     Route::get('user/fetch_single_transaction', [ProductsVendorController::class, 'fetch_single_transaction'])->name('api.user.fetch_single_transaction');
     Route::get('user/fetch_product_plan_categories', [ProductsVendorController::class, 'fetch_product_plan_categories'])->name('api.user.fetch_product_plan_categories');
-    Route::get('user/fetch_data_plans', [ProductsVendorController::class, 'fetch_data_plans'])->name('api.user.fetch_data_plans');
     Route::get('user/fetch_product_plans', [ProductsVendorController::class, 'fetch_product_plans'])->name('api.user.fetch_product_plans');
     Route::post('user/buy_data', [ProductsVendorController::class, 'buy_data'])->name('api.user.buy_data');
     Route::post('user/buy_airtime', [ProductsVendorController::class, 'buy_airtime'])->name('api.user.buy_airtime');
