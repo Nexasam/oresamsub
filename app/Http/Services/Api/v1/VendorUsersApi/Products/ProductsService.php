@@ -104,7 +104,7 @@ class ProductsService{
         $counter =0;
 
        //TODO: 
-        $user_details = User::where('id',$user_id)->first();
+        $user_details = User::with('user_plan')->where('id',$user_id)->first();
 
         $user_plan_id = $user_details->user_plan_id;
         $user_id = $user_details->id;
@@ -117,13 +117,15 @@ class ProductsService{
             //get the product_category_id 
 
             if($product_slug == 'airtime'){
-                $product_plans = ProductPlan::where('product_plan_category_id',$product_plan_category->id)
+                $product_plans = ProductPlan::with(['automation','product_plan_category.network','product_plan_category.product'])
+                ->where('product_plan_category_id',$product_plan_category->id)
                 // ->where('automation_id',$product_plan_category->automation_id)
                 ->where('visibility',1)
                 ->limit(1)
                 ->get();
             }else{
-                $product_plans = ProductPlan::where('product_plan_category_id',$product_plan_category->id)
+                $product_plans = ProductPlan::with(['automation','product_plan_category.network','product_plan_category.product'])
+                ->where('product_plan_category_id',$product_plan_category->id)
                 ->where('visibility',1)
                 // ->where('automation_id',$product_plan_category->automation_id)
                 // ->orderBy('data_size_in_mb')
@@ -134,7 +136,6 @@ class ProductsService{
 
             if(count($product_plans) > 0){
                 foreach($product_plans as $product_plan){
-
 
                     //HERE SELLING PRICE CHANGES IF THEHRE IS A CUSTOM SETTING: put in a service later
                     $check_custom_setting = ProductPlanCustomPricing::where('product_plan_id','=', $product_plan->id)->where('user_id',$user_id)->first();
@@ -153,14 +154,24 @@ class ProductsService{
                           $discounted_selling_price = $amount - abs($actual_discount_value);
                           $selling_price = 0; //this is from the system, not applicable for airtime
                     }else{
+                        
+                        $discounted_selling_price = $selling_price;
+                    }
+
+
+                    //new pricing flow
+                    if($product_slug == 'data'){
+                        $dat['product_id'] = $product_plan->product_plan_category->product->id;
+                        $dat['user'] = $user_details;
+                        $dat['plan_details'] = $product_plan;
+                        $dat['network_id'] = $product_plan->product_plan_category->network->id;
+                        $selling_price = (new DataPlansService())->get_customer_price_per_plan($dat)['message'];
                         $discounted_selling_price = $selling_price;
                     }
  
             
                     if($product_plan){
-                        $counter++;
-            
-                        
+                        $counter++;                   
                         $product_planss['product_plan_id'] = $product_plan->id;
                         if($product_slug == 'airtime' || $product_slug == 'utility_bills'){
                             $product_planss['amount'] = $amount;
