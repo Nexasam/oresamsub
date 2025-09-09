@@ -455,8 +455,10 @@ class TransactionController extends Controller
         })
 
         ->addColumn('transaction_category',function($data){
-            $transaction_category = $data->transaction_category.'<br>';
-            $transaction_category .= 'Route: '.$data->txn_reference == NULL ? 'WEB':'Mobile/API';
+
+            $routeinfo = $data->txn_reference == NULL ? 'WEB':'Mobile/API';
+            $transaction_category = $data->transaction_category.'<br>Route: '.$routeinfo;
+            // $transaction_category .= 'Route: '.$routeinfo;
             return $transaction_category;
         })
         // ->addColumn('response',function($data){
