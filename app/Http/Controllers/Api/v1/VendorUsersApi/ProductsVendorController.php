@@ -218,7 +218,7 @@ class ProductsVendorController extends Controller
             'balance_after',
             'user_screen_message',
             'admin_screen_message',
-            'date',
+            'created_at',
             'retry_count',
             'txn_reference',
             'product_plan_id' // still needed to join with product_plan
