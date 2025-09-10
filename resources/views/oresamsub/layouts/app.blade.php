@@ -837,7 +837,7 @@
         Swal.fire({
               icon: status,
               title: title,
-              text: message,
+              html: message,
               // footer: '<a href="">Why do I have this issue?</a>'
               });
     }
