@@ -40,10 +40,10 @@ class ProductsVendorController extends Controller
         }
 
         $networkuuid = Network::where('api_id',$network)
-        ->pluck('id');
+        ->value('id');
         
         $product_id = Product::where('slug','data')
-        ->pluck('id');
+        ->value('id');
       
         $dataservice['user'] = $request->api_user;
         $dataservice['network_id'] = $networkuuid;
@@ -132,7 +132,6 @@ class ProductsVendorController extends Controller
     public function buy_data(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'network' => 'required',
             'mobile_number' => 'required',
             'plan' => 'required|exists:product_plans,api_id',
             'reference' => 'required|unique:transactions,txn_reference'
@@ -149,8 +148,10 @@ class ProductsVendorController extends Controller
         //     return $this->error('Authentication failed', data: [], code: 403 );    
         // }
 
-        $network_id = Network::where('api_id',$request->network)->value('id');
+        // $network_id = Network::where('api_id',$request->network)->value('id');
         $product_plan_id = ProductPlan::with('product_plan_category')->where('api_id',$request->plan)->value('id');
+        $getnetwork = ProductPlan::with('product_plan_category.network')->where('api_id',$request->plan)->first();
+        $network_id = $getnetwork->product_plan_category->network->id;
 
         $data['network_id'] = $network_id;
         $data['reference'] = $request->reference ?? NULL;
