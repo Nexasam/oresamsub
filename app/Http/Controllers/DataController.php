@@ -867,7 +867,7 @@ class DataController extends Controller
         $amount = $data['amount'];
         $automation_details = $data['automation_details'];
 
-        $automation_cost_price  = $automation_details;
+        $automation_cost_price  = $plan_details->cost_price;
         $amounnt_paid  = $amount;
         
         $network_plan_categories_arr = ProductPlanCategory::where('network_id',$data['network_id'])
@@ -935,7 +935,7 @@ class DataController extends Controller
                         'plan_id' => $get_associated_plan->id,
                     ];
                 }
-                
+
                 logger("Trial $key: Data purchase with $automationname failed");
 
             }
