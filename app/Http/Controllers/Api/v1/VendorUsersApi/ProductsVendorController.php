@@ -103,7 +103,11 @@ class ProductsVendorController extends Controller
             'balance_before',
             'balance_after',
             'user_screen_message',
-            'phone_number'
+            'phone_number',
+            'amount',
+            'date',
+            'retry_count',
+            'txn_reference',
         ])
         ->map(function ($t) {
           
