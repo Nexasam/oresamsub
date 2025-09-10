@@ -543,7 +543,7 @@ class ProductsService{
                                 "plan" => $plan_details->api_id,
                                 "Status" => match($status) {
                                     "1"   => "successful",
-                                    "2 "  => "refunded",
+                                    "2"  => "refunded",
                                     "-1"  => "failed",
                                     default => "unknown"
                                 },

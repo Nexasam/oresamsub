@@ -110,7 +110,7 @@ class ProductsVendorController extends Controller
             return [
                 "status" => match($t->status) {
                         "1"   => "success",
-                        "2 "  => "refunded",
+                        "2"  => "refunded",
                         "-1"  => "failed",
                         default => "unknown"
                 },
@@ -192,6 +192,40 @@ class ProductsVendorController extends Controller
 
         return $this->error( $message ,data: $data, code: 500);     
     }
+
+    public function fetch_transaction(Request $request){
+        $validator = Validator::make($request->all(), [
+            'reference' => ['required', 'string', 'exists:transactions,txn_reference'],
+        ]);
+
+        if ($validator->stopOnFirstFailure()->fails()) {
+            return $this->error($validator->errors()->first(), code: 403 );       
+        }
+
+        $user_details = $request->api_user;
+
+        $transaction = Transaction::select([
+            'status',
+            'amount',
+            'balance_before',
+            'balance_after',
+            'user_screen_message',
+            'admin_screen_message',
+            'date',
+            'retry_count',
+            'txn_reference',
+            'product_plan_id' // still needed to join with product_plan
+        ])
+        ->with([
+            'product_plan:id,product_plan_name,api_id'
+        ])
+        ->where('user_id', $user_details->id)
+        ->where('txn_reference', $request->reference)
+        ->first();
+    
+
+        return $this->success('Transaction successfully fetched',data: $transaction);    
+     }
 
      
 
