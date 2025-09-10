@@ -170,7 +170,24 @@ class ProductsVendorController extends Controller
         $message = $buy_data['message'];
         $data = $buy_data['data'] ?? [];
         if($status == 1){
-            return $this->success('Data was successfully processed',data: $data);    
+            $data2 =[
+                'id'=>$buy_data['id'],
+                'txn_reference'=>$buy_data['txn_reference'],
+                'status'=>$buy_data['status'],
+                'Status'=>$buy_data['Status'],
+                'plan'=>$buy_data['plan'],
+                'balance_before'=>$buy_data['balance_before'],
+                'balance_after'=>$buy_data['balance_after'],
+                'message'=>$buy_data['message'],
+                'user_message'=>$buy_data['user_message'],
+                'admin_message'=>$buy_data['admin_message'],
+                'plan_network'=>$buy_data['plan_network'],
+                'plan_name'=>$buy_data['plan_name'],
+                'plan_amount'=>$buy_data['plan_amount'],
+                'create_date'=>$buy_data['create_date']
+              ];
+
+            return $this->success('Data was successfully processed',data: $data2);    
         }
 
         return $this->error( $message ,data: $data, code: 500);     
