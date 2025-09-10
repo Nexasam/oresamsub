@@ -875,6 +875,7 @@ class DataController extends Controller
 
     public function processDataViaAutomations($data){
   
+        $phone_number = $data['phone_number'];
         $plan_id = $data['plan_id'];
         $plan_details = $data['plan_details'];
         $productplan = $plan_details->product_plan_name;
@@ -971,7 +972,7 @@ class DataController extends Controller
 
 
 
-        $number = "08123456789"; // user number
+        $number = $phone_number; // user number
         $plan   = $plan_details->product_plan_name; // plan name
 
         // Encode for URL safety
@@ -979,14 +980,22 @@ class DataController extends Controller
 
         // Build message with HEREDOC
         $messageeeee = <<<HTML
-        Transaction was not successful and automatically refunded... 
-        Chat support to try help you process manually: 
-        <a href="https://wa.me/2348168509044?text={$waMessage}"
-        target="_blank" 
-        class="inline-flex items-center px-4 py-2 bg-green-600 text-white rounded-lg shadow hover:bg-green-700 transition">
-        YES, PROCESS
-        </a>
+        <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; text-align: center;">
+            <p style="font-size: 16px; margin-bottom: 12px;">
+                ❌ Your transaction was <strong>not successful</strong> and has been <strong>automatically refunded</strong>.
+            </p>
+            <p style="font-size: 15px; margin-bottom: 16px;">
+                If you’d like, our support team can help you process this transaction manually.
+            </p>
+            <a href="https://wa.me/2348168509044?text={$waMessage}"
+               target="_blank"
+               style="display: inline-block; padding: 12px 20px; background-color: #16a34a; color: #fff; font-size: 15px; 
+                      border-radius: 8px; text-decoration: none; font-weight: bold; box-shadow: 0 2px 6px rgba(0,0,0,0.15);">
+                💬 Contact Support
+            </a>
+        </div>
         HTML;
+    
 
         //no automation went through: it means, refund, no processing
         return [
