@@ -639,7 +639,13 @@ class DataController extends Controller
                                     //it might be processing or it failed
                                     $coupon_count  = 0;
 
-                                    $status = -1;
+                                    if($sell_data['status'] == 2){
+                                        //refunded
+                                        $status = 2;
+                                    }else{
+                                        $status = -1;
+                                    }
+
                                     $failure++;
                                     $wallet_before = User::where('id',$user_id)->first()->main_wallet;
                                     $wallet_after = $wallet_before;
@@ -722,9 +728,15 @@ class DataController extends Controller
                             if($failure > 1){
                               return response()->json(['status'=>2, 'message'=>" $failure issue(s) found. Check transaction history", 'data' => $display_results  ]);   
                             }
+                            
+                            else if($status == 2){
+                                return response()->json(['status'=>2, 'message'=>$sell_data['user_message'], 'data' => $display_results  ]);   
+                            }
+
                             else if(count($phone_numbers_array) == 1 && $failure == 1){
                                 return response()->json(['status'=>2, 'message'=>"Ops, Transaction was not successful, please try again", 'data' => $display_results  ]);   
                             }
+                            
                             else{
                                 if($pending > 0){
                                     return response()->json(['status'=>1, 'message'=>'Transaction is being processed.', 'data' => $display_results  ]);
