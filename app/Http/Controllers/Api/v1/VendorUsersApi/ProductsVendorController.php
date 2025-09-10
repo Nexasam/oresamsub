@@ -134,7 +134,7 @@ class ProductsVendorController extends Controller
         $validator = Validator::make($request->all(), [
             'network' => 'required',
             'mobile_number' => 'required',
-            'plan' => 'required',
+            'plan' => 'required|unique:product_plans,api_id',
             'reference' => 'required|unique:transactions,txn_reference'
         ]);
         
