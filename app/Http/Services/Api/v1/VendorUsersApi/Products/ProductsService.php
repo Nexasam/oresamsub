@@ -292,8 +292,7 @@ class ProductsService{
         $plan_details = ProductPlan::with(['automation','product_plan_category.network','product_plan_category.product'])
         ->where('id',$product_plan_id)->where('visibility',1)
         ->first();
-
-
+        $plan_detailsold =  $plan_details; //preserve original plan for pricing fetch.
 
 
         //TESSSSSSSTTTTTT
@@ -338,9 +337,9 @@ class ProductsService{
         $product_plan_category_id = $plan_details->product_plan_category->id; 
         
         //new pricing
-        $dat['product_id'] = $plan_details->product_plan_category->product->id;
+        $dat['product_id'] = $plan_detailsold->product_plan_category->product->id;
         $dat['user'] = $user_details;
-        $dat['plan_details'] = $plan_details;
+        $dat['plan_details'] = $plan_detailsold;
         $dat['network_id'] = $network_id;
         $get_selling_price = (new DataPlansService())->get_customer_price_per_plan($dat);
         $amount = $get_selling_price['message'];
