@@ -293,6 +293,33 @@ class ProductsService{
         ->where('id',$product_plan_id)->where('visibility',1)
         ->first();
 
+
+
+
+        //TESSSSSSSTTTTTT
+        //here we overrite the plan id with cheapest costprice: vendor
+        $network_plan_categories_arr = ProductPlanCategory::where('network_id',$plan_details->product_plan_category->network->id)
+        ->where('product_id', $plan_details->product_plan_category->product->id)
+        ->pluck('id')
+        ->toArray();
+    
+        //overwritten plan details
+        $plan_details = ProductPlan::with([
+            'automation',
+            'product_plan_category.product',
+            'product_plan_category.network'
+        ])
+        ->where('data_size_in_mb', $plan_details->data_size_in_mb)
+        ->where('validity_in_days', $plan_details->validity_in_days)
+        ->whereIn('product_plan_category_id', $network_plan_categories_arr)
+        ->where('visibility', 1)
+        ->orderByRaw('CAST(cost_price AS UNSIGNED) ASC') // ✅ Sort numerically
+        ->first();
+        //TESSSSSSSTTTTTT
+
+
+
+
         // $user_level = UserPlan::select('plan_level')->where('id',$user_plan->id)->first();
         // $plan_level = $user_plan->plan_level;
         // $user_plan_selling_price = 'user_level_'.$plan_level.'_selling_price';
