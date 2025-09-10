@@ -105,7 +105,7 @@ class ProductsVendorController extends Controller
             'user_screen_message',
             'phone_number',
             'amount',
-            'date',
+            'created_at',
             'retry_count',
             'txn_reference',
         ])
