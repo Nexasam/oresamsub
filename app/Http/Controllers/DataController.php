@@ -963,7 +963,7 @@ class DataController extends Controller
             'set_for_manual' => 0,
             'case_critical' => 0,
             'retry_count' => 50,//for refund code
-            'user_message' => 'Transaction was not successful and automatically refunded.',
+            'user_message' => $sell_data['user_message'],
             'admin_message' => $sell_data['admin_message'],
             'plan_id' => $get_associated_plan->id, //this will be the last tried automation
         ];
