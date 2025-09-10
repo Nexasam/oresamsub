@@ -187,7 +187,7 @@ class ProductsVendorController extends Controller
                 'create_date'=>$buy_data['create_date']
               ];
 
-            return $this->success('Data was successfully processed',data: $data2);    
+            return $this->success($buy_data['message'],data: $data2);    
         }
 
         return $this->error( $message ,data: $data, code: 500);     
