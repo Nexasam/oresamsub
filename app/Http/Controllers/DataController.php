@@ -879,7 +879,7 @@ class DataController extends Controller
         
         //NEW SWITCH HERE
         $retry_count = 0;
-        foreach($get_associated_plans  as $get_associated_plan){
+        foreach($get_associated_plans  as $key=>$get_associated_plan){
             if(auth()->user()->email == 'oreofe@gmail.com'){
                 // $dataa['phone_number'] = $phone_number; //fixed, dont change
                 // $dataa['network_id'] = $request->network_id;//fixed, dont change
@@ -888,6 +888,7 @@ class DataController extends Controller
                 //only these changes
                 $data['automation_details'] = $get_associated_plan->automation;
                 $data['plan_id'] = $get_associated_plan->id;
+                $automationname = $get_associated_plan->automation->automation_name;
 
                 $sell_data = AutomationLogic::initiateDataPurchase($data);
                 $status = $sell_data['status'];
@@ -907,6 +908,8 @@ class DataController extends Controller
                         'plan_id' => $get_associated_plan->id,
                     ];
                 }
+
+                logger("Trial $key: Data purchase with $automationname failed");
 
             }
             $retry_count++;
