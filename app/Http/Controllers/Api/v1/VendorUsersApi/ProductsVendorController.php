@@ -123,6 +123,9 @@ class ProductsVendorController extends Controller
                 "balance_after"     => $t->balance_after,
                 "user_screen_message" => $t->user_screen_message,
                 "phone_number"      => $t->phone_number,
+                "amount"      => $t->amount,
+                "retry_count"      => $t->retry_count,
+                "txn_reference"      => $t->txn_reference,
             ];
         });
         
