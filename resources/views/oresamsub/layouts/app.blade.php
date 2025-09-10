@@ -1043,7 +1043,7 @@
                       var dataList = JSON.parse(result);
                       if( parseInt(dataList.status) == 1){
                           sweetAlertDisplay(dataList.message,'Success','success');
-                          reload(3000,'dashboard');
+                          // reload(3000,'dashboard');
                       }
                       else if(dataList.status == 2){
                           //@least 1 tranaction had an issue
@@ -1051,7 +1051,7 @@
                           $("#buy_data_btn").text('Buy Data');
                           $("#buy_data_btn").prop('disabled',false);
                           $('#cancel_disabling').addClass('hidden')
-                          reload(6000);
+                          // reload(6000);
 
                       }
                       else{
