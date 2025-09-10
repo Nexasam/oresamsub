@@ -579,6 +579,12 @@ class DataController extends Controller
                                 //NEW SWITCH HERE
                                 if(auth()->user()->email == 'oreofe@gmail.com'){
                                     //NEW ROUTE
+
+                                    $dataa['product_id'] = $plan_details->product_plan_category->product->id;
+                                    $dataa['network_id'] = $plan_details->product_plan_category->network->id;
+                                    $dataa['plan_details'] = $plan_details;
+                                    $dataa['amount'] = $total_amount;
+                                 
                                     $retry_count = 0;
                                     $sell_data = $this->processDataViaAutomations($dataa);
                                     $product_plan_id = $sell_data['plan_id'];
@@ -586,7 +592,7 @@ class DataController extends Controller
 
                                     //incase there are no plans to use.
                                     if($sell_data['case_critical'] == 1){
-                                     return response()->json(['status'=>'-1', 'message'=>'Sorry this plan is currently not available.' ]);
+                                     return response()->json(['status'=> -1, 'message'=>'Sorry this plan is currently not available.' ]);
                                     }
 
 
@@ -856,11 +862,29 @@ class DataController extends Controller
 
     public function processDataViaAutomations($data){
   
-        $unique_plan_id = $data['plan_id'];
-        $get_associated_plans = ProductPlan::with('automation')
-        ->where('unique_product_plan_id', $unique_plan_id)
+        $plan_id = $data['plan_id'];
+        $plan_details = $data['plan_details'];
+        $amount = $data['amount'];
+        $automation_details = $data['automation_details'];
+
+        $automation_cost_price  = $automation_details;
+        $amounnt_paid  = $amount;
+        
+        $network_plan_categories_arr = ProductPlanCategory::where('network_id',$data['network_id'])
+        ->where('product_id', $data['product_id'])
+        ->pluck('id')
+        ->toArray();
+    
+        $get_associated_plans = ProductPlan::with([
+            'automation',
+            'product_plan_category.product',
+            'product_plan_category.network'
+        ])
+        ->where('data_size_in_mb', $plan_details->data_size_in_mb)
+        ->where('validity_in_days', $plan_details->validity_in_days)
+        ->whereIn('product_plan_category_id', $network_plan_categories_arr)
         ->where('visibility', 1)
-        ->orderByRaw('CAST(cost_price AS UNSIGNED) ASC') // sort as numbers
+        ->orderByRaw('CAST(cost_price AS UNSIGNED) ASC') // ✅ Sort numerically
         ->get();
     
         if(count($get_associated_plans) <= 0){
@@ -881,9 +905,12 @@ class DataController extends Controller
         $retry_count = 0;
         foreach($get_associated_plans  as $key=>$get_associated_plan){
             if(auth()->user()->email == 'oreofe@gmail.com'){
-                // $dataa['phone_number'] = $phone_number; //fixed, dont change
-                // $dataa['network_id'] = $request->network_id;//fixed, dont change
-                // $data['validatephonenetwork'] = $request->validatephonenetwork; //fixed dont change
+               
+
+                if ($automation_cost_price > $amounnt_paid) {
+                    logger('Automation cost price is greater than the amount customer paid: Skip....dont process..');
+                    continue; // Skip to next product plan if its a loss game
+                }
 
                 //only these changes
                 $data['automation_details'] = $get_associated_plan->automation;
@@ -908,7 +935,6 @@ class DataController extends Controller
                         'plan_id' => $get_associated_plan->id,
                     ];
                 }
-
                 logger("Trial $key: Data purchase with $automationname failed");
 
             }
