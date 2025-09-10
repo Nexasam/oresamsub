@@ -434,6 +434,7 @@ class TransactionController extends Controller
                 
                 $dataa =  $data->product_plan->product_plan_name.'<br>';
                 $dataa .=  $data->product_plan->product_plan_category->product_plan_category_name.'<br>';
+                $dataa .=  'Plan ID:'.$data->product_plan->api_id.'<br>';
                 if($data->transaction_category == 'cable_subscription'){
                     $dataa .=  'Smart Card No: '.$data->smart_card_number.'<br>';
                 }
