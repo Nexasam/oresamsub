@@ -959,22 +959,42 @@ class DataController extends Controller
 
 
         
-        $supportline = '2348168509044';
-        $manualrequest = urlencode("Hello Support, please help me process this transaction: $productplan .");
-        $messageeee = '
-            <a href="https://wa.me/'.$supportline.'?text='.$manualrequest.'" 
-            target="_blank"
-            class="inline-flex items-center px-4 py-2 bg-green-600 text-white rounded-lg shadow hover:bg-green-700 transition">
-                YES, PROCESS
-            </a>
-        ';
+        // $supportline = '2348168509044';
+        // $manualrequest = urlencode("Hello Support, please help me process this transaction: $productplan .");
+        // $messageeee = '
+        //     <a href="https://wa.me/'.$supportline.'?text='.$manualrequest.'" 
+        //     target="_blank"
+        //     class="inline-flex items-center px-4 py-2 bg-green-600 text-white rounded-lg shadow hover:bg-green-700 transition">
+        //         YES, PROCESS
+        //     </a>
+        // ';
+
+
+
+        $number = "08123456789"; // user number
+        $plan   = $plan_details->product_plan_name; // plan name
+
+        // Encode for URL safety
+        $waMessage = urlencode("Hello Support, please help me process this transaction: {$plan} for {$number}");
+
+        // Build message with HEREDOC
+        $messageeeee = <<<HTML
+        Transaction was not successful and automatically refunded... 
+        Chat support to try help you process manually: 
+        <a href="https://wa.me/2348168509044?text={$waMessage}"
+        target="_blank" 
+        class="inline-flex items-center px-4 py-2 bg-green-600 text-white rounded-lg shadow hover:bg-green-700 transition">
+        YES, PROCESS
+        </a>
+        HTML;
+
         //no automation went through: it means, refund, no processing
         return [
             'status' => 2,
             'set_for_manual' => 0,
             'case_critical' => 0,
             'retry_count' => 50,//for refund code
-            'user_message' => 'Transaction was not successful and automatically refunded...Chat support to try help you process manually:  '.PHP_EOL.$messageeee,
+            'user_message' => $messageeeee,
             'admin_message' => $sell_data['admin_message'],
             'plan_id' => $get_associated_plan->id, //this will be the last tried automation
         ];
