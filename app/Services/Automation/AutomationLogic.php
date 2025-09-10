@@ -322,7 +322,7 @@ class AutomationLogic{
             $data['mobile_number'] = $validated_phone_number;
             $buy_airtime = (new SimserverAutomation($data))->buyAirtime();
         }else if($automation_details->slug == 'smeplug'){
-            logger('smeplug ran: '.json_encode($data));
+            // logger('smeplug ran: '.json_encode($data));
             $buy_airtime = (new SmeplugAutomation($data))->buyAirtime();
         }
         else{

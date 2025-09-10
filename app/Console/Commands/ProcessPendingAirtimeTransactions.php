@@ -146,7 +146,7 @@ class ProcessPendingAirtimeTransactions extends Command
                             // && strtolower($selected_network2) != 'airtel'
                             if($network_error == 0){
                                 $buy_airtime = AutomationLogic::initiateAirtimePurchase($dataa);
-                                logger('AIRTIME DEBUG: '.json_encode($buy_airtime));
+                                // logger('AIRTIME DEBUG: '.json_encode($buy_airtime));
 
                             }else{
                                 $buy_airtime['status'] = -1;
@@ -167,7 +167,7 @@ class ProcessPendingAirtimeTransactions extends Command
                                     'user_screen_message' => $buy_airtime['user_message'],
                                     'admin_screen_message' => $buy_airtime['admin_message'],
                                   ]);
-                                  logger('AIRTIME SUCCESS '.json_encode($buy_airtime));
+                                //   logger('AIRTIME SUCCESS '.json_encode($buy_airtime));
                             }else{
                                 //failed, so refund: this should not run for oresamsub
                                 $user_message = $buy_airtime['user_message'];

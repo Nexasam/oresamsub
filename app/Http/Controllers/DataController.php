@@ -577,20 +577,20 @@ class DataController extends Controller
                                 
                                 
                                 //NEW SWITCH HERE
-                                // if(auth()->user()->email == 'oreofe@gmail.com'){
-                                //     //NEW ROUTE
-                                //     $retry_count = 0;
-                                //     $sell_data = $this->processDataViaAutomations($dataa);
-                                //     $product_plan_id = $sell_data['plan_id'];
-                                //     $retry_count = $sell_data['retry_count'] ?? 0;
+                                if(auth()->user()->email == 'oreofe@gmail.com'){
+                                    //NEW ROUTE
+                                    $retry_count = 0;
+                                    $sell_data = $this->processDataViaAutomations($dataa);
+                                    $product_plan_id = $sell_data['plan_id'];
+                                    $retry_count = $sell_data['retry_count'] ?? 0;
 
-                                //     //incase there are no plans to use.
-                                //     if($sell_data['case_critical'] == 1){
-                                //      return response()->json(['status'=>'-1', 'message'=>'Sorry this plan is currently not available.' ]);
-                                //     }
+                                    //incase there are no plans to use.
+                                    if($sell_data['case_critical'] == 1){
+                                     return response()->json(['status'=>'-1', 'message'=>'Sorry this plan is currently not available.' ]);
+                                    }
 
 
-                                // }else{
+                                }else{
 
                                     //OLD ROUTE
                                     $datacoupon['product_plan_id'] = $request->product_plan_id;
@@ -603,12 +603,13 @@ class DataController extends Controller
                                     $remaining_slots = $get_deducted_amount['remaining_slots'];
                                     $dataa['coupon'] = $coupon;
                                     $sell_data = AutomationLogic::initiateDataPurchase($dataa);
-                                // }
+                                }
 
                                 $set_for_manual = $sell_data['set_for_manual'] ?? 0;
                                 // logger('DATAAA: '.json_encode($sell_data));    
 
 
+                                //2 is refunded
                                 if($sell_data['status'] == 1){
 
                                     $coupon_count  = 1;
@@ -628,6 +629,7 @@ class DataController extends Controller
                                    
                                 }
                                 else{
+                                    //status = 2 for refund is here too.
                                     //it might be processing or it failed
                                     $coupon_count  = 0;
 
@@ -912,13 +914,14 @@ class DataController extends Controller
         }
 
 
-        //no automation went through
+        
+        //no automation went through: it means, refund, no processing
         return [
-            'status' => 1,
-            'set_for_manual' => 1,
+            'status' => 2,
+            'set_for_manual' => 0,
             'case_critical' => 0,
-            'retry_count' => $retry_count,
-            'user_message' => $sell_data['user_message'],
+            'retry_count' => 50,//for refund code
+            'user_message' => 'Transaction was not successful and automatically refunded.',
             'admin_message' => $sell_data['admin_message'],
             'plan_id' => $get_associated_plan->id, //this will be the last tried automation
         ];
