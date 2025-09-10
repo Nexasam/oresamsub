@@ -315,6 +315,7 @@ class ProductsService{
         ->where('visibility', 1)
         ->orderByRaw('CAST(cost_price AS UNSIGNED) ASC') // ✅ Sort numerically
         ->first();
+        $product_plan_id = $plan_details->id;
         //TESSSSSSSTTTTTT
 
 
