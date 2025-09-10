@@ -935,6 +935,7 @@ class DataController extends Controller
                         'plan_id' => $get_associated_plan->id,
                     ];
                 }
+                
                 logger("Trial $key: Data purchase with $automationname failed");
 
             }
