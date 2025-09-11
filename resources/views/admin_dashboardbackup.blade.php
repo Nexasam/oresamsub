@@ -3,10 +3,17 @@
 @section('content')
 <div class="main-content">
 
+    @php
+        $sidebar_color =  App\Models\AdminColorSetting::where('color_name','site_admin_sidebar_color')->first(); 
+        $sidebar_color = $sidebar_color->color_value ?? '#6B21A8';
+        //   echo $sidebar_color;
+    @endphp
+
     <!-- Page Header -->
     <div class="block justify-between page-header md:flex">
         <div>
-            <h3 class="text-gray-700 hover:text-gray-900 dark:text-gray-900 dark:hover:text-white text-2xl font-medium"> <small style=" font-size: 14px;">Welcome <strong>{{ $user->first_name. ' '. $user->last_name }}</strong></small> </h3>
+            {{-- <p>Current locale: {{ app()->getLocale() }}</p> --}}
+            <h3 class="text-gray-700 hover:text-gray-900 dark:text-gray-900 dark:hover:text-white text-2xl font-medium"> <small style=" font-size: 14px;">{{ __('messages.Welcome') }} <strong>{{ $user->first_name. ' '. $user->last_name }}</strong></small> </h3>
         </div>
         
     </div>
@@ -30,7 +37,7 @@
                 <div class="box-body">
                   <h6 class="text-base font-semibold">Current wallet balance: &#8358; {{ number_format($user->main_wallet,2) }}</h6>
                   <p class="text-[0.813rem] mb-0">Generate a dynamic account below to fund your wallet</p>
-                 <label for="amount">Enter amount to fund:</label><br>
+                 <label for="amount">Enter amount to fund:  </label><br>
                   <input type="number" id="amount" name="amount" value=""><br>
                   <button type="button" class="ti-btn ti-btn-primary"  id="generate_crystalpay_dynamic_account" name="generate_crystalpay_dynamic_account">Generate</button>
                   <div class="crystal_pay_dynamic_account_details">
@@ -45,8 +52,108 @@
             </div>
         </div>
     </div> --}}
+
+
+
+    {{-- <div class="grid grid-cols-1">
+        <div class="overflow-x-auto whitespace-nowrap w-full bg-blue-100 mx-auto text-blue-800 px-4 py-1 rounded-sm font-semibold">
+            <div class="text-sm inline-block animate-marquee hover:[animation-play-state:paused]">
+                @php
+                   
+                        $futureDate = new DateTime('2025-12-31'); // Replace with your desired future date
+                        $today = new DateTime();
+
+                        $interval = $today->diff($futureDate);
+
+                        // Get total number of days
+                        $daysRemaining = $interval->days;
+
+                        // echo "Number of days remaining: $daysRemaining";
+                @endphp     
+                Next renewal of your domain and hosting is {!! $futureDate }}. You have {!! $daysRemaining !!} remaining. 
+            </div>
+          </div>
+    </div> --}}
+
     <div class="grid grid-cols-12 gap-x-5">
-        
+        <div class="col-span-12 xxxl:col-span-2 md:col-span-4">
+            <div
+            class="max-w-sm w-full p-2 mt-2 rounded-2xl shadow-lg bg-white border border-2 border-gray-700  text-white relative space-y-4"
+           >
+
+                @if (config('app.name') == 'OresamSub')
+                    <div class="grid">
+                        @if (auth()->user()->verification_status != 1)
+                        <b><a class="underline" href="{{route('user.verification.index')}}">{{__('messages.Verify your Account with better opportunities')}} </a></b>                               
+                        @endif
+                        <form action="{{ route('user.virtual_accounts.generate') }}" method="POST">
+                            @csrf
+                            <div class="mb-4">
+                                <button type="submit" class="ti-btn ti-btn-primary w-full">{{__('messages.Generate More Virtual Accounts')}}</button>
+                            </div>
+                        </form>
+                        </div>
+                @endif
+
+               @if (count($user_virtual_accounts) > 0)
+                   @foreach ($user_virtual_accounts as $vaccount)
+                           {{-- <div class="flex items-center space-x-4">
+                               <div>
+                                   <p class="text-sm uppercase tracking-wider text-gray-900"></p>
+                                   <p class="text-2xl font-bold">
+                                       {{ $vaccount->account_number }} 
+                                   </p>
+                               </div>
+                           </div> --}}
+                       @if (in_array($vaccount->bank_code,$active_bankcodes))
+                           <div class="max-w-sm w-full p-4 rounded-2xl shadow-xl bg-[{{$sidebar_color}}] text-white">
+                           
+                               <p>
+                                   <span class="text-md font-bold">{{$vaccount->bank_name }}</span> &nbsp; | &nbsp; {{ $vaccount->account_name }} | &nbsp; <span class="text-xl font-bold">{{ $vaccount->account_number }}</span>
+                                   <br>
+                                   @php
+                                       $bankcodeinfo = App\Models\FundingOptionBankCodes::where('bank_code',$vaccount->bank_code)->first();
+                                       $charge_info = $bankcodeinfo->rate_category == 'Percentage' ? '%':' NGN Flat rate';
+                                       $bank_charges =  $bankcodeinfo->bank_charges;
+                                       $bank_charges =  $bankcodeinfo->short_description == NULL ? '':'|&nbsp;';
+                                   @endphp
+                                   <small>{!! 'charges: '.$bankcodeinfo->bank_charges .$charge_info.'&nbsp;'.$bankcodeinfo->short_description !!}</small>
+                               </p>
+                           
+                           </div>     
+                       @endif  
+                      
+                   @endforeach
+               @else
+                                   
+                       <div class="max-w-sm w-full p-6 rounded-2xl shadow-xl bg-gradient-to-r from-indigo-600 to-purple-600 text-white">
+                           <div class="flex items-center justify-between">
+                           <!-- Icon (pointing down) -->
+                           <div class="p-3 bg-white/20 rounded-full">
+                               <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-current" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                   <!-- Wallet Icon -->
+                                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                                       d="M3 10h18M3 14h18M3 6h18c.553 0 1 .447 1 1v12c0 .553-.447 1-1 1H3c-.553 0-1-.447-1-1V7c0-.553.447-1 1-1z" />
+                                   <!-- Naira Symbol (₦) -->
+                                   <text x="12" y="15" font-size="8" font-family="Arial" text-anchor="middle" fill="currentColor">₦</text>
+                               </svg>
+                               
+                           </div>
+
+                         
+           
+                           <a href="{{route('user.wallet.index')}}" class="bg-[{{$sidebar_color}}]  text-sm font-medium px-4 py-2 rounded-lg shadow hover:bg-indigo-700 transition">
+                               {{ __('messages.Fund Wallet') }}
+                           </a>
+                           </div>
+                       </div>
+
+               @endif
+              
+              
+
+           </div>
+        </div>
         <div class="col-span-12 xxxl:col-span-2 md:col-span-4">
             <div class="box">
                 <div class="box-body">
@@ -149,6 +256,7 @@
         </div>
         <div class="col-span-12 xxxl:col-span-2 md:col-span-4">
             <div class="box">
+                <a href="{{route('wallet_creditings.index')}}">
                 <div class="box-body">
                     <div class="flex space-x-4 rtl:space-x-reverse">
                         <div class="flex items-center justify-center ecommerce-icon px-0">
@@ -162,12 +270,15 @@
                             </span>
                         </div>
                         <div class="">
-                            <div class="mb-2">Total User Main Balances</div>
+                            <div class="mb-2">Your Balance</div>
                             <div class="text-gray-500 dark:text-white/70 mb-1 text-xs">
                                 <span
                                     class="text-gray-800 font-semibold text-xl leading-none align-bottom dark:text-gray-900">
-                                    &#8358;{{  number_format($main_wallet_balances,2) ?? 0  }}
+                                    &#8358;{{  number_format(auth()->user()->main_wallet,2) ?? 0  }}
                                 </span>
+                                @if ($funding_res != 'nil') 
+                                    {!! $funding_res !!}
+                                @endif
                             </div>
                             {{-- <div>
                                 <span class="text-xs mb-0">Increased by <span
@@ -176,8 +287,77 @@
                         </div>
                     </div>
                 </div>
+                </a>
             </div>
         </div>
+
+        <div class="col-span-12 xxxl:col-span-2 md:col-span-4">
+            <div class="box">
+                <div class="box-body">
+                    <div class="flex space-x-4 rtl:space-x-reverse">
+                        
+                        <!-- Icon -->
+                        <div class="flex items-center justify-center ecommerce-icon px-0">
+                            <span class="rounded-sm p-4 bg-warning/10">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="fill-white svg4" height="24px"
+                                    viewBox="0 0 24 24" width="24px" fill="#000000">
+                                    <path d="M0 0h24v24H0V0z" fill="none" />
+                                    <path
+                                        d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm.31-8.86c-1.77-.45-2.34-.94-2.34-1.67 0-.84.79-1.43 2.1-1.43 1.38 0 1.9.66 1.94 1.64h1.71c-.05-1.34-.87-2.57-2.49-2.97V5H10.9v1.69c-1.51.32-2.72 1.3-2.72 2.81 0 1.79 1.49 2.69 3.66 3.21 1.95.46 2.34 1.15 2.34 1.87 0 .53-.39 1.39-2.1 1.39-1.6 0-2.23-.72-2.32-1.64H8.04c.1 1.7 1.36 2.66 2.86 2.97V19h2.34v-1.67c1.52-.29 2.72-1.16 2.73-2.77-.01-2.2-1.9-2.96-3.66-3.42z" />
+                                </svg>
+                            </span>
+                        </div>
+        
+                        <!-- Balance Card -->
+                        <div x-data="walletBalance()" x-init="init()" 
+                             class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm p-4 border border-gray-100 dark:border-gray-700 w-full">
+                            
+                            <!-- Header -->
+                            <div class="flex items-center justify-between mb-3">
+                                <h3 class="text-sm font-medium text-gray-600 dark:text-gray-300">
+                                    Total User Main Balances
+                                </h3>
+                                <!-- Refresh Button -->
+                                <button @click="refreshMainBalances()" 
+                                        class="p-1.5 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition"
+                                        title="Refresh">
+                                    <svg xmlns="http://www.w3.org/2000/svg" 
+                                         fill="none" viewBox="0 0 24 24" 
+                                         stroke-width="2" stroke="currentColor" 
+                                         class="w-5 h-5 text-emerald-600 dark:text-emerald-400" 
+                                         :class="{ 'animate-spin': loading }">
+                                        <path stroke-linecap="round" stroke-linejoin="round" 
+                                            d="M16.023 9.348h4.992v-.001m-2.495-2.498
+                                                A9.372 9.372 0 0012 3.75 
+                                                9.372 9.372 0 004.48 6.85m-.002 0H.005v.001
+                                                M3.75 12a9.372 9.372 0 002.493 6.849
+                                                9.372 9.372 0 006.757 2.901
+                                                9.372 9.372 0 006.757-2.901m.003 0h4.992v-.001"/>
+                                    </svg>
+                                </button>
+                            </div>
+        
+                            <!-- Balance / Skeleton -->
+                            <template x-if="loading">
+                                <div class="h-6 w-24 bg-gray-200 dark:bg-gray-700 rounded-md animate-pulse"></div>
+                            </template>
+                            <template x-if="!loading">
+                                <div class="text-gray-900 dark:text-white flex items-end gap-1">
+                                    <span class="text-sm text-gray-500 dark:text-gray-400">₦</span>
+                                    <span class="text-2xl font-bold leading-none" x-text="balance"></span>
+                                </div>
+                            </template>
+        
+                            <!-- Subtext -->
+                            <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                                Updated every 20 seconds
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
 
        
 
@@ -311,14 +491,37 @@
         </div>
       
         <div class="col-span-12 xxl:col-span-12">
+
+            {{-- <div class="box w-full mb-4">
+                <div class="box-header">
+                    <div class="sm:flex">
+                        <h5 class="box-title my-auto">Recent Transactions</h5>
+                    </div>
+                </div>
+                <livewire:transactions-table />
+
+            </div> --}}
+
+        
+
             <div class="box">
                 <div class="box-header">
                     <div class="sm:flex">
                         <h5 class="box-title my-auto">Recent Transactions</h5>
                         <div class="box-header">
-                            <div class="flex">
+                            <div class="flex items-center">
+
+                              @if (env('APP_NAME') == 'OresamSub')
+                                    <!-- Refresh button -->
+                                    <button type="button"
+                                        id="reload_txns_tbl"
+                                        class="w-full text-white bg-emerald-600 hover:bg-emerald-700 focus:ring-2 focus:ring-emerald-400 
+                                            font-medium rounded-lg text-sm px-4 py-2 text-left">
+                                        Refresh
+                                    </button>
+                              @endif
                              
-                              <div class="hs-dropdown ti-dropdown block ms-auto my-auto s  sm:flex items-center justify-between">
+                              <div class="hs-dropdown ti-dropdown block ms-auto my-auto  sm:flex items-center justify-between">
                                
                                     <div id="hs-slide-down-animation-modal" class="hs-overlay hidden ti-modal">
                                       <div class="hs-overlay-open:mt-7 ti-modal-box mt-0 ease-out">
@@ -405,7 +608,7 @@
                         <div class="overflow-auto">
                             
 
-                            <table  id="admin_transactions_table" class="ti-custom-table ti-custom-table-head">    
+                            <table  id="admin_transactions_table" class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">    
                                 <thead class="bg-gray-50 dark:bg-black/20">
                                 <tr>
                                     
@@ -465,6 +668,146 @@
                 </div>
             </div>
         </div>
+
+        <div class="col-span-12 xxl:col-span-12">
+
+            <div class="grid grid-cols-12 gap-1">
+         
+                <div class="col-span-12">
+                
+                    <div class="box">
+                      <div class="box-header">
+                        <h5 class="box-title">Wallet Creditings</h5>
+                      </div>
+                     
+                      <div class="box-body">
+      
+                          <div class="box-header">
+                              <div class="flex">
+                                <h5 class="box-title my-auto">{{__('messages.Filter Options')}}</h5>
+                                <div class="hs-dropdown ti-dropdown block ms-auto my-auto s  sm:flex items-center justify-between">
+                                
+                                      <button type="button"
+                                      class="hs-dropdown-toggle ti-dropdown-toggle rounded-sm p-1 px-3 mr-8 !border border-gray-200 text-gray-400 hover:text-gray-500 hover:bg-gray-200 hover:border-gray-200 focus:ring-gray-200  dark:hover:bg-black/30 dark:border-white/10 dark:hover:border-white/20 dark:focus:ring-white/10 dark:focus:ring-offset-white/10">
+                                Filter <i class="ti ti-chevron-down"></i>
+                                </button>
+                                <div class="hs-dropdown-menu ti-dropdown-menu ">
+                                  <a href="javascript:void(0)" class="ti-dropdown-item hs-dropdown-toggle"
+                                  data-hs-overlay="#hs-slide-down-animation-modal">Basic filter</a>
+                                  {{-- <a href="javascript:void(0)" data-target="#testing" data-toggle="modal">Basic filter</a> --}}
+                                  <a id="reload_txns_tbl" class="ti-dropdown-item" href="javascript:void(0)">Refresh</a>
+                                  {{-- <a class="ti-dropdown-item" href="javascript:void(0)">Export</a> --}}
+                                </div>
+      
+                                <div id="hs-slide-down-animation-modal" class="hs-overlay hidden ti-modal">
+                                  <div class="hs-overlay-open:mt-7 ti-modal-box mt-0 ease-out">
+                                    <div class="ti-modal-content">
+                                      <div class="ti-modal-header">
+                                        <h3 class="ti-modal-title">
+                                          Filter Options
+                                        </h3>
+                                        <button type="button" class="hs-dropdown-toggle ti-modal-close-btn"
+                                          data-hs-overlay="#hs-slide-down-animation-modal">
+                                          <span class="sr-only">Close</span>
+                                          <svg class="w-3.5 h-3.5" width="8" height="8" viewBox="0 0 8 8" fill="none"
+                                            xmlns="http://www.w3.org/2000/svg">
+                                            <path
+                                              d="M0.258206 1.00652C0.351976 0.912791 0.479126 0.860131 0.611706 0.860131C0.744296 0.860131 0.871447 0.912791 0.965207 1.00652L3.61171 3.65302L6.25822 1.00652C6.30432 0.958771 6.35952 0.920671 6.42052 0.894471C6.48152 0.868271 6.54712 0.854471 6.61352 0.853901C6.67992 0.853321 6.74572 0.865971 6.80722 0.891111C6.86862 0.916251 6.92442 0.953381 6.97142 1.00032C7.01832 1.04727 7.05552 1.1031 7.08062 1.16454C7.10572 1.22599 7.11842 1.29183 7.11782 1.35822C7.11722 1.42461 7.10342 1.49022 7.07722 1.55122C7.05102 1.61222 7.01292 1.6674 6.96522 1.71352L4.31871 4.36002L6.96522 7.00648C7.05632 7.10078 7.10672 7.22708 7.10552 7.35818C7.10442 7.48928 7.05182 7.61468 6.95912 7.70738C6.86642 7.80018 6.74102 7.85268 6.60992 7.85388C6.47882 7.85498 6.35252 7.80458 6.25822 7.71348L3.61171 5.06702L0.965207 7.71348C0.870907 7.80458 0.744606 7.85498 0.613506 7.85388C0.482406 7.85268 0.357007 7.80018 0.264297 7.70738C0.171597 7.61468 0.119017 7.48928 0.117877 7.35818C0.116737 7.22708 0.167126 7.10078 0.258206 7.00648L2.90471 4.36002L0.258206 1.71352C0.164476 1.61976 0.111816 1.4926 0.111816 1.36002C0.111816 1.22744 0.164476 1.10028 0.258206 1.00652Z"
+                                              fill="currentColor" />
+                                          </svg>
+                                        </button>
+                                      </div>
+                                      <div class="ti-modal-body">
+                                        <p class="mt-1 text-gray-800 dark:text-white/70">Txn Reference:</p>
+                                        <input type="text" value="" id="txn_reference" name="txn_reference"> <br>
+                                        <hr>
+                                        <br>
+                                        <p class="mt-1 text-gray-800 dark:text-white/70">Date range:</p><br>
+                                        <div class="flex items-center justify-between">
+                                          <div class="flex items-center justify-start space-x-5">
+                                              <div>
+                                                <p>Date from:</p>
+                                                <input type="date" value="" id="date_from_filter">
+                                              </div>
+                                              <div>
+                                                <p>Date to:</p>
+                                                <input type="date" value="" id="date_to_filter">
+                                              </div>
+                                          </div>
+                                        </div>
+                                      </div>
+                                      <div class="ti-modal-footer">
+                                      
+                                        <a id="filter_crystalpay_txn_table" class="ti-btn ti-btn-primary" data-hs-overlay="#hs-slide-down-animation-modal"
+                                          href="javascript:void(0);">
+                                          Save changes
+                                        </a>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>   
+                              </div>                       
+                              </div> 
+                            </div>
+      
+      
+                          <div class="overflow-auto">
+                          {{-- <div id="basic-tablee" class="ti-custom-table ti-striped-table ti-custom-table-hover"> --}}
+                              <table  id="crystal_pay_funding_logs_table" class="ti-custom-table ti-custom-table-head">    
+                                  <thead class="bg-gray-50 dark:bg-black/20">
+                                    <tr>
+                            
+                                      <th>ID</th>
+                                      <th>User</th>
+                                      <th>Txn Reference</th>
+                                      <th>Txn Status</th>
+                                      <th>Funding Status</th>
+                                      <th>Txn Message</th>
+                                      {{-- <th>Package Id</th> --}}
+                                      <th>Bank</th>
+                                      <th>Account Name</th>
+                                      <th>Account No</th>
+                                      <th>Account Reference</th>
+                                      <th>Amount Paid</th>
+                                      <th>Amount Charged</th>
+                                      <th>Amount Settled</th>
+                                      <th>Date Added</th>
+                                      <th>Action</th>
+                                  </tr>
+                              </thead>
+                             
+                              <tbody>
+      
+                             </tbody>
+                              </table>  
+                          {{-- </div> --}}
+                        </div>
+                      </div>
+                    </div>
+                    {{-- <div class="box-body">
+                      <div class="overflow-auto table-bordered p-4">
+                        <table id="basic-table" class="ti-custom-table ti-striped-table ti-custom-table-hover">
+                          <thead>
+                              <tr>
+                             
+                                  <td>First Name</td>
+                                  <td>Last Name</td>
+                                  <td>Action</td>
+                              </tr>
+                          </thead>
+                          <tbody>
+                          </tbody>
+                        </table>
+                      </div>
+                     
+                    </div> --}}
+                     
+                      
+                  </div>
+                </div>
+              </div>
+
+        </div>
      
        
     </div>
@@ -474,3 +817,43 @@
 
 </div>
 @endsection
+
+@push('scripts')
+<script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+<script>
+
+
+setInterval(function () {
+    location.reload();
+}, 1800000); // 30 minutes (30 * 60 * 1000)
+
+
+function walletBalance() {
+    return {
+        balance: '0.00',
+        loading: false,
+        init() {
+            this.refreshMainBalances();
+            // auto refreshMainBalances every 20s
+            setInterval(() => this.refreshMainBalances(), 500000);
+        },
+        refreshMainBalances() {
+            this.loading = true;
+            fetch("{{ route('admin.wallet.total_balances') }}")
+                .then(res => res.json())
+                .then(data => {
+                    console.log(data)
+                    this.balance = Number(data.balance)
+                        .toLocaleString('en-NG', { minimumFractionDigits: 2 });
+                })
+                .catch(() => {
+                    this.balance = 'Error';
+                })
+                .finally(() => {
+                    this.loading = false;
+                });
+        }
+    }
+}
+</script>
+@endpush
