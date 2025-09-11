@@ -919,7 +919,7 @@ class DataController extends Controller
         //NEW SWITCH HERE
         $retry_count = 0;
         foreach($get_associated_plans  as $key=>$get_associated_plan){
-            if(auth()->user()->email == 'oreofe@gmail.com'){
+            // if(auth()->user()->email == 'oreofe@gmail.com'){
                
 
                 if ($automation_cost_price > $amounnt_paid) {
@@ -953,7 +953,7 @@ class DataController extends Controller
 
                 logger("Trial $key: Data purchase with $automationname failed");
 
-            }
+            // }
             $retry_count++;
             sleep(2);
         }
@@ -1004,7 +1004,7 @@ class DataController extends Controller
             'case_critical' => 0,
             'retry_count' => 50,//for refund code
             'user_message' => $messageeeee,
-            'admin_message' => $sell_data['admin_message'],
+            'admin_message' => $sell_data['admin_message'] ?? 'Transaction failed...could not be processed' ,
             'plan_id' => $get_associated_plan->id, //this will be the last tried automation
         ];
 
