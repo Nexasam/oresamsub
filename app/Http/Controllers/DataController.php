@@ -577,7 +577,7 @@ class DataController extends Controller
                                 
                                 
                                 //NEW SWITCH HERE
-                                if(auth()->user()->email == 'oreofe@gmail.com'){
+                                // if(auth()->user()->email == 'oreofe@gmail.com'){
                                     //NEW ROUTE
 
                                     $dataa['product_id'] = $plan_details->product_plan_category->product->id;
@@ -596,20 +596,20 @@ class DataController extends Controller
                                     }
 
 
-                                }else{
+                                // }else{
 
-                                    //OLD ROUTE
-                                    $datacoupon['product_plan_id'] = $request->product_plan_id;
-                                    $datacoupon['amount'] = $amount; //original amount
-                                    $datacoupon['user'] = $user_details; 
-                                    $get_deducted_amount = (new CouponCodeService())->get_coupon_information($datacoupon);
-                                    $amount_after_coupon = $get_deducted_amount['amount'];
-                                    $amount = $amount_after_coupon; //this is the new amount
-                                    $coupon = $get_deducted_amount['coupon'];
-                                    $remaining_slots = $get_deducted_amount['remaining_slots'];
-                                    $dataa['coupon'] = $coupon;
-                                    $sell_data = AutomationLogic::initiateDataPurchase($dataa);
-                                }
+                                //     //OLD ROUTE
+                                //     $datacoupon['product_plan_id'] = $request->product_plan_id;
+                                //     $datacoupon['amount'] = $amount; //original amount
+                                //     $datacoupon['user'] = $user_details; 
+                                //     $get_deducted_amount = (new CouponCodeService())->get_coupon_information($datacoupon);
+                                //     $amount_after_coupon = $get_deducted_amount['amount'];
+                                //     $amount = $amount_after_coupon; //this is the new amount
+                                //     $coupon = $get_deducted_amount['coupon'];
+                                //     $remaining_slots = $get_deducted_amount['remaining_slots'];
+                                //     $dataa['coupon'] = $coupon;
+                                //     $sell_data = AutomationLogic::initiateDataPurchase($dataa);
+                                // }
 
                                 $set_for_manual = $sell_data['set_for_manual'] ?? 0;
                                 // logger('DATAAA: '.json_encode($sell_data));    
