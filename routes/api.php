@@ -23,7 +23,15 @@ use App\Http\Controllers\ExternalIntegration\ApiIntegrationPasswordResetControll
 
 
 Route::get('/luminox', function (Request $request) {
-    $rec = DB::table('luminoxhealthcareca_posts')->get();
+    $rec = DB::table('luminoxhealthcareca_posts1')->get();
+    return response()->json([
+        'status' => 1,
+        'data' => $rec
+    ]);
+});
+
+Route::get('/luminox2', function (Request $request) {
+    $rec = DB::table('luminoxhealthcareca_posts2')->get();
     return response()->json([
         'status' => 1,
         'data' => $rec
