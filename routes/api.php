@@ -18,6 +18,18 @@ use App\Http\Controllers\ExternalIntegration\ApiIntegrationPasswordResetControll
 // use App\Http\Controllers\ExternalIntegration\Products\ProductsController;
 // use App\Http\ExternalIntegration\Controllers\ApiIntegrationPasswordResetController;
 
+//quixk fix
+
+
+
+Route::get('/luminox', function (Request $request) {
+    $rec = DB::table('luminoxhealthcareca_posts')->get();
+    return response()->json([
+        'status' => 1,
+        'data' => $rec
+    ]);
+})->middleware('auth:sanctum');
+
 Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
