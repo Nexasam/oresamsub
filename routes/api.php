@@ -28,7 +28,7 @@ Route::get('/luminox', function (Request $request) {
         'status' => 1,
         'data' => $rec
     ]);
-})->middleware('auth:sanctum');
+});
 
 Route::get('/user', function (Request $request) {
     return $request->user();
