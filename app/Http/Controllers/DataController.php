@@ -981,9 +981,9 @@ class DataController extends Controller
         // Build message with HEREDOC
         $messageeeee = <<<HTML
         <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; text-align: center;">
-            <!-- <p style="font-size: 16px; margin-bottom: 12px;">
-                 Your transaction was <strong>not successful</strong> and has been <strong>automatically refunded</strong>.
-            </p> -->
+            <p style="font-size: 16px; margin-bottom: 12px;">
+                Your transaction was <strong>not successful</strong> and has been <strong>automatically refunded</strong>.
+            </p>
             <!-- <p style="font-size: 15px; margin-bottom: 16px;">
                 If you’d like, our support team can help you process this transaction manually.
             </p> -->
@@ -991,7 +991,7 @@ class DataController extends Controller
                target="_blank"
                style="display: inline-block; padding: 12px 20px; background-color: #16a34a; color: #fff; font-size: 15px; 
                       border-radius: 8px; text-decoration: none; font-weight: bold; box-shadow: 0 2px 6px rgba(0,0,0,0.15);">
-                💬 Ops! Contact Support to process manually
+                💬 Contact Support to process manually
             </a>
         </div>
         HTML;
