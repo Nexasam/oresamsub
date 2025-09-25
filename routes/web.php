@@ -91,7 +91,7 @@ Route::middleware(['set_locale'])->group(function () {
                 // Route::get('oresamsub/dashboard', fn () => view('oresamsub.pages.dashboard'))->name('ore.dashboard');
 
                 Route::get('oresamsub/dashboard', function () {
-                    $data['transactions'] = App\Models\Transaction::with(relations: 'product_plan')->where('user_id',auth()->id())->limit(50)->latest()->get();
+                    $data['transactions'] = App\Models\Transaction::with(relations: 'product_plan')->where('user_id',auth()->id())->limit(10)->latest()->get();
                     $data['announcements'] = App\Models\Announcement::latest()->get();
                     return view('oresamsub.pages.dashboard')->with($data);
                 })->name('ore.dashboard');
@@ -100,6 +100,11 @@ Route::middleware(['set_locale'])->group(function () {
                     $data['networks'] = App\Models\Network::get();
                     return view('oresamsub.pages.airtime')->with($data);
                 })->name('ore.airtime');
+
+                Route::get('oresamsub/transactions', function () {
+                    $data['transactions'] = App\Models\Transaction::with(relations: 'product_plan')->where('user_id',auth()->id())->limit(200)->latest()->get();
+                    return view('oresamsub.pages.transactions')->with($data);
+                })->name('ore.transactions');
 
                 Route::post('oresamsub/airtime/submit', fn () => view('oresamsub.pages.airtime.submit'))->name('ore.airtime.submit');
 
