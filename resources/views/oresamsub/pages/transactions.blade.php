@@ -2,7 +2,7 @@
 
 @section('content')
 
-@include('partials.announcements')  
+{{-- @include('partials.announcements')   --}}
 
 <div class="space-y-6 pt-2" x-data="{ isWalletLoading: false, isRefreshing: false }">
 
@@ -52,7 +52,7 @@
       Transactions
     </div>
     {{-- <div class="max-h-[400px] overflow-y-auto divide-y divide-gray-200 dark:divide-gray-700 text-sm"> --}}
-    <div class="relative max-h-[800px] overflow-y-auto divide-y divide-gray-200 dark:divide-gray-700 text-sm scrollbar-thin scrollbar-thumb-emerald-500 scrollbar-track-transparent">
+    <div class="relative max-h-[650px] overflow-y-auto divide-y divide-gray-200 dark:divide-gray-700 text-sm scrollbar-thin scrollbar-thumb-emerald-500 scrollbar-track-transparent">
 
       @foreach ($transactions as $key => $transaction)
       @php
