@@ -210,7 +210,7 @@ class="border border-emerald-400 dark:border-emerald-600 rounded-xl shadow-md ov
     ['label' => 'Data', 'icon' => '📶', 'route' => 'ore.data'],
     ['label' => 'Power', 'icon' => '⚡', 'route' => 'ore.electricity'],
     ['label' => 'Cable', 'icon' => '📺', 'route' => 'ore.cable'],
-    ['label' => 'All', 'icon' => '🧾', 'route' => 'ore.transactions'], 
+    ['label' => 'Transactions', 'icon' => '🧾', 'route' => 'ore.transactions'], 
   ] as $item)
   <a 
     href="{{ route($item['route']) }}"

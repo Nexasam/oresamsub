@@ -7,19 +7,6 @@
 <div class="space-y-6 pt-2" x-data="{ isWalletLoading: false, isRefreshing: false }">
 
 
- 
-
-  <div class="">
-    <a href="{{route('admin.exit_impersonate')}}">
-            @if (session()->has('impersonator'))
-               <div class="bg-green-800 text-white p-2 rounded-xl">
-                <h1>You are now viewing <u>{{ auth()->user()->first_name }} {{ auth()->user()->pin }}</u> as an Administrator.</h1>
-                <div class="text-lg"><b>Click to EXIT User Account</b></div>
-                </div>
-
-            @endif
-    </a>
-  </div>
 
 
 <!-- Alpine (only include if not already loaded in your layout) -->
