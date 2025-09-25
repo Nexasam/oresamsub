@@ -91,7 +91,7 @@ Route::middleware(['set_locale'])->group(function () {
                 // Route::get('oresamsub/dashboard', fn () => view('oresamsub.pages.dashboard'))->name('ore.dashboard');
 
                 Route::get('oresamsub/dashboard', function () {
-                    $data['transactions'] = App\Models\Transaction::with(relations: 'product_plan')->where('user_id',auth()->id())->limit(10)->latest()->get();
+                    $data['transactions'] = App\Models\Transaction::with(relations: 'product_plan')->where('user_id',auth()->id())->limit(50)->latest()->get();
                     $data['announcements'] = App\Models\Announcement::latest()->get();
                     return view('oresamsub.pages.dashboard')->with($data);
                 })->name('ore.dashboard');
