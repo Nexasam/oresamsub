@@ -4,7 +4,6 @@
 <div class="pt-6 max-w-sm mx-auto pb-24" x-data="{ isSubmitting: false }">
 
   <!-- Back Button -->
-  <!-- Back Button -->
   <div class="mb-4">
     <a 
     href="{{ route('dashboard') }}"

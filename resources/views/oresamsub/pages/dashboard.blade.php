@@ -210,18 +210,24 @@ class="border border-emerald-400 dark:border-emerald-600 rounded-xl shadow-md ov
     ['label' => 'Data', 'icon' => '📶', 'route' => 'ore.data'],
     ['label' => 'Power', 'icon' => '⚡', 'route' => 'ore.electricity'],
     ['label' => 'Cable', 'icon' => '📺', 'route' => 'ore.cable'],
+    ['label' => 'All', 'icon' => '🧾', 'route' => 'ore.transactions'], 
   ] as $item)
-    <a 
-      href="{{ route($item['route']) }}"
-      @click.prevent="showLoader = true; setTimeout(() => window.location.href = '{{ route($item['route']) }}', 150)"
-      class="group p-3 bg-white dark:bg-gray-900 rounded-xl ring-1 ring-emerald-200 dark:ring-emerald-700 shadow hover:shadow-md transition transform hover:scale-[1.05]"
-    >
-      <div class="w-10 h-10 mx-auto rounded-full bg-gradient-to-r from-emerald-500 to-green-500 flex items-center justify-center text-white text-xl shadow-sm group-hover:scale-110 group-hover:rotate-3 transition duration-200">
-        {{ $item['icon'] }}
-      </div>
-      <div class="mt-2 font-medium text-gray-700 dark:text-gray-200 group-hover:text-emerald-600 text-[13px]">{{ $item['label'] }}</div>
-    </a>
-  @endforeach
+  <a 
+    href="{{ route($item['route']) }}"
+    @click.prevent="showLoader = true; setTimeout(() => window.location.href = '{{ route($item['route']) }}', 150)"
+    class="group p-3 bg-white dark:bg-gray-900 rounded-xl ring-1 ring-emerald-200 dark:ring-emerald-700 shadow hover:shadow-md transition transform hover:scale-[1.05]"
+  >
+    <div class="w-10 h-10 mx-auto rounded-full bg-gradient-to-r from-emerald-500 to-green-500 
+                flex items-center justify-center text-white text-xl shadow-sm 
+                group-hover:scale-110 group-hover:rotate-3 transition duration-200">
+      {{ $item['icon'] }}
+    </div>
+    <div class="mt-2 font-medium text-gray-700 dark:text-gray-200 
+                group-hover:text-emerald-600 text-[13px]">
+      {{ $item['label'] }}
+    </div>
+  </a>
+@endforeach
 
   <!-- Logout -->
   <form method="POST" action="{{ route('logout') }}"
