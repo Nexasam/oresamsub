@@ -15,7 +15,7 @@
 <!-- Font Awesome Free CDN -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
-  <div class="mb-4">
+  <div class="mb-4 flex items-center justify-between">
             <a 
             href="{{ route('dashboard') }}"
             @click.prevent="showLoader = true; setTimeout(() => window.location.href = '{{ route('dashboard') }}', 1000)"
@@ -29,6 +29,27 @@
             <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
             </svg>
             Back to Dashboard
+        </a>
+
+         <!-- Refresh Button -->
+        <a
+        href="{{ url()->current() }}"
+        @click.prevent="showLoader = true; setTimeout(() => window.location.href = '{{ url()->current() }}', 150)"
+        class="group flex items-center px-3 py-1 rounded-xl bg-white dark:bg-gray-900 
+                ring-1 ring-green-200 dark:ring-green-700 
+                shadow-md hover:shadow-xl hover:scale-[1.03] 
+                transition transform text-xs font-medium text-gray-700 dark:text-gray-200"
+        title="Refresh page"
+        >
+        <span class="flex items-center space-x-1">
+            <span class="w-5 h-5 flex items-center justify-center rounded-full 
+                        bg-gradient-to-r from-emerald-500 to-green-500 
+                        text-white shadow-sm group-hover:scale-110 
+                        transition duration-200 ease-in-out">
+            <i class="fas fa-sync-alt text-[10px]"></i>
+            </span>
+            <span class="group-hover:text-green-600">Refresh</span>
+        </span>
         </a>
   </div>
 
