@@ -19,7 +19,7 @@ class InertiaDashboardController extends Controller
     {
         
         $data['transactions'] = Transaction::with(relations: 'product_plan')->where('user_id',auth()->id())->limit(10)->latest()->get();
-        $data['announcements'] = Announcement::latest()->get();
+        $data['announcements'] = Announcement::where('status',1)->latest()->get();
 
      
         return Inertia::render('Dashboard')->with($data);

@@ -41,7 +41,7 @@ export default function Announcements({ announcements = [] }) {
             className="bg-emerald-400 dark:bg-emerald-800 p-3 rounded-lg text-sm"
           >
             <span className="font-semibold">{a.title ?? "Announcement"}:</span>{" "}
-            {a.message}
+            {a.description}
           </div>
         ))}
       </div>
