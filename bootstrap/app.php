@@ -11,6 +11,7 @@ use App\Http\Middleware\SetTransactionPin;
 use App\Http\Middleware\ApiTokenMiddleware;
 use App\Http\Middleware\MarketerMiddleware;
 use App\Http\Middleware\ValidateSanctumUser;
+use App\Http\Middleware\HandleInertiaRequests;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 use App\Http\Middleware\AuthenticateExternalIntegration;
@@ -34,6 +35,11 @@ return Application::configure(basePath: dirname(__DIR__))
             'set_transaction_pin' => SetTransactionPin::class,
             'set_locale' => \App\Http\Middleware\SetLocale::class,
          ]);
+
+         $middleware->web(append: [
+            HandleInertiaRequests::class,
+        ]);
+        
         // 'api_access' => AuthenticateExternalIntegration::class
         // $middleware->alias(['user' => RoleUserAccess::class]);
         $middleware->statefulApi();

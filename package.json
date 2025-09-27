@@ -7,6 +7,7 @@
     },
     "devDependencies": {
         "@tailwindcss/forms": "^0.5.2",
+        "@vitejs/plugin-react": "^5.0.3",
         "alpinejs": "^3.4.2",
         "autoprefixer": "^10.4.2",
         "axios": "^1.6.4",
@@ -14,5 +15,15 @@
         "postcss": "^8.4.31",
         "tailwindcss": "^3.1.0",
         "vite": "^5.0"
+    },
+    "dependencies": {
+        "@fortawesome/free-solid-svg-icons": "^7.0.1",
+        "@fortawesome/react-fontawesome": "^3.0.2",
+        "@inertiajs/progress": "^0.2.7",
+        "@inertiajs/react": "^2.2.0",
+        "react": "^19.1.1",
+        "react-dom": "^19.1.1",
+        "sweetalert2": "^11.23.0",
+        "ziggy-js": "^2.6.0"
     }
 }

@@ -2226,7 +2226,7 @@
               
 
                 $.ajax({
-                  type: 'GET',
+                  type: 'POST',
                   url: "{{ route('user.data.buy_data_action') }}",
                   data: data,
                   dataType: 'json',
@@ -2326,7 +2326,7 @@
               
 
                 $.ajax({
-                  type: 'GET',
+                  type: 'POST',
                   url: "{{ route('user.airtime.buy_airtime_action') }}",
                   data: data,
                   dataType: 'json',

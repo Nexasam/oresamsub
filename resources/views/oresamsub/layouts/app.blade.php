@@ -1135,7 +1135,7 @@
             if (confirm("Are you sure you want to complete this airtime purchase?") == true) {
                 // alert('logic happens here')
                 $.ajax({
-                  type: 'GET',
+                  type: 'POST',
                   url: "{{ route('user.airtime.buy_airtime_action') }}",
                   data: data,
                   dataType: 'json',

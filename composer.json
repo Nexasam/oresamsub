@@ -7,6 +7,7 @@
     "require": {
         "php": "^8.2",
         "coconutcraig/laravel-postmark": "^3.2",
+        "inertiajs/inertia-laravel": "^2.0",
         "laravel/breeze": "^2.0",
         "laravel/fortify": "^1.21",
         "laravel/framework": "^11.0",
@@ -15,6 +16,7 @@
         "rap2hpoutre/laravel-log-viewer": "^2.5",
         "spatie/laravel-translation-loader": "^2.8",
         "spatie/laravel-webhook-client": "^3.4",
+        "tightenco/ziggy": "^2.6",
         "yajra/laravel-datatables-oracle": "11"
     },
     "require-dev": {

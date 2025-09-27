@@ -40,6 +40,7 @@ use App\Http\Controllers\PriceChangeController;
 use App\Http\Controllers\ProductPlanController;
 use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\BulkDataPlanController;
+use App\Http\Controllers\InertiaLoginController;
 use App\Http\Controllers\ResellerPlanController;
 use App\Http\Controllers\UserSettingsController;
 use App\Http\Services\UniqueProductPlansService;
@@ -54,6 +55,7 @@ use App\Http\Controllers\DynamicAccountsController;
 use App\Http\Controllers\ProductCategoryController;
 use App\Http\Controllers\UserProductPlanController;
 use App\Http\Controllers\VirtualAccountsController;
+use App\Http\Controllers\InertiaDashboardController;
 use App\Http\Controllers\UserVerificationController;
 use App\Http\Controllers\CableSubscriptionController;
 use Rap2hpoutre\LaravelLogViewer\LogViewerController;
@@ -66,11 +68,13 @@ use App\Http\Controllers\DailyCustomerFollowupController;
 use App\Http\Controllers\ElectricitySubscriptionController;
 use App\Http\Controllers\ProductPlanCustomPricingController;
 
+    // Inertia routes
+    Route::get('/login2', [InertiaLoginController::class, 'create'])->name('inertia.login.index');
+    Route::post('/login2', [InertiaLoginController::class, 'store'])->name('inertia.login.store');
+  
 
    
 Route::get('oresamsub/newlanding', fn () => view('oresamsub.landing.new'))->name('ore.landing');
-
-
 
 Route::get('oresamsub/register', fn () => view('oresamsub.auth.register'))->name('ore.register');
             
@@ -88,8 +92,13 @@ Route::middleware(['set_locale'])->group(function () {
             // ORESAMSUB WEBPWA V1: ROUTES (wrapped in auth middleware)
             Route::middleware(['auth','set_transaction_pin'])->group(function () {
 
-                // Route::get('oresamsub/dashboard', fn () => view('oresamsub.pages.dashboard'))->name('ore.dashboard');
-
+                //   INERTIAJS
+                Route::get('/dashboard2', [InertiaDashboardController::class, 'dashboard'])->name('inertia.dashboard.index');   
+                Route::get('/data2', [InertiaDashboardController::class, 'data'])->name('inertia.data.index');   
+                Route::get('/airtime2', [InertiaDashboardController::class, 'airtime'])->name('inertia.airtime.index');   
+                Route::get('/cable2', [InertiaDashboardController::class, 'cable'])->name('inertia.cable.index');   
+                Route::get('/electricity2', [InertiaDashboardController::class, 'electricity'])->name('inertia.electricity.index');   
+                
                 Route::get('oresamsub/dashboard', function () {
                     $data['transactions'] = App\Models\Transaction::with(relations: 'product_plan')->where('user_id',auth()->id())->limit(10)->latest()->get();
                     $data['announcements'] = App\Models\Announcement::latest()->get();
@@ -413,7 +422,7 @@ Route::middleware(['set_locale'])->group(function () {
             })->name('account.deactivate');
 
             Route::get('/', function () {
-            
+          
                 //get template name:
                 $data = [];
                     $site_images_data = SiteImage::get();
@@ -422,18 +431,15 @@ Route::middleware(['set_locale'])->group(function () {
                             $data[$site_image->image_category] = $site_image->image_name;
                         }
                     }
-                
-                    // dd($data);
-                
-                
+                             
                 
                     $landing_data = LandingPagesSetting::get();
+                    // dd($landing_data);
                     foreach($landing_data as $landing_component){
                         $data[$landing_component->field_name] = $landing_component->field_details;
                     }
                 
-                
-                
+                    // dd($data);
                     $site_colors = AdminColorSetting::get();
                     foreach($site_colors as $site_color){
                         if($site_color->color_name == 'site_landing_analytics_color'){
@@ -451,12 +457,10 @@ Route::middleware(['set_locale'])->group(function () {
                         }     
                         else{
                             $data[$site_color->color_name] = $site_color->color_value;
-                
                         }
                     }
                 
                     // dd($data);
-                
                     $product_plans = ProductPlan::get();
                     $data['product_plans'] = $product_plans;
                     
@@ -506,6 +510,8 @@ Route::middleware(['set_locale'])->group(function () {
             //     Route::get('verify/resend', [UserTwoFactorController::class, 'resend'])->name('verify.resend');
             //     Route::resource('verify', UserTwoFactorController::class)->only(['index', 'store']);
             // });
+
+      
 
             //this will be adjusted later
             Route::middleware(['auth','verified'])->get('/dashboard', [UserDashboardController::class, 'index'])->name('dashboard');
@@ -707,7 +713,7 @@ Route::middleware(['set_locale'])->group(function () {
 
             Route::middleware(['auth','verified','user'])->get('user/data/buy_bulk_data/bulk_data_wallet/{data_wallet_id}', [DataController::class, 'buy_bulk_data'])->name('user.data.buy_bulk_data.bulk_data_wallet');
             Route::middleware(['auth','verified','user'])->get('user/data/buy_bulk_data', [DataController::class, 'buy_bulk_data'])->name('user.data.buy_bulk_data');
-            // Route::middleware(['auth','verified','user'])->post('user/data/buy_data_action', [DataController::class, 'buy_data_action'])->name('user.data.buy_data_action');
+            Route::middleware(['auth','verified','user'])->post('user/data/buy_data_action', [DataController::class, 'buy_data_action'])->name('user.data.buy_data_action');
             Route::middleware(['auth','verified','user'])->post('user/data/buy_bulk_data_action', [DataController::class, 'buy_bulk_data_action'])->name('user.data.buy_bulk_data_action');
             Route::middleware(['auth','verified','user'])->post('user/data/fetch_bulk_data_plans', [DataController::class, 'fetch_bulk_data_plans'])->name('user.data.fetch_bulk_data_plans');
             Route::middleware(['auth','verified','user'])->get('user/data/fetch_bulk_data_plan_details', [DataController::class, 'fetch_bulk_data_plan_details'])->name('user.data.fetch_bulk_data_plan_details');
@@ -729,7 +735,7 @@ Route::middleware(['set_locale'])->group(function () {
             //EXEMPTED SO THEY ARE ACCESSIBLE BY BOTH USER AND ADMIN
             Route::middleware(['auth','verified','set_transaction_pin'])->get('user/data/buy_data_single', [DataController::class, 'buy_data_v2'])->name('user.data.buy_data2');
             Route::middleware(['auth','verified','set_transaction_pin'])->get('user/data/buy_data', [DataController::class, 'buy_data'])->name('user.data.buy_data'); //single/bulk
-            Route::middleware(['auth','verified','set_transaction_pin'])->get('user/data/store', [DataController::class, 'buy_data_action'])->name('user.data.buy_data_action');
+            // Route::middleware(['auth','verified','set_transaction_pin'])->get('user/data/store', [DataController::class, 'buy_data_action'])->name('user.data.buy_data_action');
             Route::middleware(['auth','verified','set_transaction_pin'])->get('user/data/fetch_product_plan_categories', [DataController::class, 'fetch_product_plan_categories'])->name('user.fetch_product_plan_categories'); //TODO: you can add this to a helper controller later
             Route::middleware(['auth','verified','set_transaction_pin'])->get('user/data/fetch_product_plans', [DataController::class, 'fetch_product_plans'])->name('user.fetch_product_plans'); //TODO: you can add this to a helper controller later
             Route::middleware(['auth','verified','set_transaction_pin'])->post('user/data/fetch_data_plans_by_phone_number', [DataController::class, 'fetch_data_plans_by_phone_number'])->name('user.data.fetch_data_plans_by_phone_number'); //TODO: you can add this to a helper controller later
@@ -748,7 +754,7 @@ Route::middleware(['set_locale'])->group(function () {
 
             Route::middleware(['auth','verified','set_transaction_pin'])->get('user/airtime/buy_airtime_v2', [AirtimeController::class, 'buy_airtime_v2'])->name('user.airtime.buy_artime2');
             Route::middleware(['auth','verified','set_transaction_pin'])->get('user/airtime/buy_airtime', [AirtimeController::class, 'buy_airtime'])->name('user.airtime.buy_airtime');
-            Route::middleware(['auth','verified','set_transaction_pin'])->get('user/airtime/store', [AirtimeController::class, 'buy_airtime_action'])->name('user.airtime.buy_airtime_action');
+            Route::middleware(['auth','verified','set_transaction_pin'])->post('user/airtime/store', [AirtimeController::class, 'buy_airtime_action'])->name('user.airtime.buy_airtime_action');
             Route::middleware(['auth','verified','set_transaction_pin'])->get('user/airtime/buy_airtime_by_plan_category/{id}', [AirtimeController::class, 'buy_airtime_by_plan_category'])->name('user.airtime.buy_airtime_by_plan_category');
             Route::middleware(['auth','verified','set_transaction_pin'])->get('user/airtime/fetch_single_airtime_plan', [AirtimeController::class, 'fetch_single_airtime_plan'])->name('user.airtime.fetch_single_airtime_plan');
 

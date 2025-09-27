@@ -395,12 +395,12 @@ class AirtimeController extends Controller
         $data1['user_id'] = auth()->id();
         $check_purchase_limit =  ProductsService::check_purchase_limit($data1);
         if($check_purchase_limit['status'] == -1){
-            return response()->json(['status'=>'-1', 'message'=>$check_purchase_limit['message'] ]);
+            return response()->json(['status'=> -1, 'message'=>$check_purchase_limit['message'] ]);
         }
 
 
         if($request->amount < 50){
-            return response()->json(['status'=>'-1', 'message'=>'amount cannot be less than 50','data' => ''  ]);
+            return response()->json(['status'=> -1, 'message'=>'amount cannot be less than 50','data' => ''  ]);
         }
 
         $success = 0;
@@ -435,15 +435,15 @@ class AirtimeController extends Controller
             //end session and redirect to login
     
             redirect(url('/login'));
-            return response()->json(['status'=>'-1', 'message'=>'please logout and login again' ]);
+            return response()->json(['status'=> -1, 'message'=>'please logout and login again' ]);
         }
 
 
         if($user_details->pin != $request->pin){
             //end session and redirect to login
            
-            // return response()->json(['status'=>'-1', 'message'=>'Incorrect PIN' ]);
-            return response()->json(['status'=>'-1', 'message'=>__('messages.Incorrect PIN') ]);
+            // return response()->json(['status'=> -1, 'message'=>'Incorrect PIN' ]);
+            return response()->json(['status'=> -1, 'message'=>__('messages.Incorrect PIN') ]);
 
         }
 
@@ -458,7 +458,7 @@ class AirtimeController extends Controller
             $validate_phone = (new UtilService())->phoneNumberValidation($phone_number);
             $validated_phone_number = $validate_phone['validated_phone_number'];
             if($validate_phone['status'] != 1){
-                return response()->json(['status'=>'-1', 'message'=>$validate_phone['message'].' Number is: '.$validated_phone_number  ]);
+                return response()->json(['status'=> -1, 'message'=>$validate_phone['message'].' Number is: '.$validated_phone_number  ]);
             }
         }
 
@@ -470,7 +470,7 @@ class AirtimeController extends Controller
                             $wallet_before = $user_details->main_wallet;
                             $total_amount = $phone_numbers_count * $amount;
                             if($total_amount > $wallet_before || $wallet_before < 0){
-                                return response()->json(['status'=>'-1', 'message'=>'Insufficient wallet balance' ]);
+                                return response()->json(['status'=> -1, 'message'=>'Insufficient wallet balance' ]);
                             }
                     
                             //calling the actual vending via the automation:
@@ -563,7 +563,7 @@ class AirtimeController extends Controller
                             return response()->json(['status'=>1, 'message'=>'Transaction was successfully processed', 'data' => $display_results  ]);
                     
                         } else{
-                            return response()->json(['status'=>'-1', 'message'=>'Wrong wallet selection', 'data'=>[]]);
+                            return response()->json(['status'=> -1, 'message'=>'Wrong wallet selection', 'data'=>[]]);
                         }
 
 
@@ -571,7 +571,7 @@ class AirtimeController extends Controller
         }catch(Exception $exception){
             logger($exception->getMessage().' on line: '. $exception->getLine());
             DB::rollBack();
-            return response()->json(['status'=>'-1', 'message'=>'Something went wrong... Please try again', 'data'=>[]]);
+            return response()->json(['status'=> -1, 'message'=>'Something went wrong... Please try again', 'data'=>[]]);
         }
 
       
@@ -601,7 +601,7 @@ class AirtimeController extends Controller
         ]);
           
         if ($validator->stopOnFirstFailure()->fails()) {
-            return response()->json(['status'=>'-1', 'message'=>'network is required','data' => $request->all() ]);
+            return response()->json(['status'=> -1, 'message'=>'network is required','data' => $request->all() ]);
         }
 
         $network = $request->network_id;
