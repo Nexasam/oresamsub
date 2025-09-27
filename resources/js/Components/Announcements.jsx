@@ -14,10 +14,18 @@ export default function Announcements({ announcements = [] }) {
                     visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
                   }`}
     >
-      <div className="bg-emerald-300 dark:bg-emerald-900 text-emerald-900 dark:text-emerald-100 
+      {/* <div className="bg-emerald-300 dark:bg-emerald-900 text-emerald-900 dark:text-emerald-100 
                       rounded-xl shadow-lg w-80 max-h-64 overflow-y-auto p-3 space-y-3 
                       scrollbar-thin scrollbar-thumb-emerald-300 dark:scrollbar-thumb-emerald-700 
-                      scrollbar-track-transparent">
+                      scrollbar-track-transparent"> */}
+
+        <div
+          className="bg-emerald-300 dark:bg-emerald-900 text-emerald-900 dark:text-emerald-100 
+                    rounded-xl shadow-lg w-80 max-h-[70vh] overflow-y-auto p-3 space-y-3 
+                    scrollbar-thin scrollbar-thumb-emerald-300 dark:scrollbar-thumb-emerald-700 
+                    scrollbar-track-transparent"
+        >
+
         
         {/* Close button */}
         <div className="flex justify-end">
