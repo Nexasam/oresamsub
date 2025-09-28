@@ -106,7 +106,7 @@
               @endif
               <div class="flex justify-between">
                 <span>Plan:</span>
-                <span class="font-semibold">{{ $transaction->product_plan->product_plan_name }}</span>
+                <span class="font-semibold">{{ $transaction->product_plan->product_plan_name ?? 'nil' }}</span>
               </div>
               <div class="flex justify-between">
                 <span>Phone Recharged:</span>
