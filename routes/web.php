@@ -713,7 +713,10 @@ Route::middleware(['set_locale'])->group(function () {
 
             Route::middleware(['auth','verified','user'])->get('user/data/buy_bulk_data/bulk_data_wallet/{data_wallet_id}', [DataController::class, 'buy_bulk_data'])->name('user.data.buy_bulk_data.bulk_data_wallet');
             Route::middleware(['auth','verified','user'])->get('user/data/buy_bulk_data', [DataController::class, 'buy_bulk_data'])->name('user.data.buy_bulk_data');
-            Route::middleware(['auth','verified','user'])->post('user/data/buy_data_action', [DataController::class, 'buy_data_action'])->name('user.data.buy_data_action');
+           
+            //handle former implementation but remove later
+            Route::middleware(['auth','verified','user'])->get('user/data/buy_data_action', [DataController::class, 'buy_data_action'])->name('user.data.buy_data_action');
+            
             Route::middleware(['auth','verified','user'])->post('user/data/buy_bulk_data_action', [DataController::class, 'buy_bulk_data_action'])->name('user.data.buy_bulk_data_action');
             Route::middleware(['auth','verified','user'])->post('user/data/fetch_bulk_data_plans', [DataController::class, 'fetch_bulk_data_plans'])->name('user.data.fetch_bulk_data_plans');
             Route::middleware(['auth','verified','user'])->get('user/data/fetch_bulk_data_plan_details', [DataController::class, 'fetch_bulk_data_plan_details'])->name('user.data.fetch_bulk_data_plan_details');
@@ -735,7 +738,7 @@ Route::middleware(['set_locale'])->group(function () {
             //EXEMPTED SO THEY ARE ACCESSIBLE BY BOTH USER AND ADMIN
             Route::middleware(['auth','verified','set_transaction_pin'])->get('user/data/buy_data_single', [DataController::class, 'buy_data_v2'])->name('user.data.buy_data2');
             Route::middleware(['auth','verified','set_transaction_pin'])->get('user/data/buy_data', [DataController::class, 'buy_data'])->name('user.data.buy_data'); //single/bulk
-            Route::middleware(['auth','verified','set_transaction_pin'])->get('user/data/store2', [DataController::class, 'buy_data_action'])->name('user.data.buy_data_action2');
+            Route::middleware(['auth','verified','set_transaction_pin'])->post('user/data/store2', [DataController::class, 'buy_data_action'])->name('user.data.buy_data_action2');
             Route::middleware(['auth','verified','set_transaction_pin'])->get('user/data/fetch_product_plan_categories', [DataController::class, 'fetch_product_plan_categories'])->name('user.fetch_product_plan_categories'); //TODO: you can add this to a helper controller later
             Route::middleware(['auth','verified','set_transaction_pin'])->get('user/data/fetch_product_plans', [DataController::class, 'fetch_product_plans'])->name('user.fetch_product_plans'); //TODO: you can add this to a helper controller later
             Route::middleware(['auth','verified','set_transaction_pin'])->post('user/data/fetch_data_plans_by_phone_number', [DataController::class, 'fetch_data_plans_by_phone_number'])->name('user.data.fetch_data_plans_by_phone_number'); //TODO: you can add this to a helper controller later
