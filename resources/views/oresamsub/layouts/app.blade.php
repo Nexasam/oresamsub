@@ -1032,7 +1032,7 @@
               
 
                 $.ajax({
-                  type: 'GET',
+                  type: 'POST',
                   url: "{{ route('user.data.buy_data_action') }}",
                   data: data,
                   dataType: 'json',
