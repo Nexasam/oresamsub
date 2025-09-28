@@ -2334,7 +2334,7 @@
               
 
                 $.ajax({
-                  type: 'POST',
+                  type: 'GET',
                   url: "{{ route('user.airtime.buy_airtime_action') }}",
                   data: data,
                   dataType: 'json',

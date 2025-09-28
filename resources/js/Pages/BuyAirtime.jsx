@@ -115,7 +115,7 @@ export default function BuyAirtime() {
 
     try {
       setSubmitting(true);
-      const response = await axios.post(route("user.airtime.buy_airtime_action"), data);
+      const response = await axios.post(route("user.airtime.buy_airtime_action2"), data);
       if (response.data.status === 1) {
         await Swal.fire("✅ Success", response.data.message, "success");
         // window.location.href = route("dashboard");

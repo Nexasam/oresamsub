@@ -757,7 +757,13 @@ Route::middleware(['set_locale'])->group(function () {
 
             Route::middleware(['auth','verified','set_transaction_pin'])->get('user/airtime/buy_airtime_v2', [AirtimeController::class, 'buy_airtime_v2'])->name('user.airtime.buy_artime2');
             Route::middleware(['auth','verified','set_transaction_pin'])->get('user/airtime/buy_airtime', [AirtimeController::class, 'buy_airtime'])->name('user.airtime.buy_airtime');
-            Route::middleware(['auth','verified','set_transaction_pin'])->post('user/airtime/store', [AirtimeController::class, 'buy_airtime_action'])->name('user.airtime.buy_airtime_action');
+
+            //new
+            Route::middleware(['auth','verified','set_transaction_pin'])->post('user/airtime/store2', [AirtimeController::class, 'buy_airtime_action'])->name('user.airtime.buy_airtime_action2');
+           
+            //former... pls discard as soon as possible
+            Route::middleware(['auth','verified','set_transaction_pin'])->get('user/airtime/store', [AirtimeController::class, 'buy_airtime_action'])->name('user.airtime.buy_airtime_action');
+           
             Route::middleware(['auth','verified','set_transaction_pin'])->get('user/airtime/buy_airtime_by_plan_category/{id}', [AirtimeController::class, 'buy_airtime_by_plan_category'])->name('user.airtime.buy_airtime_by_plan_category');
             Route::middleware(['auth','verified','set_transaction_pin'])->get('user/airtime/fetch_single_airtime_plan', [AirtimeController::class, 'fetch_single_airtime_plan'])->name('user.airtime.fetch_single_airtime_plan');
 
