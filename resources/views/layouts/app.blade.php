@@ -2234,7 +2234,7 @@
               
 
                 $.ajax({
-                  type: 'POST',
+                  type: 'GET',
                   url: "{{ route('user.data.buy_data_action') }}",
                   data: data,
                   dataType: 'json',

@@ -65,7 +65,7 @@ const handleSubmit = async (e) => {
 
   try {
     setSubmitting(true); // 🔹 disable button + show processing
-    const response = await axios.post(route("user.data.buy_data_action"), data);
+    const response = await axios.post(route("user.data.buy_data_action2"), data);
 
     if (response.data.status === 1) {
       await Swal.fire("✅ Success", response.data.message, "success");
