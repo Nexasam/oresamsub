@@ -1031,6 +1031,12 @@
             if (confirm("Are you sure you want to complete this data purchase?") == true) {
                 // alert('logic happens here')
               
+                $.ajaxSetup({
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    }
+                });
+
 
                 $.ajax({
                   type: 'POST',
