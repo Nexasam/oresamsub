@@ -2213,7 +2213,8 @@
               wallet_category : wallet_category,
               product_plan_id : product_plan_id,
               pin : pin,
-              validatephonenetwork : validatephonenetwork
+              validatephonenetwork : validatephonenetwork,
+              _token: $('meta[name="csrf-token"]').attr('content')
             };
 
             
