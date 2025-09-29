@@ -101,14 +101,14 @@ export default function DashboardLayout({ children , title}) {
             </button> */}
 
               {/* Install App Button (Visible Always, triggers popup) */}
-              <button
+              {/* <button
                 onClick={() => setShowInstall(true)}
                 className="px-4 py-2 bg-gradient-to-r from-emerald-400 to-green-500 
                           hover:from-emerald-500 hover:to-green-600 text-white font-bold 
                           rounded-xl shadow-lg animate-pulse transition transform hover:scale-105"
               >
                 🚀 Install App
-              </button>
+              </button> */}
 
               <a
               href="https://wa.me/2349163128718?text=Hello%20OresamSub%20Support%2C%20I%20need%20help%20on%20your%20website"
