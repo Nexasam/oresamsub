@@ -27,7 +27,7 @@ export default function AuthLayout({ children, title }) {
   useEffect(() => {
     // If authenticated, redirect immediately
     if (auth?.user) {
-      window.location.href = "/dashboard2"; // full redirect
+      window.location.href = "/dashboard"; // full redirect
       // window.location.href = route("inertia.dashboard.index"); // full redirect
     } else {
       setCheckingAuth(false); // allow rendering login form
