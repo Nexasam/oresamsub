@@ -17,6 +17,7 @@ export default function DashboardLayout({ children , title}) {
   const user = auth.user;
 
 
+
   const [showBalance, setShowBalance] = useState(true);
   const [darkMode, setDarkMode] = useState(getInitialTheme());
 
@@ -43,22 +44,36 @@ export default function DashboardLayout({ children , title}) {
 
      
 
-      {/* Impersonation banner */}
-      {impersonator && (
-        <a href={route("admin.exit_impersonate")}>
-          <div className="bg-green-800 text-white p-2 rounded-xl">
-            You are viewing <u>{user.first_name}</u> as Admin. Click to EXIT.
-          </div>
-        </a>
-      )}
+    
+        {/* Impersonation Banner */}
+        {impersonator && (
+          <a href={impersonator.exitUrl}>
+            <div className="bg-green-800 text-white p-3 mt-2 rounded-xl shadow-md animate-pulse">
+              <h1>
+                You are now viewing{" "}
+                <u>
+                  {impersonator.username} {impersonator.first_name} ({impersonator.pin})
+                </u>{" "}
+                as an Administrator.
+              </h1>
+              <div className="text-sm font-bold">
+                👉 Click here to EXIT User Account
+              </div>
+            </div>
+          </a>
+        )}
 
       {/* Greeting + Dark mode toggle */}
       <div className="flex items-center justify-between mt-2">
+
+        
 
         <div className="flex items-center space-x-4">     
             <h1 className="text-lg font-bold text-gray-800 dark:text-gray-100">
                 👋 Hi, {user.username}
             </h1>
+
+          
 
               <a
               href="https://wa.me/2349163128718?text=Hello%20OresamSub%20Support%2C%20I%20need%20help%20on%20your%20website"

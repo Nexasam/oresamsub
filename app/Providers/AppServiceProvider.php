@@ -24,13 +24,30 @@ class AppServiceProvider extends ServiceProvider
     {
         Inertia::share([
             'auth' => fn () => [
-                'user' => auth()->user(),
+                'user' => auth()->check() ? [
+                    'id'         => auth()->id(),
+                    'first_name' => auth()->user()->first_name,
+                    'last_name'  => auth()->user()->last_name,
+                    'email'      => auth()->user()->email,
+                    'main_wallet'      => auth()->user()->main_wallet,
+                    'username'      => auth()->user()->username,
+                    // add only the fields you actually need on frontend
+                ] : null,
             ],
+        
             'flash' => fn () => [
                 'success' => session('success'),
-                'error' => session('error'),
+                'error'   => session('error'),
             ],
+        
+            'impersonator' => fn () =>
+                session()->has('impersonator') ? [
+                    'name'    => auth()->user()->first_name,
+                    'pin'     => auth()->user()->pin,
+                    'exitUrl' => route('admin.exit_impersonate'),
+                ] : null,
         ]);
+        
         
         User::observe(UserObserver::class);
     }
