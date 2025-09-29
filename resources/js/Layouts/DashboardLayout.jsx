@@ -73,7 +73,25 @@ export default function DashboardLayout({ children , title}) {
                 👋 Hi, {user.username}
             </h1>
 
-          
+            {/* Install App Button */}
+            <button
+              id="installAppBtn"
+              className="px-4 py-2 bg-gradient-to-r from-emerald-400 to-green-500 hover:from-emerald-500 hover:to-green-600 
+                        text-white font-bold rounded-xl shadow-lg animate-pulse transition transform hover:scale-105"
+              onClick={() => {
+                if (window.deferredPrompt) {
+                  window.deferredPrompt.prompt();
+                  window.deferredPrompt.userChoice.then((choiceResult) => {
+                    console.log("User choice:", choiceResult.outcome);
+                    window.deferredPrompt = null;
+                  });
+                } else {
+                  alert("App installation prompt not available. Try visiting this site on supported devices.");
+                }
+              }}
+            >
+              🚀 Install App
+            </button>
 
               <a
               href="https://wa.me/2349163128718?text=Hello%20OresamSub%20Support%2C%20I%20need%20help%20on%20your%20website"
