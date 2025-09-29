@@ -107,12 +107,12 @@
     <nav class="fixed bottom-0 inset-x-0 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 shadow-lg z-50">
       <div class="max-w-md mx-auto flex justify-around py-2 text-xs font-medium text-gray-700 dark:text-gray-200">
         @foreach ([
-          ['label' => 'Dashboard', 'icon' => '🏠', 'route' => 'inertia.dashboard.index'],
+          ['label' => 'Dashboard', 'icon' => '🏠', 'route' => 'dashboard'],
           ['label' => 'Data', 'icon' => '📶', 'route' => 'inertia.data.index'],
           ['label' => 'Airtime', 'icon' => '📞', 'route' => 'inertia.airtime.index'],
           ['label' => 'Cable', 'icon' => '📺', 'route' => 'ore.cable'],
           ['label' => 'Electricity', 'icon' => '⚡', 'route' => 'ore.electricity'],
-          // ['label' => 'Profile', 'icon' => '👤', 'route' => 'inertia.dashboard.index'], // Replace 'profile' with your actual route
+          // ['label' => 'Profile', 'icon' => '👤', 'route' => 'dashboard'], // Replace 'profile' with your actual route
         ] as $item)
           <a 
             href="{{ route($item['route']) }}"

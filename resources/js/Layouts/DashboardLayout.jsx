@@ -94,7 +94,7 @@ export default function DashboardLayout({ children , title}) {
       <nav className="fixed bottom-0 inset-x-0 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 shadow-lg z-50">
         <div className="max-w-md mx-auto flex justify-around py-2 text-xs font-medium text-gray-700 dark:text-gray-200">
           {[
-            { label: "Dashboard", icon: "🏠", route: "inertia.dashboard.index", inertia: true },
+            { label: "Dashboard", icon: "🏠", route: "dashboard", inertia: true },
             { label: "Data", icon: "📶", route: "inertia.data.index", inertia: true },
             { label: "Airtime", icon: "📞", route: "inertia.airtime.index", inertia: true },
             { label: "Cable", icon: "📺", route: "ore.cable", inertia: false },

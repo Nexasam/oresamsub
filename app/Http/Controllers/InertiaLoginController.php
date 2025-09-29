@@ -27,7 +27,7 @@ class InertiaLoginController extends Controller
             $request->session()->regenerate();
 
             return redirect()->intended('/dashboard');
-            // return redirect()->route('inertia.dashboard.index');
+            // return redirect()->route('dashboard');
         }
 
         dd('got here');

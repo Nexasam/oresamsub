@@ -68,7 +68,7 @@ const handleSubmit = async (e) => {
 
     if (response.data.status === 1) {
       await Swal.fire("✅ Success", response.data.message, "success");
-      // window.location.href = route("inertia.dashboard.index");
+      // window.location.href = route("dashboard");
     } else {
       Swal.fire("⚠️ Failed", response.data.message, "error");
     }
@@ -126,7 +126,7 @@ const handleSubmit = async (e) => {
       <WalletBalance user={user} />
 
       <Link
-        href={route("inertia.dashboard.index")}
+        href={route("dashboard")}
         className="inline-flex items-center px-4 py-2 mb-2 mt-4 rounded-lg bg-gradient-to-r from-emerald-600 to-emerald-500 text-white text-sm font-medium shadow hover:from-emerald-700 hover:to-emerald-600 transition"
       >
         ← Back to Dashboard

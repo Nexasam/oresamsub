@@ -3,7 +3,7 @@
 @section('content')
 <div class="pt-10 pb-6 max-w-full mx-auto" x-data="{ isRegistering: false, showPassword: false, showConfirm: false }">
 
-  <a href="{{ route('inertia.dashboard.index') }}" class="flex flex-col items-center mb-4">
+  <a href="{{ route('dashboard') }}" class="flex flex-col items-center mb-4">
     <img 
       src="{{ asset('assets/logo_imgs/oresamsublogo.jpeg') }}" 
       alt="OresamSub Logo" 

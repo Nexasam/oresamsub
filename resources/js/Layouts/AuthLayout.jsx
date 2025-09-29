@@ -28,7 +28,7 @@ export default function AuthLayout({ children, title }) {
     // If authenticated, redirect immediately
     if (auth?.user) {
       window.location.href = "/dashboard"; // full redirect
-      // window.location.href = route("inertia.dashboard.index"); // full redirect
+      // window.location.href = route("dashboard"); // full redirect
     } else {
       setCheckingAuth(false); // allow rendering login form
     }

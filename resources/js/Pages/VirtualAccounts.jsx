@@ -25,7 +25,7 @@ export default function VirtualAccounts() {
 
       {/* Back Navigation */}
       <Link
-        href={route("inertia.dashboard.index")}
+        href={route("dashboard")}
         className="inline-flex items-center px-4 py-2 mb-4 mt-6 rounded-lg bg-gradient-to-r from-emerald-600 to-emerald-500 text-white text-sm font-medium shadow hover:from-emerald-700 hover:to-emerald-600 transition font-inter"
       >
         ← Back to Dashboard
