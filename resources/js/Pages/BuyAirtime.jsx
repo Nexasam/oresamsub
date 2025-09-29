@@ -125,7 +125,7 @@ export default function BuyAirtime() {
         
         // 🔹 Clear form on success
         // setPlans([]);
-        reset(); // resets all fields back to defaults
+        window.location.reload(); // reload the page
 
       } else {
         Swal.fire("⚠️ Failed", response.data.message, "error");
