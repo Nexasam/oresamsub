@@ -71,9 +71,9 @@ const handleSubmit = async (e) => {
       // window.location.href = route("dashboard");
 
         // 🔹 Clear form on success
-        setPlans([]);
+        // setPlans([]);
         reset(); // resets all fields back to defaults
-        
+
     } else {
       Swal.fire("⚠️ Failed", response.data.message, "error");
     }
