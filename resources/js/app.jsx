@@ -3,6 +3,7 @@ import { createInertiaApp } from '@inertiajs/react'
 import { createRoot } from 'react-dom/client'
 import { route } from 'ziggy-js'
 import LoaderOverlay from '@/Components/LoaderOverlay.jsx'
+import PwaInstallPopup from "@/Components/PwaInstallPopup";
 
 createInertiaApp({
   resolve: name => {
@@ -13,6 +14,7 @@ createInertiaApp({
     createRoot(el).render(
       <>
         <App {...props} />
+        <PwaInstallPopup />
         <LoaderOverlay />
       </>
     )

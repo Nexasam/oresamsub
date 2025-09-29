@@ -34,7 +34,7 @@ export default function LoaderOverlay() {
   if (!loading) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm">
+    <div className="fixed inset-0 z-30 flex items-center justify-center bg-black/40 backdrop-blur-sm">
       <div className="flex flex-col items-center">
         <svg className="animate-spin h-12 w-12 text-white mb-2" viewBox="0 0 24 24">
           <circle
