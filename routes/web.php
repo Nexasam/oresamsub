@@ -93,7 +93,7 @@ Route::middleware(['set_locale'])->group(function () {
             Route::middleware(['auth','set_transaction_pin'])->group(function () {
 
                 //   INERTIAJS
-                Route::get('/dashboard', [InertiaDashboardController::class, 'dashboard'])->name('inertia.dashboard.index');   
+                Route::get('/dashboard', [UserDashboardController::class, 'index'])->name('inertia.dashboard.index');   
                 Route::get('/data', [InertiaDashboardController::class, 'data'])->name('inertia.data.index');   
                 Route::get('/airtime', [InertiaDashboardController::class, 'airtime'])->name('inertia.airtime.index');   
                 Route::get('/cable', [InertiaDashboardController::class, 'cable'])->name('inertia.cable.index');   

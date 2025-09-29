@@ -3,10 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use Inertia\Inertia;
 use App\Models\UserPlan;
 use App\Models\WalletLog;
 use App\Models\ProductPlan;
 use App\Models\Transaction;
+use App\Models\Announcement;
 use App\Models\SiteTemplate;
 use Illuminate\Http\Request;
 use App\Models\UserProductPlan;
@@ -29,13 +31,20 @@ class UserDashboardController extends Controller
       
     $template = SiteTemplate::first();
     if((! $template || $template->template_name == 'template_1') && env('APP_NAME') == 'OresamSub' && auth()->user()->role->role_name == 'User'){
-        $data['transactions'] = Transaction::with('product_plan')->where('user_id',auth()->id())->limit(10)->latest()->get();
-        $data['wallet_logs'] = WalletLog::with('user')
-        ->where('user_id',auth()->id())
-        ->limit(25)
-        ->latest()
-        ->get();
-        return view('oresamsub.pages.dashboard')->with($data);
+        // $data['transactions'] = Transaction::with('product_plan')->where('user_id',auth()->id())->limit(10)->latest()->get();
+        // $data['wallet_logs'] = WalletLog::with('user')
+        // ->where('user_id',auth()->id())
+        // ->limit(25)
+        // ->latest()
+        // ->get();
+
+
+        $data['transactions'] = Transaction::with(relations: 'product_plan')->where('user_id',auth()->id())->limit(10)->latest()->get();
+        $data['announcements'] = Announcement::where('status',1)->latest()->get();
+
+     
+        return Inertia::render('Dashboard')->with($data);
+        // return view('oresamsub.pages.dashboard')->with($data);
     }
 
   
