@@ -14,8 +14,9 @@ createInertiaApp({
     createRoot(el).render(
       <>
         <App {...props} />
-        <PwaInstallPopup />
         <LoaderOverlay />
+        <PwaInstallPopup />
+
       </>
     )
   },
