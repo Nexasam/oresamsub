@@ -15,7 +15,7 @@ createInertiaApp({
       <>
         <App {...props} />
         <LoaderOverlay />
-        <PwaInstallPopup />
+        {/* <PwaInstallPopup /> */}
 
       </>
     )

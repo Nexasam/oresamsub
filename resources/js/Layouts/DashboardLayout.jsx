@@ -2,6 +2,9 @@ import { useEffect, useState } from "react";
 import { Link, usePage } from "@inertiajs/react";
 import Announcements from "@/Components/Announcements";
 import { Head } from "@inertiajs/react";
+import PwaInstallPopup from "@/Components/PwaInstallPopup";
+import { useRef } from "react";
+
 
 const getInitialTheme = () => {
   if (typeof window !== "undefined") {
@@ -20,6 +23,8 @@ export default function DashboardLayout({ children , title}) {
 
   const [showBalance, setShowBalance] = useState(true);
   const [darkMode, setDarkMode] = useState(getInitialTheme());
+  const [showInstall, setShowInstall] = useState(false);
+  const installRef = useRef();
 
   // Initialize + sync dark mode
   useEffect(() => {
@@ -42,7 +47,9 @@ export default function DashboardLayout({ children , title}) {
       {/* Announcements */}
       {/* <Announcements announcements={announcements} /> */}
 
-     
+          {/* PWA Install Popup */}
+          {/* <PwaInstallPopup visible={showInstall} setVisible={setShowInstall} /> */}
+          <PwaInstallPopup ref={installRef} />
 
     
         {/* Impersonation Banner */}
@@ -74,7 +81,7 @@ export default function DashboardLayout({ children , title}) {
             </h1>
 
             {/* Install App Button */}
-            <button
+            {/* <button
               id="installAppBtn"
               className="px-4 py-2 bg-gradient-to-r from-emerald-400 to-green-500 hover:from-emerald-500 hover:to-green-600 
                         text-white font-bold rounded-xl shadow-lg animate-pulse transition transform hover:scale-105"
@@ -91,14 +98,24 @@ export default function DashboardLayout({ children , title}) {
               }}
             >
               🚀 Install App
-            </button>
+            </button> */}
+
+              {/* Install App Button (Visible Always, triggers popup) */}
+              <button
+                onClick={() => setShowInstall(true)}
+                className="px-4 py-2 bg-gradient-to-r from-emerald-400 to-green-500 
+                          hover:from-emerald-500 hover:to-green-600 text-white font-bold 
+                          rounded-xl shadow-lg animate-pulse transition transform hover:scale-105"
+              >
+                🚀 Install App
+              </button>
 
               <a
               href="https://wa.me/2349163128718?text=Hello%20OresamSub%20Support%2C%20I%20need%20help%20on%20your%20website"
               target="_blank"
-              class="flex items-center px-3 py-1 text-xs font-bold text-emerald-900 dark:text-white bg-gradient-to-r from-emerald-100 to-emerald-200 dark:from-emerald-700 dark:to-emerald-800 hover:brightness-110 dark:hover:brightness-125 rounded-full transition duration-300 ease-in-out shadow-sm"
+              className="flex items-center px-3 py-1 text-xs font-bold text-emerald-900 dark:text-white bg-gradient-to-r from-emerald-100 to-emerald-200 dark:from-emerald-700 dark:to-emerald-800 hover:brightness-110 dark:hover:brightness-125 rounded-full transition duration-300 ease-in-out shadow-sm"
               >
-              <svg class="w-3.5 h-3.5 mr-1 fill-current" viewBox="0 0 24 24">
+              <svg className="w-3.5 h-3.5 mr-1 fill-current" viewBox="0 0 24 24">
               <path d="M20.52 3.48A11.86 11.86 0 0012.02 0C5.39 0 0 5.38 0 12a11.89 11.89 0 001.65 6L0 24l6.42-1.68A11.84 11.84 0 0012 24c6.63 0 12-5.38 12-12a11.86 11.86 0 00-3.48-8.52zM12 22.06a10.1 10.1 0 01-5.17-1.42l-.37-.22-3.81 1 1-3.7-.24-.38A10.07 10.07 0 011.94 12c0-5.57 4.5-10.06 10.06-10.06 2.69 0 5.21 1.05 7.11 2.95a10.06 10.06 0 01-7.11 17.17zM17 14.41l-2.17-.62a1.33 1.33 0 00-1.25.34l-.6.61a9.55 9.55 0 01-4.51-4.5l.6-.61a1.33 1.33 0 00.34-1.25l-.62-2.17A1.33 1.33 0 007.12 6H5.65a1.33 1.33 0 00-1.33 1.33A9.7 9.7 0 0015.67 18a1.33 1.33 0 001.33-1.33v-1.47a1.33 1.33 0 00-.95-1.26z"/>
               </svg>
               Support

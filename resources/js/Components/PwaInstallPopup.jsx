@@ -1,51 +1,47 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, forwardRef, useImperativeHandle } from "react";
 
-export default function PwaInstallPopup() {
+const PwaInstallPopup = forwardRef((props, ref) => {
   const [deferredPrompt, setDeferredPrompt] = useState(null);
   const [visible, setVisible] = useState(false);
 
   const cooldownDays = 2;
   const cooldownMs = cooldownDays * 24 * 60 * 60 * 1000;
 
-  // Service worker registration
   useEffect(() => {
     if ("serviceWorker" in navigator) {
       window.addEventListener("load", () => {
         navigator.serviceWorker
           .register("/service-worker.js")
-          .then((reg) => console.log("Service Worker registered:", reg))
-          .catch((err) => console.log("Service Worker registration failed:", err));
+          .then((reg) => console.log("SW registered:", reg))
+          .catch((err) => console.log("SW failed:", err));
       });
     }
   }, []);
 
-  // Handle beforeinstallprompt
   useEffect(() => {
     const handleBeforeInstallPrompt = (e) => {
       const dismissedAt = localStorage.getItem("installDismissedAt");
-      if (dismissedAt && Date.now() - dismissedAt < cooldownMs) return; // cooldown
+      if (dismissedAt && Date.now() - dismissedAt < cooldownMs) return;
 
       e.preventDefault();
       setDeferredPrompt(e);
       setVisible(true);
     };
-
     window.addEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
-
-    return () => {
-      window.removeEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
-    };
+    return () => window.removeEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
   }, []);
 
-  const handleInstall = async () => {
-    if (deferredPrompt) {
-      deferredPrompt.prompt();
-      const { outcome } = await deferredPrompt.userChoice;
-      console.log("User choice:", outcome);
-      setDeferredPrompt(null);
-    }
-    setVisible(false);
-  };
+  useImperativeHandle(ref, () => ({
+    promptInstall: async () => {
+      if (deferredPrompt) {
+        deferredPrompt.prompt();
+        const { outcome } = await deferredPrompt.userChoice;
+        console.log("User choice:", outcome);
+        setDeferredPrompt(null);
+        setVisible(false);
+      }
+    },
+  }));
 
   const handleDismiss = () => {
     localStorage.setItem("installDismissedAt", Date.now());
@@ -55,7 +51,7 @@ export default function PwaInstallPopup() {
   if (!visible) return null;
 
   return (
-    <div className="fixed inset-0 z-200 flex items-center justify-center bg-black/50">
+    <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/50">
       <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl max-w-sm w-full p-6 text-center">
         <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-3">
           Install OresamSub
@@ -71,7 +67,7 @@ export default function PwaInstallPopup() {
             Not now
           </button>
           <button
-            onClick={handleInstall}
+            onClick={() => ref.current.promptInstall()}
             className="px-4 py-2 rounded-xl bg-emerald-600 text-white font-medium shadow hover:bg-emerald-700"
           >
             Install
@@ -80,4 +76,6 @@ export default function PwaInstallPopup() {
       </div>
     </div>
   );
-}
+});
+
+export default PwaInstallPopup;
