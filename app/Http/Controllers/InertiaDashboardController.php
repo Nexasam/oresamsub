@@ -8,6 +8,7 @@ use App\Models\Product;
 use App\Models\Transaction;
 use App\Models\Announcement;
 use Illuminate\Http\Request;
+use App\Models\UserVirtualAccount;
 use App\Models\ProductPlanCategory;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
@@ -55,6 +56,17 @@ class InertiaDashboardController extends Controller
         $data['product'] = $product;
         $data['product_plan_categories'] = $product_plan_categories;
         return Inertia::render('BuyElectricity')->with($data);
+    }
+
+    public function virtual_accounts(){
+        $virtualccts = UserVirtualAccount::select('id','bank_name','account_name','account_number')->where('user_id',auth()->id())->get();
+        $data['virtualccts'] = $virtualccts;
+        return Inertia::render('VirtualAccounts')->with($data);
+    }
+
+    public function transactions(){
+        $data['transactions'] = Transaction::with(relations: 'product_plan')->where('user_id',auth()->id())->limit(200)->latest()->get();
+        return Inertia::render('Transactions')->with($data);
     }
 
 }

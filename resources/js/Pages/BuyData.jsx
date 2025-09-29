@@ -4,8 +4,7 @@ import { useForm, usePage, Link } from "@inertiajs/react";
 import DashboardLayout from "@/Layouts/DashboardLayout";
 import axios from "axios";
 import Swal from "sweetalert2";
-import { getTelcoColor } from "@/utils/telcoColors";
-import PinInput from "../Components/PinInput";
+import WalletBalance from "@/Components/WalletBalance";
 
 // inside your map(tx)
 // const telcoColor = getTelcoColor(tx.product_plan?.product_plan_name);
@@ -124,30 +123,7 @@ const handleSubmit = async (e) => {
   return (
     <DashboardLayout>
       {/* Wallet card */}
-      <div className="bg-emerald-600 dark:bg-emerald-700 text-white p-4   rounded-xl shadow-md flex items-center justify-between">
-        <div >
-          <p className="text-xs text-white/70 font-medium">Wallet Balance</p>
-          <div className="flex items-center space-x-1 text-xl font-bold">
-            {showBalance ? (
-              <span>₦{Number(user.main_wallet).toFixed(2)}</span>
-            ) : (
-              <span className="tracking-widest">•••••</span>
-            )}
-            <button
-              onClick={() => setShowBalance((prev) => !prev)}
-              className="ml-2 hover:text-white/90 transition"
-            >
-              {showBalance ? "🙈" : "👁️"}
-            </button>
-          </div>
-        </div>
-        <Link
-          href={route("ore.virtual_accounts")}
-          className="text-sm font-semibold underline hover:text-white/90 transition"
-        >
-          + Top Up
-        </Link>
-      </div>
+      <WalletBalance user={user} />
 
       <Link
         href={route("inertia.dashboard.index")}

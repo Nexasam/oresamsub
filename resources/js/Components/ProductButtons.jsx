@@ -57,7 +57,7 @@ export default function ProductButtons({ loggingOut, setLoggingOut }) {
 
       {/* Transactions */}
       <button
-        onClick={() => router.get(route("ore.transactions"))}
+        onClick={() => router.get(route("inertia.transactions.index"))}
         className="group p-3 rounded-xl shadow hover:shadow-md transition transform hover:scale-[1.05] bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200"
       >
         <div className="w-10 h-10 mx-auto rounded-full bg-gradient-to-r from-emerald-500 to-green-500 flex items-center justify-center text-white text-xl shadow-sm">

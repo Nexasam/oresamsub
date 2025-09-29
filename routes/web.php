@@ -98,6 +98,8 @@ Route::middleware(['set_locale'])->group(function () {
                 Route::get('/airtime2', [InertiaDashboardController::class, 'airtime'])->name('inertia.airtime.index');   
                 Route::get('/cable2', [InertiaDashboardController::class, 'cable'])->name('inertia.cable.index');   
                 Route::get('/electricity2', [InertiaDashboardController::class, 'electricity'])->name('inertia.electricity.index');   
+                Route::get('/virtual-accounts2', [InertiaDashboardController::class, 'virtual_accounts'])->name('inertia.virtual_accounts.index');   
+                Route::get('/transactions2', [InertiaDashboardController::class, 'transactions'])->name('inertia.transactions.index');   
                 
                 Route::get('oresamsub/dashboard', function () {
                     $data['transactions'] = App\Models\Transaction::with(relations: 'product_plan')->where('user_id',auth()->id())->limit(10)->latest()->get();

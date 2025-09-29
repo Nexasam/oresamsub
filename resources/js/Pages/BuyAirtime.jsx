@@ -3,6 +3,9 @@ import { useForm, usePage, Link } from "@inertiajs/react";
 import DashboardLayout from "@/Layouts/DashboardLayout";
 import axios from "axios";
 import Swal from "sweetalert2";
+import WalletBalance from "@/Components/WalletBalance";
+
+
 
 export default function BuyAirtime() {
   const { props } = usePage();
@@ -140,24 +143,7 @@ export default function BuyAirtime() {
   return (
     <DashboardLayout>
       {/* Wallet */}
-      <div className="bg-emerald-600 dark:bg-emerald-700 text-white p-4 rounded-xl shadow-md flex items-center justify-between font-inter">
-        <div>
-          <p className="text-xs text-white/70 font-medium">Wallet Balance</p>
-          <div className="flex items-center space-x-1 text-xl font-bold">
-            {showBalance ? (
-              <span>₦{Number(user.main_wallet).toFixed(2)}</span>
-            ) : (
-              <span className="tracking-widest">•••••</span>
-            )}
-            <button onClick={() => setShowBalance(!showBalance)} className="ml-2 hover:text-white/90">
-              {showBalance ? "🙈" : "👁️"}
-            </button>
-          </div>
-        </div>
-        <Link href={route("ore.virtual_accounts")} className="text-sm font-semibold underline hover:text-white/90">
-          + Top Up
-        </Link>
-      </div>
+      <WalletBalance user={user} />
 
       <Link
         href={route("inertia.dashboard.index")}
@@ -187,25 +173,44 @@ export default function BuyAirtime() {
           </div>
 
             {/* Network Cards */}
-            <div>
+           {/* Networks */}
+           <div>
             <label className="block text-sm mb-2">Network</label>
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
               {networks.map((n) => {
-                const colorClass = networkColors[n.network_name.toUpperCase()] ?? "bg-gray-200 text-gray-700 border-gray-300";
+                // Exact brand colors
+                const networkColors = {
+                  MTN: "bg-[#FFCC00] text-black border-[#FFCC00]",   
+                  GLO: "bg-[#008751] text-white border-[#008751]",   
+                  AIRTEL: "bg-gradient-to-r from-[#EE1C25] to-[#B50000] text-white border-[#B50000]",
+                  "9MOBILE": "bg-[#A6CE39] text-black border-[#A6CE39]" 
+                };
+                
+                const colorClass =
+                  networkColors[n.network_name] ||
+                  "bg-gray-200 text-gray-700 border-gray-300";
+
                 return (
                   <div
                     key={n.id}
                     onClick={() => handleNetworkChange(n.id)}
-                    className={`cursor-pointer rounded-lg border p-3 text-center font-semibold transition ${
-                      data.network_id === n.id ? `${colorClass} ring-2 ring-emerald-500 scale-105` : `${colorClass} hover:shadow-md`
-                    }`}
+                    className={`cursor-pointer rounded-lg border p-1 text-center font-semibold transition
+                      ${data.network_id === n.id
+                        ? `${colorClass} ring-2 ring-emerald-500 scale-105`
+                        : `${colorClass} hover:shadow-md`}
+                    `}
                   >
                     {n.network_name}
                   </div>
                 );
               })}
-             </div>
             </div>
+            {errors.network_id && (
+              <p className="text-xs text-red-500 mt-1">{errors.network_id}</p>
+            )}
+          </div>
+
+          
 
           {/* Amount */}
           <div>

@@ -3,27 +3,25 @@ import { useState } from "react";
 import DashboardLayout from "@/Layouts/DashboardLayout";
 import { Link, usePage } from "@inertiajs/react";
 import ProductButtons from "@/Components/ProductButtons";
-
+import InviteEarn from "@/Components/InviteEarn";
+import CommunityCard from "@/Components/CommunityCard";
+import WalletBalance from "@/Components/WalletBalance";
 
 export default function Dashboard({ transactions: initialTransactions }) {
-  // Inertia might inject transactions either via props param or via usePage
   const { props } = usePage();
   const { auth, announcements, impersonator } = props;
   const user = auth.user;
 
-
   const transactions = initialTransactions ?? props.transactions ?? [];
   const [showBalance, setShowBalance] = useState(true);
-
-
-  // Page-local state for transactions interactions
   const [openTransactionId, setOpenTransactionId] = useState(null);
   const [loggingOut, setLoggingOut] = useState(false);
 
-  
-  
+  const [inviteOpen, setInviteOpen] = useState(false);
+  const [copied, setCopied] = useState(false);
 
-  // Convert status to readable text + tailwind color classes
+  const referralLink = `https://oresamsub.com/register?ref=${user.phone_number}`;
+
   const getStatus = (status) => {
     const s = String(status);
     switch (s) {
@@ -40,82 +38,28 @@ export default function Dashboard({ transactions: initialTransactions }) {
     }
   };
 
+  const copyReferral = () => {
+    navigator.clipboard.writeText(referralLink).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    });
+  };
+
   return (
     <DashboardLayout>
-
-
       {/* Wallet */}
-      <div className="bg-emerald-600 dark:bg-emerald-700 text-white p-4 rounded-xl shadow-md flex items-center justify-between">
-        <div>
-          <p className="text-xs text-white/70 font-medium">Wallet Balance</p>
-          <div className="flex items-center space-x-1 text-xl font-bold">
-            {showBalance ? (
-              <span>₦{Number(user.main_wallet).toFixed(2)}</span>
-            ) : (
-              <span className="tracking-widest">•••••</span>
-            )}
-            <button
-              onClick={() => setShowBalance((prev) => !prev)}
-              className="ml-2 hover:text-white/90 transition"
-            >
-              {showBalance ? "🙈" : "👁️"}
-            </button>
-          </div>
-        </div>
-        <Link
-          href={route("ore.virtual_accounts")}
-          className="text-sm font-semibold underline hover:text-white/90 transition"
-        >
-          + Top Up
-        </Link>
-      </div>
+      <WalletBalance user={user} />
 
-       {/* Referral Section */}
-       <div className="bg-emerald-50 dark:bg-gray-800 p-4 rounded-xl shadow-sm mt-4">
-        <h2 className="text-sm font-semibold text-gray-700 dark:text-gray-200 mb-2">
-          Invite a Friend
-        </h2>
-        <p className="text-xs text-gray-600 dark:text-gray-400 mb-2">
-          Share your referral link and earn rewards when they sign up.
-        </p>
-        <div className="flex items-center justify-between">
-          <input
-            type="text"
-            readOnly
-            value={`https://oresamsub.com/register?ref=${user.phone_number}`}
-            className="flex-1 rounded-lg px-3 py-2 text-sm border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200"
-          />
-          <button
-            onClick={() =>
-              navigator.clipboard.writeText(
-                `https://oresamsub.com/register?ref=${user.phone_number}`
-              )
-            }
-            className="ml-2 px-3 py-2 bg-emerald-500 text-white rounded-lg hover:bg-emerald-600 transition"
-          >
-            Copy
-          </button>
-        </div>
-      </div>
+      {/* Invite & Earn */}
+      <InviteEarn referralLink={referralLink} />
 
-      {/* Community Section */}
-      <div className="bg-emerald-50 dark:bg-gray-800 p-4 rounded-xl shadow-sm mt-4">
-        <h2 className="text-sm font-semibold text-gray-700 dark:text-gray-200 mb-2">
-          Community
-        </h2>
-        <p className="text-xs text-gray-600 dark:text-gray-400 mb-2">
-          Join our community to connect with other users, share tips, and stay updated.
-        </p>
-        <Link
-          // href={route("community.index")}
-          className="inline-block text-emerald-600 dark:text-emerald-400 text-sm font-medium hover:underline"
-        >
-          Go to Community
-        </Link>
-      </div>
-
+     
       {/* Product Buttons */}
       <ProductButtons loggingOut={loggingOut} setLoggingOut={setLoggingOut} />
+
+      {/* Community Section */}
+      <CommunityCard customerCategory={user.customer_category} />
+
 
       {/* Transactions Table */}
       <div className="bg-white dark:bg-gray-800 mt-6 rounded-xl shadow overflow-hidden">

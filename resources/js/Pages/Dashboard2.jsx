@@ -157,24 +157,7 @@ export default function Dashboard() {
       </div>
 
       {/* Wallet Balance */}
-      <div className="bg-emerald-600 dark:bg-emerald-700 text-white p-4 rounded-xl shadow-md flex items-center justify-between">
-        <div>
-          <p className="text-xs text-white/70 font-medium">Wallet Balance</p>
-          <div className="flex items-center space-x-1 text-xl font-bold">
-            {showBalance ? (
-              <span>₦{Number(user.main_wallet).toFixed(2)}</span>
-            ) : (
-              <span className="tracking-widest">•••••</span>
-            )}
-            <button onClick={() => setShowBalance(prev => !prev)} className="ml-2 hover:text-white/90 transition">
-              {showBalance ? "🙈" : "👁️"}
-            </button>
-          </div>
-        </div>
-        <Link href={route("ore.virtual_accounts")} className="text-sm font-semibold underline hover:text-white/90 transition">
-          + Top Up
-        </Link>
-      </div>
+      <WalletBalance user={user} />
 
       {/* Invite & Earn */}
       <div className="border border-emerald-400 dark:border-emerald-600 rounded-xl shadow-md overflow-hidden">

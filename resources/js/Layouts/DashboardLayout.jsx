@@ -73,22 +73,32 @@ export default function DashboardLayout({ children }) {
       <nav className="fixed bottom-0 inset-x-0 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 shadow-lg z-50">
         <div className="max-w-md mx-auto flex justify-around py-2 text-xs font-medium text-gray-700 dark:text-gray-200">
           {[
-            { label: "Dashboard", icon: "🏠", route: "inertia.dashboard.index" },
-            { label: "Data", icon: "📶", route: "inertia.data.index" },
-            { label: "Airtime", icon: "📞", route: "inertia.airtime.index" },
-            { label: "Cable", icon: "📺", route: "inertia.cable.index" },
-            { label: "Electricity", icon: "⚡", route: "inertia.electricity.index" },
-            // { label: "Profile", icon: "👤", route: "profile.show" },
-          ].map((item) => (
-            <Link
-              key={item.label}
-              href={route(item.route)}
-              className="flex flex-col items-center hover:text-blue-600 dark:hover:text-blue-400"
-            >
-              <div className="text-xl">{item.icon}</div>
-              <span>{item.label}</span>
-            </Link>
-          ))}
+            { label: "Dashboard", icon: "🏠", route: "inertia.dashboard.index", inertia: true },
+            { label: "Data", icon: "📶", route: "inertia.data.index", inertia: true },
+            { label: "Airtime", icon: "📞", route: "inertia.airtime.index", inertia: true },
+            { label: "Cable", icon: "📺", route: "ore.cable", inertia: false },
+            { label: "Electricity", icon: "⚡", route: "ore.electricity", inertia: false },
+          ].map((item) =>
+            item.inertia ? (
+              <Link
+                key={item.label}
+                href={route(item.route)}
+                className="flex flex-col items-center hover:text-blue-600 dark:hover:text-blue-400"
+              >
+                <div className="text-xl">{item.icon}</div>
+                <span>{item.label}</span>
+              </Link>
+            ) : (
+              <a
+                key={item.label}
+                href={route(item.route)}
+                className="flex flex-col items-center hover:text-blue-600 dark:hover:text-blue-400"
+              >
+                <div className="text-xl">{item.icon}</div>
+                <span>{item.label}</span>
+              </a>
+            )
+          )}
         </div>
       </nav>
 
