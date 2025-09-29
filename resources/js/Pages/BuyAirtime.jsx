@@ -105,7 +105,12 @@ export default function BuyAirtime() {
 
     const result = await Swal.fire({
       title: "Confirm Purchase",
-      html: `Are you sure you want to purchase <b>${selectedPlan.product_plan_name}</b> for <b>₦${Number(selectedPlan.selling_price).toLocaleString("en-NG")}</b>?`,
+      html: `
+        Are you sure you want to purchase 
+        <b>${selectedPlan.product_plan_name}</b> 
+        for <b>₦${Number(selectedPlan.selling_price).toLocaleString("en-NG")}</b> 
+        to <b>${data.phone_number}</b>?
+      `,
       icon: "question",
       showCancelButton: true,
       confirmButtonText: "Yes, Buy Now ✅",
