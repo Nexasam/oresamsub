@@ -21,8 +21,10 @@
         "@fortawesome/react-fontawesome": "^3.0.2",
         "@inertiajs/progress": "^0.2.7",
         "@inertiajs/react": "^2.2.0",
+        "lucide-react": "^0.544.0",
         "react": "^19.1.1",
         "react-dom": "^19.1.1",
+        "react-icons": "^5.5.0",
         "sweetalert2": "^11.23.0",
         "ziggy-js": "^2.6.0"
     }

@@ -6,6 +6,8 @@ import ProductButtons from "@/Components/ProductButtons";
 import InviteEarn from "@/Components/InviteEarn";
 import CommunityCard from "@/Components/CommunityCard";
 import WalletBalance from "@/Components/WalletBalance";
+import Announcements from "@/Components/Announcements";
+
 
 export default function Dashboard({ transactions: initialTransactions }) {
   const { props } = usePage();
@@ -46,9 +48,12 @@ export default function Dashboard({ transactions: initialTransactions }) {
   };
 
   return (
-    <DashboardLayout>
+    <DashboardLayout title="Dashboard">
       {/* Wallet */}
       <WalletBalance user={user} />
+
+      {/* Announcements Slider */}
+      <Announcements announcements={announcements} />
 
       {/* Invite & Earn */}
       <InviteEarn referralLink={referralLink} />

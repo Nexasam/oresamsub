@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { FaWhatsapp, FaFacebookF, FaInstagram, FaTiktok } from "react-icons/fa";
 
 export default function InviteEarn({ referralLink }) {
   const [inviteOpen, setInviteOpen] = useState(false);
@@ -58,7 +59,7 @@ export default function InviteEarn({ referralLink }) {
           {copied && <span className="text-xs text-emerald-500 block">✅ Link copied!</span>}
 
           {/* Share Buttons */}
-          <div className="flex space-x-2">
+          {/* <div className="flex space-x-2">
             <a
               href={`https://wa.me/?text=Join me on OresamSub 👉 ${referralLink}`}
               target="_blank"
@@ -87,7 +88,40 @@ export default function InviteEarn({ referralLink }) {
             >
               <i className="fab fa-tiktok"></i>
             </a>
+          </div> */}
+
+          <div className="flex space-x-2">
+            <a
+              href={`https://wa.me/?text=Join me on OresamSub 👉 ${referralLink}`}
+              target="_blank"
+              className="flex items-center justify-center w-8 h-8 bg-green-500 hover:bg-green-600 rounded-full text-white"
+            >
+              <FaWhatsapp size={16} />
+            </a>
+            <a
+              href={`https://www.facebook.com/sharer/sharer.php?u=${referralLink}`}
+              target="_blank"
+              className="flex items-center justify-center w-8 h-8 bg-blue-600 hover:bg-blue-700 rounded-full text-white"
+            >
+              <FaFacebookF size={16} />
+            </a>
+            <a
+              href={`https://www.instagram.com/?url=${referralLink}`}
+              target="_blank"
+              className="flex items-center justify-center w-8 h-8 bg-pink-500 hover:bg-pink-600 rounded-full text-white"
+            >
+              <FaInstagram size={16} />
+            </a>
+            <a
+              href={`https://www.tiktok.com/share?url=${referralLink}`}
+              target="_blank"
+              className="flex items-center justify-center w-8 h-8 bg-black hover:bg-gray-800 rounded-full text-white"
+            >
+              <FaTiktok size={16} />
+            </a>
           </div>
+
+
         </div>
       )}
     </div>

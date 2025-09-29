@@ -19,7 +19,7 @@ export default function VirtualAccounts() {
   };
 
   return (
-    <DashboardLayout>
+    <DashboardLayout  title="Virtual Accounts">
       {/* Wallet Balance */}
       <WalletBalance user={user} />
 

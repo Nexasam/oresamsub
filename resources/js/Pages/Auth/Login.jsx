@@ -14,12 +14,12 @@ export default function Login() {
   function submit(e) {
     e.preventDefault();
     // post(route("login")); // Laravel route('login')
-    post('/login2'); // Laravel route('login')
-    // post(route('inertia.login.store')); // Laravel route('login')
+    // post('/login2'); // Laravel route('login')
+    post(route('inertia.login.store')); // Laravel route('login')
   }
 
   return (
-    <AuthLayout>
+    <AuthLayout title="Login">
       <div className="relative min-h-screen w-full flex items-center justify-center overflow-hidden">
         <p>{props.user}</p>
         {/* Background pattern */}
@@ -28,7 +28,7 @@ export default function Login() {
         </div>
 
         {/* Login Card */}
-        <div className="relative z-10 pt-10 pb-6 max-w-xs w-full mx-auto bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6">
+        <div className="relative z-10 pt-10 pb-6 max-w-full w-full mx-auto bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6">
           <div className="flex justify-center mb-4">
             <img
               src="/assets/logo_imgs/oresamsublogo.jpeg"
@@ -149,9 +149,9 @@ export default function Login() {
           {/* Register link */}
           <p className="text-xs text-center mt-6 text-gray-500 dark:text-gray-400">
             Don&apos;t have an account?{" "}
-            <Link href={route("register")} className="text-blue-600 dark:text-blue-400 font-semibold">
+            <a href={route("register")} className="text-blue-600 dark:text-blue-400 font-semibold">
               Register
-            </Link>
+            </a>
           </p>
         </div>
       </div>

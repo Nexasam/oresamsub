@@ -1,27 +1,12 @@
 @extends('oresamsub.layouts.app')
 
 @section('content')
-<div class="pt-6 max-w-sm mx-auto" x-data="{ isSubmitting: false }">
+<div class="pt-6 max-w-full mx-auto" x-data="{ isSubmitting: false }">
 
     <!-- Back Button -->
-    <div class="mb-4">
-       <a 
-    href="{{ route('dashboard') }}"
-    @click.prevent="showLoader = true; setTimeout(() => window.location.href = '{{ route('dashboard') }}', 1000)"
-    class="inline-flex items-center px-3 py-1.5 rounded-md 
-           bg-emerald-600 hover:bg-emerald-700 
-           text-white 
-           text-xs font-semibold 
-           transition-all duration-200 shadow"
-  >
-    <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-      <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
-    </svg>
-    Back to Dashboard
-  </a>
-    </div>
+ 
 
-    {{-- <div class="mb-4">
+    <div class="mb-4">
           <a 
           href="{{ route('inertia.dashboard.index') }}"
           @click.prevent="showLoader = true; setTimeout(() => window.location.href = '{{ route('inertia.dashboard.index') }}', 1000)"
@@ -33,7 +18,7 @@
           </svg>
           Back to Dashboard
           </a>
-      </div> --}}
+      </div>
     
 
   <h2 class="text-xl font-bold text-center mb-1">Buy Electricity Token</h2>

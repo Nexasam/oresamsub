@@ -26,8 +26,12 @@ class InertiaLoginController extends Controller
         if (Auth::attempt($credentials, $request->boolean('remember'))) {
             $request->session()->regenerate();
 
-            return redirect()->intended('/dashboard2');
+            return redirect()->intended('/dashboard');
+            // return redirect()->route('inertia.dashboard.index');
         }
+
+        dd('got here');
+
 
         return back()->withErrors([
             'email' => 'Invalid credentials.',

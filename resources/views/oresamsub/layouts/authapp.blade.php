@@ -53,7 +53,7 @@
 >
 
   <!-- App Container -->
-  <div class="max-w-md mx-auto border border-gray-300 dark:border-gray-700 rounded-xl shadow-lg overflow-hidden bg-white dark:bg-gray-900">
+  <div class="max-w-full mx-auto border border-gray-300 dark:border-gray-700 rounded-xl shadow-lg overflow-hidden bg-white dark:bg-gray-900">
 
      
 

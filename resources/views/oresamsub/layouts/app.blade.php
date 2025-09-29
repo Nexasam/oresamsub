@@ -60,7 +60,7 @@
 
 
   <!-- App Container -->
-  <div class="max-w-md mx-auto border border-gray-300 dark:border-gray-700 rounded-xl shadow-lg overflow-hidden bg-white dark:bg-gray-900">
+  <div class="max-w-full mx-auto border border-gray-300 dark:border-gray-700 rounded-xl shadow-lg overflow-hidden bg-white dark:bg-gray-900">
 
     <!-- Header -->
     {{-- <div class="p-4 flex justify-between items-center border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800">
@@ -107,12 +107,12 @@
     <nav class="fixed bottom-0 inset-x-0 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 shadow-lg z-50">
       <div class="max-w-md mx-auto flex justify-around py-2 text-xs font-medium text-gray-700 dark:text-gray-200">
         @foreach ([
-          ['label' => 'Dashboard', 'icon' => '🏠', 'route' => 'dashboard'],
-          ['label' => 'Data', 'icon' => '📶', 'route' => 'ore.data'],
-          ['label' => 'Airtime', 'icon' => '📞', 'route' => 'ore.airtime'],
+          ['label' => 'Dashboard', 'icon' => '🏠', 'route' => 'inertia.dashboard.index'],
+          ['label' => 'Data', 'icon' => '📶', 'route' => 'inertia.data.index'],
+          ['label' => 'Airtime', 'icon' => '📞', 'route' => 'inertia.airtime.index'],
           ['label' => 'Cable', 'icon' => '📺', 'route' => 'ore.cable'],
           ['label' => 'Electricity', 'icon' => '⚡', 'route' => 'ore.electricity'],
-          ['label' => 'Profile', 'icon' => '👤', 'route' => 'dashboard'], // Replace 'profile' with your actual route
+          // ['label' => 'Profile', 'icon' => '👤', 'route' => 'inertia.dashboard.index'], // Replace 'profile' with your actual route
         ] as $item)
           <a 
             href="{{ route($item['route']) }}"

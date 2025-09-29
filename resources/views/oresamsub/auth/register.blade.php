@@ -1,7 +1,17 @@
 @extends('oresamsub.layouts.authapp')
 
 @section('content')
-<div class="pt-10 pb-6 max-w-md mx-auto" x-data="{ isRegistering: false, showPassword: false, showConfirm: false }">
+<div class="pt-10 pb-6 max-w-full mx-auto" x-data="{ isRegistering: false, showPassword: false, showConfirm: false }">
+
+  <a href="{{ route('inertia.dashboard.index') }}" class="flex flex-col items-center mb-4">
+    <img 
+      src="{{ asset('assets/logo_imgs/oresamsublogo.jpeg') }}" 
+      alt="OresamSub Logo" 
+      class="h-20 w-20 rounded-full shadow-md"
+    >
+    {{-- Optional text below logo --}}
+    {{-- <span class="text-2xl font-bold text-gray-800 dark:text-gray-100 mt-2">OresamSub</span> --}}
+  </a>
   
   <h2 class="text-2xl font-bold text-center mb-6">Create Your Account</h2>
 

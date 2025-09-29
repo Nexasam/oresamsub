@@ -6,8 +6,8 @@
 
     <div class="mb-4">
         <a 
-        href="{{ route('dashboard') }}"
-        @click.prevent="showLoader = true; setTimeout(() => window.location.href = '{{ route('dashboard') }}', 1000)"
+        href="{{ route('inertia.dashboard.index') }}"
+        @click.prevent="showLoader = true; setTimeout(() => window.location.href = '{{ route('inertia.dashboard.index') }}', 1000)"
         class="inline-flex items-center px-3 py-1.5 rounded-md 
                bg-emerald-600 hover:bg-emerald-700 
                text-white 

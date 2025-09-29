@@ -1,7 +1,7 @@
 import { useState } from "react";
 
-export default function Announcements({ announcements }) {
-  const [open, setOpen] = useState(announcements?.length > 0);
+export default function Announcements({ announcements = [] }) {
+  const [open, setOpen] = useState(announcements.length > 0);
 
   if (!announcements || announcements.length === 0) return null;
 
@@ -13,8 +13,8 @@ export default function Announcements({ announcements }) {
           onClick={() => setOpen(false)}
         >
           <div
-            className="bg-white dark:bg-gray-900 rounded-xl shadow-lg w-full max-w-md p-6 space-y-3 text-gray-800 dark:text-gray-100"
-            onClick={(e) => e.stopPropagation()}
+            className="bg-white dark:bg-gray-900 rounded-xl shadow-lg w-full max-w-md p-6 space-y-4 text-gray-800 dark:text-gray-100"
+            onClick={(e) => e.stopPropagation()} // Prevent closing when clicking inside
           >
             {/* Header */}
             <div className="flex justify-between items-center">
@@ -30,7 +30,7 @@ export default function Announcements({ announcements }) {
             </div>
 
             {/* Announcements List */}
-            <div className="space-y-3 max-h-60 overflow-y-auto pr-2">
+            <div className="space-y-3 max-h-[60vh] overflow-y-auto pr-2">
               {announcements.map((ann) => (
                 <div
                   key={ann.id}
@@ -51,7 +51,7 @@ export default function Announcements({ announcements }) {
             <div className="flex justify-center mt-3">
               <button
                 onClick={() => setOpen(false)}
-                className="px-4 py-1 bg-gradient-to-r from-emerald-500 to-green-500 hover:from-emerald-600 hover:to-green-600 text-white font-medium rounded-lg shadow-sm transition transform hover:scale-[1.03] text-sm"
+                className="px-4 py-2 bg-gradient-to-r from-emerald-500 to-green-500 hover:from-emerald-600 hover:to-green-600 text-white font-medium rounded-lg shadow-sm transition transform hover:scale-[1.03] text-sm"
               >
                 Close
               </button>

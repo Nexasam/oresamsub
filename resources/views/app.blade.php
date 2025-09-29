@@ -6,9 +6,10 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
 
-    {{-- <title inertia>{{ config('app.name', 'Oresamsub - react') }}</title> --}}
+    <title inertia>{{ config('app.name', 'Dashboard') }}</title>
 
-    <title>Test</title>
+
+    {{-- <title>Test</title> --}}
 
     @viteReactRefresh
     @vite('resources/js/app.jsx')

@@ -28,7 +28,7 @@ export default function Transactions() {
   };
 
   return (
-    <DashboardLayout>
+    <DashboardLayout  title="Transactions">
       {/* Wallet Balance + Top Up */}
       <WalletBalance user={user} />
 

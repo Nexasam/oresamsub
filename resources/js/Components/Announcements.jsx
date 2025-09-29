@@ -1,64 +1,61 @@
-import { useState } from "react";
+// resources/js/Components/Announcements.jsx
+import { useState, useEffect } from "react";
+import { ChevronLeft, ChevronRight } from "lucide-react"; // lightweight icons
 
 export default function Announcements({ announcements = [] }) {
-  const [open, setOpen] = useState(announcements.length > 0);
+  const [index, setIndex] = useState(0);
 
   if (!announcements || announcements.length === 0) return null;
 
+  // Auto slide every 5s
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setIndex((prev) => (prev + 1) % announcements.length);
+    }, 5000);
+    return () => clearInterval(interval);
+  }, [announcements.length]);
+
+  const prevSlide = () => {
+    setIndex((prev) => (prev - 1 + announcements.length) % announcements.length);
+  };
+
+  const nextSlide = () => {
+    setIndex((prev) => (prev + 1) % announcements.length);
+  };
+
   return (
-    <>
-      {open && (
+    <div className="w-full my-2">
+      <div className="relative flex items-center bg-emerald-50 dark:bg-emerald-900 border border-emerald-200 dark:border-emerald-700 text-emerald-800 dark:text-emerald-200 rounded-lg px-3 py-3 text-xs sm:text-sm overflow-hidden">
+
+        {/* Blinking dot */}
+        <span className="absolute left-2 top-1/2 -translate-y-1/2 w-2.5 h-2.5 rounded-full bg-emerald-500 animate-ping" />
+        <span className="absolute left-2 top-1/2 -translate-y-1/2 w-2.5 h-2.5 rounded-full bg-emerald-500" />
+
+        {/* Announcement text */}
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm"
-          onClick={() => setOpen(false)}
-        >
-          <div
-            className="bg-white dark:bg-gray-900 rounded-xl shadow-lg w-full max-w-md p-6 space-y-4 text-gray-800 dark:text-gray-100"
-            onClick={(e) => e.stopPropagation()} // Prevent closing when clicking inside
-          >
-            {/* Header */}
-            <div className="flex justify-between items-center">
-              <h2 className="text-lg font-bold flex items-center gap-2">
-                🎉 Announcements
-              </h2>
-              <button
-                onClick={() => setOpen(false)}
-                className="text-gray-900 dark:text-gray-100 hover:text-red-500 text-xl font-bold"
-              >
-                &times;
-              </button>
-            </div>
+          key={announcements[index].id}
+          className="ml-6 flex-1 transition-all duration-500 ease-in-out"
+          dangerouslySetInnerHTML={{ __html: announcements[index].description }}
+        />
 
-            {/* Announcements List */}
-            <div className="space-y-3 max-h-[60vh] overflow-y-auto pr-2">
-              {announcements.map((ann) => (
-                <div
-                  key={ann.id}
-                  className="p-3 rounded-lg border border-emerald-200 dark:border-emerald-600 bg-emerald-50 dark:bg-emerald-900 text-emerald-900 dark:text-emerald-200 text-sm"
-                >
-                  <h3 className="font-extrabold underline text-emerald-700 dark:text-emerald-300 mb-1">
-                    {ann.title}
-                  </h3>
-                  <div
-                    className="text-gray-700 dark:text-gray-200"
-                    dangerouslySetInnerHTML={{ __html: ann.description }}
-                  />
-                </div>
-              ))}
-            </div>
-
-            {/* Footer Close Button */}
-            <div className="flex justify-center mt-3">
-              <button
-                onClick={() => setOpen(false)}
-                className="px-4 py-2 bg-gradient-to-r from-emerald-500 to-green-500 hover:from-emerald-600 hover:to-green-600 text-white font-medium rounded-lg shadow-sm transition transform hover:scale-[1.03] text-sm"
-              >
-                Close
-              </button>
-            </div>
+        {/* Controls */}
+        {announcements.length > 1 && (
+          <div className="flex gap-1 ml-2">
+            <button
+              onClick={prevSlide}
+              className="p-1 rounded-full hover:bg-emerald-100 dark:hover:bg-emerald-800"
+            >
+              <ChevronLeft className="w-3 h-3" />
+            </button>
+            <button
+              onClick={nextSlide}
+              className="p-1 rounded-full hover:bg-emerald-100 dark:hover:bg-emerald-800"
+            >
+              <ChevronRight className="w-3 h-3" />
+            </button>
           </div>
-        </div>
-      )}
-    </>
+        )}
+      </div>
+    </div>
   );
 }

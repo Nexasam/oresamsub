@@ -69,8 +69,8 @@ use App\Http\Controllers\ElectricitySubscriptionController;
 use App\Http\Controllers\ProductPlanCustomPricingController;
 
     // Inertia routes
-    Route::get('/login2', [InertiaLoginController::class, 'create'])->name('inertia.login.index');
-    Route::post('/login2', [InertiaLoginController::class, 'store'])->name('inertia.login.store');
+    Route::get('/login', [InertiaLoginController::class, 'create'])->name('login');
+    Route::post('/login', [InertiaLoginController::class, 'store'])->name('inertia.login.store');
   
 
    
@@ -93,19 +93,19 @@ Route::middleware(['set_locale'])->group(function () {
             Route::middleware(['auth','set_transaction_pin'])->group(function () {
 
                 //   INERTIAJS
-                Route::get('/dashboard2', [InertiaDashboardController::class, 'dashboard'])->name('inertia.dashboard.index');   
-                Route::get('/data2', [InertiaDashboardController::class, 'data'])->name('inertia.data.index');   
-                Route::get('/airtime2', [InertiaDashboardController::class, 'airtime'])->name('inertia.airtime.index');   
-                Route::get('/cable2', [InertiaDashboardController::class, 'cable'])->name('inertia.cable.index');   
-                Route::get('/electricity2', [InertiaDashboardController::class, 'electricity'])->name('inertia.electricity.index');   
-                Route::get('/virtual-accounts2', [InertiaDashboardController::class, 'virtual_accounts'])->name('inertia.virtual_accounts.index');   
-                Route::get('/transactions2', [InertiaDashboardController::class, 'transactions'])->name('inertia.transactions.index');   
+                Route::get('/dashboard', [InertiaDashboardController::class, 'dashboard'])->name('inertia.dashboard.index');   
+                Route::get('/data', [InertiaDashboardController::class, 'data'])->name('inertia.data.index');   
+                Route::get('/airtime', [InertiaDashboardController::class, 'airtime'])->name('inertia.airtime.index');   
+                Route::get('/cable', [InertiaDashboardController::class, 'cable'])->name('inertia.cable.index');   
+                Route::get('/electricity', [InertiaDashboardController::class, 'electricity'])->name('inertia.electricity.index');   
+                Route::get('/virtual-accounts', [InertiaDashboardController::class, 'virtual_accounts'])->name('inertia.virtual_accounts.index');   
+                Route::get('/transactions', [InertiaDashboardController::class, 'transactions'])->name('inertia.transactions.index');   
                 
-                Route::get('oresamsub/dashboard', function () {
-                    $data['transactions'] = App\Models\Transaction::with(relations: 'product_plan')->where('user_id',auth()->id())->limit(10)->latest()->get();
-                    $data['announcements'] = App\Models\Announcement::latest()->get();
-                    return view('oresamsub.pages.dashboard')->with($data);
-                })->name('ore.dashboard');
+                // Route::get('oresamsub/dashboard', function () {
+                //     $data['transactions'] = App\Models\Transaction::with(relations: 'product_plan')->where('user_id',auth()->id())->limit(10)->latest()->get();
+                //     $data['announcements'] = App\Models\Announcement::latest()->get();
+                //     return view('oresamsub.pages.dashboard')->with($data);
+                // })->name('ore.dashboard');
 
                 Route::get('oresamsub/airtime', function () {
                     $data['networks'] = App\Models\Network::get();
@@ -516,7 +516,7 @@ Route::middleware(['set_locale'])->group(function () {
       
 
             //this will be adjusted later
-            Route::middleware(['auth','verified'])->get('/dashboard', [UserDashboardController::class, 'index'])->name('dashboard');
+            // Route::middleware(['auth','verified'])->get('/dashboard', [UserDashboardController::class, 'index'])->name('dashboard');
             Route::get('product_plans/fetch_public_product_plans', [ProductPlanController::class, 'fetch_public_product_plans'])->name('fetch_public_product_plans');
 
             // COMMISSIONS

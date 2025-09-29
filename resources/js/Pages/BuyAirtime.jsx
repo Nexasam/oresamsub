@@ -141,7 +141,7 @@ export default function BuyAirtime() {
   };
 
   return (
-    <DashboardLayout>
+    <DashboardLayout  title="Buy Airtime">
       {/* Wallet */}
       <WalletBalance user={user} />
 

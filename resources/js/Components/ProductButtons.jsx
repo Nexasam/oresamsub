@@ -34,26 +34,26 @@ export default function ProductButtons({ loggingOut, setLoggingOut }) {
 
 
       {/* Power */}
-      <Link       
-        href={route("inertia.electricity.index")}
+      <a       
+        href={route("ore.electricity")}
         className="group p-3 rounded-xl shadow hover:shadow-md transition transform hover:scale-[1.05] bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200"
       >
         <div className="w-10 h-10 mx-auto rounded-full bg-gradient-to-r from-emerald-500 to-green-500 flex items-center justify-center text-white text-xl shadow-sm">
           ⚡
         </div>
         <div className="mt-2 font-medium text-[13px] md:text-sm">Power</div>
-      </Link>
+      </a>
 
       {/* Cable */}
-      <Link
-         href={route("inertia.cable.index")}
+      <a
+         href={route("ore.cable")}
         className="group p-3 rounded-xl shadow hover:shadow-md transition transform hover:scale-[1.05] bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200"
       >
         <div className="w-10 h-10 mx-auto rounded-full bg-gradient-to-r from-emerald-500 to-green-500 flex items-center justify-center text-white text-xl shadow-sm">
           📺
         </div>
         <div className="mt-2 font-medium text-[13px] md:text-sm">Cable</div>
-      </Link>
+      </a>
 
       {/* Transactions */}
       <button

@@ -121,7 +121,7 @@ const handleSubmit = async (e) => {
       : plans.filter((p) => p.data_size_in_mb === activeSize);
 
   return (
-    <DashboardLayout>
+    <DashboardLayout  title="Buy Data">
       {/* Wallet card */}
       <WalletBalance user={user} />
 
