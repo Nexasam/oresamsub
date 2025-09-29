@@ -121,7 +121,12 @@ export default function BuyAirtime() {
       const response = await axios.post(route("user.airtime.buy_airtime_action2"), data);
       if (response.data.status === 1) {
         await Swal.fire("✅ Success", response.data.message, "success");
-        // window.location.href = route("dashboard");
+       
+        
+        // 🔹 Clear form on success
+        setPlans([]);
+        reset(); // resets all fields back to defaults
+
       } else {
         Swal.fire("⚠️ Failed", response.data.message, "error");
       }
