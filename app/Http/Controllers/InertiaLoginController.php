@@ -37,6 +37,36 @@ class InertiaLoginController extends Controller
     // Handle login form submission
     public function store(Request $request)
     {
+
+        // validate input
+        $request->validate([
+            'email' => ['required'], // can be email, username or phone
+            'password' => ['required'],
+        ]);
+
+        $loginInput = $request->input('email');
+        $password   = $request->input('password');
+
+        // check what type of login this is
+        $field = filter_var($loginInput, FILTER_VALIDATE_EMAIL) ? 'email' : 
+                (is_numeric($loginInput) ? 'phone_number' : 'username');
+
+        // build credentials
+        $credentials = [
+            $field => $loginInput,
+            'password' => $password,
+        ];
+
+        // attempt login
+        if (Auth::attempt($credentials, $request->boolean('remember'))) {
+            $request->session()->regenerate();
+            return redirect()->intended('/dashboard');
+        }
+
+        return back()->withErrors([
+            'login' => 'Invalid credentials.',
+        ])->onlyInput('login');
+
         // $credentials = $request->validate([
         //     'email' => ['required'],
         //     'password' => ['required'],
@@ -57,93 +87,93 @@ class InertiaLoginController extends Controller
         // ])->onlyInput('email');
 
 
-        $password = $request->password;
+        // $password = $request->password;
 
-        // $user_check = User::select('id','api_token','old_platform_password','password')->where('email',$request->email)->first();
-        $username_param = $request->email;
-        $user_check = User::where('email', $username_param)
-        ->orWhere('username', $username_param)
-        ->orWhere('phone_number', $username_param)
-        ->first();
+        // // $user_check = User::select('id','api_token','old_platform_password','password')->where('email',$request->email)->first();
+        // $username_param = $request->email;
+        // $user_check = User::where('email', $username_param)
+        // ->orWhere('username', $username_param)
+        // ->orWhere('phone_number', $username_param)
+        // ->first();
 
-        if($user_check){
+        // if($user_check){
 
-            if ( $user_check->is_deactivated == 1 ) {
-                logger('deactivated oh');
-                Session::flash('failure','Sorry, this account has been deactivated.');
-                return redirect()->back();    
-             }
+        //     if ( $user_check->is_deactivated == 1 ) {
+        //         logger('deactivated oh');
+        //         Session::flash('failure','Sorry, this account has been deactivated.');
+        //         return redirect()->back();    
+        //      }
 
-            $request->merge([
-                'user' => $user_check
-            ]);
+        //     $request->merge([
+        //         'user' => $user_check
+        //     ]);
 
-            $djangoHash = $user_check->old_platform_password;
-            $new_password_hashed = $user_check->password;
+        //     $djangoHash = $user_check->old_platform_password;
+        //     $new_password_hashed = $user_check->password;
 
             
 
-            //migration tool
-            if(env('APP_NAME') == 'CrystaltechData'){ 
-                if($djangoHash != NULL && ! Hash::check($request->password,$new_password_hashed)  ){
-                    if (Hash::check($request->password,$djangoHash)) {
-                            $new_password_hash = Hash::make($password);
-                            $user_check->update([
-                                'password' => $new_password_hash
-                            ]);
-                            $user_check->refresh();
-                            // echo "Password is valid!";exit;
-                    }   
-                }
-            }else{
-                if($djangoHash != NULL && ! Hash::check($request->password,$new_password_hashed)  ){
+        //     //migration tool
+        //     if(env('APP_NAME') == 'CrystaltechData'){ 
+        //         if($djangoHash != NULL && ! Hash::check($request->password,$new_password_hashed)  ){
+        //             if (Hash::check($request->password,$djangoHash)) {
+        //                     $new_password_hash = Hash::make($password);
+        //                     $user_check->update([
+        //                         'password' => $new_password_hash
+        //                     ]);
+        //                     $user_check->refresh();
+        //                     // echo "Password is valid!";exit;
+        //             }   
+        //         }
+        //     }else{
+        //         if($djangoHash != NULL && ! Hash::check($request->password,$new_password_hashed)  ){
                 
-                    if ($this->verifyDjangoPassword($password, $djangoHash)) {
-                        $new_password_hash = Hash::make($password);
-                        $user_check->update([
-                            'password' => $new_password_hash
-                        ]);
-                        $user_check->refresh();
-                    } 
+        //             if ($this->verifyDjangoPassword($password, $djangoHash)) {
+        //                 $new_password_hash = Hash::make($password);
+        //                 $user_check->update([
+        //                     'password' => $new_password_hash
+        //                 ]);
+        //                 $user_check->refresh();
+        //             } 
                     
-                }
-            }
+        //         }
+        //     }
             
 
-            //we not expecting the customer to have password as password - NAH
-            //if old account gets here, then password is updated
+        //     //we not expecting the customer to have password as password - NAH
+        //     //if old account gets here, then password is updated
             
-            if( $user_check->api_token == NULL){
-                $user_idd = $user_check->id;
-                $cleaned_userid = str_replace('-', '', $user_idd);
-                $randomLetters = substr(str_shuffle('abcdefghijklmnopqrstuvwxyz'), 0, 3);
-                $api_token = rand(11111,99999).$cleaned_userid.time().$randomLetters;
-                // $api_token = str()->random(200).time();
-                $user_check->update([
-                    'api_token' => $api_token
-                ]);
-            }
+        //     if( $user_check->api_token == NULL){
+        //         $user_idd = $user_check->id;
+        //         $cleaned_userid = str_replace('-', '', $user_idd);
+        //         $randomLetters = substr(str_shuffle('abcdefghijklmnopqrstuvwxyz'), 0, 3);
+        //         $api_token = rand(11111,99999).$cleaned_userid.time().$randomLetters;
+        //         // $api_token = str()->random(200).time();
+        //         $user_check->update([
+        //             'api_token' => $api_token
+        //         ]);
+        //     }
 
 
-            $dataaa['user'] = $user_check; 
-            $coupon_check = (new CouponCodeService())->determine_if_user_qualify($dataaa);
-            $user_check->coupons = $coupon_check['status'] == 1 ? $coupon_check['coupon_info'] : NULL;
+        //     $dataaa['user'] = $user_check; 
+        //     $coupon_check = (new CouponCodeService())->determine_if_user_qualify($dataaa);
+        //     $user_check->coupons = $coupon_check['status'] == 1 ? $coupon_check['coupon_info'] : NULL;
 
 
-            $check_login = DB::table('sessions')->where('user_id',$user_check->id)->first();
-            if($check_login){
-                //a login exists somewhere
-                DB::table('sessions')->where('user_id',$user_check->id)->update([
-                    'user_id' => NULL,
-                    'last_activity' => 172520111
-                ]);
-            }      
-        }
+        //     $check_login = DB::table('sessions')->where('user_id',$user_check->id)->first();
+        //     if($check_login){
+        //         //a login exists somewhere
+        //         DB::table('sessions')->where('user_id',$user_check->id)->update([
+        //             'user_id' => NULL,
+        //             'last_activity' => 172520111
+        //         ]);
+        //     }      
+        // }
 
 
-        return $this->loginPipeline($request)->then(function ($request) {
-            return app(LoginResponse::class);
-        });
+        // return $this->loginPipeline($request)->then(function ($request) {
+        //     return app(LoginResponse::class);
+        // });
     }
 
 
