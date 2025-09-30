@@ -2,10 +2,29 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
+use Exception;
+use App\Models\User;
 use Inertia\Inertia;
+use Illuminate\Http\Request;
+use Laravel\Fortify\Fortify;
+use Laravel\Fortify\Features;
+use App\Models\AdminColorSetting;
+use Illuminate\Pipeline\Pipeline;
+use Illuminate\Support\Facades\DB;
+use App\Models\LandingPagesSetting;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Session;
+use App\Http\Services\CouponCodeService;
+use App\Http\Services\CrystalPayService;
+use App\Http\Services\VirtualAccountService;
+use Laravel\Fortify\Contracts\LoginResponse;
+use Laravel\Fortify\Http\Requests\LoginRequest;
+use Laravel\Fortify\Actions\AttemptToAuthenticate;
+use Laravel\Fortify\Actions\EnsureLoginIsNotThrottled;
+use Laravel\Fortify\Actions\PrepareAuthenticatedSession;
+use Laravel\Fortify\Actions\RedirectIfTwoFactorAuthenticatable;
 
 class InertiaLoginController extends Controller
 {
@@ -18,23 +37,168 @@ class InertiaLoginController extends Controller
     // Handle login form submission
     public function store(Request $request)
     {
-        $credentials = $request->validate([
-            'email' => ['required', 'email'],
-            'password' => ['required'],
-        ]);
+        // $credentials = $request->validate([
+        //     'email' => ['required'],
+        //     'password' => ['required'],
+        // ]);
 
-        if (Auth::attempt($credentials, $request->boolean('remember'))) {
-            $request->session()->regenerate();
+        // if (Auth::attempt($credentials, $request->boolean('remember'))) {
+        //     $request->session()->regenerate();
 
-            return redirect()->intended('/dashboard');
-            // return redirect()->route('dashboard');
+        //     return redirect()->intended('/dashboard');
+        //     // return redirect()->route('dashboard');
+        // }
+
+        // // dd('got here');
+
+
+        // return back()->withErrors([
+        //     'email' => 'Invalid credentials.',
+        // ])->onlyInput('email');
+
+
+        $password = $request->password;
+
+        // $user_check = User::select('id','api_token','old_platform_password','password')->where('email',$request->email)->first();
+        $username_param = $request->email;
+        $user_check = User::where('email', $username_param)
+        ->orWhere('username', $username_param)
+        ->orWhere('phone_number', $username_param)
+        ->first();
+
+        if($user_check){
+
+            if ( $user_check->is_deactivated == 1 ) {
+                logger('deactivated oh');
+                Session::flash('failure','Sorry, this account has been deactivated.');
+                return redirect()->back();    
+             }
+
+            $request->merge([
+                'user' => $user_check
+            ]);
+
+            $djangoHash = $user_check->old_platform_password;
+            $new_password_hashed = $user_check->password;
+
+            
+
+            //migration tool
+            if(env('APP_NAME') == 'CrystaltechData'){ 
+                if($djangoHash != NULL && ! Hash::check($request->password,$new_password_hashed)  ){
+                    if (Hash::check($request->password,$djangoHash)) {
+                            $new_password_hash = Hash::make($password);
+                            $user_check->update([
+                                'password' => $new_password_hash
+                            ]);
+                            $user_check->refresh();
+                            // echo "Password is valid!";exit;
+                    }   
+                }
+            }else{
+                if($djangoHash != NULL && ! Hash::check($request->password,$new_password_hashed)  ){
+                
+                    if ($this->verifyDjangoPassword($password, $djangoHash)) {
+                        $new_password_hash = Hash::make($password);
+                        $user_check->update([
+                            'password' => $new_password_hash
+                        ]);
+                        $user_check->refresh();
+                    } 
+                    
+                }
+            }
+            
+
+            //we not expecting the customer to have password as password - NAH
+            //if old account gets here, then password is updated
+            
+            if( $user_check->api_token == NULL){
+                $user_idd = $user_check->id;
+                $cleaned_userid = str_replace('-', '', $user_idd);
+                $randomLetters = substr(str_shuffle('abcdefghijklmnopqrstuvwxyz'), 0, 3);
+                $api_token = rand(11111,99999).$cleaned_userid.time().$randomLetters;
+                // $api_token = str()->random(200).time();
+                $user_check->update([
+                    'api_token' => $api_token
+                ]);
+            }
+
+
+            $dataaa['user'] = $user_check; 
+            $coupon_check = (new CouponCodeService())->determine_if_user_qualify($dataaa);
+            $user_check->coupons = $coupon_check['status'] == 1 ? $coupon_check['coupon_info'] : NULL;
+
+
+            $check_login = DB::table('sessions')->where('user_id',$user_check->id)->first();
+            if($check_login){
+                //a login exists somewhere
+                DB::table('sessions')->where('user_id',$user_check->id)->update([
+                    'user_id' => NULL,
+                    'last_activity' => 172520111
+                ]);
+            }      
         }
 
-        dd('got here');
+
+        return $this->loginPipeline($request)->then(function ($request) {
+            return app(LoginResponse::class);
+        });
+    }
 
 
-        return back()->withErrors([
-            'email' => 'Invalid credentials.',
-        ])->onlyInput('email');
+    /**
+     * Attempt to authenticate a new session.
+     *
+     * @param  \Laravel\Fortify\Http\Requests\LoginRequest  $request
+     * @return mixed
+     */
+    function verifyDjangoPassword($password, $djangoHash)
+    {
+        // Format: algorithm$iterations$salt$hash
+        [$algo, $iterations, $salt, $hash] = explode('$', $djangoHash);
+    
+        if ($algo !== 'pbkdf2_sha256') {
+            throw new Exception('Unsupported hash algorithm.');
+        }
+    
+        // Decode base64 hash
+        $expected = base64_decode($hash);
+    
+        // Create PBKDF2 hash using SHA-256
+        $derivedKey = hash_pbkdf2('sha256', $password, $salt, (int)$iterations, strlen($expected), true);
+    
+        return hash_equals($expected, $derivedKey);
+    }
+
+
+
+    /**
+     * Get the authentication pipeline instance.
+     *
+     * @param  \Laravel\Fortify\Http\Requests\LoginRequest  $request
+     * @return \Illuminate\Pipeline\Pipeline
+     */
+    protected function loginPipeline(LoginRequest $request)
+    {
+
+        if (Fortify::$authenticateThroughCallback) {
+            return (new Pipeline(app()))->send($request)->through(array_filter(
+                call_user_func(Fortify::$authenticateThroughCallback, $request)
+            ));
+        }
+
+        if (is_array(config('fortify.pipelines.login'))) {
+            return (new Pipeline(app()))->send($request)->through(array_filter(
+                config('fortify.pipelines.login')
+            ));
+        }
+
+        return (new Pipeline(app()))->send($request)->through(array_filter([
+            config('fortify.limiters.login') ? null : EnsureLoginIsNotThrottled::class,
+            Features::enabled(Features::twoFactorAuthentication()) ? RedirectIfTwoFactorAuthenticatable::class : null,
+            AttemptToAuthenticate::class,
+            PrepareAuthenticatedSession::class,
+        ]));
     }
 }
