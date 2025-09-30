@@ -64,8 +64,8 @@ class InertiaLoginController extends Controller
         }
 
         return back()->withErrors([
-            'login' => 'Invalid credentials.',
-        ])->onlyInput('login');
+            'email' => 'Invalid credentials.',
+        ])->onlyInput('email');
 
         // $credentials = $request->validate([
         //     'email' => ['required'],
