@@ -34,7 +34,7 @@ export default function WalletBalance({ user }) {
         href={route("inertia.virtual_accounts.index")}
         className="text-sm font-semibold underline hover:text-white/90 transition"
       >
-        + Top Up
+        + Fund Wallet
       </Link>
     </div>
   );
