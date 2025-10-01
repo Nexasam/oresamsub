@@ -6,21 +6,7 @@ export default function ProductButtons({ loggingOut, setLoggingOut }) {
   return (
     <div className="grid grid-cols-3 sm:grid-cols-4 gap-3 text-center text-sm md:text-base mt-4">
 
-      {/* Airtime */}
-      <Link
-        href={route("inertia.airtime.index")}
-        className="group p-3 rounded-xl shadow hover:shadow-md transition transform hover:scale-[1.05] bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200"
-      >
-        <div className="w-10 h-10 mx-auto rounded-full bg-gradient-to-r from-emerald-500 to-green-500 flex items-center justify-center text-white text-xl shadow-sm">
-          📞
-        </div>
-        <div className="mt-2 font-medium text-[13px] md:text-sm">Airtime</div>
-      </Link>
-
-      
-
       {/* Data */}
-     
       <Link
         href={route("inertia.data.index")}
         className="group p-3 rounded-xl shadow hover:shadow-md transition transform hover:scale-[1.05] bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200 flex flex-col items-center"
@@ -32,6 +18,16 @@ export default function ProductButtons({ loggingOut, setLoggingOut }) {
       </Link>
 
 
+      {/* Airtime */}
+      <Link
+        href={route("inertia.airtime.index")}
+        className="group p-3 rounded-xl shadow hover:shadow-md transition transform hover:scale-[1.05] bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200"
+      >
+        <div className="w-10 h-10 mx-auto rounded-full bg-gradient-to-r from-emerald-500 to-green-500 flex items-center justify-center text-white text-xl shadow-sm">
+          📞
+        </div>
+        <div className="mt-2 font-medium text-[13px] md:text-sm">Airtime</div>
+      </Link>
 
       {/* Power */}
       <a       
