@@ -55,7 +55,7 @@ export default function Dashboard({ transactions: initialTransactions }) {
          {/* Marketer/Admin Shortcut */}
          {(user.is_marketer === 1 || user.role?.role_name === "Admin") && (
         <Link href={route("marketer.dashboard")}>
-          <div className="bg-green-800 text-white p-2 rounded-xl mb-4 mt-2">
+          <div className="bg-green-800 text-white p-2 rounded-xl my-4">
             <h1 className="text-center">Go to Marketer Dashboard</h1>
           </div>
         </Link>
