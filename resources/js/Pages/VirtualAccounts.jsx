@@ -34,7 +34,7 @@ export default function VirtualAccounts() {
       {/* Full Page Card */}
       <div className="bg-white dark:bg-gray-800 text-gray-700 dark:text-white mt-6 pb-16 rounded-xl shadow overflow-hidden font-inter">
         <div className="p-4 border-b border-gray-200 dark:border-gray-700 font-semibold text-gray-700 dark:text-white">
-          My Virtual Accounts
+          Fund any of the accounts below:
         </div>
 
         <div className="p-4 space-y-4">
