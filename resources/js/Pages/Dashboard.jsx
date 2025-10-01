@@ -8,6 +8,7 @@ import CommunityCard from "@/Components/CommunityCard";
 import WalletBalance from "@/Components/WalletBalance";
 import Announcements from "@/Components/Announcements";
 
+
 export default function Dashboard({ transactions: initialTransactions }) {
   const { props } = usePage();
   const { auth, announcements, impersonator } = props;
@@ -51,8 +52,8 @@ export default function Dashboard({ transactions: initialTransactions }) {
       {/* Wallet */}
       <WalletBalance user={user} />
 
-      {/* Marketer/Admin Shortcut */}
-      {(user.is_marketer === 1 || user.role?.role_name === "Admin") && (
+         {/* Marketer/Admin Shortcut */}
+         {(user.is_marketer === 1 || user.role?.role_name === "Admin") && (
         <Link href={route("marketer.dashboard")}>
           <div className="bg-green-800 text-white p-2 rounded-xl mb-4">
             <h1 className="text-center">Go to Marketer Dashboard</h1>
@@ -66,14 +67,113 @@ export default function Dashboard({ transactions: initialTransactions }) {
       {/* Invite & Earn */}
       <InviteEarn referralLink={referralLink} />
 
+     
       {/* Product Buttons */}
       <ProductButtons loggingOut={loggingOut} setLoggingOut={setLoggingOut} />
 
       {/* Community Section */}
       <CommunityCard customerCategory={user.customer_category} />
 
+
       {/* Transactions Table */}
-      {/* ... rest of your code unchanged ... */}
+      <div className="bg-white dark:bg-gray-800 mt-6 rounded-xl shadow overflow-hidden">
+        <div className="p-4 border-b border-gray-200 dark:border-gray-700 font-semibold text-gray-700 dark:text-gray-200">
+          Recent Transactions
+        </div>
+
+        <div className="relative max-h-[400px] overflow-y-auto divide-y divide-gray-200 dark:divide-gray-700 text-sm scrollbar-thin scrollbar-thumb-emerald-500 scrollbar-track-gray-200 dark:scrollbar-track-gray-900">
+          {transactions.map((tx) => {
+            const status = getStatus(tx.status);
+            const time = new Date(tx.created_at).toLocaleString();
+
+            return (
+              <div key={tx.id} className="relative">
+                <div
+                  onClick={() => setOpenTransactionId(tx.id)}
+                  className="px-4 py-3 flex justify-between items-center bg-gray-50 dark:bg-gray-900 border-b border-gray-100 dark:border-gray-700 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-800 transition rounded"
+                >
+                  <div>
+                    <div className="font-semibold text-xs text-gray-800 dark:text-gray-100">
+                      {tx.transaction_category?.toUpperCase()}
+                    </div>
+                    <div className="text-xs text-gray-500 dark:text-gray-400">{time}</div>
+                  </div>
+
+                  <div className="text-right">
+                    <div className={`font-bold ${status.color}`}>
+                      ₦{Number(tx.discounted_amount ?? tx.amount).toFixed(2)}
+                    </div>
+                    <div className={`text-xs ${status.color2}`}>{status.text}</div>
+                  </div>
+                </div>
+
+                {/* Transaction Details Modal */}
+                {openTransactionId === tx.id && (
+                  <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+                    <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg max-w-sm w-full p-6">
+                      <h2 className="text-lg font-bold text-gray-800 dark:text-gray-100 mb-4">
+                        Transaction Details
+                      </h2>
+
+                      <div className="space-y-2 text-sm text-gray-700 dark:text-gray-300">
+                        <div className="flex justify-between">
+                          <span>Plan:</span>
+                          <span className="font-semibold">{tx.product_plan?.product_plan_name ?? "—"}</span>
+                        </div>
+
+                        <div className="flex justify-between">
+                          <span>Phone:</span>
+                          <span className="font-semibold">{tx.phone_number ?? "—"}</span>
+                        </div>
+
+                        <div className="flex justify-between">
+                          <span>Discounted Amount:</span>
+                          <span className="font-semibold">
+                            ₦{Number(tx.discounted_amount ?? tx.amount).toFixed(2)}
+                          </span>
+                        </div>
+
+                        <div className="flex justify-between">
+                          <span>Amount:</span>
+                          <span className="font-semibold">₦{Number(tx.amount).toFixed(2)}</span>
+                        </div>
+
+                        <div className="flex justify-between">
+                          <span>Status:</span>
+                          <span className={status.color2}>{status.text}</span>
+                        </div>
+
+                        <div className="flex justify-between">
+                          <span>Date:</span>
+                          <span>{time}</span>
+                        </div>
+
+                        <div className="flex justify-between">
+                          <span>Category:</span>
+                          <span>{tx.transaction_category?.toUpperCase()}</span>
+                        </div>
+                      </div>
+
+                      <div className="mt-6 text-center">
+                        <button
+                          onClick={() => setOpenTransactionId(null)}
+                          className="px-4 py-2 bg-green-500 hover:bg-green-600 text-white rounded text-sm"
+                        >
+                          Close
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+            );
+          })}
+
+          <div className="sticky bottom-0 text-center text-[11px] text-gray-400 dark:text-gray-500 bg-gray-50 dark:bg-gray-900 py-1 border-t border-gray-200 dark:border-gray-700">
+            Scroll to view more ⬇️
+          </div>
+        </div>
+      </div>
     </DashboardLayout>
   );
 }

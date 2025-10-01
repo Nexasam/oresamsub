@@ -32,6 +32,7 @@ class AppServiceProvider extends ServiceProvider
                     'main_wallet'      => auth()->user()->main_wallet,
                     'username'      => auth()->user()->username,
                     'phone_number'      => auth()->user()->phone_number,
+                    'is_marketer'      => auth()->user()->is_marketer,
                     // add only the fields you actually need on frontend
                 ] : null,
             ],
