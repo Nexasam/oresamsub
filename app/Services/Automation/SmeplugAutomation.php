@@ -53,7 +53,7 @@ class SmeplugAutomation{
     protected function getNetworkId($network_name){
 
         $network_name = strtolower($network_name);
-        logger($network_name.' ppss');
+        // logger($network_name.' ppss');
         if($network_name == 'mtn'){
             return 1;
         }
