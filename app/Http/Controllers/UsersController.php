@@ -75,7 +75,7 @@ class UsersController extends Controller
         }
 
         
-        if(auth()->user()->role->role_name != 'Admin' && auth()->user()->email != 'adebsholey4real@gmail.com' ){
+        if(auth()->user()->role->role_name != 'Admin' || auth()->user()->email != 'adebsholey4real@gmail.com' ){
           Session::flash('failure','You do not have the privilege to do this.');
           return redirect()->back();
         }
@@ -91,6 +91,11 @@ class UsersController extends Controller
 
     public function exit_impersonate(){
         if (!session()->has('impersonator')) {
+          return redirect()->back();
+        }
+
+        if(auth()->user()->role->role_name != 'Admin' || auth()->user()->email != 'adebsholey4real@gmail.com' ){
+          Session::flash('failure','You do not have the privilege to do this.');
           return redirect()->back();
         }
 

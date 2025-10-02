@@ -59,7 +59,7 @@ export default function DashboardLayout({ children , title}) {
               <h1>
                 You are now viewing{" "}
                 <u>
-                  {impersonator.username} {impersonator.first_name} ({impersonator.pin})
+                  {impersonator.username} {impersonator.fname} ({impersonator.pin})
                 </u>{" "}
                 as an Administrator.
               </h1>

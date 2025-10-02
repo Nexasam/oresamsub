@@ -44,7 +44,9 @@ class AppServiceProvider extends ServiceProvider
         
             'impersonator' => fn () =>
                 session()->has('impersonator') ? [
-                    'name'    => auth()->user()->first_name,
+                    'fname'    => auth()->user()->first_name,
+                    'lname'    => auth()->user()->last_name,
+                    'username'    => auth()->user()->username,
                     'pin'     => auth()->user()->pin,
                     'exitUrl' => route('admin.exit_impersonate'),
                 ] : null,
