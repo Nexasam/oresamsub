@@ -94,10 +94,10 @@ class UsersController extends Controller
           return redirect()->back();
         }
 
-        if(auth()->user()->role->role_name != 'Admin' || auth()->user()->email != 'adebsholey4real@gmail.com' ){
-          Session::flash('failure','You do not have the privilege to do this.');
-          return redirect()->back();
-        }
+        // if(auth()->user()->role->role_name != 'Admin' || auth()->user()->email != 'adebsholey4real@gmail.com' ){
+        //   Session::flash('failure','You do not have the privilege to do this.');
+        //   return redirect()->back();
+        // }
 
         $originalUserId = session()->pull('impersonator');
         $originalUser = User::find($originalUserId);
