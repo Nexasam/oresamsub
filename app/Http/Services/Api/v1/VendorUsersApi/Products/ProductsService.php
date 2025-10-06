@@ -359,22 +359,54 @@ class ProductsService{
         $check_purchase_limit =  ProductsService::check_purchase_limit($data1);
         if($check_purchase_limit['status'] == -1){
             
+            // $description = 'Purchase of data';
+            // $creationData['transaction_category'] = 'data';
+            // $creationData['txn_reference'] = $txn_reference;
+            // $creationData['user_id'] = $user_id;
+            // $creationData['set_for_manual'] = 0;
+            // $creationData['wallet_category'] = $wallet_category;
+            // $creationData['product_plan_id'] = $product_plan_id;
+            // $creationData['phone_number'] = $phone_number;
+            // $creationData['amount'] = $amount;
+            // $creationData['discounted_amount'] = $amount;
+            // $creationData['status'] = -1;
+            // $creationData['balance_before'] = $user_details->main_wallet;
+            // $creationData['balance_after'] = $user_details->main_wallet;
+            // $creationData['description'] = $description;
+            // $creationData['user_screen_message'] = 'Sorry, something went wrong';
+            // $creationData['admin_screen_message'] =$check_purchase_limit['message'];
+            // $transaction = Transaction::create($creationData);
+
+            // $walletLog['user_id'] = $user_id;
+            // $walletLog['transaction_category'] = 'DATA_FROM_MAIN_WALLET';
+            // $walletLog['balance_before'] = $user_details->main_wallet;
+            // $walletLog['balance_after'] = $user_details->main_wallet;
+            // $walletLog['transaction_id'] = $transaction->id;
+            // $walletLog['action_by'] = $user_id;           
+            // $walletLog['description'] = 'Data Purchase from main wallet';
+            // $this->log_wallet_transactions($walletLog);
+            // return ['status'=>'-1', 'message'=>$check_purchase_limit['message']  ];
+
+
+
             $description = 'Purchase of data';
             $creationData['transaction_category'] = 'data';
+            $creationData['transaction_route'] = 'api';
             $creationData['txn_reference'] = $txn_reference;
             $creationData['user_id'] = $user_id;
-            $creationData['set_for_manual'] = 0;
+            $creationData['set_for_manual'] = $set_for_manual ?? 0;
             $creationData['wallet_category'] = $wallet_category;
             $creationData['product_plan_id'] = $product_plan_id;
-            $creationData['phone_number'] = $phone_number;
+            $creationData['phone_number'] = $phone_number ?? NULL;
             $creationData['amount'] = $amount;
+            $creationData['coupon_code_id'] = $coupon ?? NULL;
             $creationData['discounted_amount'] = $amount;
             $creationData['status'] = -1;
-            $creationData['balance_before'] = $user_details->main_wallet;
+            $creationData['balance_before'] =$user_details->main_wallet;
             $creationData['balance_after'] = $user_details->main_wallet;
-            $creationData['description'] = $description;
-            $creationData['user_screen_message'] = 'Sorry, something went wrong';
-            $creationData['admin_screen_message'] =$check_purchase_limit['message'];
+            $creationData['description'] = $description ?? 'Purchase of data';
+            $creationData['user_screen_message'] = $check_purchase_limit['message'];
+            $creationData['admin_screen_message'] = $check_purchase_limit['message'];
             $transaction = Transaction::create($creationData);
 
 
@@ -386,7 +418,37 @@ class ProductsService{
             $walletLog['action_by'] = $user_id;           
             $walletLog['description'] = 'Data Purchase from main wallet';
             $this->log_wallet_transactions($walletLog);
-            return ['status'=>'-1', 'message'=>$check_purchase_limit['message']  ];
+
+       
+            $status = -1;
+            return [
+                'id'=>$transaction->id,
+                'txn_reference'=>$txn_reference ?? NULL,
+                'status'=>-1,
+                'actual_status' => -1,
+                'status_code' => 503,
+                'message' => $check_purchase_limit['message'] ?? 'Transaction failed',
+                'apiresponse' => $check_purchase_limit['message'] ?? 'Transaction failed',
+                'user_message' => $check_purchase_limit['message'] ?? 'Transaction failed',
+                'admin_message' => $check_purchase_limit['message'] ?? 'Transaction failed',
+                "balance_before" => $user_details->main_wallet ?? NULL,
+                "balance_after" =>  $user_details->main_wallet ?? NULL,
+                "plan" => $plan_details->api_id,
+                "Status" => match($status) {
+                    "1"   => "successful",
+                    "2"  => "refunded",
+                    "-1"  => "failed",
+                    1   => "successful",
+                    2  => "refunded",
+                    -1  => "failed",
+                    default => "failed"
+                },
+                "plan_network" => Network::where('id',$network_id)->value('network_name'),
+                "plan_name" => $plan_details->product_plan_name ?? NULL,
+                'plan_amount'=>$amount ?? NULL, 
+                'create_date'=>date('Y-m-d H:i:s'), 
+                'data' => $display_results ?? NULL
+            ];
         }
 
 
@@ -414,7 +476,69 @@ class ProductsService{
                             $wallet_before = $user_details->main_wallet;
                             $total_amount = $phone_numbers_count * $amount;
                             if($total_amount > $wallet_before || $wallet_before < 0){
-                                return ['status'=>'-1', 'message'=>'Insufficient wallet balance...' ];
+                                // return ['status'=>'-1', 'message'=>'Insufficient wallet balance...' ];
+                                $description = 'Purchase of data';
+                                $creationData['transaction_category'] = 'data';
+                                $creationData['transaction_route'] = 'api';
+                                $creationData['txn_reference'] = $txn_reference;
+                                $creationData['user_id'] = $user_id;
+                                $creationData['set_for_manual'] = $set_for_manual ?? 0;
+                                $creationData['wallet_category'] = $wallet_category;
+                                $creationData['product_plan_id'] = $product_plan_id;
+                                $creationData['phone_number'] = $phone_numbers_array[0];
+                                $creationData['amount'] = $amount;
+                                $creationData['coupon_code_id'] = $coupon ?? NULL;
+                                $creationData['discounted_amount'] = $amount;
+                                $creationData['status'] = -1;
+                                $creationData['balance_before'] =$user_details->main_wallet;
+                                $creationData['balance_after'] = $user_details->main_wallet;
+                                $creationData['description'] = $description ?? 'Purchase of data';
+                                $creationData['user_screen_message'] = 'Insufficient balance';
+                                $creationData['admin_screen_message'] = 'Insufficient balance';
+                                $transaction = Transaction::create($creationData);
+
+
+                                $walletLog['user_id'] = $user_id;
+                                $walletLog['transaction_category'] = 'DATA_FROM_MAIN_WALLET';
+                                $walletLog['balance_before'] = $user_details->main_wallet;
+                                $walletLog['balance_after'] = $user_details->main_wallet;
+                                $walletLog['transaction_id'] = $transaction->id;
+                                $walletLog['action_by'] = $user_id;           
+                                $walletLog['description'] = 'Data Purchase from main wallet';
+                                $this->log_wallet_transactions($walletLog);
+
+                                DB::commit();                                
+
+                                $status = -1;
+                                return [
+                                    'id'=>$transaction->id,
+                                    'txn_reference'=>$txn_reference ?? NULL,
+                                    'status'=>-1,
+                                    'actual_status' => -1,
+                                    'status_code' => 503,
+                                    'message' => 'Insufficient wallet balance',
+                                    'apiresponse' => $user_message ?? 'Insufficient balance',
+                                    'user_message' => $user_message ?? 'Insufficient balance',
+                                    'admin_message' => $admin_message ?? 'Insufficient balance',
+                                    "balance_before" => $user_details->main_wallet ?? NULL,
+                                    "balance_after" =>  $user_details->main_wallet ?? NULL,
+                                    "plan" => $plan_details->api_id,
+                                    "Status" => match($status) {
+                                        "1"   => "successful",
+                                        "2"  => "refunded",
+                                        "-1"  => "failed",
+                                        1   => "successful",
+                                        2  => "refunded",
+                                        -1  => "failed",
+                                        default => "failed"
+                                    },
+                                    "plan_network" => Network::where('id',$network_id)->value('network_name'),
+                                    "plan_name" => $plan_details->product_plan_name ?? NULL,
+                                    'plan_amount'=>$amount ?? NULL, 
+                                    'create_date'=>date('Y-m-d H:i:s'), 
+                                    'data' => $display_results ?? NULL
+                                ];
+
                             }
                     
                             //calling the actual vending via the automation:
@@ -541,25 +665,22 @@ class ProductsService{
 
                             DB::commit();
                     
-                            if($failure > 0){
-                                return [ 
-                                'status'=>2, 
-                                'user_message' => $user_message,
-                                'admin_message' => $admin_message,
-                                'message'=>" $failure issue(s) found. Check transaction history", 
-                                'data' => $display_results
-                              ];  
+                            // if($failure > 0){
+                            //     return [ 
+                            //     'status'=>2, 
+                            //     'user_message' => $user_message,
+                            //     'admin_message' => $admin_message,
+                            //     'message'=>" $failure issue(s) found. Check transaction history", 
+                            //     'data' => $display_results
+                            //   ];  
 
-                            }
-
-
-
+                            // }
 
 
                             return [
                                 'id'=>$transaction->id,
                                 'txn_reference'=>$txn_reference,
-                                'status'=>1,
+                                'status'=>$status,
                                 'actual_status' => $status,
                                 'message' => $user_message,
                                 'apiresponse' => $user_message,
@@ -572,6 +693,9 @@ class ProductsService{
                                     "1"   => "successful",
                                     "2"  => "refunded",
                                     "-1"  => "failed",
+                                    1   => "successful",
+                                    2  => "refunded",
+                                    -1  => "failed",
                                     default => "unknown"
                                 },
                                 "plan_network" => Network::where('id',$network_id)->value('network_name'),
@@ -713,7 +837,67 @@ class ProductsService{
             DB::rollBack();
             logger($exception->getMessage().' on line: '. $exception->getLine());
 
-            return ['status'=>'-1', 'message'=>'Something went wrong... Please try again', 'data'=>[]];
+            $description = 'Purchase of data';
+            $creationData['transaction_category'] = 'data';
+            $creationData['transaction_route'] = 'api';
+            $creationData['txn_reference'] = $txn_reference;
+            $creationData['user_id'] = $user_id;
+            $creationData['set_for_manual'] = $set_for_manual ?? 0;
+            $creationData['wallet_category'] = $wallet_category;
+            $creationData['product_plan_id'] = $product_plan_id;
+            $creationData['phone_number'] = $phone_number ?? NULL;
+            $creationData['amount'] = $amount;
+            $creationData['coupon_code_id'] = $coupon ?? NULL;
+            $creationData['discounted_amount'] = $amount;
+            $creationData['status'] = -1;
+            $creationData['balance_before'] =$user_details->main_wallet;
+            $creationData['balance_after'] = $user_details->main_wallet;
+            $creationData['description'] = $description ?? 'Purchase of data';
+            $creationData['user_screen_message'] = $check_purchase_limit['message'];
+            $creationData['admin_screen_message'] = $check_purchase_limit['message'];
+            $transaction = Transaction::create($creationData);
+
+
+            $walletLog['user_id'] = $user_id;
+            $walletLog['transaction_category'] = 'DATA_FROM_MAIN_WALLET';
+            $walletLog['balance_before'] = $user_details->main_wallet;
+            $walletLog['balance_after'] = $user_details->main_wallet;
+            $walletLog['transaction_id'] = $transaction->id;
+            $walletLog['action_by'] = $user_id;           
+            $walletLog['description'] = 'Data Purchase from main wallet';
+            $this->log_wallet_transactions($walletLog);
+
+
+            return [
+                'id'=>$transaction->id,
+                'txn_reference'=>$txn_reference ?? NULL,
+                'status'=>-1,
+                'actual_status' => -1,
+                'status_code' => 500,
+                'message' => $user_message ?? 'Transaction failed',
+                'apiresponse' => $user_message ?? 'Transaction failed',
+                'user_message' => $user_message ?? 'Transaction failed',
+                'admin_message' => $admin_message ?? 'Transaction failed',
+                "balance_before" => $user_details->main_wallet ?? NULL,
+                "balance_after" =>  $user_details->main_wallet ?? NULL,
+                "plan" => $plan_details->api_id,
+                "Status" => match($status) {
+                    "1"   => "successful",
+                    "2"  => "refunded",
+                    "-1"  => "failed",
+                    1   => "successful",
+                    2  => "refunded",
+                    -1  => "failed",
+                    default => "failed"
+                },
+                "plan_network" => Network::where('id',$network_id)->value('network_name'),
+                "plan_name" => $plan_details->product_plan_name ?? NULL,
+                'plan_amount'=>$amount ?? NULL, 
+                'create_date'=>date('Y-m-d H:i:s'), 
+                'data' => $display_results ?? NULL
+            ];
+
+            // return ['status'=>'-1', 'message'=>'Something went wrong... Please try again', 'data'=>[]];
         }
 
     }

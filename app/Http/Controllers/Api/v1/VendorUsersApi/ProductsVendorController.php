@@ -36,6 +36,7 @@ class ProductsVendorController extends Controller
      public function fetch_data_plans(Request $request){  
         $network = $request->network_id ?? '';
         if($network == ''){
+            return $this->error('Network ID is required');    
 
         }
 
@@ -148,13 +149,6 @@ class ProductsVendorController extends Controller
             return $this->error($validator->errors()->first(), code: 403 );    
         }
 
-        //TODO: revamp to make better
-        // $bearer_token = $request->bearerToken(); 
-        // $user_details = $this->fetch_user_records_with_token($bearer_token);
-        // if(! $user_details){
-        //     return $this->error('Authentication failed', data: [], code: 403 );    
-        // }
-
         // $network_id = Network::where('api_id',$request->network)->value('id');
         $product_plan_id = ProductPlan::with('product_plan_category')->where('api_id',$request->plan)->value('id');
         $getnetwork = ProductPlan::with('product_plan_category.network')->where('api_id',$request->plan)->first();
@@ -176,28 +170,31 @@ class ProductsVendorController extends Controller
         $status = $buy_data['status'];
         $message = $buy_data['message'];
         $data = $buy_data['data'] ?? [];
-        if($status == 1){
-            $data2 =[
-                'id'=>$buy_data['id'],
-                'txn_reference'=>$buy_data['txn_reference'],
-                'status'=>$buy_data['status'],
-                'Status'=>$buy_data['Status'],
-                'plan'=>$buy_data['plan'],
-                'balance_before'=>$buy_data['balance_before'],
-                'balance_after'=>$buy_data['balance_after'],
-                'message'=>$buy_data['message'],
-                'user_message'=>$buy_data['user_message'],
-                'admin_message'=>$buy_data['admin_message'],
-                'plan_network'=>$buy_data['plan_network'],
-                'plan_name'=>$buy_data['plan_name'],
-                'plan_amount'=>$buy_data['plan_amount'],
-                'create_date'=>$buy_data['create_date']
-              ];
+        
+        $data2 =[
+            'id'=>$buy_data['id'],
+            'txn_reference'=>$buy_data['txn_reference'] ?? NULL,
+            'status'=>$buy_data['status'] ?? NULL,
+            'Status'=>$buy_data['Status'] ?? NULL,
+            'plan'=>$buy_data['plan'] ?? NULL,
+            'balance_before'=>$buy_data['balance_before'],
+            'balance_after'=>$buy_data['balance_after'],
+            'message'=>$buy_data['message'],
+            'user_message'=>$buy_data['user_message'],
+            'admin_message'=>$buy_data['admin_message'],
+            'plan_network'=>$buy_data['plan_network'],
+            'plan_name'=>$buy_data['plan_name'],
+            'plan_amount'=>$buy_data['plan_amount'],
+            'create_date'=>$buy_data['create_date']
+        ];
 
+        if($status == 1){
             return $this->success($buy_data['message'],data: $data2);    
         }
 
-        return $this->error( $message ,data: $data, code: 500);     
+        $status_code = $buy_data['status_code'] ?? 500;
+        return $this->error( $message ,data: $data2, code: $status_code);   
+
     }
 
     public function fetch_transaction(Request $request){

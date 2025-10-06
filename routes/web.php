@@ -100,13 +100,7 @@ Route::middleware(['set_locale'])->group(function () {
                 Route::get('/electricity', [InertiaDashboardController::class, 'electricity'])->name('inertia.electricity.index');   
                 Route::get('/virtual-accounts', [InertiaDashboardController::class, 'virtual_accounts'])->name('inertia.virtual_accounts.index');   
                 Route::get('/transactions', [InertiaDashboardController::class, 'transactions'])->name('inertia.transactions.index');   
-                
-                // Route::get('oresamsub/dashboard', function () {
-                //     $data['transactions'] = App\Models\Transaction::with(relations: 'product_plan')->where('user_id',auth()->id())->limit(10)->latest()->get();
-                //     $data['announcements'] = App\Models\Announcement::latest()->get();
-                //     return view('oresamsub.pages.dashboard')->with($data);
-                // })->name('ore.dashboard');
-
+        
                 Route::get('oresamsub/airtime', function () {
                     $data['networks'] = App\Models\Network::get();
                     return view('oresamsub.pages.airtime')->with($data);
@@ -386,7 +380,7 @@ Route::middleware(['set_locale'])->group(function () {
 
                 foreach($productplan as $plan){
                  
-                    if($plan->api_token == NULL){
+                    if($plan->api_id == NULL){
                         $plan->update([
                             'api_id' => $nextapiid
                         ]);
