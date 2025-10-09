@@ -107,7 +107,7 @@ class MegaSubElectricity{
 
         $response = curl_exec($curl);
 
-        // logger($response);
+        logger($response);
 
         curl_close($curl);
 
