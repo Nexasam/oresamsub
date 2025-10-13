@@ -20,6 +20,14 @@ class ProductPlanService{
         $product_planss = [];
         $dat = [];
 
+        return [
+            'status' => 1,
+            'message' => $product_planss,
+            'plans' => $product_planss,
+            'sizes' => $data_sizes ?? NULL,
+            // 'plan_level' => $plan_level
+        ];
+
         // if(count($product_plans) >= 1){
 
         foreach($data as $key=>$product_plan){
