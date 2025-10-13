@@ -12,6 +12,7 @@ use Illuminate\Validation\Rule;
 use App\Models\ProductPlanCategory;
 use App\Traits\JsonResponseWrapper;
 use App\Http\Controllers\Controller;
+use App\Models\BulkDataProductPlans;
 use App\Http\Services\DataPlansService;
 use App\Http\Services\ProductPlanService;
 use Illuminate\Support\Facades\Validator;
