@@ -22,9 +22,9 @@ class ProductPlanService{
 
         return [
             'status' => 1,
-            'message' => $product_planss,
-            'plans' => $product_planss,
-            'sizes' => $data_sizes ?? NULL,
+            'message' => 'success',
+            'plans' => $data,
+            'sizes' => NULL,
             // 'plan_level' => $plan_level
         ];
 
