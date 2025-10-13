@@ -25,7 +25,6 @@ class ProductPlanService{
         foreach($data as $key=>$product_plan){
             $cost_price = $product_plan->cost_price;
             $data_size_in_mb = $product_plan->data_size_in_mb;
-            
             $network_id = $product_plan->product_plan_category->network->id;
             $product_id = $product_plan->product_plan_category->product->id;
             $slug = Product::select('slug')->where('id',$product_id)->first()->slug;

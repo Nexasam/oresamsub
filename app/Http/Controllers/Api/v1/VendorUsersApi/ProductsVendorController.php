@@ -39,11 +39,11 @@ class ProductsVendorController extends Controller
             // $pplanservice['network_id'] = $plann->product_plan_category->network->id;
             // $pplanservice['product_id'] = $plann->product_plan_category->product->id;
             // $pplanservice['is_api'] = 'yes';
-            $plans = (new ProductPlanService())->fetch_all_data_plans($fetchpplans);
+            // $plans = (new ProductPlanService())->fetch_all_data_plans($fetchpplans);
         // }
        
 
-        return $this->success('All plans successfully fetched',data: $plans);  
+        return $this->success('All plans successfully fetched',data: $fetchpplans);  
     }
 
     public function fetch_networks(Request $request){  
