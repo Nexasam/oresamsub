@@ -143,6 +143,8 @@ class ProductPlanService{
                 }
 
                 $product_planss[$key]['is_api'] = 'yes';
+                $product_planss[$key]['product_plan_id'] = optional($product_plan->product_plan_category?->product)->api_id;
+                $product_planss[$key]['network_plan_id'] = optional($product_plan->product_plan_category?->network)->api_id;
                 $product_planss[$key]['product_id'] = $product_id;
                 $product_planss[$key]['network_id'] = $network_id;
                 $product_planss[$key]['product_plan_name'] = $product_plan->product_plan_name;
