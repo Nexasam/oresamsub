@@ -29,8 +29,7 @@ class ProductsVendorController extends Controller
 
 
     public function syncplans(Request $request){
-        $fetchpplans =  $product_plansss = ProductPlan::with([
-            'automation',
+        $fetchpplans =   ProductPlan::with([
             'product_plan_category.product',
             'product_plan_category.network'
         ])->get();
