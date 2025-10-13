@@ -43,7 +43,7 @@ class ProductsVendorController extends Controller
         // }
        
 
-        return $this->success('All plans successfully fetched',data: $fetchpplans);  
+        return $this->success('All plans successfully fetched',data: $plans);  
     }
 
     public function fetch_networks(Request $request){  
