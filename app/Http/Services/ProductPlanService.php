@@ -14,31 +14,15 @@ use App\Models\ProductPlanCustomPricing;
 class ProductPlanService{
 
     public function fetch_all_data_plans($data){
-        $user_details = $data['user'];
-        $network_id = $data['network_id'];
-        $product_plan_category_id = $data['product_plan_category_id'] ?? NULL;
-        $product_id = $data['product_id'];
-        $is_api = $data['is_api'] ?? NULL;
-
-        //selling plan level
-        $user_plan_id = $user_details->user_plan_id;
-        $user_id = $user_details->id;
-        $user_level = UserPlan::select('plan_level')->where('id',$user_plan_id)->first();
-        $plan_level = $user_level->plan_level;
         $costprice_order = 'cost_price'; //
-
-        $product_plans = ProductPlan::orderByRaw('CASE WHEN CAST(data_size_in_mb AS UNSIGNED) < 500 THEN 1 ELSE 0 END') // Push <500MB to bottom
-        ->orderByRaw('CAST(data_size_in_mb AS UNSIGNED)') // Then order by size
-        ->orderByRaw('CAST(' . $costprice_order . ' AS UNSIGNED)') // Then by price
-        ->orderByRaw('CAST(validity_in_days AS UNSIGNED) DESC') // Then by validity
-        ->get();
-        
+        $is_api = 'yes'; //
+ 
         $product_planss = [];
         $dat = [];
 
         // if(count($product_plans) >= 1){
 
-            foreach($product_plans as $key=>$product_plan){
+            foreach($data as $key=>$product_plan){
                 $cost_price = $product_plan['cost_price'];
                 $data_size_in_mb = $product_plan['data_size_in_mb'];
              
@@ -72,7 +56,7 @@ class ProductPlanService{
                         $selling_profit = $product_plan->$user_level ?? 1; //percent
                         $selling_price = $selling_profit; //percent
                     }
-                    
+
                     $product_planss[$key]['cost_price_aff_'.$i] = $selling_price;
 
                 }
@@ -116,7 +100,7 @@ class ProductPlanService{
             'message' => $product_planss,
             'plans' => $product_planss,
             'sizes' => $data_sizes,
-            'plan_level' => $plan_level
+            // 'plan_level' => $plan_level
         ];
     }
 
