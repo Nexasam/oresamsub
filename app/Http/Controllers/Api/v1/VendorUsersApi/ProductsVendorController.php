@@ -2,8 +2,6 @@
 
 namespace App\Http\Controllers\Api\v1\VendorUsersApi;
 
-use App\Http\Services\DataPlansService;
-use App\Models\ProductPlanCategory;
 use App\Models\User;
 use App\Models\Network;
 use App\Models\Product;
@@ -11,8 +9,11 @@ use App\Models\ProductPlan;
 use App\Models\Transaction;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
+use App\Models\ProductPlanCategory;
 use App\Traits\JsonResponseWrapper;
 use App\Http\Controllers\Controller;
+use App\Http\Services\DataPlansService;
+use App\Http\Services\ProductPlanService;
 use Illuminate\Support\Facades\Validator;
 use App\Services\Automation\MegaSubPlugAutomation\MegaSubCableTV;
 use App\Http\Services\Api\v1\VendorUsersApi\Products\ProductsService;
@@ -27,6 +28,23 @@ class ProductsVendorController extends Controller
     use JsonResponseWrapper;
 
 
+    public function syncplans(Request $request){
+        $fetchpplans =  $product_plansss = ProductPlan::with([
+            'automation',
+            'product_plan_category.product',
+            'product_plan_category.network'
+        ])->get();
+        foreach($fetchpplans as $plann){
+            $pplanservice['user'] = $request->api_user;
+            $pplanservice['network_id'] = $plann->product_plan_category->network->id;
+            $pplanservice['product_id'] = $plann->product_plan_category->product->id;
+            $pplanservice['is_api'] = 'yes';
+            $plans = (new ProductPlanService())->fetch_all_data_plans($pplanservice)['plans'];
+        }
+       
+
+        return $this->success('All plans successfully fetched',data: $plans);  
+    }
 
     public function fetch_networks(Request $request){  
         $data = Network::where('visibility',1)->select('network_name','api_id')->get();
