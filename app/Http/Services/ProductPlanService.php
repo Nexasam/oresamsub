@@ -144,8 +144,8 @@ class ProductPlanService{
 
                 $product_planss[$key]['is_api'] = 'yes';
                 $product_planss[$key]['plan_category'] = $product_plan->product_plan_category;
-                $product_planss[$key]['product_api_id'] = (int) optional($product_plan->product_plan_category?->product)->api_id;
-                $product_planss[$key]['network_api_id'] = (int) optional($product_plan->product_plan_category?->network)->api_id;
+                $product_planss[$key]['product'] = (int) optional($product_plan->product_plan_category?->product);
+                $product_planss[$key]['network'] = (int) optional($product_plan->product_plan_category?->network);
                 // $product_planss[$key]['product_id'] = $product_id;
                 // $product_planss[$key]['network_id'] = $network_id;
                 $product_planss[$key]['product_plan_name'] = $product_plan->product_plan_name;
