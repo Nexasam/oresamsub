@@ -114,8 +114,8 @@ class ProductPlanService{
                 $product_id = optional($product_plan->product_plan_category?->product)->id;
                 $slug = $product_plan->product_plan_category?->product?->slug;
 
-                $product_planss[$key]['plan_id'] = $product_plan->api_id ? (int)$product_plan->api_id : null;
-                $product_planss[$key]['product_plan_id'] = $product_plan->id;
+                $product_planss[$key]['api_id'] = $product_plan->api_id ? (int)$product_plan->api_id : null;
+   
 
                 for ($i = 1; $i <= 12; $i++) {
                     $user_level = "user_level_{$i}_selling_price";
@@ -143,8 +143,9 @@ class ProductPlanService{
                 }
 
                 $product_planss[$key]['is_api'] = 'yes';
-                $product_planss[$key]['product_plan_id'] = (int) optional($product_plan->product_plan_category?->product)->api_id;
-                $product_planss[$key]['network_plan_id'] = (int) optional($product_plan->product_plan_category?->network)->api_id;
+                $product_planss[$key]['plan_category'] = $product_plan->product_plan_category;
+                $product_planss[$key]['product_api_id'] = (int) optional($product_plan->product_plan_category?->product)->api_id;
+                $product_planss[$key]['network_api_id'] = (int) optional($product_plan->product_plan_category?->network)->api_id;
                 // $product_planss[$key]['product_id'] = $product_id;
                 // $product_planss[$key]['network_id'] = $network_id;
                 $product_planss[$key]['product_plan_name'] = $product_plan->product_plan_name;
