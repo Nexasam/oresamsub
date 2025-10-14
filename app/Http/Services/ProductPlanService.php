@@ -162,7 +162,7 @@ class ProductPlanService{
 
             $networks = Network::get();
             $products = Product::get();
-            $product_plan_categories = ProductPlanCategory::get();
+            $product_plan_categories = ProductPlanCategory::with('product','network')->get();
 
             return [
                 'status' => 1,
