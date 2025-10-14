@@ -3,6 +3,7 @@
 namespace App\Http\Services;
 
 use App\Models\User;
+use App\Models\Network;
 use App\Models\Product;
 use App\Models\UserPlan;
 use App\Models\ProductPlan;
@@ -146,8 +147,6 @@ class ProductPlanService{
                 $product_planss[$key]['plan_category'] = $product_plan->product_plan_category;
                 $product_planss[$key]['product'] = (int) optional($product_plan->product_plan_category?->product);
                 $product_planss[$key]['network'] = (int) optional($product_plan->product_plan_category?->network);
-                // $product_planss[$key]['product_id'] = $product_id;
-                // $product_planss[$key]['network_id'] = $network_id;
                 $product_planss[$key]['product_plan_name'] = $product_plan->product_plan_name;
                 $product_planss[$key]['data_size_in_mb'] = (int) $product_plan->data_size_in_mb;
                 $product_planss[$key]['validity_in_days'] = (int) $product_plan->validity_in_days;
@@ -161,11 +160,17 @@ class ProductPlanService{
                 ->values()
                 ->toArray();
 
+            $networks = Network::get();
+            $products = Product::get();
+            $product_plan_categories = ProductPlanCategory::get();
+
             return [
                 'status' => 1,
-                'message' => $product_planss,
+                'message' => 'Success',
                 'plans' => $product_planss,
-                'sizes' => $data_sizes,
+                'networks' => $networks,
+                'products' => $products,
+                'product_plan_categories' => $product_plan_categories,
             ];
     }
 
