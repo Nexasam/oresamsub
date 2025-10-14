@@ -140,7 +140,7 @@ class ProductPlanService{
                         $selling_price = $selling_profit;
                     }
 
-                    $product_planss[$key]['cost_price_aff_' . $i] = $selling_price;
+                    $product_planss[$key]['cost_price_aff_' . $i] = (int) $selling_price;
                 }
 
                 $product_planss[$key]['is_api'] = 'yes';
