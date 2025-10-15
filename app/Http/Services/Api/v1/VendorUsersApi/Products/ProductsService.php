@@ -297,7 +297,11 @@ class ProductsService{
 
         //TESSSSSSSTTTTTT
         //here we overrite the plan id with cheapest costprice: vendor
-        $network_plan_categories_arr = ProductPlanCategory::where('network_id',$plan_details->product_plan_category->network->id)
+        // $network_plan_categories_arr = ProductPlanCategory::where('network_id',$plan_details->product_plan_category->network->id)
+        // ->where('product_id', $plan_details->product_plan_category->product->id)
+        // ->pluck('id')
+        // ->toArray();
+        $network_plan_categories_arr = ProductPlanCategory::where('network_id',$network_id)
         ->where('product_id', $plan_details->product_plan_category->product->id)
         ->pluck('id')
         ->toArray();
