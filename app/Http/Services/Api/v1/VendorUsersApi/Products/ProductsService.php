@@ -276,7 +276,7 @@ class ProductsService{
             $user_details = User::with('user_plan')->where('id',$user_id)->first();;
             if(! $user_details){
                 //end session and redirect to login
-                return ['status'=>'-1', 'message'=>'User record not found' ]; //data removed
+                return ['status'=>-1, 'message'=>'User record not found' ]; //data removed
             }
         }else{
             $user_details = $user;
@@ -286,16 +286,21 @@ class ProductsService{
         $user_plan = $user_details->user_plan ?? NULL;
         if($user_plan == NULL){
             //end session and redirect to login
-            return ['status'=>'-1', 'message'=>'User plan ID is null'];  //'data' => $data
+            return ['status'=>-1, 'message'=>'User plan ID is null'];  //'data' => $data
         }
 
-        logger('eee'.$product_plan_id);
+        // logger('eee'.$product_plan_id);
         // $plan_details = ProductPlan::with('automation')->where('id',$product_plan_id)->where('visibility',1)->first();
         $plan_details = ProductPlan::with(['automation','product_plan_category.network','product_plan_category.product'])
         ->where('id',$product_plan_id)
         ->where('visibility',1)
         ->first();
-        logger('nn'.$plan_details);
+        if(! $plan_details){
+            return ['status'=>-1, 'message'=>'Please try another plan. This is not available'];  //'data' => $data
+        }
+       
+
+
         $plan_detailsold =  $plan_details; //preserve original plan for pricing fetch.
 
 
