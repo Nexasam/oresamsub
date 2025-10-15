@@ -294,6 +294,7 @@ class ProductsService{
         ->where('id',$product_plan_id)
         ->where('visibility',1)
         ->first();
+        logger('nn'.$plan_details);
         $plan_detailsold =  $plan_details; //preserve original plan for pricing fetch.
 
 

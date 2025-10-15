@@ -168,7 +168,7 @@ class ProductsVendorController extends Controller
         $network_id = $getnetwork->product_plan_category->network->id;
         $product_id = $getnetwork->product_plan_category->product->id;
         $product_plan_id = $getnetwork->id;
-        logger('tttt'.$network_id.' '.$product_id.' '.$product_plan_id );
+        // logger('tttt'.$network_id.' '.$product_id.' '.$product_plan_id );
 
 
         $data['network_id'] = $network_id;
@@ -183,7 +183,7 @@ class ProductsVendorController extends Controller
         $data['validatephonenetwork'] = $request->validatephonenetwork ?? 1;
         $data['user_id'] = $request->api_user->id;//this is required
         $data['user'] = $request->api_user;//this is required
-        logger('parent request'.$getnetwork);
+        // logger('parent request'.$getnetwork);
 
         $buy_data = (new ProductsService())->buy_data_service($data);
 
