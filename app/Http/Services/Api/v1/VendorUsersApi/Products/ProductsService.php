@@ -291,7 +291,8 @@ class ProductsService{
 
         // $plan_details = ProductPlan::with('automation')->where('id',$product_plan_id)->where('visibility',1)->first();
         $plan_details = ProductPlan::with(['automation','product_plan_category.network','product_plan_category.product'])
-        ->where('id',$product_plan_id)->where('visibility',1)
+        ->where('id',$product_plan_id)
+        ->where('visibility',1)
         ->first();
         $plan_detailsold =  $plan_details; //preserve original plan for pricing fetch.
 

@@ -168,6 +168,7 @@ class ProductsVendorController extends Controller
         $network_id = $getnetwork->product_plan_category->network->id;
         $product_id = $getnetwork->product_plan_category->product->id;
         $product_plan_id = $getnetwork->id;
+        logger('tttt'.$network_id.' '.$product_id.' '.$product_plan_id );
 
 
         $data['network_id'] = $network_id;
