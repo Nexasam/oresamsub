@@ -192,20 +192,20 @@ class ProductsVendorController extends Controller
         $data = $buy_data['data'] ?? [];
         
         $data2 =[
-            'id'=>$buy_data['id'],
+            'id'=>$buy_data['id'] ?? NULL,
             'txn_reference'=>$buy_data['txn_reference'] ?? NULL,
-            'status'=>$buy_data['status'] ?? NULL,
+            'status'=>$buy_data['status'],
             'Status'=>$buy_data['Status'] ?? NULL,
             'plan'=>$buy_data['plan'] ?? NULL,
-            'balance_before'=>$buy_data['balance_before'],
-            'balance_after'=>$buy_data['balance_after'],
-            'message'=>$buy_data['message'],
-            'user_message'=>$buy_data['user_message'],
-            'admin_message'=>$buy_data['admin_message'],
-            'plan_network'=>$buy_data['plan_network'],
-            'plan_name'=>$buy_data['plan_name'],
-            'plan_amount'=>$buy_data['plan_amount'],
-            'create_date'=>$buy_data['create_date']
+            'balance_before'=>$buy_data['balance_before'] ?? NULL,
+            'balance_after'=>$buy_data['balance_after'] ?? NULL,
+            'message'=>$buy_data['message'] ?? NULL,
+            'user_message'=>$buy_data['user_message'] ?? NULL,
+            'admin_message'=>$buy_data['admin_message'] ?? NULL,
+            'plan_network'=>$buy_data['plan_network'] ?? NULL,
+            'plan_name'=>$buy_data['plan_name'] ?? NULL,
+            'plan_amount'=>$buy_data['plan_amount'] ?? NULL,
+            'create_date'=>$buy_data['create_date'] ?? NULL
         ];
 
         if($status == 1){
