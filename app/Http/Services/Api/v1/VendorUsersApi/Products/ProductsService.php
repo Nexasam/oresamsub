@@ -289,6 +289,7 @@ class ProductsService{
             return ['status'=>'-1', 'message'=>'User plan ID is null'];  //'data' => $data
         }
 
+        logger('eee'.$product_plan_id);
         // $plan_details = ProductPlan::with('automation')->where('id',$product_plan_id)->where('visibility',1)->first();
         $plan_details = ProductPlan::with(['automation','product_plan_category.network','product_plan_category.product'])
         ->where('id',$product_plan_id)
