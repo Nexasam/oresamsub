@@ -248,6 +248,7 @@ class ProductsService{
     public function buy_data_service($data){
        
         $network_id = $data['network_id'];
+        $product_id = $data['product_id'];
         $phone_number = $data['phone_number'];
         $product_plan_category_id = $data['product_plan_category_id'] ?? NULL;
         $product_plan_id = $data['product_plan_id'];
@@ -302,7 +303,7 @@ class ProductsService{
         // ->pluck('id')
         // ->toArray();
         $network_plan_categories_arr = ProductPlanCategory::where('network_id',$network_id)
-        ->where('product_id', $plan_details->product_plan_category->product->id)
+        ->where('product_id', $product_id)
         ->pluck('id')
         ->toArray();
     

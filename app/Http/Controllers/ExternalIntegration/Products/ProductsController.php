@@ -303,7 +303,11 @@ class ProductsController extends Controller
         //     return $this->error($check_purchase_limit['message'], code: 403 );    
         // }
 
+        $ppcate = ProductPlanCategory::with('network','product')->where('id',$request->product_plan_category_id)->first();
+        $product_id = $ppcate->product->id;
+
         $data['network_id'] = $request->network_id;
+        $data['product_id'] = $product_id;
         $data['phone_number'] = $request->phone_number;
         $data['product_plan_category_id'] = $request->product_plan_category_id;
         $data['product_plan_id'] = $request->product_plan_id;

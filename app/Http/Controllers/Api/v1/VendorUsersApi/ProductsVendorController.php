@@ -163,14 +163,18 @@ class ProductsVendorController extends Controller
         }
 
         // $network_id = Network::where('api_id',$request->network)->value('id');
-        $product_plan_id = ProductPlan::where('api_id',$request->plan)->value('id');
-        $getnetwork = ProductPlan::with('product_plan_category.network')->where('api_id',$request->plan)->first();
+        // $product_plan_id = ProductPlan::where('api_id',$request->plan)->value('id');
+        $getnetwork = ProductPlan::with('product_plan_category.network','product_plan_category.product')->where('api_id',$request->plan)->first();
         $network_id = $getnetwork->product_plan_category->network->id;
+        $product_id = $getnetwork->product_plan_category->product->id;
+        $product_plan_id = $getnetwork->id;
 
         $data['network_id'] = $network_id;
+        $data['product_id'] = $product_id;
         $data['reference'] = $request->reference ?? NULL;
         $data['phone_number'] = $request->mobile_number;
         $data['product_plan_category_id'] = NULL;
+        // $data['product_plan_id'] = $product_plan_id;
         $data['product_plan_id'] = $product_plan_id;
         $data['pin'] = $request->api_user->pin;
         $data['wallet_category'] = $request->wallet_category ?? 'main_wallet';
