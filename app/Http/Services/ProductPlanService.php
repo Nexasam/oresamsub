@@ -131,6 +131,7 @@ class ProductPlanService{
                             $profitlevel_for_user = "profit_$i";
                             $profit_value = $get_planprofit?->$profitlevel_for_user ?? 50;
                             $selling_price = $cost_price + abs($profit_value);
+                            
                         } else {
                             $selling_price = $product_plan->$user_level ?? 5000;
                         }

@@ -163,7 +163,7 @@ class ProductsVendorController extends Controller
         }
 
         // $network_id = Network::where('api_id',$request->network)->value('id');
-        $product_plan_id = ProductPlan::with('product_plan_category')->where('api_id',$request->plan)->value('id');
+        $product_plan_id = ProductPlan::where('api_id',$request->plan)->value('id');
         $getnetwork = ProductPlan::with('product_plan_category.network')->where('api_id',$request->plan)->first();
         $network_id = $getnetwork->product_plan_category->network->id;
 
