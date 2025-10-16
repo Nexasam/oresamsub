@@ -60,7 +60,7 @@ class InertiaDashboardController extends Controller
 
     public function virtual_accounts(){
         $virtualccts = UserVirtualAccount::select('id','bank_name','account_name','account_number')
-        ->where('slug','!=','crystal_pay')
+        ->where('funding_slug','!=','crystal_pay')
         ->where('user_id',auth()->id())
         ->get();
         
