@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\v1\VendorUsersApi\ProductsVendorController;
 use App\Http\Controllers\ExternalIntegration\Products\ProductsController;
+use App\Http\Controllers\Api\v1\VendorUsersApi\AffiliateProductsVendorController;
 
 
 // middleware('auth:sanctum')
@@ -15,11 +16,17 @@ use App\Http\Controllers\ExternalIntegration\Products\ProductsController;
 // }
 
 Route::middleware('api_token')->group(function () {
+
+    Route::get('user/syncplans', [AffiliateProductsVendorController::class, 'syncplans'])->name('api.syncplans');
+    // Route::get('user/aff/buy_airtime', [AffiliateProductsVendorController::class, 'buy_airtime'])->name('aff.api.buy_airtime_aff');
+
+
     Route::get('user/fetch_networks', [ProductsVendorController::class, 'fetch_networks'])->name('api.user.fetch_networks');
-    Route::get('user/syncplans', [ProductsVendorController::class, 'syncplans'])->name('api.syncplans');
     Route::get('user/fetch_data_plans', [ProductsVendorController::class, 'fetch_data_plans'])->name('api.user.fetch_data_plans');
     Route::get('user/fetch_data_transactions', [ProductsVendorController::class, 'fetch_data_transactions'])->name('api.user.fetch_data_transactions');
     Route::get('user/fetch_transaction', [ProductsVendorController::class, 'fetch_transaction'])->name('api.user.fetch_transaction');
+    // Route::get('user/fetch_airtime_plans', [ProductsVendorController::class, 'fetch_airtime_plans'])->name('api.user.fetch_airtime_plans');
+    Route::get('user/fetch_airtime_transactions', [ProductsVendorController::class, 'fetch_airtime_transactions'])->name('api.user.fetch_airtime_transactions');
     
     
     

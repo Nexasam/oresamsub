@@ -41,6 +41,84 @@ class ProductsVendorController extends Controller
         return $this->success('All plans successfully fetched',data: $plans);  
     }
 
+
+     /**
+     * Buy airtime
+     */
+    public function buy_airtime(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            // 'actual_amount' => 'required|numeric|gt:0',
+            'amount' => 'required|numeric|gt:49',
+            'mobile_number' => 'required',
+            'plan' => 'required|exists:product_plans,api_id',
+            'reference' => 'required|unique:transactions,txn_reference'
+        ]);
+        
+        if ($validator->stopOnFirstFailure()->fails()) {
+            return $this->error('Validation failed', data: $validator->errors()->first(), code: 403 );    
+        }
+        
+        
+        if ($validator->stopOnFirstFailure()->fails()) {
+            return $this->error($validator->errors()->first(), code: 403 );    
+        }
+
+        $getnetwork = ProductPlan::with('product_plan_category.network','product_plan_category.product')->where('api_id',$request->plan)->first();
+        $product_plan_category_id = $getnetwork->product_plan_category->id;
+        $network_id = $getnetwork->product_plan_category->network->id;
+        $product_id = $getnetwork->product_plan_category->product->id;
+        $product_plan_id = $getnetwork->id;
+    
+
+        $data['network_id'] = $network_id;
+        $data['product_id'] = $product_id;
+        $data['reference'] = $request->reference ?? NULL;
+        $data['phone_number'] = $request->mobile_number;
+        $data['product_plan_category_id'] = $product_plan_category_id;
+        $data['product_plan_id'] = $product_plan_id;
+        $data['pin'] = $request->api_user->pin;
+        $data['wallet_category'] = $request->wallet_category ?? 'main_wallet';
+        $data['validatephonenetwork'] = $request->validatephonenetwork ?? 1;
+        $data['user_id'] = $request->api_user->id;//this is required
+        $data['user'] = $request->api_user;//this is required
+        $data['amount'] = $request->amount;//this is required
+        $data['actual_amount'] = $request->amount;//this is required
+    
+
+        $buy_airtime = (new ProductsService())->buy_airtime_service($data);
+
+        $status = $buy_airtime['status'];
+        $message = $buy_airtime['message'];
+        $data = $buy_airtime['data'] ?? [];
+        
+        $data2 =[
+            'id'=>$buy_airtime['id'] ?? NULL,
+            'txn_reference'=>$buy_airtime['txn_reference'] ?? NULL,
+            'status'=>$buy_airtime['status'],
+            'Status'=>$buy_airtime['Status'] ?? NULL,
+            'plan'=>$buy_airtime['plan'] ?? NULL,
+            'balance_before'=>$buy_airtime['balance_before'] ?? NULL,
+            'balance_after'=>$buy_airtime['balance_after'] ?? NULL,
+            'message'=>$buy_airtime['message'] ?? NULL,
+            'user_message'=>$buy_airtime['user_message'] ?? NULL,
+            'admin_message'=>$buy_airtime['admin_message'] ?? NULL,
+            'plan_network'=>$buy_airtime['plan_network'] ?? NULL,
+            'plan_name'=>$buy_airtime['plan_name'] ?? NULL,
+            'plan_amount'=>$buy_airtime['plan_amount'] ?? NULL,
+            'create_date'=>$buy_airtime['create_date'] ?? NULL
+        ];
+
+        if($status == 1){
+            return $this->success($buy_airtime['message'],data: $data2);    
+        }
+
+        $status_code = $buy_airtime['status_code'] ?? 500;
+        return $this->error( $message ,data: $data2, code: $status);
+
+    }
+
+
     public function fetch_networks(Request $request){  
         $data = Network::where('visibility',1)->select('network_name','api_id')->get();
         return $this->success('Networks successfully fetched',data: $data);    
@@ -64,6 +142,28 @@ class ProductsVendorController extends Controller
         $dataservice['product_id'] = $product_id;
         $dataservice['is_api'] = 'yes';
         $plans = (new DataPlansService())->fetch_user_data_plans($dataservice)['plans'];
+
+        return $this->success('Data plans successfully fetched',data: $plans);    
+     }
+
+     public function fetch_airtime_plans(Request $request){  
+        $network = $request->network_id ?? '';
+        if($network == ''){
+            return $this->error('Network ID is required');    
+
+        }
+
+        $networkuuid = Network::where('api_id',$network)
+        ->value('id');
+        
+        $product_id = Product::where('slug','airtime')
+        ->value('id');
+      
+        $airtimeservice['user'] = $request->api_user;
+        $airtimeservice['network_id'] = $networkuuid;
+        $airtimeservice['product_id'] = $product_id;
+        $airtimeservice['is_api'] = 'yes';
+        $plans = (new DataPlansService())->fetch_user_data_plans($airtimeservice)['plans'];
 
         return $this->success('Data plans successfully fetched',data: $plans);    
      }
@@ -492,56 +592,7 @@ class ProductsVendorController extends Controller
     }
 
 
-    /**
-     * Buy airtime
-     */
-    public function buy_airtime(Request $request)
-    {
-        $validator = Validator::make($request->all(), [
-            'network_id' => 'required',
-            'phone_number' => 'required',
-            // 'product_plan_category_id' => 'required',
-            'product_plan_id' => 'required',
-            // 'pin' => ['required','string','regex:/^\d{4,5}$/'],
-            'amount' => 'required|numeric|gt:0',
-            'actual_amount' => 'required|numeric|gt:0',
-            'validatephonenetwork'=>['required',Rule::in([0,1])],
-        ]);
-        
-        if ($validator->stopOnFirstFailure()->fails()) {
-            return $this->error('Validation failed', data: $validator->errors()->first(), code: 403 );    
-        }
-        
-
-        //TODO: revamp to make better
-        $bearer_token = $request->bearerToken(); 
-        $user_details = $this->fetch_user_records_with_token($bearer_token);
-        if(! $user_details){
-            return $this->error('Authentication failed', data: [], code: 403 );    
-        }
-
-        $data['network_id'] = $request->network_id;
-        $data['phone_number'] = $request->phone_number;
-        $data['product_plan_category_id'] = $request->product_plan_category_id;
-        $data['product_plan_id'] = $request->product_plan_id;
-        $data['pin'] = $user_details->pin;
-        $data['amount'] = $request->amount; //the affiliate price: dontuser
-        $data['actual_amount'] = $request->actual_amount; //the parent price
-        $data['validatephonenetwork'] = $request->validatephonenetwork;
-        $data['user_id'] = $user_details->id;//this is required
-        logger($data);
-
-
-        $buy_airtime = (new ProductsService())->buy_airtime_service($data);
-
-        $status = $buy_airtime['status'];
-        $message = $buy_airtime['message'];
-        $data = $buy_airtime['data'] ?? [];
-        if($status == 1){
-            return $this->success('Airtime was successfully being processed',data: $data);    
-        }
-        return $this->error( $message ,data: $data, code: 500);   
-    }
+   
 
 
     /**

@@ -371,36 +371,6 @@ class ProductsService{
         $data1['product'] = 'data';
         $check_purchase_limit =  ProductsService::check_purchase_limit($data1);
         if($check_purchase_limit['status'] == -1){
-            
-            // $description = 'Purchase of data';
-            // $creationData['transaction_category'] = 'data';
-            // $creationData['txn_reference'] = $txn_reference;
-            // $creationData['user_id'] = $user_id;
-            // $creationData['set_for_manual'] = 0;
-            // $creationData['wallet_category'] = $wallet_category;
-            // $creationData['product_plan_id'] = $product_plan_id;
-            // $creationData['phone_number'] = $phone_number;
-            // $creationData['amount'] = $amount;
-            // $creationData['discounted_amount'] = $amount;
-            // $creationData['status'] = -1;
-            // $creationData['balance_before'] = $user_details->main_wallet;
-            // $creationData['balance_after'] = $user_details->main_wallet;
-            // $creationData['description'] = $description;
-            // $creationData['user_screen_message'] = 'Sorry, something went wrong';
-            // $creationData['admin_screen_message'] =$check_purchase_limit['message'];
-            // $transaction = Transaction::create($creationData);
-
-            // $walletLog['user_id'] = $user_id;
-            // $walletLog['transaction_category'] = 'DATA_FROM_MAIN_WALLET';
-            // $walletLog['balance_before'] = $user_details->main_wallet;
-            // $walletLog['balance_after'] = $user_details->main_wallet;
-            // $walletLog['transaction_id'] = $transaction->id;
-            // $walletLog['action_by'] = $user_id;           
-            // $walletLog['description'] = 'Data Purchase from main wallet';
-            // $this->log_wallet_transactions($walletLog);
-            // return ['status'=>'-1', 'message'=>$check_purchase_limit['message']  ];
-
-
 
             $description = 'Purchase of data';
             $creationData['transaction_category'] = 'data';
@@ -916,6 +886,7 @@ class ProductsService{
     }
 
     public function buy_airtime_service($data){
+
         $network_id = $data['network_id'];
         $product_plan_category_id = $data['product_plan_category_id'];
         
@@ -927,46 +898,23 @@ class ProductsService{
         $validatephonenetwork = $data['validatephonenetwork'];
         $user_id = $data['user_id'];//this is required
         $wallet_category = 'main_wallet';//this is required
+        $txn_reference = $data['reference'] ?? NULL;
 
-
-        $data1['days_count'] = [1,7,30];
-        $data1['user_id'] = auth()->id();
-        $check_purchase_limit =  ProductsService::check_purchase_limit($data1);
-        if($check_purchase_limit['status'] == -1){
-            return ['status'=>'-1', 'message'=>$check_purchase_limit['message'] ];
+        if($txn_reference == NULL){
+            //generate a unique one
+            $txn_reference = $this->generateTxnReference('AIRTIME',$user_id);
         }
-
-
-        if($amount < 50){
-            return ['status'=>'-1', 'message'=>'amount cannot be less than 50','data' => ''];
-        }
-
-        $success = 0;
-        $failure = 0;
-        $status = -1;
-        $message = 'Pending';
-        $display_results = [];
 
         $user_details = User::where('id',$user_id)->first();
         if($user_details->pin != $pin){
             return ['status'=>'-1', 'message'=>'Pin mismatch found'];
+
         }
 
         $user_plan_id = $user_details->user_plan_id;
         $user_id = $user_details->id;
         $user_level = UserPlan::select('plan_level')->where('id',$user_plan_id)->first();
         $plan_level = $user_level->plan_level;
-
-        
-        // $validate_phone = (new UtilService())->phoneNumberNetworkValidation($phone_number);
-        // $validated_phone_number = $validate_phone['validated_phone_number'];
-        // $selected_network = $validate_phone['selected_network'] ?? 'NIL';
-        // $get_network_id = Network::where('network_name',$selected_network)->first();
-        // if(! $get_network_id){
-        //     $network_id = $get_network_id->id;
-        //     logger('Airtime should not run based on this exception');
-        //     return ['status'=>'-1', 'message'=>'The phone number does not seem to match the network'];
-        // }
 
         
         $plan_details = ProductPlan::with('product_plan_category')
@@ -976,6 +924,135 @@ class ProductsService{
         $product_plan_category = $plan_details->product_plan_category;
         // $actual_amount = abs($actual_amount);
         // logger('parent actual_amount: '.$actual_amount);
+
+        $success = 0;
+        $failure = 0;
+        $status = -1;
+        $message = 'Pending';
+        $display_results = [];
+
+
+
+
+        $data1['days_count'] = [1,7,30];
+        $data1['user_id'] = auth()->id();
+        $check_purchase_limit =  ProductsService::check_purchase_limit($data1);
+        if($check_purchase_limit['status'] == -1){
+            // return ['status'=>'-1', 'message'=>$check_purchase_limit['message'] ];
+            $description = 'Purchase of airtime';
+            $creationData['transaction_category'] = 'airtime';
+            $creationData['transaction_route'] = 'api';
+            $creationData['txn_reference'] = $txn_reference;
+            $creationData['user_id'] = $user_id;
+            $creationData['set_for_manual'] = $set_for_manual ?? 0;
+            $creationData['wallet_category'] = $wallet_category;
+            $creationData['product_plan_id'] = $product_plan_id;
+            $creationData['phone_number'] = $phone_number ?? NULL;
+            $creationData['amount'] = $amount;
+            $creationData['coupon_code_id'] = $coupon ?? NULL;
+            $creationData['discounted_amount'] = $amount;
+            $creationData['status'] = -1;
+            $creationData['balance_before'] =$user_details->main_wallet;
+            $creationData['balance_after'] = $user_details->main_wallet;
+            $creationData['description'] = $description ?? 'Purchase of airtime';
+            $creationData['user_screen_message'] = $check_purchase_limit['message']  ?? 'Transaction failed.';
+            $creationData['admin_screen_message'] = $check_purchase_limit['message']  ?? 'Transaction failed.';
+            $transaction = Transaction::create($creationData);
+
+
+       
+            $status = -1;
+                return [
+                    'id'=>$transaction->id,
+                    'txn_reference'=>$txn_reference ?? NULL,
+                    'status'=>-1,
+                    'actual_status' => -1,
+                    'status_code' => 503,
+                    'message' => $check_purchase_limit['message'] ?? 'Transaction failed.',
+                    'apiresponse' => 'Amount cannot be less than 50',
+                    'user_message' => 'Amount cannot be less than 50',
+                    'admin_message' => 'Amount cannot be less than 50',
+                    "balance_before" => $user_details->main_wallet ?? NULL,
+                    "balance_after" =>  $user_details->main_wallet ?? NULL,
+                    "plan" => $plan_details->api_id,
+                    "Status" => match($status) {
+                        "1"   => "successful",
+                        "2"  => "refunded",
+                        "-1"  => "failed",
+                        1   => "successful",
+                        2  => "refunded",
+                        -1  => "failed",
+                        default => "failed"
+                    },
+                    "plan_network" => Network::where('id',$network_id)->value('network_name'),
+                    "plan_name" => $plan_details->product_plan_name ?? NULL,
+                    'plan_amount'=>$amount ?? NULL, 
+                    'create_date'=>date('Y-m-d H:i:s'), 
+                    'data' => $display_results ?? NULL
+                ];
+        }
+
+      
+
+        if($amount < 50){
+            // return ['status'=>'-1', 'message'=>'Insufficient wallet balance','data' => ''];
+            $description = 'Purchase of airtime';
+            $creationData['transaction_category'] = 'airtime';
+            $creationData['transaction_route'] = 'api';
+            $creationData['txn_reference'] = $txn_reference;
+            $creationData['user_id'] = $user_id;
+            $creationData['set_for_manual'] = $set_for_manual ?? 0;
+            $creationData['wallet_category'] = $wallet_category;
+            $creationData['product_plan_id'] = $product_plan_id;
+            $creationData['phone_number'] = $phone_number ?? NULL;
+            $creationData['amount'] = $amount;
+            $creationData['coupon_code_id'] = $coupon ?? NULL;
+            $creationData['discounted_amount'] = $amount;
+            $creationData['status'] = -1;
+            $creationData['balance_before'] =$user_details->main_wallet;
+            $creationData['balance_after'] = $user_details->main_wallet;
+            $creationData['description'] = $description ?? 'Purchase of airtime';
+            $creationData['user_screen_message'] = 'Insufficient wallet balance';
+            $creationData['admin_screen_message'] = 'Insufficient wallet balance';
+            $transaction = Transaction::create($creationData);
+
+
+       
+            $status = -1;
+                return [
+                    'id'=>$transaction->id,
+                    'txn_reference'=>$txn_reference ?? NULL,
+                    'status'=>-1,
+                    'actual_status' => -1,
+                    'status_code' => 503,
+                    'message' => 'Amount cannot be less than 50',
+                    'apiresponse' => 'Amount cannot be less than 50',
+                    'user_message' => 'Amount cannot be less than 50',
+                    'admin_message' => 'Amount cannot be less than 50',
+                    "balance_before" => $user_details->main_wallet ?? NULL,
+                    "balance_after" =>  $user_details->main_wallet ?? NULL,
+                    "plan" => $plan_details->api_id,
+                    "Status" => match($status) {
+                        "1"   => "successful",
+                        "2"  => "refunded",
+                        "-1"  => "failed",
+                        1   => "successful",
+                        2  => "refunded",
+                        -1  => "failed",
+                        default => "failed"
+                    },
+                    "plan_network" => Network::where('id',$network_id)->value('network_name'),
+                    "plan_name" => $plan_details->product_plan_name ?? NULL,
+                    'plan_amount'=>$amount ?? NULL, 
+                    'create_date'=>date('Y-m-d H:i:s'), 
+                    'data' => $display_results ?? NULL
+                ];
+        }
+
+   
+        
+
+
 
         $user_level_selling = "user_level_".$plan_level."_selling_price";
         $purchase_discount =  $plan_details->$user_level_selling;
@@ -1006,7 +1083,59 @@ class ProductsService{
                             $wallet_before = $user_details->main_wallet;
                             $total_amount = $phone_numbers_count * $amount;
                             if($total_amount > $wallet_before || $wallet_before < 0){
-                                return ['status'=>'-1', 'message'=>'Insufficient wallet balance' ];
+                                // return ['status'=>'-1', 'message'=>'Insufficient wallet balance' ];
+                                // return ['status'=>'-1', 'message'=>'Insufficient wallet balance','data' => ''];
+                                $description = 'Purchase of airtime';
+                                $creationData['transaction_category'] = 'airtime';
+                                $creationData['transaction_route'] = 'api';
+                                $creationData['txn_reference'] = $txn_reference;
+                                $creationData['user_id'] = $user_id;
+                                $creationData['set_for_manual'] = $set_for_manual ?? 0;
+                                $creationData['wallet_category'] = $wallet_category;
+                                $creationData['product_plan_id'] = $product_plan_id;
+                                $creationData['phone_number'] = $phone_number ?? NULL;
+                                $creationData['amount'] = $amount;
+                                $creationData['coupon_code_id'] = $coupon ?? NULL;
+                                $creationData['discounted_amount'] = $amount;
+                                $creationData['status'] = -1;
+                                $creationData['balance_before'] =$user_details->main_wallet;
+                                $creationData['balance_after'] = $user_details->main_wallet;
+                                $creationData['description'] = $description ?? 'Purchase of airtime';
+                                $creationData['user_screen_message'] = 'Insufficient wallet balance';
+                                $creationData['admin_screen_message'] = 'Insufficient wallet balance';
+                                $transaction = Transaction::create($creationData);
+
+
+                        
+                                $status = -1;
+                                    return [
+                                        'id'=>$transaction->id,
+                                        'txn_reference'=>$txn_reference ?? NULL,
+                                        'status'=>-1,
+                                        'actual_status' => -1,
+                                        'status_code' => 503,
+                                        'message' => 'Insufficient wallet balance',
+                                        'apiresponse' => 'Insufficient wallet balance',
+                                        'user_message' => 'Insufficient wallet balance',
+                                        'admin_message' => 'Insufficient wallet balance',
+                                        "balance_before" => $user_details->main_wallet ?? NULL,
+                                        "balance_after" =>  $user_details->main_wallet ?? NULL,
+                                        "plan" => $plan_details->api_id,
+                                        "Status" => match($status) {
+                                            "1"   => "successful",
+                                            "2"  => "refunded",
+                                            "-1"  => "failed",
+                                            1   => "successful",
+                                            2  => "refunded",
+                                            -1  => "failed",
+                                            default => "failed"
+                                        },
+                                        "plan_network" => Network::where('id',$network_id)->value('network_name'),
+                                        "plan_name" => $plan_details->product_plan_name ?? NULL,
+                                        'plan_amount'=>$amount ?? NULL, 
+                                        'create_date'=>date('Y-m-d H:i:s'), 
+                                        'data' => $display_results ?? NULL
+                                    ];
                             }
                     
                             //calling the actual vending via the automation:
@@ -1089,11 +1218,37 @@ class ProductsService{
                             }
 
                             DB::commit();
-                    
-                            if($failure > 0){
-                              return ['status'=>2, 'message'=>" $failure issue(s) found. Check transaction history", 'data' => $transaction  ];   
-                            }
-                            return ['status'=>1, 'message'=>'Transaction was successfully processed', 'data' => $transaction  ];
+
+                            return [
+                                'id'=>$transaction->id,
+                                'txn_reference'=>$txn_reference,
+                                'status'=>$status,
+                                'actual_status' => $status,
+                                'message' => $user_message,
+                                'apiresponse' => $user_message,
+                                'user_message' => $user_message,
+                                'admin_message' => $admin_message,
+                                "balance_before" => $wallet_before,
+                                "balance_after" => $wallet_after,
+                                "plan" => $plan_details->api_id,
+                                "Status" => match($status) {
+                                    "0"   => "pending",
+                                    "1"   => "successful",
+                                    "2"  => "refunded",
+                                    "-1"  => "failed",
+                                    0   => "pending",
+                                    1   => "successful",
+                                    2  => "refunded",
+                                    -1  => "failed",
+                                    default => "unknown"
+                                },
+                                "plan_network" => Network::where('id',$network_id)->value('network_name'),
+                                "plan_name" => $plan_details->product_plan_name,
+                                'plan_amount'=>$amount, 
+                                'create_date'=>date('Y-m-d H:i:s'), 
+                                'data' => $display_results
+                            ];
+
                     
                         } else{
                             return ['status'=>'-1', 'message'=>'Wrong wallet selection', 'data'=>[]];
@@ -1129,7 +1284,7 @@ class ProductsService{
 
     
         // if($amount < 50){
-        //     return ['status'=>'-1', 'message'=>'amount cannot be less than 50','data' => []  ];
+        //     return ['status'=>'-1', 'message'=>'Insufficient wallet balance','data' => []  ];
         // }
 
         // $data1['days_count'] = [1,7,30];
