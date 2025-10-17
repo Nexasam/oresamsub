@@ -1219,6 +1219,7 @@ class ProductsService{
 
                             DB::commit();
 
+                            $status = $status == 0 ? 1 : -1; //if its pending, then show the user as success so the backend can now process
                             return [
                                 'id'=>$transaction->id,
                                 'txn_reference'=>$txn_reference,
