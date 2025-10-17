@@ -965,7 +965,7 @@ class ProductsService{
                 return [
                     'id'=>$transaction->id,
                     'txn_reference'=>$txn_reference ?? NULL,
-                    'status'=>-1,
+                    'status'=> -1,
                     'actual_status' => -1,
                     'status_code' => 503,
                     'message' => $check_purchase_limit['message'] ?? 'Transaction failed.',
@@ -1072,7 +1072,7 @@ class ProductsService{
             $validate_phone = (new UtilService())->phoneNumberValidation($phone_number);
             $validated_phone_number = $validate_phone['validated_phone_number'];
             if($validate_phone['status'] != 1){
-                return ['status'=>'-1', 'message'=>$validate_phone['message'].' Number is: '.$validated_phone_number  ];
+                return ['status'=>-1, 'message'=>$validate_phone['message'].' Number is: '.$validated_phone_number  ];
             }
         }
 
@@ -1254,7 +1254,7 @@ class ProductsService{
 
                     
                         } else{
-                            return ['status'=>'-1', 'message'=>'Wrong wallet selection', 'data'=>[]];
+                            return ['status'=>-1, 'message'=>'Wrong wallet selection', 'data'=>[]];
                         }
 
 
@@ -1262,7 +1262,7 @@ class ProductsService{
         }catch(Exception $exception){
             logger($exception->getMessage().' on line: '. $exception->getLine());
             DB::rollBack();
-            return ['status'=>'-1', 'message'=>'Something went wrong... Please try again', 'data'=>[]];
+            return ['status'=>-1, 'message'=>'Something went wrong... Please try again', 'data'=>[]];
         }
 
       
