@@ -1186,6 +1186,8 @@ class ProductsService{
                     
                                 $description = 'Purchase of airtime';
                                 $creationData['transaction_category'] = 'airtime';
+                                $creationData['transaction_route'] = 'api';
+                                $creationData['txn_reference'] = $txn_reference;
                                 $creationData['user_id'] = $user_id;
                                 $creationData['wallet_category'] = $wallet_category;
                                 $creationData['product_plan_id'] = $product_plan_id;
