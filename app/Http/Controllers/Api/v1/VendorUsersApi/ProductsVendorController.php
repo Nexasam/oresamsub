@@ -114,7 +114,7 @@ class ProductsVendorController extends Controller
         }
 
         $status_code = $buy_airtime['status_code'] ?? 500;
-        return $this->error( $message ,data: $data2, code: $status);
+        return $this->error( $message ,data: $data2, code: $status_code);
 
     }
 
