@@ -1104,8 +1104,9 @@ class ProductsService{
                                 $creationData['description'] = $description;
                                 $creationData['user_screen_message'] = 'Insufficient wallet balance';
                                 $creationData['admin_screen_message'] = 'Insufficient wallet balance';
-                                logger('CD:::'.json_encode($creationData));
                                 $transaction = Transaction::create($creationData);
+                                logger('CD:::'.json_encode($transaction));
+
 
 
                         
