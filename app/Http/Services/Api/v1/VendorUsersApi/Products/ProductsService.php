@@ -1106,10 +1106,9 @@ class ProductsService{
                                 $creationData['admin_screen_message'] = 'Insufficient wallet balance';
                                 $transaction = Transaction::create($creationData);
                                 logger('CD:::'.json_encode($transaction));
+                                DB::commit();
 
 
-
-                        
                                 $status = -1;
                                     return [
                                         'id'=>$transaction->id,
