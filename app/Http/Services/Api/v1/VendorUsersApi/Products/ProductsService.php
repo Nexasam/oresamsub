@@ -1012,8 +1012,8 @@ class ProductsService{
             $creationData['balance_before'] =$user_details->main_wallet;
             $creationData['balance_after'] = $user_details->main_wallet;
             $creationData['description'] = $description ?? 'Purchase of airtime';
-            $creationData['user_screen_message'] = 'Insufficient wallet balance';
-            $creationData['admin_screen_message'] = 'Insufficient wallet balance';
+            $creationData['user_screen_message'] = 'Amount cannot be less than 50';
+            $creationData['admin_screen_message'] = 'Amount cannot be less than 50';
             $transaction = Transaction::create($creationData);
 
 
@@ -1085,6 +1085,7 @@ class ProductsService{
                             if($total_amount > $wallet_before || $wallet_before < 0){
                                 // return ['status'=>'-1', 'message'=>'Insufficient wallet balance' ];
                                 // return ['status'=>'-1', 'message'=>'Insufficient wallet balance','data' => ''];
+                                logger('we got here');
                                 $description = 'Purchase of airtime';
                                 $creationData['transaction_category'] = 'airtime';
                                 $creationData['transaction_route'] = 'api';
