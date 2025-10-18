@@ -1005,7 +1005,7 @@ class ProductsService{
 
       
 
-        if($amount < 50){
+        if($actual_amount < 50){
             // return ['status'=>'-1', 'message'=>'Insufficient wallet balance','data' => ''];
             $description = 'Purchase of airtime';
             $creationData['transaction_category'] = 'airtime';
