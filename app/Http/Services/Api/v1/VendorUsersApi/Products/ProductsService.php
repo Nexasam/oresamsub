@@ -917,13 +917,24 @@ class ProductsService{
         $plan_level = $user_level->plan_level;
 
         
+
+        
         $plan_details = ProductPlan::with('product_plan_category')
         ->where('visibility',1)
         ->where('id',$product_plan_id)->first();
         // $automation_id = $plan_details->automation_id;
         // $product_plan_category = $plan_details->product_plan_category;
         // $actual_amount = abs($actual_amount);
-        logger('parent plan details: '.$plan_details);
+        // logger('parent plan details: '.$plan_details);
+
+
+        $user_level_selling = "user_level_".$plan_level."_selling_price";
+        $purchase_discount =  $plan_details->$user_level_selling;
+        $actual_discount_value = ceil(($purchase_discount/100) * $actual_amount); 
+         
+        //below forms the new amount to sell to the user
+        $amount = $actual_discount_value < 0 || $actual_discount_value > $actual_amount ? $actual_amount : ($actual_amount - $actual_discount_value);
+        
 
         $success = 0;
         $failure = 0;
@@ -948,7 +959,7 @@ class ProductsService{
             $creationData['wallet_category'] = $wallet_category;
             $creationData['product_plan_id'] = $product_plan_id;
             $creationData['phone_number'] = $phone_number ?? NULL;
-            $creationData['amount'] = $amount;
+            $creationData['amount'] = $actual_amount;
             $creationData['coupon_code_id'] = $coupon ?? NULL;
             $creationData['discounted_amount'] = $amount;
             $creationData['status'] = -1;
@@ -1005,7 +1016,7 @@ class ProductsService{
             $creationData['wallet_category'] = $wallet_category;
             $creationData['product_plan_id'] = $product_plan_id;
             $creationData['phone_number'] = $phone_number ?? NULL;
-            $creationData['amount'] = $amount;
+            $creationData['amount'] = $actual_amount;
             $creationData['coupon_code_id'] = $coupon ?? NULL;
             $creationData['discounted_amount'] = $amount;
             $creationData['status'] = -1;
@@ -1054,13 +1065,6 @@ class ProductsService{
 
 
 
-        $user_level_selling = "user_level_".$plan_level."_selling_price";
-        $purchase_discount =  $plan_details->$user_level_selling;
-        $actual_discount_value = ceil(($purchase_discount/100) * $actual_amount); 
-         
-        //below forms the new amount to sell to the user
-        $amount = $actual_discount_value < 0 || $actual_discount_value > $actual_amount ? $actual_amount : ($actual_amount - $actual_discount_value);
-        
         $user_id = $user_details->id;
         $phone_numbers = $phone_number;
         $phone_numbers = trim($phone_numbers);
@@ -1082,6 +1086,7 @@ class ProductsService{
                         if($wallet_category == 'main_wallet'){
                             $wallet_before = $user_details->main_wallet;
                             $total_amount = $phone_numbers_count * $amount;
+                            $actual_total_amount = $phone_numbers_count * $actual_amount;
                             if($total_amount > $wallet_before || $wallet_before < 0){
                                 // return ['status'=>'-1', 'message'=>'Insufficient wallet balance' ];
                                 // return ['status'=>'-1', 'message'=>'Insufficient wallet balance','data' => ''];
@@ -1095,7 +1100,7 @@ class ProductsService{
                                 $creationData['wallet_category'] = $wallet_category;
                                 $creationData['product_plan_id'] = $product_plan_id;
                                 $creationData['phone_number'] = $phone_number ?? NULL;
-                                $creationData['amount'] = $total_amount;
+                                $creationData['amount'] = $actual_amount;
                                 $creationData['coupon_code_id'] = $coupon ?? NULL;
                                 $creationData['discounted_amount'] = $amount;
                                 $creationData['status'] = -1;
@@ -1134,7 +1139,7 @@ class ProductsService{
                                         },
                                         "plan_network" => Network::where('id',$network_id)->value('network_name'),
                                         "plan_name" => $plan_details->product_plan_name ?? NULL,
-                                        'plan_amount'=>$amount ?? NULL, 
+                                        'plan_amount'=>$total_amount ?? NULL, 
                                         'create_date'=>date('Y-m-d H:i:s'), 
                                         'data' => $display_results ?? NULL
                                     ];
