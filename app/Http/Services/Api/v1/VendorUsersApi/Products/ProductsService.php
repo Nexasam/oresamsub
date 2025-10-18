@@ -1095,15 +1095,16 @@ class ProductsService{
                                 $creationData['wallet_category'] = $wallet_category;
                                 $creationData['product_plan_id'] = $product_plan_id;
                                 $creationData['phone_number'] = $phone_number ?? NULL;
-                                $creationData['amount'] = $amount;
+                                $creationData['amount'] = $total_amount;
                                 $creationData['coupon_code_id'] = $coupon ?? NULL;
                                 $creationData['discounted_amount'] = $amount;
                                 $creationData['status'] = -1;
                                 $creationData['balance_before'] =$user_details->main_wallet;
                                 $creationData['balance_after'] = $user_details->main_wallet;
-                                $creationData['description'] = $description ?? 'Purchase of airtime';
+                                $creationData['description'] = $description;
                                 $creationData['user_screen_message'] = 'Insufficient wallet balance';
                                 $creationData['admin_screen_message'] = 'Insufficient wallet balance';
+                                logger('CD:::'.json_encode($creationData));
                                 $transaction = Transaction::create($creationData);
 
 
