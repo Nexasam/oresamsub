@@ -923,7 +923,7 @@ class ProductsService{
         // $automation_id = $plan_details->automation_id;
         // $product_plan_category = $plan_details->product_plan_category;
         // $actual_amount = abs($actual_amount);
-        // logger('parent actual_amount: '.$actual_amount);
+        logger('parent plan details: '.$plan_details);
 
         $success = 0;
         $failure = 0;
@@ -969,9 +969,9 @@ class ProductsService{
                     'actual_status' => -1,
                     'status_code' => 503,
                     'message' => $check_purchase_limit['message'] ?? 'Transaction failed.',
-                    'apiresponse' => 'Amount cannot be less than 50',
-                    'user_message' => 'Amount cannot be less than 50',
-                    'admin_message' => 'Amount cannot be less than 50',
+                    'apiresponse' => $check_purchase_limit['message'] ?? 'Transaction failed.',
+                    'user_message' => $check_purchase_limit['message'] ?? 'Transaction failed.',
+                    'admin_message' => $check_purchase_limit['message'] ?? 'Transaction failed.',
                     "balance_before" => $user_details->main_wallet ?? NULL,
                     "balance_after" =>  $user_details->main_wallet ?? NULL,
                     "plan" => $plan_details->api_id,
