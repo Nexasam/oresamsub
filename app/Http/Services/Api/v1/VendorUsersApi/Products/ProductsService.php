@@ -709,7 +709,7 @@ class ProductsService{
                             }
                     
                             //calling the actual vending via the automation:
-                            $automation_details = Automation::where('id',$automation_id)->first();
+                            // $automation_details = Automation::where('id',$automation_id)->first();
                     
                             //TODO: candidate for separation
                             for($i = 0; $i < count($phone_numbers_array); $i++ ){
@@ -812,7 +812,7 @@ class ProductsService{
                             if($failure > 0){
                                 return ['status'=>2, 'message'=>" $failure issue(s) found. Check transaction history", 'data' => $display_results  ];   
                             }
-                            return ['status'=>1, 'message'=>'Bulk data transaction was successfully processed', 'data' => $display_results  ];
+                            // return ['status'=>1, 'message'=>'Bulk data transaction was successfully processed', 'data' => $display_results  ];
                         }
 
 
@@ -907,7 +907,7 @@ class ProductsService{
 
         $user_details = User::where('id',$user_id)->first();
         if($user_details->pin != $pin){
-            return ['status'=>'-1', 'message'=>'Pin mismatch found'];
+            return ['status'=>-1, 'message'=>'Pin mismatch found'];
 
         }
 
@@ -920,7 +920,7 @@ class ProductsService{
         $plan_details = ProductPlan::with('product_plan_category')
         ->where('visibility',1)
         ->where('id',$product_plan_id)->first();
-        $automation_id = $plan_details->automation_id;
+        // $automation_id = $plan_details->automation_id;
         $product_plan_category = $plan_details->product_plan_category;
         // $actual_amount = abs($actual_amount);
         // logger('parent actual_amount: '.$actual_amount);
@@ -1022,7 +1022,7 @@ class ProductsService{
                 return [
                     'id'=>$transaction->id,
                     'txn_reference'=>$txn_reference ?? NULL,
-                    'status'=>-1,
+                    'status'=> -1,
                     'actual_status' => -1,
                     'status_code' => 503,
                     'message' => 'Amount cannot be less than 50',
@@ -1111,7 +1111,7 @@ class ProductsService{
                                     return [
                                         'id'=>$transaction->id,
                                         'txn_reference'=>$txn_reference ?? NULL,
-                                        'status'=>-1,
+                                        'status'=> -1,
                                         'actual_status' => -1,
                                         'status_code' => 503,
                                         'message' => 'Insufficient wallet balance',
@@ -1125,9 +1125,9 @@ class ProductsService{
                                             "1"   => "successful",
                                             "2"  => "refunded",
                                             "-1"  => "failed",
-                                            1   => "successful",
-                                            2  => "refunded",
-                                            -1  => "failed",
+                                            1 => "successful",
+                                            2 => "refunded",
+                                            -1 => "failed",
                                             default => "failed"
                                         },
                                         "plan_network" => Network::where('id',$network_id)->value('network_name'),
@@ -1139,7 +1139,7 @@ class ProductsService{
                             }
                     
                             //calling the actual vending via the automation:
-                            $automation_details = Automation::where('id',$automation_id)->first();            
+                            // $automation_details = Automation::where('id',$automation_id)->first();            
                             //TODO: candidate for separation
                             for($i = 0; $i < count($phone_numbers_array); $i++ ){
                                 sleep(2); //add throttle here
