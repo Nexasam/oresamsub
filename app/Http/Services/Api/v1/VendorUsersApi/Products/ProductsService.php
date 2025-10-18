@@ -921,7 +921,7 @@ class ProductsService{
         ->where('visibility',1)
         ->where('id',$product_plan_id)->first();
         // $automation_id = $plan_details->automation_id;
-        $product_plan_category = $plan_details->product_plan_category;
+        // $product_plan_category = $plan_details->product_plan_category;
         // $actual_amount = abs($actual_amount);
         // logger('parent actual_amount: '.$actual_amount);
 
