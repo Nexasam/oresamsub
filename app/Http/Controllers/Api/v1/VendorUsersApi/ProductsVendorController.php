@@ -191,6 +191,71 @@ class ProductsVendorController extends Controller
 
     }
 
+    public function buy_cable_tv(Request $request)
+    {
+       
+
+        $validator = Validator::make($request->all(), [
+            'plan' => 'required|unique:product_plans,api_id',
+            'reference' => 'required|unique:transactions,txn_reference',
+            'smart_card_number' => 'required',
+            'validation_customer_name' => 'required',
+        ]);
+
+        if ($validator->stopOnFirstFailure()->fails()) {
+            return $this->error('Validation failed', data: $validator->errors()->first(), code: 403 );    
+        }
+
+        $getiddd = ProductPlan::with('product_plan_category.product')->where('api_id',$request->plan)->first();
+        $product_id = $getiddd->product_plan_category->product->id;
+        $product_plan_category_id = $getiddd->product_plan_category->id;
+        $product_plan_id = $getiddd->id;
+
+          
+        $data['user_id'] = $request->api_user->id;//this is required
+        $data['user'] = $request->api_user;//this is required
+        $data['smart_card_number'] = $request->smart_card_number;//this is required
+        $data['validation_customer_name'] = $request->validation_customer_name;//this is required
+        $data['cable_product_plan_category_id'] = $product_plan_category_id;//this is required
+        $data['cable_product_plan_id'] = $product_plan_id;//this is required
+        $data['no_of_slots'] = '1';//this is required
+        $data['wallet_category'] = 'main_wallet';//this is required
+        $data['pin'] = $request->api_user->pin ?? '';
+
+
+
+        $buy_cablee = (new ProductsService())->buy_cable_service($data);
+        $status = $buy_cablee['status'];
+        $message = $buy_cablee['message'];
+        $data = $buy_cablee['data'] ?? [];
+        
+        $data2 =[
+            'id'=>$buy_cablee['id'] ?? NULL,
+            'txn_reference'=>$buy_cablee['txn_reference'] ?? NULL,
+            'status'=>$buy_cablee['status'],
+            'Status'=>$buy_cablee['Status'] ?? NULL,
+            'plan'=>$buy_cablee['plan'] ?? NULL,
+            'balance_before'=>$buy_cablee['balance_before'] ?? NULL,
+            'balance_after'=>$buy_cablee['balance_after'] ?? NULL,
+            'message'=>$buy_cablee['message'] ?? NULL,
+            'user_message'=>$buy_cablee['user_message'] ?? NULL,
+            'admin_message'=>$buy_cablee['admin_message'] ?? NULL,
+            'plan_network'=>$buy_cablee['plan_network'] ?? NULL,
+            'plan_name'=>$buy_cablee['plan_name'] ?? NULL,
+            'plan_amount'=>$buy_cablee['plan_amount'] ?? NULL,
+            'create_date'=>$buy_cablee['create_date'] ?? NULL
+        ];
+
+        if($status == 1){
+            return $this->success($buy_cablee['message'],data: $data2);    
+        }
+
+        $status_code = $buy_cablee['status_code'] ?? 500;
+        return $this->error( $message ,data: $data2, code: $status_code); 
+
+
+    }
+
 
     public function fetch_networks(Request $request){  
         $data = Network::where('visibility',1)->select('network_name','api_id')->get();
@@ -831,7 +896,7 @@ class ProductsVendorController extends Controller
      /**
      * buy cable tv
     */
-    public function buy_cable_tv(Request $request)
+    public function buy_cable_tvold(Request $request)
     {
        
 

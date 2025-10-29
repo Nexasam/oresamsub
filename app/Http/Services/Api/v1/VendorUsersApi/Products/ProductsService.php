@@ -1614,8 +1614,15 @@ class ProductsService{
         $cable_product_plan_id = $data['cable_product_plan_id'];
         $pin = $data['pin'];
         $user_id = $data['user_id'];//this is required
+        $user = $data['user'];//this is required
         $no_of_slots = $data['no_of_slots'];
         $wallet_category = $data['wallet_category'];
+
+        $txn_reference = $data['reference'] ?? NULL;
+        if($txn_reference == NULL){
+            //generate a unique one
+            $txn_reference = $this->generateTxnReference('ELECTRICITY',$user_id);
+        }
 
         
         $success = 0;
@@ -1627,30 +1634,19 @@ class ProductsService{
         $data1['days_count'] = [1,7,30];
         $data1['user_id'] = $user_id;
         // $data1['product'] = 'cable_subscription';
-        $check_purchase_limit =  ProductsService::check_purchase_limit($data1);
-        if($check_purchase_limit['status'] == -1){
-            return ['status'=>'-1', 'message'=>$check_purchase_limit['message'] ];
-        }
+        $user_details = User::where('id',$user_id)->first();
+        // if(! $user_details){
+        //     return ['status'=>'-1', 'message'=>'please logout and login again' ];
+        // }
+
+        // if($user_details->pin != $pin){
+        //     return ['status'=>'-1', 'message'=>'Incorrect PIN' ];
+        // }
+
 
         $plan_details = ProductPlan::where('id',$cable_product_plan_id)->where('visibility',1)->first();
         if(! $plan_details){
             return ['status'=>'-1', 'message'=>'plan details not found' ];
-        }
-        $automation_id = $plan_details->automation_id;
-        // $data_value_mb = $plan_details->data_size_in_mb ?? 0;
-
-        $plan_category_details = ProductPlanCategory::where('id',$cable_product_plan_category_id)->first();
-        if(! $plan_category_details){
-            return ['status'=>'-1', 'message'=>'plan category details not found' ];
-        }
-
-        $user_details = User::where('id',$user_id)->first();
-        if(! $user_details){
-            return ['status'=>'-1', 'message'=>'please logout and login again' ];
-        }
-
-        if($user_details->pin != $pin){
-            return ['status'=>'-1', 'message'=>'Incorrect PIN' ];
         }
 
         $user_plan_id = $user_details->user_plan_id;
@@ -1658,8 +1654,87 @@ class ProductsService{
         $plan_level = $user_level->plan_level;
         $user_plan_selling_price = 'user_level_'.$plan_level.'_selling_price';
         $amount = abs($plan_details->$user_plan_selling_price);
-     
 
+        $check_purchase_limit =  ProductsService::check_purchase_limit($data1);
+        if($check_purchase_limit['status'] == -1){
+            // return ['status'=>'-1', 'message'=>$check_purchase_limit['message'] ];
+            $limitmess = $check_purchase_limit['message'] ?? 'limit reached';
+            $description = 'Purchase of cable subscription';
+            $creationData['transaction_category'] = 'cable_subscription';
+            $creationData['user_id'] = $user_id;
+            $creationData['txn_reference'] = $txn_reference;
+            $creationData['wallet_category'] = $wallet_category;
+            $creationData['product_plan_id'] = $cable_product_plan_id;
+            $creationData['phone_number'] =  NULL;
+            $creationData['smart_card_number'] = $smart_card_number;
+            $creationData['cable_tv_slots'] = 1;
+            $creationData['amount'] = $amount;
+            $creationData['discounted_amount'] = $amount;
+            $creationData['status'] = -1;
+            $creationData['balance_before'] = $user_details->main_wallet;
+            $creationData['balance_after'] = $user_details->main_wallet;
+            $creationData['description'] = $description;
+            $creationData['user_screen_message'] = $limitmess;
+            $creationData['admin_screen_message'] = $limitmess;
+            $transaction = Transaction::create($creationData);
+
+            $walletLog['user_id'] = $user_id;
+            $walletLog['transaction_category'] = 'CABLE';
+            $walletLog['balance_before'] = $user_details->main_wallet;
+            $walletLog['balance_after'] =$user_details->main_wallet;
+            $walletLog['transaction_id'] = $transaction->id;
+            $walletLog['action_by'] =  $user_id;        
+            $walletLog['description'] = 'CABLE Purchase from main wallet';
+            $this->log_wallet_transactions($walletLog);
+
+
+            User::where('id',$user_id)->update([
+                'main_wallet' => $user_details->main_wallet
+            ]);
+
+            DB::commit();
+
+      
+            return [
+                'id'=>$transaction->id,
+                'txn_reference'=>$txn_reference,
+                'status'=> -1,
+                'actual_status' => -1,
+                'message' => $limitmess,
+                'apiresponse' =>$limitmess,
+                'user_message' =>$limitmess,
+                'admin_message' =>$limitmess,
+                "balance_before" => $user_details->main_wallet,
+                "balance_after" => $user_details->main_wallet,
+                "plan" => $plan_details->api_id,
+                "Status" => match($status) {
+                    "0"   => "pending",
+                    "1"   => "successful",
+                    "2"  => "refunded",
+                    "-1"  => "failed",
+                    0   => "pending",
+                    1   => "successful",
+                    2  => "refunded",
+                    -1  => "failed",
+                    default => "unknown"
+                },
+                "plan_network" => null,
+                "plan_name" => $plan_details->product_plan_name,
+                'plan_amount'=>$amount, 
+                'create_date'=>date('Y-m-d H:i:s'), 
+                'data' => []
+            ];
+        }
+
+       
+        $automation_id = $plan_details->automation_id;
+        // $data_value_mb = $plan_details->data_size_in_mb ?? 0;
+
+        $plan_category_details = ProductPlanCategory::where('id',$cable_product_plan_category_id)->first();
+        if(! $plan_category_details){
+            return ['status'=>'-1', 'message'=>'plan category details not found' ];
+        }
+     
         DB::beginTransaction();
         try{
 
@@ -1668,7 +1743,73 @@ class ProductsService{
                             $wallet_before = $user_details->main_wallet;
                             $total_amount =  $no_of_slots * $amount;
                             if($total_amount > $wallet_before || $wallet_before < 0){
-                                return ['status'=>'-1', 'message'=>'Insufficient wallet balance' ];
+                                // return ['status'=>'-1', 'message'=>'Insufficient wallet balance' ];
+                                $description = 'Purchase of cable subscription';
+                                $creationData['transaction_category'] = 'cable_subscription';
+                                $creationData['user_id'] = $user_id;
+                                $creationData['txn_reference'] = $txn_reference;
+                                $creationData['wallet_category'] = $wallet_category;
+                                $creationData['product_plan_id'] = $cable_product_plan_id;
+                                $creationData['phone_number'] =  NULL;
+                                $creationData['smart_card_number'] = $smart_card_number;
+                                $creationData['cable_tv_slots'] = 1;
+                                $creationData['amount'] = $amount;
+                                $creationData['discounted_amount'] = $amount;
+                                $creationData['status'] = -1;
+                                $creationData['balance_before'] = $wallet_before;
+                                $creationData['balance_after'] = $wallet_before;
+                                $creationData['description'] = $description;
+                                $creationData['user_screen_message'] = 'Insufficient wallet balance';
+                                $creationData['admin_screen_message'] = 'Insufficient wallet balance';
+                                $transaction = Transaction::create($creationData);
+
+                                $walletLog['user_id'] = $user_id;
+                                $walletLog['transaction_category'] = 'CABLE';
+                                $walletLog['balance_before'] = $wallet_before;
+                                $walletLog['balance_after'] = $wallet_before;
+                                $walletLog['transaction_id'] = $transaction->id;
+                                $walletLog['action_by'] =  $user_id;        
+                                $walletLog['description'] = 'CABLE Purchase from main wallet';
+                                $this->log_wallet_transactions($walletLog);
+                    
+                    
+                                User::where('id',$user_id)->update([
+                                    'main_wallet' => $wallet_before
+                                ]);
+
+                                DB::commit();
+
+                          
+                                return [
+                                    'id'=>$transaction->id,
+                                    'txn_reference'=>$txn_reference,
+                                    'status'=> -1,
+                                    'actual_status' => -1,
+                                    'message' => 'Insufficient wallet balance',
+                                    'apiresponse' =>'Insufficient wallet balance',
+                                    'user_message' =>'Insufficient wallet balance',
+                                    'admin_message' =>'Insufficient wallet balance',
+                                    "balance_before" => $wallet_before,
+                                    "balance_after" => $wallet_before,
+                                    "plan" => $plan_details->api_id,
+                                    "Status" => match($status) {
+                                        "0"   => "pending",
+                                        "1"   => "successful",
+                                        "2"  => "refunded",
+                                        "-1"  => "failed",
+                                        0   => "pending",
+                                        1   => "successful",
+                                        2  => "refunded",
+                                        -1  => "failed",
+                                        default => "unknown"
+                                    },
+                                    "plan_network" => null,
+                                    "plan_name" => $plan_details->product_plan_name,
+                                    'plan_amount'=>$amount, 
+                                    'create_date'=>date('Y-m-d H:i:s'), 
+                                    'data' => []
+                                ];
+
                             }
                     
                             //calling the actual vending via the automation:
@@ -1677,26 +1818,7 @@ class ProductsService{
                        
                              //TODO: candidate for separation
                              for($i = 1; $i <= $no_of_slots; $i++ ){
-                                //vend data
-                                //HERE the endpoint of the automation service is called:
-                                //this is for megasubplug: vend for Airtime
                               
-                                
-                                //WE MOVED THIS
-                                // if($automation_details->slug == 'megasubplug'){
-                                //     $duplication_check = 1;
-                                //     // $smart_card_number,$plan_id,$amount,$validation_customer_name,$no_of_slots,$product_plan_category_name
-                                //     // return ['status'=>'-1', 'message'=>$smart_card_number ]);
-
-                                //     $buy_cable_subscription = (new MegaSubCableTV($smart_card_number,$cable_product_plan_id,$total_amount,$validation_customer_name,1,$plan_category_details->product_plan_category_name, user_id: $user_id))->buyCable();
-                                // }else{
-                                //     //this will be like this until other automations are processed
-                                //     $buy_cable_subscription['status'] = -1;
-                                //     $buy_cable_subscription['user_message'] = 'Cable subscription failed.';
-                                //     $buy_cable_subscription['admin_message'] = 'Cable subscription failed.';
-                                // }
-                                // logger(json_encode($buy_cable_subscription_megasub));
-                                // dd($buy_cable_subscription_megasub);
 
                                 $dataa['automation_details'] = $automation_details;
                                 $dataa['smart_card_number'] = $smart_card_number;
@@ -1751,6 +1873,7 @@ class ProductsService{
                                 $description = 'Purchase of cable subscription';
                                 $creationData['transaction_category'] = 'cable_subscription';
                                 $creationData['user_id'] = $user_id;
+                                $creationData['txn_reference'] = $txn_reference;
                                 $creationData['wallet_category'] = $wallet_category;
                                 $creationData['product_plan_id'] = $cable_product_plan_id;
                                 $creationData['phone_number'] =  NULL;
@@ -1797,7 +1920,72 @@ class ProductsService{
         }catch(Exception $exception){
             logger($exception->getMessage().' on line: '. $exception->getLine());
             DB::rollBack();
-            return ['status'=>'-1', 'message'=>'Something went wrong... Please try again', 'data'=>[]];
+            // return ['status'=>'-1', 'message'=>'Something went wrong... Please try again', 'data'=>[]];
+            $description = 'Purchase of cable subscription';
+            $creationData['transaction_category'] = 'cable_subscription';
+            $creationData['user_id'] = $user_id;
+            $creationData['txn_reference'] = $txn_reference;
+            $creationData['wallet_category'] = $wallet_category;
+            $creationData['product_plan_id'] = $cable_product_plan_id;
+            $creationData['phone_number'] =  NULL;
+            $creationData['smart_card_number'] = $smart_card_number;
+            $creationData['cable_tv_slots'] = -1;
+            $creationData['amount'] = $amount;
+            $creationData['discounted_amount'] = $amount;
+            $creationData['status'] = -1;
+            $creationData['balance_before'] = $user_details->main_wallet;
+            $creationData['balance_after'] = $user_details->main_wallet;
+            $creationData['description'] = $description;
+            $creationData['user_screen_message'] = 'Unsuccesful. Please try again';
+            $creationData['admin_screen_message'] =  'Unsuccesful. Please try again '.$exception->getMessage();
+            $transaction = Transaction::create($creationData);
+
+            $walletLog['user_id'] = $user_id;
+            $walletLog['transaction_category'] = 'CABLE';
+            $walletLog['balance_before'] = $user_details->main_wallet;
+            $walletLog['balance_after'] =$user_details->main_wallet;
+            $walletLog['transaction_id'] = $transaction->id;
+            $walletLog['action_by'] =  $user_id;        
+            $walletLog['description'] = 'CABLE Purchase from main wallet';
+            $this->log_wallet_transactions($walletLog);
+
+
+            User::where('id',$user_id)->update([
+                'main_wallet' => $user_details->main_wallet
+            ]);
+
+            DB::commit();
+
+            return [
+                'id'=>$transaction->id,
+                'txn_reference'=>$txn_reference,
+                'status'=> -1,
+                'actual_status' => -1,
+                'message' => 'Unsuccesful. Please try again',
+                'apiresponse' =>'Unsuccesful. Please try again',
+                'user_message' =>'Unsuccesful. Please try again',
+                'admin_message' =>'Unsuccesful. Please try again '.$exception->getMessage(),
+                "balance_before" => $user_details->main_wallet,
+                "balance_after" => $user_details->main_wallet,
+                "plan" => $plan_details->api_id,
+                "Status" => match($status) {
+                    "0"   => "pending",
+                    "1"   => "successful",
+                    "2"  => "refunded",
+                    "-1"  => "failed",
+                    0   => "pending",
+                    1   => "successful",
+                    2  => "refunded",
+                    -1  => "failed",
+                    default => "unknown"
+                },
+                "plan_network" => null,
+                "plan_name" => $plan_details->product_plan_name,
+                'plan_amount'=>$amount, 
+                'create_date'=>date('Y-m-d H:i:s'), 
+                'data' => []
+            ];
+
         }
 
     }

@@ -30,6 +30,7 @@ Route::middleware('api_token')->group(function () {
     Route::post('user/buy_data', [ProductsVendorController::class, 'buy_data'])->name('api.user.buy_data');
     Route::post('user/buy_airtime', [ProductsVendorController::class, 'buy_airtime'])->name('api.user.buy_airtime');
     Route::post('user/buy_electricity', [ProductsVendorController::class, 'buy_electricity'])->name('api.user.buy_electricity');
+    Route::post('user/buy_cable_tv', [ProductsVendorController::class, 'buy_cable_tv'])->name('api.user.buy_cable_tv');
 
     // Route::get('user/fetch_airtime_plans', [ProductsVendorController::class, 'fetch_airtime_plans'])->name('api.user.fetch_airtime_plans');
     Route::get('user/fetch_airtime_transactions', [ProductsVendorController::class, 'fetch_airtime_transactions'])->name('api.user.fetch_airtime_transactions');
@@ -46,6 +47,5 @@ Route::middleware('api_token')->group(function () {
     Route::get('user/fetch_product_plans', [ProductsVendorController::class, 'fetch_product_plans'])->name('api.user.fetch_product_plans');
     Route::post('user/validate_metre_number', [ProductsVendorController::class, 'validate_metre_number'])->name('api.user.validate_metre_number');
     Route::post('user/validate_cable_tv', [ProductsVendorController::class, 'validate_cable_tv'])->name('api.user.validate_cable_tv');
-    Route::post('user/buy_cable_tv', [ProductsVendorController::class, 'buy_cable_tv'])->name('api.user.buy_cable_tv');
     Route::get('user/parent_child_website_syncing/{email}', [ProductsController::class, 'parent_child_website_syncing'])->name('api.parent_child_website_syncing');
 });
