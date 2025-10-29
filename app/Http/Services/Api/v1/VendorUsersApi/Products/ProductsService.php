@@ -916,16 +916,10 @@ class ProductsService{
         $user_level = UserPlan::select('plan_level')->where('id',$user_plan_id)->first();
         $plan_level = $user_level->plan_level;
 
-        
-
-        
+                
         $plan_details = ProductPlan::with('product_plan_category')
         ->where('visibility',1)
         ->where('id',$product_plan_id)->first();
-        // $automation_id = $plan_details->automation_id;
-        // $product_plan_category = $plan_details->product_plan_category;
-        // $actual_amount = abs($actual_amount);
-        // logger('parent plan details: '.$plan_details);
 
 
         $user_level_selling = "user_level_".$plan_level."_selling_price";
@@ -1271,249 +1265,6 @@ class ProductsService{
             return ['status'=>-1, 'message'=>'Something went wrong... Please try again', 'data'=>[]];
         }
 
-      
-       
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-       
-
-    
-        // if($amount < 50){
-        //     return ['status'=>'-1', 'message'=>'Insufficient wallet balance','data' => []  ];
-        // }
-
-        // $data1['days_count'] = [1,7,30];
-        // $data1['user_id'] = $user_id;
-        // $data1['product'] = 'airtime';
-        // $check_purchase_limit =  ProductsService::check_purchase_limit($data1);
-        // if($check_purchase_limit['status'] == -1){
-        //     return ['status'=>'-1', 'message'=>$check_purchase_limit['message']  ];
-        // }
-
-      
-
-        // $success = 0;
-        // $failure = 0;
-        // $status = 0;
-        // $message = 'Pending';
-        // $display_results = [];
-
-        // $user_details = User::where('id',$user_id)->first();
-        // if(! $user_details){
-        //     //end session and redirect to login
-        //     return ['status'=>'-1', 'message'=>'User records not found' ];
-        // }
-        // $user_plan_id = $user_details->user_plan_id;
-        // $user_id = $user_details->id;
-        // $user_level = UserPlan::select('plan_level')->where('id',$user_plan_id)->first();
-        // $plan_level = $user_level->plan_level;
-
-        
-        // $plan_details = ProductPlan::where('visibility',1)
-        //                             ->where('product_plan_category_id',$product_plan_category_id)
-        //                             ->first();
-        
-        // if(! $plan_details){
-        //     return ['status'=>'-1', 'message'=>'plan details not found or available','data' => []  ];
-        // }
-
-        // $product_plan_id = $plan_details->id;
-        
-        // $automation_id = $plan_details->automation_id;
-        // // $product_plan_category = $plan_details->product_plan_category;
-        // $actual_amount = abs($amount);
-
-        // $user_level_selling = "user_level_".$plan_level."_selling_price";
-        // $purchase_discount =  $plan_details->$user_level_selling;
-        // $actual_discount_value = ceil(($purchase_discount/100) * $actual_amount); 
-         
-        // //below forms the new amount to sell to the user
-        // $amount = $actual_discount_value < 0 || $actual_discount_value > $actual_amount ? $actual_amount : ($actual_amount - $actual_discount_value);
-        
-
-        // // if($user_details->pin != $pin){
-        // //     //end session and redirect to login 
-        // //     return ['status'=>'-1', 'message'=>'Incorrect PIN' ];
-        // // }
-
-        // $user_id = $user_details->id;
-        // $phone_numbers = $phone_number;
-        // $phone_numbers = trim($phone_numbers);
-        // $phone_numbers_array = explode(',',$phone_numbers);
-        // $phone_numbers_count = count($phone_numbers_array);
-
-        // if($phone_numbers_count == 1){
-        //     $phone_number = $phone_numbers;
-        //     $validate_phone = (new UtilService())->phoneNumberValidation($phone_number);
-        //     $validated_phone_number = $validate_phone['validated_phone_number'];
-        //     if($validate_phone['status'] != 1){
-        //         return ['status'=>'-1', 'message'=>$validate_phone['message'].' Number is: '.$validated_phone_number  ];
-        //     }
-        // }
-
-        // DB::beginTransaction();
-        // try{
-
-        //       ////validate wallet
-        //                 if($wallet_category == 'main_wallet'){
-        //                     $wallet_before = $user_details->main_wallet;
-        //                     $total_amount = $phone_numbers_count * $amount;
-        //                     if($total_amount > $wallet_before || $wallet_before < 0){
-        //                         return ['status'=>'-1', 'message'=>'Insufficient wallet balance' ];
-        //                     }
-                    
-        //                     //calling the actual vending via the automation:
-        //                     $automation_details = Automation::where('id',$automation_id)->first();            
-        //                     //TODO: candidate for separation
-        //                     for($i = 0; $i < count($phone_numbers_array); $i++ ){
-        //                         sleep(2); //add throttle here
-
-        //                         $phone_number = $phone_numbers_array[$i];
-        //                         $validate_phone = (new UtilService())->phoneNumberValidation($phone_number);
-        //                         $validated_phone_number = $validate_phone['validated_phone_number'];
-                                
-        //                         //vend data
-        //                         //HERE the endpoint of the automation service is called:
-        //                         //this is for megasubplug
-                                
-
-        //                         if($validate_phone['status'] != 1){
-        //                             //something when wrong
-        //                             $sell_data['status'] = -1;
-        //                             $sell_data['user_message'] = 'This number is not a valid number: '.$phone_number;
-        //                             $sell_data['admin_message'] = 'This number is not a valid number: '.$phone_number;
-        //                         }
-
-        //                         //always check the wallet balance after every loop:
-        //                         else if($wallet_before < 0){
-        //                              //this will be like this until other automations are processed
-        //                              $buy_airtime['status'] = -1;
-        //                              $buy_airtime['user_message'] = 'Airtime transaction failed.';
-        //                              $buy_airtime['admin_message'] = 'Airtime transaction failed...';
-        //                             // return response()->json(['status'=>'-1', 'message'=>'Insufficient wallet balance' ]);
-        //                         }else{
-        //                             //vend data
-        //                             //HERE the endpoint of the automation service is called:
-        //                             //this is for megasubplug: vend for Airtime
-
-        //                             if($automation_details->slug == 'megasubplug'){
-        //                               $buy_airtime = (new MegaSubVendAirtime($phone_numbers_array[$i],$product_plan_id,$actual_amount,$validatephonenetwork))->buyAirtime();
-        //                              // logger($buy_airtime);
-        //                             }else{
-        //                                 //this will be like this until other automations are processed
-        //                                 $buy_airtime['status'] = -1;
-        //                                 $buy_airtime['user_message'] = 'Airtime transaction failed.';
-        //                                 $buy_airtime['admin_message'] = 'Airtime transaction failed...';
-        //                             }
-        //                             // logger(json_encode($buy_airtime_megasub));
-        //                             // dd($buy_airtime_megasub);
-        //                         }
-
-                               
-
-        //                         if($buy_airtime['status'] == 1){
-        //                             $success++;
-        //                             $status = 1;
-        //                             $wallet_before = User::where('id',$user_id)->first()->main_wallet;
-        //                             $wallet_after = $wallet_before - $amount;
-        //                         }else{
-        //                             //it might be processing or it failed
-        //                             $status = -1;
-        //                             $failure++;
-        //                             $wallet_before = User::where('id',$user_id)->first()->main_wallet;
-        //                             $wallet_after = $wallet_before;
-        //                         }
-        //                         //simulate success
-
-        //                         $user_message = $buy_airtime['user_message'];
-        //                         $admin_message = $buy_airtime['admin_message'];
-        //                         $display_results[$i] = array(
-        //                             'message' => $user_message,
-        //                             'admin_message' => $admin_message,
-        //                             'status' => $status
-        //                         );
-                                       
-                    
-        //                         //this should not run though because it has already been checked
-        //                         // if($wallet_after <= 0){
-        //                         //     $status = -1;
-        //                         //     $user_message = 'Failed due to insufficient balance';
-        //                         //     $admin_message = 'Failed due to insufficient balance';
-        //                         //     $failure++;
-        //                         //     $display_results[$i] = array(
-        //                         //         'message' => $user_message,
-        //                         //         'admin_message' => $admin_message,
-        //                         //         'status' => $status
-        //                         //     );
-        //                         // }
-                        
-        //                         $description = 'Purchase of airtime';
-        //                         $creationData['transaction_category'] = 'airtime';
-        //                         $creationData['user_id'] = $user_id;
-        //                         $creationData['wallet_category'] = $wallet_category;
-        //                         $creationData['product_plan_id'] = $product_plan_id;
-        //                         $creationData['phone_number'] = $phone_numbers_array[$i];
-        //                         $creationData['amount'] = $actual_amount;
-        //                         $creationData['discounted_amount'] = $amount;
-        //                         $creationData['status'] = $status;
-        //                         $creationData['balance_before'] = $wallet_before;
-        //                         $creationData['balance_after'] = $wallet_after;
-        //                         $creationData['description'] = $description;
-        //                         $creationData['user_screen_message'] = $user_message;
-        //                         $creationData['admin_screen_message'] = $admin_message;
-        //                         $transaction =  Transaction::create($creationData);
-
-        //                         $walletLog['user_id'] = $user_id;
-        //                         $walletLog['transaction_category'] = 'AIRTIME';
-        //                         $walletLog['balance_before'] = $wallet_before;
-        //                         $walletLog['balance_after'] = $wallet_after;
-        //                         $walletLog['transaction_id'] = $transaction->id;
-        //                         $walletLog['action_by'] = $user_id;
-        //                         $walletLog['description'] = 'Airtime Purchase from naira wallet';
-        //                         $this->log_main_wallet_transactions($walletLog);
-
-        //                         User::where('id',$user_id)->update([
-        //                             'main_wallet' => $wallet_after
-        //                         ]);
-                    
-        //                     }
-
-        //                     DB::commit();
-                    
-        //                     if($failure > 0){
-        //                       return ['status'=>2, 'message'=>" $failure issue(s) found. Check transaction history", 'data' => $display_results  ];   
-        //                     }
-        //                     return ['status'=>1, 'message'=>'Transaction was successfully processed', 'data' => $display_results  ];
-                    
-        //                 } else{
-        //                     return ['status'=>'-1', 'message'=>'Wrong wallet selection', 'data'=>[]];
-        //                 }
-
-
-
-        // }catch(Exception $exception){
-        //     logger($exception->getMessage().' on line: '. $exception->getLine());
-        //     DB::rollBack();
-        //     return ['status'=>'-1', 'message'=>'Something went wrong... Please try again', 'data'=>[]];
-        // }
-
-      
-
-
     }
 
     public function buy_electricity_service($data){
@@ -1522,16 +1273,23 @@ class ProductsService{
         $electricity_product_plan_category_id = $data['electricity_product_plan_category_id'];
         $electricity_product_plan_id = $data['electricity_product_plan_id'];
         $no_of_slots = $data['no_of_slots'];
-        // $amount = $data['amount']; //not needed
+        $amount = $data['amount']; 
         $amount = $data['actual_amount'];
-        $pin = $data['pin'];
-        // $pin = $data['pin'];
-        $user_id = $data['user_id'];//this is required
-        $wallet_category = $data['wallet_category'];//this is required
+        $pin = $data['pin'] ?? '';
+        $user_id = $data['user_id'];
+        $user_id = $data['user_id'];
+        $wallet_category = $data['wallet_category'];
+        $txn_reference = $data['reference'] ?? NULL;
+        $validated_address = $data['validated_address'] ?? 'nil';
+
+        if($txn_reference == NULL){
+            //generate a unique one
+            $txn_reference = $this->generateTxnReference('ELECTRICITY',$user_id);
+        }
 
         /////////////////////TO BE REVAMPED
-        if($amount < 0){
-            return ['status'=>'-1', 'message'=>'amount cannot be less than 0','data' => ''  ];
+        if($amount < 500){
+            return ['status'=> -1, 'message'=>'amount cannot be less than 500'];
         }
 
         $data1['days_count'] = [1,7,30];
@@ -1539,7 +1297,7 @@ class ProductsService{
         $data1['product'] = 'utility_bills';
         $check_purchase_limit =  ProductsService::check_purchase_limit($data1);
         if($check_purchase_limit['status'] == -1){
-            return ['status'=>'-1', 'message'=>$check_purchase_limit['message']  ];
+            return [ 'status'=> -1, 'message' =>$check_purchase_limit['message'] ];
         }
 
         $success = 0;
@@ -1551,25 +1309,25 @@ class ProductsService{
         $plan_details = ProductPlan::where('id',$electricity_product_plan_id)
         ->where('visibility',1)
         ->first();
+
         if(! $plan_details){
-            return ['status'=>'-1', 'message'=>'plan details not found' ];
+            return [ 'status'=> -1,'message' => 'plan details not found' ];
         }
 
         $user_details = User::where('id',$user_id)->first();
         if(! $user_details){
-            return ['status'=>'-1', 'message'=>'User record not found' ];
+            return [ 'status'=> -1, 'message'=>'User record not found' ];
         }
 
-        if($user_details->pin != $pin){
-            return ['status'=>'-1', 'message'=>'Incorrect PIN' ];
-        }
-
+        // if($user_details->pin != $pin){
+        //     return ['status'=>'-1', 'message'=>'Incorrect PIN' ];
+        // }
 
         $automation_id = $plan_details->automation_id;
        
         $plan_category_details = ProductPlanCategory::where('id',$electricity_product_plan_category_id)->first();
         if(! $plan_category_details){
-            return ['status'=>'-1', 'message'=>'plan category details not found' ];
+            return ['status'=> -1, 'message'=>'plan category details not found' ];
         }
 
       
@@ -1599,7 +1357,41 @@ class ProductsService{
                             $wallet_before = $user_details->main_wallet;
                             $total_amount =  $no_of_slots * $amount;
                             if($total_amount > $wallet_before || $wallet_before < 0){
-                                return ['status'=>'-1', 'message'=>'Insufficient wallet balance' ];
+                              
+                                $description = 'Purchase of electricity subscription';
+                                $creationData['transaction_category'] = 'utility_bills';
+                                $creationData['user_id'] = $user_id;
+                                $creationData['txn_reference'] = $txn_reference;
+                                $creationData['wallet_category'] = $wallet_category;
+                                $creationData['product_plan_id'] = $electricity_product_plan_id;
+                                $creationData['phone_number'] =  NULL;
+                                $creationData['metre_number'] = $metre_number;
+                                $creationData['validation_address'] = $validated_address;
+                                // $creationData['electricity_tv_slots'] = 1;
+                                $creationData['amount'] = $actual_amount;
+                                $creationData['discounted_amount'] = $amount;
+                                $creationData['status'] = $status;
+                                $creationData['balance_before'] = $wallet_before;
+                                $creationData['balance_after'] = $wallet_before;
+                                $creationData['description'] = $description;
+                                $creationData['user_screen_message'] = 'Insufficient wallet balance';
+                                $creationData['admin_screen_message'] = 'Insufficient wallet balance';
+                                $transaction = Transaction::create($creationData);
+
+
+                                $walletLog['user_id'] = $user_id;
+                                $walletLog['transaction_category'] = 'BILLS';
+                                $walletLog['balance_before'] = $wallet_before;
+                                $walletLog['balance_after'] = $wallet_before;
+                                $walletLog['transaction_id'] = $transaction->id;
+                                $walletLog['action_by'] = $user_details->id;
+                                $walletLog['description'] = 'UTILITY BILLS Purchase from main wallet with transaction_id';
+                                $this->log_wallet_transactions($walletLog);
+                    
+                                User::where('id',$user_id)->update([
+                                    'main_wallet' => $wallet_before
+                                ]);
+
                             }
                     
                             //calling the actual vending via the automation:
@@ -1608,22 +1400,7 @@ class ProductsService{
                        
                              //TODO: candidate for separation
                              for($i = 1; $i <= $no_of_slots; $i++ ){
-                                //vend data
-                                //HERE the endpoint of the automation service is called:
-                                //this is for megasubplug: vend for Airtime
-                                
-                                // if($automation_details->slug == 'megasubplug'){
-                                //     $duplication_check = 1;
-                                 
-                                //     $buy_electricity_subscription = (new MegaSubElectricity($metre_number,$electricity_product_plan_id,$total_amount,$validation_extra_info,1,$plan_category_details->product_plan_category_name,$user_details->phone_number, user_id: $user_id))->buyElectricity();
-                            
-                                // }else{
-                                //     //this will be like this until other automations are processed
-                                //     $buy_electricity_subscription['status'] = -1;
-                                //     $buy_electricity_subscription['user_message'] = 'Electricity subscription failed...';
-                                //     $buy_electricity_subscription['admin_message'] = 'Electricity subscription failed...';
-                                // }
-
+                          
                                 $data['automation_details'] = $automation_details;
                                 $data['metre_number'] = $metre_number;
                                 $data['plan_id'] = $electricity_product_plan_id;
@@ -1634,7 +1411,7 @@ class ProductsService{
                                 $data['phone_number'] = $user_details->phone_number;
                                 $data['user_id'] = $user_id;
                                 $buy_electricity_subscription = AutomationLogic::initiateElectricityPurchase($data);
-                                logger('ELECTTT SERVICE: '.json_encode($buy_electricity_subscription));
+                                logger('ELECTRICITY SERVICE: '.json_encode($buy_electricity_subscription));
                                 $extra_info = $buy_electricity_subscription['extra_info'] ?? 'nil';
                                 $token = $buy_electricity_subscription['token'] ?? 'nil';
                                
@@ -1660,7 +1437,9 @@ class ProductsService{
                                     'status' => $status
                                 );
                                
-                    
+                                $validate_metre_name = (new MegaSubElectricity(metre_number: $metre_number, plan_id: $electricity_product_plan_id, user_id: $user_id))->validateMetreNumber();
+                                $validated_name = $validate_metre_name['name'] ?? '';
+                                $validated_address = $validate_metre_name['address'] ?? 'Nil';
                     
                                 //this should not run though because it has already been checked
                                 if($wallet_after <= 0){
@@ -1675,14 +1454,13 @@ class ProductsService{
                                     );
                                 }
 
-                                $validate_metre_name = (new MegaSubElectricity(metre_number: $metre_number, plan_id: $electricity_product_plan_id, user_id: $user_id))->validateMetreNumber();
-                                $validated_name = $validate_metre_name['name'] ?? '';
-                                $validated_address = $validate_metre_name['address'] ?? 'Nil';
+                               
                                
     
                                 $description = 'Purchase of electricity subscription';
                                 $creationData['transaction_category'] = 'utility_bills';
                                 $creationData['user_id'] = $user_id;
+                                $creationData['txn_reference'] = $txn_reference;
                                 $creationData['wallet_category'] = $wallet_category;
                                 $creationData['product_plan_id'] = $electricity_product_plan_id;
                                 $creationData['phone_number'] =  NULL;
@@ -1724,7 +1502,7 @@ class ProductsService{
                             return ['status'=>1, 'user_message' => $user_message,'admin_message' => $admin_message,'extra_info' => $extra_info, 'token' => $token,'validation_address' => $validated_address,'message'=>'Transaction was successfully processed', 'data' => $display_results  ];
                     
                         } else{
-                            return ['status'=>'-1', 'message'=>'Wrong wallet selection', 'data'=>[]];
+                            return ['status'=> -1, 'message'=>'Wrong wallet selection', 'data'=>[]];
                         }
 
 
@@ -1732,7 +1510,7 @@ class ProductsService{
         }catch(Exception $exception){
             logger($exception->getMessage().' on line: '. $exception->getLine());
             DB::rollBack();
-            return ['status'=>'-1', 'message'=>'Something went wrong... Please try again', 'data'=>[]];
+            return ['status'=> -1, 'message'=>'Something went wrong... Please try again', 'data'=>[]];
         }
     }
 
