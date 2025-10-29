@@ -196,7 +196,7 @@ class ProductsVendorController extends Controller
        
 
         $validator = Validator::make($request->all(), [
-            'plan' => 'required|unique:product_plans,api_id',
+            'plan' => 'required|exists:product_plans,api_id',
             'reference' => 'required|unique:transactions,txn_reference',
             'smart_card_number' => 'required',
             'validation_customer_name' => 'required',
