@@ -1369,7 +1369,7 @@ class ProductsService{
                                 // $creationData['electricity_tv_slots'] = 1;
                                 $creationData['amount'] = $actual_amount;
                                 $creationData['discounted_amount'] = $amount;
-                                $creationData['status'] = $status;
+                                $creationData['status'] = -1;
                                 $creationData['balance_before'] = $wallet_before;
                                 $creationData['balance_after'] = $wallet_before;
                                 $creationData['description'] = $description;
@@ -1393,8 +1393,36 @@ class ProductsService{
 
                                 DB::commit();
 
-                               return ['status'=> -1, 'message'=>'Insufficient wallet balance', 'user_message' => 'Insufficient wallet balance','admin_message' => 'Insufficient wallet balance','extra_info' => $validation_extra_info, 'token' => NULL,'validation_address' => $validated_address, 'data' => $display_results  ];
-
+                          
+                                return [
+                                    'id'=>$transaction->id,
+                                    'txn_reference'=>$txn_reference,
+                                    'status'=> -1,
+                                    'actual_status' => -1,
+                                    'message' => 'Insufficient wallet balance',
+                                    'apiresponse' =>'Insufficient wallet balance',
+                                    'user_message' =>'Insufficient wallet balance',
+                                    'admin_message' =>'Insufficient wallet balance',
+                                    "balance_before" => $wallet_before,
+                                    "balance_after" => $wallet_before,
+                                    "plan" => $plan_details->api_id,
+                                    "Status" => match($status) {
+                                        "0"   => "pending",
+                                        "1"   => "successful",
+                                        "2"  => "refunded",
+                                        "-1"  => "failed",
+                                        0   => "pending",
+                                        1   => "successful",
+                                        2  => "refunded",
+                                        -1  => "failed",
+                                        default => "unknown"
+                                    },
+                                    "plan_network" => null,
+                                    "plan_name" => $plan_details->product_plan_name,
+                                    'plan_amount'=>$amount, 
+                                    'create_date'=>date('Y-m-d H:i:s'), 
+                                    'data' => []
+                                ];
 
                             }
                     
@@ -1498,12 +1526,44 @@ class ProductsService{
                             }
 
                             DB::commit();
+
+                            
                     
-                            if($failure > 0){
-                              return ['status'=>2,'user_message' => $user_message,'admin_message' => $admin_message, 'extra_info' => $extra_info, 'token' => $token,'validation_address' => $validated_address,'message'=>" $failure issue(s) found. Check transaction history", 'data' => $display_results  ];   
+                            if($failure > 1){
+                              return ['status'=>2,'user_message' => $user_message,'admin_message' => $admin_message, 'extra_info' => $extra_info, 'token' => $token,'validation_address' => $validated_address,'message'=>"$user_message. $failure issue(s) found. Check transaction history", 'data' => $display_results  ];   
+                            }else{
+                                return [
+                                    'id'=>$transaction->id,
+                                    'txn_reference'=>$txn_reference,
+                                    'status'=>$status,
+                                    'actual_status' => $status,
+                                    'message' => $user_message,
+                                    'apiresponse' =>$user_message,
+                                    'user_message' =>$user_message,
+                                    'admin_message' =>$admin_message,
+                                    "balance_before" => $wallet_before,
+                                    "balance_after" => $wallet_after,
+                                    "plan" => $plan_details->api_id,
+                                    "Status" => match($status) {
+                                        "0"   => "pending",
+                                        "1"   => "successful",
+                                        "2"  => "refunded",
+                                        "-1"  => "failed",
+                                        0   => "pending",
+                                        1   => "successful",
+                                        2  => "refunded",
+                                        -1  => "failed",
+                                        default => "unknown"
+                                    },
+                                    "plan_network" => null,
+                                    "plan_name" => $plan_details->product_plan_name,
+                                    'plan_amount'=>$amount, 
+                                    'create_date'=>date('Y-m-d H:i:s'), 
+                                    'data' => []
+                                ];
                             }
 
-                            return ['status'=>1, 'user_message' => $user_message,'admin_message' => $admin_message,'extra_info' => $extra_info, 'token' => $token,'validation_address' => $validated_address,'message'=>'Transaction was successfully processed', 'data' => $display_results  ];
+                            // return ['status'=>1, 'user_message' => $user_message,'admin_message' => $admin_message,'extra_info' => $extra_info, 'token' => $token,'validation_address' => $validated_address,'message'=>'Transaction was successfully processed', 'data' => $display_results  ];
                     
                         } else{
                             return ['status'=> -1, 'message'=>'Wrong wallet selection', 'data'=>[]];
@@ -1514,7 +1574,36 @@ class ProductsService{
         }catch(Exception $exception){
             logger($exception->getMessage().' on line: '. $exception->getLine());
             DB::rollBack();
-            return ['status'=> -1, 'message'=>'Something went wrong... Please try again', 'data'=>[]];
+            // return ['status'=> -1, 'message'=>'Something went wrong... Please try again', 'data'=>[]];
+            return [
+                'id'=>$transaction->id,
+                'txn_reference'=>$txn_reference,
+                'status'=> -1,
+                'actual_status' =>  -1,
+                'message' => $user_message,
+                'apiresponse' =>$user_message,
+                'user_message' =>$user_message,
+                'admin_message' =>$admin_message,
+                "balance_before" => $wallet_before,
+                "balance_after" => $wallet_after,
+                "plan" => $plan_details->api_id,
+                "Status" => match($status) {
+                    "0"   => "pending",
+                    "1"   => "successful",
+                    "2"  => "refunded",
+                    "-1"  => "failed",
+                    0   => "pending",
+                    1   => "successful",
+                    2  => "refunded",
+                    -1  => "failed",
+                    default => "unknown"
+                },
+                "plan_network" => null,
+                "plan_name" => $plan_details->product_plan_name,
+                'plan_amount'=>$amount, 
+                'create_date'=>date('Y-m-d H:i:s'), 
+                'data' => []
+            ];
         }
     }
 
