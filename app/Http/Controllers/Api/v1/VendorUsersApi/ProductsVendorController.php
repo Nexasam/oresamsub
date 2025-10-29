@@ -128,7 +128,7 @@ class ProductsVendorController extends Controller
             "plan"=>"required",
             "metre_number" =>"required|integer",
             "validation_extra_info" =>"required|string",
-            "validation_address" =>"nullable|string",
+            "validated_address" =>"nullable|string",
             'reference' => 'required|unique:transactions,txn_reference'
         ]);
 
@@ -145,6 +145,7 @@ class ProductsVendorController extends Controller
         $data['validation_address'] = $buy_electricity->validation_address ??  'nil';
         $data['metre_number'] = $request->metre_number;
         $data['validation_extra_info'] = $request->validation_extra_info;
+        $data['validated_address'] = $request->validated_address;
         $data['electricity_product_plan_category_id'] = $product_plan_category_id;
         $data['electricity_product_plan_id'] = $product_plan_id;
         $data['amount'] = $request->amount;

@@ -1391,6 +1391,11 @@ class ProductsService{
                                     'main_wallet' => $wallet_before
                                 ]);
 
+                                DB::commit();
+
+                               return ['status'=> -1, 'message'=>'Insufficient wallet balance', 'user_message' => 'Insufficient wallet balance','admin_message' => 'Insufficient wallet balance','extra_info' => $validation_extra_info, 'token' => NULL,'validation_address' => $validated_address, 'data' => $display_results  ];
+
+
                             }
                     
                             //calling the actual vending via the automation:
