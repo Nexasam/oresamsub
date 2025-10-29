@@ -69,11 +69,8 @@ use App\Http\Controllers\ElectricitySubscriptionController;
 use App\Http\Controllers\ProductPlanCustomPricingController;
 
    
-/////////////////NEW ADMIN UI START
-Route::get('admin/new', function () {
-    return view('admin.new.index');
-})->name('admin.new.data');
-/////NEW ADMIN UI END
+/////////////////LATER: FILAMENT IS THE NEW ADMIN UI 
+/////NEW ADMIN UI 
 
 
 

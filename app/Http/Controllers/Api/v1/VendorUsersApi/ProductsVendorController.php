@@ -118,6 +118,77 @@ class ProductsVendorController extends Controller
 
     }
 
+      /**
+     * subscribe utility bill
+    */
+    public function buy_electricity(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            "amount"=>"required|integer",
+            "plan"=>"required",
+            "metre_number" =>"required|integer",
+            "validation_extra_info" =>"required|string",
+            "validation_address" =>"nullable|string",
+            'reference' => 'required|unique:transactions,txn_reference'
+        ]);
+
+        if ($validator->stopOnFirstFailure()->fails()) {
+            return $this->error('Validation failed', data: $validator->errors()->first(), code: 403 );    
+        }
+
+        $getiddd = ProductPlan::with('product_plan_category.product')->where('api_id',$request->plan)->first();
+        $product_id = $getiddd->product_plan_category->product->id;
+        $product_plan_category_id = $getiddd->product_plan_category->id;
+        $product_plan_id = $getiddd->id;
+       
+        // $buy_electricity = (new ProductsService())->buy_electricity_service($data);
+        $data['validation_address'] = $buy_electricity->validation_address ??  'nil';
+        $data['metre_number'] = $request->metre_number;
+        $data['validation_extra_info'] = $request->validation_extra_info;
+        $data['electricity_product_plan_category_id'] = $product_plan_category_id;
+        $data['electricity_product_plan_id'] = $product_plan_id;
+        $data['amount'] = $request->amount;
+        $data['actual_amount'] = $request->actual_amount; //this is what is needed
+        $data['pin'] = '';
+        $data['no_of_slots'] = '1';//this is required
+        $data['wallet_category'] = 'main_wallet';//this is required
+        $data['user_id'] = $request->api_user->id;//this is required
+        $data['user'] = $request->api_user;//this is required
+        $data['product_id'] = $product_id;//this is required
+        // logger('parent request'.$getnetwork);
+
+        $buy_electricityy = (new ProductsService())->buy_electricity_service($data);
+        $status = $buy_electricityy['status'];
+        $message = $buy_electricityy['message'];
+        $data = $buy_electricityy['data'] ?? [];
+        
+        $data2 =[
+            'id'=>$buy_electricityy['id'] ?? NULL,
+            'txn_reference'=>$buy_electricityy['txn_reference'] ?? NULL,
+            'status'=>$buy_electricityy['status'],
+            'Status'=>$buy_electricityy['Status'] ?? NULL,
+            'plan'=>$buy_electricityy['plan'] ?? NULL,
+            'balance_before'=>$buy_electricityy['balance_before'] ?? NULL,
+            'balance_after'=>$buy_electricityy['balance_after'] ?? NULL,
+            'message'=>$buy_electricityy['message'] ?? NULL,
+            'user_message'=>$buy_electricityy['user_message'] ?? NULL,
+            'admin_message'=>$buy_electricityy['admin_message'] ?? NULL,
+            'plan_network'=>$buy_electricityy['plan_network'] ?? NULL,
+            'plan_name'=>$buy_electricityy['plan_name'] ?? NULL,
+            'plan_amount'=>$buy_electricityy['plan_amount'] ?? NULL,
+            'create_date'=>$buy_electricityy['create_date'] ?? NULL
+        ];
+
+        if($status == 1){
+            return $this->success($buy_electricityy['message'],data: $data2);    
+        }
+
+        $status_code = $buy_electricityy['status_code'] ?? 500;
+        return $this->error( $message ,data: $data2, code: $status_code); 
+
+
+    }
+
 
     public function fetch_networks(Request $request){  
         $data = Network::where('visibility',1)->select('network_name','api_id')->get();
@@ -705,7 +776,7 @@ class ProductsVendorController extends Controller
     /**
      * subscribe utility bill
     */
-    public function buy_electricity(Request $request)
+    public function buy_electricityold(Request $request)
     {
         $validator = Validator::make($request->all(), [
             // 'user_id' => 'required',
@@ -752,6 +823,8 @@ class ProductsVendorController extends Controller
         }
         return $this->error( $message ,data: $data, code: 500);   
     }
+
+
 
      /**
      * buy cable tv
