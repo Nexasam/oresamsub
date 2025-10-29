@@ -1288,7 +1288,7 @@ class ProductsService{
 
         /////////////////////TO BE REVAMPED
         if($amount < 500){
-            return ['status'=> -1, 'message'=>'amount cannot be less than 500'];
+            return ['status'=> -1, 'message'=>'Amount cannot be less than 500'];
         }
 
         $data1['days_count'] = [1,7,30];
@@ -1392,7 +1392,6 @@ class ProductsService{
                                 ]);
 
                                 DB::commit();
-
                           
                                 return [
                                     'id'=>$transaction->id,
