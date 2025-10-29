@@ -1277,7 +1277,6 @@ class ProductsService{
         // $amount = $data['actual_amount'];
         $pin = $data['pin'] ?? '';
         $user_id = $data['user_id'];
-        $user_id = $data['user_id'];
         $wallet_category = $data['wallet_category'];
         $txn_reference = $data['reference'] ?? NULL;
         $validated_address = $data['validated_address'] ?? 'nil';

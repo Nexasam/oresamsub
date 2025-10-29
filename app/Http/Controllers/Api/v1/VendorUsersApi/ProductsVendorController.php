@@ -148,6 +148,7 @@ class ProductsVendorController extends Controller
         $data['electricity_product_plan_category_id'] = $product_plan_category_id;
         $data['electricity_product_plan_id'] = $product_plan_id;
         $data['amount'] = $request->amount;
+        $data['reference'] = $request->reference;
         $data['actual_amount'] = $request->actual_amount; //this is what is needed
         $data['pin'] = '';
         $data['no_of_slots'] = '1';//this is required
