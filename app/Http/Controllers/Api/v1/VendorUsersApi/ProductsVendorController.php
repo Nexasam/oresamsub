@@ -220,7 +220,9 @@ class ProductsVendorController extends Controller
         $data['cable_product_plan_id'] = $product_plan_id;//this is required
         $data['no_of_slots'] = '1';//this is required
         $data['wallet_category'] = 'main_wallet';//this is required
+        
         $data['pin'] = $request->api_user->pin ?? '';
+        $data['reference'] = $request->reference ?? '';
 
 
 

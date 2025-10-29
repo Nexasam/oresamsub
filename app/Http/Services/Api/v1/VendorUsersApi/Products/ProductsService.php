@@ -1621,7 +1621,7 @@ class ProductsService{
         $txn_reference = $data['reference'] ?? NULL;
         if($txn_reference == NULL){
             //generate a unique one
-            $txn_reference = $this->generateTxnReference('ELECTRICITY',$user_id);
+            $txn_reference = $this->generateTxnReference('CABLE',$user_id);
         }
 
         
