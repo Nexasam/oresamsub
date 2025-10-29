@@ -151,6 +151,8 @@ class ProductPlanService{
                 $product_planss[$key]['product_plan_name'] = $product_plan->product_plan_name;
                 $product_planss[$key]['data_size_in_mb'] = (int) $product_plan->data_size_in_mb;
                 $product_planss[$key]['validity_in_days'] = (int) $product_plan->validity_in_days;
+                $product_planss[$key]['visibility'] = (int) $product_plan->visibility;
+                $product_planss[$key]['public_visibility'] = (int) $product_plan->public_visibility;
             }
 
             // Always return
