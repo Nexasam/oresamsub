@@ -1906,10 +1906,42 @@ class ProductsService{
 
                             DB::commit();
                     
-                            if($failure > 0){
+                            if($failure > 1){
                               return ['status'=>2, 'user_message' => $user_message,'admin_message' => $admin_message,'message'=>" $failure issue(s) found. Check transaction history", 'data' => $display_results  ];   
+                            }else{
+                              
+                                    return [
+                                        'id'=>$transaction->id,
+                                        'txn_reference'=>$txn_reference,
+                                        'status'=>$status,
+                                        'actual_status' => $status,
+                                        'message' => $user_message,
+                                        'apiresponse' =>$user_message,
+                                        'user_message' =>$user_message,
+                                        'admin_message' =>$admin_message,
+                                        "balance_before" => $wallet_before,
+                                        "balance_after" => $wallet_after,
+                                        "plan" => $plan_details->api_id,
+                                        "Status" => match($status) {
+                                            "0"   => "pending",
+                                            "1"   => "successful",
+                                            "2"  => "refunded",
+                                            "-1"  => "failed",
+                                            0   => "pending",
+                                            1   => "successful",
+                                            2  => "refunded",
+                                            -1  => "failed",
+                                            default => "unknown"
+                                        },
+                                        "plan_network" => null,
+                                        "plan_name" => $plan_details->product_plan_name,
+                                        'plan_amount'=>$amount, 
+                                        'create_date'=>date('Y-m-d H:i:s'), 
+                                        'data' => []
+                                    ];
                             }
-                            return ['status'=>1,'user_message' => $user_message,'admin_message' => $admin_message, 'message'=>'Transaction was successfully processed', 'data' => $display_results  ];
+                            
+                            // return ['status'=>1,'user_message' => $user_message,'admin_message' => $admin_message, 'message'=>'Transaction was successfully processed', 'data' => $display_results  ];
                     
                         } else{
                             return ['status'=>'-1','admin_message' => 'Sorry transaction failed', 'message'=>'Wrong wallet selection', 'data'=>[]];
