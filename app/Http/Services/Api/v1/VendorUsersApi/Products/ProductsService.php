@@ -1090,7 +1090,7 @@ class ProductsService{
                             if($total_amount > $wallet_before || $wallet_before < 0){
                                 // return ['status'=>'-1', 'message'=>'Insufficient wallet balance' ];
                                 // return ['status'=>'-1', 'message'=>'Insufficient wallet balance','data' => ''];
-                                logger('we got here');
+                                
                                 $description = 'Purchase of airtime';
                                 $creationData['transaction_category'] = 'airtime';
                                 $creationData['transaction_route'] = 'api';
@@ -1110,7 +1110,6 @@ class ProductsService{
                                 $creationData['user_screen_message'] = 'Insufficient wallet balance';
                                 $creationData['admin_screen_message'] = 'Insufficient wallet balance';
                                 $transaction = Transaction::create($creationData);
-                                logger('CD:::'.json_encode($transaction));
                                 DB::commit();
 
 

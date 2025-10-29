@@ -68,7 +68,17 @@ use App\Http\Controllers\DailyCustomerFollowupController;
 use App\Http\Controllers\ElectricitySubscriptionController;
 use App\Http\Controllers\ProductPlanCustomPricingController;
 
-    // Inertia routes
+   
+/////////////////NEW ADMIN UI START
+Route::get('admin/new', function () {
+    return view('admin.new.index');
+})->name('admin.new.data');
+/////NEW ADMIN UI END
+
+
+
+
+// Inertia routes
     Route::get('/login', [InertiaLoginController::class, 'create'])->name('login');
     Route::post('/login', [InertiaLoginController::class, 'store'])->name('inertia.login.store');
   
