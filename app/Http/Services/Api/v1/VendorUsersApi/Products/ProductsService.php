@@ -1274,7 +1274,7 @@ class ProductsService{
         $electricity_product_plan_id = $data['electricity_product_plan_id'];
         $no_of_slots = $data['no_of_slots'];
         $amount = $data['amount']; 
-        $amount = $data['actual_amount'];
+        // $amount = $data['actual_amount'];
         $pin = $data['pin'] ?? '';
         $user_id = $data['user_id'];
         $user_id = $data['user_id'];
