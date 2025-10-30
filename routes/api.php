@@ -11,6 +11,7 @@ use App\Http\Controllers\WalletsController;
 use App\Http\Controllers\UserDashboardController;
 use App\Http\Controllers\ProductWebhookController;
 use App\Http\Controllers\ExternalIntegration\ApiIntegrationController;
+use App\Http\Controllers\Api\v1\VendorUsersApi\ProductsVendorController;
 use App\Http\Controllers\ExternalIntegration\Products\ProductsController;
 use App\Http\Controllers\ExternalIntegration\Wallets\FundingOptionsController;
 use App\Http\Controllers\ExternalIntegration\ApiIntegrationPasswordResetController;
@@ -19,6 +20,10 @@ use App\Http\Controllers\ExternalIntegration\ApiIntegrationPasswordResetControll
 // use App\Http\ExternalIntegration\Controllers\ApiIntegrationPasswordResetController;
 
 //quixk fix
+
+///////STRICTLY MSORG
+Route::middleware('api_token')->post('data', [ProductsVendorController::class, 'buy_datav2'])->name('rawapi.user.buy_datav2');
+///////STRICTLY MSORG
 
 
 
