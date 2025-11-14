@@ -18,7 +18,7 @@ export default {
             //     sans: ['Figtree', ...defaultTheme.fontFamily.sans],
             // },
             fontFamily: {
-                sans: ["Inter", "ui-sans-serif", "system-ui"],
+                sans: ['"Work Sans"', 'sans-serif'],
                 // sans: ["Inter", "ui-sans-serif", "system-ui"],
             },
             colors: {
