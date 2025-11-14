@@ -68,6 +68,8 @@
 
 
 
+
+
     <link rel="stylesheet" href="">
     {{-- 
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -78,7 +80,9 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap" rel="stylesheet">
+    {{-- <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap" rel="stylesheet"> --}}
+    <link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
 
 
 
@@ -106,6 +110,14 @@
           font-weight: 400;
           font-style: normal;
         }
+
+        .work-sans {
+            font-family: "Work Sans", sans-serif;
+            font-optical-sizing: auto;
+            font-weight: 400;
+            font-style: normal;
+        }
+
 
 
         :root {
@@ -247,7 +259,7 @@
 @livewireStyles
 </head>
 
-<body class="montserrat2">
+<body class="work-sans">
 
         {{-- <div id="loadingOverlay">
           <div class="loader"></div>
