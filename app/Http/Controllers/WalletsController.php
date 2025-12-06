@@ -75,6 +75,7 @@ class WalletsController extends Controller
                 'url'       => 'https://securewavengtest.com',
                 'payload'   => $raw,
             ]);
+            logger('securewavehook got here');
     
             return response()->json(['status' => 'ok'], 200);
     
