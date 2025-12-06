@@ -85,7 +85,6 @@ class XixaPayService{
                         "id_number"=>$biz_bvn
                     ];
                     $arrjson = json_encode($arrr);
-                    
                     $curl = curl_init();
                     curl_setopt_array($curl, array(
                     CURLOPT_URL => 'https://api.xixapay.com/api/v1/createVirtualAccount',

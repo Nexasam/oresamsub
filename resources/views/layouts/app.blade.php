@@ -2559,6 +2559,7 @@
   </script>
   
   
+
   @stack('scripts')
 </body>
 

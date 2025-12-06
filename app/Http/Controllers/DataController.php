@@ -919,9 +919,7 @@ class DataController extends Controller
         //NEW SWITCH HERE
         $retry_count = 0;
         foreach($get_associated_plans  as $key=>$get_associated_plan){
-            // if(auth()->user()->email == 'oreofe@gmail.com'){
-               
-
+                // if(auth()->user()->email == 'oreofe@gmail.com'){
                 if ($automation_cost_price > $amounnt_paid) {
                     logger('Automation cost price is greater than the amount customer paid: Skip....dont process..');
                     continue; // Skip to next product plan if its a loss game
@@ -933,7 +931,9 @@ class DataController extends Controller
                 $automationname = $get_associated_plan->automation->automation_name;
 
                 $sell_data = AutomationLogic::initiateDataPurchase($data);
+                // logger('TESTTTTTTTT'.json_encode($sell_data));
                 $status = $sell_data['status'];
+                $failed_message = $sell_data['user_message'] ?? 'failed';
                 $set_for_manual = $sell_data['set_for_manual'] ?? 0;
 
                 if($set_for_manual == 0 && $status == 1){
@@ -951,7 +951,7 @@ class DataController extends Controller
                     ];
                 }
 
-                logger("Trial $key: Data purchase with $automationname failed");
+                logger("Trial $key: Data purchase with $automationname failed . $failed_message");
 
             // }
             $retry_count++;

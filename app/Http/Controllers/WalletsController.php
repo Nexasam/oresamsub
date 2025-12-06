@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Exception;
+use Throwable;
 use App\Models\User;
 use App\Models\Setting;
 use App\Models\SiteTemplate;
@@ -60,6 +61,38 @@ class WalletsController extends Controller
 
         // return $total_balances;
     }
+
+    public function securewavehook(Request $request)
+    {
+        try {
+    
+            // Raw body (best for bank/fintech webhook payloads)
+            $raw = $request->getContent();
+    
+            // Log the webhook
+            DB::table('webhook_calls')->insert([
+                'name'      => 'securewave',      // name of webhook source
+                'url'       => 'https://securewavengtest.com',
+                'payload'   => $raw,
+            ]);
+    
+            return response()->json(['status' => 'ok'], 200);
+    
+        } catch (Throwable $e) {
+    
+              // Log the exception also
+              // Log the webhook
+              DB::table('webhook_calls')->insert([
+                'name'      => 'securewave',      // name of webhook source
+                'url'       => 'https://securewavengtest.com',
+                'payload'   => $raw,
+              ]);
+    
+            return response()->json(['status' => 'error'], 500);
+        }
+    }
+    
+
 
     public function xixapayhook($id,Request $request){
         header('Content-Type: application/json');

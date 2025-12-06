@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\VendorAutomationSetting;
 use Exception;
 use App\Models\Product;
 use App\Models\UserPlan;
@@ -12,6 +13,8 @@ use Illuminate\Support\Facades\DB;
 use App\Models\ProductPlanCategory;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
+
 
 class AutomationController extends Controller
 {
@@ -46,6 +49,81 @@ class AutomationController extends Controller
         return view('admin.automations.index')->with($data);
         // return $data;
     }
+
+    public function create(Request $request){
+        $automations = Automation::get();
+        $data['automations'] = $automations;
+
+
+        $fields = [
+            'phone_number',
+            'network',
+            'plan',
+            'amount',
+            'email',
+            'user',
+            // Add more fields based on your system logic
+        ];
+
+        $data['fields'] = $fields;
+
+        // return view('admin.automation.create', compact('fields'));
+
+        return view('admin.automations.create')->with($data);
+        // return $data;
+
+    }
+
+
+    
+    public function storev2(Request $request)
+    {
+        // Validate incoming request
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'slug' => 'required|string|max:255|unique:vendor_automation_settings,slug',
+            'endpoint_url' => 'required|url',
+            'network_plans' => 'required|array',
+            'request_params' => 'required|array',
+            'request_headers' => 'required|array',
+            'http_verb' => 'required|in:POST,GET',
+            'success_condition' => 'required|array',
+            'success_response' => 'required|string',
+            'failed_response' => 'required|string',
+            'success_code' => 'nullable|string',
+            'failure_code' => 'nullable|string',
+        ]);
+
+        // return $request->all();
+
+    
+        // Store provider
+        $provider = VendorAutomationSetting::create([
+            'id' => Str::uuid(), // UUID primary key
+            'name' => $request->name,
+            'slug' => $request->slug,
+            'product_slug' => $request->product_slug ?? 'data',
+            'endpoint_url' => $request->endpoint_url,
+            // 'request_params' => json_encode($request->request_params),
+            // 'headers' => json_encode($request->headers),
+            'request_params' => json_encode($request->request_params ?? []),
+            'network_plans' => json_encode($request->network_plans), // <-- new field
+            'headers' => json_encode($request->request_headers ?? []),  // <— default to empty array
+            'method' => $request->http_verb,
+            'success_conditions' => json_encode($request->success_condition),
+            'success_response' => $request->success_response,
+            'failed_response' => $request->failed_response,
+            'success_code' => $request->success_code ?? '200',
+            'failure_code' => $request->failure_code ?? '404',
+        ]);
+    
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Provider saved successfully',
+            'data' => $provider
+        ], 201);
+    }
+      
 
     public function store(Request $request){
         $validator = Validator::make($request->all(), [

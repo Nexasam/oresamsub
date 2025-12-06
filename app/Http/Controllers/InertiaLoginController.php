@@ -33,6 +33,7 @@ class InertiaLoginController extends Controller
     {
         return Inertia::render('Auth/Login');
     }
+    
 
     // Handle login form submission
     public function store(Request $request)

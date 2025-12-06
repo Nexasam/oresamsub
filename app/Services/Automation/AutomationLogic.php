@@ -4,6 +4,8 @@ namespace App\Services\Automation;
 
 use App\Models\ProductPlan;
 use App\Services\Utils\UtilService;
+use App\Models\VendorAutomationSetting;
+use App\Services\Automation\DataAutomation;
 use App\Services\Automation\VtpassAutomation;
 use App\Services\Automation\SmeplugAutomation;
 use App\Services\Automation\Twins10Automation;
@@ -172,7 +174,35 @@ class AutomationLogic{
         // $coupon = $data['coupon'];
         $data['coupon'] = $data['coupon'] ?? NULL;
 
-   
+        
+        //dont forget to remove after testing.
+
+
+        //NEW
+        // $test = '1';
+        // if($test == '1'){
+     
+        //     $reference = substr(uniqid(rand(), true), 0, 15);
+        //     $plan_details = ProductPlan::with('product_plan_category.network')
+        //     ->where('visibility',1)
+        //     ->where('id',$product_plan_id)->first();
+        //     if(! $plan_details){
+        //         return [
+        //             'status' => -1,
+        //             'user_message' => 'An error occurred while processing this transaction. Please try again or reach out to support',
+        //             'admin_message' => 'Wrong plan Id',
+        //         ];
+        //     }
+        //     $vendor_record = VendorAutomationSetting::where('slug','newone')->first();
+        //     $dataaa['vendor_record'] = $vendor_record;
+        //     $input_phone_number = $validated_phone_number;
+        //     $vendor_plan_id = $plan_details->automation_product_plan_id ?? '';
+        //     $ported_number = true; //lets make this a default for now
+        //     $input_network = $plan_details->product_plan_category->network->network_name; //lets get the network
+        //     $buy_data = (new DataAutomation())->buyData($vendor_record,$input_phone_number,$vendor_plan_id,$ported_number,$input_network,$reference);    
+
+        // } else 
+        
         if($validate_phone['status'] != 1){
             //something when wrong
             $buy_data['status'] = -1;
@@ -211,7 +241,7 @@ class AutomationLogic{
         //oresamsub for now: the FIX to ensure customers dont see failed transaction... its annnoying and discouraging actually for POS agents/resellers:::: i.e it failed internally
         if($buy_data['status'] == -1 && env('APP_NAME') == 'OresamSub'){
             $buy_data['status'] = 1; //make it successful
-            $buy_data['user_message'] = 'Transaction is being processed.'; //make it successful for the customer
+            $buy_data['user_message'] = $buy_data['user_message'] ?? 'Transaction is being processed.'; //make it successful for the customer
             $buy_data['set_for_manual'] = 1; // 1 means need to process manually
         }
 
