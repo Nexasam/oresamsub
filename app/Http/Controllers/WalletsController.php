@@ -68,6 +68,7 @@ class WalletsController extends Controller
     
             // Raw body (best for bank/fintech webhook payloads)
             $raw = $request->getContent();
+            logger($raw);
     
             // Log the webhook
             DB::table('webhook_calls')->insert([
