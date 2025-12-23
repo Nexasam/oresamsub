@@ -118,7 +118,7 @@ class WalletsController extends Controller
 
         // --- Compare signatures ---
         if (!hash_equals($expected, $signature)) {
-            logger('Invalid webhook signature2', [
+            logger('Invalid webhook signature', [
                 'expected' => $expected,
                 'received' => $signature,
             ]);
