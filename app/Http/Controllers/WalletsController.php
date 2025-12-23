@@ -105,7 +105,7 @@ class WalletsController extends Controller
         $event     = $request->header('X-SecureWave-Event');
 
         // --- Merchant secret (stored in env or DB) ---
-        $webhookSecret = config('services.securewave.webhook_secret'); // or fetch per merchant
+        $webhookSecret = config('services.securewave.webhook_secret1'); // or fetch per merchant
 
         // --- Verify timestamp (optional, prevents replay attacks) ---
         if (abs(now()->timestamp - (int) $timestamp) > 300) { // 5 minutes
@@ -150,7 +150,65 @@ class WalletsController extends Controller
 
         return response()->json(['status' => 'error'], 500);
     }
-}
+    }
+
+    public function securewavehook2(Request $request){
+      try {
+          // --- Raw payload ---
+          $raw = $request->getContent();
+  
+          // --- Get headers ---
+          $signature = $request->header('X-SecureWave-Signature');
+          $timestamp = $request->header('X-SecureWave-Timestamp');
+          $event     = $request->header('X-SecureWave-Event');
+  
+          // --- Merchant secret (stored in env or DB) ---
+          $webhookSecret = config('services.securewave.webhook_secret1'); // or fetch per merchant
+  
+          // --- Verify timestamp (optional, prevents replay attacks) ---
+          if (abs(now()->timestamp - (int) $timestamp) > 300) { // 5 minutes
+              logger('Webhook expired: '.$timestamp);
+              return response()->json(['status' => 'error', 'message' => 'Webhook expired'], 400);
+          }
+  
+          // --- Compute expected signature ---
+          $expected = hash_hmac('sha256', $timestamp.'.'.$raw, $webhookSecret);
+  
+          // --- Compare signatures ---
+          if (!hash_equals($expected, $signature)) {
+              logger('Invalid webhook signature', [
+                  'expected' => $expected,
+                  'received' => $signature,
+              ]);
+              return response()->json(['status' => 'error', 'message' => 'Invalid signature'], 401);
+          }
+  
+          // --- Log the valid webhook ---
+          DB::table('webhook_calls')->insert([
+              'name'    => 'securewave',
+              'url'     => 'https://securewavengtest.com',
+              'payload' => $raw,
+              'created_at' => now(),
+              'updated_at' => now(),
+          ]);
+  
+          logger('securewavehook verified successfully', ['event' => $event]);
+  
+          // --- Handle payload logic here ---
+          $data = json_decode($raw, true);
+          // e.g., mark transaction as paid, update balance, etc.
+  
+          return response()->json(['status' => 'ok'], 200);
+  
+      } catch (Throwable $e) {
+          logger('securewavehook exception', [
+              'message' => $e->getMessage(),
+              'payload' => $raw ?? null,
+          ]);
+  
+          return response()->json(['status' => 'error'], 500);
+      }
+      }
 
     
 

@@ -18,6 +18,11 @@ return [
         'token' => env('POSTMARK_TOKEN'),
     ],
 
+    'securewave' => [
+        'webhook_secret1' => 'sk_live_d725037306e279f75510d88872885232f6ead8ac05946b5bca110716d5b636e8',
+        'webhook_secret2' => 'sk_live_6b085fa5699c2f4a1e43a72ad5d9b0d181665ed092d125647e2a7cc78e4d6269',
+    ],
+
     'ses' => [
         'key' => env('AWS_ACCESS_KEY_ID'),
         'secret' => env('AWS_SECRET_ACCESS_KEY'),

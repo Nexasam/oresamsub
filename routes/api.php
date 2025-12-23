@@ -57,7 +57,7 @@ Route::post('admin/wallets/xixapayhook/{id}', [WalletsController::class, 'xixapa
 
 
 Route::post('admin/wallets/securewavehook', [WalletsController::class, 'securewavehook'])->name('admin.wallet.securewavehook.webhook'); //testing securewave
-Route::post('admin/wallets/securewavehook2', [WalletsController::class, 'securewavehook'])->name('admin.wallet.securewavehook.webhook2'); //testing securewave
+Route::post('admin/wallets/securewavehook2', [WalletsController::class, 'securewavehook2'])->name('admin.wallet.securewavehook.webhook2'); //testing securewave
 
 
 //WEBHOOK
