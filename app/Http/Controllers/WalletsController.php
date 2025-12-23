@@ -163,7 +163,7 @@ class WalletsController extends Controller
           $event     = $request->header('X-SecureWave-Event');
   
           // --- Merchant secret (stored in env or DB) ---
-          $webhookSecret = config('services.securewave.webhook_secret1'); // or fetch per merchant
+          $webhookSecret = config('services.securewave.webhook_secret2'); // or fetch per merchant
   
           // --- Verify timestamp (optional, prevents replay attacks) ---
           if (abs(now()->timestamp - (int) $timestamp) > 300) { // 5 minutes
