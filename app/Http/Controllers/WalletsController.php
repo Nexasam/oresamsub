@@ -450,12 +450,18 @@ class WalletsController extends Controller
 
    
       
+      // Try the standard Laravel header getter first
       $rawBody = $request->getContent();
       $signature = $request->header('X-Signature')
-                   ?? $request->header('x-signature')
-                   ?? $request->header('SIGNATURE')
-                   ?? null;
-      
+      ?? $request->header('x-signature')
+      ?? $request->header('SIGNATURE')
+      ?? null;
+
+      // If still null, check PHP's $_SERVER
+      if (!$signature && isset($_SERVER['HTTP_SIGNATURE'])) {
+      $signature = $_SERVER['HTTP_SIGNATURE'];
+      }
+
       logger('Webhook signature: ' . ($signature ?? 'NOT PROVIDED'));
       logger('Webhook body sha256: ' . hash('sha256', $rawBody));
       logger('All headers', $request->headers->all());
