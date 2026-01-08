@@ -454,6 +454,7 @@ class WalletsController extends Controller
       $rawBody = $request->getContent();
       $signature = $request->header('X-Signature')
       ?? $request->header('x-signature')
+      ?? $request->header('signature')
       ?? $request->header('SIGNATURE')
       ?? null;
 
