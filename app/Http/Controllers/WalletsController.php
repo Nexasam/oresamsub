@@ -94,6 +94,8 @@ class WalletsController extends Controller
         }
     }
 
+    
+
     // public function securewavehook(Request $request){
     // try {
     //     // --- Raw payload ---
@@ -444,6 +446,8 @@ class WalletsController extends Controller
       header('Content-Type: application/json');
       $response = file_get_contents('php://input');
       $response_decode = json_decode($response,true);
+      logger("Crystalpay webhook headers: ". json_encode($request->headers->all()) );
+
       
     
       $can_fund = '';
