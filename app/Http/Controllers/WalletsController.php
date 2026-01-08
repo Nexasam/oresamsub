@@ -450,18 +450,15 @@ class WalletsController extends Controller
 
    
       
-
-      header('Content-Type: application/json');
       $rawBody = $request->getContent();
-      // Capture signature explicitly
-      $signature = $request->header('SIGNATURE') 
-          ?? $request->header('X-Signature');
-      logger('Crystalpay webhook signature: ' . ($signature ?? 'NOT PROVIDED'));
-      // Optional: log raw body hash for debugging
-      logger('Crystalpay webhook body sha256: ' . hash('sha256', $rawBody));
-      // Optional: log all headers (debug only)
-      logger('Crystalpay webhook headers', $request->headers->all());
-
+      $signature = $request->header('X-Signature')
+                   ?? $request->header('x-signature')
+                   ?? $request->header('SIGNATURE')
+                   ?? null;
+      
+      logger('Webhook signature: ' . ($signature ?? 'NOT PROVIDED'));
+      logger('Webhook body sha256: ' . hash('sha256', $rawBody));
+      logger('All headers', $request->headers->all());
 
 
 
