@@ -459,12 +459,15 @@ class WalletsController extends Controller
 
       // If still null, check PHP's $_SERVER
       if (!$signature && isset($_SERVER['HTTP_SIGNATURE'])) {
-      $signature = $_SERVER['HTTP_SIGNATURE'];
+      $signature2 = $_SERVER['HTTP_SIGNATURE'];
       }
 
       logger('Webhook signature: ' . ($signature ?? 'NOT PROVIDED'));
+      logger('Webhook signature2: ' . ($signature2 ?? 'NOT PROVIDED2'));
       logger('Webhook body sha256: ' . hash('sha256', $rawBody));
       logger('All headers', $request->headers->all());
+      logger('All raw headers: ', getallheaders());
+
 
 
 
