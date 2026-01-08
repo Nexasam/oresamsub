@@ -448,7 +448,23 @@ class WalletsController extends Controller
       $response_decode = json_decode($response,true);
       logger("Crystalpay webhook headers: ". json_encode($request->headers->all()) );
 
+   
       
+
+      header('Content-Type: application/json');
+      $rawBody = $request->getContent();
+      // Capture signature explicitly
+      $signature = $request->header('SIGNATURE') 
+          ?? $request->header('X-Signature');
+      logger('Crystalpay webhook signature: ' . ($signature ?? 'NOT PROVIDED'));
+      // Optional: log raw body hash for debugging
+      logger('Crystalpay webhook body sha256: ' . hash('sha256', $rawBody));
+      // Optional: log all headers (debug only)
+      logger('Crystalpay webhook headers', $request->headers->all());
+
+
+
+
     
       $can_fund = '';
 
