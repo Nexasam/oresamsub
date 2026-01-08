@@ -456,6 +456,8 @@ class WalletsController extends Controller
       ?? $request->header('x-signature')
       ?? $request->header('signature')
       ?? $request->header('SIGNATURE')
+      ?? $request->input('SIGNATURE')
+      ?? $request->input('signature')
       ?? null;
 
       // If still null, check PHP's $_SERVER
