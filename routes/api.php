@@ -25,6 +25,151 @@ use App\Http\Controllers\ExternalIntegration\ApiIntegrationPasswordResetControll
 Route::middleware('api_token')->post('data', [ProductsVendorController::class, 'buy_datav2'])->name('rawapi.user.buy_datav2');
 ///////STRICTLY MSORG
 
+Route::post('recova_create_consent', function (Request $request) {
+        
+    // $recova_url = "https://recova.ng/recova_ofi_handshake/api/ConsentRequest/CreateConsentRequest";
+
+    // // Initialize cURL
+    // $ch = curl_init($recova_url);
+    // curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    // curl_setopt($ch, CURLOPT_TIMEOUT, 10); // 10 seconds
+    // curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+
+    // // Enable verbose output to a file
+    // $verbose = fopen('php://temp', 'w+');
+    // curl_setopt($ch, CURLOPT_VERBOSE, true);
+    // curl_setopt($ch, CURLOPT_STDERR, $verbose);
+
+    // // Execute cURL
+    // $response = curl_exec($ch);
+    // $errno = curl_errno($ch);
+    // $error = curl_error($ch);
+
+    // // Check HTTP response code
+    // $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+
+    // curl_close($ch);
+
+    // // Output results
+    // echo "cURL error number: $errno\n";
+    // echo "cURL error message: $error\n";
+    // echo "HTTP response code: $http_code\n";
+    // echo "Response: $response\n";
+
+    // // Show verbose info
+    // rewind($verbose);
+    // $verboseLog = stream_get_contents($verbose);
+    // // echo "\nVerbose info:\n$verboseLog\n";exit;
+    // return json_encode([
+    //     'status' => -1,
+    //     'message' => "\nVerbose info:\n$verboseLog\n"
+    // ]);
+
+    return $request->all();
+
+
+$recova_url = "https://recova.ng/recova_ofi_handshake/api/ConsentRequest/CreateConsentRequest";
+
+$recova_token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBUElLZXkiOiI0ZTcyZjAzMi00NGU3LTRmN2QtOTZiOS00NWY2YjZjZDA0NjQiLCJCZWxscyI6IkhSTVlSTlNGTlpQWCIsIkluc3RpdHV0aW9uSWQiOiI0MDI0NSIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6Ik9GSSIsImp0aSI6IjZjYWMzNjMxLTkzZTUtNDQ2OS04NmI1LWI4MGZmNzI5NGNhNyIsImV4cCI6MjA0NjAxMjc4OCwiaXNzIjoicmVjb3ZhLm5nIiwiYXVkIjoicmVjb3ZhLm5nIn0.envUxk5E9dL2rnPMyCyfIeMMEDcrHwmnI7yIicRw5sM';
+
+$request_array = [
+    "bvn"=>"22221006885",
+    "businessRegistrationNumber"=>"nil",
+    "taxIdentificationNumber"=>"nil",
+    "loanReference"=>"LOAN_695a5d57c8b2b",
+    "customerID"=>"f127921c6984ffc94b78dab9f7faf200",
+    "customerName"=>"Oluwakayode Onayemi",
+    "customerEmail"=>"principal@siconcept.org",
+    "phoneNumber"=>"09018008000",
+    "loanAmount"=>7000000,
+    "totalRepaymentExpected"=>8365000,
+    "loanTenure"=>3,
+    "linkedAccountNumber"=>"0005280295",
+    "repaymentType"=>"Collection",
+    "preferredRepaymentBankCBNCode"=>"100",
+    "preferredRepaymentAccount"=>"0005280295",
+    "collectionPaymentSchedules"=>[
+      [
+        "repaymentDate"=>"2026-02-06T07:38:04.324Z",
+        "repaymentAmountInNaira"=>455000
+      ],
+      [
+        "repaymentDate"=>"2026-03-06T07:38:04.324Z",
+        "repaymentAmountInNaira"=>455000   
+       ],
+      [
+        "repaymentDate"=>"2026-04-06T07:38:04.324Z",
+        "repaymentAmountInNaira"=>7455000
+      ]
+    ]
+];
+
+$request_json = json_encode($request_array);
+
+/* ----------------------------------------
+ | 6. Call Recova API
+ ---------------------------------------- */
+$curl = curl_init();
+
+curl_setopt_array($curl, [
+    CURLOPT_URL => rtrim($recova_url),
+    CURLOPT_RETURNTRANSFER => true,
+    CURLOPT_POST => true,
+    CURLOPT_POSTFIELDS => $request_json,
+    CURLOPT_HTTPHEADER => [
+        'Accept: application/json',
+        'Content-Type: application/json',
+        'Authorization: Bearer ' . trim($recova_token),
+        'Content-Length: ' . strlen($request_json),
+    ],
+    CURLOPT_TIMEOUT => 60,
+    CURLOPT_SSL_VERIFYPEER => true,
+    CURLOPT_SSL_VERIFYHOST => 2,
+]);
+
+$response   = curl_exec($curl);
+$curl_error = curl_error($curl);
+$http_code  = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+curl_close($curl);
+
+$response_dec = json_decode($response, true);
+ 
+
+/* ----------------------------------------
+ | 7. Handle Errors
+ ---------------------------------------- */
+if ($response === false) {
+    return json_encode([
+        'status' => -1,
+        'message' => 'Curl execution failed',
+        'curl_error' => $curl_error,
+        'response_arr' => $response_dec,
+
+    ]);
+}
+
+if (!in_array($http_code, [200, 201])) {
+    return json_encode([
+        'status' => -1,
+        'message' => 'Recova returned an error',
+        'http_code' => $http_code,
+        // 'response' => $response,
+        'response_arr' => $response_dec,
+        // 'request' => $request_array,
+    ]);
+}
+
+
+if (json_last_error() !== JSON_ERROR_NONE) {
+    return json_encode([
+        'status' => -1,
+        'message' => 'Invalid JSON response from Recova',
+        // 'raw_response' => $response,
+        'response_arr' => $response_dec,
+    ]);
+}
+
+});
 
 
 Route::get('/luminox', function (Request $request) {
