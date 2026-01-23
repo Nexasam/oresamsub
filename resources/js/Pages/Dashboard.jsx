@@ -63,20 +63,22 @@ export default function Dashboard({ transactions: initialTransactions }) {
     setLoading(true);
     try {
       const res = await axios.post(route("commissions.transfer")); // backend route
-
-      if (res.success) {
-        alert("Transferred to wallet successfully!");
-
+    
+      if (res.data.success) { // ✅ use res.data
+        alert(res.data.message || "Transferred to wallet successfully!");
+    
         // Update frontend state
         setAvailableState(0);
         setPendingState(pendingState); // pending stays the same
         setShowTransferModal(false);
       } else {
-        alert(res.message || "Transfer failed!");
+        alert(res.data.message || "Transfer failed!");
       }
     } catch (err) {
       console.error(err);
-      alert("Transfer failed!");
+      alert(
+        err.response?.data?.message || "Transfer failed! Please try again."
+      );
     } finally {
       setLoading(false);
     }
