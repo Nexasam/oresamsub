@@ -127,52 +127,48 @@ export default function Dashboard({ transactions: initialTransactions }) {
       <Announcements announcements={announcements} />
 
 
-    {/* Commission Summary Cards */}
+      {/* Commission Summary Cards */}
     {commss && (
-      <div className="grid grid-cols-3 sm:grid-cols-3 gap-4 mt-6">
+      <div className="grid grid-cols-3 gap-3 mt-4">
         {/* Pending */}
-        <div className="group bg-yellow-50 dark:bg-yellow-900 p-5 rounded-2xl shadow hover:shadow-lg transition transform hover:-translate-y-1 text-center">
-          <p className="text-xs font-medium text-yellow-700 dark:text-yellow-300 uppercase">
+        <div className="group bg-yellow-50 dark:bg-yellow-900 p-3 rounded-xl shadow-sm hover:shadow transition text-center">
+          <p className="text-[10px] font-medium text-yellow-700 dark:text-yellow-300 uppercase">
             Pending
           </p>
-          <h2 className="text-2xl font-bold text-yellow-800 dark:text-yellow-200 mt-2">
+          <h2 className="text-lg font-semibold text-yellow-800 dark:text-yellow-200 mt-1">
             ₦{Number(pendingState).toLocaleString()}
           </h2>
-          <p className="text-xs text-gray-400 dark:text-gray-300 mt-1">
-            Commissions awaiting approval
+          <p className="text-[10px] text-gray-400 dark:text-gray-300 leading-tight">
+            Awaiting approval
           </p>
         </div>
 
         {/* Available */}
         <div
           onClick={handleTransferWithSwal}
-          className="bg-green-100 dark:bg-green-900 p-5 rounded-2xl shadow hover:shadow-lg transition transform hover:-translate-y-1 text-center cursor-pointer"
+          className="bg-green-100 dark:bg-green-900 p-3 rounded-xl shadow-sm hover:shadow transition text-center cursor-pointer"
         >
-          <p className="text-xs text-green-700 dark:text-green-300 uppercase">
+          <p className="text-[10px] font-medium text-green-700 dark:text-green-300 uppercase">
             Available
           </p>
-          <h2 className="text-2xl font-bold text-green-800 dark:text-green-200 mt-2">
+          <h2 className="text-lg font-semibold text-green-800 dark:text-green-200 mt-1">
             ₦{Number(availableState).toLocaleString()}
           </h2>
-          {/* <p className="text-xs text-gray-400 dark:text-gray-300 mt-1">
-            CLICK to transfer to wallet
-          </p> */}
-          <p className="mt-2 text-xs font-medium text-green-600 dark:text-green-300 flex items-center justify-center gap-1 animate-pulse">
-            Click to transfer →
+          <p className="text-[10px] font-medium text-green-600 dark:text-green-300 animate-pulse">
+            Tap to transfer →
           </p>
-
         </div>
 
         {/* Total Earned */}
-        <div className="group bg-blue-50 dark:bg-blue-900 p-5 rounded-2xl shadow hover:shadow-lg transition transform hover:-translate-y-1 text-center">
-          <p className="text-xs font-medium text-blue-700 dark:text-blue-300 uppercase">
-            Total Earned
+        <div className="group bg-blue-50 dark:bg-blue-900 p-3 rounded-xl shadow-sm hover:shadow transition text-center">
+          <p className="text-[10px] font-medium text-blue-700 dark:text-blue-300 uppercase">
+            Total
           </p>
-          <h2 className="text-2xl font-bold text-blue-800 dark:text-blue-200 mt-2">
+          <h2 className="text-lg font-semibold text-blue-800 dark:text-blue-200 mt-1">
             ₦{Number(total_earned).toLocaleString()}
           </h2>
-          <p className="text-xs text-gray-400 dark:text-gray-300 mt-1">
-            Lifetime commissions earned
+          <p className="text-[10px] text-gray-400 dark:text-gray-300 leading-tight">
+            Lifetime earnings
           </p>
         </div>
       </div>
