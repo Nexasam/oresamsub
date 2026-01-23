@@ -78,7 +78,7 @@ class UserDashboardController extends Controller
         $data['transactions'] = Transaction::with(relations: 'product_plan')->where('user_id',auth()->id())->limit(10)->latest()->get();
         $data['announcements'] = Announcement::where('status',1)->latest()->get();
         $data['commissionData'] = $commissionData;
-        return $data;
+        // return $data;
 
      
         return Inertia::render('Dashboard')->with($data);
