@@ -81,17 +81,10 @@ class UserDashboardController extends Controller
         $data['commissionData'] = $commissionData;
         // return $data;
         // logger('thiss ran for inertia dashboard'.json_encode($data));
-        // return Inertia::render('Dashboard')->with($data);
-        // return view('oresamsub.pages.dashboard')->with($data);
 
-        return Inertia::render('Dashboard', [
-          'transactions' => $data['transactions'] ?? [],
-          'announcements' => $data['announcements'] ?? [],
-          'commissionData' => $data['commissionData'] ?? null,
-          'auth' => $data['user'] ?? auth()->user(),
-          // any other props you need
-        ]);
-        
+     
+        return Inertia::render('Dashboard')->with($data);
+        // return view('oresamsub.pages.dashboard')->with($data);
     }
 
   
