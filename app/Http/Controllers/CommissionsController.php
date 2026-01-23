@@ -178,15 +178,16 @@ class CommissionsController extends Controller
 
             // Mark commissions as paid (payout = 1)
             Commissions::whereIn('id', $commissions->pluck('id'))
-                ->update(['payout_out' => 1]);
+                ->update(['payout_status' => 1]);
 
             DB::commit();
 
             return response()->json([
+                'success' => true,
                 'message' => 'Transferred to wallet successfully.',
                 'main_wallet' => $user->main_wallet,
             ]);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             DB::rollBack();
             logger('Transfer to wallet failed: ' . $e->getMessage());
             return response()->json([
