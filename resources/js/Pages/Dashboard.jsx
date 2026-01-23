@@ -64,7 +64,7 @@ export default function Dashboard({ transactions: initialTransactions }) {
     try {
       const res = await axios.post(route("commissions.transfer")); // backend route
 
-      if (res.data.success) {
+      if (res.success) {
         alert("Transferred to wallet successfully!");
 
         // Update frontend state
@@ -72,7 +72,7 @@ export default function Dashboard({ transactions: initialTransactions }) {
         setPendingState(pendingState); // pending stays the same
         setShowTransferModal(false);
       } else {
-        alert(res.data.message || "Transfer failed!");
+        alert(res.message || "Transfer failed!");
       }
     } catch (err) {
       console.error(err);
