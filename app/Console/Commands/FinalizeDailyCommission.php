@@ -35,7 +35,7 @@ class FinalizeDailyCommission extends Command
         // $yesterdayEnd   = \Carbon\Carbon::yesterday()->endOfDay();
 
         //ONLY FOR DATA TRANSACTIONS FOR NOW
-        $startFrom = Carbon::parse('2025-07-08')->startOfDay();
+        $startFrom = Carbon::parse('2023-07-08')->startOfDay();
         $endAt     = Carbon::yesterday()->endOfDay();
 
 
