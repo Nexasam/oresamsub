@@ -35,42 +35,7 @@ class UserDashboardController extends Controller
     $userid = auth()->id();
     $commissionData = null;
 
-    // if (auth()->user()->email === 'oreofe@gmail.com') {
-                logger('thiss ran for comss');
-                $available = Commissions::select('commission')
-                ->where('beneficiary', $userid)
-                ->where('status', 1)
-                ->where('payout_status', 0)
-                ->sum('commission');
-      
-                $pending = Commissions::select('commission')
-                ->where('beneficiary', $userid)
-                ->where('status', 0)
-                ->where('payout_status', 0)
-                ->sum('commission');
-
-                $total_earned = Commissions::select('commission')
-                ->where('beneficiary', $userid)
-                ->where('status', 1)
-                ->where('payout_status', 1)
-                ->sum('commission');
-
-
- 
-
-
-        // $commissionData = [
-        //     'pending' => $pending,
-
-        //     'available' => $available,
-
-        //     'total_earned' => $total_earned
-        // ];
-        $data['pending'] = $pending;
-        $data['available'] = $available;
-        $data['total_earned'] = $total_earned;
-
-    // }
+   
 
     if((! $template || $template->template_name == 'template_1') && env('APP_NAME') == 'OresamSub' && auth()->user()->role->role_name == 'User'){
         // $data['transactions'] = Transaction::with('product_plan')->where('user_id',auth()->id())->limit(10)->latest()->get();
@@ -80,6 +45,33 @@ class UserDashboardController extends Controller
         // ->latest()
         // ->get();
 
+         // if (auth()->user()->email === 'oreofe@gmail.com') {
+            logger('thiss ran for comss');
+            $available = Commissions::select('commission')
+            ->where('beneficiary', $userid)
+            ->where('status', 1)
+            ->where('payout_status', 0)
+            ->sum('commission');
+
+            $pending = Commissions::select('commission')
+            ->where('beneficiary', $userid)
+            ->where('status', 0)
+            ->where('payout_status', 0)
+            ->sum('commission');
+
+            $total_earned = Commissions::select('commission')
+            ->where('beneficiary', $userid)
+            ->where('status', 1)
+            ->where('payout_status', 1)
+            ->sum('commission');
+
+            $data['commissionData'] = [
+              'pending' => $pending,
+              'available' => $available,
+              'total_earned' => $total_earned,
+          ];
+
+          // }
 
 
 

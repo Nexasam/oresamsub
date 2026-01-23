@@ -11,8 +11,9 @@ import Announcements from "@/Components/Announcements";
 
 export default function Dashboard({ transactions: initialTransactions }) {
   const { props } = usePage();
-  const { auth, announcements, impersonator, available = 0, pending = 0, total_earned = 0 } = props;
-  // const showCommissions = available || pending || total_earned;
+  const { auth, announcements, impersonator, commissionData = {} } = props;
+  const { available = 0, pending = 0, total_earned = 0 } = commissionData;
+  
   const showCommissions = true;
 
   const user = auth.user;
@@ -72,7 +73,7 @@ export default function Dashboard({ transactions: initialTransactions }) {
         {showCommissions && (
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-4">
             {/* Pending */}
-            <Link href={route("commissions.index")}>
+            <Link href={route("dashboard")}>
               <div className="bg-yellow-100 dark:bg-yellow-900 p-4 rounded-xl shadow hover:scale-[1.02] transition text-center">
                 <p className="text-xs text-yellow-700 dark:text-yellow-300">Pending</p>
                 <h2 className="text-lg font-bold text-yellow-800 dark:text-yellow-200">
@@ -82,7 +83,7 @@ export default function Dashboard({ transactions: initialTransactions }) {
             </Link>
 
             {/* Available */}
-            <Link href={route("commissions.index")}>
+            <Link href={route("dashboard")}>
               <div className="bg-green-100 dark:bg-green-900 p-4 rounded-xl shadow hover:scale-[1.02] transition text-center">
                 <p className="text-xs text-green-700 dark:text-green-300">Available</p>
                 <h2 className="text-lg font-bold text-green-800 dark:text-green-200">
@@ -92,7 +93,7 @@ export default function Dashboard({ transactions: initialTransactions }) {
             </Link>
 
             {/* Total Earned */}
-            <Link href={route("commissions.index")}>
+            <Link href={route("dashboard")}>
               <div className="bg-blue-100 dark:bg-blue-900 p-4 rounded-xl shadow hover:scale-[1.02] transition text-center">
                 <p className="text-xs text-blue-700 dark:text-blue-300">Total Earned</p>
                 <h2 className="text-lg font-bold text-blue-800 dark:text-blue-200">
