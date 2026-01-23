@@ -31,6 +31,47 @@ class UserDashboardController extends Controller
 
       
     $template = SiteTemplate::first();
+
+    $userid = auth()->id();
+    $commissionData = null;
+
+    // if (auth()->user()->email === 'oreofe@gmail.com') {
+                logger('thiss ran for comss');
+                $available = Commissions::select('commission')
+                ->where('beneficiary', $userid)
+                ->where('status', 1)
+                ->where('payout_status', 0)
+                ->sum('commission');
+      
+                $pending = Commissions::select('commission')
+                ->where('beneficiary', $userid)
+                ->where('status', 0)
+                ->where('payout_status', 0)
+                ->sum('commission');
+
+                $total_earned = Commissions::select('commission')
+                ->where('beneficiary', $userid)
+                ->where('status', 1)
+                ->where('payout_status', 1)
+                ->sum('commission');
+
+
+ 
+
+
+        // $commissionData = [
+        //     'pending' => $pending,
+
+        //     'available' => $available,
+
+        //     'total_earned' => $total_earned
+        // ];
+        $data['pending'] = $pending;
+        $data['available'] = $available;
+        $data['total_earned'] = $total_earned;
+
+    // }
+
     if((! $template || $template->template_name == 'template_1') && env('APP_NAME') == 'OresamSub' && auth()->user()->role->role_name == 'User'){
         // $data['transactions'] = Transaction::with('product_plan')->where('user_id',auth()->id())->limit(10)->latest()->get();
         // $data['wallet_logs'] = WalletLog::with('user')
@@ -40,46 +81,11 @@ class UserDashboardController extends Controller
         // ->get();
 
 
-        $userid = auth()->id();
-        $commissionData = null;
 
-        // if (auth()->user()->email === 'oreofe@gmail.com') {
-                    logger('thiss ran for comss');
-                    $available = Commissions::select('commission')
-                    ->where('beneficiary', $userid)
-                    ->where('status', 1)
-                    ->where('payout_status', 0)
-                    ->sum('commission');
-          
-                    $pending = Commissions::select('commission')
-                    ->where('beneficiary', $userid)
-                    ->where('status', 0)
-                    ->where('payout_status', 0)
-                    ->sum('commission');
-
-                    $total_earned = Commissions::select('commission')
-                    ->where('beneficiary', $userid)
-                    ->where('status', 1)
-                    ->where('payout_status', 1)
-                    ->sum('commission');
-
-
-     
-
-
-            $commissionData = [
-                'pending' => $pending,
-
-                'available' => $available,
-
-                'total_earned' => $total_earned
-            ];
-        // }
 
         $data['transactions'] = Transaction::with(relations: 'product_plan')->where('user_id',auth()->id())->limit(10)->latest()->get();
         $data['announcements'] = Announcement::where('status',1)->latest()->get();
-        $data['commissionData'] = $commissionData;
-        // return $data;
+        return $data;
         logger('thiss ran for inertia dashboard'.json_encode($data));
 
      
