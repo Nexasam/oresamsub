@@ -65,7 +65,7 @@ export default function Dashboard({ transactions: initialTransactions }) {
         {console.log("Commission Data:", commissionData)}
 
         {/* Commission Cards */}
-        {commissionData && (
+        { (
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 my-4">
             {/* Pending */}
             <div className="bg-white dark:bg-gray-800 rounded-xl shadow p-4 flex flex-col justify-between">
