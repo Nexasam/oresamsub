@@ -167,11 +167,14 @@ class CommissionsController extends Controller
             $user->main_wallet += $totalAmount;
             $user->save();
 
+            $ref = 'ore_withdrawals_' . time() . rand(1000000000, 9999999999);
+
             Withdrawal::create([
                 'user_id' => $user->id,
                 'amount' => $totalAmount,
                 'type' => 'wallet', // default wallet
                 'status' => 'success',
+                'reference' => $ref,
                 'description' => 'Transfer from commissions to wallet',
                 'balance_before' => $beforeBalance,
                 'balance_after' => $user->main_wallet + $totalAmount,
