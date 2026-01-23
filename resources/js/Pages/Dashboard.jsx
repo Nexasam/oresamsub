@@ -22,6 +22,8 @@ export default function Dashboard({ transactions: initialTransactions }) {
   const [inviteOpen, setInviteOpen] = useState(false);
   const [copied, setCopied] = useState(false);
 
+  console.log("Commission Data:", commissionData); // should now log your array
+
   const referralLink = `https://oresamsub.com/register?ref=${user.phone_number}`;
 
   const getStatus = (status) => {
@@ -48,6 +50,7 @@ export default function Dashboard({ transactions: initialTransactions }) {
   };
 
   return (
+    
     <DashboardLayout title="Dashboard">
       {/* Wallet */}
       <WalletBalance user={user} />
