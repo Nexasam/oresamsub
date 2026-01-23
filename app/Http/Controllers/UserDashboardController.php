@@ -72,7 +72,7 @@ class UserDashboardController extends Controller
 
                 'available' => $available,
 
-                'total' => $total_earned
+                'total_earned' => $total_earned
             ];
         }
 
