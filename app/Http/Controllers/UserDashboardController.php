@@ -80,6 +80,7 @@ class UserDashboardController extends Controller
         $data['announcements'] = Announcement::where('status',1)->latest()->get();
         $data['commissionData'] = $commissionData;
         // return $data;
+        logger('thiss ran for inertia dashboard'.json_encode($data));
 
      
         return Inertia::render('Dashboard')->with($data);
