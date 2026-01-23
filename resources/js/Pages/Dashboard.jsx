@@ -68,14 +68,59 @@ export default function Dashboard({ transactions: initialTransactions }) {
       <Announcements announcements={announcements} />
 
 
-        { commss && (
-          <>
-            <p>avail: {available}</p>
-            <p>pending: {pending}</p>
-            <p>total: {total_earned}</p>
-          </>
-        
-        )}
+      {/* Commission Summary Cards */}
+      {commss && (
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-6">
+          {/* Pending */}
+          <Link
+            href="/commissions"
+            className="group bg-yellow-50 dark:bg-yellow-900 p-5 rounded-2xl shadow hover:shadow-lg transition transform hover:-translate-y-1 text-center"
+          >
+            <p className="text-xs font-medium text-yellow-700 dark:text-yellow-300 uppercase">
+              Pending
+            </p>
+            <h2 className="text-2xl font-bold text-yellow-800 dark:text-yellow-200 mt-2">
+              ₦{Number(pending).toLocaleString()}
+            </h2>
+            <p className="text-xs text-gray-400 dark:text-gray-300 mt-1">
+              Commissions awaiting approval
+            </p>
+          </Link>
+
+          {/* Available */}
+          <Link
+            href="/commissions"
+            className="group bg-green-50 dark:bg-green-900 p-5 rounded-2xl shadow hover:shadow-lg transition transform hover:-translate-y-1 text-center"
+          >
+            <p className="text-xs font-medium text-green-700 dark:text-green-300 uppercase">
+              Available
+            </p>
+            <h2 className="text-2xl font-bold text-green-800 dark:text-green-200 mt-2">
+              ₦{Number(available).toLocaleString()}
+            </h2>
+            <p className="text-xs text-gray-400 dark:text-gray-300 mt-1">
+              Ready for withdrawal
+            </p>
+          </Link>
+
+          {/* Total Earned */}
+          <Link
+            href="/commissions"
+            className="group bg-blue-50 dark:bg-blue-900 p-5 rounded-2xl shadow hover:shadow-lg transition transform hover:-translate-y-1 text-center"
+          >
+            <p className="text-xs font-medium text-blue-700 dark:text-blue-300 uppercase">
+              Total Earned
+            </p>
+            <h2 className="text-2xl font-bold text-blue-800 dark:text-blue-200 mt-2">
+              ₦{Number(total_earned).toLocaleString()}
+            </h2>
+            <p className="text-xs text-gray-400 dark:text-gray-300 mt-1">
+              Lifetime commissions earned
+            </p>
+          </Link>
+        </div>
+      )}
+
 
       {/* Invite & Earn */}
       <InviteEarn referralLink={referralLink} />
