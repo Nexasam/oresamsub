@@ -53,15 +53,15 @@ export default function Dashboard({ transactions: initialTransactions }) {
       <WalletBalance user={user} />
 
          {/* Marketer/Admin Shortcut */}
-         {(user.is_marketer === 1 || user.role?.role_name === "Admin") && (
-        <a href={route("marketer.dashboard")}>
-          <div className="bg-green-800 text-white p-2 rounded-xl my-4">
-            <h1 className="text-center">Go to Marketer Dashboard</h1>
-          </div>
-        </a>
-        )}
+          {(user.is_marketer === 1 || user.role?.role_name === "Admin") && (
+          <a href={route("marketer.dashboard")}>
+            <div className="bg-green-800 text-white p-2 rounded-xl my-4">
+              <h1 className="text-center">Go to Marketer Dashboard</h1>
+            </div>
+          </a>
+          )}
 
-
+        {commissionData && console.log("Commission Data:", commissionData)}
 
         {/* Commission Cards */}
         {commissionData && (
