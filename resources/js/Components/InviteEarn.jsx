@@ -2,7 +2,7 @@ import { useState } from "react";
 import { FaWhatsapp, FaFacebookF, FaInstagram, FaTiktok } from "react-icons/fa";
 
 export default function InviteEarn({ referralLink }) {
-  const [inviteOpen, setInviteOpen] = useState(false);
+  const [inviteOpen, setInviteOpen] = useState(true);
   const [copied, setCopied] = useState(false);
 
   const copyReferral = () => {
@@ -36,9 +36,14 @@ export default function InviteEarn({ referralLink }) {
       {/* Accordion Content */}
       {inviteOpen && (
         <div className="bg-white dark:bg-gray-800 px-4 py-3 space-y-3 text-sm">
-          <p className="text-gray-600 dark:text-gray-400">
+          {/* <p className="text-gray-600 dark:text-gray-400">
             Buy airtime, data, and pay bills at affordable rates — get started now! 🚀
+          </p> */}
+
+          <p className="text-gray-600 dark:text-gray-400">
+            Refer friends and earn commissions on every data transaction they make — start earning today 💰
           </p>
+
 
           {/* Referral Link */}
           <div className="flex items-center bg-gray-100 dark:bg-gray-700 rounded-md overflow-hidden">
