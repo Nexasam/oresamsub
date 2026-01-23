@@ -252,6 +252,8 @@ class BizProfitCalculationService{
         $profit = $purchase_amount - $actual_cost_price;
         $total_txn_profit += $profit;
        
+        $data[$key]['automation_type'] = $automation_details->automation_group;
+        $data[$key]['upline_commission'] = $transaction->upline_commission;
         $data[$key]['automation'] = $automation_details->automation_name;
         $data[$key]['plan'] = $transaction->product_plan->product_plan_name;
         $data[$key]['admin_screen_message'] = $transaction->admin_screen_message;
