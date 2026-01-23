@@ -73,14 +73,54 @@ use App\Http\Controllers\ProductPlanCustomPricingController;
 /////NEW ADMIN UI 
 
 
-
-
 // Inertia routes
 Route::get('/login', [InertiaLoginController::class, 'create'])->name('login');
 Route::post('/login', [InertiaLoginController::class, 'store'])->name('inertia.login.store');
   
 
-   
+
+Route::get('/recova_create_consent', function () {
+        
+        $recova_url = "https://recova.ng/recova_ofi_handshake/api/ConsentRequest/CreateConsentRequest";
+
+        // Initialize cURL
+        $ch = curl_init($recova_url);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_TIMEOUT, 10); // 10 seconds
+        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+
+        // Enable verbose output to a file
+        $verbose = fopen('php://temp', 'w+');
+        curl_setopt($ch, CURLOPT_VERBOSE, true);
+        curl_setopt($ch, CURLOPT_STDERR, $verbose);
+
+        // Execute cURL
+        $response = curl_exec($ch);
+        $errno = curl_errno($ch);
+        $error = curl_error($ch);
+
+        // Check HTTP response code
+        $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+
+        curl_close($ch);
+
+        // Output results
+        echo "cURL error number: $errno\n";
+        echo "cURL error message: $error\n";
+        echo "HTTP response code: $http_code\n";
+        echo "Response: $response\n";
+
+        // Show verbose info
+        rewind($verbose);
+        $verboseLog = stream_get_contents($verbose);
+        // echo "\nVerbose info:\n$verboseLog\n";exit;
+        return json_encode([
+            'status' => -1,
+            'message' => "\nVerbose info:\n$verboseLog\n"
+        ]);
+ 
+});
+
 Route::get('oresamsub/newlanding', fn () => view('oresamsub.landing.new'))->name('ore.landing');
 
 Route::get('oresamsub/register', fn () => view('oresamsub.auth.register'))->name('ore.register');

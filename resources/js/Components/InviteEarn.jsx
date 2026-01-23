@@ -96,6 +96,5 @@ export default function InviteEarn({ referralLink }) {
       </div>
     )}
     </div>
-  
   );
 }
