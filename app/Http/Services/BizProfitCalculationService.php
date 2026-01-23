@@ -207,6 +207,8 @@ class BizProfitCalculationService{
 
         $total_txn_profit = 0;
 
+        $upline_comm = 0;
+
        foreach($transactions as $key=>$transaction){
            $jsonstatus = $this->isObjectOrArrayJson($transaction->admin_screen_message) ? 'TRUE':'FALSE';
            $automation_details = $transaction->product_plan->automation;
