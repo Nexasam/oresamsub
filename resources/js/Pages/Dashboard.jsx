@@ -11,9 +11,12 @@ import Announcements from "@/Components/Announcements";
 
 export default function Dashboard({ transactions: initialTransactions }) {
   const { props } = usePage();
-  const { auth, announcements, impersonator } = props;
-  const commissionData = props.commissionData;
+  const { auth, announcements, impersonator, available = 0, pending = 0, total_earned = 0 } = props;
+  const showCommissions = available || pending || total_earned;
+
   const user = auth.user;
+
+
 
   const transactions = initialTransactions ?? props.transactions ?? [];
   const [showBalance, setShowBalance] = useState(true);
@@ -62,36 +65,43 @@ export default function Dashboard({ transactions: initialTransactions }) {
           </a>
           )}
 
-        {console.log("Commission Data:", commissionData)}
+        {/* {console.log("Commission Data:", commissionData)} */}
 
-        {/* Commission Cards */}
-        { (
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 my-4">
+       {/* Commission Summary Cards */}
+        {showCommissions && (
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-4">
             {/* Pending */}
-            <div className="bg-white dark:bg-gray-800 rounded-xl shadow p-4 flex flex-col justify-between">
-              <div className="text-gray-500 dark:text-gray-400 text-sm">Pending Commission</div>
-              <div className="text-2xl font-bold text-yellow-500">
-                ₦{Number(commissionData.pending).toFixed(2)}
+            <Link href={route("commissions.index")}>
+              <div className="bg-yellow-100 dark:bg-yellow-900 p-4 rounded-xl shadow hover:scale-[1.02] transition text-center">
+                <p className="text-xs text-yellow-700 dark:text-yellow-300">Pending</p>
+                <h2 className="text-lg font-bold text-yellow-800 dark:text-yellow-200">
+                  ₦{Number(pending).toFixed(2)}
+                </h2>
               </div>
-            </div>
+            </Link>
 
             {/* Available */}
-            <Link href="/commissions" className="bg-white dark:bg-gray-800 rounded-xl shadow p-4 flex flex-col justify-between hover:bg-gray-50 dark:hover:bg-gray-900 transition">
-              <div className="text-gray-500 dark:text-gray-400 text-sm">Available Commission</div>
-              <div className="text-2xl font-bold text-green-500">
-                ₦{Number(commissionData.available).toFixed(2)}
+            <Link href={route("commissions.index")}>
+              <div className="bg-green-100 dark:bg-green-900 p-4 rounded-xl shadow hover:scale-[1.02] transition text-center">
+                <p className="text-xs text-green-700 dark:text-green-300">Available</p>
+                <h2 className="text-lg font-bold text-green-800 dark:text-green-200">
+                  ₦{Number(available).toFixed(2)}
+                </h2>
               </div>
             </Link>
 
             {/* Total Earned */}
-            <div className="bg-white dark:bg-gray-800 rounded-xl shadow p-4 flex flex-col justify-between">
-              <div className="text-gray-500 dark:text-gray-400 text-sm">Total Earned</div>
-              <div className="text-2xl font-bold text-gray-700 dark:text-gray-100">
-                ₦{Number(commissionData.total_earned).toFixed(2)}
+            <Link href={route("commissions.index")}>
+              <div className="bg-blue-100 dark:bg-blue-900 p-4 rounded-xl shadow hover:scale-[1.02] transition text-center">
+                <p className="text-xs text-blue-700 dark:text-blue-300">Total Earned</p>
+                <h2 className="text-lg font-bold text-blue-800 dark:text-blue-200">
+                  ₦{Number(total_earned).toFixed(2)}
+                </h2>
               </div>
-            </div>
+            </Link>
           </div>
         )}
+
 
       
 
