@@ -45,19 +45,19 @@ class UserDashboardController extends Controller
 
         if ($user->email === 'oreofe@gmail.com') {
                     $available = Commissions::select('commission')
-                    ->where('transaction_by', $user->id)
+                    ->where('beneficiary', $user->id)
                     ->where('status', 1)
                     ->where('payout_status', 0)
                     ->sum('commission');
           
                     $pending = Commissions::select('commission')
-                    ->where('transaction_by', $user->id)
+                    ->where('beneficiary', $user->id)
                     ->where('status', 0)
                     ->where('payout_status', 0)
                     ->sum('commission');
 
                     $total_earned = Commissions::select('commission')
-                    ->where('transaction_by', $user->id)
+                    ->where('beneficiary', $user->id)
                     ->where('status', 1)
                     ->where('payout_status', 1)
                     ->sum('commission');
