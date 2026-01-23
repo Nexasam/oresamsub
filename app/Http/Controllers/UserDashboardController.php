@@ -43,7 +43,7 @@ class UserDashboardController extends Controller
         $userid = auth()->id();
         $commissionData = null;
 
-        if (auth()->user()->email === 'oreofe@gmail.com') {
+        // if (auth()->user()->email === 'oreofe@gmail.com') {
                     logger('thiss ran for comss');
                     $available = Commissions::select('commission')
                     ->where('beneficiary', $userid)
@@ -74,13 +74,13 @@ class UserDashboardController extends Controller
 
                 'total_earned' => $total_earned
             ];
-        }
+        // }
 
         $data['transactions'] = Transaction::with(relations: 'product_plan')->where('user_id',auth()->id())->limit(10)->latest()->get();
         $data['announcements'] = Announcement::where('status',1)->latest()->get();
         $data['commissionData'] = $commissionData;
         // return $data;
-        logger('thiss ran for inertia dashboard'.json_encode($data));
+        // logger('thiss ran for inertia dashboard'.json_encode($data));
 
      
         return Inertia::render('Dashboard')->with($data);
