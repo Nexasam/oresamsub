@@ -11,8 +11,11 @@ import Announcements from "@/Components/Announcements";
 
 export default function Dashboard({ transactions: initialTransactions }) {
   const { props } = usePage();
-  const { auth, announcements, impersonator } = props;
+  const { auth, announcements, impersonator, commissionData = {} } = props;
+  const { available = 0, pending = 0, total_earned = 0 } = commissionData;
   const user = auth.user;
+
+  const commss = true;
 
   const transactions = initialTransactions ?? props.transactions ?? [];
   const [showBalance, setShowBalance] = useState(true);
@@ -63,6 +66,16 @@ export default function Dashboard({ transactions: initialTransactions }) {
 
       {/* Announcements Slider */}
       <Announcements announcements={announcements} />
+
+
+        { commss && (
+          <>
+            <p>avail: {available}</p>
+            <p>pending: {pending}</p>
+            <p>total: {total_earned}</p>
+          </>
+        
+        )}
 
       {/* Invite & Earn */}
       <InviteEarn referralLink={referralLink} />
