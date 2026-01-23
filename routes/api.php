@@ -65,7 +65,7 @@ Route::post('recova_create_consent', function (Request $request) {
     //     'message' => "\nVerbose info:\n$verboseLog\n"
     // ]);
 
-    return $request->all();
+    // return $request->all();
 
 
 $recova_url = "https://recova.ng/recova_ofi_handshake/api/ConsentRequest/CreateConsentRequest";
