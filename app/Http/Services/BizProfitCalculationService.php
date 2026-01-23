@@ -253,11 +253,11 @@ class BizProfitCalculationService{
         $purchase_amount = $transaction->discounted_amount ?? $transaction->amount;
         $profit = $purchase_amount - $actual_cost_price;
         $upline_comm = $transaction->upline_commission ?? 0;
-        $total_upline_comm += $upline_comm;
+        // $total_upline_comm += $upline_comm;
         $total_txn_profit += $profit;
        
         $data[$key]['automation_type'] = $automation_details->automation_group;
-        $data[$key]['upline_commission'] = $transaction->upline_commission;
+        // $data[$key]['upline_commission'] = $transaction->upline_commission;
         $data[$key]['automation'] = $automation_details->automation_name;
         $data[$key]['plan'] = $transaction->product_plan->product_plan_name;
         $data[$key]['admin_screen_message'] = $transaction->admin_screen_message;
@@ -276,13 +276,13 @@ class BizProfitCalculationService{
 
 
       $total_funding_profit = $this->calculate_funding_profit()['total_profit'];
-      $total_profit = $total_txn_profit + $total_funding_profit - $total_upline_comm;
+      $total_profit = $total_txn_profit + $total_funding_profit;
       return  [
         'status' => 1,
         'start_date' => $start,
         'end_date' => $end,
         'txn_profit'=>$total_txn_profit,
-        'total_upline_comm'=>$total_upline_comm,
+        // 'total_upline_comm'=>$total_upline_comm,
         'total_funding_profit'=>$total_funding_profit,
         'total_profit'=>$total_profit,
         'total_checked_txns' => $total_checked_txns,
