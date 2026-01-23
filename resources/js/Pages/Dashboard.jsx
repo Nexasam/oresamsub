@@ -103,6 +103,14 @@ export default function Dashboard({ transactions: initialTransactions }) {
           </div>
         )}
 
+      <p>
+
+      Pending: {{ pending, available, total_earned }}  
+
+
+      </p>
+
+
 
       
 
