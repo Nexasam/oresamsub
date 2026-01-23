@@ -7,7 +7,7 @@ import InviteEarn from "@/Components/InviteEarn";
 import CommunityCard from "@/Components/CommunityCard";
 import WalletBalance from "@/Components/WalletBalance";
 import Announcements from "@/Components/Announcements";
-
+import axios from "axios";
 
 export default function Dashboard({ transactions: initialTransactions }) {
   const { props } = usePage();
