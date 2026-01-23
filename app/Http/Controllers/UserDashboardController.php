@@ -56,7 +56,7 @@ class UserDashboardController extends Controller
                     ->where('payout_status', 0)
                     ->sum('commission');
 
-                    $total_withdrawn = Commissions::select('commission')
+                    $total_earned = Commissions::select('commission')
                     ->where('transaction_by', $user->id)
                     ->where('status', 1)
                     ->where('payout_status', 1)
@@ -71,13 +71,14 @@ class UserDashboardController extends Controller
 
                 'available' => $available,
 
-                'total' => $total_withdrawn
+                'total' => $total_earned
             ];
         }
 
         $data['transactions'] = Transaction::with(relations: 'product_plan')->where('user_id',auth()->id())->limit(10)->latest()->get();
         $data['announcements'] = Announcement::where('status',1)->latest()->get();
         $data['commissionData'] = $commissionData;
+        return $data;
 
      
         return Inertia::render('Dashboard')->with($data);
