@@ -12,7 +12,8 @@ import Announcements from "@/Components/Announcements";
 export default function Dashboard({ transactions: initialTransactions }) {
   const { props } = usePage();
   const { auth, announcements, impersonator, available = 0, pending = 0, total_earned = 0 } = props;
-  const showCommissions = available || pending || total_earned;
+  // const showCommissions = available || pending || total_earned;
+  const showCommissions = true;
 
   const user = auth.user;
 
