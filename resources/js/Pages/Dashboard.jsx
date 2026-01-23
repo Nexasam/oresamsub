@@ -11,14 +11,8 @@ import Announcements from "@/Components/Announcements";
 
 export default function Dashboard({ transactions: initialTransactions }) {
   const { props } = usePage();
-  const { auth, announcements, impersonator, commissionData = {} } = props;
-  const { available = 0, pending = 0, total_earned = 0 } = commissionData;
-  
-  const showCommissions = true;
-
+  const { auth, announcements, impersonator } = props;
   const user = auth.user;
-
-
 
   const transactions = initialTransactions ?? props.transactions ?? [];
   const [showBalance, setShowBalance] = useState(true);
@@ -59,62 +53,13 @@ export default function Dashboard({ transactions: initialTransactions }) {
       <WalletBalance user={user} />
 
          {/* Marketer/Admin Shortcut */}
-          {(user.is_marketer === 1 || user.role?.role_name === "Admin") && (
-          <a href={route("marketer.dashboard")}>
-            <div className="bg-green-800 text-white p-2 rounded-xl my-4">
-              <h1 className="text-center">Go to Marketer Dashboard</h1>
-            </div>
-          </a>
-          )}
-
-        {/* {console.log("Commission Data:", commissionData)} */}
-
-       {/* Commission Summary Cards */}
-        {showCommissions && (
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-4">
-            {/* Pending */}
-            <Link href={route("dashboard")}>
-              <div className="bg-yellow-100 dark:bg-yellow-900 p-4 rounded-xl shadow hover:scale-[1.02] transition text-center">
-                <p className="text-xs text-yellow-700 dark:text-yellow-300">Pending</p>
-                <h2 className="text-lg font-bold text-yellow-800 dark:text-yellow-200">
-                  ₦{Number(pending).toFixed(2)}
-                </h2>
-              </div>
-            </Link>
-
-            {/* Available */}
-            <Link href={route("dashboard")}>
-              <div className="bg-green-100 dark:bg-green-900 p-4 rounded-xl shadow hover:scale-[1.02] transition text-center">
-                <p className="text-xs text-green-700 dark:text-green-300">Available</p>
-                <h2 className="text-lg font-bold text-green-800 dark:text-green-200">
-                  ₦{Number(available).toFixed(2)}
-                </h2>
-              </div>
-            </Link>
-
-            {/* Total Earned */}
-            <Link href={route("dashboard")}>
-              <div className="bg-blue-100 dark:bg-blue-900 p-4 rounded-xl shadow hover:scale-[1.02] transition text-center">
-                <p className="text-xs text-blue-700 dark:text-blue-300">Total Earned</p>
-                <h2 className="text-lg font-bold text-blue-800 dark:text-blue-200">
-                  ₦{Number(total_earned).toFixed(2)}
-                </h2>
-              </div>
-            </Link>
+         {(user.is_marketer === 1 || user.role?.role_name === "Admin") && (
+        <a href={route("marketer.dashboard")}>
+          <div className="bg-green-800 text-white p-2 rounded-xl my-4">
+            <h1 className="text-center">Go to Marketer Dashboard</h1>
           </div>
+        </a>
         )}
-
-      <p>
-
-      Pending: {{ pending, available, total_earned }}  
-
-
-      </p>
-
-
-
-      
-
 
       {/* Announcements Slider */}
       <Announcements announcements={announcements} />
