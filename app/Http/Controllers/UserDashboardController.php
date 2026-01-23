@@ -46,7 +46,7 @@ class UserDashboardController extends Controller
         // ->get();
 
          // if (auth()->user()->email === 'oreofe@gmail.com') {
-            logger('thiss ran for comss');
+            // logger('thiss ran for comss');
             $available = Commissions::select('commission')
             ->where('beneficiary', $userid)
             ->where('status', 1)
