@@ -424,9 +424,8 @@ class ProductsVendorController extends Controller
         $data['user_id'] = $request->api_user->id;//this is required
         $data['user'] = $request->api_user;//this is required
         // logger('parent request'.$getnetwork);
-
+        
         $buy_data = (new ProductsService())->buy_data_service($data);
-
         $status = $buy_data['status'];
         $message = $buy_data['message'];
         $data = $buy_data['data'] ?? [];

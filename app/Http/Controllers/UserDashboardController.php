@@ -6,6 +6,7 @@ use App\Models\User;
 use Inertia\Inertia;
 use App\Models\UserPlan;
 use App\Models\WalletLog;
+use App\Models\Commissions;
 use App\Models\ProductPlan;
 use App\Models\Transaction;
 use App\Models\Announcement;
@@ -39,8 +40,44 @@ class UserDashboardController extends Controller
         // ->get();
 
 
+        $user = auth()->user();
+        $commissionData = null;
+
+        if ($user->email === 'oreofe@gmail.com') {
+                    $available = Commissions::select('commission')
+                    ->where('user_id', $user->id)
+                    ->where('status', 1)
+                    ->where('payout_status', 0)
+                    ->sum('commission');
+          
+                    $pending = Commissions::select('commission')
+                    ->where('user_id', $user->id)
+                    ->where('status', 0)
+                    ->where('payout_status', 0)
+                    ->sum('commission');
+
+                    $total_withdrawn = Commissions::select('commission')
+                    ->where('user_id', $user->id)
+                    ->where('status', 1)
+                    ->where('payout_status', 1)
+                    ->sum('commission');
+
+
+     
+
+
+            $commissionData = [
+                'pending' => $pending,
+
+                'available' => $available,
+
+                'total' => $total_withdrawn
+            ];
+        }
+
         $data['transactions'] = Transaction::with(relations: 'product_plan')->where('user_id',auth()->id())->limit(10)->latest()->get();
         $data['announcements'] = Announcement::where('status',1)->latest()->get();
+        $data['commissionData'] = $commissionData;
 
      
         return Inertia::render('Dashboard')->with($data);

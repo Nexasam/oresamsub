@@ -259,6 +259,7 @@ class ProductsService{
         $user = $data['user'];//this is required
         $coupon_code = $data['coupon_code'] ?? NULL;
         $txn_reference = $data['reference'] ?? NULL;
+        $upline_commission = 0;
 
         if($txn_reference == NULL){
             //generate a unique one
@@ -356,6 +357,7 @@ class ProductsService{
         $dat['network_id'] = $network_id;
         $get_selling_price = (new DataPlansService())->get_customer_price_per_plan($dat);
         $amount = $get_selling_price['message'];
+        $upline_commission = $get_selling_price['upline_commission'];
 
 
 
@@ -390,6 +392,7 @@ class ProductsService{
             $creationData['description'] = $description ?? 'Purchase of data';
             $creationData['user_screen_message'] = $check_purchase_limit['message'];
             $creationData['admin_screen_message'] = $check_purchase_limit['message'];
+            $creationData['upline_commission'] = 0;
             $transaction = Transaction::create($creationData);
 
 
@@ -478,6 +481,7 @@ class ProductsService{
                                 $creationData['description'] = $description ?? 'Purchase of data';
                                 $creationData['user_screen_message'] = 'Insufficient balance';
                                 $creationData['admin_screen_message'] = 'Insufficient balance';
+                                $creationData['upline_commission'] = 0;
                                 $transaction = Transaction::create($creationData);
 
 
@@ -551,13 +555,13 @@ class ProductsService{
                                 $dataa['validatephonenetwork'] = $validatephonenetwork;
                                 $sell_data = AutomationLogic::initiateDataPurchase($dataa);
                                 $set_for_manual = $sell_data['set_for_manual'] ?? 0;
+                                $upline_commission = $sell_data['upline_commission'] ?? 0;
 
                                 // logger('DATAAA SERVICE: '.json_encode($sell_data));
                                 $coupon_count  = 0;
                 
                                 if($sell_data['status'] == 1){
                                     $coupon_count  = 1;
-
                                     $success++;
                                     $status = 1;
                                     $wallet_before = User::where('id',$user_id)->first()->main_wallet;
@@ -627,6 +631,7 @@ class ProductsService{
                                 $creationData['description'] = $description;
                                 $creationData['user_screen_message'] = $user_message;
                                 $creationData['admin_screen_message'] = $admin_message;
+                                $creationData['upline_commission'] = $upline_commission ?? 0;
                                 $transaction = Transaction::create($creationData);
 
 

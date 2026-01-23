@@ -89,6 +89,7 @@ class DataPlansService{
                 $dat['plan_details'] = $product_plan;
                 $dat['network_id'] = $network_id;
                 $selling_price = $this->get_customer_price_per_plan($dat)['message'];
+                $upline_commission = $this->get_customer_price_per_plan($dat)['upline_commission'] ?? 5;
     
              
                 if($is_api != NULL){
@@ -105,6 +106,7 @@ class DataPlansService{
                 $product_planss[$key]['product_plan_name'] = $product_plan->product_plan_name;
                 $product_planss[$key]['data_size_in_mb'] = $product_plan->data_size_in_mb;
                 $product_planss[$key]['validity_in_days'] = $product_plan->validity_in_days; 
+                $product_planss[$key]['upline_commission'] = $upline_commission; 
                              
             }
 
@@ -117,6 +119,7 @@ class DataPlansService{
             $product_planss[0]['data_size_in_mb'] = NULL;
             $product_planss[0]['validity_in_days'] = NULL;    
             $product_planss[0]['automation_id'] = NULL;  
+            $product_planss[0]['upline_commission'] = 0;  
         }
 
         if($is_api != NULL){
@@ -144,12 +147,18 @@ class DataPlansService{
 
     public function get_customer_price_per_plan($data){
         $product_plan = $data['plan_details'];
+        $commission_feature = $data['plan_details']->commission_feature;
+        $upline_commission_option = $data['plan_details']->upline_commission_option;
+        $commission_feature = $data['plan_details']->commission_feature;
         $cost_price = $data['plan_details']->cost_price;
         $data_size_in_mb = $data['plan_details']->data_size_in_mb;
         $network_id = $data['network_id'];
         $product_id = $data['product_id'];
         $user_details = $data['user'];
+        $upline_commission = 0;
 
+    
+            
         $user_plan_id = $user_details->user_plan_id;
         $user_id = $user_details->id;
         $user_level = UserPlan::select('plan_level')->where('id',$user_plan_id)->first();
@@ -162,8 +171,19 @@ class DataPlansService{
         ->first();
 
         $profitlevel_for_user = "profit_$plan_level" ?? 'profit_1'; 
-        $profit = $get_planprofit->$profitlevel_for_user ?? 50;
+        $profit = $get_planprofit->$profitlevel_for_user ?? 50; //business profit
+
+        if($commission_feature == 1 && $upline_commission_option == 'flat' ){
+            $upline_commission = 5; //flat 5 naira for now
+        }else{
+            $plan_perc = $product_plan->upline_percentage_commission ?? 20; //default 30%
+            if($plan_perc <= 0 || $plan_perc > 100){
+                $plan_perc = 20;
+            }
+            $upline_commission = $profit * ($plan_perc / 100 ); //30% to upline
+        }
         $selling_price = $cost_price + abs($profit);
+
 
         //custom case
         //HERE SELLING PRICE CHANGES IF THEHRE IS A CUSTOM SETTING: put in a service later
@@ -177,7 +197,8 @@ class DataPlansService{
 
         return [
             'status' => 1,
-            'message' => $selling_price ?? $augmentsp
+            'message' => $selling_price ?? $augmentsp,
+            'upline_commission' => $upline_commission
         ];
     }
 

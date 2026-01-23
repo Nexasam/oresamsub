@@ -61,6 +61,40 @@ export default function Dashboard({ transactions: initialTransactions }) {
         </a>
         )}
 
+
+
+        {/* Commission Cards */}
+        {props.commissionData && (
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 my-4">
+            {/* Pending */}
+            <div className="bg-white dark:bg-gray-800 rounded-xl shadow p-4 flex flex-col justify-between">
+              <div className="text-gray-500 dark:text-gray-400 text-sm">Pending Commission</div>
+              <div className="text-2xl font-bold text-yellow-500">
+                ₦{Number(props.commissionData.pending).toFixed(2)}
+              </div>
+            </div>
+
+            {/* Available */}
+            <Link href="/commissions" className="bg-white dark:bg-gray-800 rounded-xl shadow p-4 flex flex-col justify-between hover:bg-gray-50 dark:hover:bg-gray-900 transition">
+              <div className="text-gray-500 dark:text-gray-400 text-sm">Available Commission</div>
+              <div className="text-2xl font-bold text-green-500">
+                ₦{Number(props.commissionData.available).toFixed(2)}
+              </div>
+            </Link>
+
+            {/* Total Earned */}
+            <div className="bg-white dark:bg-gray-800 rounded-xl shadow p-4 flex flex-col justify-between">
+              <div className="text-gray-500 dark:text-gray-400 text-sm">Total Earned</div>
+              <div className="text-2xl font-bold text-gray-700 dark:text-gray-100">
+                ₦{Number(props.commissionData.total_earned).toFixed(2)}
+              </div>
+            </div>
+          </div>
+        )}
+
+      
+
+
       {/* Announcements Slider */}
       <Announcements announcements={announcements} />
 

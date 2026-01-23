@@ -1,5 +1,6 @@
 <?php
 
+use App\Console\Commands\FinalizeDailyCommission;
 use App\Console\Commands\SyncAddons;
 use Illuminate\Foundation\Inspiring;
 use Illuminate\Support\Facades\Artisan;
@@ -23,8 +24,14 @@ use App\Console\Commands\ProcessPendingAirtimeTransactions;
 Schedule::command('migrate --force')->everyMinute();
 Schedule::command(ProcessPendingAirtimeTransactions::class)->everyThirtySeconds();
 Schedule::command(ZerorizeNegativeBalances::class)->everyTwoMinutes()->withoutOverlapping();
-Schedule::command(ComputeReferralCommission::class)->everyMinute();
-Schedule::command(ComputeReferralCommission::class)->everySixHours();
+Schedule::command(ComputeReferralCommission::class)->everyFiveMinutes(); 
+Schedule::command(FinalizeDailyCommission::class)
+    ->dailyAt('02:00')
+    ->timezone('Africa/Lagos')
+    ->withoutOverlapping()
+    ->runInBackground();
+
+// Schedule::command(ComputeReferralCommission::class)->everySixHours();
 // Schedule::command(ComputeReferralCommission::class)->hourly();
 
 

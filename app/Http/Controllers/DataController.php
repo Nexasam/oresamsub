@@ -472,6 +472,7 @@ class DataController extends Controller
         $coupon_count = 0;
         $coupon = NULL;
         $remaining_slots = NULL;
+        $upline_commission = 0;
 
         $dat = [];
 
@@ -546,7 +547,10 @@ class DataController extends Controller
             $dat['network_id'] = $plan_details->product_plan_category->network->id;
             $dat['user'] = $user_details;
             $dat['plan_details'] = $plan_details;
-            $amount = (new DataPlansService())->get_customer_price_per_plan($dat)['message'];
+            $dataplanservice = new DataPlansService();
+            $amount = $dataplanservice->get_customer_price_per_plan($dat)['message'];
+            $upline_commission = $dataplanservice->get_customer_price_per_plan($dat)['upline_commission'];
+    
         // }
 
 
@@ -705,6 +709,7 @@ class DataController extends Controller
                                 $creationData['description'] = $description;
                                 $creationData['user_screen_message'] = $user_message;
                                 $creationData['admin_screen_message'] = $admin_message;
+                                $creationData['upline_commission'] = $upline_commission ?? 0;
                                 $transaction = Transaction::create($creationData);
 
 
@@ -839,6 +844,7 @@ class DataController extends Controller
                                 $creationData['description'] = $description;
                                 $creationData['user_screen_message'] = $user_message;
                                 $creationData['admin_screen_message'] = $admin_message;
+                                $creationData['upline_commission'] = $upline_commission ?? 0;
                                 $transaction = Transaction::create($creationData);
 
                                 $walletLog['user_id'] = $user_id;
@@ -1140,6 +1146,7 @@ class DataController extends Controller
             $creationData['description'] = $description;
             $creationData['admin_screen_message'] = 'Bulk data purchase was successful: '. $bulk_data_plan->bulk_data_plan_name;
             $creationData['user_screen_message'] = 'Purchase of Bulk data plan: '. $bulk_data_plan->bulk_data_plan_name.' was successful';
+            $creationData['upline_commission'] = $upline_commission ?? 0;
             $transaction = Transaction::create($creationData);
 
             $walletLog['user_id'] = $user_details->id;
