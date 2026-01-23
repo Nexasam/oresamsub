@@ -152,6 +152,7 @@ class CommissionsController extends Controller
                 ->get();
 
             if ($commissions->isEmpty()) {
+                logger('is1');
                 return response()->json([
                     'message' => 'No available commissions to transfer.'
                 ], 400);
@@ -160,7 +161,7 @@ class CommissionsController extends Controller
             // Sum total available commissions
             $totalAmount = $commissions->sum('commission');
 
-            $beforeBalance = $user->main_balance;
+            $beforeBalance = $user->main_wallet;
 
             // Update user's wallet balance
             $user->main_wallet += $totalAmount;
