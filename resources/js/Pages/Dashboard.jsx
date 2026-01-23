@@ -129,7 +129,7 @@ export default function Dashboard({ transactions: initialTransactions }) {
 
     {/* Commission Summary Cards */}
     {commss && (
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-6">
+      <div className="grid grid-cols-3 sm:grid-cols-3 gap-4 mt-6">
         {/* Pending */}
         <div className="group bg-yellow-50 dark:bg-yellow-900 p-5 rounded-2xl shadow hover:shadow-lg transition transform hover:-translate-y-1 text-center">
           <p className="text-xs font-medium text-yellow-700 dark:text-yellow-300 uppercase">
