@@ -212,6 +212,7 @@ Route::get('/recova_create_consent', function () {
             'status' => -1,
             'message' => 'Invalid JSON response from Recova',
             'raw_response' => $response,
+            'response_arr' => $response_dec,
         ]);
     }
  
