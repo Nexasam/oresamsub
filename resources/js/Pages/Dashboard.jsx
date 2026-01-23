@@ -154,9 +154,13 @@ export default function Dashboard({ transactions: initialTransactions }) {
           <h2 className="text-2xl font-bold text-green-800 dark:text-green-200 mt-2">
             ₦{Number(availableState).toLocaleString()}
           </h2>
-          <p className="text-xs text-gray-400 dark:text-gray-300 mt-1">
-            Ready for transfer
+          {/* <p className="text-xs text-gray-400 dark:text-gray-300 mt-1">
+            CLICK to transfer to wallet
+          </p> */}
+          <p className="mt-2 text-xs font-medium text-green-600 dark:text-green-300 flex items-center justify-center gap-1 animate-pulse">
+            Click to transfer →
           </p>
+
         </div>
 
         {/* Total Earned */}
