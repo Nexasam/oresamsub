@@ -70,7 +70,7 @@ export default function Dashboard({ transactions: initialTransactions }) {
 
       {/* Commission Summary Cards */}
       {commss && (
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-6">
+        <div className="grid grid-cols-3 sm:grid-cols-3 gap-4 mt-6">
           {/* Pending */}
           <Link
             href="/commissions"
