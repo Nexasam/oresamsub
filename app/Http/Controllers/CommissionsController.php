@@ -5,9 +5,11 @@ namespace App\Http\Controllers;
 use Exception;
 use App\Models\User;
 use App\Models\Network;
+use App\Models\Withdrawal;
 use App\Models\Commissions;
 use App\Models\Transaction;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 use Yajra\DataTables\Facades\DataTables;
 
@@ -131,7 +133,67 @@ class CommissionsController extends Controller
 
 
        
-  }
+    }
+
+
+    public function transferToWallet(Request $request)
+    {
+        $user = auth()->user();
+
+        // Start a database transaction
+        DB::beginTransaction();
+
+        try {
+            // Get available commissions that haven't been paid
+            $commissions = Commissions::where('beneficiary', $user->id)
+                ->where('status', 1) // or status = 1 if numeric
+                ->where('payout_status', 0)
+                ->lockForUpdate() // prevent race conditions
+                ->get();
+
+            if ($commissions->isEmpty()) {
+                return response()->json([
+                    'message' => 'No available commissions to transfer.'
+                ], 400);
+            }
+
+            // Sum total available commissions
+            $totalAmount = $commissions->sum('commission');
+
+            $beforeBalance = $user->main_balance;
+
+            // Update user's wallet balance
+            $user->main_wallet += $totalAmount;
+            $user->save();
+
+            Withdrawal::create([
+                'user_id' => $user->id,
+                'amount' => $totalAmount,
+                'type' => 'wallet', // default wallet
+                'status' => 'success',
+                'description' => 'Transfer from commissions to wallet',
+                'balance_before' => $beforeBalance,
+                'balance_after' => $user->main_wallet + $totalAmount,
+            ]);
+
+            // Mark commissions as paid (payout = 1)
+            Commissions::whereIn('id', $commissions->pluck('id'))
+                ->update(['payout_out' => 1]);
+
+            DB::commit();
+
+            return response()->json([
+                'message' => 'Transferred to wallet successfully.',
+                'main_wallet' => $user->main_wallet,
+            ]);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            logger('Transfer to wallet failed: ' . $e->getMessage());
+            return response()->json([
+                'message' => 'Transfer to wallet failed. Please contact support ',
+            ], 500);
+        }
+    }
 
  
 }

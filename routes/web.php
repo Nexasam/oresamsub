@@ -526,6 +526,11 @@ Route::middleware(['set_locale'])->group(function () {
 
             Route::middleware(['auth','verified'])->get('admin/wallet_creditings/index', [WalletsController::class, 'wallet_creditings'])->name('wallet_creditings.index');
 
+            // routes/web.php or routes/api.php
+            Route::post('/commissions/transfer-to-wallet', [CommissionsController::class, 'transferToWallet'])
+            ->name('commissions.transfer')
+            ->middleware('auth');
+
 
               // COUPON CODES
               Route::middleware(['auth','verified','admin'])->get('coupon_codes/index', [CouponCodesController::class, 'index'])->name('admin.coupon_codes.index');

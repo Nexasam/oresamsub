@@ -18,12 +18,20 @@ export default function Dashboard({ transactions: initialTransactions }) {
   const commss = true;
 
   const transactions = initialTransactions ?? props.transactions ?? [];
+  const [showTransferModal, setShowTransferModal] = useState(false);
   const [showBalance, setShowBalance] = useState(true);
   const [openTransactionId, setOpenTransactionId] = useState(null);
   const [loggingOut, setLoggingOut] = useState(false);
 
   const [inviteOpen, setInviteOpen] = useState(false);
   const [copied, setCopied] = useState(false);
+
+
+  //commissions
+  const [availableState, setAvailableState] = useState(available);
+  const [pendingState, setPendingState] = useState(pending);
+  const [loading, setLoading] = useState(false);
+
 
   const referralLink = `https://oresamsub.com/register?ref=${user.phone_number}`;
 
@@ -50,6 +58,30 @@ export default function Dashboard({ transactions: initialTransactions }) {
     });
   };
 
+  const handleTransfer = async () => {
+    if (availableState <= 0) return;
+    setLoading(true);
+    try {
+      const res = await axios.post(route("commissions.transfer")); // backend route
+
+      if (res.data.success) {
+        alert("Transferred to wallet successfully!");
+
+        // Update frontend state
+        setAvailableState(0);
+        setPendingState(pendingState); // pending stays the same
+        setShowTransferModal(false);
+      } else {
+        alert(res.data.message || "Transfer failed!");
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Transfer failed!");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <DashboardLayout title="Dashboard">
       {/* Wallet */}
@@ -70,55 +102,82 @@ export default function Dashboard({ transactions: initialTransactions }) {
 
       {/* Commission Summary Cards */}
       {commss && (
-        <div className="grid grid-cols-3 sm:grid-cols-3 gap-4 mt-6">
-          {/* Pending */}
-          <Link
-            href="#"
-            className="group bg-yellow-50 dark:bg-yellow-900 p-5 rounded-2xl shadow hover:shadow-lg transition transform hover:-translate-y-1 text-center"
-          >
-            <p className="text-xs font-medium text-yellow-700 dark:text-yellow-300 uppercase">
-              Pending
-            </p>
-            <h2 className="text-2xl font-bold text-yellow-800 dark:text-yellow-200 mt-2">
-              ₦{Number(pending).toLocaleString()}
-            </h2>
-            <p className="text-xs text-gray-400 dark:text-gray-300 mt-1">
-              Commissions awaiting approval
-            </p>
-          </Link>
-
-          {/* Available */}
-          <Link
-            href="#"
-            className="group bg-green-50 dark:bg-green-900 p-5 rounded-2xl shadow hover:shadow-lg transition transform hover:-translate-y-1 text-center"
-          >
-            <p className="text-xs font-medium text-green-700 dark:text-green-300 uppercase">
-              Available
-            </p>
-            <h2 className="text-2xl font-bold text-green-800 dark:text-green-200 mt-2">
-              ₦{Number(available).toLocaleString()}
-            </h2>
-            <p className="text-xs text-gray-400 dark:text-gray-300 mt-1">
-              Ready for withdrawal
-            </p>
-          </Link>
-
-          {/* Total Earned */}
-          <Link
-            href="#"
-            className="group bg-blue-50 dark:bg-blue-900 p-5 rounded-2xl shadow hover:shadow-lg transition transform hover:-translate-y-1 text-center"
-          >
-            <p className="text-xs font-medium text-blue-700 dark:text-blue-300 uppercase">
-              Total Earned
-            </p>
-            <h2 className="text-2xl font-bold text-blue-800 dark:text-blue-200 mt-2">
-              ₦{Number(total_earned).toLocaleString()}
-            </h2>
-            <p className="text-xs text-gray-400 dark:text-gray-300 mt-1">
-              Lifetime commissions earned
-            </p>
-          </Link>
-        </div>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-6">
+              {/* Pending */}
+              <div className="group bg-yellow-50 dark:bg-yellow-900 p-5 rounded-2xl shadow hover:shadow-lg transition transform hover:-translate-y-1 text-center">
+                <p className="text-xs font-medium text-yellow-700 dark:text-yellow-300 uppercase">
+                  Pending
+                </p>
+                <h2 className="text-2xl font-bold text-yellow-800 dark:text-yellow-200 mt-2">
+                  ₦{Number(pendingState).toLocaleString()}
+                </h2>
+                <p className="text-xs text-gray-400 dark:text-gray-300 mt-1">
+                  Commissions awaiting approval
+                </p>
+              </div>
+        
+              {/* Available */}
+              <div
+                onClick={() => setShowTransferModal(true)}
+                className="bg-green-100 dark:bg-green-900 p-5 rounded-2xl shadow hover:shadow-lg transition transform hover:-translate-y-1 text-center cursor-pointer"
+              >
+                <p className="text-xs text-green-700 dark:text-green-300 uppercase">
+                  Available
+                </p>
+                <h2 className="text-2xl font-bold text-green-800 dark:text-green-200 mt-2">
+                  ₦{Number(availableState).toLocaleString()}
+                </h2>
+                <p className="text-xs text-gray-400 dark:text-gray-300 mt-1">
+                  Ready for transfer
+                </p>
+              </div>
+        
+              {/* Total Earned */}
+              <div className="group bg-blue-50 dark:bg-blue-900 p-5 rounded-2xl shadow hover:shadow-lg transition transform hover:-translate-y-1 text-center">
+                <p className="text-xs font-medium text-blue-700 dark:text-blue-300 uppercase">
+                  Total Earned
+                </p>
+                <h2 className="text-2xl font-bold text-blue-800 dark:text-blue-200 mt-2">
+                  ₦{Number(total_earned).toLocaleString()}
+                </h2>
+                <p className="text-xs text-gray-400 dark:text-gray-300 mt-1">
+                  Lifetime commissions earned
+                </p>
+              </div>
+        
+              {/* Transfer Modal */}
+              {showTransferModal && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+                  <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg max-w-sm w-full p-6">
+                    <h2 className="text-lg font-bold text-gray-800 dark:text-gray-100 mb-4">
+                      Transfer Available Balance
+                    </h2>
+        
+                    <div className="text-gray-700 dark:text-gray-300 text-sm mb-6">
+                      Your available commissions: ₦{Number(availableState).toLocaleString()}
+                    </div>
+        
+                    <div className="mt-4 flex justify-end gap-2">
+                      <button
+                        onClick={() => setShowTransferModal(false)}
+                        className="px-4 py-2 bg-gray-300 dark:bg-gray-700 hover:bg-gray-400 dark:hover:bg-gray-600 text-gray-800 dark:text-gray-200 rounded transition"
+                      >
+                        Close
+                      </button>
+        
+                      <button
+                        disabled={availableState <= 0 || loading}
+                        onClick={handleTransfer}
+                        className={`px-4 py-2 bg-green-500 hover:bg-green-600 text-white rounded transition disabled:opacity-50 disabled:cursor-not-allowed`}
+                      >
+                        {loading ? "Transferring..." : "Transfer to Wallet"}
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+          
       )}
 
 
