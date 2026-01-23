@@ -61,7 +61,7 @@ export default function Dashboard({ transactions: initialTransactions }) {
           </a>
           )}
 
-        {commissionData && console.log("Commission Data:", commissionData)}
+        {console.log("Commission Data:", commissionData)}
 
         {/* Commission Cards */}
         {commissionData && (
