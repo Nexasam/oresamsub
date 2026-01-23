@@ -184,6 +184,9 @@ Route::get('/recova_create_consent', function () {
     $http_code  = curl_getinfo($curl, CURLINFO_HTTP_CODE);
     curl_close($curl);
 
+    $response_dec = json_decode($response, true);
+     
+
     /* ----------------------------------------
      | 7. Handle Errors
      ---------------------------------------- */
@@ -192,6 +195,8 @@ Route::get('/recova_create_consent', function () {
             'status' => -1,
             'message' => 'Curl execution failed',
             'curl_error' => $curl_error,
+            'response_arr' => $response_dec,
+
         ]);
     }
 
@@ -200,18 +205,18 @@ Route::get('/recova_create_consent', function () {
             'status' => -1,
             'message' => 'Recova returned an error',
             'http_code' => $http_code,
-            'response' => $response,
-            'request' => $request_array,
+            // 'response' => $response,
+            'response_arr' => $response_dec,
+            // 'request' => $request_array,
         ]);
     }
 
-    $response_dec = json_decode($response, true);
 
     if (json_last_error() !== JSON_ERROR_NONE) {
         return json_encode([
             'status' => -1,
             'message' => 'Invalid JSON response from Recova',
-            'raw_response' => $response,
+            // 'raw_response' => $response,
             'response_arr' => $response_dec,
         ]);
     }
