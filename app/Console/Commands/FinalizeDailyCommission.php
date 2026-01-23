@@ -45,7 +45,7 @@ class FinalizeDailyCommission extends Command
         ->pluck('id');
 
         if ($transactionIds->isEmpty()) {
-            $this->info('No eligible commissions to finalize.');
+            logger('No eligible commissions to finalize.');
             return;
         }
         
@@ -54,6 +54,6 @@ class FinalizeDailyCommission extends Command
             ->where('status', 0)
             ->update(['status' => 1]);
 
-        $this->info("Daily referral commissions finalized: {$finalizedCount}");
+        logger("Daily referral commissions finalized: {$finalizedCount}");
     }
 }

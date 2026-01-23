@@ -73,7 +73,7 @@ export default function Dashboard({ transactions: initialTransactions }) {
         <div className="grid grid-cols-3 sm:grid-cols-3 gap-4 mt-6">
           {/* Pending */}
           <Link
-            href="/commissions"
+            href="#"
             className="group bg-yellow-50 dark:bg-yellow-900 p-5 rounded-2xl shadow hover:shadow-lg transition transform hover:-translate-y-1 text-center"
           >
             <p className="text-xs font-medium text-yellow-700 dark:text-yellow-300 uppercase">
@@ -89,7 +89,7 @@ export default function Dashboard({ transactions: initialTransactions }) {
 
           {/* Available */}
           <Link
-            href="/commissions"
+            href="#"
             className="group bg-green-50 dark:bg-green-900 p-5 rounded-2xl shadow hover:shadow-lg transition transform hover:-translate-y-1 text-center"
           >
             <p className="text-xs font-medium text-green-700 dark:text-green-300 uppercase">
@@ -105,7 +105,7 @@ export default function Dashboard({ transactions: initialTransactions }) {
 
           {/* Total Earned */}
           <Link
-            href="/commissions"
+            href="#"
             className="group bg-blue-50 dark:bg-blue-900 p-5 rounded-2xl shadow hover:shadow-lg transition transform hover:-translate-y-1 text-center"
           >
             <p className="text-xs font-medium text-blue-700 dark:text-blue-300 uppercase">

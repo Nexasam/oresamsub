@@ -55,7 +55,7 @@ class ComputeReferralCommission extends Command
                         // $expected_commission = $successful_txn->product_plan->$commission_field;//continue here
                         $expected_commission = $successful_txn->upline_commission;
 
-                        if($expected_commission != 0 && $upline_id != NULL){
+                        if( $upline_id != NULL){
                             //insert
                             //check if the user has an upline:
                             $user_upline_check = User::where('id',$upline_id)->first();
