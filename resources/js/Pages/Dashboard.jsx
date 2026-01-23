@@ -11,7 +11,7 @@ import Announcements from "@/Components/Announcements";
 
 export default function Dashboard({ transactions: initialTransactions }) {
   const { props } = usePage();
-  const { auth, announcements, impersonator } = props;
+  const { auth, announcements, impersonator, commissionData } = props;
   const user = auth.user;
 
   const transactions = initialTransactions ?? props.transactions ?? [];
