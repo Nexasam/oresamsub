@@ -150,7 +150,7 @@ Route::post('recova_create_consent', function (Request $request) {
             /* ----------------------------------------
             | 7. Handle Errors
             ---------------------------------------- */
-            if ($response === false) {
+           
                 return json_encode([
                     'status' => -1,
                     'message' => 'Curl execution failed',
@@ -158,7 +158,7 @@ Route::post('recova_create_consent', function (Request $request) {
                     'response_arr' => $response_dec,
 
                 ]);
-            }
+        
 
 
 });
