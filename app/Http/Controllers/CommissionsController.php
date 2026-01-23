@@ -177,7 +177,7 @@ class CommissionsController extends Controller
                 'reference' => $ref,
                 'description' => 'Transfer from commissions to wallet',
                 'balance_before' => $beforeBalance,
-                'balance_after' => $user->main_wallet + $totalAmount,
+                'balance_after' => $beforeBalance + $totalAmount,
             ]);
 
             // Mark commissions as paid (payout = 1)
