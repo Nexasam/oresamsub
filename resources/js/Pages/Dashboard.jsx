@@ -121,7 +121,7 @@ export default function Dashboard({ transactions: initialTransactions }) {
       {/* Wallet */}
       <WalletBalance user={user} />
 
-
+{/* 
         <button
           onClick={() => setIsBuyAgainOpen(true)}
           className="px-4 py-2 mt-4 bg-blue-600 text-white rounded-lg"
@@ -133,7 +133,7 @@ export default function Dashboard({ transactions: initialTransactions }) {
           isOpen={isBuyAgainOpen}
           onClose={() => setIsBuyAgainOpen(false)}
           contacts={contacts}
-        />
+        /> */}
 
          {/* Marketer/Admin Shortcut */}
          {(user.is_marketer === 1 || user.role?.role_name === "Admin") && (
