@@ -22,6 +22,17 @@ class InertiaDashboardController extends Controller
         
         $data['transactions'] = Transaction::with(relations: 'product_plan')->where('user_id',auth()->id())->limit(10)->latest()->get();
         $data['announcements'] = Announcement::where('status',1)->latest()->get();
+        $contacts =  UserContact::where('user_id', auth()->id())
+            ->orderByDesc('last_used_at')
+            ->limit(50) // keep payload light
+            ->get([
+                'id',
+                'phone_number',
+                'name',
+                'product_plan_id',
+                'network_id',
+            ]);
+        $data['contacts'] = $contacts;
 
        return $data;
         return Inertia::render('Dashboard')->with($data);
