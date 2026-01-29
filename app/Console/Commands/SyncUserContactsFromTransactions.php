@@ -42,7 +42,7 @@ class SyncUserContactsFromTransactions extends Command
                         [
                             // only set network if we have one
                             'product_plan_id'   => $tx->product_plan_id,
-                            'last_used_at' => $tx->created_at,
+                            'last_used_at' => date('Y-m-d H:i:s', strtotime($tx->created_at)),
                         ]
                     );
                 }
