@@ -460,9 +460,9 @@ class TransactionController extends Controller
             // $user_details = "<b>{$user->username}</b><br>";
             $user_details = "{$first_name}<br>{$last_name}<br>";
             $user_details .= "<b><i>{$user_plan_name}</i></b><br>";
+            $user_details .= "<b><i>{$usercategory}</i></b>";
             $user_details .= $actionsDropdown . "<br>";
 
-            $user_details .= "<b><i>{$usercategory}</i></b>";
         
             return $user_details;
         })
