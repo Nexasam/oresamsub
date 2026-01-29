@@ -7,6 +7,7 @@ import InviteEarn from "@/Components/InviteEarn";
 import CommunityCard from "@/Components/CommunityCard";
 import WalletBalance from "@/Components/WalletBalance";
 import Announcements from "@/Components/Announcements";
+import BuyAgainModal from "@/Components/BuyAgainModal";
 import axios from "axios";
 import Swal from "sweetalert2";
 
@@ -23,6 +24,8 @@ export default function Dashboard({ transactions: initialTransactions }) {
   const [showBalance, setShowBalance] = useState(true);
   const [openTransactionId, setOpenTransactionId] = useState(null);
   const [loggingOut, setLoggingOut] = useState(false);
+  const [isBuyAgainOpen, setIsBuyAgainOpen] = useState(false);
+
 
   const [inviteOpen, setInviteOpen] = useState(false);
   const [copied, setCopied] = useState(false);
@@ -35,6 +38,10 @@ export default function Dashboard({ transactions: initialTransactions }) {
 
 
   const referralLink = `https://oresamsub.com/register?ref=${user.phone_number}`;
+
+
+  
+
 
   const getStatus = (status) => {
     const s = String(status);
@@ -113,6 +120,20 @@ export default function Dashboard({ transactions: initialTransactions }) {
     <DashboardLayout title="Dashboard">
       {/* Wallet */}
       <WalletBalance user={user} />
+
+
+        <button
+          onClick={() => setIsBuyAgainOpen(true)}
+          className="px-4 py-2 mt-4 bg-blue-600 text-white rounded-lg"
+        >
+          Buy Again
+        </button>
+
+        <BuyAgainModal
+          isOpen={isBuyAgainOpen}
+          onClose={() => setIsBuyAgainOpen(false)}
+          contacts={contacts}
+        />
 
          {/* Marketer/Admin Shortcut */}
          {(user.is_marketer === 1 || user.role?.role_name === "Admin") && (

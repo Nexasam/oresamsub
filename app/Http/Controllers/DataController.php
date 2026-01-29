@@ -435,6 +435,22 @@ class DataController extends Controller
         return view('user.bulk_data.buy_bulk_data')->with($data);
     }
 
+    public function buy_again_data_action(Request $request){
+        $getnetwork = ProductPlan::with('product_plan_category.network')
+        ->where('id',$request->product_plan_id)
+        ->first();
+        $product_plan_category_id = $getnetwork->product_plan_category->id;
+        $network_id = $getnetwork->product_plan_category->network->id;
+
+        $request->merge([
+            'network_id' => $network_id,
+            'product_plan_category_id' => $product_plan_category_id,
+        ]);
+
+        logger('buy again: '.json_encode($request->all()));
+        return $this->buy_data_action($request);
+    }
+
     /**
      * Store a newly created resource in storage.
      */
