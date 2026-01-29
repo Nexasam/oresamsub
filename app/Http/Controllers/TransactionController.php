@@ -442,7 +442,7 @@ class TransactionController extends Controller
             $user_details .= "<b><i>{$user_plan_name}</i></b><br>";
             $user_details .= "<b><i>{$usercategory}</i></b>";
             // Add link to transactions
-            $transactionsLink = "<a href='" . route('admin.users.transactions', $user->id) . "' target='_blank'>View Transactions</a>";
+            $transactionsLink = "<a href='" . route('transactions.transaction_details', $data->id) . "' target='_blank'>View Transactions</a>";
             $user_details .= $transactionsLink;
         
             return $user_details;
