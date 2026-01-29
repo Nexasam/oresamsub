@@ -569,6 +569,8 @@ class DataController extends Controller
                 [
                     'name' => $contactData['name'] ?? null,
                     'product_plan_id' => $request->product_plan_id ?? null,
+                    'last_used_at' => date('Y-m-d H:i:s'),
+
                 ]
             );
         }
