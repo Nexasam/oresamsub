@@ -414,17 +414,40 @@ class TransactionController extends Controller
         ->addColumn('DT_RowIndex',function($data){
         return $data->id;
         })
-        ->addColumn('user_id',function($data){
-            $usercategory = env('APP_NAME') == 'OresamSub' ? $data->user->customer_category : '';
-            $user_plan_name = $data->user->user_plan->updated_user_plan_name ??  $data->user->user_plan->user_plan_name;
-            $first_name = $data->user->first_name  ?? 'nil';
-            $last_name = $data->user->last_name  ?? 'nil';
-            $phone_number = $data->user->phone_number  ?? 'nil';
-            $user_details =  $first_name.'<br>'.$last_name.'<br>'.$phone_number.'<br>'; 
-            $user_details .= '<b><i>'.$user_plan_name.'</i></b><br>';    
-            $user_details .= '<b><i>'.$usercategory.'</i></b>';    
+        ->addColumn('user_id', function($data) {
+
+            $user = $data->user;
+        
+            $usercategory = env('APP_NAME') == 'OresamSub' ? $user->customer_category : '';
+            $user_plan_name = $user->user_plan->updated_user_plan_name ?? $user->user_plan->user_plan_name;
+            $first_name = $user->first_name ?? 'nil';
+            $last_name = $user->last_name ?? 'nil';
+            $phone_number = $user->phone_number ?? 'nil';
+
+              // Make phone number clickable for call and WhatsApp
+            if ($phone_number !== 'nil') {
+                $phone_call = "<a href='tel:{$phone_number}'>{$phone_number}</a>";
+                $phone_whatsapp = "<a href='https://wa.me/{$phone_number}' target='_blank'>WhatsApp</a>";
+                $phone_display = "{$phone_call} | {$phone_whatsapp}";
+            } else {
+                $phone_display = 'nil';
+            }
+        
+            // Build user details HTML
+            $impersonateLink = "<a href='" . route('admin.impersonate', $user->id) . "' target='_blank'>Impersonate</a>";
+            $viewDetailsLink = "<a href='" . route('admin.users.index', $user->id) . "' target='_blank'>View Details</a>";
+            $user_details = "<b>{$user->username}</b><br>Actions: {$impersonateLink} | {$viewDetailsLink}<br>";
+
+            $user_details .= "{$first_name}<br>{$last_name}<br>{$phone_display}<br>";
+            $user_details .= "<b><i>{$user_plan_name}</i></b><br>";
+            $user_details .= "<b><i>{$usercategory}</i></b>";
+            // Add link to transactions
+            $transactionsLink = "<a href='" . route('admin.users.transactions', $user->id) . "' target='_blank'>View Transactions</a>";
+            $user_details .= $transactionsLink;
+        
             return $user_details;
         })
+        
         ->addColumn('wallet_category',function($data){
             $wallet_category = $data->wallet_category == 'main_wallet' ?  'MAIN' : 'DATA_WALLET';
             return $wallet_category;
