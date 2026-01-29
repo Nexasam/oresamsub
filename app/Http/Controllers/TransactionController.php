@@ -459,7 +459,7 @@ class TransactionController extends Controller
             // Build user details HTML
             // $user_details = "<b>{$user->username}</b><br>";
             $username = $user->username ?? 'nil';
-            $user_details = "{$first_name}<br>{$last_name}<br>{$username}";
+            $user_details = "{$first_name}<br>{$last_name}<br>{$username}<br>";
             $user_details .= "<small><b><i>{$user_plan_name}</i></b></small><br>";
             $user_details .= "<b><i>{$usercategory}</i></b>";
             $user_details .= $actionsDropdown . "<br>";
