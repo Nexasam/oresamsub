@@ -360,7 +360,7 @@ class WalletsController extends Controller
                   $promoBonus,
                   $custom_user_funding_promo_id,
                   $response_decode['event_data']['data']['charged'] ?? $charges,
-                  $amount_to_fund_user
+                  $response_decode['event_data']['data']['settled'] ?? ($paid_amount - $charges)
                 );
 
             }
