@@ -423,26 +423,29 @@ class TransactionController extends Controller
             $first_name = $user->first_name ?? 'nil';
             $last_name = $user->last_name ?? 'nil';
             $phone_number = $user->phone_number ?? null;
+            $impersonateRoute = route('admin.impersonate', $user->id);
+            $detailsRoute = route('admin.users.index', $user->id);
+            $transactionsRoute = route('transactions.transaction_details', $user->id);
         
             // Alpine.js dropdown for all actions
             $actionsDropdown = <<<HTML
-        <div x-data="{ open: false }" class="relative inline-block text-left">
-            <button @click="open = !open" type="button" 
-                class="inline-flex justify-center w-full rounded-md border border-gray-300 shadow-sm px-2 py-1 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50">
-                Actions
-                <svg class="-mr-1 ml-2 h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                </svg>
-            </button>
-        
-            <div x-show="open" @click.outside="open = false" 
-                class="origin-top-left absolute left-0 mt-1 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-10"
-                style="display: none;">
-                <div class="py-1">
-                    <a href="{$user->id}" target="_blank" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Impersonate</a>
-                    <a href="{$user->id}" target="_blank" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">View Details</a>
-                    <a href="{$data->id}" target="_blank" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">View Transactions</a>
-        HTML;
+                <div x-data="{ open: false }" class="relative inline-block text-left">
+                    <button @click="open = !open" type="button" 
+                        class="inline-flex justify-center w-full rounded-md border border-gray-300 shadow-sm px-2 py-1 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50">
+                        Actions
+                        <svg class="-mr-1 ml-2 h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                        </svg>
+                    </button>
+                
+                    <div x-show="open" @click.outside="open = false" 
+                        class="origin-top-left absolute left-0 mt-1 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-10"
+                        style="display: none;">
+                        <div class="py-1">
+                            <a href="{$impersonateRoute}" target="_blank" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Impersonate</a>
+                            <a href="{$detailsRoute}" target="_blank" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">View Details</a>
+                            <a href="{$transactionsRoute}" target="_blank" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">View Transactions</a>
+                HTML;
         
             // Add phone actions if available
             if ($phone_number) {
@@ -454,10 +457,11 @@ class TransactionController extends Controller
             $actionsDropdown .= "</div></div></div>";
         
             // Build user details HTML
-            $user_details = "<b>{$user->username}</b><br>";
-            $user_details .= $actionsDropdown . "<br>";
-            $user_details .= "{$first_name}<br>{$last_name}<br>";
+            // $user_details = "<b>{$user->username}</b><br>";
+            $user_details = "{$first_name}<br>{$last_name}<br>";
             $user_details .= "<b><i>{$user_plan_name}</i></b><br>";
+            $user_details .= $actionsDropdown . "<br>";
+
             $user_details .= "<b><i>{$usercategory}</i></b>";
         
             return $user_details;
