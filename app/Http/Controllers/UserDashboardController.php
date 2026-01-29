@@ -9,6 +9,7 @@ use App\Models\WalletLog;
 use App\Models\Commissions;
 use App\Models\ProductPlan;
 use App\Models\Transaction;
+use App\Models\UserContact;
 use App\Models\Announcement;
 use App\Models\SiteTemplate;
 use Illuminate\Http\Request;
@@ -70,6 +71,21 @@ class UserDashboardController extends Controller
               'available' => $available,
               'total_earned' => $total_earned,
           ];
+
+
+   
+
+            $contacts =  UserContact::where('user_id', auth()->id())
+            ->orderByDesc('last_used_at')
+            ->limit(50) // keep payload light
+            ->get([
+                'id',
+                'phone_number',
+                'name',
+                'product_plan_id',
+                'network_id',
+            ]);
+            $data['contacts'] = $contacts;
 
           // }
 

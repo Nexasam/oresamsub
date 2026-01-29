@@ -7,6 +7,7 @@ use App\Models\Product;
 use App\Models\UserPlan;
 use App\Models\Automation;
 use App\Models\ProductPlan;
+use App\Models\Transaction;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Yajra\DataTables\DataTables;
@@ -28,6 +29,34 @@ class ProductPlanController extends Controller
 
         
         return view('admin.product_plans.index')->with($data);
+    }
+
+    public function topFavoriteData(Request $request){
+      $user = auth()->user();
+      if (! $user) {
+          return response()->json([
+              'status' => -1,
+              'message' => 'Unauthorized'
+          ], 401);
+      }
+  
+      // Get unique product_plan_ids from the user's data transactions
+      $uniquePlanIds = Transaction::where('user_id', $user->id)
+          ->where('transaction_category', 'data')
+          ->distinct()
+          ->pluck('product_plan_id')
+          ->take(15); // take top 15 unique plans
+  
+      // Load ProductPlan details
+      $plans = ProductPlan::with(['product_plan_category.network', 'product_plan_category.product'])
+          ->whereIn('id', $uniquePlanIds)
+          ->get();
+  
+      return response()->json([
+          'status' => 1,
+          'message' => 'Top 15 unique data plans retrieved successfully',
+          'data' => $plans
+      ]);
     }
 
 

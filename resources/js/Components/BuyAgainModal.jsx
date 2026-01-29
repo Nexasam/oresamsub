@@ -189,7 +189,7 @@ export default function BuyAgainModal({ isOpen, onClose, contacts }) {
               {favorites.length === 0 && (
                 <div className="text-center mb-3">
                   <a
-                    href={route("user.buy_data")}
+                    href={route("inertia.data.index")}
                     className="text-emerald-600 hover:underline font-semibold"
                   >
                     No favorite plans yet? Buy data here

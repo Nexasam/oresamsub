@@ -98,6 +98,9 @@ Route::middleware(['set_locale'])->group(function () {
             // ORESAMSUB WEBPWA V1: ROUTES (wrapped in auth middleware)
             Route::middleware(['auth','set_transaction_pin'])->group(function () {
 
+                Route::get('/user/top-favorite-data', [ProductPlanController::class, 'topFavoriteData'])->name('user.favorite_data');
+
+
                 //   INERTIAJS
                 Route::get('/dashboard', [UserDashboardController::class, 'index'])->name('dashboard');   
                 Route::get('/data', [InertiaDashboardController::class, 'data'])->name('inertia.data.index');   
