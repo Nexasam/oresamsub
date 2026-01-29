@@ -422,18 +422,9 @@ class TransactionController extends Controller
             $user_plan_name = $user->user_plan->updated_user_plan_name ?? $user->user_plan->user_plan_name;
             $first_name = $user->first_name ?? 'nil';
             $last_name = $user->last_name ?? 'nil';
-            $phone_number = $user->phone_number ?? 'nil';
+            $phone_number = $user->phone_number ?? null;
         
-            // Phone clickable
-            if ($phone_number !== 'nil') {
-                $phone_call = "<a href='tel:{$phone_number}'>{$phone_number}</a>";
-                $phone_whatsapp = "<a href='https://wa.me/{$phone_number}' target='_blank'>WhatsApp</a>";
-                $phone_display = "{$phone_call} | {$phone_whatsapp}";
-            } else {
-                $phone_display = 'nil';
-            }
-        
-            // Alpine.js dropdown for actions
+            // Alpine.js dropdown for all actions
             $actionsDropdown = <<<HTML
         <div x-data="{ open: false }" class="relative inline-block text-left">
             <button @click="open = !open" type="button" 
@@ -445,26 +436,33 @@ class TransactionController extends Controller
             </button>
         
             <div x-show="open" @click.outside="open = false" 
-                class="origin-top-left absolute left-0 mt-1 w-40 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-10"
+                class="origin-top-left absolute left-0 mt-1 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-10"
                 style="display: none;">
                 <div class="py-1">
                     <a href="{$user->id}" target="_blank" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Impersonate</a>
                     <a href="{$user->id}" target="_blank" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">View Details</a>
                     <a href="{$data->id}" target="_blank" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">View Transactions</a>
-                </div>
-            </div>
-        </div>
         HTML;
+        
+            // Add phone actions if available
+            if ($phone_number) {
+                $phone_call = "<a href='tel:{$phone_number}' class='block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100'>Call {$phone_number}</a>";
+                $phone_whatsapp = "<a href='https://wa.me/{$phone_number}' target='_blank' class='block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100'>WhatsApp</a>";
+                $actionsDropdown .= $phone_call . $phone_whatsapp;
+            }
+        
+            $actionsDropdown .= "</div></div></div>";
         
             // Build user details HTML
             $user_details = "<b>{$user->username}</b><br>";
             $user_details .= $actionsDropdown . "<br>";
-            $user_details .= "{$first_name}<br>{$last_name}<br>{$phone_display}<br>";
+            $user_details .= "{$first_name}<br>{$last_name}<br>";
             $user_details .= "<b><i>{$user_plan_name}</i></b><br>";
             $user_details .= "<b><i>{$usercategory}</i></b>";
         
             return $user_details;
         })
+        
         
         
         ->addColumn('wallet_category',function($data){
