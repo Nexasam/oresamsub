@@ -442,9 +442,9 @@ class TransactionController extends Controller
                         class="origin-top-left absolute left-0 mt-1 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-10"
                         style="display: none;">
                         <div class="py-1">
-                            <a href="{$impersonateRoute}" target="_blank" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Impersonate</a>
-                            <a href="{$detailsRoute}" target="_blank" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">View Details</a>
-                            <a href="{$transactionsRoute}" target="_blank" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">View Transactions</a>
+                            <a href="{$impersonateRoute}"  class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Impersonate</a>
+                            <a href="{$detailsRoute}"  class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">View Details</a>
+                            <a href="{$transactionsRoute}"  class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">View Transactions</a>
                 HTML;
         
             // Add phone actions if available
