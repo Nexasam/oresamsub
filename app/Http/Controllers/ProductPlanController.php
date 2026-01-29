@@ -46,11 +46,24 @@ class ProductPlanController extends Controller
           ->distinct()
           ->pluck('product_plan_id')
           ->take(15); // take top 15 unique plans
+
+
+      $plans = ProductPlan::with(['product_plan_category.network', 'product_plan_category.product'])
+      ->whereIn('id', $uniquePlanIds)
+      ->get()
+      ->map(function($plan) {
+          return [
+              'product_plan_id' => $plan->id,
+              'product_plan_name' => $plan->product_plan_name,
+              'network_name' => $plan->product_plan_category->network->name ?? '',
+              'selling_price' => $plan->user_level_1_selling_price ?? 0, // adjust as needed
+          ];
+      });
   
       // Load ProductPlan details
-      $plans = ProductPlan::with(['product_plan_category.network', 'product_plan_category.product'])
-          ->whereIn('id', $uniquePlanIds)
-          ->get();
+      // $plans = ProductPlan::with(['product_plan_category.network', 'product_plan_category.product'])
+      //     ->whereIn('id', $uniquePlanIds)
+      //     ->get();
   
       return response()->json([
           'status' => 1,
