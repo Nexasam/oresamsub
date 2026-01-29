@@ -425,7 +425,7 @@ class TransactionController extends Controller
             $phone_number = $user->phone_number ?? null;
             $impersonateRoute = route('admin.impersonate', $user->id);
             $detailsRoute = route('admin.users.index', $user->id);
-            $transactionsRoute = route('transactions.transaction_details', $user->id);
+            $transactionsRoute = route('transactions.transaction_details', $data->id);
         
             // Alpine.js dropdown for all actions
             $actionsDropdown = <<<HTML
