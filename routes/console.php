@@ -43,7 +43,7 @@ Schedule::command(SendPendingTransactionEmail::class)->everyTwoMinutes()->withou
 
 Schedule::command(ReprocessPendingTransaction::class)->everyMinute()->withoutOverlapping();
 
-Schedule::command(SyncUserContactsFromTransactions::class)->everyTwoMinutes()->withoutOverlapping();
+// Schedule::command(SyncUserContactsFromTransactions::class)->everyTwoMinutes()->withoutOverlapping();
 
 Schedule::command(ClearErrorLogs::class)->everyThirtyMinutes()->withoutOverlapping();
 
