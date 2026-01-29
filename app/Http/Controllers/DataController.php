@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Services\DataPlansService;
 use Exception;
 use App\Models\User;
 use App\Models\Network;
@@ -12,6 +11,7 @@ use App\Models\Automation;
 use App\Models\CouponCode;
 use App\Models\ProductPlan;
 use App\Models\Transaction;
+use App\Models\UserContact;
 use App\Models\SiteTemplate;
 use Illuminate\Http\Request;
 use App\Models\ProductCategory;
@@ -29,6 +29,7 @@ use App\Models\BulkDataProductPlans;
 use App\Models\UserBulkDataPurchase;
 use App\Traits\WalletTransactionLogs;
 use Illuminate\Support\Facades\Route;
+use App\Http\Services\DataPlansService;
 use App\Http\Services\CouponCodeService;
 use App\Models\ProductPlanCustomPricing;
 use Illuminate\Support\Facades\Validator;
@@ -554,6 +555,23 @@ class DataController extends Controller
         // }
 
 
+
+        // 🔹 Save optional contact if provided
+        if ($request->filled('save_contact.phone_number')) {
+            logger('SAVING CONTACT NOW');
+            $contactData = $request->save_contact;
+            
+            UserContact::firstOrCreate(
+                [
+                    'user_id' => auth()->id(),
+                    'phone_number' => $contactData['phone_number'],
+                ],
+                [
+                    'name' => $contactData['name'] ?? null,
+                    'product_plan_id' => $request->product_plan_id ?? null,
+                ]
+            );
+        }
      
 
         DB::beginTransaction();

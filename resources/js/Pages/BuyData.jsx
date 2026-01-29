@@ -12,8 +12,11 @@ import WalletBalance from "@/Components/WalletBalance";
 
 export default function BuyData() {
   const { props } = usePage();
-  const { auth, networks } = props;
+  const { auth, networks, contacts } = props;
   const user = auth.user;
+
+  const [filteredContacts, setFilteredContacts] = useState([]);
+  const [showContactDropdown, setShowContactDropdown] = useState(false);
 
   const [showBalance, setShowBalance] = useState(true);
 
@@ -36,56 +39,178 @@ export default function BuyData() {
     validatephonenetwork:0
   });
 
-const handleSubmit = async (e) => {
-  e.preventDefault();
+  const handlePhoneChange = (value) => {
+    setData("phone_number", value);
+      
+        if (!value || value.length < 2) {
+          setFilteredContacts([]);
+          setShowContactDropdown(false);
+          return;
+        }
+      
+        const term = value.toLowerCase();
+      
+        const matches = contacts.filter((c) =>
+          c.phone_number.includes(term) ||
+          (c.name && c.name.toLowerCase().includes(term))
+        );
+      
+        setFilteredContacts(matches.slice(0, 8));
+      setShowContactDropdown(matches.length > 0);
+    };
 
-  const selectedPlan = plans.find((p) => p.product_plan_id === data.product_plan_id);
-  if (!selectedPlan) {
-    Swal.fire("No Plan Selected", "Please select a plan first.", "warning");
-    return;
-  }
+    const selectContact = (contact) => {
+      setData("phone_number", contact.phone_number);
+      setShowContactDropdown(false);
+    
+      if (contact.network_id) {
+        handleNetworkChange(contact.network_id);
+      }
+    };
 
-  const result = await Swal.fire({
-    title: "Confirm Purchase",
-    html: `
-    Are you sure you want to purchase 
-    <b>${selectedPlan.product_plan_name}</b> 
-    for <b>₦${Number(selectedPlan.selling_price).toLocaleString("en-NG")}</b> 
-    to <b>${data.phone_number}</b>?
-    `,
+  // const handleSubmit = async (e) => {
+  //   e.preventDefault();
+
+  //   const selectedPlan = plans.find((p) => p.product_plan_id === data.product_plan_id);
+  //   if (!selectedPlan) {
+  //     Swal.fire("No Plan Selected", "Please select a plan first.", "warning");
+  //     return;
+  //   }
+
+  //   const result = await Swal.fire({
+  //     title: "Confirm Purchase",
+  //     html: `
+  //     Are you sure you want to purchase 
+  //     <b>${selectedPlan.product_plan_name}</b> 
+  //     for <b>₦${Number(selectedPlan.selling_price).toLocaleString("en-NG")}</b> 
+  //     to <b>${data.phone_number}</b>?
+  //     `,
+    
+  //     icon: "question",
+  //     showCancelButton: true,
+  //     confirmButtonText: "Yes, Buy Now ✅",
+  //     cancelButtonText: "Cancel ❌",
+  //     confirmButtonColor: "#059669",
+  //     cancelButtonColor: "#d33",
+  //   });
+
+  //   if (!result.isConfirmed) return;
+
+  //   try {
+  //     setSubmitting(true); // 🔹 disable button + show processing
+  //     const response = await axios.post(route("user.data.buy_data_action2"), data);
+
+  //     if (response.data.status === 1) {
+  //       await Swal.fire("✅ Success", response.data.message, "success");
+  //       // window.location.href = route("dashboard");
+
+  //         // 🔹 Clear form on success
+  //         // setPlans([]);
+  //         window.location.reload(); // reload the page
+
+  //     } else {
+  //       Swal.fire("⚠️ Failed", response.data.message, "error");
+  //     }
+  //   } catch (error) {
+  //     console.error("Error submitting form:", error);
+  //     Swal.fire("❌ Error", "Something went wrong. Please try again.", "error");
+  //   } finally {
+  //     setSubmitting(false); // 🔹 re-enable button
+  //   }
+  // };
+
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
   
-    icon: "question",
-    showCancelButton: true,
-    confirmButtonText: "Yes, Buy Now ✅",
-    cancelButtonText: "Cancel ❌",
-    confirmButtonColor: "#059669",
-    cancelButtonColor: "#d33",
-  });
-
-  if (!result.isConfirmed) return;
-
-  try {
-    setSubmitting(true); // 🔹 disable button + show processing
-    const response = await axios.post(route("user.data.buy_data_action2"), data);
-
-    if (response.data.status === 1) {
-      await Swal.fire("✅ Success", response.data.message, "success");
-      // window.location.href = route("dashboard");
-
-        // 🔹 Clear form on success
-        // setPlans([]);
-        window.location.reload(); // reload the page
-
-    } else {
-      Swal.fire("⚠️ Failed", response.data.message, "error");
-    }
-  } catch (error) {
-    console.error("Error submitting form:", error);
-    Swal.fire("❌ Error", "Something went wrong. Please try again.", "error");
-  } finally {
-    setSubmitting(false); // 🔹 re-enable button
-  }
-};
+        const selectedPlan = plans.find((p) => p.product_plan_id === data.product_plan_id);
+        if (!selectedPlan) {
+          Swal.fire("No Plan Selected", "Please select a plan first.", "warning");
+          return;
+        }
+      
+        // 🔹 Check if the number is already saved
+        const existingContact = contacts.find(
+          (c) => c.phone_number.replace(/\s/g, "") === data.phone_number.replace(/\s/g, "")
+        );
+      
+        let saveContactPayload = null;
+      
+        // 🔹 Prompt to save contact ONLY if it's unsaved
+        if (!existingContact) {
+            const { value: contactName } = await Swal.fire({
+              title: "Save this contact?",
+              html: `
+                <p class="text-sm mb-2">
+                  This number is not in your saved contacts.
+                </p>
+                <input
+                  id="contact-name"
+                  class="swal2-input"
+                  placeholder="Contact name (optional)"
+                />
+                <p class="text-xs text-gray-500 mt-2">
+                  You can skip this if you don't want to save it.
+                </p>
+              `,
+              showCancelButton: true,
+              confirmButtonText: "Save & Continue",
+              cancelButtonText: "Skip",
+              focusConfirm: false,
+              preConfirm: () => document.getElementById("contact-name").value,
+            });
+        
+            // Save name only if user entered something
+            if (contactName && contactName.trim() !== "") {
+                saveContactPayload = {
+                  phone_number: data.phone_number,
+                  name: contactName.trim(),
+                };
+            }
+        }
+      
+        // 🔹 Purchase confirmation modal
+        const result = await Swal.fire({
+           title: "Confirm Purchase",
+            html: `
+              Are you sure you want to purchase 
+              <b>${selectedPlan.product_plan_name}</b> 
+              for <b>₦${Number(selectedPlan.selling_price).toLocaleString("en-NG")}</b> 
+              to <b>${data.phone_number}</b>?
+            `,
+            icon: "question",
+            showCancelButton: true,
+            confirmButtonText: "Yes, Buy Now ✅",
+            cancelButtonText: "Cancel ❌",
+            confirmButtonColor: "#059669",
+            cancelButtonColor: "#d33",
+        });
+      
+        if (!result.isConfirmed) return;
+      
+        try {
+          setSubmitting(true);
+      
+          // 🔹 Include save_contact if it exists
+          const response = await axios.post(route("user.data.buy_data_action2"), {
+            ...data,
+            save_contact: saveContactPayload, // null or object
+          });
+      
+          if (response.data.status === 1) {
+            await Swal.fire("✅ Success", response.data.message, "success");
+            window.location.reload();
+          } else {
+            Swal.fire("⚠️ Failed", response.data.message, "error");
+          }
+        } catch (error) {
+          console.error("Error submitting form:", error);
+          Swal.fire("❌ Error", "Something went wrong. Please try again.", "error");
+        } finally {
+          setSubmitting(false);
+        }
+  };
+  
 
 
   
@@ -147,19 +272,44 @@ const handleSubmit = async (e) => {
 
         <form onSubmit={handleSubmit} className="p-4 space-y-4">
           {/* Phone Number */}
-          <div>
+          <div className="relative">
             <label className="block text-sm mb-1">Phone Number</label>
+
             <input
               type="tel"
               className="w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 px-3 py-2 text-sm focus:ring-2 focus:ring-emerald-500"
-              placeholder="e.g. 08012345678"
+              placeholder="e.g. 08012345678 or John"
               value={data.phone_number}
-              onChange={(e) => setData("phone_number", e.target.value)}
+              onChange={(e) => handlePhoneChange(e.target.value)}
+              onFocus={() => filteredContacts.length && setShowContactDropdown(true)}
+              onBlur={() => setTimeout(() => setShowContactDropdown(false), 150)}
             />
+
+            {/* CONTACT SUGGESTIONS */}
+            {showContactDropdown && (
+              <div className="absolute z-20 mt-1 w-full bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg max-h-60 overflow-y-auto">
+                {filteredContacts.map((contact) => (
+                  <div
+                    key={contact.id}
+                    onClick={() => selectContact(contact)}
+                    className="px-3 py-2 cursor-pointer hover:bg-emerald-50 dark:hover:bg-gray-700 transition"
+                  >
+                    <div className="text-sm font-medium text-gray-800 dark:text-white">
+                      {contact.name || "Unnamed contact"}
+                    </div>
+                    <div className="text-xs text-gray-500">
+                      {contact.phone_number}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+
             {errors.phone_number && (
               <p className="text-xs text-red-500 mt-1">{errors.phone_number}</p>
             )}
           </div>
+
 
           {/* <div>
             <label className="block text-sm mb-2">Network</label>

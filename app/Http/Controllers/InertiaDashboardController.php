@@ -6,6 +6,7 @@ use Inertia\Inertia;
 use App\Models\Network;
 use App\Models\Product;
 use App\Models\Transaction;
+use App\Models\UserContact;
 use App\Models\Announcement;
 use Illuminate\Http\Request;
 use App\Models\UserVirtualAccount;
@@ -26,12 +27,26 @@ class InertiaDashboardController extends Controller
         return Inertia::render('Dashboard')->with($data);
     }
 
+   
+    
     public function data()
     {
-        $data['networks'] = Network::get();
-        // dd('test');
-        return Inertia::render('BuyData')->with($data);
+        return Inertia::render('BuyData', [
+            'networks' => Network::all(),
+    
+            'contacts' => UserContact::where('user_id', auth()->id())
+                ->orderByDesc('last_used_at')
+                ->limit(50) // keep payload light
+                ->get([
+                    'id',
+                    'phone_number',
+                    'name',
+                    'product_plan_id',
+                    'network_id',
+                ]),
+        ]);
     }
+    
 
     public function airtime()
     {

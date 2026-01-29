@@ -1,18 +1,19 @@
 <?php
 
-use App\Console\Commands\FinalizeDailyCommission;
 use App\Console\Commands\SyncAddons;
 use Illuminate\Foundation\Inspiring;
 use Illuminate\Support\Facades\Artisan;
 use App\Console\Commands\ClearErrorLogs;
 use Illuminate\Support\Facades\Schedule;
 use App\Console\Commands\GeneralRepetitiveTasks;
+use App\Console\Commands\FinalizeDailyCommission;
 use App\Console\Commands\SendNewRegistrationEmail;
 use App\Console\Commands\ZerorizeNegativeBalances;
 use App\Console\Commands\ComputeReferralCommission;
 use App\Console\Commands\SendFailedTransactionEmail;
 use App\Console\Commands\ReprocessPendingTransaction;
 use App\Console\Commands\SendPendingTransactionEmail;
+use App\Console\Commands\SyncUserContactsFromTransactions;
 use App\Console\Commands\ProcessPendingAirtimeTransactions;
 
 // Artisan::command('inspire', function () {
@@ -42,6 +43,7 @@ Schedule::command(SendPendingTransactionEmail::class)->everyTwoMinutes()->withou
 
 Schedule::command(ReprocessPendingTransaction::class)->everyMinute()->withoutOverlapping();
 
+// Schedule::command(SyncUserContactsFromTransactions::class)->everyTwoMinutes()->withoutOverlapping();
 
 Schedule::command(ClearErrorLogs::class)->everyThirtyMinutes()->withoutOverlapping();
 
