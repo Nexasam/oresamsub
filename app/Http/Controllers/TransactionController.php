@@ -433,23 +433,26 @@ class TransactionController extends Controller
                 $phone_display = 'nil';
             }
         
-            // Dropdown for actions
+            // Alpine.js dropdown for actions
             $actionsDropdown = <<<HTML
-        <div class="relative inline-block text-left">
-          <button type="button" class="inline-flex justify-center w-full rounded-md border border-gray-300 shadow-sm px-2 py-1 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50" id="menu-button" aria-expanded="true" aria-haspopup="true">
-            Actions
-            <svg class="-mr-1 ml-2 h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-            </svg>
-          </button>
+        <div x-data="{ open: false }" class="relative inline-block text-left">
+            <button @click="open = !open" type="button" 
+                class="inline-flex justify-center w-full rounded-md border border-gray-300 shadow-sm px-2 py-1 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50">
+                Actions
+                <svg class="-mr-1 ml-2 h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                </svg>
+            </button>
         
-          <div class="origin-top-left absolute left-0 mt-1 w-40 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none z-10" role="menu" aria-orientation="vertical" aria-labelledby="menu-button">
-            <div class="py-1" role="none">
-              <a href="{$user->id}" target="_blank" class="text-gray-700 block px-4 py-2 text-sm hover:bg-gray-100">Impersonate</a>
-              <a href="{$user->id}" target="_blank" class="text-gray-700 block px-4 py-2 text-sm hover:bg-gray-100">View Details</a>
-              <a href="{$data->id}" target="_blank" class="text-gray-700 block px-4 py-2 text-sm hover:bg-gray-100">View Transactions</a>
+            <div x-show="open" @click.outside="open = false" 
+                class="origin-top-left absolute left-0 mt-1 w-40 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-10"
+                style="display: none;">
+                <div class="py-1">
+                    <a href="{$user->id}" target="_blank" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Impersonate</a>
+                    <a href="{$user->id}" target="_blank" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">View Details</a>
+                    <a href="{$data->id}" target="_blank" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">View Transactions</a>
+                </div>
             </div>
-          </div>
         </div>
         HTML;
         
