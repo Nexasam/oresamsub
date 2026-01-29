@@ -250,35 +250,6 @@ class WalletsController extends Controller
         ->first();
 
 
-        // notificaton json format
-        // {
-        //   "notification_status": "payment_successful",
-        //   "transaction_id": "xxx",
-        //   "amount_paid": 100,
-        //   "settlement_amount": 99.5,
-        //   "settlement_fee": 0.5,
-        //   "transaction_status": "success",
-        //   "sender": {
-        //     "name": "A D E LIMITED",
-        //     "account_number": "****4290",
-        //     "bank": "HYDROGEN"
-        //   },
-        //   "receiver": {
-        //     "name": "adex-Abd(xixapay)",
-        //     "account_number": "667985",
-        //     "bank": "PalmPay"
-        //   },
-        //   "customer": {
-        //     "name": "adex dev",
-        //     "email": "adexplug@gmail.com,
-        //     "phone": null,
-        //     "customer_id": "xxx"
-        //   },
-        //   "description": "Your payment has been successfully processed.",
-        //   "timestamp": "2024-11-22T13:00:04.256092Z"
-        // }
-
-      
 
         if( ($response_decode['notification_status'] == 'payment_successful') && (!$check_exists) ){    
             
@@ -342,38 +313,69 @@ class WalletsController extends Controller
 
 
             //inacase there is a custom funding promo: think of DRY
-            //incase there is a promo
-            $user_wallet_funding_promo  = UserWalletFundingPromo::where('user_id',$user_details->id)
-            ->where('funding_option_id',$funding_option_details->id)
-            ->where('status',1)
-            ->first();
+            // //incase there is a promo
+            // $user_wallet_funding_promo  = UserWalletFundingPromo::where('user_id',$user_details->id)
+            // ->where('funding_option_id',$funding_option_details->id)
+            // ->where('status',1)
+            // ->first();
 
-            if($user_wallet_funding_promo){
-              //custom funding exists
-              $daaat['promo_discount_category'] = $user_wallet_funding_promo->rate_category;
-              $daaat['promo_discount_percentage_cap'] = $user_wallet_funding_promo->capped_at;
-              $daaat['funding_amount'] = $paid_amount;
-              $daaat['promo_value'] = $user_wallet_funding_promo->value;
-              $daaat['funding_option_id'] = $funding_option_details->id;
-              $amount_to_fund_user = (new WalletFundingPromoService())->get_amount_to_fund_user($daaat);
-              // logger('custom promo.: '.$amount_to_fund_user);
-              $custom_user_funding_promo_id = $user_wallet_funding_promo->id;
-              //custom funding promo 
+            // if($user_wallet_funding_promo){
+            //   //custom funding exists
+            //   $daaat['promo_discount_category'] = $user_wallet_funding_promo->rate_category;
+            //   $daaat['promo_discount_percentage_cap'] = $user_wallet_funding_promo->capped_at;
+            //   $daaat['funding_amount'] = $paid_amount;
+            //   $daaat['promo_value'] = $user_wallet_funding_promo->value;
+            //   $daaat['funding_option_id'] = $funding_option_details->id;
+            //   $amount_to_fund_user = (new WalletFundingPromoService())->get_amount_to_fund_user($daaat);
+            //   // logger('custom promo.: '.$amount_to_fund_user);
+            //   $custom_user_funding_promo_id = $user_wallet_funding_promo->id;
+            //   //custom funding promo 
+            // }
+
+
+
+            //////CUSTOM WALLET FUNDING PROMO SERVICE 
+            $walletPromoService = new WalletFundingPromoService();
+            $userWalletPromo = $walletPromoService->getUserPromo(
+              $user_details->id,
+              $funding_option_details->id
+            );      
+            if ($userWalletPromo) {
+                $dataForCalc = [
+                    'promo_discount_category' => $userWalletPromo->rate_category,
+                    'promo_discount_percentage_cap' => $userWalletPromo->capped_at,
+                    'funding_amount' => $paid_amount,
+                    'promo_value' => $userWalletPromo->value,
+                    'funding_option_id' => $funding_option_details->id,
+                ];
+                $amount_to_fund_user = $walletPromoService->get_amount_to_fund_user($dataForCalc)['actual_amount_to_fund_user'];
+                $promoBonus = $walletPromoService->get_amount_to_fund_user($dataForCalc)['promo_value'];
+                $custom_user_funding_promo_id = $userWalletPromo->id;
+
+                
+                $log = $walletPromoService->processFundingAndLog(
+                  $user_details,
+                  $funding_option_details,
+                  $paid_amount,
+                  $promoBonus,
+                  $custom_user_funding_promo_id,
+                  $response_decode['event_data']['data']['charged'] ?? $charges,
+                  $amount_to_fund_user
+                );
+
             }
 
-          
-
-
-            //incase there is a general promo: think of DRY
-            $daat['user'] = $user_details;
-            $daat['funding_amount'] = $paid_amount;
-            $daat['funding_option_id'] = $funding_option_details->id;
-            $check_promo = (new WalletFundingPromoService())->apply_funding_promo($daat);
-            if($check_promo['status'] == 1){
-              // logger('general promo: '.$check_promo['actual_amount_to_fund_user']);
-              $amount_to_fund_user = $check_promo['actual_amount_to_fund_user'];
-              $promo_id = $check_promo['promo_id'];
-            }
+            
+            //SUSPEND GENERAL FOR NOW FOR NOW...WE WORK ON THIS LATER...
+            // $daat['user'] = $user_details;
+            // $daat['funding_amount'] = $paid_amount;
+            // $daat['funding_option_id'] = $funding_option_details->id;
+            // $check_promo = (new WalletFundingPromoService())->apply_funding_promo($daat);
+            // if($check_promo['status'] == 1){
+            //   // logger('general promo: '.$check_promo['actual_amount_to_fund_user']);
+            //   $amount_to_fund_user = $check_promo['actual_amount_to_fund_user'];
+            //   $promo_id = $check_promo['promo_id'];
+            // }
             //general promo supercedes custom
 
 

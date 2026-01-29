@@ -14,8 +14,10 @@ use App\Models\UserVirtualAccount;
 use App\Models\WalletFundingPromo;
 use Illuminate\Support\Facades\DB;
 use App\Models\LandingPagesSetting;
+use App\Models\UserWalletFundingLog;
 use App\Models\FundingOptionBankCodes;
 use App\Models\UsedWalletFundingPromo;
+use App\Models\UserWalletFundingPromo;
 
 class WalletFundingPromoService{
 
@@ -219,14 +221,16 @@ class WalletFundingPromoService{
 
 
     public function get_amount_to_fund_user($data){
-         
+        
+        //add amount condition: meaning if the amount is a particular amount and above, then the promo applies
+
          $promo_discount_category = $data['promo_discount_category'];
          $funding_amount = $data['funding_amount'];
          $promo_value = $data['promo_value'];
          $promo_discount_percentage_cap = $data['promo_discount_percentage_cap'];
          //next line is a safety measure
          if($promo_discount_category == 'percent' && $promo_discount_percentage_cap != NULL){
-             $promo_discount_percentage_cap = $promo_discount_percentage_cap > 100 ? 100 : $promo_discount_percentage_cap; 
+             $promo_discount_percentage_cap = $promo_discount_percentage_cap > 100 ? 100 : $promo_discount_percentage_cap; //max 100 naira
              $promo_value = $promo_value > 15 ? 15 : $promo_value; 
              $promo_value = (($promo_value / 100) * $funding_amount);
 
@@ -241,7 +245,60 @@ class WalletFundingPromoService{
          }
 
         //  logger('get funding amount: '. $actual_amount_to_fund_user);
-         return $actual_amount_to_fund_user;
+        //  return $actual_amount_to_fund_user;
+         return [
+            'actual_amount_to_fund_user' => $actual_amount_to_fund_user,
+            'promo_value' => $promo_value
+         ];
     }  
+
+      /**
+     * Get the active promo for a user & funding option
+     */
+    public function getUserPromo($userId, $fundingOptionId): ?UserWalletFundingPromo
+    {
+        return UserWalletFundingPromo::where('user_id', $userId)
+            ->where('status', 1)
+            ->whereJsonContains('funding_option_ids', $fundingOptionId)
+            ->first();
+    }
+
+    /**
+     * Process funding payment and log the transaction
+     *
+     */
+    public function processFundingAndLog($user, $fundingOption, $fundingAmount, $promoBonus = 0, $promoId = null,$gatewayCharge,$amountSettled)
+    {
+
+       
+
+        // 2️⃣ Enforce funding_amount = settled + fee
+        // if (bcadd($amountSettled, $gatewayCharge, 2) != bcadd($fundingAmount, 0, 2)) {
+        //     // throw new \Exception("Funding amount mismatch: intended {$fundingAmount}, settled {$amountSettled} + fee {$gatewayCharge}");
+        //     logger("Funding amount mismatch: intended {$fundingAmount}, settled {$amountSettled} + fee {$gatewayCharge}");
+        //     return [
+        //         'status' => -1,
+        //         'message' => "Funding amount mismatch: intended {$fundingAmount}, settled {$amountSettled} + fee {$gatewayCharge}"
+        //     ];
+        // }
+
+        // 3️⃣ Log the funding
+        $log = UserWalletFundingLog::create([
+            'user_id' => $user->id,
+            'funding_option_id' => $fundingOption->id,
+            'funding_amount' => $fundingAmount,
+            'promo_bonus' => $promoBonus,
+            'amount_settled_by_gateway' => $amountSettled,
+            'gateway_charge' => $gatewayCharge,
+            'promo_id' => $promoId,
+            'status' => 1,
+        ]);
+
+        return [
+            'status' => 1,
+            'log' => $log
+        ];
+    }
+
 
 }

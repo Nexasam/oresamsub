@@ -10,6 +10,7 @@ use App\Models\LandingPagesSetting;
 use App\Http\Services\XixaPayService;
 use App\Models\FundingOptionBankCodes;
 use App\Http\Services\CrystalPayService;
+use App\Http\Services\SecurewavengService;
 
 class VirtualAccountService{
 
@@ -19,11 +20,16 @@ class VirtualAccountService{
             if(config('app.name') == 'OresamSub'){
                 $xixa =  (new XixaPayService())->generate_accounts($dataaa);
                 if($xixa['status'] == 1){
-                    return [
-                        'status' => 1,
-                        'message' => 'Virtual Accounts Generated Successfully',
-                    ];
+                    // return [
+                    //     'status' => 1,
+                    //     'message' => 'Virtual Accounts Generated Successfully',
+                    // ];
+                    logger('XixaPay VA generation successful');
+                    
                 }
+
+                 //new payment gateway:securewaveng
+               (new SecurewavengService())->generate_accounts($dataaa);
 
                 return [
                     'status' => -1,
@@ -37,6 +43,8 @@ class VirtualAccountService{
                 'message' => 'Virtual Accounts Generated Attempt was successful',
             ];
 
+
+            
             
         
     }

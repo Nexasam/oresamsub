@@ -13,6 +13,10 @@ class UserWalletFundingPromo extends Model
 
     protected $guarded = [];
 
+    protected $casts = [
+        'funding_option_ids' => 'array',
+    ];    
+
 
     /**
     * each funding belongs to a user 

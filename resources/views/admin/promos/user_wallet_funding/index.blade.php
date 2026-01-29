@@ -67,21 +67,57 @@
                                        
 
                                         <!-- Beneficiary (Username) nullable-->
-                                        <div class="mt-2">
-                                            <label class="ti-form-label mb-0">Enter Username</label>
-                                            <input name="username" type="text" class="my-auto ti-form-input" placeholder="username of customer">
-                                        </div>
+                                       <!-- Beneficiaries (Usernames array) -->
+                                      <div class="mt-2">
+                                        <label class="ti-form-label mb-0">
+                                            Enter Username(s)
+                                            <span class="text-xs text-gray-500">(comma separated)</span>
+                                        </label>
+                                        <input 
+                                            name="usernames" 
+                                            type="text" 
+                                            class="my-auto ti-form-input" 
+                                            placeholder="john, mary01, sam_dev"
+                                        >
+                                      </div>
 
                                         <!-- Funding Option -->
                                         <div>
-                                            <label class="ti-form-label mb-0">Funding Option</label>
-                                            <select required id="funding_option_id" name="funding_option_id" class="my-auto ti-form-select">
-                                                <option value="">Select</option>
-                                                @foreach ($funding_options as $funding_option)
-                                                    <option value="{{ $funding_option->id }}">{{ $funding_option->funding_option_name }} -- {{ $funding_option->id }}</option>                                        
-                                                @endforeach
-                                            </select>
+                                          <label class="ti-form-label mb-0">
+                                              Funding Option(s)
+                                              <span class="text-xs text-gray-500">(select one or more)</span>
+                                          </label>
+
+                                          <select 
+                                              required 
+                                              multiple
+                                              id="funding_option_ids" 
+                                              name="funding_option_ids[]" 
+                                              class=""
+                                          >
+                                              @foreach ($funding_options as $funding_option)
+                                                  <option value="{{ $funding_option->id }}">
+                                                      {{ $funding_option->funding_option_name }} — {{ $funding_option->id }}
+                                                  </option>
+                                              @endforeach
+                                          </select>
                                         </div>
+
+
+                                        <!-- Minimum Funding Amount -->
+                                        <div class="mt-2">
+                                          <label class="ti-form-label mb-0">
+                                              Promo applies If Funding Amount Is ≥ below
+                                          </label>
+                                          <input 
+                                              name="min_funding_amount" 
+                                              type="number" 
+                                              min="0"
+                                              class="my-auto ti-form-input" 
+                                              placeholder="e.g. 5000"
+                                          >
+                                        </div>
+
 
 
                                         <!-- Promo Discount Category -->
@@ -173,6 +209,7 @@
                                     <th>User</th>
                                     <th>Funding Option</th>
                                     <th>Rate Type</th>
+                                    <th>Min. Funding Amount</th>
                                     <th>Capped At</th>
                                     <th>Value</th>
                                     <th>Status</th>
@@ -190,8 +227,19 @@
                                 <tr>
                                   <td>{{ $count++ }}</td>
                                   <td>{!! $cc->user->username.'<br><b>'.$cc->user->first_name.' '.$cc->user->last_name.' <br>'.$cc->user->phone_number.'</b>' !!}</td>
-                                  <td>{{ $cc->funding_option->funding_option_name }}</td>
+                                  {{-- <td>{{ $cc->funding_option->funding_option_name }}</td> --}}
+                                  <td>
+                                    {{
+                                        \App\Models\FundingOption::whereIn(
+                                            'id',
+                                            $cc->funding_option_ids ?? []
+                                        )
+                                        ->pluck('funding_option_name')
+                                        ->implode(', ')
+                                    }}
+                                </td>
                                   <td>{{ $cc->rate_category }}</td>
+                                  <td>{{ $cc->min_funding_amount }}</td>
                                   <td>{{ $cc->capped_at ?? 'none' }}</td>
                                   <td>{{ $cc->value ?? 'none' }}{{ $cc->rate_category == 'percent' ? '%' : ' Naira' }}</td>
                                   <td>
@@ -227,76 +275,128 @@
                         
                                                   <form 
                                                   x-data="{ 
-                                                      rateCategory: 'percent' 
+                                                      rateCategory: '{{ $cc->rate_category }}' 
                                                   }" 
                                                   method="POST" 
-                                                  action="{{ route('admin.user_wallet_funding_promo.update_user',['id'=>$cc->id]) }}"
-                                                  >
+                                                  action="{{ route('admin.user_wallet_funding_promo.update_user', ['id' => $cc->id]) }}"
+                                              >
                                                   @csrf
+                                              
                                                   <div class="grid w-full lg:w-full lg:grid-cols-1 gap-6 space-y-4 lg:space-y-0">
                                                       <div class="grid grid-cols-1 gap-2">
-                                                          
-                  
-                                                          <!-- Beneficiary (Username) nullable-->    
-                                                          <input name="username" value="{{ $cc->user->username }}" type="hidden" class="my-auto ti-form-input" placeholder="username of customer">
-                                                      
-                                                          <!-- Funding Option -->
+                                              
+                                                          <!-- Username (hidden) -->
+                                                          <input 
+                                                              name="username" 
+                                                              value="{{ $cc->user->username }}" 
+                                                              type="hidden"
+                                                          >
+                                              
+                                                          <!-- Funding Options (MULTI SELECT) -->
                                                           <div>
-                                                              <label class="ti-form-label mb-0">Funding Option</label>
-                                                              <select required id="funding_option_id" name="funding_option_id" class="my-auto ti-form-select">
-                                                                  <option selected value="{{$cc->funding_option->id}}">{{$cc->funding_option->funding_option_name}}</option>
+                                                              <label class="ti-form-label mb-0">
+                                                                  Funding Option(s)
+                                                              </label>
+                                              
+                                                              <select 
+                                                                  required
+                                                                  multiple
+                                                                  name="funding_option_ids[]" 
+                                                                  class="my-auto ti-form-select"
+                                                              >
                                                                   @foreach ($funding_options as $funding_option)
-                                                                      <option value="{{ $funding_option->id }}">{{ $funding_option->funding_option_name }}</option>                                        
+                                                                      <option 
+                                                                          value="{{ $funding_option->id }}"
+                                                                          {{ in_array(
+                                                                              $funding_option->id,
+                                                                              $cc->funding_option_ids ?? []
+                                                                          ) ? 'selected' : '' }}
+                                                                      >
+                                                                          {{ $funding_option->funding_option_name }}
+                                                                      </option>
                                                                   @endforeach
                                                               </select>
                                                           </div>
-                  
-                  
-                                                          <!-- Promo Discount Category -->
+                                              
+                                                          <!-- Promo Rate Category -->
                                                           <div>
                                                               <label class="ti-form-label mb-0">Promo Rate Category</label>
                                                               <select 
-                                                                  x-model="rateCategory" 
-                                                                  required 
-                                                                  id="rate_category" 
+                                                                  x-model="rateCategory"
+                                                                  required
                                                                   name="rate_category" 
                                                                   class="my-auto ti-form-select"
-                                                              >   
-                                                                  <option selected value="{{$cc->rate_category}}">{{$cc->rate_category == 'flat' ? 'Flat Rate':'Percentage'}}</option>
-                                                                  <option value="flat">Flat Rate</option> 
-                                                                  <option value="percent">Percentage</option> 
+                                                              >
+                                                                  <option value="flat">Flat Rate</option>
+                                                                  <option value="percent">Percentage</option>
                                                               </select>
                                                           </div>
-                  
-                                                          <!-- Promo Discount Percentage Cap nullable-->
+                                              
+                                                          <!-- Promo Percentage Cap -->
                                                           <div x-show="rateCategory === 'percent'" x-transition>
                                                               <label class="ti-form-label mb-0">Promo Percentage Cap</label>
-                                                              <input name="capped_at" value="{{$cc->capped_at}}" type="text" class="my-auto ti-form-input" placeholder="amount">
+                                                              <input 
+                                                                  name="capped_at" 
+                                                                  value="{{ $cc->capped_at }}" 
+                                                                  type="number"
+                                                                  class="my-auto ti-form-input"
+                                                                  placeholder="amount"
+                                                              >
                                                           </div>
-                  
+                                              
+                                                          <!-- Promo Value -->
                                                           <div>
-                                                              <label class="ti-form-label mb-0">Promo Value <span x-show="rateCategory === 'percent'">%</span> </label>
-                                                              <input name="value" value="{{$cc->value}}" required type="number" class="my-auto ti-form-input" placeholder="value">
+                                                              <label class="ti-form-label mb-0">
+                                                                  Promo Value <span x-show="rateCategory === 'percent'">%</span>
+                                                              </label>
+                                                              <input 
+                                                                  name="value" 
+                                                                  value="{{ $cc->value }}" 
+                                                                  required 
+                                                                  type="number" 
+                                                                  class="my-auto ti-form-input"
+                                                              >
                                                           </div>
 
+                                                            <!-- Promo Value -->
+                                                            <div>
+                                                              <label class="ti-form-label mb-0">
+                                                                  Min. Funding Amount for Promo to Apply
+                                                              </label>
+                                                              <input 
+                                                                  name="min_funding_amount" 
+                                                                  value="{{ $cc->min_funding_amount }}" 
+                                                                  required 
+                                                                  type="number" 
+                                                                  class="my-auto ti-form-input"
+                                                              >
+                                                          </div>
+                                              
+                                                          <!-- Status -->
                                                           <div>
-                                                            <label class="ti-form-label mb-0">Status</label>
-                                                            <select required id="status" name="status" class="my-auto ti-form-select">
-                                                                <option value="{{$cc->status}}">{{ $cc->status == 1 ? 'Active':'Inactive' }}</option>
-                                                                <option value="1">Active</option>
-                                                                <option value="0">Inactive</option>
-                                                            </select>
-                                                           </div>
-                
-                                      
+                                                              <label class="ti-form-label mb-0">Status</label>
+                                                              <select 
+                                                                  required 
+                                                                  name="status" 
+                                                                  class="my-auto ti-form-select"
+                                                              >
+                                                                  <option value="1" {{ $cc->status == 1 ? 'selected' : '' }}>Active</option>
+                                                                  <option value="0" {{ $cc->status == 0 ? 'selected' : '' }}>Inactive</option>
+                                                              </select>
+                                                          </div>
+                                              
                                                       </div>
-                  
+                                              
                                                       <div class="space-y-2">
-                                                          <button type="submit" class="ti-btn ti-btn-primary w-full">Update User Wallet Funding Promo</button>
+                                                          <button type="submit" class="ti-btn ti-btn-primary w-full">
+                                                              Update User Wallet Funding Promo
+                                                          </button>
                                                       </div>
+                                              
                                                       <br>
                                                   </div>
                                               </form>
+                                              
 
                                               
                                                 </div>   
