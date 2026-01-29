@@ -13,7 +13,7 @@ import Swal from "sweetalert2";
 
 export default function Dashboard({ transactions: initialTransactions }) {
   const { props } = usePage();
-  const { auth, announcements, impersonator, commissionData = {} } = props;
+  const { auth, announcements,contacts, impersonator, commissionData = {} } = props;
   const { available = 0, pending = 0, total_earned = 0 } = commissionData;
   const user = auth.user;
 
