@@ -136,38 +136,39 @@ export default function BuyData() {
       
         let saveContactPayload = null;
       
-        // 🔹 Prompt to save contact ONLY if it's unsaved
-        if (!existingContact) {
-            const { value: contactName } = await Swal.fire({
-              title: "Save this contact?",
-              html: `
-                <p class="text-sm mb-2">
-                  This number is not in your saved contacts.
-                </p>
-                <input
-                  id="contact-name"
-                  class="swal2-input"
-                  placeholder="Contact name (optional)"
-                />
-                <p class="text-xs text-gray-500 mt-2">
-                  You can skip this if you don't want to save it.
-                </p>
-              `,
-              showCancelButton: true,
-              confirmButtonText: "Save & Continue",
-              cancelButtonText: "Skip",
-              focusConfirm: false,
-              preConfirm: () => document.getElementById("contact-name").value,
-            });
-        
-            // Save name only if user entered something
-            if (contactName && contactName.trim() !== "") {
-                saveContactPayload = {
-                  phone_number: data.phone_number,
-                  name: contactName.trim(),
-                };
-            }
+     // 🔹 Prompt to save contact ONLY if it's unsaved or unnamed
+      if (!existingContact || !existingContact.name || existingContact.name.trim() === "") {
+        const { value: contactName } = await Swal.fire({
+            title: "Save this contact?",
+            html: `
+              <p class="text-sm mb-2">
+                This number ${!existingContact ? "is not in your saved contacts" : "has no name"}.
+              </p>
+              <input
+                id="contact-name"
+                class="swal2-input"
+                placeholder="Contact name (optional)"
+              />
+              <p class="text-xs text-gray-500 mt-2">
+                You can skip this if you don't want to save it.
+              </p>
+            `,
+            showCancelButton: true,
+            confirmButtonText: "Save & Continue",
+            cancelButtonText: "Skip",
+            focusConfirm: false,
+            preConfirm: () => document.getElementById("contact-name").value,
+        });
+
+        // Save name only if user entered something
+        if (contactName && contactName.trim() !== "") {
+            saveContactPayload = {
+                phone_number: data.phone_number,
+                name: contactName.trim(),
+            };
         }
+      }
+
       
         // 🔹 Purchase confirmation modal
         const result = await Swal.fire({
