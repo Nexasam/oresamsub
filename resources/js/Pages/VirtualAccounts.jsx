@@ -52,7 +52,7 @@ export default function VirtualAccounts() {
           {/* Header */}
           <div className="flex items-center justify-between">
             <div className="font-semibold text-emerald-600 dark:text-emerald-400">
-              Palmpay
+              MANUAL OPTION - NO CHARGES: Palmpay
             </div>
             {copiedAcct === "8168509044" && (
               <span className="text-xs text-emerald-500">Copied ✅</span>
