@@ -74,8 +74,9 @@ export default function VirtualAccounts() {
         </button>
 
         {/* WhatsApp Admin Sam */}
+        {/* WhatsApp Admin Sam */}
         <a
-          href="https://wa.me/2348168509044?text=I%20have%20paid%20some%20amount"
+          href="https://wa.me/2348168509044?text=I%20just%20made%20a%20manual%20payment%20to%20oresamsub%20account,%20pls%20check%20and%20verify%20thank%20you"
           target="_blank"
           rel="noopener noreferrer"
           className="text-xs px-3 py-1 rounded-md bg-green-600 hover:bg-green-700 text-white dark:bg-green-500 dark:hover:bg-green-600 transition"
@@ -85,13 +86,14 @@ export default function VirtualAccounts() {
 
         {/* WhatsApp Admin Ore */}
         <a
-          href="https://wa.me/2349163128718?text=I%20have%20paid%20Namount"
+          href="https://wa.me/2349163128718?text=I%20just%20made%20a%20manual%20payment%20to%20oresamsub%20account,%20pls%20check%20and%20verify%20thank%20you"
           target="_blank"
           rel="noopener noreferrer"
           className="text-xs px-3 py-1 rounded-md bg-green-600 hover:bg-green-700 text-white dark:bg-green-500 dark:hover:bg-green-600 transition"
         >
           Notify Admin Ore
         </a>
+
       </div>
     </div>
 
