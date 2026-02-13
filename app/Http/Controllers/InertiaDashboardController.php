@@ -102,11 +102,11 @@ class InertiaDashboardController extends Controller
                 'user_virtual_accounts.account_name',
                 'user_virtual_accounts.account_number',
                 'user_virtual_accounts.bank_code',
-                'funding_bank_codes.description as bank_description'
+                'funding_option_bank_codes.description as bank_description'
             )
-            ->leftJoin('funding_bank_codes', function($join) {
-                $join->on('user_virtual_accounts.funding_option_id', '=', 'funding_bank_codes.funding_option_id')
-                    ->on('user_virtual_accounts.bank_code', '=', 'funding_bank_codes.bank_code');
+            ->leftJoin('funding_option_bank_codes', function($join) {
+                $join->on('user_virtual_accounts.funding_option_id', '=', 'funding_option_bank_codes.funding_option_id')
+                    ->on('user_virtual_accounts.bank_code', '=', 'funding_option_bank_codes.bank_code');
             })
             ->where('funding_slug','!=','crystal_pay')
             ->where('user_virtual_accounts.user_id', auth()->id())
