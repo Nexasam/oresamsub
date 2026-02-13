@@ -84,14 +84,35 @@ class InertiaDashboardController extends Controller
         return Inertia::render('BuyElectricity')->with($data);
     }
 
-    public function virtual_accounts(){
-        $virtualccts = UserVirtualAccount::select('id','bank_name','account_name','account_number')
-        ->where('funding_slug','!=','crystal_pay')
-        ->where('user_id',auth()->id())
-        ->get();
+    // public function virtual_accounts(){
+    //     $virtualccts = UserVirtualAccount::select('id','bank_name','account_name','account_number')
+    //     ->where('funding_slug','!=','crystal_pay')
+    //     ->where('user_id',auth()->id())
+    //     ->get();
         
-        $data['virtualccts'] = $virtualccts;
-        return Inertia::render('VirtualAccounts')->with($data);
+    //     $data['virtualccts'] = $virtualccts;
+    //     return Inertia::render('VirtualAccounts')->with($data);
+    // }
+
+    public function virtual_accounts()
+    {
+        $virtualccts = UserVirtualAccount::select(
+                'user_virtual_accounts.id',
+                'user_virtual_accounts.bank_name',
+                'user_virtual_accounts.account_name',
+                'user_virtual_accounts.account_number',
+                'user_virtual_accounts.bank_code',
+                'funding_bank_codes.description as bank_description'
+            )
+            ->leftJoin('funding_bank_codes', function($join) {
+                $join->on('user_virtual_accounts.funding_option_id', '=', 'funding_bank_codes.funding_option_id')
+                    ->on('user_virtual_accounts.bank_code', '=', 'funding_bank_codes.bank_code');
+            })
+            ->where('funding_slug','!=','crystal_pay')
+            ->where('user_virtual_accounts.user_id', auth()->id())
+            ->get();
+
+        return Inertia::render('VirtualAccounts')->with(['virtualccts' => $virtualccts]);
     }
 
     public function transactions(){
