@@ -93,7 +93,7 @@ export default function VirtualAccounts() {
 
         {/* WhatsApp Admin Ore */}
         <a
-          href={`https://wa.me/2349163128718?text=${encodeURIComponent(message)}`}
+          href={`https://wa.me/2349011988807?text=${encodeURIComponent(message)}`}
           target="_blank"
           rel="noopener noreferrer"
           className="text-xs px-3 py-1 rounded-md bg-green-600 hover:bg-green-700 text-white dark:bg-green-500 dark:hover:bg-green-600 transition"
