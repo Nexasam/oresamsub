@@ -14,6 +14,7 @@
   </a>
   
   <h2 class="text-2xl font-bold text-center mb-6">Create Your Account</h2>
+  
 
   {{-- @if (Session::has('success'))
     <div class="bg-success/10 border border-success/10 alert text-success" role="alert">
@@ -156,6 +157,39 @@
         </button>
       </div>
     </div>
+
+    <!-- How you want to use OresamSub -->
+    <div class="mb-4" x-data="{ usage: '{{ old('usage') ?? '' }}' }">
+      <label class="block text-sm mb-1">How do you want to use OresamSub?</label>
+      <select
+          name="usage"
+          x-model="usage"
+          required
+          class="w-full px-4 py-2 rounded-lg bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+      >
+          <option value="" disabled selected>Select usage</option>
+          <option value="Personal">Personal</option>
+          <option value="Business">Business</option>
+      </select>
+      <x-input-error :messages="$errors->get('usage')" class="mt-1" />
+      
+      <!-- Transaction volume (only if Business) -->
+      <div x-show="usage === 'Business'" class="mt-3">
+          <label class="block text-sm mb-1">Weekly transaction volume</label>
+          <select
+              name="transaction_volume"
+              class="w-full px-4 py-2 rounded-lg bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          >
+              <option value="" disabled selected>Select volume</option>
+              <option value="100_199">100 - 199</option>
+              <option value="200_999">200 - 999</option>
+              <option value="1000_4999">1000 - 4999</option>
+              <option value="5000+">5000 and above</option>
+          </select>
+          <x-input-error :messages="$errors->get('transaction_volume')" class="mt-1" />
+      </div>
+    </div>
+
 
     <!-- Submit Button -->
     <div class="mt-6">

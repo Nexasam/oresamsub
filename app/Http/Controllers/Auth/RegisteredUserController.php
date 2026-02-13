@@ -161,7 +161,86 @@ class RegisteredUserController extends Controller
      *
      * @throws \Illuminate\Validation\ValidationException
      */
-    public function store2(Request $request): RedirectResponse
+
+
+     public function store2(Request $request): RedirectResponse
+    {
+        // 1. Validate input
+        $validated = $request->validate([
+            'username' => ['required', 'string', 'unique:users,username'],
+            'fullname' => ['required', 'string', 'max:255'],
+            'phone_number' => ['required', 'string', 'max:255', 'unique:users,phone_number'],
+            'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email'],
+            'password' => ['required', 'confirmed', Password::min(6)],
+            'usage' => ['required', 'string', 'in:Personal,Business'],
+            'transaction_volume' => ['nullable', 'string', 'in:100_199,200_999,1000_4999,5000+'],
+        ]);
+
+        // Ensure transaction_volume is provided if usage is Business
+        if ($validated['usage'] === 'Business' && empty($request->transaction_volume)) {
+            return back()->withInput()->with('failure', 'Please select your weekly transaction volume.');
+        }
+
+        // 2. Fast email security check
+        $dotCount = substr_count($validated['email'], '.');
+        if ($dotCount > 2 || preg_match('/\.+@/', $validated['email'])) {
+            return back()->with('failure', 'This email is not allowed. Contact support via WhatsApp.');
+        }
+
+        // 3. Split name
+        $nameParts = explode(' ', $validated['fullname'], 2);
+        $firstName = $nameParts[0];
+        $lastName = $nameParts[1] ?? $firstName;
+
+        // 4. Upline check
+        $uplineId = null;
+        if ($request->filled('upline_referral_phone_number') && $request->upline_referral_phone_number !== $validated['phone_number']) {
+            $upline = User::where('phone_number', $request->upline_referral_phone_number)->first();
+            if ($upline) {
+                $uplineId = $upline->id;
+            }
+        }
+
+        // 5. Role and Plan
+        $roleId = Role::where('role_name', 'User')->value('id');
+
+        if($request->usage == 'Personal'){
+            $defaultPlanId = UserPlan::where('is_default', 1)->value('id');
+
+        }else{
+            //for business: if after a whhile no show, we downgrade the customer
+            $defaultPlanId = UserPlan::where('plan_level', 3)->value('id');
+        }
+
+
+        // 6. Create user
+        $user = User::create([
+            'first_name' => $firstName,
+            'last_name' => $lastName,
+            'username' => $validated['username'],
+            'phone_number' => $validated['phone_number'],
+            'email' => $validated['email'],
+            'upline_id' => $uplineId,
+            'pin' => null,
+            'role_id' => $roleId,
+            'user_plan_id' => $defaultPlanId,
+            'password' => Hash::make($validated['password']),
+            'usage' => $validated['usage'],
+            'transaction_volume' => $request->transaction_volume ?? null,
+            'email_verified_at' => env('APP_NAME') === 'OresamSub' ? now() : null,
+        ]);
+
+        // 7. Dispatch event
+        event(new Registered($user));
+
+        // 8. Login and redirect
+        Auth::login($user);
+        return redirect()->route('dashboard');
+    }
+
+
+
+    public function store2latestbackup(Request $request): RedirectResponse
     {
         // 1. Validate input
         $validated = $request->validate([
@@ -217,92 +296,6 @@ class RegisteredUserController extends Controller
         // 8. Login and redirect
         Auth::login($user);
         return redirect()->route('dashboard');
-    }
-
-
-
-
-    public function store2BACKUP(Request $request): RedirectResponse
-    {
-  
-        $request->validate([
-            'username' => ['required', 'string', 'unique:users,username'],
-            'fullname' => ['required', 'string', 'max:255'],
-            'phone_number' => ['required','unique:users,phone_number', 'string', 'max:255'],
-            // 'upline_referral_phone_number' => ['nullable', 'string','exists:users,phone_number' ,'max:255'],
-            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
-            'password' => ['required', 'confirmed', Password::min(6)],
-        ]);
-
-        // 	echo REGEX_CountMatches('as.sfad.asdferw.asdfsdf.@gmail.com','.');
-        // 	echo $count = preg_match_all('/\b.\b/','as.sfad.asdferw.asdfsdf.l.@gmail.com');
-        // 	echo $count = preg_match_all('/\b.\b/','ade.a@gmail.com');
-        // 	echo substr_count('as.sfad.asdferw.asdfsdf.l.@gmail.com','.');
-        // 	echo substr_count('sam.ade@gmail.com','.');
-
-        $validate_email =  count(explode('.',$request->email));
-        if($validate_email > 2){
-            Session::flash('failure','This email is not allowed.. You can reach out to our support via whatsapp');
-            return redirect()->back();
-        }
-
-        $name_array = explode(' ',$request->fullname);
-        if(count($name_array) == 1){
-            $first_name = $name_array[0];
-            $last_name = $name_array[0];
-        }else if(count($name_array) > 1){
-            $first_name = $name_array[0];
-            $last_name = $name_array[1];
-        }
-
-        //second security check
-        $new_email_array = explode('.',$request->email);
-        $last_item = array_pop($new_email_array);
-        // echo $last_item;
-        $checked_email = implode('',$new_email_array).'.'.$last_item;
-
-        if($request->email != $checked_email){
-            Session::flash('failure','This email is not allowed.. You can reach out to our support via whatsapp...');
-            return redirect()->back();
-        }
-
-
-        $upline_details = NULL;
-        if(isset($request->upline_referral_phone_number) &&  $request->upline_referral_phone_number != NULL){
-            $upline_details = User::where('phone_number',$request->upline_referral_phone_number)->first();
-        }
-        $upline_id = $upline_details != NULL && $request->upline_referral_phone_number != $request->phone_number ? $upline_details->id : NULL;
-        // $upline_id = $upline_details->id;
-       
-
-        $role_details = Role::where('role_name','User')->first();
-        $default_reseller_plan = UserPlan::where('is_default',1)->first();
-        $data['first_name'] = $first_name;
-        $data['last_name'] = $last_name;
-        $data['phone_number'] = $request->phone_number;
-        $data['username'] = $request->username;
-        $data['upline_id'] = $upline_id;
-        $data['email'] = $request->email;
-        $data['pin'] = NULL;
-        $data['role_id'] = $role_details->id;
-        $data['user_plan_id'] = $default_reseller_plan->id;
-        $data['password'] = Hash::make($request->password);
-
-        // dd($data);
-        // $data['confirm_password'] = Hash::make($request->confirm_password);
-        if(env('APP_NAME') == 'OresamSub'){
-            $data['email_verified_at'] = date('Y-m-d H:i:s');
-        }
-
-        $user = User::create($data);
-
-        // $dataaa['user'] = $user;
-        // (new VirtualAccountService())->generate_accounts($dataaa);
-        event(new Registered($user));
-
-        Auth::login($user);
-
-        return redirect(route('dashboard', absolute: false));
     }
 
 
