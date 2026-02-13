@@ -37,58 +37,64 @@ export default function VirtualAccounts() {
           Fund any of the accounts below:
         </div>
 
-      {/* Manual Funding Account (Hardcoded) */}
-      <div className="p-4 bg-white dark:bg-gray-900 rounded-xl shadow space-y-1 border border-emerald-100 dark:border-emerald-800 mb-4">
-        <div className="flex items-center justify-between">
-          <div className="font-semibold text-emerald-600 dark:text-emerald-400">
-            Palmpay
-          </div>
-          {copiedAcct === "manual-funding" && (
-            <span className="text-xs text-emerald-500">Copied ✅</span>
-          )}
+      {/* Manual Funding Account (Hardcoded, copy like virtualccts) */}
+    <div className="p-4 bg-white dark:bg-gray-900 rounded-xl shadow space-y-1 border border-emerald-100 dark:border-emerald-800 mb-4">
+      {/* Header */}
+      <div className="flex items-center justify-between">
+        <div className="font-semibold text-emerald-600 dark:text-emerald-400">
+          Palmpay
         </div>
-
-        {/* Account Name */}
-        <div className="text-sm text-gray-700 dark:text-gray-300">
-          Acct Name: Adebunmi Olusola Samuel
-        </div>
-
-        {/* Instruction / Description */}
-        <div className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-          Manual funding (0% charges). Scan or pay and notify via WhatsApp.
-        </div>
-
-        {/* Account Number + Copy + WhatsApp */}
-        <div className="flex justify-between items-center mt-1 space-x-2">
-          <div className="text-lg font-mono tracking-wide text-gray-900 dark:text-white">
-            8168509044
-          </div>
-          <button
-            onClick={() => handleCopy("manual-funding")}
-            className="text-xs px-3 py-1 rounded-md bg-emerald-600 hover:bg-emerald-700 text-white dark:bg-emerald-500 dark:hover:bg-emerald-600 transition"
-          >
-            Copy
-          </button>
-          <a
-            href="https://wa.me/2348168509044?text=I%20have%20paid%20Namount"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-xs px-3 py-1 rounded-md bg-green-600 hover:bg-green-700 text-white dark:bg-green-500 dark:hover:bg-green-600 transition"
-          >
-            Notify Admin Sam
-          </a>
-
-          <a
-            href="https://wa.me/2349163128718?text=I%20have%20paid%20Namount"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-xs px-3 py-1 rounded-md bg-green-600 hover:bg-green-700 text-white dark:bg-green-500 dark:hover:bg-green-600 transition"
-          >
-            Notify Admin Ore
-          </a>
-
-        </div>
+        {copiedAcct === "8168509044" && (
+          <span className="text-xs text-emerald-500">Copied ✅</span>
+        )}
       </div>
+
+      {/* Account Name */}
+      <div className="text-sm text-gray-700 dark:text-gray-300">
+        Acct Name: Adebunmi Olusola Samuel
+      </div>
+
+      {/* Instruction / Description */}
+      <div className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+        MANUAL FUNDING (FREE charges). Pay to the account below and notify via WhatsApp.
+      </div>
+
+      {/* Account Number + Copy + WhatsApp */}
+      <div className="flex justify-between items-center mt-1 space-x-2">
+        <div className="text-lg font-mono tracking-wide text-gray-900 dark:text-white">
+          8168509044
+        </div>
+
+        {/* Copy Button */}
+        <button
+          onClick={() => handleCopy("8168509044", "8168509044")}
+          className="text-xs px-3 py-1 rounded-md bg-emerald-600 hover:bg-emerald-700 text-white dark:bg-emerald-500 dark:hover:bg-emerald-600 transition"
+        >
+          Copy
+        </button>
+
+        {/* WhatsApp Admin Sam */}
+        <a
+          href="https://wa.me/2348168509044?text=I%20have%20paid%20some%20amount"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-xs px-3 py-1 rounded-md bg-green-600 hover:bg-green-700 text-white dark:bg-green-500 dark:hover:bg-green-600 transition"
+        >
+          Notify Admin Sam
+        </a>
+
+        {/* WhatsApp Admin Ore */}
+        <a
+          href="https://wa.me/2349163128718?text=I%20have%20paid%20Namount"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-xs px-3 py-1 rounded-md bg-green-600 hover:bg-green-700 text-white dark:bg-green-500 dark:hover:bg-green-600 transition"
+        >
+          Notify Admin Ore
+        </a>
+      </div>
+    </div>
+
 
 
       {virtualccts && virtualccts.length > 0 ? (
