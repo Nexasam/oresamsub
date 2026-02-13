@@ -12,6 +12,13 @@ export default function VirtualAccounts() {
   const [copiedAcct, setCopiedAcct] = useState(null);
   const [showBalance, setShowBalance] = useState(true);
 
+  const message = `I just made a manual payment to OresamSub account.
+  Please check and verify.
+
+  Username: ${user.username}
+  Email: ${user.email}
+  Phone: ${user.phone_number}`;
+
   const handleCopy = (accountNumber) => {
     navigator.clipboard.writeText(accountNumber);
     setCopiedAcct(accountNumber);
@@ -73,10 +80,10 @@ export default function VirtualAccounts() {
           Copy
         </button>
 
-        {/* WhatsApp Admin Sam */}
+
         {/* WhatsApp Admin Sam */}
         <a
-          href="https://wa.me/2348168509044?text=I%20just%20made%20a%20manual%20payment%20to%20oresamsub%20account,%20pls%20check%20and%20verify%20thank%20you"
+          href={`https://wa.me/2348168509044?text=${encodeURIComponent(message)}`}
           target="_blank"
           rel="noopener noreferrer"
           className="text-xs px-3 py-1 rounded-md bg-green-600 hover:bg-green-700 text-white dark:bg-green-500 dark:hover:bg-green-600 transition"
@@ -86,13 +93,15 @@ export default function VirtualAccounts() {
 
         {/* WhatsApp Admin Ore */}
         <a
-          href="https://wa.me/2349163128718?text=I%20just%20made%20a%20manual%20payment%20to%20oresamsub%20account,%20pls%20check%20and%20verify%20thank%20you"
+          href={`https://wa.me/2349163128718?text=${encodeURIComponent(message)}`}
           target="_blank"
           rel="noopener noreferrer"
           className="text-xs px-3 py-1 rounded-md bg-green-600 hover:bg-green-700 text-white dark:bg-green-500 dark:hover:bg-green-600 transition"
         >
           Notify Admin Ore
         </a>
+
+
 
       </div>
     </div>
