@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\SecurewaveWebhookController;
 use App\Models\ProductPlan;
 use Illuminate\Http\Request;
 use App\Models\ProductPlanCategory;
@@ -191,10 +192,11 @@ Route::post('admin/wallets/crystal_pay_webhook/{id}', [WalletsController::class,
 Route::post('admin/products/oresamsub', [ProductWebhookController::class, 'product_webhook'])->name('admin.product.webhook');
 Route::get('admin/fetch_addons', [AddonController::class, 'fetch_addons'])->name('admin.addons.fetch_addons');
 Route::post('admin/wallets/xixapayhook/{id}', [WalletsController::class, 'xixapayhook'])->name('admin.wallet.xixapay.webhook');
+Route::post('admin/wallets/securewaveng_hook/{id}', [WalletsController::class, 'securewavehook'])->name('admin.wallet.securwavenghook.webhook');
 
 
-Route::post('admin/wallets/securewavehook', [WalletsController::class, 'securewavehook'])->name('admin.wallet.securewavehook.webhook'); //testing securewave
-Route::post('admin/wallets/securewavehook2', [WalletsController::class, 'securewavehook'])->name('admin.wallet.securewavehook.webhook2'); //testing securewave
+// Route::post('admin/wallets/securewavehook', [SecurewaveWebhookController::class, 'securewavehook'])->name('admin.wallet.securewavehook.webhook'); //testing securewave
+// Route::post('admin/wallets/securewavehook/{id}', [SecurewaveWebhookController::class, 'securewavehook'])->name('admin.wallet.securewavehook.webhook2'); //testing securewave
 
 
 //WEBHOOK

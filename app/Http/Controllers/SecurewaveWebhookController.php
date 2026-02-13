@@ -5,21 +5,12 @@ namespace App\Http\Controllers;
 use Exception;
 use App\Models\User;
 use App\Models\Setting;
-use App\Models\SiteTemplate;
 use Illuminate\Http\Request;
 use App\Models\FundingOption;
-use Illuminate\Validation\Rule;
-use Yajra\DataTables\DataTables;
-use App\Models\AdminWebhookString;
-use App\Models\UserVirtualAccount;
 use Illuminate\Support\Facades\DB;
-use App\Models\LandingPagesSetting;
 use App\Models\FundingWebhookPayload;
 use App\Models\FundingOptionBankCodes;
-use App\Models\UserWalletFundingPromo;
-use Illuminate\Support\Facades\Session;
-use App\Models\UserMonnifyVirtualAccount;
-use Illuminate\Support\Facades\Validator;
+// use App\Models\UserWalletFundingPromo;
 use App\Http\Services\WalletFundingPromoService;
 use App\Traits\Dashboard\UserDashboardDataTrait;
 use App\Models\MaxCrystalPaymentsPendingApproval;
@@ -30,6 +21,8 @@ class SecurewaveWebhookController extends Controller
     use UserDashboardDataTrait;
   
 
+
+    //NOT USING THIS OH
     public function securewavehook(Request $request)
     {
        
@@ -79,6 +72,8 @@ class SecurewaveWebhookController extends Controller
             DB::beginTransaction();
             try{
 
+            $provider_ref = $response_decode['provider_reference'];
+
             $check_exists = FundingWebhookPayload::where('transaction_reference',$response_decode['provider_reference'])
             ->first();
 
@@ -123,8 +118,17 @@ class SecurewaveWebhookController extends Controller
                 }
 
                 $paid_amount = $response_decode['amount'];
-                $package_id = $response_decode['provider_reference']; //work on changing later most likely
-                $get_charges = FundingOptionBankCodes::where('bank_code',$package_id)->first();
+                if( strtolower($response_decode['receiver']['bank']) == 'kolomoni'){
+                    $package_id = 1;
+                }else if( strtolower($response_decode['receiver']['bank']) == 'wema'){
+                    $package_id = 2;
+                }else{
+                    $package_id = 3;
+                    // $package_id = $response_decode['provider_reference']; //work on changing later most likely
+                }
+                $get_charges = FundingOptionBankCodes::where('bank_code',$package_id)
+                ->where('funding_option_id',$funding_option_details->id)
+                ->first();
                 if($get_charges){
                     $rate_type = $get_charges->rate_category;
                     if($rate_type == 'Flat'){
@@ -146,39 +150,39 @@ class SecurewaveWebhookController extends Controller
                 }
 
 
-                //inacase there is a custom funding promo: think of DRY
-                //incase there is a promo
-                $user_wallet_funding_promo  = UserWalletFundingPromo::where('user_id',$user_details->id)
-                ->where('funding_option_id',$funding_option_details->id)
-                ->where('status',1)
-                ->first();
 
-                if($user_wallet_funding_promo){
-                    //custom funding exists
-                    $daaat['promo_discount_category'] = $user_wallet_funding_promo->rate_category;
-                    $daaat['promo_discount_percentage_cap'] = $user_wallet_funding_promo->capped_at;
-                    $daaat['funding_amount'] = $paid_amount;
-                    $daaat['promo_value'] = $user_wallet_funding_promo->value;
-                    $daaat['funding_option_id'] = $funding_option_details->id;
-                    $amount_to_fund_user = (new WalletFundingPromoService())->get_amount_to_fund_user($daaat);
-                    logger('custom promo.: '.$amount_to_fund_user);
-                    $custom_user_funding_promo_id = $user_wallet_funding_promo->id;
-                    //custom funding promo 
+                //////CUSTOM WALLET FUNDING PROMO SERVICE 
+                $walletPromoService = new WalletFundingPromoService();
+                $userWalletPromo = $walletPromoService->getUserPromo(
+                $user_details->id,
+                $funding_option_details->id
+                );      
+                if ($userWalletPromo) {
+                    $dataForCalc = [
+                        'promo_discount_category' => $userWalletPromo->rate_category,
+                        'promo_discount_percentage_cap' => $userWalletPromo->capped_at,
+                        'funding_amount' => $paid_amount,
+                        'promo_value' => $userWalletPromo->value,
+                        'funding_option_id' => $funding_option_details->id,
+                    ];
+                    $amount_to_fund_user = $walletPromoService->get_amount_to_fund_user($dataForCalc)['actual_amount_to_fund_user'];
+                    $promoBonus = $walletPromoService->get_amount_to_fund_user($dataForCalc)['promo_value'];
+                    $custom_user_funding_promo_id = $userWalletPromo->id;
+
+                    
+                    $log = $walletPromoService->processFundingAndLog(
+                    $user_details,
+                    $funding_option_details,
+                    $paid_amount,
+                    $promoBonus,
+                    $custom_user_funding_promo_id,
+                    $response_decode['event_data']['data']['charged'] ?? $charges,
+                    $response_decode['event_data']['data']['settled'] ?? ($paid_amount - $charges)
+                    );
+
                 }
 
-                //incase there is a general promo: think of DRY
-                $daat['user'] = $user_details;
-                $daat['funding_amount'] = $paid_amount;
-                $daat['funding_option_id'] = $funding_option_details->id;
-                $check_promo = (new WalletFundingPromoService())->apply_funding_promo($daat);
-                if($check_promo['status'] == 1){
-                    // logger('general promo: '.$check_promo['actual_amount_to_fund_user']);
-                    $amount_to_fund_user = $check_promo['actual_amount_to_fund_user'];
-                    $promo_id = $check_promo['promo_id'];
-                }
-                //general promo supercedes custom
-
-
+        
                 $created_data['funding_slug'] = 'securewaveng';
                 $created_data['user_id'] = $user_details->id;
                 $created_data['wallet_funding_promo_id'] = $promo_id;
