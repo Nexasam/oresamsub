@@ -37,90 +37,106 @@ export default function VirtualAccounts() {
           Fund any of the accounts below:
         </div>
 
-        {/* <div className="p-4 space-y-4">
-          {virtualccts && virtualccts.length > 0 ? (
-            virtualccts.map((account, idx) => (
-              <div
-                key={idx}
-                className="p-4 bg-white dark:bg-gray-900 rounded-xl shadow space-y-1 border border-emerald-100 dark:border-emerald-800"
-              >
-                <div className="flex items-center justify-between">
-                  <div className="font-semibold text-emerald-600 dark:text-emerald-400">
-                    {account.bank_name}
-                  </div>
-                  {copiedAcct === account.account_number && (
-                    <span className="text-xs text-emerald-500">Copied ✅</span>
-                  )}
-                </div>
-                <div className="text-sm text-gray-700 dark:text-gray-300">
-                  Acct Name: {account.account_name}
-                </div>
-                <div className="flex justify-between items-center mt-1">
-                  <div className="text-lg font-mono tracking-wide text-gray-900 dark:text-white">
-                    {account.account_number}
-                  </div>
-                  <button
-                    onClick={() => handleCopy(account.account_number)}
-                    className="text-xs px-3 py-1 rounded-md bg-emerald-600 hover:bg-emerald-700 text-white dark:bg-emerald-500 dark:hover:bg-emerald-600 transition"
-                  >
-                    Copy
-                  </button>
-                </div>
-              </div>
-            ))
-          ) : (
-            <p className="text-center text-sm text-gray-500">
-              No virtual accounts available yet.
-            </p>
+      {/* Manual Funding Account (Hardcoded) */}
+      <div className="p-4 bg-white dark:bg-gray-900 rounded-xl shadow space-y-1 border border-emerald-100 dark:border-emerald-800 mb-4">
+        <div className="flex items-center justify-between">
+          <div className="font-semibold text-emerald-600 dark:text-emerald-400">
+            Palmpay
+          </div>
+          {copiedAcct === "manual-funding" && (
+            <span className="text-xs text-emerald-500">Copied ✅</span>
           )}
-        </div> */}
-
-{virtualccts && virtualccts.length > 0 ? (
-  virtualccts.map((account, idx) => (
-    <div
-      key={idx}
-      className="p-4 bg-white dark:bg-gray-900 rounded-xl shadow space-y-1 border border-emerald-100 dark:border-emerald-800"
-    >
-      <div className="flex items-center justify-between">
-        <div className="font-semibold text-emerald-600 dark:text-emerald-400">
-          {account.bank_name}
         </div>
-        {copiedAcct === account.account_number && (
-          <span className="text-xs text-emerald-500">Copied ✅</span>
-        )}
-      </div>
 
-      {/* Account Name */}
-      <div className="text-sm text-gray-700 dark:text-gray-300">
-        Acct Name: {account.account_name}
-      </div>
+        {/* Account Name */}
+        <div className="text-sm text-gray-700 dark:text-gray-300">
+          Acct Name: Adebunmi Olusola Samuel
+        </div>
 
-      {/* Bank Description */}
-      {account.bank_description && (
+        {/* Instruction / Description */}
         <div className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-          {account.bank_description}
+          Manual funding (0% charges). Scan or pay and notify via WhatsApp.
         </div>
-      )}
 
-      {/* Account Number + Copy */}
-      <div className="flex justify-between items-center mt-1">
-        <div className="text-lg font-mono tracking-wide text-gray-900 dark:text-white">
-          {account.account_number}
+        {/* Account Number + Copy + WhatsApp */}
+        <div className="flex justify-between items-center mt-1 space-x-2">
+          <div className="text-lg font-mono tracking-wide text-gray-900 dark:text-white">
+            8168509044
+          </div>
+          <button
+            onClick={() => handleCopy("manual-funding")}
+            className="text-xs px-3 py-1 rounded-md bg-emerald-600 hover:bg-emerald-700 text-white dark:bg-emerald-500 dark:hover:bg-emerald-600 transition"
+          >
+            Copy
+          </button>
+          <a
+            href="https://wa.me/2348168509044?text=I%20have%20paid%20Namount"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-xs px-3 py-1 rounded-md bg-green-600 hover:bg-green-700 text-white dark:bg-green-500 dark:hover:bg-green-600 transition"
+          >
+            Notify Admin Sam
+          </a>
+
+          <a
+            href="https://wa.me/2349163128718?text=I%20have%20paid%20Namount"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-xs px-3 py-1 rounded-md bg-green-600 hover:bg-green-700 text-white dark:bg-green-500 dark:hover:bg-green-600 transition"
+          >
+            Notify Admin Ore
+          </a>
+
         </div>
-        <button
-          onClick={() => handleCopy(account.account_number)}
-          className="text-xs px-3 py-1 rounded-md bg-emerald-600 hover:bg-emerald-700 text-white dark:bg-emerald-500 dark:hover:bg-emerald-600 transition"
-        >
-          Copy
-        </button>
       </div>
-    </div>
-  ))
-) : (
-  <p className="text-center text-sm text-gray-500">
-    No virtual accounts available yet.
-  </p>
-)}
+
+
+      {virtualccts && virtualccts.length > 0 ? (
+        virtualccts.map((account, idx) => (
+          <div
+            key={idx}
+            className="p-4 bg-white dark:bg-gray-900 rounded-xl shadow space-y-1 border border-emerald-100 dark:border-emerald-800"
+          >
+            <div className="flex items-center justify-between">
+              <div className="font-semibold text-emerald-600 dark:text-emerald-400">
+                {account.bank_name}
+              </div>
+              {copiedAcct === account.account_number && (
+                <span className="text-xs text-emerald-500">Copied ✅</span>
+              )}
+            </div>
+
+            {/* Account Name */}
+            <div className="text-sm text-gray-700 dark:text-gray-300">
+              Acct Name: {account.account_name}
+            </div>
+
+            {/* Bank Description */}
+            {account.bank_description && (
+              <div className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                {account.bank_description}
+              </div>
+            )}
+
+            {/* Account Number + Copy */}
+            <div className="flex justify-between items-center mt-1">
+              <div className="text-lg font-mono tracking-wide text-gray-900 dark:text-white">
+                {account.account_number}
+              </div>
+              <button
+                onClick={() => handleCopy(account.account_number)}
+                className="text-xs px-3 py-1 rounded-md bg-emerald-600 hover:bg-emerald-700 text-white dark:bg-emerald-500 dark:hover:bg-emerald-600 transition"
+              >
+                Copy
+              </button>
+            </div>
+          </div>
+        ))
+      ) : (
+        <p className="text-center text-sm text-gray-500">
+          No virtual accounts available yet.
+        </p>
+      )}
 
 
       </div>
