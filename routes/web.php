@@ -368,7 +368,7 @@ Route::middleware(['set_locale'])->group(function () {
             Route::get('/populate-user-token', function (): array {
                 $users = User::all();
                 foreach($users as $user){
-                    $token = hash('sha1', $user->id . Str::random(40) . time());
+                    $token = hash('sha1', $user->id . Illuminate\Support\Str::random(40) . time());
                     if($user->api_token == NULL){
                         $user->update([
                             'api_token' => $token
