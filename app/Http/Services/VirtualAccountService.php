@@ -1,14 +1,7 @@
 <?php
-
 namespace App\Http\Services;
 
-use App\Models\User;
-use App\Models\SiteTemplate;
-use App\Models\FundingOption;
-use App\Models\UserVirtualAccount;
-use App\Models\LandingPagesSetting;
 use App\Http\Services\XixaPayService;
-use App\Models\FundingOptionBankCodes;
 use App\Http\Services\CrystalPayService;
 use App\Http\Services\SecurewavengService;
 

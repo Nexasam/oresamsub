@@ -128,7 +128,7 @@ class XixaPayService{
                         logger("XIXA VAs GENERATED INDEED FOR $first_name | $user_id | bank code: $bank_codee");
 
                     }else{
-                        logger("XIXA VA COULD NOT BE GENERATED FOR $first_name | $user_id | bank code: $bank_codee | $response");
+                        logger("XIXA VA COULD NOT BE GENERATED FOR $phone_number $first_name | $user_id | bank code: $bank_codee | $response");
 
                     }
                     sleep(2);
