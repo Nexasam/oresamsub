@@ -18,6 +18,7 @@ class XixaPayService{
         $last_name = $user->last_name;
         $email = $user->email;
         $phone_number = $user->phone_number;
+        $phone_number  = preg_replace('/[^0-9]/', '', $phone_number);
         $bvn = $user->bvn;
 
         //FOR NOW, RELAX ON THIS
