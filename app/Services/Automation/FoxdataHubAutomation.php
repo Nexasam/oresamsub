@@ -134,6 +134,72 @@ class FoxdataHubAutomation{
         }        
     }
 
+    public function buyElectricity(){
+        $plan_details = ProductPlan::with('product_plan_category.network')
+        ->where('visibility',1)
+        ->where('id',$this->plan_id)->first();
+        if(! $plan_details){
+            return [
+            'status' => -1,
+            'user_message' => 'An error occurred while processing this transaction. Please try again or reach out to support',
+            'admin_message' => 'Wrong plan Id',
+            ];
+        }
+
+        $automation_plan_id = $plan_details->automation_product_plan_id; 
+
+        $custom_ref = substr(uniqid(rand(), true), 0, 15);
+
+        $array = [
+            "metre_number" => $this->metre_number,
+            "plan" => $automation_plan_id,
+            "amount" => $this->amount,
+            "reference" => $custom_ref,
+        ];
+        $encoded_array = json_encode($array);
+        $header_array = array(
+            'Authorization: Token '.$this->token,
+            'Content-Type: application/json',
+            'Accept: application/json',
+        );
+
+        $curl = curl_init();
+        curl_setopt_array($curl, array(
+            CURLOPT_URL => 'https://foxdatahub.com/api/v1/user/buy_electricity',
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => '',
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 0,
+            CURLOPT_FOLLOWLOCATION => true,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => 'POST',
+            CURLOPT_POSTFIELDS => $encoded_array,
+            CURLOPT_HTTPHEADER => $header_array,
+        ));
+
+        $response = curl_exec($curl);
+        $response_dec = json_decode($response, true);
+        $httpcode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+        curl_close($curl);
+
+        if(isset($response_dec['status']) && $response_dec['status'] == true ){
+            return [
+            'status' => 1,
+            'user_message' => $response_dec['message'] ?? 'Congratulations, your transaction was successfully processed',
+            'admin_message' => $response,
+            'token' => $response_dec['data']['token'] ?? null,
+            ];
+        }else{
+            $realresponse = $response_dec['message'] ??  "Sorry, transaction failed with code: $httpcode";
+            return [
+            'status' => -1,
+            'user_message' => $realresponse,
+            'admin_message' => $response,
+            ];
+        }
+      
+    }
+
     public function buyAirtime(){
         
         $plan_details = ProductPlan::with('product_plan_category.network')
