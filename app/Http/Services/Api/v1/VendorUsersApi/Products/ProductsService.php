@@ -1831,6 +1831,7 @@ class ProductsService{
                                 $dataa['total_amount'] = $total_amount;
                                 $dataa['slots'] = 1;
                                 $dataa['validation_customer_name'] = $validation_customer_name;
+                                $dataa['validation_extra_info'] = $validation_customer_name;
                                 $dataa['product_plan_category_name'] = $plan_category_details->product_plan_category_name;
                                 $dataa['user_id'] = $user_id;
                                 $buy_cable_subscription = AutomationLogic::initiateCablePurchase($dataa);
