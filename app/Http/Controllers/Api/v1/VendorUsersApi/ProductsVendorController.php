@@ -901,10 +901,10 @@ class ProductsVendorController extends Controller
         $validate_smart_card_number = (new MegaSubCableTV(smart_card_number: $smart_card_number, plan_id: $plan_id, user_id: $user_id))->validateSmartCardNumber();
 
         $status = $validate_smart_card_number['status'] ?? -1;
-        $message = $validate_smart_card_number['message'] ?? '';
+        $message = $validate_smart_card_number['message'] ?? 'nil';
         $data = $validate_smart_card_number['data'] ?? [
-            'name' => $validate_smart_card_number['name'] ?? '',
-            'address' => $validate_smart_card_number['address'] ?? '',
+            'name' => $validate_smart_card_number['name'] ?? 'nil',
+            'address' => $validate_smart_card_number['address'] ?? 'nil',
         ];
         
         if($status == 1){
