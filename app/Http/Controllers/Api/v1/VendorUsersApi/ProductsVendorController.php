@@ -127,7 +127,7 @@ class ProductsVendorController extends Controller
         $validator = Validator::make($request->all(), [
             "amount"=>"required|integer",
             "plan"=>"required",
-            "metre_number" =>"required|integer",
+            "metre_number" =>"required",
             "validation_extra_info" =>"required|string",
             "validated_address" =>"nullable|string",
             'reference' => 'required|unique:transactions,txn_reference'
