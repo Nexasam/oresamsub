@@ -271,8 +271,8 @@ class FoxdataHubAutomation{
                 'status' => 1,
                 'user_message' => $response_dec['message'] ?? 'Congratulations, your validation was successful',
                 'admin_message' => $response,
-                'name' => $response_dec['name'] ?? "",
-                'address' => $response_dec['address'] ?? "",
+                'name' => $response_dec['data']['name'] ?? "",
+                'address' => $response_dec['data']['address'] ?? "",
             ];
         }else{  
 
@@ -281,8 +281,8 @@ class FoxdataHubAutomation{
                 'status' => -1,
                 'user_message' =>$realresponse,
                 'admin_message' => $response,
-                'name' => $response_dec['name'] ?? "",
-                'address' => $response_dec['address'] ?? "",
+                'name' => $response_dec['data']['name'] ?? "",
+                'address' => $response_dec['data']['address'] ?? "",
             ];
 
         }   
