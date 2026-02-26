@@ -1581,7 +1581,7 @@ class ProductsService{
             DB::rollBack();
             // return ['status'=> -1, 'message'=>'Something went wrong... Please try again', 'data'=>[]];
             return [
-                'id'=>$transaction->id,
+                'id'=>$transaction->id ?? rand(1000,9999),
                 'txn_reference'=>$txn_reference,
                 'status'=> -1,
                 'actual_status' =>  -1,
