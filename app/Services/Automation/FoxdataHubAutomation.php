@@ -233,7 +233,7 @@ class FoxdataHubAutomation{
         ];
         $encoded_array = json_encode($array);
         $header_array = array(
-            'Authorization: Bearer '.$this->token,
+            'Authorization: Token '.$this->token,
             'Content-Type: application/json',
             'Accept: application/json',
         );
