@@ -900,7 +900,7 @@ class ProductsVendorController extends Controller
         $data['url'] = ""; //url
         $data['amount'] = ""; //amount
         $validate_smart_card_number = AutomationLogic::validateCableSubscription($data);
-        logger('cable validation result'.$validate_smart_card_number);
+        logger('cable validation result'.json_encode($validate_smart_card_number));
              
       
 
