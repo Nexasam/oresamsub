@@ -1496,6 +1496,7 @@ class ProductsService{
                                 $description = 'Purchase of electricity subscription';
                                 $creationData['transaction_category'] = 'utility_bills';
                                 $creationData['user_id'] = $user_id;
+                                $creationData['electricity_token'] = $token;
                                 $creationData['txn_reference'] = $txn_reference;
                                 $creationData['wallet_category'] = $wallet_category;
                                 $creationData['product_plan_id'] = $electricity_product_plan_id;
