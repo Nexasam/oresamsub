@@ -868,7 +868,7 @@ class ProductsVendorController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'smart_card_number' => 'required',
-            'product_plan_id' => 'required'
+            'plan' => 'required|exists:product_plans,api_id',
         ]);
 
         if ($validator->stopOnFirstFailure()->fails()) {
@@ -884,9 +884,9 @@ class ProductsVendorController extends Controller
 
         $user_id = $user_details->id; //compute this
         $smart_card_number = $request->smart_card_number;
-        $plan_id = $request->product_plan_id;
+        $plan_id = $request->plan;
        
-        $plan_details = ProductPlan::where('id',$plan_id)
+        $plan_details = ProductPlan::where('api_id',$plan_id)
         ->where('visibility',1)
         ->first();
         if(! $plan_details){
