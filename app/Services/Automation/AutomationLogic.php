@@ -390,6 +390,22 @@ class AutomationLogic{
         return $validate_smartcard_number;
     }
 
+    public static function validateElectricitySubscrption($data){
+        $automation_details = $data['automation_details'];
+        $data['url'] = $automation_details->cable_url;
+        $data['token'] = $automation_details->api_public_key;
+        if($automation_details->slug == 'foxdatahub'){
+            $validate_metre_number = (new FoxdataHubAutomation($data))->validateMetreNumber();
+        }else{
+            //this will be like this until other automations are processed
+            $validate_metre_number['status'] = -1;
+            $validate_metre_number['name'] = 'Name not found.';
+            $validate_metre_number['address'] = 'Address not found';
+            $validate_metre_number['data'] = $validate_metre_number;
+        }
+        return $validate_metre_number;
+    }
+
 
 
 

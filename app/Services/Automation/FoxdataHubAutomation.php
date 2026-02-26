@@ -289,5 +289,82 @@ class FoxdataHubAutomation{
 
     }
 
+    public function validateMetreNumber(){
+        
+            $plan_details = ProductPlan::with('product_plan_category.network')
+            ->where('visibility',1)
+            ->where('id',$this->plan_id)->first();
+            if(! $plan_details){
+                return [
+                    'status' => -1,
+                    'user_message' => 'An error occurred while processing this transaction. Please try again or reach out to support',
+                    'admin_message' => 'Wrong plan Id',
+                ];
+            }
+    
+        
+    
+            $automation_plan_id = $plan_details->automation_product_plan_id; 
+            $custom_ref = substr(uniqid(rand(), true), 0, 15);
+            $array = [
+                "smart_card_number"=>$this->smart_card_number,
+                "plan"=> $automation_plan_id,
+                "reference"=>$custom_ref,
+            ];
+            $encoded_array = json_encode($array);
+            $header_array = array(
+                'Authorization: Token '.$this->token,
+                'Content-Type: application/json',
+                'Accept: application/json',
+            );
+            $header_json = json_encode($header_array);
+    
+            $curl = curl_init();
+            curl_setopt_array($curl, array(
+            CURLOPT_URL => 'https://foxdatahub.com/api/v1/user/validate_metre_number',
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => '',
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 0,
+            CURLOPT_FOLLOWLOCATION => true,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => 'POST',
+            CURLOPT_POSTFIELDS =>$encoded_array,
+            CURLOPT_HTTPHEADER => $header_array,
+            ));
+    
+            $response = curl_exec($curl);
+    
+            logger('cable validation response TTT: '.$response.' '.$this->token);
+    
+            curl_close($curl);
+          
+            $response_dec = json_decode($response,true);
+            $httpcode = curl_getinfo($curl, CURLINFO_HTTP_CODE);   
+            
+            if(isset($response_dec['status']) && $response_dec['status'] == true ){
+                //success
+                return [
+                    'status' => 1,
+                    'user_message' => $response_dec['message'] ?? 'Congratulations, your validation was successful',
+                    'admin_message' => $response,
+                    'name' => $response_dec['data']['name'] ?? "",
+                    'address' => $response_dec['data']['address'] ?? "",
+                ];
+            }else{  
+    
+                $realresponse = $response_dec['message'] ??  "Sorry, validation failed with code: $httpcode";
+                return [
+                    'status' => -1,
+                    'user_message' =>$realresponse,
+                    'admin_message' => $response,
+                    'name' => $response_dec['data']['name'] ?? "",
+                    'address' => $response_dec['data']['address'] ?? "",
+                ];
+    
+            }   
+    
+        }  
+
 
 }

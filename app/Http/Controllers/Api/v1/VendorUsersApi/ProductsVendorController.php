@@ -836,7 +836,7 @@ class ProductsVendorController extends Controller
         $plan_id = $request->plan;
         // $pin = $request->pin;
        
-        $plan_details = ProductPlan::where('api_id',$plan_id)
+        $plan_details = ProductPlan::with('automation')->where('api_id',$plan_id)
         ->where('visibility',1)
         ->first();
         if(! $plan_details){
@@ -845,21 +845,34 @@ class ProductsVendorController extends Controller
 
 
         // $validate_metre_name = (new MegaSubElectricity(metre_number: $metre_number, plan_id: $plan_id, user_id: $user_id))->validateMetreNumber();
-        $validate_metre_name = (new MegaSubElectricity(metre_number: $metre_number, plan_id: $plan_id, user_id: $user_id))->validateMetreNumber();
+        // $validate_metre_name = (new MegaSubElectricity(metre_number: $metre_number, plan_id: $plan_id, user_id: $user_id))->validateMetreNumber();
 
-        // return $validate_metre_name;
+       
+        $data['automation_id'] = $plan_details->automation->id; //automation id
+        $data['automation_details'] = $plan_details->automation; //automation details   
+        $data['network_id'] = ""; //network id
+        $data['plan_id'] = $plan_details->id; //plan id
+        $data['phone_number'] = ""; //phone number  
+        $data['smart_card_number'] = $metre_number; //smart card number
+        $data['token'] = ""; //token
+        $data['url'] = ""; //url
+        $data['amount'] = ""; //amount
+        $validate_metre_details = AutomationLogic::validateElectricitySubscrption($data);
+        logger('metre validation result'.json_encode($validate_metre_details));
+             
+      
 
-        $status = $validate_metre_name['status'] ?? -1;
-        $message = $validate_metre_name['message'] ?? '';
-        $data = $validate_metre_name['data'] ?? [
-            'name' => $validate_metre_name['name'] ?? '',
-            'address' => $validate_metre_name['address'] ?? '',
+        $status = $validate_metre_details['status'] ?? -1;
+        $message = $validate_metre_details['message'] ?? 'nil';
+        $data = $validate_metre_details['data'] ?? [
+            'name' => $validate_metre_details['name'] ?? 'nil',
+            'address' => $validate_metre_details['address'] ?? 'nil',
         ];
-
+        
         if($status == 1){
-            return $this->success('Metre validation was successful', data: $data );    
+            return $this->success('Metre number validation was successful', data: $data );    
         }
-        return $this->error( 'Metre validation was not successful' ,data: $data, code: 500);   
+        return $this->error( 'Metre number  validation was not successful' ,data: $data, code: 500);   
     }
 
     /**
