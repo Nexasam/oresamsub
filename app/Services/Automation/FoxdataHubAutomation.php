@@ -338,7 +338,7 @@ class FoxdataHubAutomation{
     
             $response = curl_exec($curl);
     
-            logger('cable validation response TTT: '.$response.' '.$this->token);
+            logger('metre validation response BBB: '.$response.' '.$this->token);
     
             curl_close($curl);
           
