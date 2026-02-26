@@ -264,7 +264,8 @@
                                                   <div class="grid w-full p-1.5 bg-gray-100 lg:grid-cols-1 gap-2 my-2 text-sm">
                                                       <div class="">
                                                         <p class="font-bold">{{ $product_plann->product_plan_name }} 
-                                                          &nbsp; API ID: {{ $product_plann->automation_product_plan_id }}
+                                                          &nbsp; API ID: {{ $product_plann->api_id }}
+                                                          &nbsp; Auto API ID: {{ $product_plann->automation_product_plan_id }}
                                                           &nbsp; Automation: {{ $product_plann->automation->automation_name }}
                                                         </p>
                                                         <input type="hidden" name="product_plan[]" value="{{ $product_plann->id }}">

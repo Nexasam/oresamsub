@@ -136,7 +136,8 @@ class MsOrgGroupAutomation{
         $httpcode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
         // logger($response);
 
-        if(isset($response_dec['Status']) && $response_dec['Status'] == 'successful'){
+        // || $response_dec['Status'] == 'processing'
+        if(isset($response_dec['Status']) && ($response_dec['Status'] == 'successful' ) ){
             //success
             return [
                 'status' => 1,

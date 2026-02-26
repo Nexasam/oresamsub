@@ -816,7 +816,7 @@ class ProductsVendorController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'metre_number' => 'required',
-            'product_plan_id' => 'required',
+            'plan' => 'required|exists:product_plans,api_id',
         ]);
 
         if ($validator->stopOnFirstFailure()->fails()) {
@@ -832,20 +832,18 @@ class ProductsVendorController extends Controller
 
         $user_id = $user_details->id; //compute this
         $metre_number = $request->metre_number;
-        $plan_id = $request->product_plan_id;
+        $plan_id = $request->plan;
         // $pin = $request->pin;
        
-        $plan_details = ProductPlan::where('id',$plan_id)
+        $plan_details = ProductPlan::where('api_id',$plan_id)
         ->where('visibility',1)
         ->first();
         if(! $plan_details){
             return $this->error('Plan details not found', code: 404 );    
         }
 
-        // if($user_details->pin != $pin){
-        //     return $this->error('User pin is incorrect', code: 403 );    
-        // }
 
+        // $validate_metre_name = (new MegaSubElectricity(metre_number: $metre_number, plan_id: $plan_id, user_id: $user_id))->validateMetreNumber();
         $validate_metre_name = (new MegaSubElectricity(metre_number: $metre_number, plan_id: $plan_id, user_id: $user_id))->validateMetreNumber();
 
         // return $validate_metre_name;
