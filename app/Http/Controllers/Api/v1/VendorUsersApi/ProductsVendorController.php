@@ -853,7 +853,7 @@ class ProductsVendorController extends Controller
         $data['network_id'] = ""; //network id
         $data['plan_id'] = $plan_details->id; //plan id
         $data['phone_number'] = ""; //phone number  
-        $data['smart_card_number'] = $metre_number; //smart card number
+        $data['metre_number'] = $metre_number; //smart card number
         $data['token'] = ""; //token
         $data['url'] = ""; //url
         $data['amount'] = ""; //amount

@@ -29,6 +29,8 @@ class FoxdataHubAutomation{
 
     private $smart_card_number;
 
+    private $metre_number;
+
 
 
     // private $ported_number;
@@ -41,6 +43,7 @@ class FoxdataHubAutomation{
         $this->plan_id = $data['plan_id'] ?? "";
         $this->mobile_number = $data['phone_number'] ?? "";
         $this->smart_card_number = $data['smart_card_number'] ?? "";
+        $this->metre_number = $data['metre_number'] ?? "";
         $this->token = $data['token'] ?? "";
         $this->url = $data['url'] ?? "";
         $this->amount = $data['amount'] ?? 0;
@@ -307,7 +310,7 @@ class FoxdataHubAutomation{
             $automation_plan_id = $plan_details->automation_product_plan_id; 
             $custom_ref = substr(uniqid(rand(), true), 0, 15);
             $array = [
-                "smart_card_number"=>$this->smart_card_number,
+                "metre_number"=>$this->metre_number,
                 "plan"=> $automation_plan_id,
                 "reference"=>$custom_ref,
             ];
