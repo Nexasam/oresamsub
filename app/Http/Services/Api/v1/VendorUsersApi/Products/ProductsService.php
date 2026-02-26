@@ -1825,6 +1825,7 @@ class ProductsService{
                               
 
                                 $dataa['automation_details'] = $automation_details;
+                                $dataa['token'] = $automation_details->api_public_key;
                                 $dataa['smart_card_number'] = $smart_card_number;
                                 $dataa['plan_id'] = $cable_product_plan_id;
                                 $dataa['total_amount'] = $total_amount;
