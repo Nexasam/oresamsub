@@ -273,7 +273,11 @@ class AutomationLogic{
         }else if($automation_details->slug == 'paultechs'){
             //logic stays here...
             $buy_cable_subscription = (new PaultechsAutomation($data))->buyCable();    
-        }else{
+        }else if($automation_details->slug == 'foxdatahub'){
+            $buy_cable_subscription = (new FoxdataHubAutomation($data))->buyElectricity();
+            logger('foxdatahub ran for cable subscription: '.json_encode($buy_cable_subscription));
+        }
+        else{
             //this will be like this until other automations are processed
             $buy_cable_subscription['status'] = -1;
             $buy_cable_subscription['user_message'] = 'Cable subscription failed.';
