@@ -876,13 +876,7 @@ class ProductsVendorController extends Controller
             return $this->error('Validation failed', data: $validator->errors()->first(), code: 403 );    
         }
 
-         //TODO: revamp to make better
-         $bearer_token = $request->bearerToken(); 
-         $user_details = $this->fetch_user_records_with_token($bearer_token);
-         if(! $user_details){
-             return $this->error('Authentication failed', data: [], code: 403 );    
-         }
-
+        $user_details = $request->api_user;
         $user_id = $user_details->id; //compute this
         $smart_card_number = $request->smart_card_number;
         $plan_id = $request->plan;
@@ -893,11 +887,6 @@ class ProductsVendorController extends Controller
         if(! $plan_details){
             return $this->error('Plan details not found', code: 404 );    
         }
-
-        
-        // if($user_details->pin != $pin){
-        //     return $this->error('User pin is incorrect', code: 403 );    
-        // }
 
         // $validate_smart_card_number = (new MegaSubCableTV(smart_card_number: $smart_card_number, plan_id: $plan_id, user_id: $user_id))->validateSmartCardNumber();
         // $automation_slug = $plan_details->automation->slug;
