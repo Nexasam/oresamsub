@@ -493,6 +493,7 @@ class ElectricitySubscriptionController extends Controller
                                 $description = 'Purchase of electricity subscription';
                                 $creationData['transaction_category'] = 'utility_bills';
                                 $creationData['user_id'] = $user_id;
+                                $creationData['electricity_token'] = $buy_electricity_subscription['token'] ?? NULL;
                                 $creationData['wallet_category'] = $request->wallet_category;
                                 $creationData['product_plan_id'] = $request->electricity_product_plan_id;
                                 $creationData['phone_number'] =  NULL;

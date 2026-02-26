@@ -1473,9 +1473,9 @@ class ProductsService{
                                     'status' => $status
                                 );
                                
-                                $validate_metre_name = (new MegaSubElectricity(metre_number: $metre_number, plan_id: $electricity_product_plan_id, user_id: $user_id))->validateMetreNumber();
-                                $validated_name = $validate_metre_name['name'] ?? '';
-                                $validated_address = $validate_metre_name['address'] ?? 'Nil';
+                                // $validate_metre_name = (new MegaSubElectricity(metre_number: $metre_number, plan_id: $electricity_product_plan_id, user_id: $user_id))->validateMetreNumber();
+                                // $validated_name = $validate_metre_name['name'] ?? '';
+                                // $validated_address = $validate_metre_name['address'] ?? 'Nil';
                     
                                 //this should not run though because it has already been checked
                                 if($wallet_after <= 0){

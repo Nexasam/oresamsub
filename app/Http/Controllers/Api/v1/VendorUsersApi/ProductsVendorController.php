@@ -167,6 +167,7 @@ class ProductsVendorController extends Controller
         
         $data2 =[
             'id'=>$buy_electricityy['id'] ?? NULL,
+            'token'=>$buy_electricityy['token'] ?? NULL,
             'txn_reference'=>$buy_electricityy['txn_reference'] ?? NULL,
             'status'=>$buy_electricityy['status'],
             'Status'=>$buy_electricityy['Status'] ?? NULL,
