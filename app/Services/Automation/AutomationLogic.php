@@ -274,7 +274,7 @@ class AutomationLogic{
             //logic stays here...
             $buy_cable_subscription = (new PaultechsAutomation($data))->buyCable();    
         }else if($automation_details->slug == 'foxdatahub'){
-            $buy_cable_subscription = (new FoxdataHubAutomation($data))->buyElectricity();
+            $buy_cable_subscription = (new FoxdataHubAutomation($data))->buyCableTv();
             logger('foxdatahub ran for cable subscription: '.json_encode($buy_cable_subscription));
         }
         else{

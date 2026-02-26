@@ -204,7 +204,7 @@ class ProductsVendorController extends Controller
         ]);
 
         if ($validator->stopOnFirstFailure()->fails()) {
-            return $this->error('Validation faileddd', data: $validator->errors()->first(), code: 403 );    
+            return $this->error('Validation failed', data: $validator->errors()->first(), code: 403 );    
         }
 
         $getiddd = ProductPlan::with('product_plan_category.product')->where('api_id',$request->plan)->first();
