@@ -288,6 +288,7 @@ class AutomationLogic{
     public static function initiateElectricityPurchase($data){
         $automation_details = $data['automation_details'];
         $metre_number = $data['metre_number'];
+        $data['automation_details'] = $automation_details;
         $plan_id = $data['plan_id'];
         $total_amount = $data['total_amount'];
         $slots = $data['slots'];
@@ -295,7 +296,7 @@ class AutomationLogic{
         $product_plan_category_name = $data['product_plan_category_name'];
         $phone_number = $data['phone_number'];
         $user_id = $data['user_id'];
-        $data['amount'] = $total_amount;
+        $data['token'] = $automation_details->api_public_key;
 
     
         if($automation_details->slug == 'megasubplug'){
