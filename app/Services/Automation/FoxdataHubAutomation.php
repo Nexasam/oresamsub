@@ -222,14 +222,7 @@ class FoxdataHubAutomation{
             ];
         }
 
-        $network_details = Network::where('visibility',1)->where('id',$this->network_id)->first();
-        if(! $network_details){
-            return [
-                'status' => -1,
-                'user_message' => 'An error occurred while processing this transaction. Please try again or reach out to support',
-                'admin_message' => 'Network ID is likely not available or set to hidden',
-            ];
-        }
+    
 
         $automation_plan_id = $plan_details->automation_product_plan_id; 
         $custom_ref = substr(uniqid(rand(), true), 0, 15);
