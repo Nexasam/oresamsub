@@ -22,7 +22,7 @@ class ValidateApiToken
 
         if (!$user) {
             return response()->json([
-                'error' => 'Unauthorized. Invalid API token.'
+                'error' => 'Unauthorized. Invalid API token.....'
             ], 401);
         }
 
