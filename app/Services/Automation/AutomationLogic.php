@@ -376,6 +376,8 @@ class AutomationLogic{
 
     public static function validateCableSubscription($data){
         $automation_details = $data['automation_details'];
+        $data['url'] = $automation_details->cable_url;
+        $data['token'] = $automation_details->api_public_key;
         if($automation_details->slug == 'foxdatahub'){
             $validate_smartcard_number = (new FoxdataHubAutomation($data))->validateCableTv();
         }else{
