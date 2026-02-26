@@ -255,6 +255,8 @@ class FoxdataHubAutomation{
 
         $response = curl_exec($curl);
 
+        logger('cable validation response TTT: '.$response.' '.$this->token);
+
         curl_close($curl);
       
         $response_dec = json_decode($response,true);
