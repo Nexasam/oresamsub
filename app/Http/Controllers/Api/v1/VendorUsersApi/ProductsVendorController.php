@@ -7,6 +7,7 @@ use App\Models\Network;
 use App\Models\Product;
 use App\Models\ProductPlan;
 use App\Models\Transaction;
+use App\Services\Automation\AutomationLogic;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use App\Models\ProductPlanCategory;
@@ -886,7 +887,7 @@ class ProductsVendorController extends Controller
         $smart_card_number = $request->smart_card_number;
         $plan_id = $request->plan;
        
-        $plan_details = ProductPlan::where('api_id',$plan_id)
+        $plan_details = ProductPlan::with('automation')->where('api_id',$plan_id)
         ->where('visibility',1)
         ->first();
         if(! $plan_details){
@@ -898,7 +899,20 @@ class ProductsVendorController extends Controller
         //     return $this->error('User pin is incorrect', code: 403 );    
         // }
 
-        $validate_smart_card_number = (new MegaSubCableTV(smart_card_number: $smart_card_number, plan_id: $plan_id, user_id: $user_id))->validateSmartCardNumber();
+        // $validate_smart_card_number = (new MegaSubCableTV(smart_card_number: $smart_card_number, plan_id: $plan_id, user_id: $user_id))->validateSmartCardNumber();
+        // $automation_slug = $plan_details->automation->slug;
+        $data['automation_id'] = $plan_details->automation->id; //automation id
+        $data['automation_details'] = $plan_details->automation; //automation details   
+        $data['network_id'] = ""; //network id
+        $data['plan_id'] = $plan_details->id; //plan id
+        $data['phone_number'] = ""; //phone number  
+        $data['smart_card_number'] = $smart_card_number; //smart card number
+        $data['token'] = ""; //token
+        $data['url'] = ""; //url
+        $data['amount'] = ""; //amount
+        $validate_smart_card_number = AutomationLogic::validateCableSubscription($data);
+             
+      
 
         $status = $validate_smart_card_number['status'] ?? -1;
         $message = $validate_smart_card_number['message'] ?? 'nil';

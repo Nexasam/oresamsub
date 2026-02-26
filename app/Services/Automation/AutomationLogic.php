@@ -374,6 +374,20 @@ class AutomationLogic{
         return $buy_airtime;
     }
 
+    public static function validateCableSubscription($data){
+        $automation_details = $data['automation_details'];
+        if($automation_details->slug == 'foxdatahub'){
+            $validate_smartcard_number = (new FoxdataHubAutomation($data))->validateCableTv();
+        }else{
+            //this will be like this until other automations are processed
+            $validate_smartcard_number['status'] = -1;
+            $validate_smartcard_number['name'] = 'Name not found.';
+            $validate_smartcard_number['address'] = 'Address not found';
+            $validate_smartcard_number['data'] = $validate_smartcard_number;
+        }
+        return $validate_smartcard_number;
+    }
+
 
 
 
