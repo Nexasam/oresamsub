@@ -31,6 +31,7 @@ class FoxdataHubAutomation{
 
     private $metre_number;
 
+    private $validation_extra_info;
 
 
     // private $ported_number;
@@ -44,6 +45,7 @@ class FoxdataHubAutomation{
         $this->mobile_number = $data['phone_number'] ?? "";
         $this->smart_card_number = $data['smart_card_number'] ?? "";
         $this->metre_number = $data['metre_number'] ?? "";
+        $this->validation_extra_info = $data['validation_extra_info'] ?? "";
         $this->token = $data['token'] ?? "";
         $this->url = $data['url'] ?? "";
         $this->amount = $data['amount'] ?? 0;
@@ -152,6 +154,7 @@ class FoxdataHubAutomation{
 
         $array = [
             "metre_number" => $this->metre_number,
+            "validation_extra_info" => $this->validation_extra_info,
             "plan" => $automation_plan_id,
             "amount" => $this->amount,
             "reference" => $custom_ref,
