@@ -99,7 +99,7 @@
         
     </div>
 
-    <div class="grid grid-cols-12 gap-x-5">
+    <div class="grid grid-cols-12 gap-x-5 py-4">
         {{-- <div class="grid grid-cols-12 gap-5"> --}}
 
             <div class="col-span-2 bg-white p-5 rounded shadow">
