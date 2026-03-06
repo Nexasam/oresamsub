@@ -115,17 +115,17 @@
             </div>
             
             <div class="col-span-2 bg-white p-5 rounded shadow">
-                <p class="text-gray-500 text-sm">Successful</p>
+                <p class="text-gray-500 text-sm">Successful Txns</p>
                 <h2 class="text-2xl font-bold text-green-600">{{ $successful_txns }}</h2>
             </div>
             
             <div class="col-span-3 bg-white p-5 rounded shadow">
-                <p class="text-gray-500 text-sm">Failed</p>
+                <p class="text-gray-500 text-sm">Failed Txns</p>
                 <h2 class="text-2xl font-bold text-red-600">{{ $failed_txns }}</h2>
             </div>
             
             <div class="col-span-3 bg-white p-5 rounded shadow">
-                <p class="text-gray-500 text-sm">Refunded</p>
+                <p class="text-gray-500 text-sm">Refunded Txns</p>
                 <h2 class="text-2xl font-bold text-yellow-600">{{ $refunded_txns }}</h2>
             </div>
             
