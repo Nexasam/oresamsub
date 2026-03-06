@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Models\UserWalletFundingLog;
 use Inertia\Inertia;
 use App\Models\UserPlan;
 use App\Models\WalletLog;
@@ -299,22 +300,17 @@ class UserDashboardController extends Controller
               break;
       }
 
-      // Wallet balances
-      $data['main_wallet_balances'] = User::sum('main_wallet');
-      $data['bulk_data_wallet_sum'] = UserBulkDataWallet::sum('bulk_wallet_balance_mb');
-      $data['alltime_bulk_wallet_balance_mb'] = UserBulkDataWallet::sum('alltime_bulk_wallet_balance_mb');
+   
 
       // Total transactions
       $data['total_transactions_count'] = Transaction::whereBetween('created_at', [$start,$end])->count();
       $data['total_transactions_amount'] = Transaction::whereBetween('created_at', [$start,$end])->sum('amount');
 
       // Wallet funding
-      $data['wallet_funding_count'] = Transaction::where('type','wallet_funding')
-          ->whereBetween('created_at', [$start,$end])
+      $data['wallet_funding_count'] = FundingWebhookPayload::whereBetween('created_at', [$start,$end])
           ->count();
 
-      $data['wallet_funding_amount'] = Transaction::where('type','wallet_funding')
-          ->whereBetween('created_at', [$start,$end])
+      $data['wallet_funding_amount'] = FundingWebhookPayload::whereBetween('created_at', [$start,$end])
           ->sum('amount');
 
       // Success
