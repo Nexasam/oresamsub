@@ -97,7 +97,7 @@
         Last Week
         </a>
         
-        </div>
+    </div>
 
     <div class="grid grid-cols-12 gap-x-5">
         {{-- <div class="grid grid-cols-12 gap-5"> --}}
