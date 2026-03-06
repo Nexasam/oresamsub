@@ -313,7 +313,12 @@ class UserDashboardController extends Controller
       $data['wallet_funding_amount'] = FundingWebhookPayload::whereBetween('created_at', [$start,$end])
           ->sum('amount_paid');
 
+     
       // Success
+      $data['users'] = User::whereBetween('created_at', [$start,$end])
+      ->count();
+
+          // Success
       $data['successful_txns'] = Transaction::where('status',1)
           ->whereBetween('created_at', [$start,$end])
           ->count();

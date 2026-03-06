@@ -128,6 +128,11 @@
                 <p class="text-gray-500 text-sm">Refunded Txns</p>
                 <h2 class="text-2xl font-bold text-yellow-600">{{ $refunded_txns }}</h2>
             </div>
+
+            <div class="col-span-3 bg-white p-5 rounded shadow">
+                <p class="text-gray-500 text-sm">Users</p>
+                <h2 class="text-2xl font-bold text-green-600">{{ $users }}</h2>
+            </div>
             
             {{-- </div> --}}
 
