@@ -102,19 +102,19 @@
     <div class="grid grid-cols-12 gap-x-5">
         {{-- <div class="grid grid-cols-12 gap-5"> --}}
 
-            <div class="col-span-3 bg-white p-5 rounded shadow">
+            <div class="col-span-2 bg-white p-5 rounded shadow">
                 <p class="text-gray-500 text-sm">Total Transactions</p>
                 <h2 class="text-2xl font-bold">{{ $total_transactions_count }}</h2>
                 <p class="text-sm text-gray-500">₦{{ number_format($total_transactions_amount,2) }}</p>
             </div>
             
-            <div class="col-span-3 bg-white p-5 rounded shadow">
+            <div class="col-span-2 bg-white p-5 rounded shadow">
                 <p class="text-gray-500 text-sm">Wallet Funding</p>
                 <h2 class="text-2xl font-bold">{{ $wallet_funding_count }}</h2>
                 <p class="text-sm text-gray-500">₦{{ number_format($wallet_funding_amount,2) }}</p>
             </div>
             
-            <div class="col-span-3 bg-white p-5 rounded shadow">
+            <div class="col-span-2 bg-white p-5 rounded shadow">
                 <p class="text-gray-500 text-sm">Successful</p>
                 <h2 class="text-2xl font-bold text-green-600">{{ $successful_txns }}</h2>
             </div>
