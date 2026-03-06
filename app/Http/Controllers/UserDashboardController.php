@@ -24,6 +24,8 @@ use App\Models\BulkDataProductPlans;
 use App\Models\FundingWebhookPayload;
 use Illuminate\Support\Facades\Route;
 use App\Models\FundingOptionBankCodes;
+use Carbon\Carbon;
+
 
 class UserDashboardController extends Controller
 {
@@ -271,6 +273,74 @@ class UserDashboardController extends Controller
       }
 
     }else{
+
+
+      $filter = $request->filter ?? 'today';
+
+      switch ($filter) {
+          case 'yesterday':
+              $start = Carbon::yesterday()->startOfDay();
+              $end = Carbon::yesterday()->endOfDay();
+              break;
+
+          case 'this_week':
+              $start = Carbon::now()->startOfWeek();
+              $end = Carbon::now()->endOfWeek();
+              break;
+
+          case 'last_week':
+              $start = Carbon::now()->subWeek()->startOfWeek();
+              $end = Carbon::now()->subWeek()->endOfWeek();
+              break;
+
+          default: // today
+              $start = Carbon::today();
+              $end = Carbon::now();
+              break;
+      }
+
+      // Wallet balances
+      $data['main_wallet_balances'] = User::sum('main_wallet');
+      $data['bulk_data_wallet_sum'] = UserBulkDataWallet::sum('bulk_wallet_balance_mb');
+      $data['alltime_bulk_wallet_balance_mb'] = UserBulkDataWallet::sum('alltime_bulk_wallet_balance_mb');
+
+      // Total transactions
+      $data['total_transactions_count'] = Transaction::whereBetween('created_at', [$start,$end])->count();
+      $data['total_transactions_amount'] = Transaction::whereBetween('created_at', [$start,$end])->sum('amount');
+
+      // Wallet funding
+      $data['wallet_funding_count'] = Transaction::where('type','wallet_funding')
+          ->whereBetween('created_at', [$start,$end])
+          ->count();
+
+      $data['wallet_funding_amount'] = Transaction::where('type','wallet_funding')
+          ->whereBetween('created_at', [$start,$end])
+          ->sum('amount');
+
+      // Success
+      $data['successful_txns'] = Transaction::where('status',1)
+          ->whereBetween('created_at', [$start,$end])
+          ->count();
+
+      // Failed
+      $data['failed_txns'] = Transaction::where('status',-1)
+          ->whereBetween('created_at', [$start,$end])
+          ->count();
+
+      // Refunded
+      $data['refunded_txns'] = Transaction::where('status',2)
+          ->whereBetween('created_at', [$start,$end])
+          ->count();
+
+      // Transactions table
+      $data['transactions'] = Transaction::with(['user','product_plan'])
+          ->whereBetween('created_at', [$start,$end])
+          ->latest()
+          ->get();
+
+      $data['filter'] = $filter;
+
+
       $data['main_wallet_balances'] = User::select('main_wallet')->sum('main_wallet');
       $data['bulk_data_wallet_sum'] = UserBulkDataWallet::select('bulk_wallet_balance_mb')->sum('bulk_wallet_balance_mb');
       $data['alltime_bulk_wallet_balance_mb'] = UserBulkDataWallet::select('alltime_bulk_wallet_balance_mb')->sum('alltime_bulk_wallet_balance_mb');

@@ -75,6 +75,65 @@
           </div>
     </div> --}}
 
+    <div class="flex gap-3 mb-6">
+
+        <a href="?filter=today"
+        class="px-4 py-2 rounded {{ $filter=='today' ? 'bg-blue-600 text-white' : 'bg-gray-200' }}">
+        Today
+        </a>
+        
+        <a href="?filter=yesterday"
+        class="px-4 py-2 rounded {{ $filter=='yesterday' ? 'bg-blue-600 text-white' : 'bg-gray-200' }}">
+        Yesterday
+        </a>
+        
+        <a href="?filter=this_week"
+        class="px-4 py-2 rounded {{ $filter=='this_week' ? 'bg-blue-600 text-white' : 'bg-gray-200' }}">
+        This Week
+        </a>
+        
+        <a href="?filter=last_week"
+        class="px-4 py-2 rounded {{ $filter=='last_week' ? 'bg-blue-600 text-white' : 'bg-gray-200' }}">
+        Last Week
+        </a>
+        
+        </div>
+
+    <div class="grid grid-cols-12 gap-x-5">
+        {{-- <div class="grid grid-cols-12 gap-5"> --}}
+
+            <div class="col-span-3 bg-white p-5 rounded shadow">
+                <p class="text-gray-500 text-sm">Total Transactions</p>
+                <h2 class="text-2xl font-bold">{{ $total_transactions_count }}</h2>
+                <p class="text-sm text-gray-500">₦{{ number_format($total_transactions_amount,2) }}</p>
+            </div>
+            
+            <div class="col-span-3 bg-white p-5 rounded shadow">
+                <p class="text-gray-500 text-sm">Wallet Funding</p>
+                <h2 class="text-2xl font-bold">{{ $wallet_funding_count }}</h2>
+                <p class="text-sm text-gray-500">₦{{ number_format($wallet_funding_amount,2) }}</p>
+            </div>
+            
+            <div class="col-span-3 bg-white p-5 rounded shadow">
+                <p class="text-gray-500 text-sm">Successful</p>
+                <h2 class="text-2xl font-bold text-green-600">{{ $successful_txns }}</h2>
+            </div>
+            
+            <div class="col-span-3 bg-white p-5 rounded shadow">
+                <p class="text-gray-500 text-sm">Failed</p>
+                <h2 class="text-2xl font-bold text-red-600">{{ $failed_txns }}</h2>
+            </div>
+            
+            <div class="col-span-3 bg-white p-5 rounded shadow">
+                <p class="text-gray-500 text-sm">Refunded</p>
+                <h2 class="text-2xl font-bold text-yellow-600">{{ $refunded_txns }}</h2>
+            </div>
+            
+            {{-- </div> --}}
+
+     </div>
+
+
     <div class="grid grid-cols-12 gap-x-5">
         <div class="col-span-12 xxxl:col-span-2 md:col-span-4">
             <div
