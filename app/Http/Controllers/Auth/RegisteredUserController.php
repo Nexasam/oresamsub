@@ -140,9 +140,10 @@ class RegisteredUserController extends Controller
         $data['user_plan_id'] = $default_reseller_plan->id;
         $data['password'] = Hash::make($request->password);
         // $data['confirm_password'] = Hash::make($request->confirm_password);
-        if(env('APP_NAME') == 'OresamSub'){
-            $data['email_verified_at'] = date('Y-m-d H:i:s');
-        }
+        
+        // if(env('APP_NAME') == 'OresamSub'){
+        // $data['email_verified_at'] = date('Y-m-d H:i:s');
+        // }
 
         $user = User::create($data);
 
@@ -227,7 +228,7 @@ class RegisteredUserController extends Controller
             'password' => Hash::make($validated['password']),
             'usage' => $validated['usage'],
             'transaction_volume' => $request->transaction_volume ?? null,
-            'email_verified_at' => env('APP_NAME') === 'OresamSub' ? now() : null,
+            // 'email_verified_at' => env('APP_NAME') === 'OresamSub' ? now() : null,
         ]);
 
         // 7. Dispatch event
@@ -287,7 +288,7 @@ class RegisteredUserController extends Controller
             'role_id' => $roleId,
             'user_plan_id' => $defaultPlanId,
             'password' => Hash::make($validated['password']),
-            'email_verified_at' => env('APP_NAME') === 'OresamSub' ? now() : null,
+            // 'email_verified_at' => env('APP_NAME') === 'OresamSub' ? now() : null,
         ]);
 
         // 7. Dispatch event to handle account setup
