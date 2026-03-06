@@ -131,7 +131,7 @@
 
             <div class="col-span-2 bg-white p-5 rounded shadow">
                 <p class="text-gray-500 text-sm">Users</p>
-                <h2 class="text-2xl font-bold text-green-600">{{ $users }}</h2>
+                <h2 class="text-2xl font-bold text-green-600">{{ $userss }}</h2>
             </div>
             
             {{-- </div> --}}

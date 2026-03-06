@@ -315,7 +315,7 @@ class UserDashboardController extends Controller
 
      
       // Success
-      $data['users'] = User::whereBetween('created_at', [$start,$end])
+      $data['userss'] = User::whereBetween('created_at', [$start,$end])
       ->count();
 
           // Success
