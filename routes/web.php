@@ -69,6 +69,12 @@ use App\Http\Controllers\ElectricitySubscriptionController;
 use App\Http\Controllers\ProductPlanCustomPricingController;
 
    
+//test ui
+Route::get('/testui', function () {
+    return view('welcome2');
+})->name('testui');
+
+
 /////////////////LATER: FILAMENT IS THE NEW ADMIN UI 
 /////NEW ADMIN UI 
 
