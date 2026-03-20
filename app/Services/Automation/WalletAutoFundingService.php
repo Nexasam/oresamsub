@@ -84,6 +84,7 @@ class WalletAutoFundingService
 
         // Check threshold
         if ($automation->last_balance > $automation->threshold) {
+            logger('Threshold not reached yet.');
             return;
         }
 
