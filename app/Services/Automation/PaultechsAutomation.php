@@ -102,6 +102,18 @@ class PaultechsAutomation{
         $response_dec = json_decode($response,true);
         $httpcode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
 
+
+        $message = strtolower($response_dec['message'] ?? '');
+
+        // detect insufficient balance keywords
+        if (
+            str_contains($message, 'insufficient') ||
+            str_contains($message, 'low balance') ||
+            str_contains($message, 'fund your wallet')
+        ) {
+            $response_dec['balance_after'] = 0;
+        }
+
         if(isset($response_dec['balance_after'])){
             //we got here:
             logger('balance flow...');
