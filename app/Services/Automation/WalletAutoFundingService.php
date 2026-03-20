@@ -62,14 +62,17 @@ class WalletAutoFundingService
             return [
                 'status' => 1,
                 'messsage' => "success",
-                'balance' => $balance
+                'balance' => $balance,
+                'data' => $response_dec
             ];
         }
 
         return [
             'status' => -1,
             'messsage' => $response_dec['message'],
-            'balance' => 0
+            'balance' => 0,
+            'data' => $response_dec
+
         ];
         
         
