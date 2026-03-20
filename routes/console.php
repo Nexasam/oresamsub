@@ -1,20 +1,21 @@
 <?php
 
+use App\Console\Commands\ClearErrorLogs;
+use App\Console\Commands\ComputeReferralCommission;
+use App\Console\Commands\FinalizeDailyCommission;
+use App\Console\Commands\GeneralRepetitiveTasks;
+use App\Console\Commands\ProcessPendingAirtimeTransactions;
+use App\Console\Commands\ReprocessPendingTransaction;
+use App\Console\Commands\RunWalletAutoFunding;
+use App\Console\Commands\SendFailedTransactionEmail;
+use App\Console\Commands\SendNewRegistrationEmail;
+use App\Console\Commands\SendPendingTransactionEmail;
 use App\Console\Commands\SyncAddons;
+use App\Console\Commands\SyncUserContactsFromTransactions;
+use App\Console\Commands\ZerorizeNegativeBalances;
 use Illuminate\Foundation\Inspiring;
 use Illuminate\Support\Facades\Artisan;
-use App\Console\Commands\ClearErrorLogs;
 use Illuminate\Support\Facades\Schedule;
-use App\Console\Commands\GeneralRepetitiveTasks;
-use App\Console\Commands\FinalizeDailyCommission;
-use App\Console\Commands\SendNewRegistrationEmail;
-use App\Console\Commands\ZerorizeNegativeBalances;
-use App\Console\Commands\ComputeReferralCommission;
-use App\Console\Commands\SendFailedTransactionEmail;
-use App\Console\Commands\ReprocessPendingTransaction;
-use App\Console\Commands\SendPendingTransactionEmail;
-use App\Console\Commands\SyncUserContactsFromTransactions;
-use App\Console\Commands\ProcessPendingAirtimeTransactions;
 
 // Artisan::command('inspire', function () {
 //     $this->comment(Inspiring::quote());
@@ -46,5 +47,8 @@ Schedule::command(ReprocessPendingTransaction::class)->everyMinute()->withoutOve
 // Schedule::command(SyncUserContactsFromTransactions::class)->everyTwoMinutes()->withoutOverlapping();
 
 Schedule::command(ClearErrorLogs::class)->everyThirtyMinutes()->withoutOverlapping();
+
+Schedule::command(RunWalletAutoFunding::class)->everyThirtyMinutes()->withoutOverlapping();
+
 
 

@@ -2,11 +2,8 @@
 
 namespace App\Http\Services;
 
-use App\Models\User;
-use App\Models\SiteTemplate;
 use App\Models\FundingOption;
 use App\Models\UserVirtualAccount;
-use App\Models\LandingPagesSetting;
 use App\Models\FundingOptionBankCodes;
 
 class SecurewavengService{
