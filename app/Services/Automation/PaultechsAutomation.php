@@ -2,17 +2,20 @@
 
 namespace App\Services\Automation;
 
-use App\Models\User;
-use App\Models\Network;
 use App\Models\Automation;
+use App\Models\AutomationWalletFunding;
+use App\Models\Network;
 use App\Models\ProductPlan;
 use App\Models\RecurringFailedMessagePattern;
+use App\Models\User;
 
 class PaultechsAutomation{
 
     private $network_id;
 
     private $automation_id;
+
+    private $automation_details;
 
     private $api_id;
 
@@ -23,6 +26,7 @@ class PaultechsAutomation{
     private $token;
 
     private $url;
+    private $plan_id;
 
 
     // private $ported_number;
@@ -30,6 +34,7 @@ class PaultechsAutomation{
 
     public function __construct($data){
         $this->automation_id = $data['automation_id'];
+        $this->automation_details = $data['automation_details'];
         $this->network_id = $data['network_id']  ?? '';
         $this->smart_card_number = $data['smart_card_number']  ?? '';
         $this->plan_id = $data['plan_id'];
@@ -96,6 +101,14 @@ class PaultechsAutomation{
         $response = curl_exec($curl);
         $response_dec = json_decode($response,true);
         $httpcode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+
+        if(isset($response_dec['balance_after'])){
+            //we got here:
+            logger('balance flow...');
+            AutomationWalletFunding::where('automation_id',$this->automation_details->id)->update([
+                'last_balance' => $response_dec['balance_after'] ?? 3000
+            ]);
+        }
 
        if(isset($response_dec['status']) && $response_dec['status'] == 'Successful'){
             //success

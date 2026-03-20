@@ -2,17 +2,22 @@
 
 namespace App\Services\Automation\MsOrgGroupAutomation;
 
-use App\Models\User;
-use App\Models\Network;
 use App\Models\Automation;
+use App\Models\AutomationWalletFunding;
+use App\Models\Network;
 use App\Models\ProductPlan;
 use App\Models\RecurringFailedMessagePattern;
+use App\Models\User;
 
 class MsOrgGroupAutomation{
 
     private $network_id;
 
     private $automation_id;
+
+
+    private $automation_details;
+
 
     private $api_id;
 
@@ -28,12 +33,15 @@ class MsOrgGroupAutomation{
     
     private $user_id;
 
+    private $plan_id;
+
 
     // private $ported_number;
 
 
     public function __construct($data){
         $this->automation_id = $data['automation_id'] ?? '';
+        $this->automation_details = $data['automation_details'] ?? '';
         $this->network_id = $data['network_id'] ?? '';
         $this->plan_id = $data['plan_id'] ?? '';
         $this->mobile_number = $data['phone_number'] ?? '';
@@ -135,6 +143,14 @@ class MsOrgGroupAutomation{
         $response_dec = json_decode($response,true);
         $httpcode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
         // logger($response);
+
+        if(isset($response_dec['balance_after'])){
+            //we got here:
+            logger('balance flow...');
+            AutomationWalletFunding::where('automation_id',$this->automation_details->id)->update([
+                'last_balance' => $response_dec['balance_after'] ?? 3000
+            ]);
+        }
 
         // || $response_dec['Status'] == 'processing'
         if(isset($response_dec['Status']) && ($response_dec['Status'] == 'successful' ) ){
