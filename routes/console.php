@@ -48,7 +48,7 @@ Schedule::command(ReprocessPendingTransaction::class)->everyMinute()->withoutOve
 
 Schedule::command(ClearErrorLogs::class)->everyThirtyMinutes()->withoutOverlapping();
 
-// Schedule::command(RunWalletAutoFunding::class)->everyTwoMinutes()->withoutOverlapping();
+Schedule::command(RunWalletAutoFunding::class)->everyTwoMinutes()->withoutOverlapping();
 
 
 
