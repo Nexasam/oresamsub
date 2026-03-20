@@ -92,6 +92,7 @@ class WalletAutoFundingService
         }
 
         $merchantbalance = $this->getSecurewaveMerchantBalance();
+        logger('Merchant bal.'.json_encode($merchantbalance);
         
         if(($automation->amount_to_fund < $merchantbalance['balance']) || $merchantbalance['balance'] == 0){
             //no funds to fund from or amount is great that merchant amount
@@ -180,12 +181,14 @@ class WalletAutoFundingService
     
             if($response_dec['status']){
                 // $balance = $response_dec['data']['balance'] ?? 0;
+                logger('success funding');
                 return [
                     'status' => 1,
                     'messsage' => "successful withdrawal"
                 ];
             }
     
+            logger('failed funding'.json_encode($arr));
             return [
                 'status' => -1,
                 'messsage' => $response_dec['message']
