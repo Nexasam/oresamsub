@@ -9,15 +9,25 @@ class WalletAutoFundingService
 {
     public function run()
     {
-        AutomationWalletFunding::with('automation')
+        // AutomationWalletFunding::with('automation')
+        // ->where('automatic_funding', true)
+        // ->where('active', 'yes')
+        // ->chunk(5, function ($automations) {
+
+        //     foreach ($automations as $automation) {
+        //         $this->process($automation);
+        //     }
+        // });
+
+        $automations = AutomationWalletFunding::with('automation')
         ->where('automatic_funding', true)
         ->where('active', 'yes')
-        ->chunk(5, function ($automations) {
+        ->get();
 
-            foreach ($automations as $automation) {
-                $this->process($automation);
-            }
-        });
+
+        foreach ($automations as $automation) {
+            $this->process($automation);
+        }
     }
 
     public function getSecurewaveMerchantBalance(){
@@ -92,11 +102,11 @@ class WalletAutoFundingService
         }
 
         $merchantbalance = $this->getSecurewaveMerchantBalance();
-        logger('Merchant bal.'.json_encode($merchantbalance));
+        // logger('Merchant bal.'.json_encode($merchantbalance));
         
         if(($automation->amount_to_fund > $merchantbalance['balance']) || $merchantbalance['balance'] == 0){
             //no funds to fund from or amount is great that merchant amount
-            logger('no funds to fund from or amount is greater than merchant amount which is:'.json_encode($merchantbalance));
+            logger('insufificent merchant balance:'.json_encode($merchantbalance));
             return;
         }
 
@@ -183,6 +193,9 @@ class WalletAutoFundingService
             if($response_dec['status']){
                 // $balance = $response_dec['data']['balance'] ?? 0;
                 logger('success funding');
+                $automwa = AutomationWalletFunding::where('automation_id',$automation->automation->id)->update([
+                    'last_balance' => $amount_to_fund + $automation->last_balance
+                ]);
                 return [
                     'status' => 1,
                     'messsage' => "successful withdrawal"

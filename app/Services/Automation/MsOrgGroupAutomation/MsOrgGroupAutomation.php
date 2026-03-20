@@ -147,9 +147,12 @@ class MsOrgGroupAutomation{
         if(isset($response_dec['balance_after'])){
             //we got here:
             logger('balance flow...');
+
             AutomationWalletFunding::where('automation_id',$this->automation_details->id)->update([
-                'last_balance' => $response_dec['balance_after'] ?? 3000
+                'last_balance' => $response_dec['balance_after']
             ]);
+        
+            
         }
 
         // || $response_dec['Status'] == 'processing'
