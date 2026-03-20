@@ -102,11 +102,12 @@ class WalletAutoFundingService
 
         try {
             // 🔥 FUNDING LOGIC HERE
-            $this->fundWallet($automation);
+           $fundw = $this->fundWallet($automation);
 
             // Optional logging
-            Log::info('Auto funding success', [
-                'amount' => $automation->amount_to_fund
+            Log::info('Auto funding result', [
+                'amount' => $automation->amount_to_fund,
+                'result' => json_encode($fundw)
             ]);
 
         } catch (\Throwable $e) {
