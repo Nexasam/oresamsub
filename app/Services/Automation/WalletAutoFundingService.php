@@ -35,7 +35,7 @@ class WalletAutoFundingService
 
 
         curl_setopt_array($curl, array(
-        CURLOPT_URL => 'https://securewaveng.com/api/banks',
+        CURLOPT_URL => 'https://securewaveng.com/api/balance',
         CURLOPT_RETURNTRANSFER => true,
         CURLOPT_ENCODING => '',
         CURLOPT_MAXREDIRS => 10,
