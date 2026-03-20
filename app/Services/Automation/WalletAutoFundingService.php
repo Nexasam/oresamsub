@@ -92,7 +92,7 @@ class WalletAutoFundingService
         
         if(($automation->amount_to_fund < $merchantbalance['balance']) || $merchantbalance['balance'] == 0){
             //no funds to fund from or amount is great that merchant amount
-            logger('no funds to fund from or amount is greater tan merchant amount');
+            logger('no funds to fund from or amount is greater than merchant amount which is:'.$merchantbalance['balance']);
             return;
         }
 
