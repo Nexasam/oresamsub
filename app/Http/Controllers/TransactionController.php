@@ -380,7 +380,7 @@ class TransactionController extends Controller
   }
 
 
-  public function admin_fetch_transactionsOLD(Request $request){
+  public function admin_fetch_transactions(Request $request){
 
         // $date_from = $request->date_from ?? date('Y-m-d');
         // date('Y-m-d', strtotime('-10 days'))
@@ -657,7 +657,7 @@ class TransactionController extends Controller
 
   }
 
-  public function admin_fetch_transactions(Request $request)
+  public function admin_fetch_transactionsold2(Request $request)
     {
         $date_from = $request->date_from ?? '';
         $date_to = $request->date_to ?? '';
@@ -692,10 +692,49 @@ class TransactionController extends Controller
 
                 $user = $t->user;
 
-                // compute duration
-                // $created = $t->created_at;
-                // $updated = $t->updated_at;
-                // $minutes = $created->diffInMinutes($updated);
+
+
+
+                if($t->status == 1){
+                    $status_display = '<span class="badge bg-success text-white">Success</span>';
+                }
+                elseif($t->status == -1){
+                    $status_display = '<span class="badge bg-red-300 text-white">Unsuccessful</span>';
+                }
+                elseif($t->status == 0){
+                    $status_display = '<span class="badge bg-warning text-white">Pending</span>';
+                }
+                elseif($t->status == 2){
+                    $status_display = '<span class="badge bg-primary text-white">Refunded</span>';
+                }
+                elseif($t->status == 3){
+                    $status_display = '<span class="badge bg-gray text-white">Processing</span>';
+                }else{
+                    $status_display = '<span class="badge bg-gray text-white">Unknown</span>';
+                }
+    
+              
+    
+                if ($t->locked_for_manual_processing && $t->set_for_manual == 1) {
+                    $locked_by = $t->manual_processing_locker
+                        ? $t->manual_processing_locker->first_name . ' ' . $t->manual_processing_locker->last_name
+                        : 'Unknown';
+                
+                    $status_display .= '<span class="inline-block px-2 py-1 text-xs font-bold text-white bg-red-600 rounded shadow animate-pulse">
+                        🔒 Locked by ' . e($locked_by) . '
+                    </span>';
+                }
+                
+                
+                if($t->set_for_manual == 1){
+                    $status_display .= '<span class="font-bold text-red-500">URGENT</span>';    
+                }
+
+
+
+
+
+
 
                 $createdAt = Carbon::parse($t->created_at);
                 $updatedAt = Carbon::parse($t->updated_at);
@@ -763,6 +802,156 @@ class TransactionController extends Controller
             })
         ]);
   }
+
+
+public function admin_fetch_transactionsnew(Request $request)
+{
+    $date_from = $request->date_from ?? '';
+    $date_to = $request->date_to ?? '';
+    $product_plan_category_filter = $request->product_plan_category_filter ?? '';
+    $phone = $request->phone_recharged ?? '';
+    $limit = $request->limit ?? 100;
+
+    $transactions = Transaction::when($date_from && $date_to, function ($q) use ($date_from, $date_to) {
+            $date_to = date('Y-m-d', strtotime('+1 day', strtotime($date_to)));
+            $q->whereBetween('created_at', [$date_from, $date_to]);
+        })
+        ->when($product_plan_category_filter, function ($q) use ($product_plan_category_filter) {
+            $ids = ProductPlan::where('product_plan_category_id', $product_plan_category_filter)->pluck('id');
+            $q->whereIn('product_plan_id', $ids);
+        })
+        ->when($phone, function ($q) use ($phone) {
+            $q->where('phone_number', $phone);
+        })
+        ->where('wallet_category', '!=', 'data_wallet')
+        ->with([
+            'user.user_plan',
+            'product_plan.product_plan_category',
+            'product_plan.automation',
+            'product_plan.reprocess_automation',
+            'manual_processing_locker'
+        ])
+        ->latest()
+        ->limit($limit)
+        ->get();
+
+    return response()->json([
+        'data' => $transactions->map(function ($t) {
+
+            $user = $t->user;
+
+            // ===============================
+            // STATUS DISPLAY (CLEAN)
+            // ===============================
+            if ($t->status == 1) {
+                $status_display = '<span class="px-2 py-1 text-xs font-semibold bg-green-100 text-green-700 rounded-full">Success</span>';
+            }
+            elseif ($t->status == -1) {
+                $status_display = '<span class="px-2 py-1 text-xs font-semibold bg-red-100 text-red-700 rounded-full">Unsuccessful</span>';
+            }
+            elseif ($t->status == 0) {
+                $status_display = '<span class="px-2 py-1 text-xs font-semibold bg-yellow-100 text-yellow-700 rounded-full">Pending</span>';
+            }
+            elseif ($t->status == 2) {
+                $status_display = '<span class="px-2 py-1 text-xs font-semibold bg-blue-100 text-blue-700 rounded-full">Refunded</span>';
+            }
+            elseif ($t->status == 3) {
+                $status_display = '<span class="px-2 py-1 text-xs font-semibold bg-gray-100 text-gray-700 rounded-full">Processing</span>';
+            }
+            else {
+                $status_display = '<span class="px-2 py-1 text-xs font-semibold bg-gray-200 text-gray-700 rounded-full">Unknown</span>';
+            }
+
+            // ===============================
+            // LOCKED / MANUAL PROCESSING
+            // ===============================
+            if ($t->locked_for_manual_processing && $t->set_for_manual == 1) {
+
+                $locked_by = $t->manual_processing_locker
+                    ? trim(($t->manual_processing_locker->first_name ?? '') . ' ' . ($t->manual_processing_locker->last_name ?? ''))
+                    : 'Unknown';
+
+                $status_display .= '
+                    <span class="ml-2 inline-flex items-center px-2 py-1 text-xs font-bold text-white bg-red-600 rounded-full animate-pulse">
+                        🔒 Locked by ' . e($locked_by) . '
+                    </span>
+                ';
+            }
+
+            // ===============================
+            // URGENT FLAG
+            // ===============================
+            if ($t->set_for_manual == 1) {
+                $status_display .= '
+                    <span class="ml-2 inline-flex px-2 py-1 text-xs font-bold text-red-600 bg-red-50 rounded-full">
+                        URGENT
+                    </span>
+                ';
+            }
+
+            // ===============================
+            // DURATION FIXED
+            // ===============================
+            $createdAt = $t->created_at ? Carbon::parse($t->created_at) : null;
+            $updatedAt = $t->updated_at ? Carbon::parse($t->updated_at) : null;
+
+            $totalMinutes = ($createdAt && $updatedAt)
+                ? $createdAt->diffInMinutes($updatedAt)
+                : 0;
+
+            $hours = intdiv($totalMinutes, 60);
+            $minutes = $totalMinutes % 60;
+
+            $duration = $hours > 0
+                ? "{$hours}h {$minutes}m"
+                : "{$minutes}m";
+
+            // ===============================
+            // RETURN STRUCTURE
+            // ===============================
+            return [
+                'id' => $t->id,
+
+                // USER
+                'user' => trim(($user->first_name ?? '') . ' ' . ($user->last_name ?? '')),
+                'username' => $user->username ?? '',
+                'phone' => $t->phone_number,
+
+                // MONEY
+                'amount' => $t->amount,
+                'discounted_amount' => $t->discounted_amount,
+                'balance_before' => $t->balance_before,
+                'balance_after' => $t->balance_after,
+
+                // STATUS
+                'status' => $t->status,
+                'status_html' => $status_display,
+                'status_text' => $this->statusText($t->status),
+
+                // META
+                'duration' => $duration,
+                'locked' => (bool) $t->locked_for_manual_processing,
+                'urgent' => (bool) $t->set_for_manual,
+
+                // DETAILS
+                'plan' => $t->product_plan->product_plan_name ?? 'N/A',
+                'category' => $t->product_plan->product_plan_category->product_plan_category_name ?? '',
+                'route' => $t->txn_reference ? 'Mobile/API' : 'WEB',
+                'vendor' => $t->product_plan->automation->automation_name ?? 'N/A',
+                'reprocessed_by' => $t->product_plan->reprocess_automation->automation_name ?? 'nil',
+
+                'retry_count' => $t->retry_count,
+                'message' => $t->admin_screen_message,
+                'extra_info' => $t->extra_info,
+
+                // DATE (SAFE)
+                'created_at' => $t->created_at
+                    ? $t->created_at->format('Y-m-d H:i:s')
+                    : null,
+            ];
+        })
+    ]);
+}
 
   public function manually_mark_transaction_as_successful(Request $request){
        $validator = Validator::make($request->all(), [

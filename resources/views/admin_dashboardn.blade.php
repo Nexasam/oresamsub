@@ -17,63 +17,7 @@
         </div>
         
     </div>
-    <!-- Page Header Close -->
-
-    <!-- Start::row-1 -->
-    {{-- <div class="grid grid-cols-12 gap-x-5">
-        <div class="xxl:col-span-6 col-span-12">
-            <div class="box">
-              <div class="box-header flex justify-between">
-                <div class="box-title my-auto">
-                  Fund Wallet
-                </div>
-                <a aria-label="anchor" class="hs-collapse-toggle inline-flex items-center gap-x-2" href="javascript:void(0);"
-                  id="hs-show-hide-collapse" data-hs-collapse="#collapseExample">
-                  <i class="hs-collapse-open:rotate-180 ri-arrow-up-s-line text-lg"></i>
-                </a>
-              </div>
-              <div class="hs-collapse w-full overflow-hidden transition-[height] duration-300" id="collapseExample"
-                aria-labelledby="hs-show-hide-collapse">
-                <div class="box-body">
-                  <h6 class="text-base font-semibold">Current wallet balance: &#8358; {{ number_format($user->main_wallet,2) }}</h6>
-                  <p class="text-[0.813rem] mb-0">Generate a dynamic account below to fund your wallet</p>
-                 <label for="amount">Enter amount to fund:  </label><br>
-                  <input type="number" id="amount" name="amount" value=""><br>
-                  <button type="button" class="ti-btn ti-btn-primary"  id="generate_crystalpay_dynamic_account" name="generate_crystalpay_dynamic_account">Generate</button>
-                  <div class="crystal_pay_dynamic_account_details">
-
-                  </div>
-                
-                </div>
-                <div class="box-footer">
-                  <button type="button" class="ti-btn ti-btn-primary">Read More</button>
-                </div>
-              </div>
-            </div>
-        </div>
-    </div> --}}
-
-
-
-    {{-- <div class="grid grid-cols-1">
-        <div class="overflow-x-auto whitespace-nowrap w-full bg-blue-100 mx-auto text-blue-800 px-4 py-1 rounded-sm font-semibold">
-            <div class="text-sm inline-block animate-marquee hover:[animation-play-state:paused]">
-                @php
-                   
-                        $futureDate = new DateTime('2025-12-31'); // Replace with your desired future date
-                        $today = new DateTime();
-
-                        $interval = $today->diff($futureDate);
-
-                        // Get total number of days
-                        $daysRemaining = $interval->days;
-
-                        // echo "Number of days remaining: $daysRemaining";
-                @endphp     
-                Next renewal of your domain and hosting is {!! $futureDate }}. You have {!! $daysRemaining !!} remaining. 
-            </div>
-          </div>
-    </div> --}}
+  
 
     <div class="flex gap-3 mb-6">
 
@@ -140,6 +84,243 @@
 
 
     <div class="grid grid-cols-12 gap-x-5">
+
+
+
+        <div class="col-span-12 xxl:col-span-12">
+
+            {{-- <div class="box w-full mb-4">
+                <div class="box-header">
+                    <div class="sm:flex">
+                        <h5 class="box-title my-auto">Recent Transactions</h5>
+                    </div>
+                </div>
+                <livewire:transactions-table />
+
+            </div> --}}
+
+        
+
+           
+
+
+
+            <div class="p-6" x-data="tableHandler()" x-init="init()">
+
+                <!-- HEADER -->
+                <div class="mb-6 flex justify-between items-center">
+                    <h1 class="text-2xl font-bold text-gray-800">
+                        Transactions
+                    </h1>
+            
+                    <button 
+                        @click="loadData()"
+                        class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm">
+                        Refresh
+                    </button>
+                </div>
+            
+                <!-- FILTERS -->
+                <div class="bg-white p-4 rounded-2xl shadow mb-4 flex flex-col md:flex-row gap-3">
+            
+                    <!-- Search -->
+                    <input 
+                        type="text"
+                        x-model="search"
+                        @input.debounce.400ms="applyFilters"
+                        placeholder="Search user, username, phone..."
+                        class="border px-3 py-2 rounded-lg text-sm w-full md:w-1/3"
+                    >
+            
+                    <!-- Status -->
+                    <select x-model="status" @change="applyFilters"
+                        class="border px-3 py-2 rounded-lg text-sm">
+                        <option value="">All Status</option>
+                        <option value="1">Success</option>
+                        <option value="0">Pending</option>
+                        <option value="-1">Failed</option>
+                        <option value="2">Refunded</option>
+                        <option value="3">Processing</option>
+                    </select>
+            
+                </div>
+            
+                <!-- TABLE -->
+                <div class="bg-white rounded-2xl shadow p-4">
+            
+                    <div class="overflow-auto">
+                        <table class="w-full text-sm">
+                            <thead class="bg-gray-100 text-left">
+                                <tr>
+                                    <th class="p-2">ID</th>
+                                    <th class="p-2">User</th>
+                                    <th class="p-2">Amount</th>
+                                    <th class="p-2">Status</th>
+                                    <th class="p-2">Date</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+            
+                            <tbody>
+            
+                                <!-- LOADING -->
+                                <template x-if="loading">
+                                    <tr>
+                                        <td colspan="6" class="text-center py-6 text-gray-400">
+                                            Loading transactions...
+                                        </td>
+                                    </tr>
+                                </template>
+            
+                                <!-- DATA -->
+                                <template x-for="item in paginatedRows" :key="item.id">
+                                    <>
+                                        <tr class="border-b hover:bg-gray-50">
+                                            <td class="p-2" x-text="item.id"></td>
+            
+                                            <td class="p-2">
+                                                <div class="font-semibold" x-text="item.user"></div>
+                                                <div class="text-xs text-gray-500">
+                                                    <span x-text="item.username"></span> • 
+                                                    <span x-text="item.phone"></span>
+                                                </div>
+                                            </td>
+            
+                                            <td class="p-2 font-semibold">
+                                                <div x-text="formatMoney(item.amount)"></div>
+                                                <div class="text-xs text-gray-400" 
+                                                    x-text="'Bal: ' + formatMoney(item.balance_after)">
+                                                </div>
+                                            </td>
+            
+                                            <td class="p-2">
+                                                <span class="px-2 py-1 text-xs rounded font-medium"
+                                                    :class="statusClass(item.status)">
+                                                    <span x-text="item.status_text"></span>
+                                                </span>
+            
+                                                <!-- EXTRA FLAGS -->
+                                                <div class="text-xs mt-1 space-x-1">
+                                                    <template x-if="item.locked">
+                                                        <span class="text-red-600">🔒 Locked</span>
+                                                    </template>
+                                                    <template x-if="item.urgent">
+                                                        <span class="text-red-500 font-bold">URGENT</span>
+                                                    </template>
+                                                </div>
+                                            </td>
+            
+                                            <td class="p-2 text-xs text-gray-500">
+                                                <div x-text="item.date"></div>
+                                                <div class="text-gray-400" x-text="'in ' + item.duration"></div>
+                                            </td>
+            
+                                            <td class="p-2">
+                                                <button 
+                                                    @click="item.open = !item.open"
+                                                    class="text-blue-500 text-xs hover:underline">
+                                                    Details
+                                                </button>
+                                            </td>
+                                        </tr>
+            
+                                        <!-- EXPANDED ROW -->
+                                        <tr x-show="item.open">
+                                            <td colspan="6" class="bg-gray-50 p-4 text-xs space-y-2">
+            
+                                                <div class="grid md:grid-cols-2 gap-3">
+            
+                                                    <div>
+                                                        <b>Plan:</b> 
+                                                        <span x-text="item.plan"></span>
+                                                    </div>
+            
+                                                    <div>
+                                                        <b>Category:</b> 
+                                                        <span x-text="item.category"></span>
+                                                    </div>
+            
+                                                    <div>
+                                                        <b>Route:</b> 
+                                                        <span x-text="item.route"></span>
+                                                    </div>
+            
+                                                    <div>
+                                                        <b>Vendor:</b> 
+                                                        <span x-text="item.vendor"></span>
+                                                    </div>
+            
+                                                    <div>
+                                                        <b>Reprocessed By:</b> 
+                                                        <span x-text="item.reprocessed_by"></span>
+                                                    </div>
+            
+                                                    <div>
+                                                        <b>Retry Count:</b> 
+                                                        <span x-text="item.retry_count"></span>
+                                                    </div>
+            
+                                                </div>
+            
+                                                <div>
+                                                    <b>Message:</b>
+                                                    <div class="text-gray-600" x-text="item.message"></div>
+                                                </div>
+            
+                                                <div>
+                                                    <b>Extra Info:</b>
+                                                    <div class="text-gray-500" x-text="item.extra_info"></div>
+                                                </div>
+            
+                                            </td>
+                                        </tr>
+                                    </>
+                                </template>
+            
+                                <!-- EMPTY -->
+                                <template x-if="!loading && filteredRows.length === 0">
+                                    <tr>
+                                        <td colspan="6" class="text-center py-6 text-gray-400">
+                                            No transactions found
+                                        </td>
+                                    </tr>
+                                </template>
+            
+                            </tbody>
+                        </table>
+                    </div>
+            
+                    <!-- PAGINATION -->
+                    <div class="flex justify-between items-center mt-4 text-sm text-gray-500">
+            
+                        <span>
+                            Showing 
+                            <span x-text="paginatedRows.length"></span> 
+                            of 
+                            <span x-text="filteredRows.length"></span>
+                        </span>
+            
+                        <div class="flex gap-2">
+                            <button @click="prevPage()" 
+                                class="px-3 py-1 border rounded disabled:opacity-50"
+                                :disabled="page === 1">
+                                Prev
+                            </button>
+            
+                            <button @click="nextPage()" 
+                                class="px-3 py-1 border rounded disabled:opacity-50"
+                                :disabled="page >= totalPages">
+                                Next
+                            </button>
+                        </div>
+                    </div>
+            
+                </div>
+            </div>
+
+
+        </div>
+
         <div class="col-span-12 xxxl:col-span-2 md:col-span-4">
             <div
             class="max-w-sm w-full p-2 mt-2 rounded-2xl shadow-lg bg-white border border-2 border-gray-700  text-white relative space-y-4"
@@ -554,184 +735,7 @@
             </div>
         </div>
       
-        <div class="col-span-12 xxl:col-span-12">
-
-            {{-- <div class="box w-full mb-4">
-                <div class="box-header">
-                    <div class="sm:flex">
-                        <h5 class="box-title my-auto">Recent Transactions</h5>
-                    </div>
-                </div>
-                <livewire:transactions-table />
-
-            </div> --}}
-
-        
-
-            <div class="box">
-                <div class="box-header">
-                    <div class="sm:flex">
-                        <h5 class="box-title my-auto">Recent Transactions</h5>
-                        <div class="box-header">
-                            <div class="flex items-center">
-
-                              @if (env('APP_NAME') == 'OresamSub')
-                                    <!-- Refresh button -->
-                                    <button type="button"
-                                        id="reload_txns_tbl"
-                                        class="w-full text-white bg-emerald-600 hover:bg-emerald-700 focus:ring-2 focus:ring-emerald-400 
-                                            font-medium rounded-lg text-sm px-4 py-2 text-left">
-                                        Refresh
-                                    </button>
-                              @endif
-                             
-                              <div class="hs-dropdown ti-dropdown block ms-auto my-auto  sm:flex items-center justify-between">
-                               
-                                    <div id="hs-slide-down-animation-modal" class="hs-overlay hidden ti-modal">
-                                      <div class="hs-overlay-open:mt-7 ti-modal-box mt-0 ease-out">
-                                        <div class="ti-modal-content">
-                                          <div class="ti-modal-header">
-                                            <h3 class="ti-modal-title">
-                                              Filter Options
-                                            </h3>
-                                            <button type="button" class="hs-dropdown-toggle ti-modal-close-btn"
-                                              data-hs-overlay="#hs-slide-down-animation-modal">
-                                              <span class="sr-only">Close</span>
-                                              <svg class="w-3.5 h-3.5" width="8" height="8" viewBox="0 0 8 8" fill="none"
-                                                xmlns="http://www.w3.org/2000/svg">
-                                                <path
-                                                  d="M0.258206 1.00652C0.351976 0.912791 0.479126 0.860131 0.611706 0.860131C0.744296 0.860131 0.871447 0.912791 0.965207 1.00652L3.61171 3.65302L6.25822 1.00652C6.30432 0.958771 6.35952 0.920671 6.42052 0.894471C6.48152 0.868271 6.54712 0.854471 6.61352 0.853901C6.67992 0.853321 6.74572 0.865971 6.80722 0.891111C6.86862 0.916251 6.92442 0.953381 6.97142 1.00032C7.01832 1.04727 7.05552 1.1031 7.08062 1.16454C7.10572 1.22599 7.11842 1.29183 7.11782 1.35822C7.11722 1.42461 7.10342 1.49022 7.07722 1.55122C7.05102 1.61222 7.01292 1.6674 6.96522 1.71352L4.31871 4.36002L6.96522 7.00648C7.05632 7.10078 7.10672 7.22708 7.10552 7.35818C7.10442 7.48928 7.05182 7.61468 6.95912 7.70738C6.86642 7.80018 6.74102 7.85268 6.60992 7.85388C6.47882 7.85498 6.35252 7.80458 6.25822 7.71348L3.61171 5.06702L0.965207 7.71348C0.870907 7.80458 0.744606 7.85498 0.613506 7.85388C0.482406 7.85268 0.357007 7.80018 0.264297 7.70738C0.171597 7.61468 0.119017 7.48928 0.117877 7.35818C0.116737 7.22708 0.167126 7.10078 0.258206 7.00648L2.90471 4.36002L0.258206 1.71352C0.164476 1.61976 0.111816 1.4926 0.111816 1.36002C0.111816 1.22744 0.164476 1.10028 0.258206 1.00652Z"
-                                                  fill="currentColor" />
-                                              </svg>
-                                            </button>
-                                          </div>
-                                          <div class="ti-modal-body">
-                                            <p class="mt-1 text-gray-800 dark:text-white/70">Phone recharged:</p>
-                                            <input type="text" value="" id="phone_recharged" name="phone_recharged"> <br>
-                                            <hr>
-                                            <br>
-                                            <p class="mt-1 text-gray-800 dark:text-white/70">Filter by Plan Category:</p>
-                                            <select name="product_plan_category_filter" id="product_plan_category_filter">
-                                                <option value="">Select</option>
-                                                @foreach ($product_plan_categories as $plan_category)
-                                                 <option value="{{ $plan_category->id}}">{{ $plan_category->product_plan_category_name }}</option>   
-                                                @endforeach
-                                            </select>
-                                            <br>
-                                            <hr>
-                                            <br>
-                                            <p class="mt-1 text-gray-800 dark:text-white/70">Date range:</p><br>
-                                            <div class="flex items-center justify-between">
-                                              <div class="flex items-center justify-start space-x-5">
-                                                  <div>
-                                                    <p>Date from:</p>
-                                                    <input type="date" value="" id="date_from_filter">
-                                                  </div>
-                                                  <div>
-                                                    <p>Date to:</p>
-                                                    <input type="date" value="" id="date_to_filter">
-                                                  </div>
-                                              </div>
-                                            </div>
-                                          </div>
-                                          <div class="ti-modal-footer">
-                                         
-                                            <a id="filter_user_txn_table" class="ti-btn ti-btn-primary" data-hs-overlay="#hs-slide-down-animation-modal"
-                                              href="javascript:void(0);">
-                                              Save changes
-                                            </a>
-                                          </div>
-                                        </div>
-                                      </div>
-                                    </div>
-                                    
-                                 
-                    
-                              </div>
-                            
-                            </div> 
-                          </div>
-
-                        <div class="hs-dropdown ti-dropdown block ms-auto my-auto">
-                            <button aria-label="button" id="hs-dropdown-custom-icon-trigger3" type="button"
-                                class="hs-dropdown-toggle ti-dropdown-toggle rounded-sm p-2 bg-white !border border-gray-200 text-gray-500 hover:bg-gray-100  focus:ring-gray-200 dark:bg-bodybg dark:hover:bg-black/30 dark:border-white/10 dark:hover:border-white/20 dark:focus:ring-white/10 dark:focus:ring-offset-white/10">
-                                <i class="text-sm leading-none ti ti-dots-vertical"></i> </button>
-                            <div class="hs-dropdown-menu ti-dropdown-menu"
-                                aria-labelledby="hs-dropdown-custom-icon-trigger3">
-                                <a href="javascript:void(0)" class="ti-dropdown-item hs-dropdown-toggle"
-                                data-hs-overlay="#hs-slide-down-animation-modal">Basic filter</a>
-                                {{-- <a class="ti-dropdown-item"  href="javascript:void(0)">Filter by phone number</a> --}}
-                              
-                            </div>
-                        </div>
-                       
-                    </div>
-                </div>
-                <div class="box-body p-0">
-                    <div id="taskactive" class="" role="tabpanel" aria-labelledby="active-item">
-                        <div class="overflow-auto">
-                            
-
-                            <table  id="admin_transactions_table" class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">    
-                                <thead class="bg-gray-50 dark:bg-black/20">
-                                <tr>
-                                    
-                                        <th>ID</th>
-                                        <th>User</th>
-                                        <th>Wallet</th>
-                                        <th>Product Details</th>
-                                        <th>Txn Category</th>
-                                        {{-- <th>User Response</th> --}}
-                                        {{-- <th>Admin Response</th> --}}
-                                        <th>Phone</th>
-                                        <th>Amount</th>
-                                        <th>Discounted Amount</th>
-                                        <th>Balance Before</th>
-                                        {{-- <th>Data size</th> --}}
-                                        <th>Balance After</th>
-                                        <th>Status</th>
-                                        <th>Date Added</th>
-                                        <th>Action</th>
-                                    
-                                </tr>
-                            </thead>
-                           
-                            <tbody>
-
-                           </tbody>
-                            </table>  
-
-                            {{-- <table  id="admin_transactions_table" class="ti-custom-table ti-custom-table-head">    
-                                <thead class="bg-gray-50 dark:bg-black/20">
-                                <tr>
-                                    <th>ID</th>
-                                    <th>User</th>
-                                    <th>Wallet</th>
-                                    <th>Product Details</th>
-                                    <th>Txn Category</th>
-                                    <th>Response</th>
-                                    <th>Phone</th>
-                                    <th>Amount</th>
-                                    <th>Balance Before</th>
-                                    <th>Balance After</th>
-                                    <th>Status</th>
-                                    <th>Date Added</th>
-                                    <th>Action</th>
-                                </tr>
-                            </thead>
-                           
-                            <tbody>
-
-                           </tbody>
-                            </table>  --}}
-
-                        </div>
-                    </div>
-                  
-                  
-                </div>
-            </div>
-        </div>
+     
 
         <div class="col-span-12 xxl:col-span-12">
 
@@ -871,7 +875,7 @@
                 </div>
               </div>
 
-        </div>
+    </div>
      
        
     </div>
@@ -920,4 +924,96 @@ function walletBalance() {
     }
 }
 </script>
+
+
+
+
+<script>
+    function tableHandler() {
+        return {
+            rows: [],
+            filteredRows: [],
+            loading: false,
+    
+            search: '',
+            status: '',
+    
+            page: 1,
+            perPage: 10,
+    
+            init() {
+                this.loadData()
+                setInterval(() => this.loadData(), 30000)
+            },
+    
+            async loadData() {
+                this.loading = true
+    
+                try {
+                    // let res = await axios.get('/admin/fetch-transactions')
+                    let res = await axios.get("{{ route('admin.transactions.admin_fetch_transactions') }}")
+    
+                    this.rows = res.data.data.map(t => ({
+                        ...t,
+                        open: false
+                    }))
+    
+                    this.applyFilters()
+                } catch (e) {
+                    console.error(e)
+                } finally {
+                    this.loading = false
+                }
+            },
+    
+            applyFilters() {
+                let s = this.search.toLowerCase()
+    
+                this.filteredRows = this.rows.filter(item => {
+                    return (
+                        (!this.status || item.status == this.status) &&
+                        (
+                            item.user.toLowerCase().includes(s) ||
+                            item.phone.includes(s) ||
+                            item.username.toLowerCase().includes(s)
+                        )
+                    )
+                })
+    
+                this.page = 1
+            },
+    
+            get paginatedRows() {
+                let start = (this.page - 1) * this.perPage
+                return this.filteredRows.slice(start, start + this.perPage)
+            },
+    
+            get totalPages() {
+                return Math.ceil(this.filteredRows.length / this.perPage)
+            },
+    
+            nextPage() {
+                if (this.page < this.totalPages) this.page++
+            },
+    
+            prevPage() {
+                if (this.page > 1) this.page--
+            },
+    
+            formatMoney(val) {
+                return '₦' + Number(val || 0).toLocaleString()
+            },
+    
+            statusClass(status) {
+                return {
+                    1: 'bg-green-100 text-green-700',
+                    0: 'bg-yellow-100 text-yellow-700',
+                    '-1': 'bg-red-100 text-red-700',
+                    2: 'bg-blue-100 text-blue-700',
+                    3: 'bg-gray-100 text-gray-700'
+                }[status] || 'bg-gray-100'
+            }
+        }
+    }
+    </script>
 @endpush
