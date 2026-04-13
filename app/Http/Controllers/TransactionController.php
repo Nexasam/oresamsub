@@ -758,7 +758,7 @@ class TransactionController extends Controller
                     'message' => $t->admin_screen_message,
                     'extra_info' => $t->extra_info,
 
-                    'date' => $t->created_at->format('Y-m-d H:i:s'),
+                    'created_at' => Carbon::parse($t->created_at)->format('Y-m-d H:i:s'),
                 ];
             })
         ]);
