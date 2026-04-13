@@ -696,8 +696,31 @@ class TransactionController extends Controller
                 $created = $t->created_at;
                 $updated = $t->updated_at;
                 $minutes = $created->diffInMinutes($updated);
+
+                $createdAt = Carbon::parse($t->created_at);
+                $updatedAt = Carbon::parse($t->updated_at);
+
+                // Total time in minutes
+                $totalMinutes = $createdAt->diffInMinutes($updatedAt);
+
+                // Calculate hours and minutes
+                $hours = intdiv($totalMinutes, 60);
+                $minutes = $totalMinutes % 60;
+
+                if ($hours > 0 && $minutes > 0) {
+                    $timeString = "{$hours} hr" . ($hours > 1 ? 's' : '') . " {$minutes} min" . ($minutes > 1 ? 's' : '');
+                } elseif ($hours > 0) {
+                    $timeString = "{$hours} hr" . ($hours > 1 ? 's' : '');
+                } else {
+                    $timeString = "{$minutes} min" . ($minutes > 1 ? 's' : '');
+                }
+
+
+
                 $hours = intdiv($minutes, 60);
                 $mins = $minutes % 60;
+
+                
 
                 $time = $hours > 0
                     ? "{$hours}h {$mins}m"
@@ -739,8 +762,7 @@ class TransactionController extends Controller
                 ];
             })
         ]);
-    }
-
+  }
 
   public function manually_mark_transaction_as_successful(Request $request){
        $validator = Validator::make($request->all(), [
