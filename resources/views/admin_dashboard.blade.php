@@ -17,63 +17,7 @@
         </div>
         
     </div>
-    <!-- Page Header Close -->
-
-    <!-- Start::row-1 -->
-    {{-- <div class="grid grid-cols-12 gap-x-5">
-        <div class="xxl:col-span-6 col-span-12">
-            <div class="box">
-              <div class="box-header flex justify-between">
-                <div class="box-title my-auto">
-                  Fund Wallet
-                </div>
-                <a aria-label="anchor" class="hs-collapse-toggle inline-flex items-center gap-x-2" href="javascript:void(0);"
-                  id="hs-show-hide-collapse" data-hs-collapse="#collapseExample">
-                  <i class="hs-collapse-open:rotate-180 ri-arrow-up-s-line text-lg"></i>
-                </a>
-              </div>
-              <div class="hs-collapse w-full overflow-hidden transition-[height] duration-300" id="collapseExample"
-                aria-labelledby="hs-show-hide-collapse">
-                <div class="box-body">
-                  <h6 class="text-base font-semibold">Current wallet balance: &#8358; {{ number_format($user->main_wallet,2) }}</h6>
-                  <p class="text-[0.813rem] mb-0">Generate a dynamic account below to fund your wallet</p>
-                 <label for="amount">Enter amount to fund:  </label><br>
-                  <input type="number" id="amount" name="amount" value=""><br>
-                  <button type="button" class="ti-btn ti-btn-primary"  id="generate_crystalpay_dynamic_account" name="generate_crystalpay_dynamic_account">Generate</button>
-                  <div class="crystal_pay_dynamic_account_details">
-
-                  </div>
-                
-                </div>
-                <div class="box-footer">
-                  <button type="button" class="ti-btn ti-btn-primary">Read More</button>
-                </div>
-              </div>
-            </div>
-        </div>
-    </div> --}}
-
-
-
-    {{-- <div class="grid grid-cols-1">
-        <div class="overflow-x-auto whitespace-nowrap w-full bg-blue-100 mx-auto text-blue-800 px-4 py-1 rounded-sm font-semibold">
-            <div class="text-sm inline-block animate-marquee hover:[animation-play-state:paused]">
-                @php
-                   
-                        $futureDate = new DateTime('2025-12-31'); // Replace with your desired future date
-                        $today = new DateTime();
-
-                        $interval = $today->diff($futureDate);
-
-                        // Get total number of days
-                        $daysRemaining = $interval->days;
-
-                        // echo "Number of days remaining: $daysRemaining";
-                @endphp     
-                Next renewal of your domain and hosting is {!! $futureDate }}. You have {!! $daysRemaining !!} remaining. 
-            </div>
-          </div>
-    </div> --}}
+  
 
     <div class="flex gap-3 mb-6">
 
@@ -731,6 +675,223 @@
                   
                 </div>
             </div>
+
+
+
+            <div class="p-6" x-data="tableHandler()" x-init="init()">
+
+                <!-- HEADER -->
+                <div class="mb-6 flex justify-between items-center">
+                    <h1 class="text-2xl font-bold text-gray-800">
+                        Transactions
+                    </h1>
+            
+                    <button 
+                        @click="loadData()"
+                        class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm">
+                        Refresh
+                    </button>
+                </div>
+            
+                <!-- FILTERS -->
+                <div class="bg-white p-4 rounded-2xl shadow mb-4 flex flex-col md:flex-row gap-3">
+            
+                    <!-- Search -->
+                    <input 
+                        type="text"
+                        x-model="search"
+                        @input.debounce.400ms="applyFilters"
+                        placeholder="Search user, username, phone..."
+                        class="border px-3 py-2 rounded-lg text-sm w-full md:w-1/3"
+                    >
+            
+                    <!-- Status -->
+                    <select x-model="status" @change="applyFilters"
+                        class="border px-3 py-2 rounded-lg text-sm">
+                        <option value="">All Status</option>
+                        <option value="1">Success</option>
+                        <option value="0">Pending</option>
+                        <option value="-1">Failed</option>
+                        <option value="2">Refunded</option>
+                        <option value="3">Processing</option>
+                    </select>
+            
+                </div>
+            
+                <!-- TABLE -->
+                <div class="bg-white rounded-2xl shadow p-4">
+            
+                    <div class="overflow-auto">
+                        <table class="w-full text-sm">
+                            <thead class="bg-gray-100 text-left">
+                                <tr>
+                                    <th class="p-2">ID</th>
+                                    <th class="p-2">User</th>
+                                    <th class="p-2">Amount</th>
+                                    <th class="p-2">Status</th>
+                                    <th class="p-2">Date</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+            
+                            <tbody>
+            
+                                <!-- LOADING -->
+                                <template x-if="loading">
+                                    <tr>
+                                        <td colspan="6" class="text-center py-6 text-gray-400">
+                                            Loading transactions...
+                                        </td>
+                                    </tr>
+                                </template>
+            
+                                <!-- DATA -->
+                                <template x-for="item in paginatedRows" :key="item.id">
+                                    <>
+                                        <tr class="border-b hover:bg-gray-50">
+                                            <td class="p-2" x-text="item.id"></td>
+            
+                                            <td class="p-2">
+                                                <div class="font-semibold" x-text="item.user"></div>
+                                                <div class="text-xs text-gray-500">
+                                                    <span x-text="item.username"></span> • 
+                                                    <span x-text="item.phone"></span>
+                                                </div>
+                                            </td>
+            
+                                            <td class="p-2 font-semibold">
+                                                <div x-text="formatMoney(item.amount)"></div>
+                                                <div class="text-xs text-gray-400" 
+                                                    x-text="'Bal: ' + formatMoney(item.balance_after)">
+                                                </div>
+                                            </td>
+            
+                                            <td class="p-2">
+                                                <span class="px-2 py-1 text-xs rounded font-medium"
+                                                    :class="statusClass(item.status)">
+                                                    <span x-text="item.status_text"></span>
+                                                </span>
+            
+                                                <!-- EXTRA FLAGS -->
+                                                <div class="text-xs mt-1 space-x-1">
+                                                    <template x-if="item.locked">
+                                                        <span class="text-red-600">🔒 Locked</span>
+                                                    </template>
+                                                    <template x-if="item.urgent">
+                                                        <span class="text-red-500 font-bold">URGENT</span>
+                                                    </template>
+                                                </div>
+                                            </td>
+            
+                                            <td class="p-2 text-xs text-gray-500">
+                                                <div x-text="item.date"></div>
+                                                <div class="text-gray-400" x-text="'in ' + item.duration"></div>
+                                            </td>
+            
+                                            <td class="p-2">
+                                                <button 
+                                                    @click="item.open = !item.open"
+                                                    class="text-blue-500 text-xs hover:underline">
+                                                    Details
+                                                </button>
+                                            </td>
+                                        </tr>
+            
+                                        <!-- EXPANDED ROW -->
+                                        <tr x-show="item.open">
+                                            <td colspan="6" class="bg-gray-50 p-4 text-xs space-y-2">
+            
+                                                <div class="grid md:grid-cols-2 gap-3">
+            
+                                                    <div>
+                                                        <b>Plan:</b> 
+                                                        <span x-text="item.plan"></span>
+                                                    </div>
+            
+                                                    <div>
+                                                        <b>Category:</b> 
+                                                        <span x-text="item.category"></span>
+                                                    </div>
+            
+                                                    <div>
+                                                        <b>Route:</b> 
+                                                        <span x-text="item.route"></span>
+                                                    </div>
+            
+                                                    <div>
+                                                        <b>Vendor:</b> 
+                                                        <span x-text="item.vendor"></span>
+                                                    </div>
+            
+                                                    <div>
+                                                        <b>Reprocessed By:</b> 
+                                                        <span x-text="item.reprocessed_by"></span>
+                                                    </div>
+            
+                                                    <div>
+                                                        <b>Retry Count:</b> 
+                                                        <span x-text="item.retry_count"></span>
+                                                    </div>
+            
+                                                </div>
+            
+                                                <div>
+                                                    <b>Message:</b>
+                                                    <div class="text-gray-600" x-text="item.message"></div>
+                                                </div>
+            
+                                                <div>
+                                                    <b>Extra Info:</b>
+                                                    <div class="text-gray-500" x-text="item.extra_info"></div>
+                                                </div>
+            
+                                            </td>
+                                        </tr>
+                                    </>
+                                </template>
+            
+                                <!-- EMPTY -->
+                                <template x-if="!loading && filteredRows.length === 0">
+                                    <tr>
+                                        <td colspan="6" class="text-center py-6 text-gray-400">
+                                            No transactions found
+                                        </td>
+                                    </tr>
+                                </template>
+            
+                            </tbody>
+                        </table>
+                    </div>
+            
+                    <!-- PAGINATION -->
+                    <div class="flex justify-between items-center mt-4 text-sm text-gray-500">
+            
+                        <span>
+                            Showing 
+                            <span x-text="paginatedRows.length"></span> 
+                            of 
+                            <span x-text="filteredRows.length"></span>
+                        </span>
+            
+                        <div class="flex gap-2">
+                            <button @click="prevPage()" 
+                                class="px-3 py-1 border rounded disabled:opacity-50"
+                                :disabled="page === 1">
+                                Prev
+                            </button>
+            
+                            <button @click="nextPage()" 
+                                class="px-3 py-1 border rounded disabled:opacity-50"
+                                :disabled="page >= totalPages">
+                                Next
+                            </button>
+                        </div>
+                    </div>
+            
+                </div>
+            </div>
+
+
         </div>
 
         <div class="col-span-12 xxl:col-span-12">
@@ -871,7 +1032,7 @@
                 </div>
               </div>
 
-        </div>
+    </div>
      
        
     </div>
@@ -920,4 +1081,96 @@ function walletBalance() {
     }
 }
 </script>
+
+
+
+
+<script>
+    function tableHandler() {
+        return {
+            rows: [],
+            filteredRows: [],
+            loading: false,
+    
+            search: '',
+            status: '',
+    
+            page: 1,
+            perPage: 10,
+    
+            init() {
+                this.loadData()
+                setInterval(() => this.loadData(), 30000)
+            },
+    
+            async loadData() {
+                this.loading = true
+    
+                try {
+                    // let res = await axios.get('/admin/fetch-transactions')
+                    let res = await axios.get("{{ route('admin.transactions.admin_fetch_transactions') }}")
+    
+                    this.rows = res.data.data.map(t => ({
+                        ...t,
+                        open: false
+                    }))
+    
+                    this.applyFilters()
+                } catch (e) {
+                    console.error(e)
+                } finally {
+                    this.loading = false
+                }
+            },
+    
+            applyFilters() {
+                let s = this.search.toLowerCase()
+    
+                this.filteredRows = this.rows.filter(item => {
+                    return (
+                        (!this.status || item.status == this.status) &&
+                        (
+                            item.user.toLowerCase().includes(s) ||
+                            item.phone.includes(s) ||
+                            item.username.toLowerCase().includes(s)
+                        )
+                    )
+                })
+    
+                this.page = 1
+            },
+    
+            get paginatedRows() {
+                let start = (this.page - 1) * this.perPage
+                return this.filteredRows.slice(start, start + this.perPage)
+            },
+    
+            get totalPages() {
+                return Math.ceil(this.filteredRows.length / this.perPage)
+            },
+    
+            nextPage() {
+                if (this.page < this.totalPages) this.page++
+            },
+    
+            prevPage() {
+                if (this.page > 1) this.page--
+            },
+    
+            formatMoney(val) {
+                return '₦' + Number(val || 0).toLocaleString()
+            },
+    
+            statusClass(status) {
+                return {
+                    1: 'bg-green-100 text-green-700',
+                    0: 'bg-yellow-100 text-yellow-700',
+                    '-1': 'bg-red-100 text-red-700',
+                    2: 'bg-blue-100 text-blue-700',
+                    3: 'bg-gray-100 text-gray-700'
+                }[status] || 'bg-gray-100'
+            }
+        }
+    }
+    </script>
 @endpush

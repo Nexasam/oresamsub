@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Traits\Utils\Utils;
 use Carbon\Carbon;
 use App\Models\Automation;
 use App\Models\ProductPlan;
@@ -22,7 +23,7 @@ use App\Traits\Dashboard\UserDashboardDataTrait;
 
 class TransactionController extends Controller
 {
-    use UserDashboardDataTrait;
+    use UserDashboardDataTrait, Utils;
 
   public function user_all_transactions(){
     $dataa = $this->get_user_dashboard_data();
@@ -379,7 +380,7 @@ class TransactionController extends Controller
   }
 
 
-  public function admin_fetch_transactions(Request $request){
+  public function admin_fetch_transactionsOLD(Request $request){
 
         // $date_from = $request->date_from ?? date('Y-m-d');
         // date('Y-m-d', strtotime('-10 days'))
@@ -655,6 +656,90 @@ class TransactionController extends Controller
 
 
   }
+
+  public function admin_fetch_transactions(Request $request)
+    {
+        $date_from = $request->date_from ?? '';
+        $date_to = $request->date_to ?? '';
+        $product_plan_category_filter = $request->product_plan_category_filter ?? '';
+        $phone = $request->phone_recharged ?? '';
+        $limit = $request->limit ?? 100;
+
+        $transactions = Transaction::when($date_from && $date_to, function ($q) use ($date_from, $date_to) {
+                $date_to = date('Y-m-d', strtotime('+1 day', strtotime($date_to)));
+                $q->whereBetween('created_at', [$date_from, $date_to]);
+            })
+            ->when($product_plan_category_filter, function ($q) use ($product_plan_category_filter) {
+                $ids = ProductPlan::where('product_plan_category_id', $product_plan_category_filter)->pluck('id');
+                $q->whereIn('product_plan_id', $ids);
+            })
+            ->when($phone, function ($q) use ($phone) {
+                $q->where('phone_number', $phone);
+            })
+            ->where('wallet_category', '!=', 'data_wallet')
+            ->with([
+                'user.user_plan',
+                'product_plan.product_plan_category',
+                'product_plan.automation',
+                'product_plan.reprocess_automation'
+            ])
+            ->latest()
+            ->limit($limit)
+            ->get();
+
+        return response()->json([
+            'data' => $transactions->map(function ($t) {
+
+                $user = $t->user;
+
+                // compute duration
+                $created = $t->created_at;
+                $updated = $t->updated_at;
+                $minutes = $created->diffInMinutes($updated);
+                $hours = intdiv($minutes, 60);
+                $mins = $minutes % 60;
+
+                $time = $hours > 0
+                    ? "{$hours}h {$mins}m"
+                    : "{$mins}m";
+
+                return [
+                    'id' => $t->id,
+
+                    // USER
+                    'user' => trim(($user->first_name ?? '') . ' ' . ($user->last_name ?? '')),
+                    'username' => $user->username ?? '',
+                    'phone' => $t->phone_number,
+
+                    // MONEY
+                    'amount' => $t->amount,
+                    'discounted_amount' => $t->discounted_amount,
+                    'balance_before' => $t->balance_before,
+                    'balance_after' => $t->balance_after,
+
+                    // STATUS
+                    'status' => $t->status,
+                    'status_text' => $this->statusText($t->status),
+                    'duration' => $time,
+                    'locked' => $t->locked_for_manual_processing,
+                    'urgent' => $t->set_for_manual,
+
+                    // DETAILS
+                    'plan' => $t->product_plan->product_plan_name ?? 'N/A',
+                    'category' => $t->product_plan->product_plan_category->product_plan_category_name ?? '',
+                    'route' => $t->txn_reference ? 'Mobile/API' : 'WEB',
+                    'vendor' => $t->product_plan->automation->automation_name ?? 'N/A',
+                    'reprocessed_by' => $t->product_plan->reprocess_automation->automation_name ?? 'nil',
+
+                    'retry_count' => $t->retry_count,
+                    'message' => $t->admin_screen_message,
+                    'extra_info' => $t->extra_info,
+
+                    'date' => $t->created_at->format('Y-m-d H:i:s'),
+                ];
+            })
+        ]);
+    }
 
 
   public function manually_mark_transaction_as_successful(Request $request){
