@@ -693,9 +693,9 @@ class TransactionController extends Controller
                 $user = $t->user;
 
                 // compute duration
-                $created = $t->created_at;
-                $updated = $t->updated_at;
-                $minutes = $created->diffInMinutes($updated);
+                // $created = $t->created_at;
+                // $updated = $t->updated_at;
+                // $minutes = $created->diffInMinutes($updated);
 
                 $createdAt = Carbon::parse($t->created_at);
                 $updatedAt = Carbon::parse($t->updated_at);
