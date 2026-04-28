@@ -6,9 +6,16 @@ use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Wallets extends Model
+class WalletCrediting extends Model
 {
     use HasFactory, HasUuids;
 
     protected $guarded = [];
+    
+    protected $table = 'wallet_creditings';
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }

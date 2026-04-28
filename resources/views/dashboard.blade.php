@@ -534,122 +534,287 @@
         </div> --}}
 
       
-        <div class="col-span-12 xxl:col-span-12">
+        <div class="col-span-12">
             <div class="box">
-                <div class="box-header">
-                    <div class="sm:flex">
-                        <h5 class="box-title my-auto">{{ __('messages.Recent Transactions') }}</h5>
-                        <div class="box-header">
-                            <div class="flex">
-                             
-                              <div class="hs-dropdown ti-dropdown block ms-auto my-auto sm:flex items-center justify-between">
-                               
-                                    <div id="hs-slide-down-animation-modal" class="hs-overlay hidden ti-modal">
-                                      <div class="hs-overlay-open:mt-7 ti-modal-box mt-0 ease-out">
-                                        <div class="ti-modal-content">
-                                          <div class="ti-modal-header">
-                                            <h3 class="ti-modal-title">
-                                              {{ __('messages.Filter Options') }}
-                                            </h3>
-                                            <button type="button" class="hs-dropdown-toggle ti-modal-close-btn"
-                                              data-hs-overlay="#hs-slide-down-animation-modal">
-                                              <span class="sr-only">Close</span>
-                                              <svg class="w-3.5 h-3.5" width="8" height="8" viewBox="0 0 8 8" fill="none"
-                                                xmlns="http://www.w3.org/2000/svg">
-                                                <path
-                                                  d="M0.258206 1.00652C0.351976 0.912791 0.479126 0.860131 0.611706 0.860131C0.744296 0.860131 0.871447 0.912791 0.965207 1.00652L3.61171 3.65302L6.25822 1.00652C6.30432 0.958771 6.35952 0.920671 6.42052 0.894471C6.48152 0.868271 6.54712 0.854471 6.61352 0.853901C6.67992 0.853321 6.74572 0.865971 6.80722 0.891111C6.86862 0.916251 6.92442 0.953381 6.97142 1.00032C7.01832 1.04727 7.05552 1.1031 7.08062 1.16454C7.10572 1.22599 7.11842 1.29183 7.11782 1.35822C7.11722 1.42461 7.10342 1.49022 7.07722 1.55122C7.05102 1.61222 7.01292 1.6674 6.96522 1.71352L4.31871 4.36002L6.96522 7.00648C7.05632 7.10078 7.10672 7.22708 7.10552 7.35818C7.10442 7.48928 7.05182 7.61468 6.95912 7.70738C6.86642 7.80018 6.74102 7.85268 6.60992 7.85388C6.47882 7.85498 6.35252 7.80458 6.25822 7.71348L3.61171 5.06702L0.965207 7.71348C0.870907 7.80458 0.744606 7.85498 0.613506 7.85388C0.482406 7.85268 0.357007 7.80018 0.264297 7.70738C0.171597 7.61468 0.119017 7.48928 0.117877 7.35818C0.116737 7.22708 0.167126 7.10078 0.258206 7.00648L2.90471 4.36002L0.258206 1.71352C0.164476 1.61976 0.111816 1.4926 0.111816 1.36002C0.111816 1.22744 0.164476 1.10028 0.258206 1.00652Z"
-                                                  fill="currentColor" />
-                                              </svg>
-                                            </button>
-                                          </div>
-                                          <div class="ti-modal-body">
-                                            <p class="mt-1 text-gray-800 dark:text-white/70">  {{ __('messages.Phone recharged') }}:</p>
-                                            <input type="text" value="" id="phone_recharged" name="phone_recharged"> <br>
-                                            <hr>
-                                            <br>
-                                            <p class="mt-1 text-gray-800 dark:text-white/70">{{  __('messages.Filter by Plan Category') }}:</p>
-                                            <select name="product_plan_category_filter" id="product_plan_category_filter">
-                                                <option value="">Select</option>
-                                                @foreach ($product_plan_categories as $plan_category)
-                                                 <option value="{{ $plan_category->id}}">{{ $plan_category->product_plan_category_name }}</option>   
-                                                @endforeach
-                                            </select>
-                                            <br>
-                                            <hr>
-                                            <br>
-                                            <p class="mt-1 text-gray-800 dark:text-white/70">{{  __('messages.Date Range') }}:</p><br>
-                                            <div class="flex items-center justify-between">
-                                              <div class="flex items-center justify-start space-x-5">
-                                                  <div>
-                                                    <p>{{  __('messages.Date from') }}:</p>
-                                                    <input type="date" value="" id="date_from_filter">
-                                                  </div>
-                                                  <div>
-                                                    <p>{{  __('messages.Date to') }}:</p>
-                                                    <input type="date" value="" id="date_to_filter">
-                                                  </div>
-                                              </div>
-                                            </div>
-                                          </div>
-                                          <div class="ti-modal-footer">
-                                         
-                                            <a id="filter_user_txn_table" class="ti-btn ti-btn-primary" data-hs-overlay="#hs-slide-down-animation-modal"
-                                              href="javascript:void(0);">
-                                               {{  __('messages.Save changes') }}
-                                            </a>
-                                          </div>
-                                        </div>
-                                      </div>
-                                    </div>
-                                    
-                                 
-                    
-                              </div>
-                            
-                            </div> 
-                          </div>
-
-                        <div class="hs-dropdown ti-dropdown block ms-auto my-auto">
-                            <button aria-label="button" id="hs-dropdown-custom-icon-trigger3" type="button"
-                                class="hs-dropdown-toggle ti-dropdown-toggle rounded-sm p-2 bg-white !border border-gray-200 text-gray-500 hover:bg-gray-100  focus:ring-gray-200 dark:bg-bodybg dark:hover:bg-black/30 dark:border-white/10 dark:hover:border-white/20 dark:focus:ring-white/10 dark:focus:ring-offset-white/10">
-                                <i class="text-sm leading-none ti ti-dots-vertical"></i> </button>
-                            <div class="hs-dropdown-menu ti-dropdown-menu"
-                                aria-labelledby="hs-dropdown-custom-icon-trigger3">
-                                <a href="javascript:void(0)" class="ti-dropdown-item hs-dropdown-toggle"
-                                data-hs-overlay="#hs-slide-down-animation-modal">{{ __('messages.Basic filter')  }}</a>
-                                {{-- <a class="ti-dropdown-item"  href="javascript:void(0)">Filter by phone number</a> --}}
-                              
-                            </div>
-                        </div>
-                       
+                <div class="box-header border-b border-gray-200 pb-3">
+                    <div class="sm:flex items-center justify-between">
+                        <h5 class="text-lg font-semibold text-gray-800">{{ __('messages.Recent Transactions') }}</h5>
                     </div>
                 </div>
-                <div class="box-body px-6">
-                    <div id="taskactive" class="" role="tabpanel" aria-labelledby="active-item">
-                        <div class="overflow-auto">
-                            <table style="width:100%"  id="user_transactions_table" class="table ti-custom-table ti-custom-table-head">    
-                                <thead class="bg-gray-50 dark:bg-black/20">
-                                <tr>
-                                    <th>ID</th>
-                                    <th>{{ __('messages.Wallet')  }}</th>
-                                    <th>{{ __('messages.Product Details')  }}</th>
-                                    <th>{{ __('messages.Category')  }}</th>
-                                    <th>{{ __('messages.Phone')  }}</th>
-                                    <th>{{ __('messages.Amount')  }}</th>
-                                    <th>{{ __('messages.Discounted Amount')  }}</th>
-                                    <th>{{ __('messages.Balance Before')  }}</th>
-                                    <th>{{ __('messages.Balance After')  }}</th>
-                                    <th>{{ __('messages.Status')  }}</th>
-                                    <th>{{ __('messages.Date Added')  }}</th>
-                                    <th>{{ __('messages.Action')  }}</th>
-                                </tr>
-                            </thead>
-                           
-                            <tbody>
+                <div class="box-body p-0">
+                    <div id="taskactive" role="tabpanel" aria-labelledby="active-item">
+                        <!-- Alpine.js Transactions Table -->
+                        <div x-data="transactionsTable()" x-init="fetchTransactions()">
+                            <!-- Search and Filters -->
+                            <div class="p-4 bg-gray-50 border-b border-gray-200 flex flex-wrap gap-2 items-end">
+                                <!-- Search -->
+                                <div class="flex-1 min-w-[180px]">
+                                    <input 
+                                        type="text" 
+                                        x-model="filters.search" 
+                                        @input.debounce.500ms="fetchTransactions()"
+                                        placeholder="🔍 {{ __('messages.Search by phone, amount...') }}"
+                                        class="w-full px-3 py-1.5 text-sm border border-gray-300 rounded-md focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+                                    >
+                                </div>
 
-                           </tbody>
-                            </table> 
+                                <!-- Status Filter -->
+                                <div class="min-w-[120px]">
+                                    <select 
+                                        x-model="filters.status" 
+                                        @change="fetchTransactions()"
+                                        class="w-full px-2 py-1.5 text-sm border border-gray-300 rounded-md focus:ring-1 focus:ring-blue-500"
+                                    >
+                                        <option value="">{{ __('messages.All Status') }}</option>
+                                        <option value="1">✓ {{ __('messages.Success') }}</option>
+                                        <option value="0">⏳ {{ __('messages.Pending') }}</option>
+                                        <option value="-1">✗ {{ __('messages.Failed') }}</option>
+                                        <option value="2">↩ {{ __('messages.Refunded') }}</option>
+                                    </select>
+                                </div>
+
+                                <!-- Per Page -->
+                                <div class="min-w-[80px]">
+                                    <select 
+                                        x-model="filters.per_page" 
+                                        @change="fetchTransactions()"
+                                        class="w-full px-2 py-1.5 text-sm border border-gray-300 rounded-md focus:ring-1 focus:ring-blue-500"
+                                    >
+                                        <option value="10">10</option>
+                                        <option value="25">25</option>
+                                        <option value="50">50</option>
+                                        <option value="100">100</option>
+                                    </select>
+                                </div>
+
+                                <!-- Refresh Button -->
+                                <button 
+                                    @click="fetchTransactions()"
+                                    class="px-3 py-1.5 text-sm bg-blue-600 text-white rounded-md hover:bg-blue-700 transition disabled:opacity-50"
+                                    :disabled="loading"
+                                >
+                                    <span x-show="!loading">🔄</span>
+                                    <span x-show="loading">⏳</span>
+                                </button>
+                            </div>
+
+                            <!-- Loading State -->
+                            <div x-show="loading" class="text-center py-12 bg-white">
+                                <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+                                <p class="mt-2 text-sm text-gray-500">{{ __('messages.Loading') }}...</p>
+                            </div>
+
+                            <!-- Table -->
+                            <div x-show="!loading" class="overflow-x-auto">
+                                <table class="w-full text-sm">    
+                                    <thead class="bg-gray-100 border-b border-gray-200">
+                                        <tr>
+                                            <th class="px-3 py-2 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">ID</th>
+                                            <th class="px-3 py-2 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">{{ __('messages.Product') }}</th>
+                                            <th class="px-3 py-2 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">{{ __('messages.Phone') }}</th>
+                                            <th class="px-3 py-2 text-right text-xs font-semibold text-gray-700 uppercase tracking-wider">{{ __('messages.Amount') }}</th>
+                                            <th class="px-3 py-2 text-right text-xs font-semibold text-gray-700 uppercase tracking-wider">{{ __('messages.Balance') }}</th>
+                                            <th class="px-3 py-2 text-center text-xs font-semibold text-gray-700 uppercase tracking-wider">{{ __('messages.Status') }}</th>
+                                            <th class="px-3 py-2 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">{{ __('messages.Date') }}</th>
+                                            <th class="px-3 py-2 text-center text-xs font-semibold text-gray-700 uppercase tracking-wider">{{ __('messages.Action') }}</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="bg-white divide-y divide-gray-100">
+                                        <template x-if="transactions.length === 0">
+                                            <tr>
+                                                <td colspan="8" class="px-3 py-12 text-center text-sm text-gray-500">
+                                                    📭 {{ __('messages.No transactions found') }}
+                                                </td>
+                                            </tr>
+                                        </template>
+
+                                        <template x-for="transaction in transactions" :key="transaction.id">
+                                            <tr class="hover:bg-blue-50 transition-colors">
+                                                <td class="px-3 py-2 text-xs text-gray-600" x-text="'#' + transaction.id"></td>
+                                                <td class="px-3 py-2">
+                                                    <div class="text-xs font-medium text-gray-900 truncate max-w-[200px]" x-text="transaction.product_plan?.product_plan_name || 'N/A'"></div>
+                                                    <div class="text-xs text-gray-500 truncate max-w-[200px]" x-text="transaction.product_plan?.product_plan_category?.product_plan_category_name || ''"></div>
+                                                </td>
+                                                <td class="px-3 py-2 text-xs font-medium text-gray-900" x-text="transaction.phone_recharged"></td>
+                                                <td class="px-3 py-2 text-xs font-semibold text-right text-gray-900">
+                                                    ₦<span x-text="parseFloat(transaction.amount).toLocaleString('en-NG', {minimumFractionDigits: 2})"></span>
+                                                </td>
+                                                <td class="px-3 py-2 text-xs text-right text-gray-600">
+                                                    ₦<span x-text="parseFloat(transaction.balance_after).toLocaleString('en-NG', {minimumFractionDigits: 2})"></span>
+                                                </td>
+                                                <td class="px-3 py-2 text-center">
+                                                    <span 
+                                                        class="inline-flex px-2 py-0.5 text-xs font-medium rounded-full"
+                                                        :class="{
+                                                            'bg-green-100 text-green-700': transaction.status == 1,
+                                                            'bg-yellow-100 text-yellow-700': transaction.status == 0,
+                                                            'bg-red-100 text-red-700': transaction.status == -1,
+                                                            'bg-blue-100 text-blue-700': transaction.status == 2
+                                                        }"
+                                                        x-text="getStatusText(transaction.status)"
+                                                    ></span>
+                                                </td>
+                                                <td class="px-3 py-2 text-xs text-gray-600">
+                                                    <div x-text="formatDate(transaction.created_at)"></div>
+                                                    <div class="text-xs text-gray-400" x-text="formatTime(transaction.created_at)"></div>
+                                                </td>
+                                                <td class="px-3 py-2 text-center">
+                                                    <a 
+                                                        :href="`/transactions/details/${transaction.id}`" 
+                                                        class="inline-block px-3 py-1 text-xs bg-blue-600 text-white rounded hover:bg-blue-700 font-medium transition"
+                                                    >
+                                                        {{ __('messages.Details') }}
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        </template>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <!-- Pagination -->
+                            <div x-show="!loading && pagination.last_page > 1" class="px-4 py-3 bg-gray-50 border-t border-gray-200 flex items-center justify-between">
+                                <div class="text-xs text-gray-600">
+                                    {{ __('messages.Showing') }} 
+                                    <span class="font-semibold text-gray-900" x-text="pagination.from"></span>
+                                    -
+                                    <span class="font-semibold text-gray-900" x-text="pagination.to"></span>
+                                    {{ __('messages.of') }}
+                                    <span class="font-semibold text-gray-900" x-text="pagination.total"></span>
+                                </div>
+
+                                <div class="flex gap-1">
+                                    <button 
+                                        @click="changePage(pagination.current_page - 1)"
+                                        :disabled="pagination.current_page === 1"
+                                        class="px-2 py-1 text-xs border border-gray-300 rounded hover:bg-gray-100 disabled:opacity-40 disabled:cursor-not-allowed transition"
+                                    >
+                                        ←
+                                    </button>
+
+                                    <template x-for="page in getPageNumbers()" :key="page">
+                                        <button 
+                                            @click="changePage(page)"
+                                            :class="page === pagination.current_page ? 'bg-blue-600 text-white border-blue-600' : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'"
+                                            class="px-2 py-1 text-xs border rounded transition"
+                                            x-text="page"
+                                        ></button>
+                                    </template>
+
+                                    <button 
+                                        @click="changePage(pagination.current_page + 1)"
+                                        :disabled="pagination.current_page === pagination.last_page"
+                                        class="px-2 py-1 text-xs border border-gray-300 rounded hover:bg-gray-100 disabled:opacity-40 disabled:cursor-not-allowed transition"
+                                    >
+                                        →
+                                    </button>
+                                </div>
+                            </div>
                         </div>
+
+                        <script>
+                            function transactionsTable() {
+                                return {
+                                    transactions: [],
+                                    loading: false,
+                                    filters: {
+                                        search: '',
+                                        status: '',
+                                        per_page: 10,
+                                        page: 1
+                                    },
+                                    pagination: {
+                                        current_page: 1,
+                                        last_page: 1,
+                                        from: 0,
+                                        to: 0,
+                                        total: 0
+                                    },
+
+                                    async fetchTransactions() {
+                                        this.loading = true;
+                                        try {
+                                            const params = new URLSearchParams({
+                                                search: this.filters.search,
+                                                status: this.filters.status,
+                                                per_page: this.filters.per_page,
+                                                page: this.filters.page
+                                            });
+
+                                            const response = await fetch(`{{ route('dashboard.transactions.fetch') }}?${params}`);
+                                            const data = await response.json();
+
+                                            this.transactions = data.data;
+                                            this.pagination = {
+                                                current_page: data.current_page,
+                                                last_page: data.last_page,
+                                                from: data.from,
+                                                to: data.to,
+                                                total: data.total
+                                            };
+                                        } catch (error) {
+                                            console.error('Error fetching transactions:', error);
+                                        } finally {
+                                            this.loading = false;
+                                        }
+                                    },
+
+                                    changePage(page) {
+                                        if (page >= 1 && page <= this.pagination.last_page) {
+                                            this.filters.page = page;
+                                            this.fetchTransactions();
+                                        }
+                                    },
+
+                                    getPageNumbers() {
+                                        const pages = [];
+                                        const current = this.pagination.current_page;
+                                        const last = this.pagination.last_page;
+                                        
+                                        // Show max 5 page numbers
+                                        let start = Math.max(1, current - 2);
+                                        let end = Math.min(last, start + 4);
+                                        
+                                        if (end - start < 4) {
+                                            start = Math.max(1, end - 4);
+                                        }
+                                        
+                                        for (let i = start; i <= end; i++) {
+                                            pages.push(i);
+                                        }
+                                        
+                                        return pages;
+                                    },
+
+                                    getStatusText(status) {
+                                        const statuses = {
+                                            '1': '{{ __("messages.Success") }}',
+                                            '0': '{{ __("messages.Pending") }}',
+                                            '-1': '{{ __("messages.Failed") }}',
+                                            '2': '{{ __("messages.Refunded") }}'
+                                        };
+                                        return statuses[status] || 'Unknown';
+                                    },
+
+                                    formatDate(dateString) {
+                                        const date = new Date(dateString);
+                                        return date.toLocaleDateString('en-GB', {
+                                            day: '2-digit',
+                                            month: 'short',
+                                            year: 'numeric'
+                                        });
+                                    },
+
+                                    formatTime(dateString) {
+                                        const date = new Date(dateString);
+                                        return date.toLocaleTimeString('en-GB', {
+                                            hour: '2-digit',
+                                            minute: '2-digit'
+                                        });
+                                    }
+                                }
+                            }
+                        </script>
                     </div>
                     <div id="completed" class="hidden" role="tabpanel" aria-labelledby="completed-item">
                         <div class="overflow-auto">

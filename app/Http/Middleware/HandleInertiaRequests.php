@@ -2,11 +2,23 @@
 
 namespace App\Http\Middleware;
 
+use Closure;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
+use Symfony\Component\HttpFoundation\Response;
 
 class HandleInertiaRequests extends Middleware
 {
+    public function handle(Request $request, Closure $next): Response
+    {
+        // Don't process plain JSON API endpoints through Inertia
+        if ($request->is('admin/wallet/total_balances') || $request->expectsJson()) {
+            return $next($request);
+        }
+
+        return parent::handle($request, $next);
+    }
+
     /**
      * The root template that's loaded on the first page visit.
      *

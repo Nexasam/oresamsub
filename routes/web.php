@@ -109,6 +109,7 @@ Route::middleware(['set_locale'])->group(function () {
 
                 //   INERTIAJS
                 Route::get('/dashboard', [UserDashboardController::class, 'index'])->name('dashboard');   
+                Route::get('/dashboard/transactions', [UserDashboardController::class, 'fetchTransactions'])->name('dashboard.transactions.fetch');   
                 Route::get('/data', [InertiaDashboardController::class, 'data'])->name('inertia.data.index');   
                 Route::get('/airtime', [InertiaDashboardController::class, 'airtime'])->name('inertia.airtime.index');   
                 Route::get('/cable', [InertiaDashboardController::class, 'cable'])->name('inertia.cable.index');   
@@ -592,6 +593,7 @@ Route::middleware(['set_locale'])->group(function () {
             
             Route::middleware(['auth','verified','admin'])->post('admin/users/store', [UsersController::class, 'store'])->name('admin.users.store');
             Route::middleware(['auth','verified','admin'])->get('admin/users/fetch_users', [UsersController::class, 'fetch_users'])->name('admin.users.fetch_users');
+            Route::middleware(['auth','verified','admin'])->get('admin/users/fetch_users_paginated', [UsersController::class, 'fetch_users_paginated'])->name('admin.users.fetch_users_paginated');
             Route::middleware(['auth','verified','admin'])->get('admin/users/toggle_verification_status', [UsersController::class, 'toggle_verification_status'])->name('admin.users.toggle_verification_status');
 
             Route::middleware(['auth','verified','admin'])->get('admin/networks', [NetworkController::class, 'index'])->name('admin.networks.index');
@@ -630,6 +632,8 @@ Route::middleware(['set_locale'])->group(function () {
             Route::middleware(['auth','verified','admin'])->post('admin/product_plan_categories/update_plan_prices', [ProductPlanCategoryController::class, 'update_plan_prices'])->name('admin.product_plan_categories.update_plan_prices');
 
             Route::middleware(['auth','verified','admin'])->get('admin/product_plan_categories/admin_fetch_product_plan_categories', [ProductPlanCategoryController::class, 'admin_fetch_product_plan_categories'])->name('admin.product_plan_categories.admin_fetch_product_plan_categories');
+            Route::middleware(['auth','verified','admin'])->get('admin/product_plan_categories/admin_fetch_product_plan_categories_paginated', [ProductPlanCategoryController::class, 'admin_fetch_product_plan_categories_paginated'])->name('admin.product_plan_categories.admin_fetch_product_plan_categories_paginated');
+            Route::middleware(['auth','verified','admin'])->get('admin/product_plan_categories/details/{id}/json', [ProductPlanCategoryController::class, 'category_details_json'])->name('admin.product_plan_categories.category_details_json');
             Route::middleware(['auth','verified','admin'])->post('admin/product_plan_categories/store', [ProductPlanCategoryController::class, 'store'])->name('admin.product_plan_categories.store');
             Route::middleware(['auth','verified','admin'])->post('admin/product_plan_categories/store_plan', [ProductPlanCategoryController::class, 'store_plan'])->name('admin.product_plan_categories.store_plan');
             Route::middleware(['auth','verified','admin'])->get('admin/product_plan_categories/update_automation', [ProductPlanCategoryController::class, 'updateAutomation'])->name('admin.product_plan_categories.update_automation');
@@ -654,6 +658,7 @@ Route::middleware(['set_locale'])->group(function () {
             Route::middleware(['auth','verified','admin'])->post('transactions/transaction_refund', [TransactionController::class, 'transaction_refund'])->name('transactions.transaction_refund');
             Route::middleware(['auth','verified','admin'])->post('transactions/manually_mark_transaction_as_successful', [TransactionController::class, 'manually_mark_transaction_as_successful'])->name('transactions.manually_mark_transaction_as_successful');
             Route::middleware(['auth','verified','admin'])->get('admin/transactions/admin_fetch_transactions', [TransactionController::class, 'admin_fetch_transactions'])->name('admin.transactions.admin_fetch_transactions');
+            Route::middleware(['auth','verified','admin'])->get('admin/transactions/admin_fetch_transactions_paginated', [TransactionController::class, 'admin_fetch_transactions_paginated'])->name('admin.transactions.admin_fetch_transactions_paginated');
             Route::middleware(['auth','verified','admin'])->get('admin/transactions/index', [TransactionController::class, 'admin_all_transactions'])->name('admin.transactions.index');
             Route::middleware(['auth','verified','user'])->get('user/transactions/user_fetch_transactions', [TransactionController::class, 'user_fetch_transactions'])->name('user.transactions.user_fetch_transactions');
             Route::middleware(['auth','verified','user'])->get('user/transactions/index', [TransactionController::class, 'user_all_transactions'])->name('user.transactions.index');
@@ -678,6 +683,8 @@ Route::middleware(['set_locale'])->group(function () {
             Route::middleware(['auth','verified','admin'])->post('admin/product_plans/update', [ProductPlanController::class, 'update'])->name('admin.product_plans.update');
             Route::middleware(['auth','verified','admin'])->post('admin/product_plans/update_plan2', [ProductPlanController::class, 'update_plan2'])->name('admin.product_plans.update_plan2');
             Route::middleware(['auth','verified','admin'])->get('admin/product_plans/fetch_product_plans', [ProductPlanController::class, 'admin_fetch_product_plans'])->name('admin.product_plans.admin_fetch_product_plans');
+            Route::middleware(['auth','verified','admin'])->get('admin/product_plans/fetch_product_plans_paginated', [ProductPlanController::class, 'admin_fetch_product_plans_paginated'])->name('admin.product_plans.admin_fetch_product_plans_paginated');
+            Route::middleware(['auth','verified','admin'])->get('admin/product_plans/details/{id}/json', [ProductPlanController::class, 'product_plan_details_json'])->name('admin.product_plans.product_plan_details_json');
             Route::middleware(['auth','verified','admin'])->get('admin/toggle_product_visibility', [ProductPlanController::class, 'toggle_product_visibility'])->name('admin.product_plans.toggle_product_visibility');
             Route::middleware(['auth','verified','admin'])->get('admin/toggle_product_public_visibility', [ProductPlanController::class, 'toggle_product_public_visibility'])->name('admin.product_plans.toggle_product_public_visibility');
 
@@ -746,6 +753,7 @@ Route::middleware(['set_locale'])->group(function () {
             Route::middleware(['auth','verified'])->get('transactions/fetch_cable_transactions', [CableSubscriptionController::class, 'fetch_cable_transactions'])->name('transactions.fetch_cable_transactions');
             Route::middleware(['auth','verified'])->get('transactions/fetch_electricity_transactions', [ElectricitySubscriptionController::class, 'fetch_electricity_transactions'])->name('transactions.fetch_electricity_transactions');
             Route::middleware(['auth','verified'])->get('transactions/details/{id}', [TransactionController::class, 'transaction_details'])->name('transactions.transaction_details');
+            Route::middleware(['auth','verified'])->get('transactions/details/{id}/json', [TransactionController::class, 'transaction_details_json'])->name('transactions.transaction_details_json');
 
             //CABLE TV: user.cabletv.buy_cable_subscription
 
@@ -810,7 +818,8 @@ Route::middleware(['set_locale'])->group(function () {
 
             Route::middleware(['auth','verified','user'])->get('user/wallet/fund_wallet', [WalletsController::class, 'fund_wallet'])->name('user.wallet.fund_wallet');
             Route::middleware(['auth','verified'])->get('transactions/fetch_crystal_pay_funding_transactions', [WalletsController::class, 'fetch_crystal_pay_funding_transactions'])->name('transactions.fetch_crystal_pay_funding_transactions');
-            // Route::middleware(['auth','verified'])->get('transactions/fetch_crystal_pay_pending_transactions', [WalletsController::class, 'fetch_crystal_pay_pending_transactions'])->name('transactions.fetch_crystal_pay_pending_transactions');
+            Route::middleware(['auth','verified'])->get('transactions/fetch_crystal_pay_pending_transactions', [WalletsController::class, 'fetch_crystal_pay_pending_transactions'])->name('transactions.fetch_crystal_pay_pending_transactions');
+            Route::middleware(['auth','verified','admin'])->get('transactions/fetch_pending_creditings_paginated', [WalletsController::class, 'fetch_pending_creditings_paginated'])->name('transactions.fetch_pending_creditings_paginated');
             Route::middleware(['auth','verified'])->get('transactions/pending_funding_transactions', [WalletsController::class, 'pending_funding_transactions'])->name('admin.transactions.pending_funding_transactions');
 
             //ADMIN ENDS HERE

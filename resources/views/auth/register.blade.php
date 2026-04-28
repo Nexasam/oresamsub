@@ -1,498 +1,428 @@
 <!DOCTYPE html>
-<html lang="en" dir="ltr" class="h-full">
-
+<html lang="en" class="h-full">
 <head>
 
-    @if (env('APP_NAME') == 'FoxDataHub' )
-
-    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-     new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-     j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-     'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-     })(window,document,'script','dataLayer','GTM-NPMMTFT6');</script>
-     
-  
-  
-     <script async src="https://www.googletagmanager.com/gtag/js?id=G-NCKP7MH1KN"></script>
-     <script>
-     window.dataLayer = window.dataLayer || [];
-     function gtag(){dataLayer.push(arguments);}
-     gtag('js', new Date());
-  
-     gtag('config', 'G-NCKP7MH1KN');
-     </script>
-  
+    @if (env('APP_NAME') == 'FoxDataHub')
+    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','GTM-NPMMTFT6');</script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-NCKP7MH1KN"></script>
+    <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-NCKP7MH1KN');</script>
     @endif
 
-
     @if (env('APP_NAME') == 'OresamSub')
-      <!-- Meta Pixel Code -->
-      <script>
-      !function(f,b,e,v,n,t,s)
-      {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-      n.callMethod.apply(n,arguments):n.queue.push(arguments)};
-      if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
-      n.queue=[];t=b.createElement(e);t.async=!0;
-      t.src=v;s=b.getElementsByTagName(e)[0];
-      s.parentNode.insertBefore(t,s)}(window, document,'script',
-      'https://connect.facebook.net/en_US/fbevents.js');
-      fbq('init', '4058518677737855');
-      fbq('track', 'PageView');
-      </script>
-      <noscript><img height="1" width="1" style="display:none"
-      src="https://www.facebook.com/tr?id=4058518677737855&ev=PageView&noscript=1"
-      /></noscript>
-      <!-- End Meta Pixel Code -->
-     @endif
-    
+    <script>!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');fbq('init','4058518677737855');fbq('track','PageView');</script>
+    <noscript><img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=4058518677737855&ev=PageView&noscript=1"/></noscript>
+    @endif
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title> {{env('APP_NAME')}} - Enjoy data at the best rate </title>
-    <meta name="description" content="This is an amazing data website for your special data needs">
+    <title>{{ env('APP_NAME') }} — Create Account</title>
 
-    <!-- Favicon -->
-    {{-- <link rel="shortcut icon" href="../assets/img/brand-logos/favicon.ico"> --}}
-    {{-- <link rel="shortcut icon" href="{{ asset(env('APP_ASSETS_BASE_URL').'img/brand-logos/favicon.ico') }}"> --}}
-
-    <!-- Style Css -->
-    {{-- <link rel="stylesheet" href="../assets/css/style.css"> --}}
+    <link rel="icon" type="image/png" href="{{ asset('assets/logo_imgs/favicon/android-chrome-192x192.png') }}">
     <link rel="stylesheet" href="{{ asset(env('APP_ASSETS_BASE_URL').'css/style.css') }}">
-
-    <!-- Simplebar Css -->
-    {{-- <link rel="stylesheet" href="../assets/libs/simplebar/simplebar.min.css"> --}}
     <link rel="stylesheet" href="{{ asset(env('APP_ASSETS_BASE_URL').'libs/simplebar/simplebar.min.css') }}">
-
-    <!-- Color Picker Css -->
-    {{-- <link rel="stylesheet" href="../assets/libs/@simonwep/pickr/themes/nano.min.css"> --}}
-    <link rel="stylesheet" href="{{ asset(env('APP_ASSETS_BASE_URL').'libs/@simonwep/pickr/themes/nano.min.css') }}">
-
-
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap" rel="stylesheet">
-
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
 
     @php
-    $admin_site_color =  App\Models\AdminColorSetting::where('color_name','admin_site_color')->first();
-    $admin_site_color_value = $admin_site_color->color_value ?? (int) '90, 102, 241'; 
-   //  echo $admin_site_color_value;  
-   @endphp
+        $primary = App\Models\AdminColorSetting::where('color_name','site_primary_color')->first();
+        $primaryColor = $primary->color_value ?? '#5a66f2';
+        $secondary = App\Models\AdminColorSetting::where('color_name','site_secondary_color')->first();
+        $secondaryColor = $secondary->color_value ?? '#f97316';
+    @endphp
 
-   <style>
+    <style>
+        * { font-family: 'Inter', sans-serif; }
+        :root { --primary: {{ $primaryColor }}; --secondary: {{ $secondaryColor }}; }
 
+        body { background: #f8fafc; min-height: 100vh; }
 
-        .nunito2 {
-          font-family: "Nunito", sans-serif;
-          font-optical-sizing: auto;
-          font-weight: 400;
-          font-style: normal;
+        .auth-left {
+            background: linear-gradient(135deg, {{ $primaryColor }}ee 0%, {{ $primaryColor }}99 100%);
+            position: relative; overflow: hidden;
+        }
+        .auth-left::before {
+            content: ''; position: absolute; inset: 0;
+            background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
         }
 
-
-       .montserrat2 {
-          font-family: "Montserrat", sans-serif;
-          font-optical-sizing: auto;
-          font-weight: 400;
-          font-style: normal;
+        .form-input {
+            width: 100%; padding: 11px 14px;
+            border: 1.5px solid #e5e7eb; border-radius: 10px;
+            font-size: 14px; outline: none; background: #fafafa; color: #111827;
+            transition: border-color .2s, box-shadow .2s;
         }
-   
-     :root {
-           --color-primary: {{  $admin_site_color_value  }};
-           /* --color-primary: 90 102 241; */
-           --color-primary-rgb: 90,102,241;
-           --color-secondary: 96 165 250;
-           --color-success: 34 197 94;
-           --color-info: 76 117 207;
-           --color-warning: 234 179 8;
-           --color-danger: 244 63 94;
-           --body-bg: 242 246 249;
-           --default-text-color: 71 85 105;
-           --default-border: 243 243 243;
-           --muted: 140 144 151;
-           --dark-rgb: 14 16 20;
-           --menu-bg: 255 255 255;
-           --menu-border-color: 243 243 243;
-           --menu-prime-color: 100 116 139;
-           --header-bg: 255 255 255;
-           --header-prime-color: 100 116 139;
-           --header-border-color: 243 243 243;
-           --dark-bg: 30 41 59;
-           --dark-bg2: 249 250 251;
-       }
-        .float{
-         position:fixed;
-         width:60px;
-         height:60px;
-         bottom:40px;
-         right:40px;
-         background-color:#25d366;
-         color:#FFF;
-         border-radius:50px;
-         text-align:center;
-         font-size:30px;
-         box-shadow: 2px 2px 3px #999;
-         z-index:100;
-         }
+        .form-input:focus {
+            border-color: var(--primary); background: #fff;
+            box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary) 15%, transparent);
+        }
+        .form-input.error { border-color: #ef4444; }
 
-         .my-float{
-         margin-top:16px;
-         }
+        .btn-primary {
+            width: 100%; padding: 13px;
+            background: var(--primary); color: #fff;
+            border: none; border-radius: 10px;
+            font-size: 15px; font-weight: 600; cursor: pointer;
+            transition: opacity .2s, transform .2s;
+        }
+        .btn-primary:hover:not(:disabled) { opacity: .88; transform: translateY(-1px); }
+        .btn-primary:disabled { opacity: .6; cursor: not-allowed; }
 
-
-
-         /* loading overlay */
-
-            #loadingOverlay {
-            position: fixed;
-            z-index: 9999;
-            top: 0;
-            left: 0;
-            height: 100vh;
-            width: 100vw;
-            background: rgba(0, 0, 0, 0.85); /* dark semi-transparent */
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            transition: opacity 0.5s ease;
+        .float {
+            position: fixed; width: 56px; height: 56px; bottom: 32px; right: 32px;
+            background: #25d366; color: #fff; border-radius: 50%;
+            text-align: center; font-size: 28px; line-height: 56px;
+            box-shadow: 0 4px 12px rgba(0,0,0,.2); z-index: 100; text-decoration: none;
         }
 
-        #loadingOverlay.fade-out {
-            opacity: 0;
-            visibility: hidden;
+        /* Loading overlay */
+        #loadingOverlay {
+            position: fixed; z-index: 9999; inset: 0;
+            background: rgba(0,0,0,.85);
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            transition: opacity .4s;
         }
-
+        #loadingOverlay.fade-out { opacity: 0; pointer-events: none; }
         .spinner {
-            width: 60px;
-            height: 60px;
-            border: 6px solid rgba(255, 255, 255, 0.3);
-            border-top-color: #00d9ff;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin-bottom: 20px;
+            width: 52px; height: 52px;
+            border: 5px solid rgba(255,255,255,.2); border-top-color: #00d9ff;
+            border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 16px;
         }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .loading-text { color: #fff; font-size: 1rem; letter-spacing: .5px; }
 
-        .loading-text {
-            color: #fff;
-            font-size: 1.25rem;
-            letter-spacing: 1px;
-            animation: pulse 1.5s infinite;
+        .feature-item { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
+        .feature-icon {
+            width: 36px; height: 36px; border-radius: 8px;
+            background: rgba(255,255,255,.2); display: flex; align-items: center; justify-content: center;
+            flex-shrink: 0;
         }
-
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.6; }
-        }
-   </style>
-
-
+    </style>
 </head>
 
-<body class="flex h-full !py-0 bg-white dark:bg-bgdark montserrat2">
+<body>
 
+    <!-- Loading overlay -->
     <div id="loadingOverlay">
         <div class="spinner"></div>
         <div class="loading-text">Loading, please wait...</div>
-      </div>
+    </div>
 
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
-    {{-- &text=Hola%21%20Quisiera%20m%C3%A1s%20informaci%C3%B3n%20sobre%20Varela%202. --}}
-    <a href="https://api.whatsapp.com/send?phone={{  $support_whatsapp_number  }}&text=Hello,%20Please%20I%20need%20help%20on%20your%20website" class="float" target="_blank">
-    <i class="fa fa-whatsapp my-float"></i>
-    </a>       
+    <!-- WhatsApp float -->
+    <a href="https://api.whatsapp.com/send?phone={{ $support_whatsapp_number }}&text=Hello,%20I%20need%20help" class="float" target="_blank">
+        <i class="fa fa-whatsapp"></i>
+    </a>
 
+    <div style="display:flex; min-height:100vh;">
 
-    <div class="grid grid-cols-12 gap-6 w-full h-full">
-        <div class="lg:col-span-6 col-span-12 hidden lg:block relative">
-            <div class="cover relative w-full h-full z-[1]">
-                @if (isset($signup_image) && $signup_image != '')
-                <img src="{{ asset(env('APP_ASSETS_BASE_URL').'landing_page_assets/img/authentication/signup/'.$signup_image) }}" alt="signup" class="object-cover mx-auto h-full">
-                 
-             @else
-              <img src="{{ asset(env('APP_ASSETS_BASE_URL').'img/authentication/auth3.jpg') }}" alt="signup" class="object-cover mx-auto h-full">
+        <!-- LEFT PANEL — brand/features (hidden on mobile) -->
+        <div class="auth-left" style="flex:0 0 42%; display:none; position:relative;" id="leftPanel">
+            @if(isset($signup_image) && $signup_image != '')
+            <img src="{{ asset(env('APP_ASSETS_BASE_URL').'landing_page_assets/img/authentication/signup/'.$signup_image) }}"
+                 alt="signup"
+                 style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; z-index:0;">
+            <div style="position:absolute; inset:0; background:linear-gradient(135deg, {{ $primaryColor }}cc 0%, {{ $primaryColor }}88 100%); z-index:1;"></div>
+            @else
+            <img src="{{ asset(env('APP_ASSETS_BASE_URL').'img/authentication/auth3.jpg') }}"
+                 alt="signup"
+                 style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; z-index:0;">
+            <div style="position:absolute; inset:0; background:linear-gradient(135deg, {{ $primaryColor }}cc 0%, {{ $primaryColor }}88 100%); z-index:1;"></div>
+            @endif
+            <div style="position:relative; z-index:2; padding:48px 40px; height:100%; display:flex; flex-direction:column; justify-content:space-between;">
 
-             @endif
+                <!-- Logo / brand -->
+                <div>
+                    @if(isset($site_logo) && $site_logo != '')
+                        <img src="{{ env('APP_URL').'assets/landing_page_assets/img/site_logo/'.$site_logo }}"
+                             alt="logo" style="height:56px; object-fit:contain; margin-bottom:32px;">
+                    @else
+                        <div style="font-size:24px; font-weight:800; color:#fff; margin-bottom:32px; letter-spacing:-0.5px;">
+                            {{ env('APP_NAME') }}
+                        </div>
+                    @endif
+
+                    <h2 style="color:#fff; font-size:28px; font-weight:700; line-height:1.3; margin-bottom:12px;">
+                        Nigeria's fastest VTU platform
+                    </h2>
+                    <p style="color:rgba(255,255,255,.75); font-size:14px; line-height:1.7; margin-bottom:36px;">
+                        Buy data, airtime, pay bills and subscribe to cable TV — all in one place, instantly.
+                    </p>
+
+                    <div>
+                        <div class="feature-item">
+                            <div class="feature-icon">
+                                <svg width="18" height="18" fill="none" stroke="#fff" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                            </div>
+                            <div>
+                                <div style="color:#fff; font-weight:600; font-size:14px;">Instant Delivery</div>
+                                <div style="color:rgba(255,255,255,.65); font-size:12px;">Transactions processed in seconds</div>
+                            </div>
+                        </div>
+                        <div class="feature-item">
+                            <div class="feature-icon">
+                                <svg width="18" height="18" fill="none" stroke="#fff" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+                            </div>
+                            <div>
+                                <div style="color:#fff; font-weight:600; font-size:14px;">Secure & Reliable</div>
+                                <div style="color:rgba(255,255,255,.65); font-size:12px;">Your funds are always protected</div>
+                            </div>
+                        </div>
+                        <div class="feature-item">
+                            <div class="feature-icon">
+                                <svg width="18" height="18" fill="none" stroke="#fff" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                            </div>
+                            <div>
+                                <div style="color:#fff; font-weight:600; font-size:14px;">Earn Referral Bonuses</div>
+                                <div style="color:rgba(255,255,255,.65); font-size:12px;">Invite friends and earn commissions</div>
+                            </div>
+                        </div>
+                        <div class="feature-item">
+                            <div class="feature-icon">
+                                <svg width="18" height="18" fill="none" stroke="#fff" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/></svg>
+                            </div>
+                            <div>
+                                <div style="color:#fff; font-weight:600; font-size:14px;">Best Prices</div>
+                                <div style="color:rgba(255,255,255,.65); font-size:12px;">Cheapest data & airtime rates</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Stats -->
+                <div style="display:flex; gap:32px; padding-top:32px; border-top:1px solid rgba(255,255,255,.2);">
+                    <div>
+                        <div style="color:#fff; font-size:22px; font-weight:800;">5K+</div>
+                        <div style="color:rgba(255,255,255,.65); font-size:12px;">Happy Users</div>
+                    </div>
+                    <div>
+                        <div style="color:#fff; font-size:22px; font-weight:800;">10K+</div>
+                        <div style="color:rgba(255,255,255,.65); font-size:12px;">Transactions</div>
+                    </div>
+                    <div>
+                        <div style="color:#fff; font-size:22px; font-weight:800;">99.9%</div>
+                        <div style="color:rgba(255,255,255,.65); font-size:12px;">Uptime</div>
+                    </div>
+                </div>
             </div>
         </div>
-        <div class="lg:col-span-6 col-span-12">
-            <div class="authentication-page w-full">
-                <!-- ========== MAIN CONTENT ========== -->
-                    <main id="content"  class="w-full max-w-2xl mx-auto p-6">
-                        {{-- <a href="#" class="header-logo lg:hidden">
-                        <img src="../assets/img/brand-logos/desktop-logo.png" alt="logo" class="mx-auto block dark:hidden">
-                        <img src="../assets/img/brand-logos/desktop-dark.png" alt="logo" class="mx-auto hidden dark:block">
-                        </a> --}}
-                        <div class="mt-7">
-                            <div class="p-4 sm:p-12 rounded-2xl border border-2 border-gray-100 shadow-lg">
-                                @if (  isset($site_logo) && $site_logo != '')
-                    
-                                    <a href="#" class="header-logo ">
-                                        <img style="background-size: contain;" src="{{ env('APP_URL').'assets/landing_page_assets/img/site_logo/'.$site_logo }}" alt="logo"
-                                        class="w-24 h-24 mx-auto  block dark:hidden" > 
-                                        <img src="{{ env('APP_URL').'assets/landing_page_assets/img/site_logo/'.$site_logo }}" alt="logo"
-                                            class="w-24 h-24 mx-auto hidden dark:block" alt="logo" class=""> 
-                                        {{-- <img src="../assets/img/brand-logos/desktop-dark.png" alt="logo" class="mx-auto hidden dark:block"> --}}
-                                    </a>
-                                    <br>
-                                    <hr>
-                                    <br>
-                                 @endif
 
-                                <div class="text-center">
-                                    @if ( !isset($site_logo) )
-                                    <h1 class="block text-2xl font-bold text-gray-800 dark:text-gray-900">{{ env('APP_NAME') }}</h1>
-                                    <hr>
-                                    @endif
-                                    <h3 class="block text-xl text-gray-800 dark:text-gray-900">{{__('messages.Get Started')}}</h3>
-                                    <p class="mt-3 text-sm text-gray-600 dark:text-white/70">
-                                        {{__('messages.Already have an account')}}?
-                                        <a class="text-primary decoration-2 hover:underline font-medium"
-                                            href="{{ url(route('login'))}}">
-                                            {{__('messages.Signin here')}}
-                                        </a>
-                                    </p>
-                                </div>
+        <!-- RIGHT PANEL — form -->
+        <div style="flex:1; display:flex; align-items:center; justify-content:center; padding:24px; background:#f8fafc; overflow-y:auto;">
+            <div style="width:100%; max-width:520px;">
 
-                                <div class="mt-5">
-                                    {{-- <button type="button"
-                                        class="w-full py-2 px-3 inline-flex justify-center items-center gap-2 rounded-sm border font-medium bg-white text-gray-700 shadow-sm align-middle hover:bg-gray-50 focus:outline-none focus:ring-0 focus:ring-offset-0 focus:ring-offset-white focus:ring-primary transition-all text-sm dark:bg-bgdark dark:hover:bg-black/20 dark:border-white/10 dark:text-white/70 dark:hover:text-white dark:focus:ring-offset-white/10">
-                                        <img src="../assets/img/authentication/social/1.png" class="w-4 h-4" alt="google-img">Sign in with Google
+                <!-- Mobile logo -->
+                <div style="text-align:center; margin-bottom:28px;" id="mobileLogo">
+                    @if(isset($site_logo) && $site_logo != '')
+                        <img src="{{ env('APP_URL').'assets/landing_page_assets/img/site_logo/'.$site_logo }}"
+                             alt="logo" style="height:52px; object-fit:contain; margin:0 auto 8px;">
+                    @else
+                        <div style="font-size:22px; font-weight:800; color:{{ $primaryColor }};">{{ env('APP_NAME') }}</div>
+                    @endif
+                </div>
+
+                <!-- Card -->
+                <div style="background:#fff; border-radius:20px; padding:36px 32px; box-shadow:0 4px 24px rgba(0,0,0,.07); border:1px solid #f0f0f5;">
+
+                    <!-- Header -->
+                    <div style="margin-bottom:28px;">
+                        <h1 style="font-size:22px; font-weight:800; color:#111827; margin-bottom:6px;">Create your account</h1>
+                        <p style="font-size:14px; color:#6b7280;">
+                            {{ __('messages.Already have an account') }}?
+                            <a href="{{ route('login') }}" style="color:{{ $primaryColor }}; font-weight:600; text-decoration:none;">
+                                {{ __('messages.Signin here') }}
+                            </a>
+                        </p>
+                    </div>
+
+                    <!-- Flash messages -->
+                    @if(Session::has('success'))
+                    <div style="background:#f0fdf4; border:1px solid #bbf7d0; color:#166534; padding:12px 16px; border-radius:10px; font-size:13px; margin-bottom:20px; display:flex; align-items:center; gap:8px;">
+                        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                        {{ Session::get('success') }}
+                    </div>
+                    @endif
+                    @if(Session::has('failure'))
+                    <div style="background:#fef2f2; border:1px solid #fecaca; color:#991b1b; padding:12px 16px; border-radius:10px; font-size:13px; margin-bottom:20px; display:flex; align-items:center; gap:8px;">
+                        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                        {{ Session::get('failure') }}
+                    </div>
+                    @endif
+                    @if($errors->any())
+                    <div style="background:#fef2f2; border:1px solid #fecaca; color:#991b1b; padding:12px 16px; border-radius:10px; font-size:13px; margin-bottom:20px;">
+                        <div style="font-weight:600; margin-bottom:6px;">Please fix the following:</div>
+                        <ul style="list-style:disc; padding-left:16px; margin:0;">
+                            @foreach($errors->all() as $e)<li>{{ $e }}</li>@endforeach
+                        </ul>
+                    </div>
+                    @endif
+
+                    <!-- Form -->
+                    <form action="{{ route('store2') }}" method="POST" onsubmit="handleSubmit(this)">
+                        <input type="hidden" name="_token" value="{{ csrf_token() }}">
+
+                        <!-- Row 1: Full name + Username -->
+                        <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:16px;">
+                            <div>
+                                <label style="display:block; font-size:13px; font-weight:600; color:#374151; margin-bottom:6px;">
+                                    {{ __('messages.Fullname') }} <span style="color:#ef4444;">*</span>
+                                </label>
+                                <input type="text" name="fullname" value="{{ old('fullname') }}" required
+                                    placeholder="{{ __('messages.First name and Surname') }}"
+                                    class="form-input {{ $errors->has('fullname') ? 'error' : '' }}">
+                                @error('fullname')<p style="color:#ef4444; font-size:11px; margin-top:4px;">{{ $message }}</p>@enderror
+                            </div>
+                            <div>
+                                <label style="display:block; font-size:13px; font-weight:600; color:#374151; margin-bottom:6px;">
+                                    {{ __('messages.Username') }} <span style="color:#ef4444;">*</span>
+                                </label>
+                                <input type="text" name="username" value="{{ old('username') }}" required
+                                    placeholder="e.g. johndoe"
+                                    class="form-input {{ $errors->has('username') ? 'error' : '' }}">
+                                @error('username')<p style="color:#ef4444; font-size:11px; margin-top:4px;">{{ $message }}</p>@enderror
+                            </div>
+                        </div>
+
+                        <!-- Row 2: Phone + Email -->
+                        <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:16px;">
+                            <div>
+                                <label style="display:block; font-size:13px; font-weight:600; color:#374151; margin-bottom:6px;">
+                                    {{ __('messages.Phone') }} <span style="color:#ef4444;">*</span>
+                                </label>
+                                <input type="text" name="phone_number" value="{{ old('phone_number') }}" required
+                                    placeholder="08012345678"
+                                    class="form-input {{ $errors->has('phone_number') ? 'error' : '' }}">
+                                @error('phone_number')<p style="color:#ef4444; font-size:11px; margin-top:4px;">{{ $message }}</p>@enderror
+                            </div>
+                            <div>
+                                <label style="display:block; font-size:13px; font-weight:600; color:#374151; margin-bottom:6px;">
+                                    {{ __('messages.Email Address') }} <span style="color:#ef4444;">*</span>
+                                </label>
+                                <input type="email" name="email" value="{{ old('email') }}" required
+                                    placeholder="you@example.com"
+                                    class="form-input {{ $errors->has('email') ? 'error' : '' }}">
+                                @error('email')<p style="color:#ef4444; font-size:11px; margin-top:4px;">{{ $message }}</p>@enderror
+                            </div>
+                        </div>
+
+                        <!-- Referral -->
+                        <div style="margin-bottom:16px;">
+                            <label style="display:block; font-size:13px; font-weight:600; color:#374151; margin-bottom:6px;">
+                                {{ __('messages.Referral phone number (optional)') }}
+                            </label>
+                            @if($upline != '')
+                                <input type="text" name="upline_referral_phone_number" value="{{ $upline }}" readonly
+                                    class="form-input" style="background:#f3f4f6; cursor:not-allowed;">
+                            @else
+                                <input type="text" name="upline_referral_phone_number" value="{{ old('upline_referral_phone_number') }}"
+                                    placeholder="Referrer's phone number"
+                                    class="form-input {{ $errors->has('upline_referral_phone_number') ? 'error' : '' }}">
+                            @endif
+                            @error('upline_referral_phone_number')<p style="color:#ef4444; font-size:11px; margin-top:4px;">{{ $message }}</p>@enderror
+                        </div>
+
+                        <!-- Row 3: Password + Confirm -->
+                        <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:24px;">
+                            <div>
+                                <label style="display:block; font-size:13px; font-weight:600; color:#374151; margin-bottom:6px;">
+                                    {{ __('messages.Password') }} <span style="color:#ef4444;">*</span>
+                                </label>
+                                <div style="position:relative;">
+                                    <input type="password" name="password" id="password" required
+                                        placeholder="Min. 8 characters"
+                                        class="form-input {{ $errors->has('password') ? 'error' : '' }}"
+                                        style="padding-right:44px;">
+                                    <button type="button" onclick="togglePw('password', this)"
+                                        style="position:absolute; right:12px; top:50%; transform:translateY(-50%); background:none; border:none; cursor:pointer; color:#9ca3af; padding:0;">
+                                        <svg id="eye-password" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
                                     </button>
-
-                                    <div
-                                        class="py-3 flex items-center text-xs text-gray-400 uppercase before:flex-[1_1_0%] before:border-t before:border-gray-200 before:me-6 after:flex-[1_1_0%] after:border-t after:border-gray-200 after:ms-6 dark:text-white/70 dark:before:border-white/10 dark:after:border-white/10">
-                                        Or</div> --}}
-
-                                    <!-- Form -->
-                                    <div class="cols-span-1">
-                                        @if (Session::has('success'))
-                                        <div class="bg-success/10 border border-success/10 alert text-success" role="alert">
-                                        {{ Session::get('success') }}
-                                        </div>
-                                        @endif
-
-                                        @if (Session::has('failure'))
-                                        <div class="bg-danger/10 border border-danger/10 alert text-danger" role="alert">
-                                        {{ Session::get('failure') }}
-                                        </div>
-                                        @endif
-                                    </div>
-                                    <form action="{{ route('store2') }}" method="POST" onsubmit="handleSubmit(this)">
-                                        {{-- @csrf --}}
-                                        <div class="grid gap-y-4">
-
-                                            <div class="grid grid-cols-2 gap-6">
-
-                                                <!-- Form Group -->
-                                                <div>
-                                                    <label for="fullname" class="block text-sm mb-2 dark:text-gray-900 font-bold">{{__('messages.Fullname')}}</label>
-                                                    <div class="relative">
-                                                        <x-text-input placeholder="{{__('messages.First name and Surname')}}" id="fullname" class="block mt-1 w-full" type="text" name="fullname" :value="old('fullname')" required autofocus autocomplete="fullname" />
-                                                        <input type="hidden" name="_token" value="{{ csrf_token() }}" />
-                                                        <x-input-error :messages="$errors->get('fullname')" class="mt-2" />
-                                                    </div>
-                                                </div>
-                                                <!-- End Form Group -->
-
-                                                <!-- Form Group -->
-                                                <div>
-                                                    <label for="username" class="block text-sm mb-2 dark:text-gray-900 font-bold">{{__('messages.Username')}}</label>
-                                                    <div class="relative">
-                                                        <x-text-input placeholder="" id="username" class="block mt-1 w-full" type="text" name="username" :value="old('username')" required autofocus autocomplete="username" />
-                                                        <x-input-error :messages="$errors->get('username')" class="mt-2" />
-                                                    </div>
-                                                </div>
-                                                <!-- End Form Group -->
-
-                                            </div>
-
-
-                                            <div class="grid grid-cols-2 gap-6">
-
-                                                <!-- Form Group -->
-                                                <div>
-                                                    <label for="phone_number" class="block text-sm mb-2 dark:text-gray-900 font-bold">{{__('messages.Phone')}}</label>
-                                                    <div class="relative">
-                                                        <x-text-input id="phone_number" class="block mt-1 w-full" type="text" name="phone_number" :value="old('phone_number')" required autofocus autocomplete="phone_number" />
-                                                        <x-input-error :messages="$errors->get('phone_number')" class="mt-2" />
-                                                    </div>
-                                                </div>
-
-                                               <!-- Form Group -->
-                                                <div>
-                                                    <label for="email" class="block text-sm mb-2 dark:text-gray-900 font-bold">{{__('messages.Email Address')}}</label>
-                                                    <div class="relative">
-                                                        <x-text-input id="email" name="email" class="block mt-1 w-full" type="email" email="email" :value="old('email')" required autofocus autocomplete="email" />
-                                                        <x-input-error :messages="$errors->get('email')" class="mt-2" />
-                                                    </div>
-                                                </div>
-                                                <!-- End Form Group -->
-
-                                            </div>
-
-                                          
-                                            <!-- End Form Group -->
-
-
-                                        
-                                           
-                                            <div class="grid grid-cols-1 gap-6">
-                                                      
-                                                        <!-- Form Group -->
-                                                        <div>
-                                                            <label for="upline_referral_phone_number" class="block text-sm mb-2 dark:text-gray-900 font-bold">{{__('messages.Referral phone number (optional)')}}</label>
-                                                            <div class="relative">
-                                                                @if ($upline != '')
-                                                                     <x-text-input readonly id="upline_referral_phone_number" class="block mt-1 w-full" type="text" name="upline_referral_phone_number" value="{{$upline}}"  autofocus autocomplete="upline_referral_phone_number" />
-                                                                @else
-                                                                     <x-text-input id="upline_referral_phone_number" class="block mt-1 w-full" type="text" name="upline_referral_phone_number" :value="old('upline_referral_phone_number')" autofocus autocomplete="upline_referral_phone_number" />         
-                                                                @endif
-                                                                <x-input-error :messages="$errors->get('upline_referral_phone_number')" class="mt-2" />
-                                                            </div>
-                                                        </div>
-                                                        <!-- End Form Group -->
-
-                                            </div>
-
-                                      
-                                            <div class="grid grid-cols-2 gap-6"> 
-                                                <!-- Form Group -->
-                                                        <div>
-                                                            <label for="password" class="block text-sm mb-2 dark:text-gray-900 font-bold">{{__('messages.Password')}}</label>
-                                                            <div class="relative">
-                                                                <x-text-input id="password" name="password" class="block mt-1 w-full" type="password" password="password" :value="old('password')" required autofocus autocomplete="password" />
-                                                                <x-input-error :messages="$errors->get('password')" class="mt-2" />
-                                                            </div>
-                                                            <div class="flex items-center mt-1">
-                                                                <input type="checkbox" id="hs-basic-with-description-unchecked" class="ti-switch show_password">
-                                                                <label for="hs-basic-with-description-unchecked" class="text-sm text-gray-500 ms-3 dark:text-white/70 ">{{__('messages.Show password')}}</label>
-                                                            </div>
-                                                        </div>
-                                                        <!-- End Form Group -->
-            
-                                                        <!-- Form Group -->
-                                                        <div>
-                                                            <label for="confirm-password" class="block text-sm mb-2 dark:text-gray-900 font-bold">{{__('messages.Confirm Password')}}</label>
-                                                            <div class="relative">
-                                                                <x-text-input id="confirm-password" name="password_confirmation" class="block mt-1 w-full" type="password" password="confirm-password" :value="old('password_confirmation')" required autofocus autocomplete="password_confirmation" />
-                                                                <x-input-error :messages="$errors->get('password_confirmation')" class="mt-2" />
-                                                            </div>
-                                                            <div class="flex items-center mt-1">
-                                                                <input type="checkbox" id="hs-basic-with-description-unchecked" class="ti-switch show_confirm_password">
-                                                                <label for="hs-basic-with-description-unchecked" class="text-sm text-gray-500 ms-3 dark:text-white/70 ">{{__('messages.Show password')}}</label>
-                                                            </div>
-                                                        </div>
-                                                        <!-- End Form Group -->
-                                            </div>
-
-                                            {{-- <div class="grid grid-cols-1">
-                                                  
-                                                    <div>
-                                                        <label for="last_name" class="block text-sm mb-0 dark:text-gray-900">PIN</label>
-                                                        <small>You need to create a 4-digit code so as to ensure a more secure transaction with us</small>
-                                                        <div class="relative">
-                                                            <x-text-input id="pin" class="block mt-1 w-full" type="password" name="pin" :value="old('pin')" required autofocus autocomplete="pin" />
-                                                            <x-input-error :messages="$errors->get('pin')" class="mt-2" />
-                                                                
-                                                                
-                                                        </div>
-                                                        <div class="flex items-center mt-1">
-                                                            <input type="checkbox" id="hs-basic-with-description-unchecked" class="ti-switch show_pin">
-                                                            <label for="hs-basic-with-description-unchecked" class="text-sm text-gray-500 ms-3 dark:text-white/70 ">Show PIN</label>
-                                                        </div>
-                                                    </div>
-
-                                            </div> --}}
-
-                                        
-
-                                            <button type="submit" id="registerBtn"
-                                                class="py-2 px-3 inline-flex justify-center items-center gap-2 rounded-sm border border-transparent font-semibold bg-primary text-white hover:bg-primary focus:outline-none focus:ring-0 focus:ring-primary focus:ring-offset-0 transition-all text-sm dark:focus:ring-offset-white/10">{{__('messages.Signup')}}</button>
-                                        </div>
-                                    </form>
-                                    <!-- End Form -->
+                                </div>
+                                @error('password')<p style="color:#ef4444; font-size:11px; margin-top:4px;">{{ $message }}</p>@enderror
+                            </div>
+                            <div>
+                                <label style="display:block; font-size:13px; font-weight:600; color:#374151; margin-bottom:6px;">
+                                    {{ __('messages.Confirm Password') }} <span style="color:#ef4444;">*</span>
+                                </label>
+                                <div style="position:relative;">
+                                    <input type="password" name="password_confirmation" id="confirm-password" required
+                                        placeholder="Repeat password"
+                                        class="form-input"
+                                        style="padding-right:44px;">
+                                    <button type="button" onclick="togglePw('confirm-password', this)"
+                                        style="position:absolute; right:12px; top:50%; transform:translateY(-50%); background:none; border:none; cursor:pointer; color:#9ca3af; padding:0;">
+                                        <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+                                    </button>
                                 </div>
                             </div>
                         </div>
-                    </main>
-                <!-- ========== END MAIN CONTENT ========== -->
+
+                        <!-- Submit -->
+                        <button type="submit" id="registerBtn" class="btn-primary">
+                            {{ __('messages.Signup') }}
+                        </button>
+
+                        <p style="text-align:center; font-size:12px; color:#9ca3af; margin-top:16px;">
+                            By signing up you agree to our
+                            <a href="#" style="color:{{ $primaryColor }}; text-decoration:none;">Terms of Service</a>
+                            and
+                            <a href="#" style="color:{{ $primaryColor }}; text-decoration:none;">Privacy Policy</a>
+                        </p>
+                    </form>
+                </div>
+
+                <!-- Back to home -->
+                <div style="text-align:center; margin-top:20px;">
+                    <a href="{{ url('/') }}" style="font-size:13px; color:#6b7280; text-decoration:none;">
+                        ← Back to home
+                    </a>
+                </div>
             </div>
         </div>
     </div>
 
-    <!-- popperjs -->
-    {{-- <script src="../assets/libs/@popperjs/core/umd/popper.min.js"></script> --}}
     <script src="{{ asset(env('APP_ASSETS_BASE_URL').'libs/@popperjs/core/umd/popper.min.js') }}"></script>
-
-
-    <!-- Custom-Switcher JS -->
-    {{-- <script src="../assets/js/custom-switcher.js"></script> --}}
     <script src="{{ asset(env('APP_ASSETS_BASE_URL').'js/custom-switcher.js') }}"></script>
-
-    <!-- Preline JS -->
-    {{-- <script src="../assets/libs/preline/preline.js"></script> --}}
     <script src="{{ asset(env('APP_ASSETS_BASE_URL').'libs/preline/preline.js') }}"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 
     <script>
-        $(document).ready(function(){
-            $('.show_password').change(function(e){
-                e.preventDefault();
-                var get_attr = $('#password').attr('type');
-                if(get_attr == "text"){
-                    $("#password").attr("type", "password");
-                    return;
-                }
-                $("#password").attr("type", "text");
-                return;
-            })
+        // Show left panel only on large screens
+        function checkWidth() {
+            const left = document.getElementById('leftPanel');
+            const logo = document.getElementById('mobileLogo');
+            if (window.innerWidth >= 1024) {
+                left.style.display = 'block';
+                logo.style.display = 'none';
+            } else {
+                left.style.display = 'none';
+                logo.style.display = 'block';
+            }
+        }
+        checkWidth();
+        window.addEventListener('resize', checkWidth);
 
-            $('.show_confirm_password').change(function(e){
-                e.preventDefault();
-                var get_attr = $('#confirm-password').attr('type');
-                if(get_attr == "text"){
-                    $("#confirm-password").attr("type", "password");
-                    return;
-                }
-                $("#confirm-password").attr("type", "text");
-                return;
-            })
-
-            $('.show_pin').change(function(e){
-                e.preventDefault();
-                var get_attr = $('#pin').attr('type');
-                if(get_attr == "number"){
-                    $("#pin").attr("type", "password");
-                    return;
-                }
-                $("#pin").attr("type", "number");
-                return;
-            })
-        })
-    </script>
-
-    <script>
-        function handleSubmit(form) {
-        const btn = form.querySelector('#registerBtn');
-        btn.disabled = true;
-        btn.innerText = 'Registering...';
+        // Toggle password visibility
+        function togglePw(id, btn) {
+            const input = document.getElementById(id);
+            const isText = input.type === 'text';
+            input.type = isText ? 'password' : 'text';
+            btn.style.color = isText ? '#9ca3af' : '{{ $primaryColor }}';
         }
 
+        // Submit handler
+        function handleSubmit(form) {
+            const btn = form.querySelector('#registerBtn');
+            btn.disabled = true;
+            btn.textContent = 'Creating account...';
+        }
+
+        // Remove loading overlay
         window.addEventListener('load', function () {
-          const overlay = document.getElementById('loadingOverlay');
-          overlay.classList.add('fade-out');
-          setTimeout(() => {
-              overlay.style.display = 'none';
-          }, 500); // matches transition duration
+            const overlay = document.getElementById('loadingOverlay');
+            overlay.classList.add('fade-out');
+            setTimeout(() => overlay.style.display = 'none', 400);
         });
     </script>
-
 </body>
-
 </html>

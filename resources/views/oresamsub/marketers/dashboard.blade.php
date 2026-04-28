@@ -71,7 +71,7 @@
    <!-- Stats Cards -->
    <div class="grid grid-cols-2 gap-4 px-3">
     <template x-for="card in [
-      { title: 'Total Downlines', value: stats.totalRefs, icon: '👥', color: 'from-indigo-500 to-blue-500' },
+      { title: 'Total Downlines', value: stats.totalRefs, icon: '', color: 'from-indigo-500 to-blue-500' },
       { title: 'Total Txns', value: stats.totalTxns, icon: '💳', color: 'from-emerald-500 to-green-600' },
       { title: 'Downline Target', value: stats.userTarget, icon: '🎯', color: 'from-pink-500 to-rose-600' },
       { title: 'Txn Target', value: stats.txnTarget, icon: '📈', color: 'from-orange-500 to-yellow-500' }
@@ -94,7 +94,7 @@
   <!-- Referrals Table -->
   <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md overflow-hidden mx-3">
     <div class="p-4 border-b border-gray-200 dark:border-gray-700 font-semibold text-gray-700 dark:text-gray-200">
-      👥 Referrals
+       Referrals
     </div>
     <div class="overflow-x-auto">
       <table class="w-full text-sm">

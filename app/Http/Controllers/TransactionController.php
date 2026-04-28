@@ -91,6 +91,120 @@ class TransactionController extends Controller
     return view('template2.user.transactions.detail')->with($data);
   }
 
+  public function transaction_details_json($id){
+    $transaction = Transaction::with(['user','product_plan.product_plan_category.network','manual_processing_locker'])->where('id',$id)->first();
+    
+    if (!$transaction) {
+        return response()->json(['error' => 'Transaction not found'], 404);
+    }
+
+    $isAdmin = auth()->user()->role?->role_name === 'Admin';
+
+    return response()->json([
+        'id'                   => $transaction->id,
+        'status'               => $transaction->status,
+        'wallet_category'      => $transaction->wallet_category,
+        'phone_number'         => $transaction->phone_number,
+        'amount'               => $transaction->amount,
+        'discounted_amount'    => $transaction->discounted_amount,
+        'balance_before'       => $transaction->balance_before,
+        'balance_after'        => $transaction->balance_after,
+        'txn_reference'        => $transaction->txn_reference,
+        'transaction_route'    => $transaction->transaction_route,
+        'transaction_category' => $transaction->transaction_category,
+        'description'          => $transaction->description,
+        'user_screen_message'  => $transaction->user_screen_message,
+        'admin_screen_message' => $isAdmin ? $transaction->admin_screen_message : null,
+        'created_at'           => $transaction->created_at,
+        'user' => $transaction->user ? [
+            'first_name'   => $transaction->user->first_name,
+            'last_name'    => $transaction->user->last_name,
+            'email'        => $transaction->user->email,
+            'phone_number' => $transaction->user->phone_number,
+        ] : null,
+        'product_plan' => $transaction->product_plan ? [
+            'product_plan_name' => $transaction->product_plan->product_plan_name,
+        ] : null,
+    ]);
+  }
+
+  public function admin_fetch_transactions_paginated(Request $request){
+    $date_from = $request->date_from ?? '';
+    $date_to   = $request->date_to ?? '';
+    $search    = $request->search ?? '';
+    $status    = $request->status ?? '';
+    $per_page  = $request->per_page ?? 10;
+    $product_plan_category_filter = $request->product_plan_category_filter ?? '';
+    $phone     = $request->phone_recharged ?? '';
+
+    $query = Transaction::with(['user','product_plan.product_plan_category'])
+      ->where('wallet_category','!=','data_wallet')
+      ->when(!empty($date_from) && !empty($date_to), function($q) use ($date_from,$date_to){
+          $date_to = date('Y-m-d', strtotime('+1 day', strtotime($date_to)));
+          $q->where('created_at','>=',$date_from)->where('created_at','<=',$date_to);
+      })
+      ->when($status !== '', function($q) use ($status){
+          $q->where('status', $status);
+      })
+      ->when(!empty($phone), function($q) use ($phone){
+          $q->where('phone_number', $phone);
+      })
+      ->when(!empty($product_plan_category_filter), function($q) use ($product_plan_category_filter){
+          $plan_ids = ProductPlan::where('product_plan_category_id',$product_plan_category_filter)->pluck('id');
+          $q->whereIn('product_plan_id', $plan_ids);
+      })
+      ->when(!empty($search), function($q) use ($search){
+          $q->where(function($inner) use ($search){
+              $inner->where('phone_number','like','%'.$search.'%')
+                    ->orWhere('txn_reference','like','%'.$search.'%')
+                    ->orWhereHas('user', function($u) use ($search){
+                        $u->where('first_name','like','%'.$search.'%')
+                          ->orWhere('last_name','like','%'.$search.'%')
+                          ->orWhere('email','like','%'.$search.'%');
+                    })
+                    ->orWhereHas('product_plan', function($p) use ($search){
+                        $p->where('product_plan_name','like','%'.$search.'%');
+                    });
+          });
+      })
+      ->latest();
+
+    $paginated = $query->paginate($per_page);
+
+    // Transform each record into clean fields
+    $paginated->getCollection()->transform(function($txn){
+        return [
+            'id'                   => $txn->id,
+            'status'               => $txn->status,
+            'wallet_category'      => $txn->wallet_category,
+            'phone_number'         => $txn->phone_number,
+            'amount'               => $txn->amount,
+            'discounted_amount'    => $txn->discounted_amount ?? 0,
+            'balance_before'       => $txn->balance_before,
+            'balance_after'        => $txn->balance_after,
+            'txn_reference'        => $txn->txn_reference,
+            'transaction_route'    => $txn->transaction_route,
+            'transaction_category' => $txn->transaction_category,
+            'description'          => $txn->description,
+            'user_screen_message'  => $txn->user_screen_message,
+            'admin_screen_message' => $txn->admin_screen_message,
+            'created_at'           => $txn->created_at,
+            'user' => $txn->user ? [
+                'first_name'   => $txn->user->first_name,
+                'last_name'    => $txn->user->last_name,
+                'email'        => $txn->user->email,
+                'phone_number' => $txn->user->phone_number,
+            ] : null,
+            'product_plan' => $txn->product_plan ? [
+                'product_plan_name'          => $txn->product_plan->product_plan_name,
+                'product_plan_category_name' => $txn->product_plan->product_plan_category->product_plan_category_name ?? null,
+            ] : null,
+        ];
+    });
+
+    return response()->json($paginated);
+  }
+
   public function transaction_refund(Request $request){
     $validator = Validator::make($request->all(), [
         'pin' => ['required','string','regex:/^\d{4,5}$/'],
@@ -124,6 +238,11 @@ class TransactionController extends Controller
       $status = $transaction_details->status;
       $user_id = $transaction_details->user_id;
 
+      // Guard: already refunded — check BEFORE any side effects
+      if($transaction_details->status == 2){
+        Session::flash('failure','This is a refunded transaction'); 
+        return redirect()->back();
+      }
 
           //TODO::: Candidate for DRY
           //expected key:  email_sending_count_for_pending_transactions
@@ -148,12 +267,6 @@ class TransactionController extends Controller
          ConfigSetting::where('key',$config_setting_key)->update([
             'current_value' => 0
          ]);
-
-
-      if($transaction_details->status == 2){
-        Session::flash('failure','This is a refunded transaction'); 
-        return redirect()->back();
-      }
 
       if($wallet_category == 'main_wallet'){
         $former_wallet_balance =  $transaction_details->user->main_wallet;
@@ -525,11 +638,11 @@ class TransactionController extends Controller
                 if($data->extra_info != NULL){
                     $msg2 = e($data->extra_info ?? 'no_extra_info');
                 }
-                $reprocess_automation = $data->product_plan->reprocess_automation->automation_name ?? 'nil';
+                $reprocess_automation = $data->product_plan->reprocess_automation?->automation_name ?? 'nil';
 
                 $ph .='<br>Retry count: '.$data->retry_count.'<br>';
 
-                $ph .='First vendor: '.$data->product_plan->automation->automation_name.'<br>';
+                $ph .='First vendor: '.($data->product_plan?->automation?->automation_name ?? 'N/A').'<br>';
                 $ph .='Reprocessed by: '.$reprocess_automation.'<br>';
         
                 $ph .= '
@@ -560,20 +673,32 @@ class TransactionController extends Controller
          
         ->addColumn('amount',function($data){
         return '&#8358;'.(number_format($data->amount,2));
-        }) 
+        })
+        ->addColumn('amount_raw',function($data){
+            return $data->amount;
+        })
         ->addColumn('discounted_amount',function($data){
-            return '&#8358;'.(number_format($data->discounted_amount,2));
-        }) 
+            return '&#8358;'.(number_format($data->discounted_amount ?? 0,2));
+        })
+        ->addColumn('discounted_amount_raw',function($data){
+            return $data->discounted_amount ?? 0;
+        })
         ->addColumn('balance_before',function($data){
             return $data->wallet_category == 'main_wallet' ? '₦'.number_format($data->balance_before,2) : number_format($data->balance_before).'MB';
 
-        })  
+        })
+        ->addColumn('balance_before_raw',function($data){
+            return $data->balance_before;
+        })
         ->addColumn('data_size',function($data){
         $data_size = number_format($data->product_plan->data_size_in_mb ?? '0') .' MB';
         return $data_size;
         })  
         ->addColumn('balance_after',function($data){
         return $data->wallet_category == 'main_wallet' ? '₦'.number_format($data->balance_after,2) : number_format($data->balance_after).'MB';
+        })
+        ->addColumn('balance_after_raw',function($data){
+            return $data->balance_after;
         })  
         ->addColumn('status',function($data){
             if($data->status == 1){
@@ -635,6 +760,9 @@ class TransactionController extends Controller
 
             return $status_display;  
 
+        })
+        ->addColumn('status_raw',function($data){
+            return $data->status;
         }) 
         ->addColumn('created_at',function($data){
             $cat = $data->created_at;
@@ -791,7 +919,7 @@ class TransactionController extends Controller
                     'category' => $t->product_plan->product_plan_category->product_plan_category_name ?? '',
                     'route' => $t->txn_reference ? 'Mobile/API' : 'WEB',
                     'vendor' => $t->product_plan->automation->automation_name ?? 'N/A',
-                    'reprocessed_by' => $t->product_plan->reprocess_automation->automation_name ?? 'nil',
+                    'reprocessed_by' => $t->product_plan->reprocess_automation?->automation_name ?? 'nil',
 
                     'retry_count' => $t->retry_count,
                     'message' => $t->admin_screen_message,
@@ -938,7 +1066,7 @@ public function admin_fetch_transactionsnew(Request $request)
                 'category' => $t->product_plan->product_plan_category->product_plan_category_name ?? '',
                 'route' => $t->txn_reference ? 'Mobile/API' : 'WEB',
                 'vendor' => $t->product_plan->automation->automation_name ?? 'N/A',
-                'reprocessed_by' => $t->product_plan->reprocess_automation->automation_name ?? 'nil',
+                'reprocessed_by' => $t->product_plan->reprocess_automation?->automation_name ?? 'nil',
 
                 'retry_count' => $t->retry_count,
                 'message' => $t->admin_screen_message,

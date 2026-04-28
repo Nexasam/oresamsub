@@ -1,203 +1,219 @@
 @extends('layouts.app')
 @section('content')
 
-      <!-- Start::main-content -->
-      <div class="main-content">
+<div class="main-content bg-gray-50 min-h-screen" x-data="pendingCreditingsPage()" x-init="init()">
 
-        <!-- Page Header -->
-        <div class="block justify-between page-header md:flex">
-            {{-- <div>
-                <h3 class="text-gray-700 hover:text-gray-900 dark:text-gray-900 dark:hover:text-white text-2xl font-medium"> All Transactions</h3>
-            </div>
-            <ol class="flex items-center whitespace-nowrap min-w-0">
-              
-                <li class="text-sm text-gray-500 hover:text-primary dark:text-white/70 " aria-current="page">
-                    Networks
-                </li>
-            </ol> --}}
+    @if(Session::has('success'))
+    <div class="mx-6 mt-4 p-4 bg-green-50 border border-green-200 rounded-xl text-green-800 text-sm">✅ {{ Session::get('success') }}</div>
+    @endif
+    @if(Session::has('failure'))
+    <div class="mx-6 mt-4 p-4 bg-red-50 border border-red-200 rounded-xl text-red-800 text-sm">❌ {{ Session::get('failure') }}</div>
+    @endif
+
+    <!-- Page Header -->
+    <div class="px-6 pt-6 pb-4 flex items-center justify-between flex-wrap gap-4">
+        <div>
+            <h1 class="text-2xl font-bold text-gray-900">⏳ Pending Funding Approvals</h1>
+            <p class="text-gray-500 text-sm mt-1">
+                Transactions above
+                <span class="font-semibold text-orange-600">
+                    {{ is_string($setting) ? 'SET MAX AMOUNT' : '₦'.number_format($setting->field_value) }}
+                </span>
+                awaiting manual approval
+            </p>
         </div>
-        <!-- Page Header Close -->
+    </div>
 
-        <!-- Start::row-1 -->
-        <div class="grid grid-cols-12 gap-1">
-         
-          <div class="col-span-12">
-          
-              <div class="box">
-                <div class="box-header">
-                  <h5 class="box-title">Funding Transactions (Above {{ $setting->field_value == 'SET MAX AMOUNT' ? 'SET MAX AMOUNT' : '₦'. number_format($setting->field_value) }})</h5>
+    <!-- Table Card -->
+    <div class="px-6 pb-6">
+        <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+
+            <!-- Header -->
+            <div class="px-6 py-4 border-b border-gray-100 bg-gradient-to-r from-gray-50 to-white flex items-center justify-between">
+                <h2 class="text-lg font-bold text-gray-900">Pending Creditings</h2>
+                <span class="px-3 py-1 bg-orange-100 text-orange-700 rounded-full text-xs font-semibold">
+                    <span x-text="pagination.total || 0"></span> Total
+                </span>
+            </div>
+
+            <!-- Filters -->
+            <div class="px-6 py-4 bg-gray-50 border-b border-gray-100">
+                <div class="flex flex-wrap gap-3">
+                    <div class="flex-1 min-w-[220px]">
+                        <input type="text" x-model="filters.search" @input.debounce.500ms="fetchRecords()"
+                            placeholder="🔍 Search user, reference, amount..."
+                            class="w-full px-4 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500">
+                    </div>
+                    <input type="text" x-model="filters.reference" @input.debounce.500ms="fetchRecords()"
+                        placeholder="Reference..."
+                        class="px-3 py-2 border border-gray-300 rounded-lg text-sm w-44 focus:ring-2 focus:ring-blue-500">
+                    <input type="date" x-model="filters.date_from" @change="fetchRecords()"
+                        class="px-3 py-2 border border-gray-300 rounded-lg text-sm">
+                    <input type="date" x-model="filters.date_to" @change="fetchRecords()"
+                        class="px-3 py-2 border border-gray-300 rounded-lg text-sm">
+                    <select x-model="filters.per_page" @change="fetchRecords()"
+                        class="px-3 py-2 border border-gray-300 rounded-lg text-sm">
+                        <option value="10">10</option>
+                        <option value="25">25</option>
+                        <option value="50">50</option>
+                        <option value="100">100</option>
+                    </select>
+                    <button @click="fetchRecords()" :disabled="loading"
+                        class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition text-sm font-medium">
+                        <svg class="w-4 h-4 inline" :class="{'animate-spin': loading}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+                        </svg>
+                    </button>
                 </div>
-               
-                <div class="box-body">
+            </div>
 
-                    <div class="box-header">
-                        <div class="flex">
-                          <h5 class="box-title my-auto">Filter options</h5>
-                          <div class="hs-dropdown ti-dropdown block ms-auto my-auto s  sm:flex items-center justify-between">
-                          
-                                <button type="button"
-                                class="hs-dropdown-toggle ti-dropdown-toggle rounded-sm p-1 px-3 mr-8 !border border-gray-200 text-gray-400 hover:text-gray-500 hover:bg-gray-200 hover:border-gray-200 focus:ring-gray-200  dark:hover:bg-black/30 dark:border-white/10 dark:hover:border-white/20 dark:focus:ring-white/10 dark:focus:ring-offset-white/10">
-                          Filter <i class="ti ti-chevron-down"></i>
-                          </button>
-                          <div class="hs-dropdown-menu ti-dropdown-menu ">
-                            <a href="javascript:void(0)" class="ti-dropdown-item hs-dropdown-toggle"
-                            data-hs-overlay="#hs-slide-down-animation-modal">Basic filter</a>
-                            {{-- <a href="javascript:void(0)" data-target="#testing" data-toggle="modal">Basic filter</a> --}}
-                            <a id="reload_txns_tbl" class="ti-dropdown-item" href="javascript:void(0)">Refresh</a>
-                            {{-- <a class="ti-dropdown-item" href="javascript:void(0)">Export</a> --}}
-                          </div>
+            <!-- Loading -->
+            <div x-show="loading" class="py-16 text-center">
+                <div class="inline-block animate-spin rounded-full h-10 w-10 border-b-2 border-orange-500"></div>
+                <p class="mt-3 text-gray-500 text-sm">Loading records...</p>
+            </div>
 
-                          <div id="hs-slide-down-animation-modal" class="hs-overlay hidden ti-modal">
-                            <div class="hs-overlay-open:mt-7 ti-modal-box mt-0 ease-out">
-                              <div class="ti-modal-content">
-                                <div class="ti-modal-header">
-                                  <h3 class="ti-modal-title">
-                                    Filter Options
-                                  </h3>
-                                  <button type="button" class="hs-dropdown-toggle ti-modal-close-btn"
-                                    data-hs-overlay="#hs-slide-down-animation-modal">
-                                    <span class="sr-only">Close</span>
-                                    <svg class="w-3.5 h-3.5" width="8" height="8" viewBox="0 0 8 8" fill="none"
-                                      xmlns="http://www.w3.org/2000/svg">
-                                      <path
-                                        d="M0.258206 1.00652C0.351976 0.912791 0.479126 0.860131 0.611706 0.860131C0.744296 0.860131 0.871447 0.912791 0.965207 1.00652L3.61171 3.65302L6.25822 1.00652C6.30432 0.958771 6.35952 0.920671 6.42052 0.894471C6.48152 0.868271 6.54712 0.854471 6.61352 0.853901C6.67992 0.853321 6.74572 0.865971 6.80722 0.891111C6.86862 0.916251 6.92442 0.953381 6.97142 1.00032C7.01832 1.04727 7.05552 1.1031 7.08062 1.16454C7.10572 1.22599 7.11842 1.29183 7.11782 1.35822C7.11722 1.42461 7.10342 1.49022 7.07722 1.55122C7.05102 1.61222 7.01292 1.6674 6.96522 1.71352L4.31871 4.36002L6.96522 7.00648C7.05632 7.10078 7.10672 7.22708 7.10552 7.35818C7.10442 7.48928 7.05182 7.61468 6.95912 7.70738C6.86642 7.80018 6.74102 7.85268 6.60992 7.85388C6.47882 7.85498 6.35252 7.80458 6.25822 7.71348L3.61171 5.06702L0.965207 7.71348C0.870907 7.80458 0.744606 7.85498 0.613506 7.85388C0.482406 7.85268 0.357007 7.80018 0.264297 7.70738C0.171597 7.61468 0.119017 7.48928 0.117877 7.35818C0.116737 7.22708 0.167126 7.10078 0.258206 7.00648L2.90471 4.36002L0.258206 1.71352C0.164476 1.61976 0.111816 1.4926 0.111816 1.36002C0.111816 1.22744 0.164476 1.10028 0.258206 1.00652Z"
-                                        fill="currentColor" />
-                                    </svg>
-                                  </button>
-                                </div>
-                                <div class="ti-modal-body">
-                                  <p class="mt-1 text-gray-800 dark:text-white/70">Txn Reference:</p>
-                                  <input type="text" value="" id="txn_reference" name="txn_reference"> <br>
-                                  <hr>
-                                  <br>
-                                  <p class="mt-1 text-gray-800 dark:text-white/70">Date range:</p><br>
-                                  <div class="flex items-center justify-between">
-                                    <div class="flex items-center justify-start space-x-5">
-                                        <div>
-                                          <p>Date from:</p>
-                                          <input type="date" value="" id="date_from_filter">
-                                        </div>
-                                        <div>
-                                          <p>Date to:</p>
-                                          <input type="date" value="" id="date_to_filter">
-                                        </div>
-                                    </div>
-                                  </div>
-                                </div>
-                                <div class="ti-modal-footer">
-                                
-                                  <a id="filter_crystalpay_txn_table" class="ti-btn ti-btn-primary" data-hs-overlay="#hs-slide-down-animation-modal"
-                                    href="javascript:void(0);">
-                                    Save changes
-                                  </a>
-                                </div>
-                              </div>
-                            </div>
-                          </div>   
-                        </div>                       
-                        </div> 
-                      </div>
-
-
-                    <div class="overflow-auto">
-                    {{-- <div id="basic-tablee" class="ti-custom-table ti-striped-table ti-custom-table-hover"> --}}
-                        <table  id="crystal_pay_pending_logs_table" class="ti-custom-table ti-custom-table-head">    
-                            <thead class="bg-gray-50 dark:bg-black/20">
-                              <tr>
-                      
-                                <th>ID</th>
-                                <th>User</th>
-                                <th>Txn Reference</th>
-                                <th>Amount</th>
-                                <th>Status</th>
-                                <th>Date Added</th>
-                                <th>Action</th>
-                            </tr>
-                        </thead>
-                       
-                        <tbody>
-
-                       </tbody>
-                        </table>  
-                    {{-- </div> --}}
-                  </div>
-                </div>
-              </div>
-              {{-- <div class="box-body">
-                <div class="overflow-auto table-bordered p-4">
-                  <table id="basic-table" class="ti-custom-table ti-striped-table ti-custom-table-hover">
-                    <thead>
+            <!-- Table -->
+            <div x-show="!loading" class="overflow-x-auto">
+                <table class="w-full" style="font-size:12px">
+                    <thead class="bg-gray-50 border-b border-gray-200">
                         <tr>
-                       
-                            <td>First Name</td>
-                            <td>Last Name</td>
-                            <td>Action</td>
+                            <th class="px-4 py-3 text-left font-semibold text-gray-600 uppercase">#</th>
+                            <th class="px-3 py-3 text-left font-semibold text-gray-600 uppercase">User</th>
+                            <th class="px-3 py-3 text-left font-semibold text-gray-600 uppercase">Payment Reference</th>
+                            <th class="px-3 py-3 text-right font-semibold text-gray-600 uppercase">Amount</th>
+                            <th class="px-3 py-3 text-center font-semibold text-gray-600 uppercase">Status</th>
+                            <th class="px-3 py-3 text-left font-semibold text-gray-600 uppercase">Date</th>
+                            <th class="px-3 py-3 text-center font-semibold text-gray-600 uppercase">Action</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody class="divide-y divide-gray-100">
+                        <template x-if="records.length === 0">
+                            <tr>
+                                <td colspan="7" class="py-16 text-center text-gray-500">
+                                    <svg class="mx-auto h-12 w-12 text-gray-300 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                    </svg>
+                                    No pending creditings found
+                                </td>
+                            </tr>
+                        </template>
+                        <template x-for="(row, i) in records" :key="row.id">
+                            <tr class="hover:bg-orange-50 transition">
+                                <td class="px-4 py-3 text-gray-500" x-text="(pagination.current_page - 1) * parseInt(filters.per_page) + i + 1"></td>
+                                <td class="px-3 py-3">
+                                    <div class="font-semibold text-gray-900" x-text="(row.user?.first_name || '') + ' ' + (row.user?.last_name || '')"></div>
+                                    <div class="text-xs text-gray-500" x-text="row.user?.email || '—'"></div>
+                                    <div class="text-xs text-blue-600" x-text="row.user?.phone_number || ''"></div>
+                                </td>
+                                <td class="px-3 py-3 font-mono text-gray-700 text-xs" x-text="row.payment_reference || '—'"></td>
+                                <td class="px-3 py-3 text-right font-bold text-gray-900">
+                                    ₦<span x-text="parseFloat(row.amount || 0).toLocaleString('en-NG', {minimumFractionDigits: 2})"></span>
+                                </td>
+                                <td class="px-3 py-3 text-center">
+                                    <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full"
+                                        :class="row.status == 0 ? 'bg-yellow-100 text-yellow-800' : 'bg-green-100 text-green-800'"
+                                        x-text="row.status == 0 ? 'Pending' : 'Approved'">
+                                    </span>
+                                </td>
+                                <td class="px-3 py-3 text-gray-500 whitespace-nowrap" x-text="formatDate(row.created_at)"></td>
+                                <td class="px-3 py-3 text-center">
+                                    <template x-if="row.status == 0">
+                                        <a :href="row.details_url"
+                                            class="inline-flex items-center px-3 py-1.5 bg-orange-500 text-white text-xs font-medium rounded-lg hover:bg-orange-600 transition">
+                                            Review
+                                        </a>
+                                    </template>
+                                    <template x-if="row.status != 0">
+                                        <span class="text-gray-400 text-xs">—</span>
+                                    </template>
+                                </td>
+                            </tr>
+                        </template>
                     </tbody>
-                  </table>
-                </div>
-               
-              </div> --}}
-               
-                
+                </table>
             </div>
-          </div>
+
+            <!-- Pagination -->
+            <div x-show="!loading && pagination.last_page > 1" class="px-6 py-4 bg-gray-50 border-t flex items-center justify-between flex-wrap gap-3">
+                <div class="text-sm text-gray-600">
+                    Showing <span class="font-semibold" x-text="pagination.from"></span>–<span class="font-semibold" x-text="pagination.to"></span>
+                    of <span class="font-semibold" x-text="pagination.total"></span>
+                </div>
+                <div class="flex space-x-1">
+                    <button @click="changePage(pagination.current_page - 1)" :disabled="pagination.current_page === 1"
+                        class="px-3 py-1 border rounded-lg hover:bg-gray-100 disabled:opacity-40 text-sm">Previous</button>
+                    <template x-for="page in getPageNumbers()" :key="page">
+                        <button @click="changePage(page)"
+                            :class="page === pagination.current_page ? 'bg-blue-600 text-white' : 'bg-white hover:bg-gray-50'"
+                            class="px-3 py-1 border rounded-lg text-sm" x-text="page"></button>
+                    </template>
+                    <button @click="changePage(pagination.current_page + 1)" :disabled="pagination.current_page === pagination.last_page"
+                        class="px-3 py-1 border rounded-lg hover:bg-gray-100 disabled:opacity-40 text-sm">Next</button>
+                </div>
+            </div>
+
         </div>
-        <!-- End::row-1 -->
+    </div>
 
+</div>
 
-        <!-- Start::row-3 -->
-        {{-- <div class="grid grid-cols-12 gap-6">
-          <div class="col-span-12">
-            <div class="box">
-              <div class="box-header">
-                <h5 class="box-title">Reactivity DataTable</h5>
-              </div>
-              <div class="box-body space-y-3">
-                <div class="reactivity-data">
-                  <button type="button" class="ti-btn ti-btn-primary" id="reactivity-add">Add New Row</button>
-                  <button type="button" class="ti-btn ti-btn-primary" id="reactivity-delete">Remove Row</button>
-                  <button type="button" class="ti-btn ti-btn-primary" id="clear">Empty the table</button>
-                  <button type="button" class="ti-btn ti-btn-primary" id="reset">Reset</button>
-                </div>
-                <div class="overflow-hidden table-bordered">
-                  <div id="reactivity-table" class="ti-custom-table ti-striped-table ti-custom-table-hover"></div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div> --}}
-        <!-- End::row-3 -->
+<script>
+function pendingCreditingsPage() {
+    return {
+        loading: false,
+        records: [],
+        filters: { search: '', reference: '', date_from: '', date_to: '', per_page: 10, page: 1 },
+        pagination: { current_page: 1, last_page: 1, from: 0, to: 0, total: 0 },
 
-        <!-- Start::row-3 -->
-        {{-- <div class="grid grid-cols-12 gap-6">
-          <div class="col-span-12">
-            <div class="box">
-              <div class="box-header">
-                <h5 class="box-title">Download DataTable</h5>
-              </div>
-              <div class="box-body space-y-3">
-                <div class="download-data">
-                    <button type="button" class="ti-btn ti-btn-primary" id="download-csv">Download CSV</button>
-                    <button type="button" class="ti-btn ti-btn-primary" id="download-json">Download JSON</button>
-                    <button type="button" class="ti-btn ti-btn-primary" id="download-xlsx">Download XLSX</button>
-                    <button type="button" class="ti-btn ti-btn-primary" id="download-pdf">Download PDF</button>
-                    <button type="button" class="ti-btn ti-btn-primary" id="download-html">Download HTML</button>
-                </div>
-                <div class="overflow-hidden table-bordered">
-                  <div id="download-table" class="ti-custom-table ti-striped-table ti-custom-table-hover"></div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div> --}}
-        <!-- End::row-3 -->
+        init() { this.fetchRecords(); },
 
-      </div>
-      <!-- Start::main-content -->
+        async fetchRecords() {
+            this.loading = true;
+            try {
+                const params = new URLSearchParams({
+                    search:    this.filters.search,
+                    reference: this.filters.reference,
+                    date_from: this.filters.date_from,
+                    date_to:   this.filters.date_to,
+                    per_page:  this.filters.per_page,
+                    page:      this.filters.page,
+                });
+                const res  = await fetch(`/transactions/fetch_pending_creditings_paginated?${params}`);
+                const data = await res.json();
+                this.records    = data.data || [];
+                this.pagination = {
+                    current_page: data.current_page,
+                    last_page:    data.last_page,
+                    from:         data.from,
+                    to:           data.to,
+                    total:        data.total,
+                };
+            } catch(e) { console.error(e); }
+            finally { this.loading = false; }
+        },
 
-       
+        changePage(page) {
+            if (page >= 1 && page <= this.pagination.last_page) {
+                this.filters.page = page;
+                this.fetchRecords();
+            }
+        },
+
+        getPageNumbers() {
+            const pages = [], cur = this.pagination.current_page, last = this.pagination.last_page;
+            let start = Math.max(1, cur - 2), end = Math.min(last, start + 4);
+            if (end - start < 4) start = Math.max(1, end - 4);
+            for (let i = start; i <= end; i++) pages.push(i);
+            return pages;
+        },
+
+        formatDate(d) {
+            if (!d) return '—';
+            return new Date(d).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+        }
+    }
+}
+</script>
+
 @endsection
-

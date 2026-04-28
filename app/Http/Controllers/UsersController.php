@@ -67,26 +67,32 @@ class UsersController extends Controller
 
     public function impersonate($id){
 
-
         $user = User::where('id',$id)->first();
         if(! $user){
           Session::flash('failure','This customer does not exist.');
           return redirect()->back();
         }
 
-        
         if(auth()->user()->role->role_name != 'Admin' || auth()->user()->email != 'adebsholey4real@gmail.com' ){
           Session::flash('failure','You do not have the privilege to do this.');
           return redirect()->back();
         }
 
         $fullname = $user->first_name.' '.$user->last_name;
-      
-        session()->put('impersonator', auth()->id()); // Store original user id
-        auth()->login($user); // Log in as target user
-        Session::flash('success','You are now viewing customer: '. $fullname .' as an Admin');
-        return redirect()->route('dashboard');
 
+        session()->put('impersonator', auth()->id());
+
+        // If unverified, temporarily verify so the middleware doesn't lock us out.
+        // Store the original state so we can restore it on exit.
+        if (! $user->hasVerifiedEmail()) {
+            session()->put('impersonator_was_unverified', true);
+            $user->markEmailAsVerified(); // sets email_verified_at in DB
+        }
+
+        auth()->login($user);
+
+        Session::flash('success', 'You are now viewing customer: ' . $fullname . ' as an Admin');
+        return redirect()->route('dashboard');
     }
 
     public function exit_impersonate(){
@@ -94,19 +100,19 @@ class UsersController extends Controller
           return redirect()->back();
         }
 
-        // if(auth()->user()->role->role_name != 'Admin' || auth()->user()->email != 'adebsholey4real@gmail.com' ){
-        //   Session::flash('failure','You do not have the privilege to do this.');
-        //   return redirect()->back();
-        // }
+        $wasUnverified = session()->pull('impersonator_was_unverified', false);
+
+        // If we temporarily verified this user, undo it
+        if ($wasUnverified) {
+            auth()->user()->update(['email_verified_at' => null]);
+        }
 
         $originalUserId = session()->pull('impersonator');
         $originalUser = User::find($originalUserId);
         auth()->login($originalUser);
 
-        // return redirect('/')->with('status', 'You have stopped impersonating.');
         Session::flash('success','You have stopped viewing user account');
         return redirect()->route('admin.users.index');
-
     }
 
 
@@ -411,6 +417,53 @@ class UsersController extends Controller
 
     }
     
+
+    public function fetch_users_paginated(Request $request){
+        $search   = $request->search ?? '';
+        $phone    = $request->phone ?? '';
+        $email    = $request->email ?? '';
+        $date_from= $request->date_from ?? '';
+        $date_to  = $request->date_to ?? '';
+        $per_page = $request->per_page ?? 10;
+
+        $query = User::with(['role','upline:id,username,phone_number','virtual_accounts'])
+            ->when(!empty($phone), fn($q) => $q->where('phone_number', $phone))
+            ->when(!empty($email), fn($q) => $q->where('email',$email)->orWhere('username',$email))
+            ->when(!empty($date_from) && !empty($date_to), fn($q) =>
+                $q->where('created_at','>=',$date_from)->where('created_at','<=',$date_to)
+            )
+            ->when(!empty($search), fn($q) => $q->where(function($inner) use ($search){
+                $inner->where('first_name','like','%'.$search.'%')
+                      ->orWhere('last_name','like','%'.$search.'%')
+                      ->orWhere('username','like','%'.$search.'%')
+                      ->orWhere('email','like','%'.$search.'%')
+                      ->orWhere('phone_number','like','%'.$search.'%');
+            }))
+            ->latest();
+
+        $paginated = $query->paginate($per_page);
+
+        $paginated->getCollection()->transform(function($u){
+            return [
+                'id'               => $u->id,
+                'first_name'       => $u->first_name,
+                'last_name'        => $u->last_name,
+                'username'         => $u->username,
+                'email'            => $u->email,
+                'phone_number'     => $u->phone_number,
+                'main_wallet'      => $u->main_wallet,
+                'email_verified_at'=> $u->email_verified_at,
+                'created_at'       => $u->created_at,
+                'updated_at'       => $u->updated_at,
+                'upline_username'  => $u->upline->username ?? null,
+                'virtual_accounts_count' => count($u->virtual_accounts),
+                'manage_url'       => route('admin.users.manage_user', $u->id),
+                'impersonate_url'  => ($u->id != auth()->id()) ? route('admin.impersonate', $u->id) : null,
+            ];
+        });
+
+        return response()->json($paginated);
+    }
 
     public function fetch_users(Request $request){
         // Gate::authorize('viewAny', User::class);

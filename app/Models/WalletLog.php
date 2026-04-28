@@ -21,7 +21,7 @@ class WalletLog extends Model
     }
 
     public function transaction(){
-        return $this->belongsTo(User::class,'transaction_id','id');
+        return $this->belongsTo(Transaction::class,'transaction_id','id');
     }
 
 }

@@ -113,6 +113,37 @@ class ProductPlanController extends Controller
       return response()->json(['status'=>'1', 'message'=>'success']);
     }
 
+    public function product_plan_details_json($id){
+        $plan = ProductPlan::with(['automation','product_plan_category.network','product_plan_category.product'])->where('id',$id)->first();
+        if (!$plan) return response()->json(['error' => 'Not found'], 404);
+        return response()->json([
+            'id'                          => $plan->id,
+            'product_plan_name'           => $plan->product_plan_name,
+            'automation_product_plan_id'  => $plan->automation_product_plan_id,
+            'product_name'                => $plan->product_plan_category->product->product_name ?? 'N/A',
+            'network_name'                => $plan->product_plan_category->network->network_name ?? 'N/A',
+            'category_name'               => $plan->product_plan_category->product_plan_category_name ?? 'N/A',
+            'automation_name'             => $plan->automation->automation_name ?? 'N/A',
+            'data_size_in_mb'             => $plan->data_size_in_mb,
+            'validity_in_days'            => $plan->validity_in_days,
+            'cost_price'                  => $plan->cost_price,
+            'default_selling_price'       => $plan->default_selling_price,
+            'user_level_1_selling_price'  => $plan->user_level_1_selling_price,
+            'user_level_2_selling_price'  => $plan->user_level_2_selling_price,
+            'user_level_3_selling_price'  => $plan->user_level_3_selling_price,
+            'user_level_4_selling_price'  => $plan->user_level_4_selling_price,
+            'upline_commission_option'    => $plan->upline_commission_option,
+            'upline_percentage_commission'=> $plan->upline_percentage_commission,
+            'upline_flat_commission'      => $plan->upline_flat_commission,
+            'upline_commission_cap'       => $plan->upline_commission_cap,
+            'visibility'                  => $plan->visibility,
+            'public_visibility'           => $plan->public_visibility,
+            'created_at'                  => $plan->created_at,
+            'updated_at'                  => $plan->updated_at,
+            'details_url'                 => route('admin.product_plans.product_plan_details', $plan->id),
+        ]);
+    }
+
     public function product_plan_details($id){
         $data['automations'] = Automation::select('id','automation_name')->get();
         $data['networks'] = Network::select('id','network_name')->get();
@@ -132,6 +163,56 @@ class ProductPlanController extends Controller
         $data['product_plan'] = $product_plan_details;
         return view('admin.product_plans.product_plan_details')->with($data);
     }
+    public function admin_fetch_product_plans_paginated(Request $request){
+        $search = $request->search ?? '';
+        $per_page = $request->per_page ?? 10;
+
+        $query = ProductPlan::with(['automation','product_plan_category.network','product_plan_category.product'])
+            ->when(!empty($search), function($q) use ($search){
+                $q->where(function($inner) use ($search){
+                    $inner->where('product_plan_name','like','%'.$search.'%')
+                          ->orWhere('cost_price','like','%'.$search.'%')
+                          ->orWhereHas('product_plan_category', function($cat) use ($search){
+                              $cat->where('product_plan_category_name','like','%'.$search.'%');
+                          })
+                          ->orWhereHas('product_plan_category.network', function($net) use ($search){
+                              $net->where('network_name','like','%'.$search.'%');
+                          })
+                          ->orWhereHas('automation', function($auto) use ($search){
+                              $auto->where('automation_name','like','%'.$search.'%');
+                          });
+                });
+            })
+            ->orderBy('updated_at','desc');
+
+        $paginated = $query->paginate($per_page);
+
+        $paginated->getCollection()->transform(function($plan){
+            return [
+                'id'                => $plan->id,
+                'product_plan_name' => $plan->product_plan_name,
+                'product_name'      => $plan->product_plan_category->product->product_name ?? 'N/A',
+                'network_name'      => $plan->product_plan_category->network->network_name ?? 'N/A',
+                'category_name'     => $plan->product_plan_category->product_plan_category_name ?? 'N/A',
+                'automation_name'   => $plan->automation->automation_name ?? 'N/A',
+                'data_size_in_mb'   => $plan->data_size_in_mb,
+                'validity_in_days'  => $plan->validity_in_days,
+                'cost_price'        => $plan->cost_price,
+                'user_level_1_selling_price' => $plan->user_level_1_selling_price,
+                'user_level_2_selling_price' => $plan->user_level_2_selling_price,
+                'user_level_3_selling_price' => $plan->user_level_3_selling_price,
+                'user_level_4_selling_price' => $plan->user_level_4_selling_price,
+                'visibility'        => $plan->visibility,
+                'public_visibility' => $plan->public_visibility,
+                'created_at'        => $plan->created_at,
+                'updated_at'        => $plan->updated_at,
+                'details_url'       => route('admin.product_plans.product_plan_details', $plan->id),
+            ];
+        });
+
+        return response()->json($paginated);
+    }
+
     public function admin_fetch_product_plans(Request $request){
         $data = ProductPlan::with(['automation','product_plan_category.network','product_plan_category.product'])
         ->orderBy('updated_at','desc')

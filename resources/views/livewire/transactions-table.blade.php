@@ -1,6 +1,28 @@
 <div>
     <section class="my-4">
-        <div class="max-w-6xl mx-auto bg-gray-50 rounded-lg px-4 lg:p-4">
+        <div class="max-w-6xl mx-auto bg-gray-50 rounded-lg px-4 lg:p-4"
+            x-data="{
+                showTxnModal: false,
+                loadingTxnModal: false,
+                txnData: null,
+                async viewTxnDetails(id) {
+                    this.showTxnModal = true;
+                    this.loadingTxnModal = true;
+                    this.txnData = null;
+                    try {
+                        const res = await fetch('/transactions/details/' + id + '/json');
+                        this.txnData = await res.json();
+                    } catch(e) { this.showTxnModal = false; }
+                    finally { this.loadingTxnModal = false; }
+                },
+                closeTxnModal() { this.showTxnModal = false; this.txnData = null; },
+                statusText(s) {
+                    return { 1: 'Success', '1': 'Success', 0: 'Pending', '0': 'Pending', '-1': 'Failed', 2: 'Refunded', '2': 'Refunded' }[s] || 'Unknown';
+                },
+                statusClass(s) {
+                    return { 1: 'bg-green-100 text-green-800', '1': 'bg-green-100 text-green-800', 0: 'bg-yellow-100 text-yellow-800', '0': 'bg-yellow-100 text-yellow-800', '-1': 'bg-red-100 text-red-800', 2: 'bg-blue-100 text-blue-800', '2': 'bg-blue-100 text-blue-800' }[s] || 'bg-gray-100 text-gray-800';
+                }
+            }">
             @if ($routeName = Route::currentRouteName() == 'dashboard'            )
                 Recent Transactions
             @else
@@ -150,7 +172,7 @@
                                     </td>
                                     <td class="border border-gray-300 px-1">{{$txn->created_at}}</td>
                                     <td class="border border-gray-300 flex items-center px-3">
-                                        <a href='{{route("transactions.transaction_details",$txn->id)}}' class="w-full text-white bg-[{{$site_primary_color}}] hover:bg-[{{$site_primary_color}}]/90 focus:ring-4 focus:outline-none focus:ring-[{{$site_primary_color}}]/50 font-medium rounded-lg text-sm px-2 py-1 text-center items-center dark:focus:ring-[{{$site_primary_color}}]/55 my-2">Details</a>
+                                        <button @click="viewTxnDetails({{ $txn->id }})" class="w-full text-white bg-blue-600 hover:bg-blue-700 font-medium rounded-lg text-sm px-2 py-1 text-center my-2">Details</button>
                                     </td>
                                 </tr>
                             @endforeach
@@ -192,6 +214,83 @@
 
             </div>
         </div>
+
+    <!-- Transaction Details Modal -->
+    <div x-show="showTxnModal" x-cloak @click.self="closeTxnModal()"
+        class="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center p-4"
+        style="display:none">
+        <div @click.stop class="bg-white rounded-xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+            <div class="sticky top-0 bg-gradient-to-r from-blue-600 to-blue-700 px-6 py-4 flex items-center justify-between rounded-t-xl">
+                <h3 class="text-lg font-bold text-white">Transaction Details</h3>
+                <button @click="closeTxnModal()" class="text-white hover:text-gray-200">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                    </svg>
+                </button>
+            </div>
+            <div x-show="loadingTxnModal" class="py-16 text-center">
+                <div class="inline-block animate-spin rounded-full h-10 w-10 border-b-2 border-blue-600"></div>
+            </div>
+            <div x-show="!loadingTxnModal && txnData" class="p-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                    <div class="bg-gray-50 rounded-lg p-4">
+                        <p class="text-xs text-gray-500 mb-1">Status</p>
+                        <span class="inline-flex px-3 py-1 text-xs font-semibold rounded-full"
+                            :class="statusClass(txnData?.status)"
+                            x-text="statusText(txnData?.status)"></span>
+                    </div>
+                    <div class="bg-gray-50 rounded-lg p-4">
+                        <p class="text-xs text-gray-500 mb-1">Category</p>
+                        <p class="text-sm font-semibold text-gray-900 uppercase" x-text="txnData?.transaction_category ?? '—'"></p>
+                    </div>
+                    <div class="bg-gray-50 rounded-lg p-4 md:col-span-2">
+                        <p class="text-xs text-gray-500 mb-1">Product</p>
+                        <p class="text-sm font-semibold text-gray-900" x-text="txnData?.product_plan?.product_plan_name ?? 'N/A'"></p>
+                    </div>
+                    <div class="bg-gray-50 rounded-lg p-4">
+                        <p class="text-xs text-gray-500 mb-1">Phone Number</p>
+                        <p class="text-sm font-semibold font-mono text-gray-900" x-text="txnData?.phone_number ?? '—'"></p>
+                    </div>
+                    <div class="bg-gray-50 rounded-lg p-4">
+                        <p class="text-xs text-gray-500 mb-1">Wallet</p>
+                        <span class="inline-flex px-2 py-1 text-xs font-semibold rounded bg-purple-100 text-purple-800"
+                            x-text="txnData?.wallet_category === 'main_wallet' ? 'MAIN WALLET' : 'DATA WALLET'"></span>
+                    </div>
+                    <div class="bg-gradient-to-br from-green-50 to-green-100 rounded-lg p-4 border border-green-200">
+                        <p class="text-xs text-green-700 mb-1">Amount</p>
+                        <p class="text-lg font-bold text-green-900">₦<span x-text="txnData?.amount ? parseFloat(txnData.amount).toLocaleString('en-NG', {minimumFractionDigits: 2}) : '—'"></span></p>
+                    </div>
+                    <div class="bg-gray-50 rounded-lg p-4">
+                        <p class="text-xs text-gray-500 mb-1">Discounted Amount</p>
+                        <p class="text-sm font-semibold text-gray-900">₦<span x-text="txnData?.discounted_amount ? parseFloat(txnData.discounted_amount).toLocaleString('en-NG', {minimumFractionDigits: 2}) : '—'"></span></p>
+                    </div>
+                    <div class="bg-gray-50 rounded-lg p-4">
+                        <p class="text-xs text-gray-500 mb-1">Balance Before</p>
+                        <p class="text-sm font-semibold text-gray-900">₦<span x-text="txnData?.balance_before ? parseFloat(txnData.balance_before).toLocaleString('en-NG', {minimumFractionDigits: 2}) : '—'"></span></p>
+                    </div>
+                    <div class="bg-gray-50 rounded-lg p-4">
+                        <p class="text-xs text-gray-500 mb-1">Balance After</p>
+                        <p class="text-sm font-semibold text-gray-900">₦<span x-text="txnData?.balance_after ? parseFloat(txnData.balance_after).toLocaleString('en-NG', {minimumFractionDigits: 2}) : '—'"></span></p>
+                    </div>
+                    <div class="bg-gray-50 rounded-lg p-4">
+                        <p class="text-xs text-gray-500 mb-1">Reference</p>
+                        <p class="text-xs font-mono text-gray-700 break-all" x-text="txnData?.txn_reference ?? '—'"></p>
+                    </div>
+                    <div class="bg-gray-50 rounded-lg p-4">
+                        <p class="text-xs text-gray-500 mb-1">Date</p>
+                        <p class="text-sm text-gray-700" x-text="txnData?.created_at ? new Date(txnData.created_at).toLocaleString('en-GB') : '—'"></p>
+                    </div>
+                </div>
+                <div x-show="txnData?.user_screen_message" class="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                    <p class="text-xs text-blue-700 font-semibold mb-1">Message</p>
+                    <p class="text-sm text-blue-900" x-text="txnData?.user_screen_message"></p>
+                </div>
+            </div>
+            <div class="sticky bottom-0 bg-gray-50 px-6 py-4 flex justify-end rounded-b-xl border-t">
+                <button @click="closeTxnModal()" class="px-6 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition font-medium">Close</button>
+            </div>
+        </div>
+    </div>
     </section>
 
 </div>

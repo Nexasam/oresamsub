@@ -90,22 +90,26 @@ class DatabaseSeeder extends Seeder
         //NETWORKS
         $mtn_network = Network::create([
             'id' => '9c29efbb-0062-4f47-9e64-92ff101274d5',
-            'network_name' => 'MTN'
+            'network_name' => 'MTN',
+            'api_id' => 1,
         ]);
 
         $glo_network = Network::create([
             'id' => 'a7642d68-84b8-4532-a4b9-3dce8895f2e8',
-            'network_name' => 'GLO'
+            'network_name' => 'GLO',
+            'api_id' => 2,
         ]);
 
         $airtel_network = Network::create([
             'id' => '9c29efbb-06a8-4441-bb6c-2de40276150b',
-            'network_name' => 'AIRTEL'
+            'network_name' => 'AIRTEL',
+            'api_id' => 3,
         ]);
 
         $_9mobile_network = Network::create([
             'id' => '9c29efbb-0740-4e48-8b55-d1c57fe3b916',
-            'network_name' => '9MOBILE'
+            'network_name' => '9MOBILE',
+            'api_id' => 4,
         ]);
 
            

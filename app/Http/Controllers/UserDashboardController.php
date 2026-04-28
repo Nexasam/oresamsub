@@ -30,6 +30,53 @@ use Carbon\Carbon;
 
 class UserDashboardController extends Controller
 {
+  
+  public function fetchTransactions(Request $request)
+  {
+      $query = Transaction::with(['product_plan.product_plan_category', 'user'])
+          ->where('user_id', auth()->id());
+
+      // Apply filters
+      if ($request->filled('phone')) {
+          $query->where('phone_recharged', 'like', '%' . $request->phone . '%');
+      }
+
+      if ($request->filled('category_id')) {
+          $query->whereHas('product_plan.product_plan_category', function($q) use ($request) {
+              $q->where('id', $request->category_id);
+          });
+      }
+
+      if ($request->filled('date_from')) {
+          $query->whereDate('created_at', '>=', $request->date_from);
+      }
+
+      if ($request->filled('date_to')) {
+          $query->whereDate('created_at', '<=', $request->date_to);
+      }
+
+      if ($request->filled('status')) {
+          $query->where('status', $request->status);
+      }
+
+      // Search
+      if ($request->filled('search')) {
+          $search = $request->search;
+          $query->where(function($q) use ($search) {
+              $q->where('phone_recharged', 'like', "%{$search}%")
+                ->orWhere('amount', 'like', "%{$search}%")
+                ->orWhereHas('product_plan', function($q2) use ($search) {
+                    $q2->where('product_plan_name', 'like', "%{$search}%");
+                });
+          });
+      }
+
+      // Pagination
+      $perPage = $request->get('per_page', 10);
+      $transactions = $query->latest()->paginate($perPage);
+
+      return response()->json($transactions);
+  }
  
   public function index(Request $request){
 
@@ -276,9 +323,14 @@ class UserDashboardController extends Controller
     }else{
 
 
-      $filter = $request->filter ?? 'today';
+      $filter = $request->filter ?? 'all_time';
 
       switch ($filter) {
+          case 'today':
+              $start = Carbon::today();
+              $end = Carbon::now();
+              break;
+
           case 'yesterday':
               $start = Carbon::yesterday()->startOfDay();
               $end = Carbon::yesterday()->endOfDay();
@@ -294,8 +346,13 @@ class UserDashboardController extends Controller
               $end = Carbon::now()->subWeek()->endOfWeek();
               break;
 
-          default: // today
-              $start = Carbon::today();
+          case 'this_month':
+              $start = Carbon::now()->startOfMonth();
+              $end = Carbon::now()->endOfMonth();
+              break;
+
+          default: // all_time
+              $start = Carbon::createFromDate(2000, 1, 1);
               $end = Carbon::now();
               break;
       }

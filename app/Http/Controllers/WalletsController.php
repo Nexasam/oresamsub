@@ -24,6 +24,7 @@ use Illuminate\Support\Facades\Validator;
 use App\Http\Services\WalletFundingPromoService;
 use App\Traits\Dashboard\UserDashboardDataTrait;
 use App\Models\MaxCrystalPaymentsPendingApproval;
+use App\Models\WalletCrediting;
 
 class WalletsController extends Controller
 {
@@ -57,7 +58,7 @@ class WalletsController extends Controller
 
         return response()->json([
           'balance'=> $total_balances
-        ]);
+        ])->header('X-Inertia', 'false');
 
         // return $total_balances;
     }
@@ -1503,134 +1504,40 @@ class WalletsController extends Controller
           $date_to= $request->date_to ?? '';
 
           $reference = $request->reference ?? '';
-        
-          $limit = $request->limit ?? 2000;
+          $search = $request->search ?? '';
+          $per_page = $request->per_page ?? 10;
 
           
           
-          $data = FundingWebhookPayload::when(!empty($date_from) && !empty($date_to) , function ($query) use ($date_from,$date_to){
+          $query = WalletCrediting::with('user')
+          ->when(!empty($date_from) && !empty($date_to) , function ($query) use ($date_from,$date_to){
               $date_to = date('Y-m-d', strtotime('+1 day', strtotime($date_to)));
               $query->where('created_at','>=',$date_from)->where('created_at','<=',$date_to);
-          })->when(!empty($reference) , function ($query) use ($reference){
-            $query->where('transaction_reference',$reference);
-          })->when(auth()->user()->role->role_name == 'User', function($query){
+          })
+          ->when(!empty($reference) , function ($query) use ($reference){
+            $query->where('transaction_reference', 'like', '%'.$reference.'%');
+          })
+          ->when(!empty($search) , function ($query) use ($search){
+            $query->where(function($q) use ($search) {
+                $q->where('transaction_reference', 'like', '%'.$search.'%')
+                  ->orWhere('bank_name', 'like', '%'.$search.'%')
+                  ->orWhere('account_name', 'like', '%'.$search.'%')
+                  ->orWhere('account_number', 'like', '%'.$search.'%')
+                  ->orWhereHas('user', function($userQuery) use ($search) {
+                      $userQuery->where('first_name', 'like', '%'.$search.'%')
+                                ->orWhere('last_name', 'like', '%'.$search.'%')
+                                ->orWhere('email', 'like', '%'.$search.'%');
+                  });
+            });
+          })
+          ->when(auth()->user()->role->role_name == 'User', function($query){
             $query->where('user_id',auth()->id());
           })
-          ->latest()->limit($limit)->get();
+          ->latest();
       
-          return DataTables::of($data)
-          ->addIndexColumn()
-          ->addColumn('DT_RowIndex',function($data){
-            return $data->id;
-          })
-          ->addColumn('user_email',function($data){
-            $first_name = $data->user->first_name  ?? 'nil';
-            $last_name = $data->user->last_name  ?? 'nil';
-            $phone_number = $data->user->phone_number  ?? 'nil';
-            $email = $data->user->email  ?? 'nil';
-            $user_details =  $first_name.'<br>'.$last_name.'<br>'.$phone_number.'<br>'.$email.'<br>';     
-            return $user_details;
-          })
-          ->addColumn('transaction_reference',function($data){
-            $res = $data->transaction_reference;
-            $promo_id = $data->wallet_funding_promo_id;
-            $promo_bonus = $data->amount_settled - $data->amount_paid;
-
-            // if($promo_id != NULL && $promo_bonus > 0){
-            //   $res .= "<br>Promo bonus of ₦" . number_format($promo_bonus, 2) . " enjoyed 🎉";
-            // }
-
-            if ($promo_id != NULL && $promo_bonus > 0 || ($promo_bonus == 0)) {
-              if($promo_bonus == 0){
-                $formatted_bonus = number_format($promo_bonus, 2);
-                $res .= "<br><div style='
-                    background: #d1fae5;
-                    border: 1px solid #10b981;
-                    color: #065f46;
-                    padding: 8px 14px;
-                    margin-top: 10px;
-                    border-radius: 8px;
-                    font-size: 14px;
-                    font-weight: 500;
-                    display: inline-block;
-                '>
-                    🎉 ".__('messages.You enjoyed 100% funding. No charges!')."</span>
-                </div>";
-              }else{
-                $formatted_bonus = number_format($promo_bonus, 2);
-                $res .= "<br><div style='
-                    background: #d1fae5;
-                    border: 1px solid #10b981;
-                    color: #065f46;
-                    padding: 8px 14px;
-                    margin-top: 10px;
-                    border-radius: 8px;
-                    font-size: 14px;
-                    font-weight: 500;
-                    display: inline-block;
-                '>
-                    🎉 ".__('messages.You enjoyed promo bonus').": <span style='color: #047857;'>₦{$formatted_bonus}</span>
-                </div>";
-              }
-            }
+          $data = $query->paginate($per_page);
           
-
-            return $res;
-
-          })
-          ->addColumn('status',function($data){
-            return $data->status;
-          })
-          ->addColumn('funding_status',function($data){
-            return $data->funding_status;
-          })
-          ->addColumn('message',function($data){
-            return $data->message;
-          })
-          // ->addColumn('package_id',function($data){
-          //   return $data->package_id;
-          // })
-          ->addColumn('bank_name',function($data){
-            return $data->bank_name;
-          })
-          ->addColumn('account_name',function($data){
-            return $data->account_name;
-          })
-          ->addColumn('account_number',function($data){
-            return $data->account_number;
-          })
-          ->addColumn('account_reference',function($data){
-            return $data->account_reference;
-          })
-          ->addColumn('amount_paid',function($data){
-            return $data->amount_paid;
-          })
-          ->addColumn('amount_charged',function($data){
-            return $data->amount_charged;
-          })
-          ->addColumn('amount_settled',function($data){
-            return $data->amount_settled;
-          })
-          // ->addColumn('user_email',function($data){
-          //   return $data->user_email;
-          // })
-          ->addColumn('created_at',function($data){
-              return $data->created_at;
-          }) 
-          ->addColumn('action',function($data){
-              $route = '#';
-              // $route = route('transaction_details',$data->id);
-              $actionBtn = '<a href="'.$route.'" type="button" class="hs-dropdown-toggle ti-btn ti-btn-primary" data-hs-overlay="#hs-vertically-centered-scrollable-modal'.$data->email.'">
-              Details
-              </a>';
-              return '-';
-          })
-          
-          ->escapeColumns([])
-          ->make(true);
-
-
-        
+          return response()->json($data);
     }
 
     public function fetch_crystal_pay_pending_transactions(Request $request){
@@ -1701,6 +1608,60 @@ class WalletsController extends Controller
 
 
     
+    }
+
+    public function fetch_pending_creditings_paginated(Request $request){
+        $date_from  = $request->date_from ?? '';
+        $date_to    = $request->date_to   ?? '';
+        $reference  = $request->reference ?? '';
+        $search     = $request->search    ?? '';
+        $per_page   = $request->per_page  ?? 10;
+
+        $query = MaxCrystalPaymentsPendingApproval::with('user')
+            ->when(!empty($date_from) && !empty($date_to), function($q) use ($date_from, $date_to){
+                $dt = date('Y-m-d', strtotime('+1 day', strtotime($date_to)));
+                $q->where('created_at', '>=', $date_from)->where('created_at', '<=', $dt);
+            })
+            ->when(!empty($reference), function($q) use ($reference){
+                $q->where('payment_reference', 'like', '%'.$reference.'%');
+            })
+            ->when(!empty($search), function($q) use ($search){
+                $q->where(function($inner) use ($search){
+                    $inner->where('payment_reference', 'like', '%'.$search.'%')
+                          ->orWhere('amount', 'like', '%'.$search.'%')
+                          ->orWhereHas('user', function($u) use ($search){
+                              $u->where('first_name', 'like', '%'.$search.'%')
+                                ->orWhere('last_name', 'like', '%'.$search.'%')
+                                ->orWhere('email', 'like', '%'.$search.'%')
+                                ->orWhere('phone_number', 'like', '%'.$search.'%');
+                          });
+                });
+            })
+            ->when(auth()->user()->role->role_name == 'User', function($q){
+                $q->where('user_id', auth()->id());
+            })
+            ->latest();
+
+        $paginated = $query->paginate($per_page);
+
+        $paginated->getCollection()->transform(function($row){
+            return [
+                'id'                => $row->id,
+                'payment_reference' => $row->payment_reference,
+                'amount'            => $row->amount,
+                'status'            => $row->status,
+                'created_at'        => $row->created_at,
+                'details_url'       => route('admin.wallet.crediting_details', $row->id),
+                'user' => $row->user ? [
+                    'first_name'   => $row->user->first_name,
+                    'last_name'    => $row->user->last_name,
+                    'email'        => $row->user->email,
+                    'phone_number' => $row->user->phone_number,
+                ] : null,
+            ];
+        });
+
+        return response()->json($paginated);
     }
 
     public function complete_pending_wallet_crediting(Request $request){

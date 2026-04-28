@@ -57,17 +57,17 @@
 
 
     @php
-     $site_primary_color =  App\Models\AdminColorSetting::where('color_name','site_primary_color')->first();
-     $site_primary_color = $site_primary_color->color_value ?? (int) '90, 102, 241'; 
+     $site_primary_color_record = App\Models\AdminColorSetting::where('color_name','site_primary_color')->first();
+     $site_primary_color = $site_primary_color_record->color_value ?? '#5a66f2';
 
+     $site_secondary_color_record = App\Models\AdminColorSetting::where('color_name','site_secondary_color')->first();
+     $site_secondary_color = $site_secondary_color_record->color_value ?? '#f97316';
 
-     
-   
-     
-     
-     $support_whatsapp_number_template2 =  App\Models\LandingPagesSetting::where('field_name','support_whatsapp_number_template2')->first();
-     $support_whatsapp_number_template2 = $support_whatsapp_number_template2->field_details;
-    //  echo $admin_site_color_value;  
+     $support_whatsapp_number_record = App\Models\LandingPagesSetting::where('field_name','support_whatsapp_number_template2')->first();
+     $support_whatsapp_number_template2 = $support_whatsapp_number_record->field_details ?? '08000000000';
+
+     $site_logo_record = App\Models\LandingPagesSetting::where('field_name','site_logo_alt_template2')->first();
+     $site_logo = $site_logo_record->field_details ?? null;
     @endphp
 
     <style>

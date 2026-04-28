@@ -17,10 +17,12 @@ class SetTransactionPin
      */
     public function handle(Request $request, Closure $next): Response|Array
     {
-
+        // Skip PIN check when admin is impersonating a user
+        if (session()->has('impersonator')) {
+            return $next($request);
+        }
 
         if(auth()->user()->pin == NULL || auth()->user()->pin == '1234'){
-            // dd('pin creation required');
             if(env('APP_NAME') == 'OresamSub'){
             return redirect()->route('ore.set_pin');
             }

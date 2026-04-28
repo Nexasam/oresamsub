@@ -17,6 +17,62 @@ use League\CommonMark\Renderer\Inline\TextRenderer;
 
 class ProductPlanCategoryController extends Controller
 {
+    public function category_details_json($id){
+        $cat = ProductPlanCategory::with(['product','network','automation'])->where('id',$id)->first();
+        if (!$cat) return response()->json(['error' => 'Not found'], 404);
+
+        return response()->json([
+            'id'                            => $cat->id,
+            'product_plan_category_name'    => $cat->product_plan_category_name,
+            'product_name'                  => $cat->product->product_name ?? 'N/A',
+            'network_name'                  => $cat->network->network_name ?? 'N/A',
+            'automation_name'               => $cat->automation->automation_name ?? 'N/A',
+            'is_hot_sales'                  => $cat->is_hot_sales,
+            'visibility'                    => $cat->visibility,
+            'referral_commission_feature'   => $cat->referral_commission_feature,
+            'referral_commission_method'    => $cat->referral_commission_method,
+            'referral_commission_value'     => $cat->referral_commission_value,
+            'product_plans_count'           => $cat->product_plans()->count(),
+            'created_at'                    => $cat->created_at,
+            'updated_at'                    => $cat->updated_at,
+            'details_url'                   => route('admin.product_plan_categories.view_details', $cat->id),
+        ]);
+    }
+
+    public function admin_fetch_product_plan_categories_paginated(Request $request){
+        $search   = $request->search   ?? '';
+        $per_page = $request->per_page ?? 10;
+
+        $query = ProductPlanCategory::with(['product','network','automation'])
+            ->when(!empty($search), function($q) use ($search){
+                $q->where(function($inner) use ($search){
+                    $inner->where('product_plan_category_name','like','%'.$search.'%')
+                          ->orWhereHas('product', fn($p) => $p->where('product_name','like','%'.$search.'%'))
+                          ->orWhereHas('network', fn($n) => $n->where('network_name','like','%'.$search.'%'))
+                          ->orWhereHas('automation', fn($a) => $a->where('automation_name','like','%'.$search.'%'));
+                });
+            })
+            ->latest();
+
+        $paginated = $query->paginate($per_page);
+
+        $paginated->getCollection()->transform(function($cat){
+            return [
+                'id'                         => $cat->id,
+                'product_plan_category_name' => $cat->product_plan_category_name,
+                'product_name'               => $cat->product->product_name ?? 'N/A',
+                'network_name'               => $cat->network->network_name ?? 'N/A',
+                'automation_name'            => $cat->automation->automation_name ?? 'N/A',
+                'is_hot_sales'               => $cat->is_hot_sales,
+                'visibility'                 => $cat->visibility,
+                'created_at'                 => $cat->created_at,
+                'details_url'                => route('admin.product_plan_categories.view_details', $cat->id),
+            ];
+        });
+
+        return response()->json($paginated);
+    }
+
     public function index(){
         $product_plan_categories = ProductPlanCategory::with(['product' => function($query){
             $query->where('slug','data');
@@ -40,7 +96,8 @@ class ProductPlanCategoryController extends Controller
     public function view_details_by_automation($id,$automation_id){
       $product_plan_category = ProductPlanCategory::with('automation')->where('id',$id)->first();
       $bulk_data_plans = BulkDataProductPlans::with('product_plan_category')->where('product_plan_category_id',$id)->paginate(50);
-      $user_plans = UserPlan::where('plan_level','<=',env('RESELLER_PLAN_COUNT'))->get();
+      $resellerCount = env('RESELLER_PLAN_COUNT');
+      $user_plans = $resellerCount ? UserPlan::where('plan_level','<=',$resellerCount)->get() : UserPlan::all();
       $products = Product::select('id','product_name')->get();
       $networks = Network::select('id','network_name')->get();
       $automation = Automation::select('id','automation_name')->where('id',$automation_id)->first();
@@ -66,7 +123,8 @@ class ProductPlanCategoryController extends Controller
 
       $product_plan_category = ProductPlanCategory::with('automation')->where('id',$id)->first();
       $bulk_data_plans = BulkDataProductPlans::with('product_plan_category')->where('product_plan_category_id',$id)->paginate(50);
-      $user_plans = UserPlan::where('plan_level','<=',env('RESELLER_PLAN_COUNT'))->get();
+      $resellerCount = env('RESELLER_PLAN_COUNT');
+      $user_plans = $resellerCount ? UserPlan::where('plan_level','<=',$resellerCount)->get() : UserPlan::all();
       $products = Product::select('id','product_name')->get();
       $networks = Network::select('id','network_name')->get();
       $automations = Automation::select('id','automation_name')->get();

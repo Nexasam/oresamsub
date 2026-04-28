@@ -97,6 +97,7 @@
     @endphp
 
     <style>
+        [x-cloak] { display: none !important; }
 
         .nunito2 {
           font-family: "Nunito", sans-serif;
@@ -259,6 +260,10 @@
 
 
 @livewireStyles
+
+<!-- Alpine.js -->
+<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
 </head>
 
 <body class="work-sans">
