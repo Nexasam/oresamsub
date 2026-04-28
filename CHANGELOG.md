@@ -2,6 +2,20 @@
 
 ---
 
+
+Please note
+
+The wallet_creditings migration was rebuilt — if that table already exists on the real DB with the old structure (wallets), you'll need to either drop it first or write a separate migration to alter it rather than recreate it
+
+The seeders are for dummy/test data — don't run them on production
+
+If the real DB already has data, migrate will only run migrations that haven't run yet, so existing tables won't be touched
+
+Run php artisan migrate --pretend first to see exactly what SQL it would execute without actually doing anything
+
+
+
+
 ## What i've been working on
 
 This covers everything that's changed across two main work sessions. A mix of bug fixes, new features, and a big push to modernise the admin UI.
