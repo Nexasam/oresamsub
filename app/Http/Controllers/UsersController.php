@@ -332,6 +332,28 @@ class UsersController extends Controller
   }
 
 
+  public function toggleProviderSwitchFeature(Request $request)
+  {
+      $request->validate([
+          'user_id' => ['required', 'exists:users,id'],
+          'status' => ['required', 'boolean'],
+      ]);
+  
+      $user = User::findOrFail($request->user_id);
+  
+      $user->provider_switch_feature = $request->status;
+  
+      $user->save();
+  
+      return back()->with(
+          'success',
+          $request->status
+              ? 'Provider switching feature activated successfully.'
+              : 'Provider switching feature deactivated successfully.'
+      );
+  }
+
+
       /** 
     * Update user plan. by ADMIN
     */

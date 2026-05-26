@@ -589,6 +589,8 @@ Route::middleware(['set_locale'])->group(function () {
             Route::middleware(['auth','verified','admin'])->post('admin/users/reset_2fa', [UsersController::class, 'reset_2fa'])->name('admin.users.reset_2fa');
             Route::middleware(['auth','verified','admin'])->post('admin/users/update_user_plan', [UsersController::class, 'update_user_plan'])->name('admin.users.update_user_plan');
             Route::middleware(['auth','verified','admin'])->post('admin/users/update_user_info', [UsersController::class, 'update_user_info'])->name('admin.users.update_user_info');
+            Route::middleware(['auth','verified','admin'])->post('/users/toggle-provider-switch-feature', [UsersController::class, 'toggleProviderSwitchFeature'])
+    ->name('admin.users.toggle_provider_switch_feature');
             
             Route::middleware(['auth','verified','admin'])->post('admin/users/store', [UsersController::class, 'store'])->name('admin.users.store');
             Route::middleware(['auth','verified','admin'])->get('admin/users/fetch_users', [UsersController::class, 'fetch_users'])->name('admin.users.fetch_users');

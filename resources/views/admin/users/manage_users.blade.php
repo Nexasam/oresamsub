@@ -292,6 +292,69 @@
                         </div> --}}
                       </div>
 
+
+                      <div class="py-4">
+                        <hr>
+                    
+                        <div class="grid mt-3">
+                    
+                            <h5 class="text-base font-semibold mb-3">
+                                Provider Switching Feature
+                            </h5>
+                    
+                            <div class="mb-3">
+                                Current Status:
+                    
+                                @if ($user->provider_switch_feature)
+                                    <span class="badge bg-success text-white">
+                                        ACTIVE
+                                    </span>
+                                @else
+                                    <span class="badge bg-danger text-white">
+                                        INACTIVE
+                                    </span>
+                                @endif
+                            </div>
+                    
+                            <form method="POST"
+                                  action="{{ route('admin.users.toggle_provider_switch_feature') }}">
+
+                    
+                                @csrf
+
+
+                                <input type="hidden"
+                                name="status"
+                                value="{{ $user->provider_switch_feature ? 0 : 1 }}">
+                                
+
+                                <input type="hidden"
+                                       name="user_id"
+                                       value="{{ $user->id }}">
+                    
+                                @if ($user->provider_switch_feature)
+                    
+                                    <button type="submit"
+                                            class="ti-btn ti-btn-danger w-1/2">
+                                        Deactivate Provider Switching
+                                    </button>
+                    
+                                @else
+                    
+                                    <button type="submit"
+                                            class="ti-btn ti-btn-success w-1/2">
+                                        Activate Provider Switching
+                                    </button>
+                    
+                                @endif
+                    
+                            </form>
+                    
+                        </div>
+                    </div>
+
+
+
                       <div class="py-4">
                         <hr>
 
