@@ -88,6 +88,22 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->api_token;
     }
 
+    // public function automations()
+    // {
+    //     return $this->belongsToMany(
+    //         Automation::class,
+         
+    //         'user_automations',
+    //         'user_id',
+    //         'automation_id'
+    //     )->withPivot(['id','pricing_amount', 'automation_pricing_type', 'first_payment', 'product']);
+    // }
+
+    public function automations()
+    {
+        return $this->hasMany(UserAutomation::class);
+    }
+
 
 
     // public function getRoleDetailsAttribute(){

@@ -20,11 +20,14 @@ use App\Http\Controllers\ExternalIntegration\ApiIntegrationPasswordResetControll
 // use App\Http\Controllers\ExternalIntegration\Products\ProductsController;
 // use App\Http\ExternalIntegration\Controllers\ApiIntegrationPasswordResetController;
 
-//quixk fix
 
-///////STRICTLY MSORG
+
+///////STRICTLY MSORG STYLE
 Route::middleware('api_token')->post('data', [ProductsVendorController::class, 'buy_datav2'])->name('rawapi.user.buy_datav2');
-///////STRICTLY MSORG
+///////STRICTLY MSORG STYLE
+
+// ONE FITALL API
+Route::middleware('api_token')->post('buy-service', [ProductsVendorController::class, 'buyService'])->name('rawapi.user.buy_service');
 
 Route::post('recova_create_consent', function (Request $request) {
         
@@ -240,7 +243,12 @@ Route::group(['prefix'=>'v1/external','as'=>'api.','middleware' =>['auth:sanctum
     Route::middleware('auth:sanctum')->get('fetch_products', [ProductsController::class, 'fetch_products'])->name('fetch_products');
     Route::middleware('auth:sanctum')->get('fetch_product_plan_categories', [ProductsController::class, 'fetch_product_plan_categories'])->name('fetch_product_plan_categories');
     Route::middleware('auth:sanctum')->get('fetch_product_plans', [ProductsController::class, 'fetch_product_plans'])->name('fetch_product_plans');
+    
     Route::middleware('auth:sanctum')->post('buy_data', [ProductsController::class, 'buy_data'])->name('buy_data');
+
+    
+
+
     Route::middleware('auth:sanctum')->post('buy_airtime', [ProductsController::class, 'buy_airtime'])->name('buy_airtime');
     Route::middleware('auth:sanctum')->post('validate_metre_number', [ProductsController::class, 'validate_metre_number'])->name('validate_metre_number');
     Route::middleware('auth:sanctum')->post('validate_cable_tv', [ProductsController::class, 'validate_cable_tv'])->name('validate_cable_tv');

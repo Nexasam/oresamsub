@@ -1,72 +1,67 @@
 <?php
 
-use App\Models\User;
-use App\Models\SiteImage;
-use App\Models\ProductPlan;
-use App\Models\SiteTemplate;
-use App\Models\AdminColorSetting;
-use App\Models\PlanProfitSetting;
-use App\Models\UniqueProductPlan;
-use App\Http\Middleware\RoleAssess;
-use App\Models\LandingPagesSetting;
-use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\Artisan;
-use Illuminate\Support\Facades\Session;
-use App\Http\Controllers\DataController;
-use App\Http\Controllers\RoleController;
-// use App\Http\Middleware\RoleAdminAccess;
-// use App\Models\ProductPlanCustomPricing;
 use App\Http\Controllers\AddonController;
-use App\Http\Controllers\UsersController;
+use App\Http\Controllers\AdminSettingsController;
 use App\Http\Controllers\AirtimeController;
-use App\Http\Controllers\NetworkController;
-use App\Http\Controllers\PrivacyController;
-use App\Http\Controllers\ProductController;
-use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\WalletsController;
-// use App\Http\Controllers\SettingsController;
-use App\Http\Controllers\MarketersController;
-// use App\Http\Controllers\MigrationController;
-use App\Http\Controllers\QuickToolController;
-use App\Http\Controllers\Template2Controller;
-// use App\Http\Controllers\WalletLogController;
+use App\Http\Controllers\AnnouncementsController;
 use App\Http\Controllers\AutomationController;
-use App\Http\Controllers\CrystalPayController;
-use App\Http\Controllers\WalletLogsController;
+use App\Http\Controllers\AutomationKeyController;
+use App\Http\Controllers\BulkDataPlanController;
+use App\Http\Controllers\CableSubscriptionController;
 use App\Http\Controllers\CommissionsController;
 use App\Http\Controllers\CouponCodesController;
-// use App\Http\Controllers\NewTemplateController;
-use App\Http\Controllers\PriceChangeController;
-use App\Http\Controllers\ProductPlanController;
-use App\Http\Controllers\TransactionController;
-use App\Http\Controllers\BulkDataPlanController;
-use App\Http\Controllers\InertiaLoginController;
-use App\Http\Controllers\ResellerPlanController;
-use App\Http\Controllers\UserSettingsController;
-use App\Http\Services\UniqueProductPlansService;
-use App\Http\Controllers\AdminSettingsController;
-use App\Http\Controllers\AnnouncementsController;
-use App\Http\Controllers\MultilanguageController;
-use App\Http\Controllers\UserDashboardController;
-// use App\Http\Controllers\UserTwoFactorController;
-use App\Http\Services\PlansProfitSettingsService;
-use App\Http\Services\BizProfitCalculationService;
-use App\Http\Controllers\DynamicAccountsController;
-use App\Http\Controllers\ProductCategoryController;
-// use App\Http\Controllers\UserProductPlanController;
-use App\Http\Controllers\VirtualAccountsController;
-use App\Http\Controllers\InertiaDashboardController;
-use App\Http\Controllers\UserVerificationController;
-use App\Http\Controllers\CableSubscriptionController;
-use Rap2hpoutre\LaravelLogViewer\LogViewerController;
-use App\Http\Controllers\PlanProfitSettingsController;
-use App\Http\Controllers\UniqueProductPlansController;
-use App\Http\Controllers\WalletFundingPromoController;
-use App\Http\Controllers\ProductPlanCategoryController;
-use App\Http\Controllers\ReprocessTransactionController;
+use App\Http\Controllers\CrystalPayController;
 use App\Http\Controllers\DailyCustomerFollowupController;
+use App\Http\Controllers\DataController;
+use App\Http\Controllers\DynamicAccountsController;
 use App\Http\Controllers\ElectricitySubscriptionController;
+use App\Http\Controllers\InertiaDashboardController;
+use App\Http\Controllers\InertiaLoginController;
+use App\Http\Controllers\MarketersController;
+use App\Http\Controllers\MultilanguageController;
+use App\Http\Controllers\NetworkController;
+use App\Http\Controllers\PlanProfitSettingsController;
+use App\Http\Controllers\PriceChangeController;
+use App\Http\Controllers\PrivacyController;
+use App\Http\Controllers\ProductCategoryController;
+use App\Http\Controllers\ProductController;
+use App\Http\Controllers\ProductPlanCategoryController;
+use App\Http\Controllers\ProductPlanController;
 use App\Http\Controllers\ProductPlanCustomPricingController;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\QuickToolController;
+use App\Http\Controllers\ReprocessTransactionController;
+use App\Http\Controllers\ResellerPlanController;
+use App\Http\Controllers\RoleController;
+use App\Http\Controllers\Template2Controller;
+use App\Http\Controllers\TransactionController;
+use App\Http\Controllers\UniqueProductPlansController;
+use App\Http\Controllers\UserApiAccessController;
+use App\Http\Controllers\UserAutomationController;
+use App\Http\Controllers\UserDashboardController;
+use App\Http\Controllers\UsersController;
+use App\Http\Controllers\UserSettingsController;
+use App\Http\Controllers\UserVerificationController;
+use App\Http\Controllers\VirtualAccountsController;
+use App\Http\Controllers\WalletFundingPromoController;
+use App\Http\Controllers\WalletLogsController;
+use App\Http\Controllers\WalletsController;
+use App\Http\Middleware\RoleAssess;
+use App\Http\Services\BizProfitCalculationService;
+use App\Http\Services\PlansProfitSettingsService;
+use App\Http\Services\UniqueProductPlansService;
+use App\Models\AdminColorSetting;
+use App\Models\LandingPagesSetting;
+use App\Models\PlanProfitSetting;
+use App\Models\ProductPlan;
+use App\Models\SiteImage;
+use App\Models\SiteTemplate;
+use App\Models\UniqueProductPlan;
+use App\Models\User;
+use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Session;
+use Rap2hpoutre\LaravelLogViewer\LogViewerController;
 
    
 //test ui
@@ -590,8 +585,58 @@ Route::middleware(['set_locale'])->group(function () {
             Route::middleware(['auth','verified','admin'])->post('admin/users/update_user_plan', [UsersController::class, 'update_user_plan'])->name('admin.users.update_user_plan');
             Route::middleware(['auth','verified','admin'])->post('admin/users/update_user_info', [UsersController::class, 'update_user_info'])->name('admin.users.update_user_info');
             Route::middleware(['auth','verified','admin'])->post('/users/toggle-provider-switch-feature', [UsersController::class, 'toggleProviderSwitchFeature'])
-    ->name('admin.users.toggle_provider_switch_feature');
+            ->name('admin.users.toggle_provider_switch_feature');
+
+
+            //user automation management
+            // Route::get(
+            //     '/admin/provider-automation-management',
+            //     [UserAutomationController::class, 'index']
+            // )->name('admin.provider_automation_management');
+        
+            // Route::post(
+            //     '/admin/provider-automation-management/update',
+            //     [UserAutomationController::class, 'update']
+            // )->name('admin.provider_automation_management.update');
+
+            // Route::post('/admin/provider-automation/update-single', [
+            //     UserAutomationController::class,
+            //     'updateSingle'
+            // ])->name('admin.provider_automation.update.single');
+
+            Route::middleware(['auth','verified','admin'])->get('/admin/user-automations', [UserAutomationController::class, 'index'])
+                ->name('admin.user_automations.index');
+
+            Route::middleware(['auth','verified','admin'])->post('/admin/user-automations/sync', [UserAutomationController::class, 'sync'])
+                ->name('admin.user_automations.sync');
+
+            Route::middleware(['auth','verified','admin'])->get('/admin/user-automations/{user}', [UserAutomationController::class, 'getUserAutomations']);
+
+            Route::middleware(['auth','verified','admin'])->post('/admin/user-automations/update', [UserAutomationController::class, 'update'])
+                ->name('admin.user_automations.update');
             
+            Route::middleware(['auth','verified','user'])->get('/api-access', [AutomationKeyController::class, 'customerIndex'])
+            ->name('user.api_access.index');
+
+            //i thihnk thhis is signed right
+            Route::get('/automation/edit', [AutomationKeyController::class, 'editPage'])
+            ->name('automation.key.edit.page');
+
+            Route::post('/automation/update', [AutomationKeyController::class, 'update'])
+            ->name('automation.key.update');
+
+            Route::post('/automation/request-key-edit', [AutomationKeyController::class, 'requestEditLink'])
+            ->name('automation.request_key_edit');
+
+            
+            // Route::get('/automation/key/edit', [UserAutomationController::class, 'editKeyPage'])
+            //     ->name('automation.edit_key');
+
+            // Route::post('/automation/key/save', [UserAutomationController::class, 'saveKey'])
+            //     ->name('automation.save_key');
+
+
+
             Route::middleware(['auth','verified','admin'])->post('admin/users/store', [UsersController::class, 'store'])->name('admin.users.store');
             Route::middleware(['auth','verified','admin'])->get('admin/users/fetch_users', [UsersController::class, 'fetch_users'])->name('admin.users.fetch_users');
             Route::middleware(['auth','verified','admin'])->get('admin/users/toggle_verification_status', [UsersController::class, 'toggle_verification_status'])->name('admin.users.toggle_verification_status');
@@ -672,6 +717,14 @@ Route::middleware(['set_locale'])->group(function () {
             Route::middleware(['auth','verified','admin'])->post('admin/save_plan_profit_settings', [PlanProfitSettingsController::class, 'save_plan_profit_setting'])->name('admin.save_plan_profit_setting');
             Route::middleware(['auth','verified','admin'])->get('admin/plan_profit_settings/index', [PlanProfitSettingsController::class, 'index'])->name('admin.plan_profit_settings.index');
             Route::middleware(['auth','verified','admin'])->get('admin/plan_profit_settings/fetch', [PlanProfitSettingsController::class, 'fetch'])->name('admin.plan_profit_settings.fetch');
+
+
+
+            Route::middleware(['auth','verified','user'])->get('/product-plans', [ProductPlanController::class, 'indexUser'])
+            ->name('product_plans.index');
+    
+            Route::middleware(['auth','verified','user'])->post('/product-plans/favourite', [ProductPlanController::class, 'addFavourite'])
+                ->name('product_plans.favourite.store');
 
 
             Route::middleware(['auth','verified','admin'])->get('admin/product_plans', [ProductPlanController::class, 'index'])->name('admin.product_plans.index');

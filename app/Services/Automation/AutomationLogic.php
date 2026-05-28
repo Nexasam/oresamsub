@@ -162,22 +162,27 @@ class AutomationLogic{
         $product_plan_id = $data['plan_id'];
         $network_id = $data['network_id'];
         $automation_details = $data['automation_details'];
-        $token = $automation_details->api_public_key;
-        $url = $automation_details->data_url;
-        $automation_id = $automation_details->id;
+        $apikey = $automation_details->api_public_key ?? $automation_details->userAutomation->api_key;
+        $secret = $automation_details->api_secret_key ?? $automation_details->userAutomation->api_secret;
+        $url = $automation_details->data_url ?? $automation_details->userAutomation->automation->data_url;
+        $automation_plan_id = $automation_details->automation_product_plan_id ?? 'nil';
+        $automation_id = $automation_details->id ?? $automation_details->userAutomation_id;
+        $slug = $automation_details->slug ?? $automation_details->userAutomation->automation->slug;
+        $automation_group = $automation_details->automation_group ?? $automation_details->userAutomation->automation->automation_group;
         $validatephonenetwork = $data['validatephonenetwork'] ?? '';
 
         $data['phone_number'] = $validated_phone_number;
-        $data['token'] = $token;
+        $data['token'] = $apikey;
+        $data['api_key'] = $apikey;
+        $data['api_secret'] = $secret;
         $data['url'] = $url;
         $data['automation_id'] = $automation_id;
-        // $coupon = $data['coupon'];
+        $data['automation_plan_id'] = $automation_plan_id;
         $data['coupon'] = $data['coupon'] ?? NULL;
+        logger('automation details in logic: '.json_encode($data));
 
-        
+      
         //dont forget to remove after testing.
-
-
         //NEW
         // $test = '1';
         // if($test == '1'){
@@ -209,24 +214,26 @@ class AutomationLogic{
             $buy_data['user_message'] = 'This number is not a valid number: '.$phone_number;
             $buy_data['admin_message'] = 'This number is not a valid number: '.$phone_number;
         }
-        else if($automation_details->slug == 'megasubplug'){
-            $buy_data = (new MegaSubVendData($validated_phone_number,$product_plan_id,$validatephonenetwork))->buyData();
+        
+        // else if($automation_details->slug == 'megasubplug'){
+        //     $buy_data = (new MegaSubVendData($validated_phone_number,$product_plan_id,$validatephonenetwork))->buyData();
+        // }
+
+        else if($slug == '9javtu'){
+            $buy_data = (new Nine9javtuAutomation($data))->buyData();
         }
-        else if($automation_details->slug == '9javtu'){
-            $buy_data = (new Nine9javtuAutomation($validated_phone_number,$product_plan_id,$validatephonenetwork))->buyData();
-        }
-        else if($automation_details->automation_group == 'msorg'){  
+        else if($automation_group == 'msorg'){  
             $buy_data = (new MsOrgGroupAutomation($data))->buyData();
         } 
-        else if($automation_details->slug == 'directcoupon'){
+        else if($slug == 'directcoupon'){
             //logic stays here...
             $buy_data = (new DirectCouponAutomation($data))->buyData();   
         }
-        else if($automation_details->slug == 'twins10'){
+        else if($slug == 'twins10'){
             //logic stays here...
             $buy_data = (new Twins10Automation($data))->buyData();    
         }
-        else if($automation_details->slug == 'paultechs'){
+        else if($slug == 'paultechs'){
             //logic stays here...
             $buy_data = (new PaultechsAutomation($data))->buyData();    
         }

@@ -8,39 +8,72 @@ use App\Models\RecurringFailedMessagePattern;
 
 class Nine9javtuAutomation{
 
+    private $network_id;
+
+    private $automation_id;
+    private $automation_plan_id;
+    private $plan_id;
+
     private $mobile_number;
 
+    private $token;
+
+    private $url;
+
     private $amount;
+    private $coupon;
+    private $api_key;
+    private $api_secret;    
+    private $automation_details;
 
+    private $validatephonenetwork;
 
-    private $airtime_api_id;
+    private $duplication_check = 1; //default to 1, can be set to 0 if needed
 
-    private $network_api_id;
+   
 
-    private $data_api_id;
-
-
-    private $automation_slug = '9javtu';
-
-    private $duplication_check = 1;
-
-    private $validatephonenetwork = 0;
-
-    private $plan_id = '';
-
-
-    private $api_key = '';
-    private $api_password = '';
-
-    public function __construct($mobile_number,$plan_id,$validatephonenetwork = 0,$coupon = NULL, $amount = NULL){
-        $this->amount = $amount ?? 0;
-        $this->mobile_number = $mobile_number;
-        $this->coupon = $coupon ?? NULL;
-        $this->plan_id = $plan_id;
-        $this->validatephonenetwork = 0;
-        $this->api_key = Automation::where('slug','9javtu')->first()->api_public_key;
-        $this->api_password = Automation::where('slug','9javtu')->first()->api_password;
+    // public function __construct($data){
+    //     $this->amount = $data['amount'] ?? 0;
+    //     $this->mobile_number = $data['mobile_number'] ?? $data['phone_number'] ?? 'nil';
+    //     $this->coupon = $data['coupon'] ?? NULL;
+    //     $this->plan_id = $data['plan_id'] ?? '';
+    //     $this->validatephonenetwork = 0;
+    //     $this->api_key = $data['api_key'] ?? 'nil';
+    //     $this->api_secret =  $data['api_secret'] ?? 'nil';
+    //     $this->automation_details = $data['automation_details'] ?? NULL;
       
+    //     // $this->api_key = Automation::where('slug','9javtu')->first()->api_public_key;
+    //     // $this->api_password = Automation::where('slug','9javtu')->first()->api_password;
+
+
+    // }
+
+    public function __construct(array $data)
+    {
+        $this->amount = $data['amount'] ?? 0;
+    
+        // ✅ standardize to ONE field
+        $this->mobile_number = $data['phone_number'] ?? null;
+    
+        $this->coupon = $data['coupon'] ?? null;
+        $this->plan_id = $data['plan_id'] ?? null;
+    
+        $this->validatephonenetwork = 0;
+    
+        // ✅ credentials
+        $this->token = $data['token'] ?? null;
+        $this->api_key = $data['api_key'] ?? null;
+        $this->api_secret = $data['api_secret'] ?? null;
+    
+        // ✅ endpoint
+        $this->url = $data['url'] ?? null;
+    
+        // ✅ automation mapping
+        $this->automation_id = $data['automation_id'] ?? null;
+        $this->automation_plan_id = $data['automation_plan_id'] ?? null;
+    
+        // ✅ optional extra config
+        $this->automation_details = $data['automation_details'] ?? null;
     }
     
 
@@ -89,7 +122,7 @@ class Nine9javtuAutomation{
     public function buyData(){
 
         $plan_details = ProductPlan::with('product_plan_category.network')
-        ->where('visibility',1)
+        // ->where('visibility',1)
         ->where('id',$this->plan_id)
         ->first();
       
@@ -106,7 +139,7 @@ class Nine9javtuAutomation{
         $network_id = $plan_details->product_plan_category->network->id;
         $network_name = $plan_details->product_plan_category->network->network_name;
         
-        $data_api_id = $plan_details->automation_product_plan_id;
+        $data_api_id = $this->automation_plan_id;
         $network_api_id = $this->getNetworkApiID($network_name);
 
         if($network_api_id == -1){
@@ -119,11 +152,10 @@ class Nine9javtuAutomation{
 
         }
 
-        $this->network_api_id = $network_api_id;
-        $this->data_api_id = $data_api_id;
+       
 
         $curl = curl_init();
-        $url = 'https://9javtu.ng/API/?action=buy_data&mobile_number='.$this->mobile_number.'&network_api_id='.$this->network_api_id.'&data_api_id='.$this->data_api_id.'&validatephonenetwork='.$this->validatephonenetwork.'&duplication_check='.$this->duplication_check.'';
+        $url = 'https://9javtu.ng/API/?action=buy_data&mobile_number='.$this->mobile_number.'&network_api_id='.$network_api_id.'&data_api_id='.$data_api_id.'&validatephonenetwork='.$this->validatephonenetwork.'&duplication_check='.$this->duplication_check.'';
         curl_setopt_array($curl, array(
           CURLOPT_URL => $url,
           CURLOPT_RETURNTRANSFER => true,
@@ -133,10 +165,10 @@ class Nine9javtuAutomation{
           CURLOPT_FOLLOWLOCATION => true,
           CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
           CURLOPT_CUSTOMREQUEST => 'POST',
-          CURLOPT_POSTFIELDS => array('action' => 'buy_data','mobile_number' => $this->mobile_number,'network_api_id' => $this->network_api_id,'data_api_id' => $this->data_api_id,'validatephonenetwork' => $this->validatephonenetwork,'duplication_check' => $this->duplication_check),
+          CURLOPT_POSTFIELDS => array('action' => 'buy_data','mobile_number' => $this->mobile_number,'network_api_id' => $this->network_api_id,'data_api_id' => $data_api_id,'validatephonenetwork' => $this->validatephonenetwork,'duplication_check' => $this->duplication_check),
           CURLOPT_HTTPHEADER => array(
             'Authorization: Bearer '.$this->api_key,
-            'Password: '.$this->api_password
+            'Password: '.$this->api_secret
           ),
         ));
         

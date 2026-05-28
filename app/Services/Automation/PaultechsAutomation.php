@@ -14,42 +14,73 @@ class PaultechsAutomation{
     private $network_id;
 
     private $automation_id;
-
-    private $automation_details;
-
-    private $api_id;
-
-    private $plan_api_id;
+    private $automation_plan_id;
+    private $plan_id;
 
     private $mobile_number;
 
     private $token;
 
     private $url;
-    private $plan_id;
+
+    private $amount;
+    private $coupon;
+    private $api_key;
+    private $api_secret;    
+    private $automation_details;
+
+    private $validatephonenetwork;
 
 
     // private $ported_number;
 
 
-    public function __construct($data){
-        $this->automation_id = $data['automation_id'];
-        $this->automation_details = $data['automation_details'];
-        $this->network_id = $data['network_id']  ?? '';
-        $this->smart_card_number = $data['smart_card_number']  ?? '';
-        $this->plan_id = $data['plan_id'];
-        $this->mobile_number = $data['phone_number'] ?? '';
-        $this->token = $data['token'] ?? '';
-        $this->url = $data['url'] ?? '';
+    // public function __construct($data){
+    //     $this->automation_id = $data['automation_id'];
+    //     $this->automation_details = $data['automation_details'];
+    //     $this->network_id = $data['network_id']  ?? '';
+    //     $this->smart_card_number = $data['smart_card_number']  ?? '';
+    //     $this->plan_id = $data['plan_id'];
+    //     $this->mobile_number = $data['phone_number'] ?? '';
+    //     $this->token = $data['token'] ?? '';
+    //     $this->url = $data['url'] ?? '';
+    //     $this->amount = $data['amount'] ?? 0;
+    //     $this->user_id = $data['user_id'] ?? '';
+    // }
+
+    public function __construct(array $data)
+    {
         $this->amount = $data['amount'] ?? 0;
-        $this->user_id = $data['user_id'] ?? '';
+    
+        // ✅ standardize to ONE field
+        $this->mobile_number = $data['phone_number'] ?? null;
+    
+        $this->coupon = $data['coupon'] ?? null;
+        $this->plan_id = $data['plan_id'] ?? null;
+    
+        $this->validatephonenetwork = 0;
+    
+        // ✅ credentials
+        $this->token = $data['token'] ?? null;
+        $this->api_key = $data['api_key'] ?? null;
+        $this->api_secret = $data['api_secret'] ?? null;
+    
+        // ✅ endpoint
+        $this->url = $data['url'] ?? null;
+    
+        // ✅ automation mapping
+        $this->automation_id = $data['automation_id'] ?? null;
+        $this->automation_plan_id = $data['automation_plan_id'] ?? null;
+    
+        // ✅ optional extra config
+        $this->automation_details = $data['automation_details'] ?? null;
     }
 
  
     public function buyData(){
         
         $plan_details = ProductPlan::with('product_plan_category.network')
-        ->where('visibility',1)
+        // ->where('visibility',1)
         ->where('id',$this->plan_id)->first();
         if(! $plan_details){
             return [

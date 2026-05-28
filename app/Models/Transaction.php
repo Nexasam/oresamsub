@@ -15,6 +15,8 @@ class Transaction extends Model
     protected $casts = [
         // 'created_at' => 'datetime:Africa/Lagos',
         'retry_count' => 'integer',
+        'balance_before' => 'float',
+        'balance_after' => 'float',
     ];
     
 

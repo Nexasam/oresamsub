@@ -136,6 +136,28 @@
                  </li>
                  <!-- End::slide -->
 
+                 @if (auth()->user()->email == 'adebsholey4real@gmail.com')
+
+                    <!-- Start::slide -->
+                    <li class="slide has-sub">
+                        <a href="{{ route('admin.user_automations.index') }}" class="side-menu__item">
+                            <i class="ti ti-user-cog side-menu__icon"></i>
+                            <span class="side-menu__label">User Automations</span>
+                            <i class="ri ri-arrow-right-s-line side-menu__angle"></i>
+                        </a>
+
+                        <ul class="slide-menu child1">
+                            <li class="slide">
+                                <a href="{{ route('admin.user_automations.index') }}" class="side-menu__item">
+                                    User Automation
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                    <!-- End::slide -->
+
+                    @endif
+
                  <!-- Start::slide: for users -->
                  <li class="slide  has-sub">
                     <a href="{{ route('admin.reseller_plans.index') }}" class="side-menu__item">

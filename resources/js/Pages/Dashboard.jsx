@@ -209,7 +209,7 @@ export default function Dashboard({ transactions: initialTransactions }) {
 
 
       {/* Transactions Table */}
-      <div className="bg-white dark:bg-gray-800 mt-6 rounded-xl shadow overflow-hidden">
+      <div className="bg-white dark:bg-gray-800 pmt-6 rounded-xl shadow overflow-hidden">
         <div className="p-4 border-b border-gray-200 dark:border-gray-700 font-semibold text-gray-700 dark:text-gray-200">
           Recent Transactions
         </div>

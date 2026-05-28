@@ -12,4 +12,14 @@ class Automation extends Model
     
     protected $guarded = ['id'];
 
+    protected $hidden = [
+        // 'created_at',
+        // 'updated_at',
+        'api_secret_key',
+        'api_public_key',
+        'api_password',
+    ];
+
+     
+
 }

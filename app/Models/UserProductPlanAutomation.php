@@ -4,6 +4,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class UserProductPlanAutomation extends Model
 {
@@ -37,4 +38,9 @@ class UserProductPlanAutomation extends Model
     {
         return $this->belongsTo(UserAutomation::class);
     }
+    
+    // public function allUserPlans(): HasMany
+    // {
+    //     return $this->hasMany(User::class,'id','user_id');
+    // }
 }

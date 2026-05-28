@@ -34,8 +34,15 @@ class UserAutomation extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function automation(): BelongsTo
+    // public function automation(): BelongsTo
+    // {
+    //     return $this->belongsTo(Automation::class);
+    // }
+
+    public function automation()
     {
         return $this->belongsTo(Automation::class);
     }
+
+ 
 }

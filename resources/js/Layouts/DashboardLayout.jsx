@@ -132,6 +132,47 @@ export default function DashboardLayout({ children , title}) {
         </button>
       </div>
 
+      {/* QUICK AUTOMATIONS BAR */}
+{user.automations?.length > 0 && (
+  <div className="mt-3 bg-white dark:bg-gray-800 p-3 rounded-xl shadow-sm">
+
+    <div className="flex items-center justify-between mb-2">
+      <p className="text-xs font-semibold text-gray-500 uppercase">
+        Your Automations
+      </p>
+
+      <Link
+        href={route("user.api_access.index")}
+        className="text-xs text-emerald-600 hover:underline"
+      >
+        View all →
+      </Link>
+    </div>
+
+    <div className="flex flex-wrap gap-2">
+
+      {user.automations.slice(0, 6).map((a) => (
+        <span
+          key={a.id}
+          className="px-2 py-1 text-xs rounded-full 
+                     bg-emerald-100 text-emerald-700 
+                     dark:bg-emerald-900 dark:text-emerald-200"
+        >
+          {a.automation_name}
+        </span>
+      ))}
+
+      {user.automations.length > 6 && (
+        <span className="text-xs text-gray-400">
+          +{user.automations.length - 6} more
+        </span>
+      )}
+
+    </div>
+
+  </div>
+)}
+
      
 
 

@@ -62,6 +62,20 @@ export default function ProductButtons({ loggingOut, setLoggingOut }) {
         <div className="mt-2 font-medium text-[13px] md:text-sm">Transactions</div>
       </button>
 
+      {/* API ACCESS */}
+      <Link
+        href={route("user.api_access.index")}
+        className="group p-3 rounded-xl shadow hover:shadow-md transition transform hover:scale-[1.05] bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200"
+      >
+        <div className="w-10 h-10 mx-auto rounded-full bg-gradient-to-r from-purple-500 to-indigo-500 flex items-center justify-center text-white text-xl shadow-sm">
+          🔑
+        </div>
+
+        <div className="mt-2 font-medium text-[13px] md:text-sm">
+          API Access
+        </div>
+      </Link>
+
       {/* Logout */}
       <button
         onClick={() => {

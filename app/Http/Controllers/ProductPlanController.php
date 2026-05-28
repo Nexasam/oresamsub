@@ -2,18 +2,21 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Automation;
 use App\Models\Network;
 use App\Models\Product;
-use App\Models\UserPlan;
-use App\Models\Automation;
 use App\Models\ProductPlan;
-use App\Models\Transaction;
-use Illuminate\Http\Request;
-use Illuminate\Validation\Rule;
-use Yajra\DataTables\DataTables;
 use App\Models\ProductPlanCategory;
+use App\Models\Transaction;
+use App\Models\UserPlan;
+use App\Models\UserProductPlanAutomation;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
+use Inertia\Inertia;
+use Yajra\DataTables\DataTables;
 
 class ProductPlanController extends Controller
 {
@@ -30,6 +33,113 @@ class ProductPlanController extends Controller
         
         return view('admin.product_plans.index')->with($data);
     }
+
+     /**
+     * Show all product plans: api user: APIUSER
+     */
+    public function indexUser(Request $request)
+    {
+        $user = $request->user();
+
+        $user->load(['automations.automation']);   
+        
+        $userAutomationIds = $user->automations->pluck('id');
+
+        // $favourites = \App\Models\UserProductPlanAutomation::whereIn('user_automation_id', $userAutomationIds)
+        // ->with(['userAutomation.automation']) // or userAutomation.automation depending on your relation
+        // ->get()
+        // ->keyBy('product_plan_id');
+
+        $favourites = \App\Models\UserProductPlanAutomation::whereIn(
+          'user_automation_id',
+          $userAutomationIds
+      )
+      ->with(['userAutomation.automation'])
+      ->get()
+      ->groupBy('product_plan_id');
+
+     
+
+        return Inertia::render('ProductPlans/Index', [
+           'productPlans' => ProductPlan::latest()->get()->map(function ($plan) use ($favourites) {
+
+            $planFavs = $favourites[$plan->id] ?? collect();
+
+            $active = $planFavs->firstWhere('status', 1); // current active one
+
+            return [
+                'id' => $plan->id,
+                'product_plan_name' => $plan->product_plan_name,
+                'api_id' => $plan->api_id,
+
+                // ACTIVE state only
+                'is_favourite' => !!$active,
+
+                'favourite' => $active ? [
+                    'id' => $active->id,
+                    'automation_name' => $active->userAutomation->automation->automation_name ?? null,
+                    'automation_id' => $active->user_automation_id,
+                    'automation_plan_id' => $active->automation_product_plan_id,
+                ] : null,
+
+                // ALL OPTIONS (🔥 this is the magic)
+                'favourites' => $planFavs->map(fn ($fav) => [
+                    'id' => $fav->id,
+                    'automation_name' => $fav->userAutomation->automation->automation_name ?? null,
+                    'automation_id' => $fav->user_automation_id,
+                    'automation_plan_id' => $fav->automation_product_plan_id,
+                    'status' => $fav->status,
+                ])->values(),
+            ];
+        }),
+      
+          'userAutomations' => $user->automations->map(fn ($ua) => [
+              'id' => $ua->id,
+              'automation_name' => $ua->automation->automation_name ?? null,
+          ]),
+      ]);
+    }
+
+    /**
+     * Add favourite mapping: api user APIUSER
+     */
+    public function addFavourite(Request $request)
+    {
+        $request->validate([
+            'product_plan_id' => 'required|exists:product_plans,id',
+            'user_automation_id' => 'required|exists:user_automations,id',
+            'automation_product_plan_id' => 'required|string',
+        ]);
+
+        $user = Auth::user();
+
+        // ensure ownership
+        $userAutomation = $user->automations()
+            ->where('user_automations.id', $request->user_automation_id)
+            ->firstOrFail();
+
+        UserProductPlanAutomation::where('user_id', $user->id)
+        ->where('product_plan_id', $request->product_plan_id)
+        ->update(['status' => 0]);
+        
+        UserProductPlanAutomation::updateOrCreate(
+            [
+                'user_id' => $user->id,
+                'product_plan_id' => $request->product_plan_id,
+                'user_automation_id' => $userAutomation->id,
+            ],
+            [
+                'automation_product_plan_id' => $request->automation_product_plan_id,
+                'status' => 1,
+                'priority' => 1,
+            ]
+        );
+
+        return response()->json([
+            'message' => 'Added to favourites successfully'
+        ]);
+    }
+
 
     public function topFavoriteData(Request $request){
       $user = auth()->user();

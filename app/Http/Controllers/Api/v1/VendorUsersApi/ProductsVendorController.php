@@ -394,6 +394,7 @@ class ProductsVendorController extends Controller
      */
     public function buy_data(Request $request)
     {
+        dd('buy data abeg');
         $validator = Validator::make($request->all(), [
             'mobile_number' => 'required',
             'plan' => 'required|exists:product_plans,api_id',
@@ -459,16 +460,16 @@ class ProductsVendorController extends Controller
     }
 
 
-      /**
-     * Store a newly created resource in storage. FOR MSORG WEBSITES:
-     */
+    /**
+    * Store a newly created resource in storage. FOR MSORG WEBSITES:
+    */
     public function buy_datav2(Request $request)
     {
         $validator = Validator::make($request->all(), [
             // 'mobile_number' => 'required',
             // 'plan' => 'required|exists:product_plans,api_id',
             // 'reference' => 'required|unique:transactions,txn_reference'
-            "network"=>'required|exists:networks,api_id',
+            // "network"=>'required|exists:networks,api_id',
             "mobile_number"=>"required",
             "plan"=>'required|exists:product_plans,api_id',
             "Ported_number"=>'required'
@@ -483,7 +484,9 @@ class ProductsVendorController extends Controller
         $getnetwork = ProductPlan::with('product_plan_category.network')->where('api_id',$request->plan)->first();
         $getnetworkcat = $getnetwork->product_plan_category->product_plan_category_name; 
         $network_id = Network::where('api_id',$request->network)->value('id');
+        $product_id = $getnetwork->product_plan_category->product->id;
         $data['network_id'] = $network_id;
+        $data['product_id'] = $product_id;
         $data['reference'] = $request->reference ?? NULL;
         $data['phone_number'] = $request->mobile_number;
         $data['product_plan_category_id'] = NULL;
@@ -532,6 +535,90 @@ class ProductsVendorController extends Controller
         
         return response()->json($data2, $status_code, [], JSON_PRETTY_PRINT);
     }
+
+   
+    public function buyService(Request $request){
+        // return $this->success('Buy service endpoint hit',data: $request->all());
+        
+        $validator = Validator::make($request->all(), [
+            // 'mobile_number' => 'required',
+            // 'plan' => 'required|exists:product_plans,api_id',
+            // 'reference' => 'required|unique:transactions,txn_reference'
+            // "network"=>'required|exists:networks,api_id',
+            "mobile_number"=>"required",
+            "plan"=>'required|exists:product_plans,api_id',
+            "reference"=>'required'
+        ]);
+        //data productt only for now.
+        
+        if ($validator->stopOnFirstFailure()->fails()) {
+            return $this->error($validator->errors()->first(), code: 403 );    
+        }
+
+        // $network_id = Network::where('api_id',$request->network)->value('id');
+        $product_plan_id = ProductPlan::with('product_plan_category')->where('api_id',$request->plan)->value('id');
+        $getnetwork = ProductPlan::with(['product_plan_category.network','product_plan_category.product'])->where('api_id',$request->plan)->first();
+        $getnetworkcat = $getnetwork->product_plan_category->product_plan_category_name; 
+        // $network_id = Network::where('api_id',$request->network)->value('id');
+        $product_id = $getnetwork->product_plan_category->product->id;
+        $network_id = $getnetwork->product_plan_category->network->id;
+
+        $data['network_id'] = $network_id;
+        $data['product_id'] = $product_id;
+
+        $data['reference'] = $request->reference ?? NULL;
+        $data['phone_number'] = $request->mobile_number;
+        $data['product_plan_category_id'] = NULL;
+        $data['product_plan_id'] = $product_plan_id;
+        $data['pin'] = $request->api_user->pin;
+        $data['wallet_category'] = $request->wallet_category ?? 'main_wallet';
+        $data['validatephonenetwork'] = $request->validatephonenetwork ?? 1;
+        $data['user_id'] = $request->api_user->id;//this is required
+        $data['user'] = $request->api_user;//this is required
+
+        // return $data;
+
+        $buy_data = (new ProductsService())->buy_data_service_one_api($data);
+
+        // return $buy_data;
+
+        $status = $buy_data['status'];
+        $statusw = $buy_data['Status'] ?? 'failed';
+        $message = $buy_data['message'];
+        $data = $buy_data['data'] ?? [];
+
+
+        $data2 = [
+            'id'              => $buy_data['id'] ?? null,
+            'ident'           => $buy_data['ident'] ?? null,
+            'payment_medium'  => $buy_data['payment_medium'] ?? 'MAIN WALLET',
+            'duration'        => $getnetwork->validity_in_days.' DAYS',
+            'plan_type'       => $getnetworkcat,
+            'network'         => $getnetwork->network->network_name ?? null,
+            'apiresponse'     => $buy_data['user_message'] ?? $buy_data['message'] ?? null,
+            // 'api_response'    => $buy_data['admin_message'] ?? $buy_data['message'] ?? null,
+            'balance_before'  =>  $buy_data['balance_before'] ?? null,
+            'balance_after'   =>  $buy_data['balance_after'] ?? null,
+            'mobile_number'   =>  $buy_data['mobile_number'] ?? null,
+            'plan'            => (int) $request->plan,
+            'Status'          => $statusw,
+            'plan_network'    => $buy_data['plan_network'] ?? null,
+            'plan_name'       => $buy_data['plan_name'] ?? null,
+            'plan_amount'     => $buy_data['plan_amount'] ?? null,
+            'service_charge'     => $buy_data['service_charge'] ?? null,
+            'create_date'     => $buy_data['create_date'] ?? now()
+            // 'Ported_number'   => true,
+        ];
+        
+        $status_code = $buy_data['status_code'] ?? 200;
+        $message = $buy_data['message'] ?? 'Transaction processed successfully.';
+        
+        if ($statusw == 'successful') {
+            return response()->json($data2, 200, [], JSON_PRETTY_PRINT);
+        }
+        
+        return response()->json($data2, $status_code, [], JSON_PRETTY_PRINT);  
+     }
 
     public function fetch_transaction(Request $request){
         $validator = Validator::make($request->all(), [
