@@ -8,7 +8,7 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::table('transactions', function (Blueprint $table) {
-            $table->foreignUuid('user_product_plan_automation_id')->after('product_plan_id')->index();  
+            $table->foreignUuid('user_product_plan_automation_id')->after('product_plan_id')->nullable()->index();  
         });
     }
 
@@ -16,6 +16,7 @@ return new class extends Migration {
     {
         Schema::table('transactions', function (Blueprint $table) {
             $table->dropForeign(['user_product_plan_automation_id']);
+            $table->dropColumn('user_product_plan_automation_id');
         });
     }
 };

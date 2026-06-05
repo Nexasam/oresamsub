@@ -905,27 +905,126 @@ class ProductsService{
         $txn_reference = $data['reference'] ?? NULL;
         $upline_commission = 0;
 
+        //WHEN WE ARE READY TO ADD AUTO SWITCHING BASED ON CHEAPEST PRICE,WE CAN MAKE THIS FETCH ALL
+        $user_unique_plan_automation = UserProductPlanAutomation::with('userAutomation.automation')
+        ->where('user_id', $user_id)
+        ->where('product_plan_id', $product_plan_id)
+        ->where('status', 1) // ✅ THIS is the correct place
+        ->first();
+        $service_charge = $user_unique_plan_automation->userAutomation->pricing_amount ?? 10; //this is the price set by the merchant for this plan. it can be null if they want to use the default price
+        
+
+
         if($txn_reference == NULL){
+          
             //generate a unique one
             $txn_reference = $this->generateTxnReference('DATA',$user_id);
         }
 
-        //safe check
         $checktxn = Transaction::where('txn_reference',$txn_reference)->first();
         if($checktxn){
-            return ['status'=>'-1', 'message'=>'Duplicate reference found' ]; //data removed
+           $txn_reference = $this->generateTxnReference('DATA',$user_id);
         }
 
+        //INITIAL CREATION
+        $creationData = [
+            'transaction_category'   => 'data',
+            'transaction_route'      => 'api',
+            'user_id'                => $user_id,
+            'txn_reference'          => $txn_reference,
+            'retry_count'            => $retry_count ?? 0,
+            'set_for_manual'         => 0,
+            'wallet_category'        => $wallet_category,
+            'product_plan_id'        => $product_plan_id,
+            'phone_number'           => $phone_number,
+            'amount'                 => 0,
+            'service_charge'         => $service_charge ?? 10,
+            'coupon_code_id'         => null,
+            'user_product_plan_automation_id'   => $user_unique_plan_automation->id,
+            'discounted_amount'      => 0,
+            'status'                 => 0, // 🔥 PENDING
+            'balance_before'         => 0,
+            'balance_after'          => 0,
+            'description'            => 'Purchase of data',
+            'user_screen_message'    => 'Transaction processing...',
+            'admin_screen_message'   => 'Transaction initialized',
+            'upline_commission'      => 0,
+        ];
+        
+        $transaction = Transaction::create($creationData);
 
         if($user == NULL){
-            $user_details = User::with('user_plan')->where('id',$user_id)->first();;
+            $user_details = User::with('user_plan')->where('id',$user_id)->first();
             if(! $user_details){
+                //add to db
                 //end session and redirect to login
-                return ['status'=>-1, 'message'=>'User record not found' ]; //data removed
+                $transaction->update([
+                    'status'               => -1,
+                    'balance_before'        => null,
+                    'balance_after'        => null,
+                    'user_screen_message'  => "User not found",
+                    'admin_screen_message' => 'User not found',
+                ]);
+
+                return $this->res([
+                    'id'             => $transaction->id ?? null,
+                    'txn_reference'  => $txn_reference,
+                    'status'         => -1,
+                    'status_code'    => 404,
+                
+                    'message'        => "User not found",
+                    'user_message'   => "User not found",
+                    'admin_message'  => "User not found",
+                
+                    'balance_before' =>  null,
+                    'balance_after'  =>  null,
+                
+                    'plan'           => $plan_details->api_id ?? null,
+                    'plan_network'   => Network::where('id',$network_id)->value('network_name'),
+                    'plan_name'      => $plan_details->product_plan_name ?? null,
+                    'plan_amount'    => $amount ?? null,
+                
+                    'data'           => $display_results ?? [],
+                ]);
             }
         }else{
             $user_details = $user;
         }
+
+
+        //safe check
+        // $checktxn = Transaction::where('txn_reference',$txn_reference)->first();
+        // if($checktxn){
+        //     // return ['status'=>'-1', 'message'=>'Duplicate reference found' ]; //data removed
+        //     // add to db
+        //     $transaction->update([
+        //         'status'               => -1,
+        //         'balance_before'        => $user_details->main_wallet,
+        //         'balance_after'        => $user_details->main_wallet,
+        //         'user_screen_message'  => "Duplicate reference found",
+        //         'admin_screen_message' => 'Duplicate reference found',
+        //     ]);
+        //     return $this->res([
+        //         'id'             => $transaction->id ?? null,
+        //         'txn_reference'  => $txn_reference,
+        //         'status'         => -1,
+        //         'status_code'    => 404,
+            
+        //         'message'        => "Duplicate reference found",
+        //         'user_message'   => "Duplicate reference found",
+        //         'admin_message'  => "Duplicate reference found",
+            
+        //         'balance_before' => $user_details->main_wallet ?? null,
+        //         'balance_after'  => $user_details->main_wallet ?? null,
+            
+        //         'plan'           => $plan_details->api_id ?? null,
+        //         'plan_network'   => Network::where('id',$network_id)->value('network_name'),
+        //         'plan_name'      => $plan_details->product_plan_name ?? null,
+        //         'plan_amount'    => $amount ?? null,
+            
+        //         'data'           => $display_results ?? [],
+        //     ]);
+        // }
 
 
         // $user_plan = $user_details->user_plan ?? NULL;
@@ -940,7 +1039,35 @@ class ProductsService{
         ->where('id',$product_plan_id)
         ->first();
         if(! $plan_details){
-            return ['status'=>-1, 'message'=>'Please try another plan. This is not available'];  //'data' => $data
+            // return ['status'=>-1, 'message'=>'Please try another plan. This is not available'];  //'data' => $data
+            $transaction->update([
+                'status'               => -1,
+                'balance_before'        => $user_details->main_wallet,
+                'balance_after'        => $user_details->main_wallet,
+                'user_screen_message'  => "Please try another plan. This is not available",
+                'admin_screen_message' => 'Please try another plan. This is not available',
+            ]);
+
+            return $this->res([
+                'id'             => $transaction->id ?? null,
+                'txn_reference'  => $txn_reference,
+                'status'         => -1,
+                'status_code'    => 404,
+            
+                'message'        => "Please try another plan. This is not available",
+                'user_message'   => "Please try another plan. This is not available",
+                'admin_message'  => "Please try another plan. This is not available",
+            
+                'balance_before' => $user_details->main_wallet ?? null,
+                'balance_after'  => $user_details->main_wallet ?? null,
+            
+                'plan'           => $plan_details->api_id ?? null,
+                'plan_network'   => Network::where('id',$network_id)->value('network_name'),
+                'plan_name'      => $plan_details->product_plan_name ?? null,
+                'plan_amount'    => $amount ?? null,
+            
+                'data'           => $display_results ?? [],
+            ]);
         }
         $plan_detailsold =  $plan_details; //preserve original plan for pricing fetch.
 
@@ -950,20 +1077,44 @@ class ProductsService{
         // ->where('product_plan_id',$product_plan_id)
         // ->first();
 
-        //WHEN WE ARE READY TO ADD AUTO SWITCHING BASED ON CHEAPEST PRICE,WE CAN MAKE THIS FETCH ALL
-        $user_unique_plan_automation = UserProductPlanAutomation::with('userAutomation.automation')
-        ->where('user_id', $user_id)
-        ->where('product_plan_id', $product_plan_id)
-        ->where('status', 1) // ✅ THIS is the correct place
-        ->first();
+
 
         
         //
         if(! $user_unique_plan_automation || ! $user_unique_plan_automation->userAutomation || $user_unique_plan_automation->status != 1){
-            return ['status'=>-1, 'message'=>'No automation configured for this plan. Please try another plan.'];  //'data' => $data
+            // return ['status'=>-1, 'message'=>'No automation configured for this plan. Please try another plan.'];  //'data' => $data
+           //    add to db: very important
+           $transaction->update([
+                'status'               => -1,
+                'balance_before'        => $user_details->main_wallet,
+                'balance_after'        => $user_details->main_wallet,
+                'user_screen_message'  => "No provider configured for this plan. Please try another plan.",
+                'admin_screen_message' => 'No provider configured for this plan. Please try another plan.'
+            ]);
+
+            return $this->res([
+                'id'             => $transaction->id ?? null,
+                'txn_reference'  => $txn_reference,
+                'status'         => -1,
+                'status_code'    => 404,
+            
+                'message'        => "Something went wrong. Please contact support",
+                'user_message'   => "No provider configured for this plan. Please try another plan.",
+                'admin_message'  => "No provider configured for this plan. Please try another plan.",
+            
+                'balance_before' => $user_details->main_wallet ?? null,
+                'balance_after'  => $user_details->main_wallet ?? null,
+            
+                'plan'           => $plan_details->api_id ?? null,
+                'plan_network'   => Network::where('id',$network_id)->value('network_name'),
+                'plan_name'      => $plan_details->product_plan_name ?? null,
+                'plan_amount'    => $amount ?? null,
+            
+                'data'           => $display_results ?? [],
+            ]);
+            
         }
 
-        $service_charge = $user_unique_plan_automation->userAutomation->pricing_amount ?? 10; //this is the price set by the merchant for this plan. it can be null if they want to use the default price
 
         // $user_automation = $user_unique_plan_automation->userAutomation;
         // ->first();
@@ -998,27 +1149,35 @@ class ProductsService{
                             $total_amount = $phone_numbers_count * $service_charge; //service charge
                             if($total_amount > $wallet_before || $wallet_before < 0){
                                 // return ['status'=>'-1', 'message'=>'Insufficient wallet balance...' ];
-                                $description = 'Purchase of data';
-                                $creationData['transaction_category'] = 'data';
-                                $creationData['transaction_route'] = 'api';
-                                $creationData['txn_reference'] = $txn_reference;
-                                $creationData['user_id'] = $user_id;
-                                $creationData['set_for_manual'] = $set_for_manual ?? 0;
-                                $creationData['wallet_category'] = $wallet_category;
-                                $creationData['product_plan_id'] = $product_plan_id;
-                                $creationData['phone_number'] = $phone_numbers_array[0];
-                                $creationData['amount'] = $amount;
-                                $creationData['service_charge'] = $service_charge;
-                                $creationData['coupon_code_id'] = $coupon ?? NULL;
-                                $creationData['discounted_amount'] = $amount;
-                                $creationData['status'] = -1;
-                                $creationData['balance_before'] =$user_details->main_wallet;
-                                $creationData['balance_after'] = $user_details->main_wallet;
-                                $creationData['description'] = $description ?? 'Purchase of data';
-                                $creationData['user_screen_message'] = 'Insufficient balance';
-                                $creationData['admin_screen_message'] = 'Insufficient balance';
-                                $creationData['upline_commission'] = 0;
-                                $transaction = Transaction::create($creationData);
+                                // $description = 'Purchase of data';
+                                // $creationData['transaction_category'] = 'data';
+                                // $creationData['transaction_route'] = 'api';
+                                // $creationData['txn_reference'] = $txn_reference;
+                                // $creationData['user_id'] = $user_id;
+                                // $creationData['set_for_manual'] = $set_for_manual ?? 0;
+                                // $creationData['wallet_category'] = $wallet_category;
+                                // $creationData['product_plan_id'] = $product_plan_id;
+                                // $creationData['phone_number'] = $phone_numbers_array[0];
+                                // $creationData['amount'] = $amount;
+                                // $creationData['service_charge'] = $service_charge;
+                                // $creationData['coupon_code_id'] = $coupon ?? NULL;
+                                // $creationData['discounted_amount'] = $amount;
+                                // $creationData['status'] = -1;
+                                // $creationData['balance_before'] =$user_details->main_wallet;
+                                // $creationData['balance_after'] = $user_details->main_wallet;
+                                // $creationData['description'] = $description ?? 'Purchase of data';
+                                // $creationData['user_screen_message'] = 'Insufficient balance';
+                                // $creationData['admin_screen_message'] = 'Insufficient balance';
+                                // $creationData['upline_commission'] = 0;
+                                // $transaction = Transaction::create($creationData);
+
+                                $transaction->update([
+                                    'status'               => -1,
+                                    'balance_before'        => $user_details->main_wallet,
+                                    'balance_after'        => $user_details->main_wallet,
+                                    'user_screen_message'  => "Insufficient wallet balance",
+                                    'admin_screen_message' => 'Insufficient wallet balance'
+                                ]);
 
 
                                 $walletLog['user_id'] = $user_id;
@@ -1032,35 +1191,27 @@ class ProductsService{
 
                                 DB::commit();                                
 
-                                $status = -1;
-                                return [
-                                    'id'=>$transaction->id,
-                                    'txn_reference'=>$txn_reference ?? NULL,
-                                    'status'=>-1,
-                                    'actual_status' => -1,
-                                    'status_code' => 503,
-                                    'message' => 'Insufficient wallet balance',
-                                    'apiresponse' => $user_message ?? 'Insufficient balance',
-                                    'user_message' => $user_message ?? 'Insufficient balance',
-                                    'admin_message' => $admin_message ?? 'Insufficient balance',
-                                    "balance_before" => $user_details->main_wallet ?? NULL,
-                                    "balance_after" =>  $user_details->main_wallet ?? NULL,
-                                    "plan" => $plan_details->api_id,
-                                    "Status" => match($status) {
-                                        "1"   => "successful",
-                                        "2"  => "refunded",
-                                        "-1"  => "failed",
-                                        1   => "successful",
-                                        2  => "refunded",
-                                        -1  => "failed",
-                                        default => "failed"
-                                    },
-                                    "plan_network" => Network::where('id',$network_id)->value('network_name'),
-                                    "plan_name" => $plan_details->product_plan_name ?? NULL,
-                                    'plan_amount'=>$amount ?? NULL, 
-                                    'create_date'=>date('Y-m-d H:i:s'), 
-                                    'data' => $display_results ?? NULL
-                                ];
+                                // $status = -1;
+                                return $this->res([
+                                    'id'             => $transaction->id ?? null,
+                                    'txn_reference'  => $txn_reference,
+                                    'status'         => -1,
+                                    'status_code'    => 404,
+                                
+                                    'message'        => "Insufficient wallet balance",
+                                    'user_message'   => "Insufficient wallet balance",
+                                    'admin_message'  => "Insufficient wallet balance",
+                                
+                                    'balance_before' => $user_details->main_wallet ?? null,
+                                    'balance_after'  => $user_details->main_wallet ?? null,
+                                
+                                    'plan'           => $plan_details->api_id ?? null,
+                                    'plan_network'   => Network::where('id',$network_id)->value('network_name'),
+                                    'plan_name'      => $plan_details->product_plan_name ?? null,
+                                    'plan_amount'    => $amount ?? null,
+                                
+                                    'data'           => $display_results ?? [],
+                                ]);
 
                             }
                     
@@ -1133,28 +1284,38 @@ class ProductsService{
                                 //     // logger('no coupon used here...');
                                 // }
 
-                                $description = 'Purchase of data';
-                                $creationData['transaction_category'] = 'data';
-                                $creationData['user_id'] = $user_id;
-                                $creationData['txn_reference'] = $txn_reference;
-                                $creationData['retry_count'] = $retry_count ?? 0;
-                                $creationData['set_for_manual'] = $set_for_manual ?? 0;
-                                $creationData['wallet_category'] = $wallet_category;
-                                $creationData['product_plan_id'] = $product_plan_id;
-                                $creationData['phone_number'] = $phone_numbers_array[$i];
-                                $creationData['amount'] = 0;
-                                $creationData['service_charge'] = $service_charge ?? 10;
-                                $creationData['coupon_code_id'] = null;
-                                $creationData['discounted_amount'] = $amount;
-                                $creationData['status'] = $status;
-                                $creationData['balance_before'] = $wallet_before;
-                                $creationData['balance_after'] = $wallet_after;
-                                $creationData['description'] = $description;
-                                $creationData['user_screen_message'] = $user_message;
-                                $creationData['admin_screen_message'] = $admin_message;
-                                $creationData['upline_commission'] = $upline_commission ?? 0;
-                                $transaction = Transaction::create($creationData);
+                                // $description = 'Purchase of data';
+                                // $creationData['transaction_category'] = 'data';
+                                // $creationData['transaction_route'] = 'api';
+                                // $creationData['user_id'] = $user_id;
+                                // $creationData['txn_reference'] = $txn_reference;
+                                // $creationData['retry_count'] = $retry_count ?? 0;
+                                // $creationData['set_for_manual'] = $set_for_manual ?? 0;
+                                // $creationData['wallet_category'] = $wallet_category;
+                                // $creationData['product_plan_id'] = $product_plan_id;
+                                // $creationData['phone_number'] = $phone_numbers_array[$i];
+                                // $creationData['amount'] = 0;
+                                // $creationData['service_charge'] = $service_charge ?? 10;
+                                // $creationData['coupon_code_id'] = null;
+                                // $creationData['discounted_amount'] = $amount;
+                                // $creationData['status'] = $status;
+                                // $creationData['balance_before'] = $wallet_before;
+                                // $creationData['balance_after'] = $wallet_after;
+                                // $creationData['description'] = $description;
+                                // $creationData['user_screen_message'] = $user_message;
+                                // $creationData['admin_screen_message'] = $admin_message;
+                                // $creationData['upline_commission'] = $upline_commission ?? 0;
+                                // $transaction = Transaction::create($creationData);
 
+
+                                $transaction->update([
+                                    'status'               => $status,
+                                    'balance_before'        => $user_details->main_wallet,
+                                    'balance_after'        => $user_details->main_wallet - $service_charge,
+                                    'user_screen_message'  =>$user_message,
+                                    'admin_screen_message' => $admin_message,
+                                    'phone_number' => $phone_numbers_array[$i]
+                                ]);
 
                                 $walletLog['user_id'] = $user_id;
                                 $walletLog['transaction_category'] = 'DATA_FROM_MAIN_WALLET';
@@ -1186,33 +1347,54 @@ class ProductsService{
                             // }
 
 
-                            return [
-                                'id'=>$transaction->id,
-                                'txn_reference'=>$txn_reference,
-                                'status'=>$status,
-                                'actual_status' => $status,
-                                'message' => $user_message,
-                                'apiresponse' => $user_message,
-                                'user_message' => $user_message,
-                                'admin_message' => $admin_message,
-                                "balance_before" => $wallet_before,
-                                "balance_after" => $wallet_after,
-                                "plan" => $plan_details->api_id,
-                                "Status" => match($status) {
-                                    "1"   => "successful",
-                                    "2"  => "refunded",
-                                    "-1"  => "failed",
-                                    1   => "successful",
-                                    2  => "refunded",
-                                    -1  => "failed",
-                                    default => "unknown"
-                                },
-                                "plan_network" => Network::where('id',$network_id)->value('network_name'),
-                                "plan_name" => $plan_details->product_plan_name,
-                                'plan_amount'=>$amount, 
-                                'create_date'=>date('Y-m-d H:i:s'), 
-                                'data' => $display_results
-                            ];
+                            // return [
+                            //     'id'=>$transaction->id,
+                            //     'txn_reference'=>$txn_reference,
+                            //     'status'=>$status,
+                            //     'actual_status' => $status,
+                            //     'message' => $user_message,
+                            //     'apiresponse' => $user_message,
+                            //     'user_message' => $user_message,
+                            //     'admin_message' => $admin_message,
+                            //     "balance_before" => $wallet_before,
+                            //     "balance_after" => $wallet_after,
+                            //     "plan" => $plan_details->api_id,
+                            //     "Status" => match($status) {
+                            //         "1"   => "successful",
+                            //         "2"  => "refunded",
+                            //         "-1"  => "failed",
+                            //         1   => "successful",
+                            //         2  => "refunded",
+                            //         -1  => "failed",
+                            //         default => "unknown"
+                            //     },
+                            //     "plan_network" => Network::where('id',$network_id)->value('network_name'),
+                            //     "plan_name" => $plan_details->product_plan_name,
+                            //     'plan_amount'=>$amount, 
+                            //     'create_date'=>date('Y-m-d H:i:s'), 
+                            //     'data' => $display_results
+                            // ];
+
+                            return $this->res([
+                                'id'             => $transaction->id ?? null,
+                                'txn_reference'  => $txn_reference,
+                                'status'         => $status,
+                                'status_code'    => 200, //confirm
+                            
+                                'message'        => $user_message,
+                                'user_message'   => $user_message,
+                                'admin_message'  => $admin_message,
+                            
+                                'balance_before' => $user_details->main_wallet ?? null,
+                                'balance_after'  => $user_details->wallet_after ?? null,
+                            
+                                'plan'           => $plan_details->api_id ?? null,
+                                'plan_network'   => Network::where('id',$network_id)->value('network_name'),
+                                'plan_name'      => $plan_details->product_plan_name ?? null,
+                                'plan_amount'    => $amount ?? null,
+                            
+                                'data'           => $display_results ?? [],
+                            ]);
                     
                         } 
 
@@ -1346,71 +1528,140 @@ class ProductsService{
             DB::rollBack();
             logger($exception->getMessage().' on line: '. $exception->getLine());
 
-            $description = 'Purchase of data';
-            $creationData['transaction_category'] = 'data';
-            $creationData['transaction_route'] = 'api';
-            $creationData['txn_reference'] = $txn_reference;
-            $creationData['user_id'] = $user_id;
-            $creationData['set_for_manual'] = $set_for_manual ?? 0;
-            $creationData['wallet_category'] = $wallet_category;
-            $creationData['product_plan_id'] = $product_plan_id;
-            $creationData['phone_number'] = $phone_number ?? NULL;
-            $creationData['amount'] = $amount;
-            $creationData['service_charge'] = 0;
-            $creationData['coupon_code_id'] = $coupon ?? NULL;
-            $creationData['discounted_amount'] = $amount;
-            $creationData['status'] = -1;
-            $creationData['balance_before'] =$user_details->main_wallet;
-            $creationData['balance_after'] = $user_details->main_wallet;
-            $creationData['description'] = $description ?? 'Purchase of data';
-            $creationData['user_screen_message'] = $check_purchase_limit['message'] ?? null;
-            $creationData['admin_screen_message'] = $check_purchase_limit['message'] ?? null;
-            $transaction = Transaction::create($creationData);
+            $transaction->update([
+                'status'               => $status,
+                'balance_before'        => $user_details->main_wallet ?? null,
+                'balance_after'        => $user_details->main_wallet ?? null,
+                'user_screen_message'  =>$user_message,
+                'admin_screen_message' => $admin_message,
+                'phone_number' => $phone_number ?? null
+            ]);
+
+            // $description = 'Purchase of data';
+            // $creationData['transaction_category'] = 'data';
+            // $creationData['transaction_route'] = 'api';
+            // $creationData['txn_reference'] = $txn_reference;
+            // $creationData['user_id'] = $user_id;
+            // $creationData['set_for_manual'] = $set_for_manual ?? 0;
+            // $creationData['wallet_category'] = $wallet_category;
+            // $creationData['product_plan_id'] = $product_plan_id;
+            // $creationData['phone_number'] = $phone_number ?? NULL;
+            // $creationData['amount'] = $amount;
+            // $creationData['service_charge'] = 0;
+            // $creationData['coupon_code_id'] = $coupon ?? NULL;
+            // $creationData['discounted_amount'] = $amount;
+            // $creationData['status'] = -1;
+            // $creationData['balance_before'] =$user_details->main_wallet;
+            // $creationData['balance_after'] = $user_details->main_wallet;
+            // $creationData['description'] = $description ?? 'Purchase of data';
+            // $creationData['user_screen_message'] = $check_purchase_limit['message'] ?? null;
+            // $creationData['admin_screen_message'] = $check_purchase_limit['message'] ?? null;
+            // $transaction = Transaction::create($creationData);
 
 
-            $walletLog['user_id'] = $user_id;
-            $walletLog['transaction_category'] = 'DATA_FROM_MAIN_WALLET';
-            $walletLog['balance_before'] = $user_details->main_wallet;
-            $walletLog['balance_after'] = $user_details->main_wallet;
-            $walletLog['transaction_id'] = $transaction->id;
-            $walletLog['action_by'] = $user_id;           
-            $walletLog['description'] = 'Data Purchase from main wallet';
-            $this->log_wallet_transactions($walletLog);
+            // $walletLog['user_id'] = $user_id;
+            // $walletLog['transaction_category'] = 'DATA_FROM_MAIN_WALLET';
+            // $walletLog['balance_before'] = $user_details->main_wallet;
+            // $walletLog['balance_after'] = $user_details->main_wallet;
+            // $walletLog['transaction_id'] = $transaction->id;
+            // $walletLog['action_by'] = $user_id;           
+            // $walletLog['description'] = 'Data Purchase from main wallet';
+            // $this->log_wallet_transactions($walletLog);
 
 
-            return [
-                'id'=>$transaction->id,
-                'txn_reference'=>$txn_reference ?? NULL,
-                'status'=>-1,
-                'actual_status' => -1,
-                'status_code' => 500,
-                'message' => $user_message ?? 'Transaction failed',
-                'apiresponse' => $user_message ?? 'Transaction failed',
-                'user_message' => $user_message ?? 'Transaction failed',
-                'admin_message' => $admin_message ?? 'Transaction failed',
-                "balance_before" => $user_details->main_wallet ?? NULL,
-                "balance_after" =>  $user_details->main_wallet ?? NULL,
-                "plan" => $plan_details->api_id,
-                "Status" => match($status) {
-                    "1"   => "successful",
-                    "2"  => "refunded",
-                    "-1"  => "failed",
-                    1   => "successful",
-                    2  => "refunded",
-                    -1  => "failed",
-                    default => "failed"
-                },
-                "plan_network" => Network::where('id',$network_id)->value('network_name'),
-                "plan_name" => $plan_details->product_plan_name ?? NULL,
-                'plan_amount'=>$amount ?? NULL, 
-                'create_date'=>date('Y-m-d H:i:s'), 
-                'data' => $display_results ?? NULL
-            ];
+            // return [
+            //     'id'=>$transaction->id,
+            //     'txn_reference'=>$txn_reference ?? NULL,
+            //     'status'=>-1,
+            //     'actual_status' => -1,
+            //     'status_code' => 500,
+            //     'message' => $user_message ?? 'Transaction failed',
+            //     'apiresponse' => $user_message ?? 'Transaction failed',
+            //     'user_message' => $user_message ?? 'Transaction failed',
+            //     'admin_message' => $admin_message ?? 'Transaction failed',
+            //     "balance_before" => $user_details->main_wallet ?? NULL,
+            //     "balance_after" =>  $user_details->main_wallet ?? NULL,
+            //     "plan" => $plan_details->api_id,
+            //     "Status" => match($status) {
+            //         "1"   => "successful",
+            //         "2"  => "refunded",
+            //         "-1"  => "failed",
+            //         1   => "successful",
+            //         2  => "refunded",
+            //         -1  => "failed",
+            //         default => "failed"
+            //     },
+            //     "plan_network" => Network::where('id',$network_id)->value('network_name'),
+            //     "plan_name" => $plan_details->product_plan_name ?? NULL,
+            //     'plan_amount'=>$amount ?? NULL, 
+            //     'create_date'=>date('Y-m-d H:i:s'), 
+            //     'data' => $display_results ?? NULL
+            // ];
 
             // return ['status'=>'-1', 'message'=>'Something went wrong... Please try again', 'data'=>[]];
+
+
+            return $this->res([
+                'id'             => $transaction->id ?? null,
+                'txn_reference'  => $txn_reference,
+                'status'         => -1,
+                'status_code'    => 500, //confirm
+            
+                'message'        => $user_message,
+                'user_message'   => $user_message,
+                'admin_message'  => $admin_message,
+            
+                'balance_before' => $user_details->main_wallet ?? null,
+                'balance_after'  => $user_details->main_wallet ?? null,
+            
+                'plan'           => $plan_details->api_id ?? null,
+                'plan_network'   => Network::where('id',$network_id)->value('network_name'),
+                'plan_name'      => $plan_details->product_plan_name ?? null,
+                'plan_amount'    => $amount ?? null,
+            
+                'data'           => $display_results ?? [],
+            ]);
+
         }
 
     }
+
+    private function res(array $data = [])
+   {
+    $status = $data['status'] ?? -1;
+    $message = $data['message'] ?? 'Transaction failed';
+
+    return [
+        'id'               => $data['id'] ?? null,
+        'txn_reference'    => $data['txn_reference'] ?? null,
+        'status'           => $status,
+        'actual_status'    => $status,
+        'status_code'      => $data['status_code'] ?? 200,
+
+        'message'          => $message,
+        'apiresponse'      => $message,
+        'user_message'     => $data['user_message'] ?? $message,
+        'admin_message'    => $data['admin_message'] ?? $message,
+
+        'balance_before'   => $data['balance_before'] ?? 0,
+        'balance_after'    => $data['balance_after'] ?? 0,
+
+        'plan'             => $data['plan'] ?? null,
+        'plan_network'     => $data['plan_network'] ?? null,
+        'plan_name'        => $data['plan_name'] ?? null,
+        'plan_amount'      => $data['plan_amount'] ?? null,
+
+        'Status' => match((string)$status) {
+            '1'  => 'successful',
+            '2'  => 'refunded',
+            '-1' => 'failed',
+            default => 'unknown'
+        },
+
+        'create_date'      => now()->format('Y-m-d H:i:s'),
+        // 'data'             => $data['data'] ?? [],
+    ];
+}
 
     public function buy_airtime_service($data){
 

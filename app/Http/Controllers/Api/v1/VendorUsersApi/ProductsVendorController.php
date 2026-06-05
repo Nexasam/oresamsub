@@ -547,7 +547,7 @@ class ProductsVendorController extends Controller
             // "network"=>'required|exists:networks,api_id',
             "mobile_number"=>"required",
             "plan"=>'required|exists:product_plans,api_id',
-            "reference"=>'required'
+            "reference"=>'required|unique:transactions,txn_reference'
         ]);
         //data productt only for now.
         
@@ -580,44 +580,47 @@ class ProductsVendorController extends Controller
 
         $buy_data = (new ProductsService())->buy_data_service_one_api($data);
 
+        return response()->json($buy_data, $buy_data['status_code'], [], JSON_PRETTY_PRINT);
+
         // return $buy_data;
 
-        $status = $buy_data['status'];
-        $statusw = $buy_data['Status'] ?? 'failed';
-        $message = $buy_data['message'];
-        $data = $buy_data['data'] ?? [];
+        // $status = $buy_data['status'];
+        // $statusw = $buy_data['Status'] ?? 'failed';
+        // $message = $buy_data['message'];
+        // $data = $buy_data['data'] ?? [];
 
 
-        $data2 = [
-            'id'              => $buy_data['id'] ?? null,
-            'ident'           => $buy_data['ident'] ?? null,
-            'payment_medium'  => $buy_data['payment_medium'] ?? 'MAIN WALLET',
-            'duration'        => $getnetwork->validity_in_days.' DAYS',
-            'plan_type'       => $getnetworkcat,
-            'network'         => $getnetwork->network->network_name ?? null,
-            'apiresponse'     => $buy_data['user_message'] ?? $buy_data['message'] ?? null,
-            // 'api_response'    => $buy_data['admin_message'] ?? $buy_data['message'] ?? null,
-            'balance_before'  =>  $buy_data['balance_before'] ?? null,
-            'balance_after'   =>  $buy_data['balance_after'] ?? null,
-            'mobile_number'   =>  $buy_data['mobile_number'] ?? null,
-            'plan'            => (int) $request->plan,
-            'Status'          => $statusw,
-            'plan_network'    => $buy_data['plan_network'] ?? null,
-            'plan_name'       => $buy_data['plan_name'] ?? null,
-            'plan_amount'     => $buy_data['plan_amount'] ?? null,
-            'service_charge'     => $buy_data['service_charge'] ?? null,
-            'create_date'     => $buy_data['create_date'] ?? now()
-            // 'Ported_number'   => true,
-        ];
+        // $data2 = [
+        //     // 'status'          => $statusw,
+        //     'status'          => $statusw,
+        //     'id'              => $buy_data['id'] ?? null,
+        //     'ident'           => $buy_data['ident'] ?? null,
+        //     'payment_medium'  => $buy_data['payment_medium'] ?? 'MAIN WALLET',
+        //     'duration'        => $getnetwork->validity_in_days.' DAYS',
+        //     'plan_type'       => $getnetworkcat,
+        //     'network'         => $getnetwork->network->network_name ?? null,
+        //     'apiresponse'     => $buy_data['user_message'] ?? $buy_data['message'] ?? null,
+        //     // 'api_response'    => $buy_data['admin_message'] ?? $buy_data['message'] ?? null,
+        //     'balance_before'  =>  $buy_data['balance_before'] ?? null,
+        //     'balance_after'   =>  $buy_data['balance_after'] ?? null,
+        //     'mobile_number'   =>  $buy_data['mobile_number'] ?? null,
+        //     'plan'            => (int) $request->plan,
+        //     'plan_network'    => $buy_data['plan_network'] ?? null,
+        //     'plan_name'       => $buy_data['plan_name'] ?? null,
+        //     'plan_amount'     => $buy_data['plan_amount'] ?? null,
+        //     'service_charge'     => $buy_data['service_charge'] ?? null,
+        //     'create_date'     => $buy_data['create_date'] ?? now()
+        //     // 'Ported_number'   => true,
+        // ];
         
-        $status_code = $buy_data['status_code'] ?? 200;
-        $message = $buy_data['message'] ?? 'Transaction processed successfully.';
+        // $status_code = $buy_data['status_code'] ?? 200;
+        // $message = $buy_data['message'] ?? 'Transaction processed successfully.';
         
-        if ($statusw == 'successful') {
-            return response()->json($data2, 200, [], JSON_PRETTY_PRINT);
-        }
+        // if ($statusw == 'successful') {
+        //     return response()->json($data2, 200, [], JSON_PRETTY_PRINT);
+        // }
         
-        return response()->json($data2, $status_code, [], JSON_PRETTY_PRINT);  
+        // return response()->json($data2, $status_code, [], JSON_PRETTY_PRINT);  
      }
 
     public function fetch_transaction(Request $request){

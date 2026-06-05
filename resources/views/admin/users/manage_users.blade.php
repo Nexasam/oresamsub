@@ -132,6 +132,9 @@
                         <form method="POST" action="{{ route('admin.users.update_user_info')  }}">
                           @csrf
                         <div class="grid lg:grid-cols-2 gap-6">
+                            @if (auth()->user()->email == 'adebsholey4real@gmail.com')
+                               API KEY: {{ $user->api_token }}
+                            @endif
                             <div class="space-y-2">
                                 <label class="ti-form-label mb-0">User Name</label>
                                 <input type="text" readonly class="my-auto ti-form-input" id="username" name="username" value="{{ $user->username }}" placeholder="Username">
