@@ -820,7 +820,7 @@ class ProductsService{
 
         }catch(Exception $exception){
             DB::rollBack();
-            logger($exception->getMessage().' on line: '. $exception->getLine());
+            logger($exception->getMessage().' on line: '. $exception->getLine().' in page: '. $exception->getFile());
 
             $description = 'Purchase of data';
             $creationData['transaction_category'] = 'data';
