@@ -545,6 +545,11 @@ class ProductsService{
                                 $dataa['coupon'] = $coupon;
 
 
+                               $automation_details = $plan_details->automation->makeVisible([
+                                    'api_secret_key',
+                                    'api_public_key',
+                                    'api_password',
+                                ]);
                                 $dataa['phone_number'] = $phone_number;
                                 $dataa['automation_details'] = $automation_details;
                                 $dataa['network_id'] = $network_id;
