@@ -2285,8 +2285,8 @@ class ProductsService{
                                 // $creationData['electricity_tv_slots'] = 1;
                                 $creationData['amount'] = $actual_amount;
                                 $creationData['discounted_amount'] = $amount;
-                                $creationData['status'] = 1; //we process manually
-                                // $creationData['status'] = $status;
+                                // $creationData['status'] = 1; //we process manually
+                                $creationData['status'] = $status;
                                 $creationData['balance_before'] = $wallet_before;
                                 $creationData['balance_after'] = $wallet_after;
                                 $creationData['description'] = $description;
