@@ -550,6 +550,7 @@ class ProductsService{
                                 $dataa['network_id'] = $network_id;
                                 $dataa['plan_id'] = $product_plan_id;
                                 $dataa['validatephonenetwork'] = $validatephonenetwork;
+                                logger('DATAAA SERVICE INPUT: '.json_encode($dataa));
                                 $sell_data = AutomationLogic::initiateDataPurchase($dataa);
                                 $set_for_manual = $sell_data['set_for_manual'] ?? 0;
                                 $upline_commission = $sell_data['upline_commission'] ?? 0;
