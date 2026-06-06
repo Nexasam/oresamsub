@@ -394,7 +394,7 @@ class ProductsVendorController extends Controller
      */
     public function buy_data(Request $request)
     {
-        dd('buy data abeg');
+        // dd('buy data abeg');
         $validator = Validator::make($request->all(), [
             'mobile_number' => 'required',
             'plan' => 'required|exists:product_plans,api_id',
