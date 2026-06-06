@@ -370,7 +370,7 @@ class ProductsService{
         $data1['product'] = 'data';
         $check_purchase_limit =  ProductsService::check_purchase_limit($data1);
         if($check_purchase_limit['status'] == -1){
-
+            logger('Purchase limit reached for user ID: '.$user_id);
             $description = 'Purchase of data';
             $creationData['transaction_category'] = 'data';
             $creationData['transaction_route'] = 'api';
