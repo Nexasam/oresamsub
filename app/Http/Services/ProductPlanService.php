@@ -153,7 +153,7 @@ class ProductPlanService{
                 $product_planss[$key]['validity_in_days'] = (int) $product_plan->validity_in_days;
                 $product_planss[$key]['visibility'] = (int) $product_plan->visibility;
                 $product_planss[$key]['public_visibility'] = (int) $product_plan->public_visibility;
-                $product_planss[$key]['automation_product_plan_id'] = (int) $product_plan->automation_product_plan_id;
+                $product_planss[$key]['automation_product_plan_id'] =  $product_plan->automation_product_plan_id;
             }
 
             // Always return

@@ -315,9 +315,7 @@ class AutomationLogic{
             $buy_electricity_subscription = (new MegaSubElectricity($metre_number,$plan_id,$total_amount,$validation_extra_info,$slots,$product_plan_category_name,$phone_number,user_id: $user_id))->buyElectricity();
         }else if($automation_details->slug == 'vtpass'){
             $buy_electricity_subscription = (new VtpassAutomation($data))->buyElectricity();
-        }else if($automation_details->slug == 'foxdatahub'){
-            $buy_electricity_subscription = (new FoxdataHubAutomation($data))->buyElectricity();
-        }
+        } 
         else{
             //this will be like this until other automations are processed
             $buy_electricity_subscription['status'] = -1;
