@@ -26,6 +26,8 @@ class ValidateApiToken
             ], 401);
         }
 
+        logger()->info('API token validated for user: ' . $user->email);
+
         // Optionally attach user to request
         $request->merge(['api_user' => $user]);
 
