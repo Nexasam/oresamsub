@@ -6,7 +6,7 @@ export default function WalletBalance({ user }) {
   const [showBalance, setShowBalance] = useState(true);
 
   return (
-    <div className="relative bg-emerald-600 dark:bg-emerald-700 text-white p-4 rounded-xl shadow-md flex items-center justify-between">
+    <div className="relative bg-emerald-600 dark:bg-emerald-700 text-white p-2 rounded-xl shadow-md flex items-center justify-between">
       <div>
         <p className="text-xs text-white/70 font-medium">Wallet Balance</p>
         <div className="flex items-center space-x-1 text-xl font-bold">

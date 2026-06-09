@@ -134,7 +134,7 @@ export default function DashboardLayout({ children , title}) {
 
       {/* QUICK AUTOMATIONS BAR */}
 {user.automations?.length > 0 && (
-  <div className="mt-2 bg-white dark:bg-gray-800 p-3 rounded-xl shadow-sm">
+  <div className="mt-3 bg-white dark:bg-gray-800 p-3 rounded-xl shadow-sm">
 
     <div className="flex items-center justify-between mb-2">
       <p className="text-xs font-semibold text-gray-500 uppercase">
