@@ -9,7 +9,7 @@ export default function CommunityCard({ customerCategory }) {
         <a
           href={link}
           target="_blank"
-          className="block bg-gradient-to-r from-green-500 via-green-600 to-green-700 text-white p-6 rounded-2xl shadow-lg transition transform hover:scale-[1.02] hover:shadow-xl"
+          className="block bg-gradient-to-r from-green-500 via-green-600 to-green-700 text-white p-3 rounded-2xl shadow-lg transition transform hover:scale-[1.02] hover:shadow-xl"
         >
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
             <div>
