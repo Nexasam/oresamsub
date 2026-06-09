@@ -50,7 +50,7 @@ export default function ProductButtons({ loggingOut, setLoggingOut }) {
         <div className="w-8 h-8 rounded-full bg-emerald-500 flex items-center justify-center text-white text-sm">
           🧾
         </div>
-        <div className="mt-1 text-[11px] font-medium">Transactions</div>
+        <div className="mt-1 text-[11px] font-medium text-gray-700 dark:text-gray-200">Transactions</div>
       </button>
 
       {/* API ACCESS */}
@@ -61,7 +61,7 @@ export default function ProductButtons({ loggingOut, setLoggingOut }) {
         <div className="w-8 h-8 rounded-full bg-purple-500 flex items-center justify-center text-white text-sm">
           🔑
         </div>
-        <div className="mt-1 text-[11px] font-medium">API</div>
+        <div className="mt-1 text-[11px] font-medium text-gray-700 dark:text-gray-200">API</div>
       </Link>
 
       {/* Logout */}
