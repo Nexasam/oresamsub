@@ -144,49 +144,6 @@ class DataAutomation{
             if ($temp != $scondition['value']) { $allPassed = false; break; }
         }
         
-
-
-
-        ///WE WILL MAKE THIS BETTER IN V2
-        // if ($allPassed) {
-        //     $success_response_steps = explode('.',$vendor_record->success_response);
-        //     if(count($success_response_steps) == 1){
-        //         $success_message = $response_dec["$success_response_steps[0]"] ?? 'success response1';
-        //     }else if(count($success_response_steps) == 2){
-        //         $success_message = $response_dec["$success_response_steps[0]"]["$success_response_steps[1]"] ?? 'success response2';
-        //     }else if(count($success_response_steps) == 3){
-        //         $success_message = $response_dec["$success_response_steps[0]"]["$success_response_steps[1]"]["$success_response_steps[2]"] ?? 'success response3';
-        //     }else{
-        //         $success_message = 'Transaction was successful';
-        //     }
-
-        //     return [
-        //         'status' => 1,
-        //         'user_message' => $success_message,
-        //         'admin_message' => $response,
-        //     ];
-        // } else {
-        //     $failed_response_steps = explode('.',$vendor_record->failed_response);
-        //     if(count($failed_response_steps) == 1){
-        //         $failed_message = $response_dec["$failed_response_steps[0]"] ?? 'Failed response1';
-        //     }else if(count($failed_response_steps) == 2){
-        //         $failed_message = $response_dec["$failed_response_steps[0]"]["$failed_response_steps[1]"] ?? 'Failed response2';
-        //     }else if(count($failed_response_steps) == 3){
-        //         $failed_message = $response_dec["$failed_response_steps[0]"]["$failed_response_steps[1]"]["$failed_response_steps[2]"] ?? 'Failed response3';
-        //     }else{
-        //         $failed_message = 'Transaction failed';
-        //     }
-          
-        //     logger('woewer: '. $failed_message );
-
-        //     return [
-        //         'status' => -1,
-        //         'user_message' => $failed_message,
-        //         'admin_message' => $response,
-        //     ];
-        // }
-
-
         $success_message = match(count($steps = explode('.', $vendor_record->success_response))) {
             1 => $response_dec[$steps[0]] ?? 'Transaction was successful',
             2 => $response_dec[$steps[0]][$steps[1]] ?? 'Transaction was successful',

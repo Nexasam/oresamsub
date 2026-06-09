@@ -148,6 +148,9 @@ export default function Dashboard({ transactions: initialTransactions }) {
       <Announcements announcements={announcements} />
 
 
+      {/* Product Buttons */}
+      <ProductButtons loggingOut={loggingOut} setLoggingOut={setLoggingOut} />
+
       {/* Commission Summary Cards */}
     {commss && (
       <div className="grid grid-cols-3 gap-3 mt-4">
@@ -201,8 +204,6 @@ export default function Dashboard({ transactions: initialTransactions }) {
       <InviteEarn referralLink={referralLink} />
 
      
-      {/* Product Buttons */}
-      <ProductButtons loggingOut={loggingOut} setLoggingOut={setLoggingOut} />
 
       {/* Community Section */}
       <CommunityCard customerCategory={user.customer_category} />
