@@ -166,7 +166,7 @@ export default function Dashboard() {
           className="w-full flex justify-between items-center bg-gradient-to-r from-emerald-500 via-teal-500 to-emerald-600
                      dark:from-emerald-600 dark:via-teal-600 dark:to-emerald-700 text-white px-3 py-2 text-xs font-semibold rounded-md"
         >
-          🎉 Invite & Earn
+          🎉 Referral Rewards (Earn from active users only)
           <svg
             className={`w-4 h-4 transform transition-transform ${copied ? "rotate-180" : ""}`}
             fill="none"

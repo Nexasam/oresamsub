@@ -77,7 +77,18 @@ Route::get('/testui', function () {
 // Inertia routes
 Route::get('/login', [InertiaLoginController::class, 'create'])->name('login');
 Route::post('/login', [InertiaLoginController::class, 'store'])->name('inertia.login.store');
-  
+
+// Route::get('/privacy-policy', function () {
+//     return inertia('Legal/PrivacyPolicy');
+// })->name('privacy.policy');
+
+// Route::get('/terms', function () {
+//     return inertia('Legal/Terms');
+// })->name('terms');
+
+
+Route::view('/privacy-policy', 'legal.privacy')->name('privacy.policy');
+Route::view('/terms', 'legal.terms')->name('terms');
 
 
 
@@ -88,7 +99,7 @@ Route::get('oresamsub/register', fn () => view('oresamsub.auth.register'))->name
 Route::middleware(['set_locale'])->group(function () {
 
 
-            Route::get('oresamsub/set_pin', fn () => view('oresamsub.pages.set_pin'))->name('ore.set_pin');
+            Route::get('set_pin', fn () => view('oresamsub.pages.set_pin'))->name('ore.set_pin');
            
             Route::get('/profit', function (): array {
                 $updateplan = (new BizProfitCalculationService())->calculate_profit();

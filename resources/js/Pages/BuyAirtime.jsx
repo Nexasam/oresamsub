@@ -104,17 +104,17 @@ export default function BuyAirtime() {
     const selectedPlan = plans.find((p) => p.product_plan_id === data.product_plan_id);
 
     const result = await Swal.fire({
-      title: "Confirm Purchase",
+      title: "Confirm Transaction",
       html: `
-        Are you sure you want to purchase 
-        <b>${selectedPlan.product_plan_name}</b> 
-        for <b>₦${Number(selectedPlan.selling_price).toLocaleString("en-NG")}</b> 
-        to <b>${data.phone_number}</b>?
+        You are about to purchase <b>${selectedPlan.product_plan_name}</b><br/>
+        Amount: <b>₦${Number(selectedPlan.selling_price).toLocaleString("en-NG")}</b><br/>
+        Recipient: <b>${data.phone_number}</b><br/><br/>
+        Please confirm to continue.
       `,
       icon: "question",
       showCancelButton: true,
-      confirmButtonText: "Yes, Buy Now ✅",
-      cancelButtonText: "Cancel ❌",
+      confirmButtonText: "Confirm",
+      cancelButtonText: "Cancel",
       confirmButtonColor: "#059669",
       cancelButtonColor: "#d33",
     });
@@ -125,7 +125,7 @@ export default function BuyAirtime() {
       setSubmitting(true);
       const response = await axios.post(route("user.airtime.buy_airtime_action2"), data);
       if (response.data.status === 1) {
-        await Swal.fire("✅ Success", response.data.message, "success");
+        await Swal.fire("✅ Transaction Completed", response.data.message, "success");
        
         
         // 🔹 Clear form on success
@@ -151,7 +151,7 @@ export default function BuyAirtime() {
   };
 
   return (
-    <DashboardLayout  title="Buy Airtime">
+    <DashboardLayout  title="Airtime Purchase">
       {/* Wallet */}
       <WalletBalance user={user} />
 
@@ -165,7 +165,7 @@ export default function BuyAirtime() {
       {/* Buy Airtime Card */}
       <div className="bg-white dark:bg-gray-800 text-gray-700 dark:text-white mt-6 pb-16 rounded-xl shadow overflow-hidden font-inter">
         <div className="p-4 border-b border-gray-200 dark:border-gray-700 font-semibold text-gray-700 dark:text-white">
-          Buy Airtime
+          Airtime Purchase
         </div>
 
         <form onSubmit={handleSubmit} className="p-4 space-y-4">
@@ -241,9 +241,9 @@ export default function BuyAirtime() {
           <div>
             <label className="block text-sm mb-1">Product Plan</label>
             {loadingPlans ? (
-              <p className="text-gray-500 text-sm">Loading plans...</p>
+              <p className="text-gray-500 text-sm">Fetching available options...</p>
             ) : plans.length === 0 ? (
-              <p className="text-gray-500 text-sm">No plans available.</p>
+              <p className="text-gray-500 text-sm">No available plans for the selected network.</p>
             ) : (
               <div className="max-h-64 overflow-y-auto pr-1 border-2 border-gray-400 rounded-xl p-3">
                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
@@ -268,7 +268,7 @@ export default function BuyAirtime() {
 
           {/* Transaction PIN */}
           <div>
-            <label className="block text-sm mb-1">Transaction PIN</label>
+            <label className="block text-sm mb-1">Security PIN</label>
             <input
               type="password"
               maxLength={4}
@@ -277,6 +277,10 @@ export default function BuyAirtime() {
               value={data.pin}
               onChange={(e) => setData("pin", e.target.value)}
             />
+
+            <p className="text-xs text-gray-500 mt-1">
+              This PIN is used to authorize transactions on your account.
+            </p>
           </div>
 
           {/* Submit */}

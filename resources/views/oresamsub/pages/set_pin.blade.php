@@ -4,7 +4,7 @@
 <div class="pt-6 max-w-sm mx-auto pb-24" x-data="{ isSubmitting: false }">
 
   <!-- Back Button -->
-  <div class="mb-4">
+  {{-- <div class="mb-4">
      <a 
     href="{{ route('dashboard') }}"
     @click.prevent="showLoader = true; setTimeout(() => window.location.href = '{{ route('dashboard') }}', 1000)"
@@ -20,7 +20,7 @@
     Back to Dashboard
   </a>
   </div>
-  
+   --}}
   
 
   {{-- <h2 class="text-xl font-bold text-center mb-6">Set PIN</h2> --}}

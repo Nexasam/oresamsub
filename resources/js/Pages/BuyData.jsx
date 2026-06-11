@@ -254,7 +254,7 @@ export default function BuyData() {
       : plans.filter((p) => p.data_size_in_mb === activeSize);
 
   return (
-    <DashboardLayout  title="Buy Data">
+    <DashboardLayout  title="Purchase Data Bundle">
       {/* Wallet card */}
       <WalletBalance user={user} />
 
@@ -265,12 +265,16 @@ export default function BuyData() {
         ← Back to Dashboard
       </Link>
 
-      {/* Buy Data Card */}
+      {/* Purchase Data Bundle Card */}
       <div className="bg-white dark:bg-gray-800 text-gray-700 dark:text-white mt-6 pb-16  rounded-xl shadow overflow-hidden">
         <div className="p-4 border-b border-gray-200 dark:border-gray-700 font-semibold text-gray-700 dark:text-white">
-          Buy Data
+          Purchase Data Bundle
+          <div className="text-[11px] text-gray-500">
+        All purchases are final and processed through verified network providers.
+      </div>
         </div>
 
+     
         <form onSubmit={handleSubmit} className="p-4 space-y-4">
           {/* Phone Number */}
           <div className="relative">
@@ -423,11 +427,11 @@ export default function BuyData() {
 
           {/* Plans */}
           <div>
-            <label className="block text-sm mb-1">Plan</label>
+            <label className="block text-sm mb-1">Plan (select your desired plan)</label>
             {loadingPlans ? (
               <p className="text-gray-500 text-sm">Loading plans...</p>
             ) : filteredPlans.length === 0 ? (
-              <p className="text-gray-500 text-sm">No plans available.</p>
+              <p className="text-gray-500 text-sm">Please select a network to load available data plans</p>
             ) : (
               <div className="max-h-64 overflow-y-auto pr-1 border-2 border-gray-400 border-rounded-xl p-3">
                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
@@ -465,35 +469,47 @@ export default function BuyData() {
             onChange={(val) => setData("pin", val)}
           /> */}
 
-          <div>
-            <label className="block text-sm mb-1">Transaction PIN</label>
-            <input
-              type="password"
-              maxLength={4}
-              className="w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 px-3 py-2 text-sm focus:ring-2 focus:ring-emerald-500"
-              placeholder="****"
-              value={data.pin}
-              onChange={(e) => setData("pin", e.target.value)}
-            />
-            {errors.pin && (
-              <p className="text-xs text-red-500 mt-1">{errors.pin}</p>
-            )}
-          </div>
+              <div>
+                <label className="block text-sm mb-1 font-medium">
+                  4-Digit Transaction PIN
+                </label>
+
+                <input
+                  type="password"
+                  inputMode="numeric"
+                  maxLength={4}
+                  className="w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 px-3 py-2 text-sm focus:ring-2 focus:ring-emerald-500"
+                  placeholder="Enter 4-digit transaction PIN"
+                  value={data.pin}
+                  onChange={(e) => setData("pin", e.target.value.replace(/\D/g, ""))}
+                />
+
+                <p className="text-[11px] text-gray-500 mt-1">
+                  This PIN is required to authorize data purchases and protect your wallet.
+                </p>
+
+                {errors.pin && (
+                  <p className="text-xs text-red-500 mt-1">{errors.pin}</p>
+                )}
+              </div>
 
           {/* <button
             type="submit"
             disabled={processing}
             className="w-full py-2 px-4 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg transition disabled:opacity-50"
           >
-            {processing ? "Processing..." : "📶 Buy Data"}
+            {processing ? "Processing..." : "📶 Purchase Data Bundle"}
           </button> */}
 
+         <div className="text-[11px] text-gray-500 text-center mt-2">
+          Transactions are processed instantly or within network processing time.
+         </div>
           <button
           type="submit"
           disabled={submitting}
           className="w-full py-2 px-4 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg transition disabled:opacity-50"
           >
-          {submitting ? "Processing..." : "📶 Buy Data"}
+          {submitting ? "Processing..." : "📶 Purchase Data Bundle"}
           </button>
 
 

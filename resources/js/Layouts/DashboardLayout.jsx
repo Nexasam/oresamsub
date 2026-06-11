@@ -215,6 +215,33 @@ export default function DashboardLayout({ children , title}) {
       </nav>
 
 
+      <div className="mt-10 border-t border-gray-200 dark:border-gray-700 pt-4 text-center text-xs text-gray-500 space-y-2">
+
+        <p>
+          By using this app, you agree to our
+          <Link href={route("privacy.policy")} className="text-emerald-600 ml-1 mr-1 underline">
+            Privacy Policy
+          </Link>
+          and
+          <Link href={route("terms")} className="text-emerald-600 ml-1 underline">
+            Terms of Service
+          </Link>.
+        </p>
+
+        <p>
+          Transactions are processed securely through licensed service providers.
+        </p>
+
+        </div>
+
+
     </div>
+
+
+
+
+
   );
+
+
 }

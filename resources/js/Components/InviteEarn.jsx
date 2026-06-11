@@ -21,7 +21,11 @@ export default function InviteEarn({ referralLink }) {
     >
       <span className="flex items-center gap-1.5">
         <span className="animate-pulse">🎉</span>
-        <span>Invite & Earn</span>
+        {/* <span>Invite & Earn</span> */}
+
+      <span>
+      Referral Rewards (Earn from active users only)
+      </span>
       </span>
       <svg
         className={`w-3.5 h-3.5 transform transition-transform ${inviteOpen ? "rotate-180" : ""}`}

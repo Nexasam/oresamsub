@@ -228,11 +228,11 @@ class RegisteredUserController extends Controller
             'password' => Hash::make($validated['password']),
             'usage' => $validated['usage'],
             'transaction_volume' => $request->transaction_volume ?? null,
-            // 'email_verified_at' => env('APP_NAME') === 'OresamSub' ? now() : null,
+            'email_verified_at' => now(),
         ]);
 
         // 7. Dispatch event
-        event(new Registered($user));
+        // event(new Registered($user));
 
         // 8. Login and redirect
         Auth::login($user);
