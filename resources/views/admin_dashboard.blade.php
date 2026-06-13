@@ -165,101 +165,150 @@
     <div class="grid grid-cols-12 gap-x-5">
 
         <div class="col-span-12 xxl:col-span-12">
-            <div x-data="adminTransactions()" x-init="init()" class="space-y-3">
 
-                <!-- FILTER BUTTON -->
-                <div class="flex items-center justify-between">
-                    <h5 class="font-semibold">Recent Transactions</h5>
+            <div x-data="adminTransactions()" x-init="init()" class="space-y-4">
             
-                    <button @click="open = true"
-                        class="bg-emerald-600 text-white px-3 py-1 rounded text-sm">
-                        Filter
+                <!-- HEADER -->
+                <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+            
+                    <div>
+                        <h2 class="text-lg font-semibold text-gray-800 dark:text-white">
+                            Recent Transactions
+                        </h2>
+                        <p class="text-xs text-gray-500">
+                            Filter and manage transaction history
+                        </p>
+                    </div>
+            
+                    <button @click="open = !open"
+                        class="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-md text-sm transition">
+                        Filters
                     </button>
                 </div>
             
                 <!-- FILTER PANEL -->
-                <div x-show="open" class="p-3 border rounded bg-white space-y-2">
+                <div x-show="open" x-transition
+                    class="bg-white dark:bg-gray-900 border dark:border-gray-700 rounded-xl p-4 space-y-3 shadow-sm">
             
-                    <input x-model="filters.phone_recharged"
-                        placeholder="Phone number"
-                        class="border p-2 w-full rounded">
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-3">
             
-                    <select x-model="filters.product_plan_category_filter"
-                            class="border p-2 w-full rounded">
-                        <option value="">Select Category</option>
-                        @foreach ($product_plan_categories as $cat)
-                            <option value="{{ $cat->id }}">{{ $cat->product_plan_category_name }}</option>
-                        @endforeach
-                    </select>
+                        <input x-model="filters.phone_recharged"
+                            placeholder="Phone number"
+                            class="border rounded-md p-2 w-full">
             
-                    <div class="flex gap-2">
-                        <input type="date" x-model="filters.date_from" class="border p-2 w-full rounded">
-                        <input type="date" x-model="filters.date_to" class="border p-2 w-full rounded">
+                        <select x-model="filters.product_plan_category_filter"
+                            class="border rounded-md p-2 w-full">
+                            <option value="">Plan Category</option>
+                            @foreach ($product_plan_categories as $cat)
+                                <option value="{{ $cat->id }}">{{ $cat->product_plan_category_name }}</option>
+                            @endforeach
+                        </select>
+            
+                        <input type="date" x-model="filters.date_from"
+                            class="border rounded-md p-2 w-full">
+            
+                        <input type="date" x-model="filters.date_to"
+                            class="border rounded-md p-2 w-full">
+            
                     </div>
             
-                    <div class="flex justify-end gap-2">
-                        <button @click="reset()" class="px-3 py-1 border rounded">Reset</button>
-                        <button @click="fetchData(1)" class="px-3 py-1 bg-emerald-600 text-white rounded">
-                            Apply
+                    <!-- ACTIONS -->
+                    <div class="flex justify-end gap-2 pt-2">
+            
+                        <button @click="reset()"
+                            class="px-3 py-1 border rounded-md text-sm hover:bg-gray-100">
+                            Reset
                         </button>
+            
+                        <button @click="fetchData(1)"
+                            class="px-4 py-1 bg-emerald-600 text-white rounded-md text-sm hover:bg-emerald-700">
+                            Apply Filters
+                        </button>
+            
                     </div>
             
                 </div>
             
-                <!-- TABLE -->
-                <div class="overflow-auto border rounded">
+                <!-- TABLE CARD -->
+                <div class="bg-white dark:bg-gray-900 border dark:border-gray-700 rounded-xl overflow-hidden">
             
-                    <table class="w-full text-sm">
-                        <thead class="bg-gray-100">
-                            <tr>
-                                <th>ID</th>
-                                <th>User</th>
-                                <th>Wallet</th>
-                                <th>Plan</th>
-                                <th>Category</th>
-                                <th>Phone</th>
-                                <th>Amount</th>
-                                <th>Status</th>
-                                <th>Date</th>
-                                <th>Action</th>
-                            </tr>
-                        </thead>
+                    <!-- TABLE -->
+                    <div class="overflow-auto">
+                        <table class="min-w-full text-sm">
             
-                        <tbody>
-                            <template x-if="loading">
+                            <thead class="bg-gray-50 dark:bg-gray-800 text-gray-600 dark:text-gray-300 sticky top-0">
                                 <tr>
-                                    <td colspan="10" class="text-center p-4">Loading...</td>
+                                    <th class="p-3 text-left">ID</th>
+                                    <th class="p-3 text-left">User</th>
+                                    <th class="p-3 text-left">Wallet</th>
+                                    <th class="p-3 text-left">Plan</th>
+                                    <th class="p-3 text-left">Category</th>
+                                    <th class="p-3 text-left">Phone</th>
+                                    <th class="p-3 text-left">Amount</th>
+                                    <th class="p-3 text-left">Status</th>
+                                    <th class="p-3 text-left">Date</th>
+                                    <th class="p-3 text-left">Action</th>
                                 </tr>
-                            </template>
+                            </thead>
             
-                            <template x-for="row in rows" :key="row.id">
-                                <tr class="border-t">
-                                    <td x-html="row.DT_RowIndex"></td>
-                                    <td x-html="row.user_id"></td>
-                                    <td x-html="row.wallet_category"></td>
-                                    <td x-html="row.plan_details"></td>
-                                    <td x-html="row.transaction_category"></td>
-                                    <td x-html="row.phone_number"></td>
-                                    <td x-html="row.amount"></td>
-                                    <td x-html="row.status"></td>
-                                    <td x-html="row.created_at"></td>
-                                    <td x-html="row.action"></td>
+                            <tbody>
+            
+                                <!-- LOADING -->
+                                <tr x-show="loading">
+                                    <td colspan="10" class="p-6 text-center text-gray-500">
+                                        Loading transactions...
+                                    </td>
                                 </tr>
-                            </template>
-                        </tbody>
             
-                    </table>
-                </div>
+                                <!-- ROWS -->
+                                <template x-for="row in rows" :key="row.id">
+                                    <tr class="border-t dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-gray-800 transition">
             
-                <!-- PAGINATION -->
-                <div class="flex justify-between items-center">
-                    <button @click="prevPage()" class="px-3 py-1 border rounded">Prev</button>
-                    <div>Page <span x-text="page"></span></div>
-                    <button @click="nextPage()" class="px-3 py-1 border rounded">Next</button>
+                                        <td class="p-3" x-html="row.DT_RowIndex"></td>
+                                        <td class="p-3" x-html="row.user_id"></td>
+                                        <td class="p-3" x-html="row.wallet_category"></td>
+                                        <td class="p-3" x-html="row.plan_details"></td>
+                                        <td class="p-3" x-html="row.transaction_category"></td>
+                                        <td class="p-3" x-html="row.phone_number"></td>
+                                        <td class="p-3 font-medium" x-html="row.amount"></td>
+                                        <td class="p-3" x-html="row.status"></td>
+                                        <td class="p-3 text-xs text-gray-500" x-html="row.created_at"></td>
+            
+                                        <td class="p-3" x-html="row.action"></td>
+            
+                                    </tr>
+                                </template>
+            
+                            </tbody>
+            
+                        </table>
+                    </div>
+            
+                    <!-- PAGINATION -->
+                    <div class="flex items-center justify-between p-3 border-t dark:border-gray-800">
+            
+                        <button @click="prevPage()"
+                            class="px-3 py-1 border rounded-md text-sm disabled:opacity-50"
+                            :disabled="page <= 1">
+                            Prev
+                        </button>
+            
+                        <div class="text-sm text-gray-500">
+                            Page <span class="font-semibold text-gray-800 dark:text-white" x-text="page"></span>
+                        </div>
+            
+                        <button @click="nextPage()"
+                            class="px-3 py-1 border rounded-md text-sm">
+                            Next
+                        </button>
+            
+                    </div>
+            
                 </div>
             
             </div>
-        </div>
+            
+            </div>
 
         <div class="col-span-12 xxl:col-span-12">
 
@@ -952,12 +1001,10 @@ function walletBalance() {
     }
 }
 
-
 function adminTransactions() {
     return {
-        open: false,
+        open: true,   // 👈 filters visible by default (your request)
         loading: false,
-    
 
         page: 1,
         rows: [],
@@ -979,17 +1026,12 @@ function adminTransactions() {
 
             const params = new URLSearchParams({
                 page: this.page,
-                date_from: this.filters.date_from,
-                date_to: this.filters.date_to,
-                product_plan_category_filter: this.filters.product_plan_category_filter,
-                phone_recharged: this.filters.phone_recharged,
+                ...this.filters
             });
 
             fetch(`/admin/transactions/admin_fetch_transactions?${params}`)
                 .then(res => res.json())
                 .then(data => {
-
-                    // DataTables response: data.data
                     this.rows = data.data ?? [];
                     this.loading = false;
                 })
@@ -1013,10 +1055,10 @@ function adminTransactions() {
                 product_plan_category_filter: '',
                 phone_recharged: ''
             };
+
             this.fetchData(1);
         }
     }
 }
-
 </script>
 @endpush
