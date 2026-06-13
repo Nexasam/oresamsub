@@ -184,66 +184,92 @@
                     <!-- RIGHT SIDE CONTROLS -->
                     <div class="flex items-center gap-2">
 
-                        <!-- LIMIT SELECT (BEST PLACE) -->
-                        <form method="GET" class="mb-3">
+                        <form method="GET">
+
+                            <!-- KEEP FILTERS -->
+                            <input type="hidden" name="phone_recharged" value="{{ request('phone_recharged') }}">
+                            <input type="hidden" name="product_plan_category_filter" value="{{ request('product_plan_category_filter') }}">
+                            <input type="hidden" name="date_from" value="{{ request('date_from') }}">
+                            <input type="hidden" name="date_to" value="{{ request('date_to') }}">
+                        
                             <select name="limit" onchange="this.form.submit()" class="border p-2 rounded">
                                 <option value="10" {{ request('limit')==10?'selected':'' }}>10</option>
                                 <option value="20" {{ request('limit',20)==20?'selected':'' }}>20</option>
                                 <option value="50" {{ request('limit')==50?'selected':'' }}>50</option>
                                 <option value="100" {{ request('limit')==100?'selected':'' }}>100</option>
                             </select>
+                        
                         </form>
-
-                        <!-- FILTER TOGGLE -->
-                        <button @click="open = !open"
-                            class="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-md text-sm">
-                            Filters
-                        </button>
-
                     </div>
                 </div>
                 <!-- FILTER PANEL -->
-                <div x-show="open" x-transition
-                    class="bg-white dark:bg-gray-900 border dark:border-gray-700 rounded-xl p-4 space-y-3 shadow-sm">
-            
+                <form method="GET" class="space-y-3 bg-white dark:bg-gray-900 border dark:border-gray-700 rounded-xl p-4 shadow-sm">
+
                     <div class="grid grid-cols-1 md:grid-cols-4 gap-3">
-            
-                        <input x-model="filters.phone_recharged"
+                
+                        <!-- PHONE -->
+                        <input 
+                            type="text"
+                            name="phone_recharged"
+                            value="{{ request('phone_recharged') }}"
                             placeholder="Phone number"
-                            class="border rounded-md p-2 w-full">
-            
-                        <select x-model="filters.product_plan_category_filter"
-                            class="border rounded-md p-2 w-full">
+                            class="border rounded-md p-2 w-full"
+                        >
+                
+                        <!-- CATEGORY -->
+                        <select 
+                            name="product_plan_category_filter"
+                            class="border rounded-md p-2 w-full"
+                        >
                             <option value="">Plan Category</option>
                             @foreach ($product_plan_categories as $cat)
-                                <option value="{{ $cat->id }}">{{ $cat->product_plan_category_name }}</option>
+                                <option value="{{ $cat->id }}" 
+                                    {{ request('product_plan_category_filter') == $cat->id ? 'selected' : '' }}>
+                                    {{ $cat->product_plan_category_name }}
+                                </option>
                             @endforeach
                         </select>
-            
-                        <input type="date" x-model="filters.date_from"
-                            class="border rounded-md p-2 w-full">
-            
-                        <input type="date" x-model="filters.date_to"
-                            class="border rounded-md p-2 w-full">
-            
+                
+                        <!-- DATE FROM -->
+                        <input 
+                            type="date"
+                            name="date_from"
+                            value="{{ request('date_from') }}"
+                            class="border rounded-md p-2 w-full"
+                        >
+                
+                        <!-- DATE TO -->
+                        <input 
+                            type="date"
+                            name="date_to"
+                            value="{{ request('date_to') }}"
+                            class="border rounded-md p-2 w-full"
+                        >
+                
                     </div>
-            
+                
+                    <!-- KEEP LIMIT -->
+                    <input type="hidden" name="limit" value="{{ request('limit', 10) }}">
+                
                     <!-- ACTIONS -->
                     <div class="flex justify-end gap-2 pt-2">
-            
-                        <button @click="reset()"
+                
+                        <!-- RESET -->
+                        <a href="{{ url()->current() }}"
                             class="px-3 py-1 border rounded-md text-sm hover:bg-gray-100">
                             Reset
-                        </button>
-            
-                        <button @click="fetchData(1)"
+                        </a>
+                
+                        <!-- APPLY -->
+                        <button 
+                            type="submit"
                             class="px-4 py-1 bg-emerald-600 text-white rounded-md text-sm hover:bg-emerald-700">
                             Apply Filters
                         </button>
-            
+                
                     </div>
-            
-                </div>
+                
+                </form>
             
                 <div class="bg-white dark:bg-gray-900 border rounded-xl overflow-hidden">
 
