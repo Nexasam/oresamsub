@@ -878,13 +878,13 @@ function adminTransactions() {
 
             const params = new URLSearchParams({
                 page: this.page,
+                perPage: this.perPage, // 👈 add this
                 ...this.filters
             });
 
             fetch(`/admin/transactions/admin_fetch_transactions?${params}`)
                 .then(res => res.json())
                 .then(data => {
-                    // this.rows = data.data ?? [];
                     this.rows = data.data ?? [];
                     this.page = data.current_page;
                     this.lastPage = data.last_page;
