@@ -491,20 +491,24 @@ class TransactionController extends Controller
         $msg2 = e($data->extra_info ?? 'nil');
 
         $phone_col = "
-        <div x-data='{ expanded:false }' class='text-sm cursor-pointer' @click='expanded=!expanded'>
-            <div x-show='!expanded' class='line-clamp-1'>
+        <div x-data='{ expanded:false }'
+             class='text-sm cursor-pointer break-words whitespace-normal max-w-[220px]'
+             @click='expanded=!expanded'>
+        
+            <div x-show='!expanded' class='break-words whitespace-normal line-clamp-2'>
                 {$msg}
             </div>
-
-            <div x-show='expanded'>
-                <b>{$msg}</b><br>
-                <b>{$msg2}</b>
+        
+            <div x-show='expanded' class='break-words whitespace-normal'>
+                <div class='mb-1'><b>Message:</b> {$msg}</div>
+                <div><b>Extra:</b> {$msg2}</div>
             </div>
-
-            <small class='text-emerald-600 underline'>
+        
+            <div class='text-emerald-600 text-xs underline mt-1'>
                 <span x-show='!expanded'>Show more</span>
                 <span x-show='expanded'>Show less</span>
-            </small>
+            </div>
+        
         </div>";
 
         // ================= AMOUNT =================

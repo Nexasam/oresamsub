@@ -250,7 +250,7 @@
             
                     <!-- TABLE -->
                     <div class="overflow-auto">
-                        <table class="min-w-full text-sm">
+                        <table class="w-full text-sm table-fixed">
             
                             <thead class="bg-gray-50 dark:bg-gray-800 text-gray-600 dark:text-gray-300 sticky top-0">
                                 <tr>
@@ -274,22 +274,24 @@
                                     </tr>
                                 </template>
                             
-                                <template x-for="row in rows" :key="row.id">
+                                <template x-for="(row, index) in rows" :key="row.id">
                                     <tr class="border-t">
-                                        <td x-text="row.id"></td>
-                            
-                                        <td x-html="row.user_id"></td>
-                                        <td x-html="row.wallet_category"></td>
-                                        <td x-html="row.plan_details"></td>
-                                        <td x-html="row.transaction_category"></td>
-                                        <td x-html="row.phone_number"></td>
-                                        <td x-html="row.amount"></td>
-                                        <td x-html="row.discounted_amount"></td>
-                                        <td x-html="row.balance_before"></td>
-                                        <td x-html="row.balance_after"></td>
-                                        <td x-html="row.status"></td>
-                                        <td x-text="row.created_at"></td>
-                                        <td x-html="row.action"></td>
+                                        
+                                        <!-- SERIAL NUMBER -->
+                                        <td x-text="((page - 1) * perPage) + index + 1"></td>
+                                
+                                       <td class="break-words whitespace-normal" x-html="row.user_id"></td>
+                                       <td class="break-words whitespace-normal" x-html="row.wallet_category"></td>
+                                       <td class="break-words whitespace-normal" x-html="row.plan_details"></td>
+                                       <td class="break-words whitespace-normal" x-html="row.transaction_category"></td>
+                                       <td class="break-words whitespace-normal" x-html="row.phone_number"></td>
+                                       <td class="break-words whitespace-normal" x-html="row.amount"></td>
+                                       <td class="break-words whitespace-normal" x-html="row.discounted_amount"></td>
+                                       <td class="break-words whitespace-normal" x-html="row.balance_before"></td>
+                                       <td class="break-words whitespace-normal" x-html="row.balance_after"></td>
+                                       <td class="break-words whitespace-normal" x-html="row.status"></td>
+                                       <td class="break-words whitespace-normal" x-text="row.created_at"></td>
+                                       <td class="break-words whitespace-normal" x-html="row.action"></td>
                                     </tr>
                                 </template>
                             </tbody>
@@ -857,6 +859,7 @@ function adminTransactions() {
         page: 1,
         rows: [],
         lastPage: 1,
+        perPage: 10,
 
         filters: {
             date_from: '',
