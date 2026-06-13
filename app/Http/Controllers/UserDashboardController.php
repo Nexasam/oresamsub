@@ -46,23 +46,72 @@ class UserDashboardController extends Controller
     $phone = $request->phone_recharged ?? '';
     $perPage = $request->limit ?? 10;
 
-    $transactions = Transaction::when(!empty($date_from) && !empty($date_to), function ($query) use ($date_from, $date_to) {
+    $search = $request->search;
+    $status = $request->status;
+    $product_plan = $request->product_plan;
+    $date_from = $request->date_from;
+    $date_to = $request->date_to;
+
+    $transactions = Transaction::query()
+
+        // 🔍 GLOBAL SEARCH
+        ->when($search, function ($query) use ($search) {
+            $query->where(function ($q) use ($search) {
+                $q->where('phone_number', 'like', "%$search%")
+                  ->orWhereHas('user', function ($q2) use ($search) {
+                      $q2->where('username', 'like', "%$search%")
+                        ->orWhere('first_name', 'like', "%$search%")
+                        ->orWhere('last_name', 'like', "%$search%");
+                  });
+            });
+        })
+
+        // ✅ STATUS FILTER
+        ->when($status !== null && $status !== '', function ($query) use ($status) {
+            $query->where('status', $status);
+        })
+
+        // 📦 PRODUCT PLAN NAME
+        ->when($product_plan, function ($query) use ($product_plan) {
+            $query->whereHas('product_plan', function ($q) use ($product_plan) {
+                $q->where('name', 'like', "%$product_plan%");
+            });
+        })
+
+        // 📅 DATE FILTER
+        ->when($date_from && $date_to, function ($query) use ($date_from, $date_to) {
             $date_to = date('Y-m-d', strtotime('+1 day', strtotime($date_to)));
             $query->whereBetween('created_at', [$date_from, $date_to]);
         })
-        ->when(!empty($product_plan_category_filter), function ($query) use ($product_plan_category_filter) {
-            $product_plan_ids = ProductPlan::where('product_plan_category_id', $product_plan_category_filter)
-                ->pluck('id');
-            $query->whereIn('product_plan_id', $product_plan_ids);
-        })
-        ->when(!empty($phone), function ($query) use ($phone) {
-            $query->where('phone_number', $phone);
-        })
+
         ->where('wallet_category', '!=', 'data_wallet')
-        ->with(['user', 'product_plan.product_plan_category', 'product_plan.automation'])
+
+        ->with(['user', 'product_plan'])
+
         ->latest()
         ->paginate($perPage)
         ->withQueryString();
+
+    // $transactions = Transaction::when(!empty($date_from) && !empty($date_to), function ($query) use ($date_from, $date_to) {
+    //         $date_to = date('Y-m-d', strtotime('+1 day', strtotime($date_to)));
+    //         $query->whereBetween('created_at', [$date_from, $date_to]);
+    //     })
+    //     ->when(!empty($product_plan_category_filter), function ($query) use ($product_plan_category_filter) {
+    //         $product_plan_ids = ProductPlan::where('product_plan_category_id', $product_plan_category_filter)
+    //             ->pluck('id');
+    //         $query->whereIn('product_plan_id', $product_plan_ids);
+    //     })
+    //     ->when(!empty($phone), function ($query) use ($phone) {
+    //         $query->where('phone_number', $phone);
+    //     })
+    //     ->where('wallet_category', '!=', 'data_wallet')
+    //     ->with(['user', 'product_plan.product_plan_category', 'product_plan.automation'])
+    //     ->latest()
+    //     ->paginate($perPage)
+    //     ->withQueryString();
+
+
+
 
 
     $data['transactions'] = $transactions;

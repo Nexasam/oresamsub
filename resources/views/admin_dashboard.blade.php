@@ -187,6 +187,13 @@
                         <form method="GET">
 
                             <!-- KEEP FILTERS -->
+
+                            <input type="hidden" name="search" value="{{ request('search') }}">
+                            <input type="hidden" name="status" value="{{ request('status') }}">
+                            <input type="hidden" name="product_plan" value="{{ request('product_plan') }}">
+                            <input type="hidden" name="date_from" value="{{ request('date_from') }}">
+                            <input type="hidden" name="date_to" value="{{ request('date_to') }}">
+
                             <input type="hidden" name="phone_recharged" value="{{ request('phone_recharged') }}">
                             <input type="hidden" name="product_plan_category_filter" value="{{ request('product_plan_category_filter') }}">
                             <input type="hidden" name="date_from" value="{{ request('date_from') }}">
@@ -205,7 +212,7 @@
                     </div>
                 </div>
                 <!-- FILTER PANEL -->
-                <form method="GET" class="space-y-3 bg-white dark:bg-gray-900 border dark:border-gray-700 rounded-xl p-4 shadow-sm">
+                {{-- <form method="GET" class="space-y-3 bg-white dark:bg-gray-900 border dark:border-gray-700 rounded-xl p-4 shadow-sm">
 
                     <div class="grid grid-cols-1 md:grid-cols-4 gap-3">
                 
@@ -271,7 +278,76 @@
                 
                     </div>
                 
+                </form> --}}
+
+                <form method="GET" class="space-y-3 bg-white dark:bg-gray-900 border dark:border-gray-700 rounded-xl p-4 shadow-sm">
+
+                    <div class="grid grid-cols-1 md:grid-cols-5 gap-3">
+                
+                        <!-- SEARCH (GLOBAL) -->
+                        <input 
+                            type="text"
+                            name="search"
+                            value="{{ request('search') }}"
+                            placeholder="Phone / Username / Name..."
+                            class="border rounded-md p-2 w-full"
+                        >
+                
+                        <!-- STATUS -->
+                        <select name="status" class="border rounded-md p-2 w-full">
+                            <option value="">All Status</option>
+                            <option value="1" {{ request('status')==='1' ? 'selected' : '' }}>Success</option>
+                            <option value="0" {{ request('status')==='0' ? 'selected' : '' }}>Pending</option>
+                            <option value="-1" {{ request('status')==='-1' ? 'selected' : '' }}>Failed</option>
+                            <option value="2" {{ request('status')==='2' ? 'selected' : '' }}>Refunded</option>
+                        </select>
+                
+                        <!-- PRODUCT PLAN -->
+                        <input 
+                            type="text"
+                            name="product_plan"
+                            value="{{ request('product_plan') }}"
+                            placeholder="Product plan name"
+                            class="border rounded-md p-2 w-full"
+                        >
+                
+                        <!-- DATE FROM -->
+                        <input 
+                            type="date"
+                            name="date_from"
+                            value="{{ request('date_from') }}"
+                            class="border rounded-md p-2 w-full"
+                        >
+                
+                        <!-- DATE TO -->
+                        <input 
+                            type="date"
+                            name="date_to"
+                            value="{{ request('date_to') }}"
+                            class="border rounded-md p-2 w-full"
+                        >
+                
+                    </div>
+                
+                    <!-- KEEP LIMIT -->
+                    <input type="hidden" name="limit" value="{{ request('limit', 10) }}">
+                
+                    <!-- ACTIONS -->
+                    <div class="flex justify-end gap-2 pt-2">
+                
+                        <a href="{{ url()->current() }}"
+                            class="px-3 py-1 border rounded-md text-sm hover:bg-gray-100">
+                            Reset
+                        </a>
+                
+                        <button 
+                            type="submit"
+                            class="px-4 py-1 bg-emerald-600 text-white rounded-md text-sm hover:bg-emerald-700">
+                            Apply Filters
+                        </button>
+                    </div>
                 </form>
+
             
                 <div class="bg-white dark:bg-gray-900 border rounded-xl overflow-hidden">
 
