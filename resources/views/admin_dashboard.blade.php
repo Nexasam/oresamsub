@@ -169,8 +169,9 @@
             <div x-data="adminTransactions()" x-init="init()" class="space-y-4">
             
                 <!-- HEADER -->
+              <!-- HEADER ABOVE TABLE -->
                 <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
-            
+
                     <div>
                         <h2 class="text-lg font-semibold text-gray-800 dark:text-white">
                             Recent Transactions
@@ -179,13 +180,28 @@
                             Filter and manage transaction history
                         </p>
                     </div>
-            
-                    <button @click="open = !open"
-                        class="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-md text-sm transition">
-                        Filters
-                    </button>
+
+                    <!-- RIGHT SIDE CONTROLS -->
+                    <div class="flex items-center gap-2">
+
+                        <!-- LIMIT SELECT (BEST PLACE) -->
+                        <select x-model="filters.limit"
+                                @change="fetchData(1)"
+                                class="border p-2 rounded-md text-sm">
+                            <option value="10">10 / page</option>
+                            <option value="20">20 / page</option>
+                            <option value="50">50 / page</option>
+                            <option value="100">100 / page</option>
+                        </select>
+
+                        <!-- FILTER TOGGLE -->
+                        <button @click="open = !open"
+                            class="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-md text-sm">
+                            Filters
+                        </button>
+
+                    </div>
                 </div>
-            
                 <!-- FILTER PANEL -->
                 <div x-show="open" x-transition
                     class="bg-white dark:bg-gray-900 border dark:border-gray-700 rounded-xl p-4 space-y-3 shadow-sm">
@@ -1008,6 +1024,7 @@ function adminTransactions() {
 
         page: 1,
         rows: [],
+        lastPage: 1,
 
         filters: {
             date_from: '',
@@ -1032,7 +1049,10 @@ function adminTransactions() {
             fetch(`/admin/transactions/admin_fetch_transactions?${params}`)
                 .then(res => res.json())
                 .then(data => {
+                    // this.rows = data.data ?? [];
                     this.rows = data.data ?? [];
+                    this.page = data.current_page;
+                    this.lastPage = data.last_page;
                     this.loading = false;
                 })
                 .catch(() => {
@@ -1041,11 +1061,15 @@ function adminTransactions() {
         },
 
         nextPage() {
-            this.fetchData(this.page + 1);
+    if (this.page < this.lastPage) {
+        this.fetchData(this.page + 1);
+            }
         },
 
         prevPage() {
-            if (this.page > 1) this.fetchData(this.page - 1);
+            if (this.page > 1) {
+                this.fetchData(this.page - 1);
+            }
         },
 
         reset() {

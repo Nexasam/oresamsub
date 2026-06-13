@@ -394,6 +394,8 @@ class TransactionController extends Controller
         $phone = $request->phone_recharged ?? '';
     
         $limit = $request->limit ?? 10;
+        $perPage = $request->limit ?? 10;
+
 
         
         $data = Transaction::when(!empty($date_from) && !empty($date_to) , function ($query) use ($date_from,$date_to){
@@ -406,8 +408,9 @@ class TransactionController extends Controller
           $query->where('phone_number',$phone);
         })
         ->where('wallet_category','!=','data_wallet')
-        ->with(['user','product_plan.automation'])->latest()->limit($limit)
-        ->get();
+        ->with(['user','product_plan.automation'])->latest()
+        // ->limit($limit)
+        ->paginate($perPage);
 
         // $data = Transaction::when(!empty($date_from) && !empty($date_to), function ($query) use ($date_from, $date_to) {
         //     $date_to = date('Y-m-d', strtotime('+1 day', strtotime($date_to)));
