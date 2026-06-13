@@ -259,13 +259,15 @@
                                     <th class="p-3 text-left">Category</th>
                                     <th class="p-3 text-left">Phone</th>
                                     <th class="p-3 text-left">Amount</th>
+                                    <th class="p-3 text-left">Before</th>
+                                    <th class="p-3 text-left">After</th>
                                     <th class="p-3 text-left">Status</th>
                                     <th class="p-3 text-left">Date</th>
                                 </tr>
                             </thead>
                 
                             <tbody>
-                                @foreach ($transactions as $data)
+                                @foreach ($transactions as $key=>$data)
                                 
                                     @php
                                         $user = $data->user;
@@ -283,7 +285,9 @@
                                     @endphp
                                 
                                     <tr class="border-t">
-                                
+                                        <td class="p-2">
+                                            {{ $key + 1 }}
+                                        </td>
                                         {{-- USER --}}
                                         <td class="p-2">
                                             <div>
