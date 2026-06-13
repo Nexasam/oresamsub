@@ -249,7 +249,12 @@
                 <div class="bg-white dark:bg-gray-900 border dark:border-gray-700 rounded-xl overflow-hidden">
             
                     <!-- TABLE -->
-                    <div class="overflow-auto">
+                    {{-- <div class="overflow-auto"> --}}
+                    <div
+                        id="scrollContainer"
+                        @scroll="handleScroll"
+                        class="overflow-auto border rounded max-h-[600px]"
+                    >
                         <table class="w-full text-sm table-fixed">
             
                             <thead class="bg-gray-50 dark:bg-gray-800 text-gray-600 dark:text-gray-300 sticky top-0">
@@ -274,8 +279,12 @@
                                     </tr>
                                 </template>
                             
+                                {{-- <template x-for="(row, index) in rows" :key="row.id"> --}}
                                 <template x-for="(row, index) in rows" :key="row.id">
-                                    <tr class="border-t">
+                                    <tr class="border-t"
+                                        :data-last="index === rows.length - 1 ? 'true' : null"
+                                        x-init="if(index === rows.length - 1) scrollObserver.observe($el)">
+                                    {{-- <tr class="border-t"> --}}
                                         
                                         <!-- SERIAL NUMBER -->
                                         <td x-text="((page - 1) * perPage) + index + 1"></td>
@@ -298,9 +307,17 @@
 
                         </table>
                     </div>
+
+                    <div class="text-center py-3 text-sm text-gray-500" x-show="loading">
+                        Loading more transactions...
+                    </div>
+                    
+                    <div class="text-center py-3 text-xs text-gray-400" x-show="page >= lastPage">
+                        No more transactions
+                    </div>
             
                     <!-- PAGINATION -->
-                    <div class="flex justify-between items-center mt-3">
+                    {{-- <div class="flex justify-between items-center mt-3">
                         <button @click="prevPage()"
                                 class="px-3 py-1 border rounded"
                                 :disabled="page <= 1">
@@ -317,7 +334,7 @@
                                 :disabled="page >= lastPage">
                             Next
                         </button>
-                    </div>
+                    </div> --}}
             
                 </div>
             
@@ -855,6 +872,7 @@ function adminTransactions() {
     return {
         open: true,   // 👈 filters visible by default (your request)
         loading: false,
+        scrollObserver: null,
 
         page: 1,
         rows: [],
@@ -870,24 +888,72 @@ function adminTransactions() {
 
         init() {
             this.fetchData(1);
+            this.setupInfiniteScroll();
         },
 
-        fetchData(page = 1) {
+        setupInfiniteScroll() {
+            this.scrollObserver = new IntersectionObserver((entries) => {
+                const lastRow = entries[0];
+
+                if (lastRow.isIntersecting && !this.loading && this.page < this.lastPage) {
+                    this.fetchMore();
+                }
+            }, {
+                root: null,
+                threshold: 1.0
+            });
+        },
+
+        fetchMore() {
+            if (this.loading || this.page >= this.lastPage) return;
+
             this.loading = true;
-            this.page = page;
+
+            const nextPage = this.page + 1;
 
             const params = new URLSearchParams({
-                page: this.page,
-                perPage: this.perPage, // 👈 add this
+                page: nextPage,
+                perPage: this.perPage,
                 ...this.filters
             });
 
             fetch(`/admin/transactions/admin_fetch_transactions?${params}`)
                 .then(res => res.json())
                 .then(data => {
+
+                    // append instead of replace 👇
+                    this.rows = [...this.rows, ...(data.data ?? [])];
+
+                    this.page = data.current_page;
+                    this.lastPage = data.last_page;
+
+                    this.loading = false;
+                })
+                .catch(() => {
+                    this.loading = false;
+                });
+        },
+
+        fetchData(page = 1) {
+            this.loading = true;
+
+            const params = new URLSearchParams({
+                page: page,
+                perPage: this.perPage,
+                ...this.filters
+            });
+
+            fetch(`/admin/transactions/admin_fetch_transactions?${params}`)
+                .then(res => res.json())
+                .then(data => {
+
                     this.rows = data.data ?? [];
                     this.page = data.current_page;
                     this.lastPage = data.last_page;
+
+                    // keep perPage synced with backend (optional safety)
+                    this.perPage = data.per_page ?? this.perPage;
+
                     this.loading = false;
                 })
                 .catch(() => {
@@ -896,12 +962,14 @@ function adminTransactions() {
         },
 
         nextPage() {
-    if (this.page < this.lastPage) {
-        this.fetchData(this.page + 1);
+            if (this.loading) return;
+            if (this.page < this.lastPage) {
+                this.fetchData(this.page + 1);
             }
         },
 
         prevPage() {
+            if (this.loading) return;
             if (this.page > 1) {
                 this.fetchData(this.page - 1);
             }
