@@ -166,7 +166,7 @@
 
         <div class="col-span-12 xxl:col-span-12">
 
-            <div x-data="adminTransactions()" x-init="init()" class="space-y-4">
+            <div  x-init="init()" class="space-y-4">
             
                 <!-- HEADER -->
               <!-- HEADER ABOVE TABLE -->
@@ -942,124 +942,5 @@ function walletBalance() {
     }
 }
 
-function adminTransactions() {
-    return {
-        open: true,   // 👈 filters visible by default (your request)
-        loading: false,
-        scrollObserver: null,
-
-        page: 1,
-        rows: [],
-        lastPage: 1,
-        perPage: 10,
-
-        filters: {
-            date_from: '',
-            date_to: '',
-            product_plan_category_filter: '',
-            phone_recharged: ''
-        },
-
-        init() {
-            this.fetchData(1);
-            this.setupInfiniteScroll();
-        },
-
-        setupInfiniteScroll() {
-            this.scrollObserver = new IntersectionObserver((entries) => {
-                const lastRow = entries[0];
-
-                if (lastRow.isIntersecting && !this.loading && this.page < this.lastPage) {
-                    this.fetchMore();
-                }
-            }, {
-                root: null,
-                threshold: 1.0
-            });
-        },
-
-        fetchMore() {
-            if (this.loading || this.page >= this.lastPage) return;
-
-            this.loading = true;
-
-            const nextPage = this.page + 1;
-
-            const params = new URLSearchParams({
-                page: nextPage,
-                perPage: this.perPage,
-                ...this.filters
-            });
-
-            fetch(`/admin/transactions/admin_fetch_transactions?${params}`)
-                .then(res => res.json())
-                .then(data => {
-
-                    // append instead of replace 👇
-                    this.rows = [...this.rows, ...(data.data ?? [])];
-
-                    this.page = data.current_page;
-                    this.lastPage = data.last_page;
-
-                    this.loading = false;
-                })
-                .catch(() => {
-                    this.loading = false;
-                });
-        },
-
-        fetchData(page = 1) {
-            this.loading = true;
-
-            const params = new URLSearchParams({
-                page: page,
-                perPage: this.perPage,
-                ...this.filters
-            });
-
-            fetch(`/admin/transactions/admin_fetch_transactions?${params}`)
-                .then(res => res.json())
-                .then(data => {
-
-                    this.rows = data.data ?? [];
-                    this.page = data.current_page;
-                    this.lastPage = data.last_page;
-
-                    // keep perPage synced with backend (optional safety)
-                    this.perPage = data.per_page ?? this.perPage;
-
-                    this.loading = false;
-                })
-                .catch(() => {
-                    this.loading = false;
-                });
-        },
-
-        nextPage() {
-            if (this.loading) return;
-            if (this.page < this.lastPage) {
-                this.fetchData(this.page + 1);
-            }
-        },
-
-        prevPage() {
-            if (this.loading) return;
-            if (this.page > 1) {
-                this.fetchData(this.page - 1);
-            }
-        },
-
-        reset() {
-            this.filters = {
-                date_from: '',
-                date_to: '',
-                product_plan_category_filter: '',
-                phone_recharged: ''
-            };
-
-            this.fetchData(1);
-        }
-    }
-}
 </script>
 @endpush
