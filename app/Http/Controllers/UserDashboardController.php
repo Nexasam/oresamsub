@@ -74,7 +74,7 @@ class UserDashboardController extends Controller
         // 📦 PRODUCT PLAN NAME
         ->when($product_plan, function ($query) use ($product_plan) {
             $query->whereHas('product_plan', function ($q) use ($product_plan) {
-                $q->where('name', 'like', "%$product_plan%");
+                $q->where('product_plan_name', 'like', "%$product_plan%");
             });
         })
 
