@@ -541,7 +541,7 @@ class TransactionController extends Controller
             'balance_before' => $balance_before,
             'balance_after' => $balance_after,
             'status' => $status,
-            'created_at' => $data->created_at->format('Y-m-d H:i:s'),
+            'created_at' => $data->created_at,
             'action' => '<a href="'.route('transactions.transaction_details', $data->id).'" class="px-2 py-1 bg-blue-600 text-white rounded">Details</a>',
         ];
     });
