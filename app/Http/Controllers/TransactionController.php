@@ -396,18 +396,35 @@ class TransactionController extends Controller
         $limit = $request->limit ?? 400;
 
         
-        $data = Transaction::when(!empty($date_from) && !empty($date_to) , function ($query) use ($date_from,$date_to){
+        // $data = Transaction::when(!empty($date_from) && !empty($date_to) , function ($query) use ($date_from,$date_to){
+        //     $date_to = date('Y-m-d', strtotime('+1 day', strtotime($date_to)));
+        //     $query->where('created_at','>=',$date_from)->where('created_at','<=',$date_to);
+        // })->when(!empty($product_plan_category_filter) , function ($query) use ($product_plan_category_filter){
+        //     $product_plan_ids = ProductPlan::where('product_plan_category_id',$product_plan_category_filter)->pluck('id');
+        //     $query->whereIn('product_plan_id',$product_plan_ids);
+        // })->when(!empty($phone) , function ($query) use ($phone){
+        //   $query->where('phone_number',$phone);
+        // })
+        // ->where('wallet_category','!=','data_wallet')
+        // ->with(['user','product_plan.automation'])->latest()->limit($limit)
+        // ->get();
+
+        $data = Transaction::when(!empty($date_from) && !empty($date_to), function ($query) use ($date_from, $date_to) {
             $date_to = date('Y-m-d', strtotime('+1 day', strtotime($date_to)));
-            $query->where('created_at','>=',$date_from)->where('created_at','<=',$date_to);
-        })->when(!empty($product_plan_category_filter) , function ($query) use ($product_plan_category_filter){
-            $product_plan_ids = ProductPlan::where('product_plan_category_id',$product_plan_category_filter)->pluck('id');
-            $query->whereIn('product_plan_id',$product_plan_ids);
-        })->when(!empty($phone) , function ($query) use ($phone){
-          $query->where('phone_number',$phone);
+            $query->where('created_at', '>=', $date_from)
+                  ->where('created_at', '<=', $date_to);
         })
-        ->where('wallet_category','!=','data_wallet')
-        ->with(['user','product_plan.automation'])->latest()->limit($limit)
-        ->get();
+        ->when(!empty($product_plan_category_filter), function ($query) use ($product_plan_category_filter) {
+            $product_plan_ids = ProductPlan::where('product_plan_category_id', $product_plan_category_filter)
+                ->pluck('id');
+            $query->whereIn('product_plan_id', $product_plan_ids);
+        })
+        ->when(!empty($phone), function ($query) use ($phone) {
+            $query->where('phone_number', $phone);
+        })
+        ->where('wallet_category', '!=', 'data_wallet')
+        ->with(['user', 'product_plan.automation'])
+        ->latest();
 
 
         return DataTables::of($data)

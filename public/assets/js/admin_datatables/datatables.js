@@ -300,10 +300,11 @@ $(document).ready(function(){
       $('#admin_transactions_table').DataTable({
                 autoWidth: false,
                 processing: true,
+                serverSide: true,   // 👈 THIS IS THE FIX
                 searching: true,
                 bInfo: false,
                 bLengthChange: true,
-                pageLength: 10,
+                pageLength: 20,
                 ajax: root_url + 'admin/transactions/admin_fetch_transactions?date_from='+date_from+'&&date_to='+date_to+'&&product_plan_category_filter='+product_plan_category_filter+'&&phone_recharged='+phone_recharged,
                 // ajax:  "{{ route('admin.users.fetch_users',"+data+") }}",
                 columns: [

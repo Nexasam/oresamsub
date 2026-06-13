@@ -960,6 +960,7 @@ function adminTransactions() {
     return {
         open: false,
         loading: false,
+    
 
         page: 1,
         rows: [],
