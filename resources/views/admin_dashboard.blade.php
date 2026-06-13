@@ -369,8 +369,10 @@
                                 
                                         {{-- PHONE / MESSAGE --}}
                                         <td class="p-2">
+                                            {{ $data->phone_number }}
                                             <details>
                                                 <summary>View</summary>
+
                                                 <div>
                                                     <b>Message:</b> {{ $data->admin_screen_message }} <br>
                                                     <b>Extra:</b> {{ $data->extra_info }}
