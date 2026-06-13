@@ -20,6 +20,7 @@ export default function Dashboard({ transactions: initialTransactions }) {
   const transactions = initialTransactions ?? props.transactions ?? [];
 
   const [openTransactionId, setOpenTransactionId] = useState(null);
+  const [selectedTx, setSelectedTx] = useState(null);
   const [loggingOut, setLoggingOut] = useState(false);
 
   const [availableState, setAvailableState] = useState(available);
@@ -165,42 +166,138 @@ export default function Dashboard({ transactions: initialTransactions }) {
       {/* Community */}
       <CommunityCard customerCategory={user.customer_category} />
 
-      {/* Transactions */}
-      <div className="bg-white dark:bg-gray-800 mt-6 rounded-xl shadow overflow-hidden">
-        {/* <div className="p-4 font-semibold border-b"> */}
-        <div className="text-lg font-semibold mt-1 text-[11px] text-gray-600 dark:text-gray-200">
-          Recent Transactions
-        </div>
+      {/* Recent Transactions */}
+      {/* Recent Transactions */}
+    <div className="bg-white dark:bg-gray-800 mt-6 rounded-xl shadow overflow-hidden">
 
-        <div className="max-h-[400px] overflow-y-auto divide-y text-sm">
-          {transactions.map((tx) => {
-            const status = getStatus(tx.status);
-            const time = new Date(tx.created_at).toLocaleString();
+    <div className="p-4 border-b border-gray-200 dark:border-gray-700 font-semibold text-gray-700 dark:text-white">
+      Recent Transactions
+    </div>
 
-            return (
-              <div key={tx.id} onClick={() => setOpenTransactionId(tx.id)}
-                className="px-4 py-3 flex justify-between cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-900">
+    <div className="max-h-[400px] overflow-y-auto divide-y divide-gray-200 dark:divide-gray-700 text-sm">
+      {transactions.length > 0 ? (
+        transactions.map((tx) => {
+          const status = getStatus(tx.status);
 
-                <div>
-                  <div className="font-semibold text-xs">
-                    {tx.transaction_category?.toUpperCase()}
-                  </div>
-                  <div className="text-xs text-gray-500">{time}</div>
+          return (
+            <div
+              key={tx.id}
+              onClick={() => setSelectedTx(tx)}
+              className="px-4 py-3 flex justify-between cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-900 transition"
+            >
+              <div>
+                <div className="font-semibold text-xs text-gray-800 dark:text-gray-200">
+                  {tx.transaction_category?.toUpperCase()}
                 </div>
-
-                <div className="text-right">
-                  <div className={`font-bold ${status.color}`}>
-                    ₦{Number(tx.amount).toFixed(2)}
-                  </div>
-                  <div className={`text-xs ${status.color2}`}>
-                    {status.text}
-                  </div>
+                <div className="text-xs text-gray-500 dark:text-gray-400">
+                  {new Date(tx.created_at).toLocaleString("en-NG")}
                 </div>
               </div>
-            );
-          })}
+
+              <div className="text-right">
+                <div className={`font-bold ${status.color}`}>
+                  ₦{Number(tx.amount).toLocaleString("en-NG")}
+                </div>
+                <div className={`text-xs ${status.color2}`}>
+                  {status.text}
+                </div>
+              </div>
+            </div>
+          );
+        })
+      ) : (
+        <p className="p-4 text-center text-gray-500 text-sm">
+          No transactions yet
+        </p>
+      )}
+    </div>
+    </div>
+
+
+    {/* Transaction Modal */}
+      {selectedTx && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg max-w-sm w-full p-6">
+
+            <h2 className="text-lg font-bold text-gray-800 dark:text-gray-100 mb-4">
+              Transaction Details
+            </h2>
+
+            <div className="space-y-2 text-sm text-gray-700 dark:text-gray-300">
+
+              {selectedTx.status === 2 && selectedTx.refund_reason && (
+                <div className="flex justify-between">
+                  <span>Refund reason:</span>
+                  <span className="font-semibold">{selectedTx.refund_reason}</span>
+                </div>
+              )}
+
+              <div className="flex justify-between">
+                <span>Plan:</span>
+                <span className="font-semibold">
+                  {selectedTx.product_plan?.product_plan_name ?? "nil"}
+                </span>
+              </div>
+
+              <div className="flex justify-between mb-2">
+                <span>Phone:</span>
+                <span className="font-semibold">{selectedTx.phone_number}</span>
+              </div>
+
+
+           
+
+              <div className="flex justify-between">
+                <span>Amount:</span>
+                <span className="font-semibold">
+                  ₦{Number(selectedTx.amount).toLocaleString("en-NG")}
+                </span>
+              </div>
+
+              {Number(selectedTx.service_charge) !== 0 && (
+                <div className="flex justify-between mb-2">
+                  <span>Service Charge:</span>
+                  <span className="font-semibold">
+                    {selectedTx.service_charge}
+                  </span>
+                </div>
+              )}
+
+              <div className="flex justify-between">
+                <span>Status:</span>
+                <span className={getStatus(selectedTx.status).color2}>
+                  {getStatus(selectedTx.status).text}
+                </span>
+              </div>
+
+              <div className="flex justify-between">
+                <span>Date:</span>
+                <span>
+                  {new Date(selectedTx.created_at).toLocaleString("en-NG")}
+                </span>
+              </div>
+
+           
+
+            </div>
+
+            <div className="my-2 text-sm text-gray-700 dark:text-gray-300">
+                <span>Message:</span> <br />
+                <span className="font-semibold">{selectedTx.user_screen_message}</span>
+              </div>
+
+            <div className="mt-6 text-center">
+              <button
+                onClick={() => setSelectedTx(null)}
+                className="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-md text-sm"
+              >
+                Close
+              </button>
+            </div>
+
+          </div>
         </div>
-      </div>
+      )}
 
     </DashboardLayout>
   );

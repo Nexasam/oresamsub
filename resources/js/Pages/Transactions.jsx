@@ -114,17 +114,28 @@ export default function Transactions() {
                 <span className="font-semibold">{selectedTx.phone_number}</span>
               </div>
               <div className="flex justify-between">
-                <span>Discounted Amount:</span>
+                <span>Amount:</span>
                 <span className="font-semibold">
                   ₦{Number(selectedTx.discounted_amount ?? selectedTx.amount).toLocaleString("en-NG")}
                 </span>
               </div>
-              <div className="flex justify-between">
+              {/* <div className="flex justify-between">
                 <span>Amount:</span>
                 <span className="font-semibold">
                   ₦{Number(selectedTx.amount).toLocaleString("en-NG")}
                 </span>
-              </div>
+              </div> */}
+
+
+              {Number(selectedTx.service_charge) !== 0 && (
+                <div className="flex justify-between mb-2">
+                  <span>Service Charge:</span>
+                  <span className="font-semibold">
+                    {selectedTx.service_charge}
+                  </span>
+                </div>
+              )}
+
               <div className="flex justify-between">
                 <span>Status:</span>
                 <span className={getStatus(Number(selectedTx.status)).color2}>
@@ -147,6 +158,11 @@ export default function Transactions() {
                 <span>{selectedTx.transaction_category?.toUpperCase()}</span>
               </div>
             </div>
+
+            <div className="my-2 text-sm text-gray-700 dark:text-gray-300">
+                <span>Message:</span> <br />
+                <span className="font-semibold">{selectedTx.user_screen_message}</span>
+              </div>
 
             <div className="mt-6 text-center">
               <button

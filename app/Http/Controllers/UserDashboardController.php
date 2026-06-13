@@ -98,11 +98,14 @@ class UserDashboardController extends Controller
         $data['announcements'] = Announcement::where('status',1)->latest()->get();
         // return $data;
         // logger('thiss ran for inertia dashboard'.json_encode($data));
+      
 
-     
+          // dd($data);
         return Inertia::render('Dashboard')->with($data);
         // return view('oresamsub.pages.dashboard')->with($data);
     }
+
+    
 
   
     $hot_sales = ProductPlanCategory::with('product')->where('is_hot_sales',1)->get();
