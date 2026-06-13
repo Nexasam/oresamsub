@@ -56,6 +56,21 @@
                         @endif
         
                     </div>
+
+
+                    @if (config('app.name') == 'OresamSub')
+                    <div class="grid">
+                        @if (auth()->user()->verification_status != 1)
+                        <b><a class="underline" href="{{route('user.verification.index')}}">{{__('messages.Verify your Account with better opportunities')}} </a></b>                               
+                        @endif
+                        <form action="{{ route('user.virtual_accounts.generate') }}" method="POST">
+                            @csrf
+                            <div class="mb-4">
+                                <button type="submit" class="ti-btn ti-btn-primary w-full">{{__('messages.Generate More Virtual Accounts')}}</button>
+                            </div>
+                            </form>
+                            </div>
+                    @endif
         
                 </div>
             </div>
