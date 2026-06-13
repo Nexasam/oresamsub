@@ -262,10 +262,6 @@
         </div>
 
         <div class="col-span-12 xxl:col-span-12">
-
-        
-        
-
             <div class="box">
                 <div class="box-header">
                     <div class="sm:flex">
@@ -370,7 +366,7 @@
                         <div class="overflow-auto">
                             
     
-                            <table  id="admin_transactions_table" class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">    
+                            <table  id="admin_transactions_tableooold" class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">    
                                 <thead class="bg-gray-50 dark:bg-black/20">
                                 <tr>
                                     
