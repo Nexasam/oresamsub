@@ -71,6 +71,21 @@
                             </form>
                             </div>
                     @endif
+
+                    @if (config('app.name') == 'OresamSub')
+                    <div class="grid">
+                        @if (auth()->user()->verification_status != 1)
+                        <b><a class="underline" href="{{route('user.verification.index')}}">{{__('messages.Verify your Account with better opportunities')}} </a></b>                               
+                        @endif
+                        <form action="{{ route('user.virtual_accounts.generate') }}" method="POST">
+                            @csrf
+                            <div class="mb-4">
+                                <button type="submit" class="ti-btn ti-btn-primary w-full">{{__('messages.Generate More Virtual Accounts')}}</button>
+                                </div>
+                            </form>
+                            </div>
+                    @endif
+
         
                 </div>
             </div>
@@ -152,24 +167,6 @@
             class="max-w-sm w-full p-2 mt-2 rounded-2xl shadow-lg bg-white border border-2 border-gray-700  text-white relative space-y-4"
            >
 
-
-                @if (config('app.name') == 'OresamSub')
-                    <div class="grid">
-                        @if (auth()->user()->verification_status != 1)
-                        <b><a class="underline" href="{{route('user.verification.index')}}">{{__('messages.Verify your Account with better opportunities')}} </a></b>                               
-                        @endif
-                        <form action="{{ route('user.virtual_accounts.generate') }}" method="POST">
-                            @csrf
-                            <div class="mb-4">
-                                <button type="submit" class="ti-btn ti-btn-primary w-full">{{__('messages.Generate More Virtual Accounts')}}</button>
-                            </div>
-                        </form>
-                        </div>
-                @endif
-
-              
-              
-
            </div>
         </div>
         <div class="col-span-12 xxxl:col-span-2 md:col-span-4">
@@ -193,7 +190,7 @@
                                 <span
                                     class="text-gray-800 font-semibold text-xl leading-none align-bottom dark:text-gray-900">
                                     {{-- {{ number_format( count($users))  }} --}}
-                                    {{ number_format( count($users ?? 0))  }}
+                                    {{ number_format( count($users))  }}
                                 </span>
                             </div>
                             {{-- <div>
