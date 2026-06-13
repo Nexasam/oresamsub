@@ -281,7 +281,7 @@
                             
                                 {{-- <template x-for="(row, index) in rows" :key="row.id"> --}}
                                 <template x-for="(row, index) in rows" :key="row.id">
-                                    <tr class="border-t"
+                                    <tr class="border-t px-4"
                                         :data-last="index === rows.length - 1 ? 'true' : null"
                                         x-init="if(index === rows.length - 1) scrollObserver.observe($el)">
                                     {{-- <tr class="border-t"> --}}
