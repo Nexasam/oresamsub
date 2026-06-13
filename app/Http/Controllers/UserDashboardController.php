@@ -66,7 +66,7 @@ class UserDashboardController extends Controller
 
 
     $data['transactions'] = $transactions;
-    dd($transactions);
+    // dd($transactions);
     $data['perPage'] = $perPage;
 
    
