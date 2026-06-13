@@ -417,6 +417,12 @@
                                                 @case(2) <span class="text-blue-600">Refunded</span> @break
                                                 @default <span>Unknown</span>
                                             @endswitch
+                                            
+                                            <br />
+
+                                            @if($data->set_for_manual == 1)
+                                                $status_display .= '<span class="font-bold text-red-500">URGENT</span>';    
+                                            @endif
                                         </td>
                                 
                                         {{-- DATE --}}
