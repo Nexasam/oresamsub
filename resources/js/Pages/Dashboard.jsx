@@ -470,7 +470,7 @@ export default function Dashboard({ transactions: initialTransactions }) {
                   setPhone("");
                   setPin("");
 
-                window.location.reload(); // 🔥 refresh everything
+               
 
                 // 🔥 ALWAYS update transaction list (SUCCESS OR FAILURE)
                 // if (data?.transaction) {
@@ -499,6 +499,7 @@ export default function Dashboard({ transactions: initialTransactions }) {
               
               } finally {
                 setBuying(false);
+                window.location.reload();
               }
 
             }}
