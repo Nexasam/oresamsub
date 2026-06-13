@@ -262,6 +262,7 @@
         </div>
 
         <div class="col-span-12 xxl:col-span-12">
+
             <div class="box">
                 <div class="box-header">
                     <div class="sm:flex">
