@@ -255,7 +255,7 @@
                         @scroll="handleScroll"
                         class="overflow-auto border rounded max-h-[600px]"
                     >
-                        <table class="w-full text-sm table-fixed">
+                        <table class="w-full text-sm table-fixed px-3">
             
                             <thead class="bg-gray-50 dark:bg-gray-800 text-gray-600 dark:text-gray-300 sticky top-0">
                                 <tr>
