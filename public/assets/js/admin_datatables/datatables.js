@@ -300,7 +300,7 @@ $(document).ready(function(){
       $('#admin_transactions_table').DataTable({
                 autoWidth: false,
                 processing: true,
-                serverSide: true,   // 👈 THIS IS THE FIX
+                // serverSide: true,   // 👈 THIS IS THE FIX
                 searching: true,
                 bInfo: false,
                 bLengthChange: true,
