@@ -282,9 +282,14 @@ export default function Dashboard({ transactions: initialTransactions }) {
             </div>
 
             <div className="my-2 text-sm text-gray-700 dark:text-gray-300">
-                <span>Message:</span> <br />
-                <span className="font-semibold">{selectedTx.user_screen_message}</span>
-              </div>
+              <span>Message:</span> <br />
+
+              <span className="font-semibold">
+                {selectedTx.status !== 1
+                  ? "Transaction was not successful"
+                  : selectedTx.user_screen_message}
+              </span>
+            </div>
 
             <div className="mt-6 text-center">
               <button
