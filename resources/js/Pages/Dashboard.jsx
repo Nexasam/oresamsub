@@ -18,7 +18,11 @@ export default function Dashboard({ transactions: initialTransactions }) {
   const { available = 0, pending = 0, total_earned = 0 } = commissionData;
   const user = auth.user;
 
-  const transactions = initialTransactions ?? props.transactions ?? [];
+  // const transactions = initialTransactions ?? props.transactions ?? [];
+
+  const [transactions, setTransactions] = useState(
+    initialTransactions ?? props.transactions ?? []
+  );
 
   const [openTransactionId, setOpenTransactionId] = useState(null);
   const [selectedTx, setSelectedTx] = useState(null);
@@ -465,9 +469,24 @@ export default function Dashboard({ transactions: initialTransactions }) {
                   setBuyModal(null);
                   setPhone("");
                   setPin("");
+
+                   // 🔥 ALWAYS update transaction list (SUCCESS OR FAILURE)
+                if (data?.transaction) {
+                  setTransactions((prev) =>
+                    prev.map((tx) =>
+                      tx.id === data.transaction.id
+                        ? data.transaction
+                        : tx
+                    )
+                  );
+                }
+                 
+
                 } else {
                   Swal.fire("Failed", data?.message || "Transaction failed", "error");
                 }
+
+                
               
               } catch (e) {
                 const message =
@@ -479,7 +498,7 @@ export default function Dashboard({ transactions: initialTransactions }) {
               } finally {
                 setBuying(false);
               }
-              
+
             }}
             className="w-full py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg disabled:opacity-50"
           >
