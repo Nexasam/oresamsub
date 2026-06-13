@@ -185,14 +185,14 @@
                     <div class="flex items-center gap-2">
 
                         <!-- LIMIT SELECT (BEST PLACE) -->
-                        <form method="GET" class="mb-3">
-                            <select name="limit" onchange="this.form.submit()" class="border p-2 rounded">
-                                <option value="10" {{ request('limit')==10?'selected':'' }}>10</option>
-                                <option value="20" {{ request('limit',20)==20?'selected':'' }}>20</option>
-                                <option value="50" {{ request('limit')==50?'selected':'' }}>50</option>
-                                <option value="100" {{ request('limit')==100?'selected':'' }}>100</option>
-                            </select>
-                        </form>
+                        <select x-model="filters.limit"
+                        @change="fetchData(1)"
+                        class="border p-2 rounded w-full">
+                            <option value="10">10 per page</option>
+                            <option value="20">20 per page</option>
+                            <option value="50">50 per page</option>
+                            <option value="100">100 per page</option>
+                        </select>
 
                         <!-- FILTER TOGGLE -->
                         <button @click="open = !open"
@@ -245,12 +245,19 @@
             
                 </div>
             
-                <div class="bg-white dark:bg-gray-900 border rounded-xl overflow-hidden">
-
-                    <div class="overflow-auto">
-                        <table class="w-full text-sm table-auto">
-                
-                            <thead class="bg-gray-50 dark:bg-gray-800 sticky top-0">
+                <!-- TABLE CARD -->
+                <div class="bg-white dark:bg-gray-900 border dark:border-gray-700 rounded-xl overflow-hidden">
+            
+                    <!-- TABLE -->
+                    {{-- <div class="overflow-auto"> --}}
+                    <div
+                        id="scrollContainer"
+                        @scroll="handleScroll"
+                        class="overflow-auto border rounded max-h-[600px]"
+                    >
+                        <table class="w-full text-sm table-fixed px-3">
+            
+                            <thead class="bg-gray-50 dark:bg-gray-800 text-gray-600 dark:text-gray-300 sticky top-0">
                                 <tr>
                                     <th class="p-3 text-left">ID</th>
                                     <th class="p-3 text-left">User</th>
@@ -261,40 +268,77 @@
                                     <th class="p-3 text-left">Amount</th>
                                     <th class="p-3 text-left">Status</th>
                                     <th class="p-3 text-left">Date</th>
+                                    <th class="p-3 text-left">Action</th>
                                 </tr>
                             </thead>
-                
+            
                             <tbody>
-                                @forelse ($transactions as $key=>$tx)
-                                    <tr class="border-t">
-                                        <td class="p-2">{{ $key + 1 }}</td>
-                                        <td class="p-2">{{ $tx->user->first_name ?? '' }}</td>
-                                        <td class="p-2">{{ $tx->wallet_category }}</td>
-                                        <td class="p-2">{{ $tx->plan_details }}</td>
-                                        <td class="p-2">{{ $tx->transaction_category }}</td>
-                                        <td class="p-2">{{ $tx->phone_number }}</td>
-                                        <td class="p-2">₦{{ number_format($tx->amount, 2) }}</td>
-                                        <td class="p-2">{{ $tx->status }}</td>
-                                        <td class="p-2">{{ $tx->created_at }}</td>
-                                    </tr>
-                                @empty
+                                <template x-if="loading">
                                     <tr>
-                                        <td colspan="9" class="text-center p-4 text-gray-500">
-                                            No transactions found
-                                        </td>
+                                        <td colspan="10" class="text-center p-4">Loading...</td>
                                     </tr>
-                                @endforelse
+                                </template>
+                            
+                                {{-- <template x-for="(row, index) in rows" :key="row.id"> --}}
+                                <template x-for="(row, index) in rows" :key="row.id">
+                                    <tr class="border-t px-4"
+                                        :data-last="index === rows.length - 1 ? 'true' : null"
+                                        x-init="if(index === rows.length - 1) scrollObserver.observe($el)">
+                                    {{-- <tr class="border-t"> --}}
+                                        
+                                        <!-- SERIAL NUMBER -->
+                                        <td x-text="((page - 1) * perPage) + index + 1"></td>
+                                
+                                       <td class="break-words whitespace-normal" x-html="row.user_id"></td>
+                                       <td class="break-words whitespace-normal" x-html="row.wallet_category"></td>
+                                       <td class="break-words whitespace-normal" x-html="row.plan_details"></td>
+                                       <td class="break-words whitespace-normal" x-html="row.transaction_category"></td>
+                                       <td class="break-words whitespace-normal" x-html="row.phone_number"></td>
+                                       <td class="break-words whitespace-normal" x-html="row.amount"></td>
+                                       <td class="break-words whitespace-normal" x-html="row.discounted_amount"></td>
+                                       <td class="break-words whitespace-normal" x-html="row.balance_before"></td>
+                                       <td class="break-words whitespace-normal" x-html="row.balance_after"></td>
+                                       <td class="break-words whitespace-normal" x-html="row.status"></td>
+                                       <td class="break-words whitespace-normal" x-text="row.created_at"></td>
+                                       <td class="break-words whitespace-normal" x-html="row.action"></td>
+                                    </tr>
+                                </template>
                             </tbody>
-                
+
                         </table>
                     </div>
-                
-                    <!-- PAGINATION -->
-                    <div class="p-4">
-                        {{ $transactions->links() }}
+
+                    <div class="text-center py-3 text-sm text-gray-500" x-show="loading">
+                        Loading more transactions...
                     </div>
-                
+                    
+                    <div class="text-center py-3 text-xs text-gray-400" x-show="page >= lastPage">
+                        No more transactions
+                    </div>
+            
+                    <!-- PAGINATION -->
+                    {{-- <div class="flex justify-between items-center mt-3">
+                        <button @click="prevPage()"
+                                class="px-3 py-1 border rounded"
+                                :disabled="page <= 1">
+                            Prev
+                        </button>
+                    
+                        <div class="text-sm">
+                            Page <span x-text="page"></span> of
+                            <span x-text="lastPage"></span>
+                        </div>
+                    
+                        <button @click="nextPage()"
+                                class="px-3 py-1 border rounded"
+                                :disabled="page >= lastPage">
+                            Next
+                        </button>
+                    </div> --}}
+            
                 </div>
+            
+            </div>
             
             </div>
 

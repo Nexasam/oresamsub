@@ -39,6 +39,35 @@ class UserDashboardController extends Controller
     $userid = auth()->id();
     $commissionData = null;
 
+
+    $date_from = $request->date_from ?? '';
+    $date_to = $request->date_to ?? '';
+    $product_plan_category_filter = $request->product_plan_category_filter ?? '';
+    $phone = $request->phone_recharged ?? '';
+    $perPage = $request->limit ?? 10;
+
+    $transactions = Transaction::when(!empty($date_from) && !empty($date_to), function ($query) use ($date_from, $date_to) {
+            $date_to = date('Y-m-d', strtotime('+1 day', strtotime($date_to)));
+            $query->whereBetween('created_at', [$date_from, $date_to]);
+        })
+        ->when(!empty($product_plan_category_filter), function ($query) use ($product_plan_category_filter) {
+            $product_plan_ids = ProductPlan::where('product_plan_category_id', $product_plan_category_filter)
+                ->pluck('id');
+            $query->whereIn('product_plan_id', $product_plan_ids);
+        })
+        ->when(!empty($phone), function ($query) use ($phone) {
+            $query->where('phone_number', $phone);
+        })
+        ->where('wallet_category', '!=', 'data_wallet')
+        ->with(['user', 'product_plan.product_plan_category', 'product_plan.automation'])
+        ->latest()
+        ->paginate($perPage)
+        ->withQueryString();
+
+        
+    $data['transactions'] = $transactions;
+    $data['perPage'] = $perPage;
+
    
 
     if((! $template || $template->template_name == 'template_1') && env('APP_NAME') == 'OresamSub' && auth()->user()->role->role_name == 'User'){
