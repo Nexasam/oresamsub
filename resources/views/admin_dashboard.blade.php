@@ -164,99 +164,101 @@
 
     <div class="grid grid-cols-12 gap-x-5">
 
-        <div x-data="adminTransactions()" x-init="init()" class="space-y-3">
+        <div class="col-span-12 xxl:col-span-12">
+            <div x-data="adminTransactions()" x-init="init()" class="space-y-3">
 
-            <!-- FILTER BUTTON -->
-            <div class="flex items-center justify-between">
-                <h5 class="font-semibold">Recent Transactions</h5>
-        
-                <button @click="open = true"
-                    class="bg-emerald-600 text-white px-3 py-1 rounded text-sm">
-                    Filter
-                </button>
-            </div>
-        
-            <!-- FILTER PANEL -->
-            <div x-show="open" class="p-3 border rounded bg-white space-y-2">
-        
-                <input x-model="filters.phone_recharged"
-                       placeholder="Phone number"
-                       class="border p-2 w-full rounded">
-        
-                <select x-model="filters.product_plan_category_filter"
-                        class="border p-2 w-full rounded">
-                    <option value="">Select Category</option>
-                    @foreach ($product_plan_categories as $cat)
-                        <option value="{{ $cat->id }}">{{ $cat->product_plan_category_name }}</option>
-                    @endforeach
-                </select>
-        
-                <div class="flex gap-2">
-                    <input type="date" x-model="filters.date_from" class="border p-2 w-full rounded">
-                    <input type="date" x-model="filters.date_to" class="border p-2 w-full rounded">
-                </div>
-        
-                <div class="flex justify-end gap-2">
-                    <button @click="reset()" class="px-3 py-1 border rounded">Reset</button>
-                    <button @click="fetchData(1)" class="px-3 py-1 bg-emerald-600 text-white rounded">
-                        Apply
+                <!-- FILTER BUTTON -->
+                <div class="flex items-center justify-between">
+                    <h5 class="font-semibold">Recent Transactions</h5>
+            
+                    <button @click="open = true"
+                        class="bg-emerald-600 text-white px-3 py-1 rounded text-sm">
+                        Filter
                     </button>
                 </div>
-        
-            </div>
-        
-            <!-- TABLE -->
-            <div class="overflow-auto border rounded">
-        
-                <table class="w-full text-sm">
-                    <thead class="bg-gray-100">
-                        <tr>
-                            <th>ID</th>
-                            <th>User</th>
-                            <th>Wallet</th>
-                            <th>Plan</th>
-                            <th>Category</th>
-                            <th>Phone</th>
-                            <th>Amount</th>
-                            <th>Status</th>
-                            <th>Date</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-        
-                    <tbody>
-                        <template x-if="loading">
+            
+                <!-- FILTER PANEL -->
+                <div x-show="open" class="p-3 border rounded bg-white space-y-2">
+            
+                    <input x-model="filters.phone_recharged"
+                        placeholder="Phone number"
+                        class="border p-2 w-full rounded">
+            
+                    <select x-model="filters.product_plan_category_filter"
+                            class="border p-2 w-full rounded">
+                        <option value="">Select Category</option>
+                        @foreach ($product_plan_categories as $cat)
+                            <option value="{{ $cat->id }}">{{ $cat->product_plan_category_name }}</option>
+                        @endforeach
+                    </select>
+            
+                    <div class="flex gap-2">
+                        <input type="date" x-model="filters.date_from" class="border p-2 w-full rounded">
+                        <input type="date" x-model="filters.date_to" class="border p-2 w-full rounded">
+                    </div>
+            
+                    <div class="flex justify-end gap-2">
+                        <button @click="reset()" class="px-3 py-1 border rounded">Reset</button>
+                        <button @click="fetchData(1)" class="px-3 py-1 bg-emerald-600 text-white rounded">
+                            Apply
+                        </button>
+                    </div>
+            
+                </div>
+            
+                <!-- TABLE -->
+                <div class="overflow-auto border rounded">
+            
+                    <table class="w-full text-sm">
+                        <thead class="bg-gray-100">
                             <tr>
-                                <td colspan="10" class="text-center p-4">Loading...</td>
+                                <th>ID</th>
+                                <th>User</th>
+                                <th>Wallet</th>
+                                <th>Plan</th>
+                                <th>Category</th>
+                                <th>Phone</th>
+                                <th>Amount</th>
+                                <th>Status</th>
+                                <th>Date</th>
+                                <th>Action</th>
                             </tr>
-                        </template>
-        
-                        <template x-for="row in rows" :key="row.id">
-                            <tr class="border-t">
-                                <td x-html="row.DT_RowIndex"></td>
-                                <td x-html="row.user_id"></td>
-                                <td x-html="row.wallet_category"></td>
-                                <td x-html="row.plan_details"></td>
-                                <td x-html="row.transaction_category"></td>
-                                <td x-html="row.phone_number"></td>
-                                <td x-html="row.amount"></td>
-                                <td x-html="row.status"></td>
-                                <td x-html="row.created_at"></td>
-                                <td x-html="row.action"></td>
-                            </tr>
-                        </template>
-                    </tbody>
-        
-                </table>
+                        </thead>
+            
+                        <tbody>
+                            <template x-if="loading">
+                                <tr>
+                                    <td colspan="10" class="text-center p-4">Loading...</td>
+                                </tr>
+                            </template>
+            
+                            <template x-for="row in rows" :key="row.id">
+                                <tr class="border-t">
+                                    <td x-html="row.DT_RowIndex"></td>
+                                    <td x-html="row.user_id"></td>
+                                    <td x-html="row.wallet_category"></td>
+                                    <td x-html="row.plan_details"></td>
+                                    <td x-html="row.transaction_category"></td>
+                                    <td x-html="row.phone_number"></td>
+                                    <td x-html="row.amount"></td>
+                                    <td x-html="row.status"></td>
+                                    <td x-html="row.created_at"></td>
+                                    <td x-html="row.action"></td>
+                                </tr>
+                            </template>
+                        </tbody>
+            
+                    </table>
+                </div>
+            
+                <!-- PAGINATION -->
+                <div class="flex justify-between items-center">
+                    <button @click="prevPage()" class="px-3 py-1 border rounded">Prev</button>
+                    <div>Page <span x-text="page"></span></div>
+                    <button @click="nextPage()" class="px-3 py-1 border rounded">Next</button>
+                </div>
+            
             </div>
-        
-            <!-- PAGINATION -->
-            <div class="flex justify-between items-center">
-                <button @click="prevPage()" class="px-3 py-1 border rounded">Prev</button>
-                <div>Page <span x-text="page"></span></div>
-                <button @click="nextPage()" class="px-3 py-1 border rounded">Next</button>
-            </div>
-        
         </div>
 
         <div class="col-span-12 xxl:col-span-12">
