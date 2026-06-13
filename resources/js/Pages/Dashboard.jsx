@@ -451,24 +451,35 @@ export default function Dashboard({ transactions: initialTransactions }) {
 
               try {
                 setBuying(true);
-
+              
                 const res = await axios.post(route("user.data.buy_again_data_action"), {
                   product_plan_id: buyModal.product_plan_id,
                   phone_number: phone,
                   pin: pin,
                 });
-
-                if (res.data.success) {
-                  Swal.fire("Success", res.data.message, "success");
+              
+                const data = res?.data;
+              
+                if (Number(data?.status) === 1) {
+                  Swal.fire("Success", data.message || "Purchase successful", "success");
                   setBuyModal(null);
+                  setPhone("");
+                  setPin("");
                 } else {
-                  Swal.fire("Failed", res.data.message, "error");
+                  Swal.fire("Failed", data?.message || "Transaction failed", "error");
                 }
+              
               } catch (e) {
-                Swal.fire("Error", "Something went wrong", "error");
+                const message =
+                  e?.response?.data?.message ||
+                  "Something went wrong";
+              
+                Swal.fire("Error", message, "error");
+              
               } finally {
                 setBuying(false);
               }
+              
             }}
             className="w-full py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg disabled:opacity-50"
           >
