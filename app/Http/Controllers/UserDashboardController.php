@@ -64,8 +64,9 @@ class UserDashboardController extends Controller
         ->paginate($perPage)
         ->withQueryString();
 
-        
+
     $data['transactions'] = $transactions;
+    dd($transactions);
     $data['perPage'] = $perPage;
 
    
