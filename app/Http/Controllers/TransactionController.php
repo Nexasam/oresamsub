@@ -25,6 +25,29 @@ class TransactionController extends Controller
 {
     use UserDashboardDataTrait, Utils;
 
+    public function buyAgain(Request $request)
+    {
+        $request->validate([
+            'transaction_id' => 'required|exists:transactions,id',
+            'phone' => 'required|string',
+            'pin' => 'required|string',
+        ]);
+
+        $transaction = Transaction::findOrFail($request->transaction_id);
+
+        // Example: reuse transaction details
+        $product = $transaction->product_plan;
+        $amount = $transaction->amount;
+
+        // TODO: call your existing purchase service here
+        // e.g. app(PurchaseService::class)->buy(...)
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Purchase successful'
+        ]);
+    }
+
   public function user_all_transactions(){
     $dataa = $this->get_user_dashboard_data();
     $data = [...$dataa];

@@ -20,7 +20,7 @@ class InertiaDashboardController extends Controller
     public function dashboard()
     {
         
-        $data['transactions'] = Transaction::with(relations: 'product_plan')->where('user_id',auth()->id())->limit(10)->latest()->get();
+        $data['transactions'] = Transaction::with(relations: 'product_plan')->where('user_id',auth()->id())->limit(50)->latest()->get();
         $data['announcements'] = Announcement::where('status',1)->latest()->get();
         $contacts =  UserContact::where('user_id', auth()->id())
             ->orderByDesc('last_used_at')

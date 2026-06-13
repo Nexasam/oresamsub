@@ -436,6 +436,7 @@ class DataController extends Controller
     }
 
     public function buy_again_data_action(Request $request){
+        logger('buy again '.json_encode($request->all()));
         $getnetwork = ProductPlan::with('product_plan_category.network')
         ->where('id',$request->product_plan_id)
         ->first();
@@ -443,6 +444,8 @@ class DataController extends Controller
         $network_id = $getnetwork->product_plan_category->network->id;
 
         $request->merge([
+            'wallet_category' => 'main_wallet',
+            'validatephonenetwork' => 0,
             'network_id' => $network_id,
             'product_plan_category_id' => $product_plan_category_id,
         ]);
@@ -509,7 +512,9 @@ class DataController extends Controller
         // }else{
           
             $plan_details = ProductPlan::with(['automation','product_plan_category.network','product_plan_category.product'])
-            ->where('id',$request->product_plan_id)->where('visibility',1)->first();
+            ->where('id',$request->product_plan_id)
+            // ->where('visibility',1)
+            ->first();
             // $automation_id = $plan_details->automation_id;
             $data_value_mb = $plan_details->data_size_in_mb ?? 0;
             $product_plan_id = $plan_details->id;

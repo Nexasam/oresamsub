@@ -113,6 +113,9 @@ Route::middleware(['set_locale'])->group(function () {
                 Route::get('/user/top-favorite-data', [ProductPlanController::class, 'topFavoriteData'])->name('user.favorite_data');
 
 
+                Route::post('/transactions/buy-again', [TransactionController::class, 'buyAgain'])
+                ->name('transactions.buyAgain');
+                
                 //   INERTIAJS
                 Route::get('/dashboard', [UserDashboardController::class, 'index'])->name('dashboard');   
                 Route::get('/data', [InertiaDashboardController::class, 'data'])->name('inertia.data.index');   
@@ -823,7 +826,7 @@ Route::middleware(['set_locale'])->group(function () {
             Route::middleware(['auth','verified','set_transaction_pin'])->get('user/data/buy_data_single', [DataController::class, 'buy_data_v2'])->name('user.data.buy_data2');
             Route::middleware(['auth','verified','set_transaction_pin'])->get('user/data/buy_data', [DataController::class, 'buy_data'])->name('user.data.buy_data'); //single/bulk
             Route::middleware(['auth','verified','set_transaction_pin'])->post('user/data/store2', [DataController::class, 'buy_data_action'])->name('user.data.buy_data_action2');
-            Route::middleware(['auth','verified','set_transaction_pin'])->post('user/data/buy_again_store2', [DataController::class, 'buy_again_data_action'])->name(' user.data.buy_again_data_action');
+            Route::middleware(['auth','verified','set_transaction_pin'])->post('user/data/buy_again_store2', [DataController::class, 'buy_again_data_action'])->name('user.data.buy_again_data_action');
            
             Route::middleware(['auth','verified','set_transaction_pin'])->get('user/data/fetch_product_plan_categories', [DataController::class, 'fetch_product_plan_categories'])->name('user.fetch_product_plan_categories'); //TODO: you can add this to a helper controller later
             Route::middleware(['auth','verified','set_transaction_pin'])->get('user/data/fetch_product_plans', [DataController::class, 'fetch_product_plans'])->name('user.fetch_product_plans'); //TODO: you can add this to a helper controller later

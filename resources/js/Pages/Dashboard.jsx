@@ -11,6 +11,7 @@ import axios from "axios";
 import Swal from "sweetalert2";
 
 export default function Dashboard({ transactions: initialTransactions }) {
+
   const { props } = usePage();
   const { auth, announcements, contacts, commissionData = {} } = props;
 
@@ -26,6 +27,12 @@ export default function Dashboard({ transactions: initialTransactions }) {
   const [availableState, setAvailableState] = useState(available);
   const [pendingState, setPendingState] = useState(pending);
   const [loading, setLoading] = useState(false);
+
+    const [search, setSearch] = useState("");
+    const [buyModal, setBuyModal] = useState(null);
+    const [phone, setPhone] = useState("");
+    const [pin, setPin] = useState("");
+    const [buying, setBuying] = useState(false);
 
   const referralLink = `https://oresamsub.com/register?ref=${user.referral_code ?? user.phone_number}`;
 
@@ -87,6 +94,11 @@ export default function Dashboard({ transactions: initialTransactions }) {
       setLoading(false);
     }
   };
+
+  const filteredTransactions = transactions.filter((tx) => {
+    const plan = tx.product_plan?.product_plan_name?.toLowerCase() || "";
+    return plan.includes(search.toLowerCase());
+  });
 
   return (
     <DashboardLayout title="Dashboard">
@@ -166,6 +178,8 @@ export default function Dashboard({ transactions: initialTransactions }) {
       {/* Community */}
       <CommunityCard customerCategory={user.customer_category} />
 
+
+    
       {/* Recent Transactions */}
       {/* Recent Transactions */}
     <div className="bg-white dark:bg-gray-800 mt-6 rounded-xl shadow overflow-hidden">
@@ -174,7 +188,76 @@ export default function Dashboard({ transactions: initialTransactions }) {
       Recent Transactions
     </div>
 
-    <div className="max-h-[400px] overflow-y-auto divide-y divide-gray-200 dark:divide-gray-700 text-sm">
+    <input
+  type="text"
+  placeholder="Search plan e.g 1GB MTN"
+  value={search}
+  onChange={(e) => setSearch(e.target.value)}
+  className="w-full px-3 py-2 text-sm rounded-lg border 
+             bg-white text-gray-800 placeholder-gray-400
+             dark:bg-gray-900 dark:text-white dark:placeholder-gray-500 dark:border-gray-700"
+/>
+
+    {filteredTransactions.length > 0 ? (
+  filteredTransactions.map((tx) => {
+    const status = getStatus(tx.status);
+
+    return (
+      <div
+      key={tx.id}
+      onClick={() => setSelectedTx(tx)}
+     className="px-4 py-3 hover:bg-gray-100 dark:hover:bg-gray-900 transition cursor-pointer active:scale-[0.99] border-b border-gray-200 dark:border-gray-700">
+        <div className="flex justify-between">
+          <div
+            onClick={() => setSelectedTx(tx)}
+            className="cursor-pointer"
+          >
+         <div className="font-semibold text-xs text-gray-800 dark:text-white">
+              {tx.product_plan?.product_plan_name?.toUpperCase() || "N/A"}
+            </div>
+            <div className="text-xs text-gray-500 dark:text-gray-300">
+              {new Date(tx.created_at).toLocaleString("en-NG")}
+            </div>
+          </div>
+
+          <div className="text-right">
+            <div className={`font-bold ${status.color}`}>
+              ₦{Number(tx.amount).toLocaleString("en-NG")}
+            </div>
+            <div className={`text-xs ${status.color2}`}>
+              {status.text}
+            </div>
+          </div>
+        </div>
+
+        {/* BUY AGAIN BUTTON */}
+       {/* BUY AGAIN BUTTON (DATA ONLY) */}
+        {tx.transaction_category === "data" &&
+          status.text === "Success" &&
+          Number(tx.service_charge || 0) === 0 && (
+            <div className="mt-2 text-right">
+              <button
+                onClick={(e) => {
+                  e.stopPropagation(); // prevent opening modal
+                  setBuyModal(tx);
+                  setPhone(tx.phone_number || "");
+                }}
+                className="text-xs px-3 py-1 bg-emerald-600 hover:bg-emerald-700 text-white rounded-md"
+              >
+                Buy Again
+              </button>
+            </div>
+          )}
+      </div>
+    );
+  })
+) : (
+  <p className="p-4 text-center text-gray-500 text-sm">
+    No matching transactions
+  </p>
+)}
+
+    {/* <div className="max-h-[400px] overflow-y-auto divide-y divide-gray-200 dark:divide-gray-700 text-sm">
       {transactions.length > 0 ? (
         transactions.map((tx) => {
           const status = getStatus(tx.status);
@@ -211,7 +294,9 @@ export default function Dashboard({ transactions: initialTransactions }) {
         </p>
       )}
     </div>
+     */}
     </div>
+
 
 
     {/* Transaction Modal */}
@@ -302,7 +387,99 @@ export default function Dashboard({ transactions: initialTransactions }) {
 
           </div>
         </div>
-      )}
+    )}
+
+  {buyModal && (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+      <div className="bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 rounded-xl shadow-lg max-w-sm w-full p-6">
+
+        <h2 className="text-lg font-bold mb-4">
+          Buy Again
+        </h2>
+
+        <div className="space-y-3 text-sm">
+
+          <div>
+            <label className="block text-xs mb-1 text-gray-600 dark:text-gray-300">
+              Plan
+            </label>
+            <div className="font-semibold">
+              {buyModal.product_plan?.product_plan_name}
+            </div>
+          </div>
+
+          <div>
+            <label className="block text-xs mb-1 text-gray-600 dark:text-gray-300">
+              Phone Number
+            </label>
+            <input
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500"
+            />
+          </div>
+
+          <div>
+            <label className="block text-xs mb-1 text-gray-600 dark:text-gray-300">
+              PIN
+            </label>
+            <input
+              type="password"
+              value={pin}
+              onChange={(e) => setPin(e.target.value)}
+              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500"
+            />
+          </div>
+
+        </div>
+
+        <div className="mt-5 flex justify-between gap-2">
+          <button
+            onClick={() => setBuyModal(null)}
+            className="w-full py-2 bg-gray-300 dark:bg-gray-700 dark:text-white rounded-lg"
+          >
+            Cancel
+          </button>
+
+          <button
+            disabled={buying}
+            onClick={async () => {
+              if (!phone || !pin) {
+                Swal.fire("Error", "Enter phone and PIN", "warning");
+                return;
+              }
+
+              try {
+                setBuying(true);
+
+                const res = await axios.post(route("user.data.buy_again_data_action"), {
+                  product_plan_id: buyModal.product_plan_id,
+                  phone_number: phone,
+                  pin: pin,
+                });
+
+                if (res.data.success) {
+                  Swal.fire("Success", res.data.message, "success");
+                  setBuyModal(null);
+                } else {
+                  Swal.fire("Failed", res.data.message, "error");
+                }
+              } catch (e) {
+                Swal.fire("Error", "Something went wrong", "error");
+              } finally {
+                setBuying(false);
+              }
+            }}
+            className="w-full py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg disabled:opacity-50"
+          >
+            {buying ? "Processing..." : "Buy Now"}
+          </button>
+        </div>
+
+      </div>
+    </div>
+  )}
+
 
     </DashboardLayout>
   );
