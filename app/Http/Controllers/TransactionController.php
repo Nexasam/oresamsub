@@ -380,7 +380,184 @@ class TransactionController extends Controller
   }
 
 
-  public function admin_fetch_transactions(Request $request){
+  public function admin_fetch_transactions(Request $request)
+{
+    $date_from = $request->date_from ?? '';
+    $date_to = $request->date_to ?? '';
+    $product_plan_category_filter = $request->product_plan_category_filter ?? '';
+    $phone = $request->phone_recharged ?? '';
+    $perPage = $request->limit ?? 10;
+
+    $query = Transaction::when(!empty($date_from) && !empty($date_to), function ($query) use ($date_from, $date_to) {
+            $date_to = date('Y-m-d', strtotime('+1 day', strtotime($date_to)));
+            $query->whereBetween('created_at', [$date_from, $date_to]);
+        })
+        ->when(!empty($product_plan_category_filter), function ($query) use ($product_plan_category_filter) {
+            $product_plan_ids = ProductPlan::where('product_plan_category_id', $product_plan_category_filter)
+                ->pluck('id');
+            $query->whereIn('product_plan_id', $product_plan_ids);
+        })
+        ->when(!empty($phone), function ($query) use ($phone) {
+            $query->where('phone_number', $phone);
+        })
+        ->where('wallet_category', '!=', 'data_wallet')
+        ->with(['user', 'product_plan.automation'])
+        ->latest();
+
+    $paginator = $query->paginate($perPage);
+
+    $formatted = $paginator->getCollection()->map(function ($data) {
+
+        // ================= USER COLUMN =================
+        $user = $data->user;
+
+        $usercategory = env('APP_NAME') == 'OresamSub' ? $user->customer_category : '';
+        $user_plan_name = $user->user_plan->updated_user_plan_name ?? $user->user_plan->user_plan_name ?? '';
+        $first_name = $user->first_name ?? 'nil';
+        $last_name = $user->last_name ?? 'nil';
+        $username = $user->username ?? 'nil';
+        $phone_number = $user->phone_number ?? null;
+
+        $impersonateRoute = route('admin.impersonate', $user->id);
+        $detailsRoute = route('admin.users.manage_user', $user->id);
+        $transactionsRoute = route('transactions.transaction_details', $data->id);
+
+        $actionsDropdown = '
+        <div x-data="{ open: false }" class="relative inline-block text-left">
+            <button @click="open = !open" class="px-2 py-1 border rounded bg-white text-sm">
+                Actions
+            </button>
+
+            <div x-show="open" @click.outside="open = false"
+                class="absolute left-0 mt-1 w-48 bg-white border rounded shadow z-50"
+                style="display:none;">
+                <a href="'.$impersonateRoute.'" class="block px-3 py-2 hover:bg-gray-100">Impersonate</a>
+                <a href="'.$detailsRoute.'" class="block px-3 py-2 hover:bg-gray-100">View User</a>
+                <a href="'.$transactionsRoute.'" class="block px-3 py-2 hover:bg-gray-100">View Txn</a>';
+
+        if ($phone_number) {
+            $actionsDropdown .= '
+                <a href="tel:'.$phone_number.'" class="block px-3 py-2 hover:bg-gray-100">Call</a>
+                <a href="https://wa.me/'.$phone_number.'" target="_blank" class="block px-3 py-2 hover:bg-gray-100">WhatsApp</a>';
+        }
+
+        $actionsDropdown .= '</div></div>';
+
+        $user_id = "
+            <div>
+                {$first_name} {$last_name}<br>
+                <small>{$username}</small><br>
+                <small><b>{$user_plan_name}</b></small><br>
+                <small>{$usercategory}</small><br>
+                {$actionsDropdown}
+            </div>
+        ";
+
+        // ================= WALLET =================
+        $wallet_category = $data->wallet_category == 'main_wallet' ? 'MAIN' : 'DATA_WALLET';
+
+        // ================= PLAN DETAILS =================
+        if ($data->product_plan) {
+            $plan = $data->product_plan->product_plan_name . '<br>';
+            $plan .= $data->product_plan->product_plan_category->product_plan_category_name . '<br>';
+            $plan .= 'Plan ID: ' . $data->product_plan->api_id . '<br>';
+
+            if ($data->transaction_category == 'cable_subscription') {
+                $plan .= 'Smart Card No: ' . $data->smart_card_number . '<br>';
+            }
+
+            if ($data->transaction_category == 'utility_bills') {
+                $response_decode = json_decode($data->admin_screen_message, true);
+                $token_details = $response_decode['Detail']['info']['realresponse'] ?? '-';
+                $plan .= 'Meter No: ' . $data->metre_number . '<br>';
+                $plan .= '<b>' . $token_details . '</b><br>';
+            }
+
+            if ($data->transaction_category == 'data') {
+                $plan .= number_format($data->product_plan->data_size_in_mb ?? 0) . ' MB';
+            }
+        } else {
+            $plan = 'NIL';
+        }
+
+        $plan_details = "<span style='white-space:normal'>{$plan}</span>";
+
+        // ================= CATEGORY =================
+        $routeinfo = $data->txn_reference == null ? 'WEB' : 'Mobile/API';
+        $transaction_category = $data->transaction_category . "<br>Route: {$routeinfo}";
+
+        // ================= PHONE COLUMN =================
+        $msg = e($data->admin_screen_message ?? '');
+        $msg2 = e($data->extra_info ?? 'nil');
+
+        $phone_col = "
+        <div x-data='{ expanded:false }' class='text-sm cursor-pointer' @click='expanded=!expanded'>
+            <div x-show='!expanded' class='line-clamp-1'>
+                {$msg}
+            </div>
+
+            <div x-show='expanded'>
+                <b>{$msg}</b><br>
+                <b>{$msg2}</b>
+            </div>
+
+            <small class='text-emerald-600 underline'>
+                <span x-show='!expanded'>Show more</span>
+                <span x-show='expanded'>Show less</span>
+            </small>
+        </div>";
+
+        // ================= AMOUNT =================
+        $amount = '&#8358;' . number_format($data->amount, 2);
+        $discounted_amount = '&#8358;' . number_format($data->discounted_amount, 2);
+
+        $balance_before = $data->wallet_category == 'main_wallet'
+            ? '₦' . number_format($data->balance_before, 2)
+            : number_format($data->balance_before) . 'MB';
+
+        $balance_after = $data->wallet_category == 'main_wallet'
+            ? '₦' . number_format($data->balance_after, 2)
+            : number_format($data->balance_after) . 'MB';
+
+        // ================= STATUS =================
+        $status = match ($data->status) {
+            1 => '<span class="badge bg-success text-white">Success</span>',
+            0 => '<span class="badge bg-warning text-white">Pending</span>',
+            -1 => '<span class="badge bg-red-300 text-white">Failed</span>',
+            2 => '<span class="badge bg-primary text-white">Refunded</span>',
+            3 => '<span class="badge bg-gray text-white">Processing</span>',
+            default => '<span class="badge bg-gray text-white">Unknown</span>',
+        };
+
+        return [
+            'id' => $data->id,
+            'user_id' => $user_id,
+            'wallet_category' => $wallet_category,
+            'plan_details' => $plan_details,
+            'transaction_category' => $transaction_category,
+            'phone_number' => $phone_col,
+            'amount' => $amount,
+            'discounted_amount' => $discounted_amount,
+            'balance_before' => $balance_before,
+            'balance_after' => $balance_after,
+            'status' => $status,
+            'created_at' => $data->created_at->format('Y-m-d H:i:s'),
+            'action' => '<a href="'.route('transactions.transaction_details', $data->id).'" class="px-2 py-1 bg-blue-600 text-white rounded">Details</a>',
+        ];
+    });
+
+    return response()->json([
+        'data' => $formatted,
+        'meta' => [
+            'current_page' => $paginator->currentPage(),
+            'last_page' => $paginator->lastPage(),
+            'per_page' => $paginator->perPage(),
+            'total' => $paginator->total(),
+        ]
+    ]);
+}
+
+  public function admin_fetch_transactionslatestold(Request $request){
 
         // $date_from = $request->date_from ?? date('Y-m-d');
         // date('Y-m-d', strtotime('-10 days'))

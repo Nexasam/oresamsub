@@ -186,12 +186,12 @@
 
                         <!-- LIMIT SELECT (BEST PLACE) -->
                         <select x-model="filters.limit"
-                                @change="fetchData(1)"
-                                class="border p-2 rounded-md text-sm">
-                            <option value="10">10 / page</option>
-                            <option value="20">20 / page</option>
-                            <option value="50">50 / page</option>
-                            <option value="100">100 / page</option>
+                        @change="fetchData(1)"
+                        class="border p-2 rounded w-full">
+                            <option value="10">10 per page</option>
+                            <option value="20">20 per page</option>
+                            <option value="50">50 per page</option>
+                            <option value="100">100 per page</option>
                         </select>
 
                         <!-- FILTER TOGGLE -->
@@ -268,56 +268,53 @@
                             </thead>
             
                             <tbody>
-            
-                                <!-- LOADING -->
-                                <tr x-show="loading">
-                                    <td colspan="10" class="p-6 text-center text-gray-500">
-                                        Loading transactions...
-                                    </td>
-                                </tr>
-            
-                                <!-- ROWS -->
-                                <template x-for="row in rows" :key="row.id">
-                                    <tr class="border-t dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-gray-800 transition">
-            
-                                        <td class="p-3" x-html="row.DT_RowIndex"></td>
-                                        <td class="p-3" x-html="row.user_id"></td>
-                                        <td class="p-3" x-html="row.wallet_category"></td>
-                                        <td class="p-3" x-html="row.plan_details"></td>
-                                        <td class="p-3" x-html="row.transaction_category"></td>
-                                        <td class="p-3" x-html="row.phone_number"></td>
-                                        <td class="p-3 font-medium" x-html="row.amount"></td>
-                                        <td class="p-3" x-html="row.status"></td>
-                                        <td class="p-3 text-xs text-gray-500" x-html="row.created_at"></td>
-            
-                                        <td class="p-3" x-html="row.action"></td>
-            
+                                <template x-if="loading">
+                                    <tr>
+                                        <td colspan="10" class="text-center p-4">Loading...</td>
                                     </tr>
                                 </template>
-            
+                            
+                                <template x-for="row in rows" :key="row.id">
+                                    <tr class="border-t">
+                                        <td x-text="row.id"></td>
+                            
+                                        <td x-html="row.user_id"></td>
+                                        <td x-html="row.wallet_category"></td>
+                                        <td x-html="row.plan_details"></td>
+                                        <td x-html="row.transaction_category"></td>
+                                        <td x-html="row.phone_number"></td>
+                                        <td x-html="row.amount"></td>
+                                        <td x-html="row.discounted_amount"></td>
+                                        <td x-html="row.balance_before"></td>
+                                        <td x-html="row.balance_after"></td>
+                                        <td x-html="row.status"></td>
+                                        <td x-text="row.created_at"></td>
+                                        <td x-html="row.action"></td>
+                                    </tr>
+                                </template>
                             </tbody>
-            
+
                         </table>
                     </div>
             
                     <!-- PAGINATION -->
-                    <div class="flex items-center justify-between p-3 border-t dark:border-gray-800">
-            
+                    <div class="flex justify-between items-center mt-3">
                         <button @click="prevPage()"
-                            class="px-3 py-1 border rounded-md text-sm disabled:opacity-50"
-                            :disabled="page <= 1">
+                                class="px-3 py-1 border rounded"
+                                :disabled="page <= 1">
                             Prev
                         </button>
-            
-                        <div class="text-sm text-gray-500">
-                            Page <span class="font-semibold text-gray-800 dark:text-white" x-text="page"></span>
+                    
+                        <div class="text-sm">
+                            Page <span x-text="page"></span> of
+                            <span x-text="lastPage"></span>
                         </div>
-            
+                    
                         <button @click="nextPage()"
-                            class="px-3 py-1 border rounded-md text-sm">
+                                class="px-3 py-1 border rounded"
+                                :disabled="page >= lastPage">
                             Next
                         </button>
-            
                     </div>
             
                 </div>
