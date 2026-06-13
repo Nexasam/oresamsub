@@ -259,6 +259,7 @@
                                     <th class="p-3 text-left">Category</th>
                                     <th class="p-3 text-left">Phone</th>
                                     <th class="p-3 text-left">Amount</th>
+                                    <th class="p-3 text-left">Discount</th>
                                     <th class="p-3 text-left">Before</th>
                                     <th class="p-3 text-left">After</th>
                                     <th class="p-3 text-left">Status</th>
