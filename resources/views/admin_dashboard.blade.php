@@ -169,7 +169,7 @@
             <div  x-init="init()" class="space-y-4">
             
                 <!-- HEADER -->
-              <!-- HEADER ABOVE TABLE -->
+                <!-- HEADER ABOVE TABLE -->
                 <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
 
                     <div>
@@ -197,6 +197,8 @@
                                 <option value="20" {{ request('limit',20)==20?'selected':'' }}>20</option>
                                 <option value="50" {{ request('limit')==50?'selected':'' }}>50</option>
                                 <option value="100" {{ request('limit')==100?'selected':'' }}>100</option>
+                                <option value="500" {{ request('limit')==100?'selected':'' }}>500</option>
+                                <option value="1000" {{ request('limit')==100?'selected':'' }}>1000</option>
                             </select>
                         
                         </form>
@@ -421,7 +423,7 @@
                                             <br />
 
                                             @if($data->set_for_manual == 1)
-                                                $status_display .= '<span class="font-bold text-red-500">URGENT</span>';    
+                                                <span class="font-bold text-red-500">URGENT</span>   
                                             @endif
                                         </td>
                                 
