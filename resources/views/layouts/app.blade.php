@@ -267,10 +267,10 @@
           <div class="loader"></div>
         </div> --}}
 
-        <div id="loadingOverlay">
+        {{-- <div id="loadingOverlay">
           <div class="spinner"></div>
           <div class="loading-text">Loading, please wait...</div>
-        </div>
+        </div> --}}
       
 
        @if (env('APP_NAME') == 'FoxDataHub')
