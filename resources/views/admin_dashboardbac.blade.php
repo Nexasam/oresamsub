@@ -167,6 +167,60 @@
                         </div>
                 @endif
 
+               @if (count($user_virtual_accounts) > 0)
+                   @foreach ($user_virtual_accounts as $vaccount)
+                           {{-- <div class="flex items-center space-x-4">
+                               <div>
+                                   <p class="text-sm uppercase tracking-wider text-gray-900"></p>
+                                   <p class="text-2xl font-bold">
+                                       {{ $vaccount->account_number }} 
+                                   </p>
+                               </div>
+                           </div> --}}
+                       @if (in_array($vaccount->bank_code,$active_bankcodes))
+                           <div class="max-w-sm w-full p-4 rounded-2xl shadow-xl bg-[{{$sidebar_color}}] text-white">
+                           
+                               <p>
+                                   <span class="text-md font-bold">{{$vaccount->bank_name }}</span> &nbsp; | &nbsp; {{ $vaccount->account_name }} | &nbsp; <span class="text-xl font-bold">{{ $vaccount->account_number }}</span>
+                                   <br>
+                                   @php
+                                       $bankcodeinfo = App\Models\FundingOptionBankCodes::where('bank_code',$vaccount->bank_code)->first();
+                                       $charge_info = $bankcodeinfo->rate_category == 'Percentage' ? '%':' NGN Flat rate';
+                                       $bank_charges =  $bankcodeinfo->bank_charges;
+                                       $bank_charges =  $bankcodeinfo->short_description == NULL ? '':'|&nbsp;';
+                                   @endphp
+                                   <small>{!! 'charges: '.$bankcodeinfo->bank_charges .$charge_info.'&nbsp;'.$bankcodeinfo->short_description !!}</small>
+                               </p>
+                           
+                           </div>     
+                       @endif  
+                      
+                   @endforeach
+               @else
+                                   
+                       <div class="max-w-sm w-full p-6 rounded-2xl shadow-xl bg-gradient-to-r from-indigo-600 to-purple-600 text-white">
+                           <div class="flex items-center justify-between">
+                           <!-- Icon (pointing down) -->
+                           <div class="p-3 bg-white/20 rounded-full">
+                               <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-current" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                   <!-- Wallet Icon -->
+                                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                                       d="M3 10h18M3 14h18M3 6h18c.553 0 1 .447 1 1v12c0 .553-.447 1-1 1H3c-.553 0-1-.447-1-1V7c0-.553.447-1 1-1z" />
+                                   <!-- Naira Symbol (₦) -->
+                                   <text x="12" y="15" font-size="8" font-family="Arial" text-anchor="middle" fill="currentColor">₦</text>
+                               </svg>
+                               
+                           </div>
+
+                         
+           
+                           <a href="{{route('user.wallet.index')}}" class="bg-[{{$sidebar_color}}]  text-sm font-medium px-4 py-2 rounded-lg shadow hover:bg-indigo-700 transition">
+                               {{ __('messages.Fund Wallet') }}
+                           </a>
+                           </div>
+                       </div>
+
+               @endif
               
               
 
