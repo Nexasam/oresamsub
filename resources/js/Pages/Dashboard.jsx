@@ -470,16 +470,18 @@ export default function Dashboard({ transactions: initialTransactions }) {
                   setPhone("");
                   setPin("");
 
-                   // 🔥 ALWAYS update transaction list (SUCCESS OR FAILURE)
-                if (data?.transaction) {
-                  setTransactions((prev) =>
-                    prev.map((tx) =>
-                      tx.id === data.transaction.id
-                        ? data.transaction
-                        : tx
-                    )
-                  );
-                }
+                window.location.reload(); // 🔥 refresh everything
+
+                // 🔥 ALWAYS update transaction list (SUCCESS OR FAILURE)
+                // if (data?.transaction) {
+                //   setTransactions((prev) =>
+                //     prev.map((tx) =>
+                //       tx.id === data.transaction.id
+                //         ? data.transaction
+                //         : tx
+                //     )
+                //   );
+                // }
                  
 
                 } else {
