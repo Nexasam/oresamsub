@@ -265,26 +265,144 @@
                             </thead>
                 
                             <tbody>
-                                @forelse ($transactions as $key=>$tx)
+                                @foreach ($transactions as $data)
+                                
+                                    @php
+                                        $user = $data->user;
+                                
+                                        $usercategory = env('APP_NAME') == 'OresamSub' ? $user->customer_category : '';
+                                        $user_plan_name = $user->user_plan->updated_user_plan_name ?? $user->user_plan->user_plan_name ?? '';
+                                        $first_name = $user->first_name ?? 'nil';
+                                        $last_name = $user->last_name ?? 'nil';
+                                        $username = $user->username ?? 'nil';
+                                        $phone_number = $user->phone_number ?? null;
+                                
+                                        $impersonateRoute = route('admin.impersonate', $user->id);
+                                        $detailsRoute = route('admin.users.manage_user', $user->id);
+                                        $transactionsRoute = route('transactions.transaction_details', $data->id);
+                                    @endphp
+                                
                                     <tr class="border-t">
-                                        <td class="p-2">{{ $key + 1 }}</td>
-                                        <td class="p-2">{{ $tx->user->first_name ?? '' }}</td>
-                                        <td class="p-2">{{ $tx->wallet_category }}</td>
-                                        <td class="p-2">{{ $tx->plan_details }}</td>
-                                        <td class="p-2">{{ $tx->transaction_category }}</td>
-                                        <td class="p-2">{{ $tx->phone_number }}</td>
-                                        <td class="p-2">₦{{ number_format($tx->amount, 2) }}</td>
-                                        <td class="p-2">{{ $tx->status }}</td>
-                                        <td class="p-2">{{ $tx->created_at }}</td>
-                                    </tr>
-                                @empty
-                                    <tr>
-                                        <td colspan="9" class="text-center p-4 text-gray-500">
-                                            No transactions found
+                                
+                                        {{-- USER --}}
+                                        <td class="p-2">
+                                            <div>
+                                                {{ $first_name }} {{ $last_name }} <br>
+                                                <small>{{ $username }}</small><br>
+                                                <small><b>{{ $user_plan_name }}</b></small><br>
+                                                <small>{{ $usercategory }}</small><br>
+                                
+                                                <div class="relative inline-block">
+                                                    <details>
+                                                        <summary class="cursor-pointer text-blue-600">Actions</summary>
+                                                        <div class="absolute bg-white border shadow p-2 z-50">
+                                                            <a href="{{ $impersonateRoute }}" class="block px-2 py-1">Impersonate</a>
+                                                            <a href="{{ $detailsRoute }}" class="block px-2 py-1">View User</a>
+                                                            <a href="{{ $transactionsRoute }}" class="block px-2 py-1">View Txn</a>
+                                
+                                                            @if($phone_number)
+                                                                <a href="tel:{{ $phone_number }}" class="block px-2 py-1">Call</a>
+                                                                <a href="https://wa.me/{{ $phone_number }}" target="_blank" class="block px-2 py-1">WhatsApp</a>
+                                                            @endif
+                                                        </div>
+                                                    </details>
+                                                </div>
+                                            </div>
                                         </td>
+                                
+                                        {{-- WALLET --}}
+                                        <td class="p-2">
+                                            {{ $data->wallet_category == 'main_wallet' ? 'MAIN' : 'DATA_WALLET' }}
+                                        </td>
+                                
+                                        {{-- PLAN --}}
+                                        <td class="p-2">
+                                            @if($data->product_plan)
+                                                {{ $data->product_plan->product_plan_name }} <br>
+                                                {{ $data->product_plan->product_plan_category->product_plan_category_name ?? '' }} <br>
+                                                Plan ID: {{ $data->product_plan->api_id }} <br>
+                                
+                                                @if($data->transaction_category == 'data')
+                                                    {{ number_format($data->product_plan->data_size_in_mb ?? 0) }} MB
+                                                @endif
+                                            @else
+                                                NIL
+                                            @endif
+                                        </td>
+                                
+                                        {{-- CATEGORY --}}
+                                        <td class="p-2">
+                                            {{ $data->transaction_category }} <br>
+                                            Route: {{ $data->txn_reference ? 'Mobile/API' : 'WEB' }}
+                                        </td>
+                                
+                                        {{-- PHONE / MESSAGE --}}
+                                        <td class="p-2">
+                                            <details>
+                                                <summary>View</summary>
+                                                <div>
+                                                    <b>Message:</b> {{ $data->admin_screen_message }} <br>
+                                                    <b>Extra:</b> {{ $data->extra_info }}
+                                                </div>
+                                            </details>
+                                        </td>
+                                
+                                        {{-- AMOUNT --}}
+                                        <td class="p-2">
+                                            ₦{{ number_format($data->amount, 2) }}
+                                        </td>
+                                
+                                        {{-- DISCOUNT --}}
+                                        <td class="p-2">
+                                            ₦{{ number_format($data->discounted_amount, 2) }}
+                                        </td>
+                                
+                                        {{-- BALANCE BEFORE --}}
+                                        <td class="p-2">
+                                            @if($data->wallet_category == 'main_wallet')
+                                                ₦{{ number_format($data->balance_before, 2) }}
+                                            @else
+                                                {{ number_format($data->balance_before) }}MB
+                                            @endif
+                                        </td>
+                                
+                                        {{-- BALANCE AFTER --}}
+                                        <td class="p-2">
+                                            @if($data->wallet_category == 'main_wallet')
+                                                ₦{{ number_format($data->balance_after, 2) }}
+                                            @else
+                                                {{ number_format($data->balance_after) }}MB
+                                            @endif
+                                        </td>
+                                
+                                        {{-- STATUS --}}
+                                        <td class="p-2">
+                                            @switch($data->status)
+                                                @case(1) <span class="text-green-600">Success</span> @break
+                                                @case(0) <span class="text-yellow-600">Pending</span> @break
+                                                @case(-1) <span class="text-red-600">Failed</span> @break
+                                                @case(2) <span class="text-blue-600">Refunded</span> @break
+                                                @default <span>Unknown</span>
+                                            @endswitch
+                                        </td>
+                                
+                                        {{-- DATE --}}
+                                        <td class="p-2">
+                                            {{ $data->created_at }}
+                                        </td>
+                                
+                                        {{-- ACTION --}}
+                                        <td class="p-2">
+                                            <a href="{{ route('transactions.transaction_details', $data->id) }}"
+                                               class="px-2 py-1 bg-blue-600 text-white rounded">
+                                                Details
+                                            </a>
+                                        </td>
+                                
                                     </tr>
-                                @endforelse
-                            </tbody>
+                                
+                                @endforeach
+                                </tbody>
                 
                         </table>
                     </div>
