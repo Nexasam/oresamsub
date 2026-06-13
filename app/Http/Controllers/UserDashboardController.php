@@ -367,10 +367,10 @@ class UserDashboardController extends Controller
           ->count();
 
       // Transactions table
-      $data['transactions'] = Transaction::with(['user','product_plan'])
-          ->whereBetween('created_at', [$start,$end])
-          ->latest()
-          ->get();
+      // $data['transactions'] = Transaction::with(['user','product_plan'])
+      //     ->whereBetween('created_at', [$start,$end])
+      //     ->latest()
+      //     ->get();
 
       $data['filter'] = $filter;
 
@@ -378,7 +378,7 @@ class UserDashboardController extends Controller
       $data['main_wallet_balances'] = User::select('main_wallet')->sum('main_wallet');
       $data['bulk_data_wallet_sum'] = UserBulkDataWallet::select('bulk_wallet_balance_mb')->sum('bulk_wallet_balance_mb');
       $data['alltime_bulk_wallet_balance_mb'] = UserBulkDataWallet::select('alltime_bulk_wallet_balance_mb')->sum('alltime_bulk_wallet_balance_mb');
-      $data['transactions'] = Transaction::with(['user','product_plan'])->latest()->get();
+      // $data['transactions'] = Transaction::with(['user','product_plan'])->latest()->get();
       //no need here
       return view('admin_dashboard')->with($data);
     }
