@@ -17,6 +17,51 @@
         </div>
         
     </div>
+    <div class="block justify-between">
+
+        <button
+            data-hs-overlay="#virtualAccountsModal"
+            class="ti-btn ti-btn-primary mb-4">
+            View Virtual Accounts
+        </button>
+
+        <div id="virtualAccountsModal" class="hs-overlay hidden ti-modal">
+            <div class="ti-modal-box">
+                <div class="ti-modal-content">
+        
+                    <div class="ti-modal-header">
+                        <h3 class="ti-modal-title">Virtual Accounts</h3>
+                        <button type="button" class="hs-dropdown-toggle ti-modal-close-btn"
+                            data-hs-overlay="#virtualAccountsModal">×</button>
+                    </div>
+        
+                    <div class="ti-modal-body space-y-3">
+        
+                        @if (count($user_virtual_accounts) > 0)
+        
+                            @foreach ($user_virtual_accounts as $vaccount)
+                                @if (in_array($vaccount->bank_code,$active_bankcodes))
+        
+                                    <div class="p-4 rounded bg-gray-100 dark:bg-gray-800">
+                                        <p class="font-bold">{{ $vaccount->bank_name }}</p>
+                                        <p>{{ $vaccount->account_name }}</p>
+                                        <p class="text-lg font-bold">{{ $vaccount->account_number }}</p>
+                                    </div>
+        
+                                @endif
+                            @endforeach
+        
+                        @else
+                            <p>No virtual accounts available.</p>
+                        @endif
+        
+                    </div>
+        
+                </div>
+            </div>
+        </div>
+
+    </div>
     <!-- Page Header Close -->
 
     <!-- Start::row-1 -->
@@ -138,12 +183,15 @@
 
      </div>
 
+     
+
 
     <div class="grid grid-cols-12 gap-x-5">
         <div class="col-span-12 xxxl:col-span-2 md:col-span-4">
             <div
             class="max-w-sm w-full p-2 mt-2 rounded-2xl shadow-lg bg-white border border-2 border-gray-700  text-white relative space-y-4"
            >
+
 
                 @if (config('app.name') == 'OresamSub')
                     <div class="grid">
