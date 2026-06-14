@@ -480,6 +480,16 @@ export default function Dashboard({ transactions: initialTransactions }) {
               </div>
             </div>
 
+             {/* Amount */}
+            <div>
+              <label className="block text-xs mb-1 text-gray-600 dark:text-gray-300">
+                Amount
+              </label>
+              <div className="font-bold text-emerald-600 dark:text-emerald-400">
+                ₦{Number(buyModal.amount).toLocaleString()}
+              </div>
+            </div>
+
             <div>
               <label className="block text-xs mb-1 text-gray-600 dark:text-gray-300">
                 Phone Number
@@ -525,8 +535,11 @@ export default function Dashboard({ transactions: initialTransactions }) {
                 const confirm = await Swal.fire({
                   title: "Confirm Purchase",
                   html: `
-                    Plan: <b>${buyModal.product_plan?.product_plan_name}</b><br/>
-                    Phone: <b>${phone}</b>
+                    <div style="text-align:left; line-height:1.6">
+                      <div><b>Plan:</b> ${buyModal.product_plan?.product_plan_name}</div>
+                      <div><b>Phone:</b> ${phone}</div>
+                      <div><b>Amount:</b> ₦${Number(buyModal.amount).toLocaleString()}</div>
+                    </div>
                   `,
                   icon: "question",
                   showCancelButton: true,
