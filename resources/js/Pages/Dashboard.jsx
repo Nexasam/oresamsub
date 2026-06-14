@@ -295,11 +295,25 @@ export default function Dashboard({ transactions: initialTransactions }) {
           Number(tx.service_charge || 0) === 0 && (
             <div className="mt-2 text-right">
               <button
-                onClick={(e) => {
-                  e.stopPropagation(); // prevent opening modal
-                  setBuyModal(tx);
-                  setPhone(tx.phone_number || "");
-                }}
+               onClick={async (e) => {
+                e.stopPropagation();
+              
+                const result = await Swal.fire({
+                  title: "Buy Again?",
+                  text: "You are about to start a new purchase using this plan.",
+                  icon: "question",
+                  showCancelButton: true,
+                  confirmButtonText: "Yes, Continue",
+                  cancelButtonText: "Cancel",
+                  confirmButtonColor: "#059669",
+                });
+              
+                if (!result.isConfirmed) return;
+              
+                setBuyModal(tx);
+                setPhone(""); // IMPORTANT: force fresh input
+                setPin("");   // reset PIN too
+              }}
                 className="text-xs px-3 py-1 bg-emerald-600 hover:bg-emerald-700 text-white rounded-md"
               >
                 Buy Again
@@ -471,8 +485,9 @@ export default function Dashboard({ transactions: initialTransactions }) {
                 Phone Number
               </label>
               <input
-                value={phone}
-                onChange={(e) => setPhone(e.target.value)}
+              value={phone}
+              placeholder="Enter phone number"
+              onChange={(e) => setPhone(e.target.value)}
                 className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500"
               />
             </div>
@@ -506,56 +521,53 @@ export default function Dashboard({ transactions: initialTransactions }) {
                   Swal.fire("Error", "Enter phone and PIN", "warning");
                   return;
                 }
-
+              
+                const confirm = await Swal.fire({
+                  title: "Confirm Purchase",
+                  html: `
+                    Plan: <b>${buyModal.product_plan?.product_plan_name}</b><br/>
+                    Phone: <b>${phone}</b>
+                  `,
+                  icon: "question",
+                  showCancelButton: true,
+                  confirmButtonText: "Proceed",
+                  cancelButtonText: "Cancel",
+                  confirmButtonColor: "#059669",
+                });
+              
+                if (!confirm.isConfirmed) return;
+              
                 try {
                   setBuying(true);
-                
+              
                   const res = await axios.post(route("user.data.buy_again_data_action"), {
                     product_plan_id: buyModal.product_plan_id,
                     phone_number: phone,
                     pin: pin,
                   });
-                
+              
                   const data = res?.data;
-                
+              
                   if (Number(data?.status) === 1) {
                     Swal.fire("Success", data.message || "Purchase successful", "success");
+              
                     setBuyModal(null);
                     setPhone("");
                     setPin("");
-
-                
-
-                  // 🔥 ALWAYS update transaction list (SUCCESS OR FAILURE)
-                  // if (data?.transaction) {
-                  //   setTransactions((prev) =>
-                  //     prev.map((tx) =>
-                  //       tx.id === data.transaction.id
-                  //         ? data.transaction
-                  //         : tx
-                  //     )
-                  //   );
-                  // }
-                  
-
+              
                   } else {
                     Swal.fire("Failed", data?.message || "Transaction failed", "error");
                   }
-
-                  
-                
+              
                 } catch (e) {
                   const message =
-                    e?.response?.data?.message ||
-                    "Something went wrong";
-                
+                    e?.response?.data?.message || "Something went wrong";
+              
                   Swal.fire("Error", message, "error");
-                
+              
                 } finally {
                   setBuying(false);
-                  window.location.reload();
                 }
-
               }}
               className="w-full py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg disabled:opacity-50"
             >
