@@ -158,7 +158,7 @@ export default function Dashboard({ transactions: initialTransactions }) {
           </div>
 
           <div className="mt-1 text-[11px] font-medium text-emerald-700 dark:text-emerald-300 text-center leading-tight">
-            Popular Data Plans
+            Favourite Data Plans
           </div>
         </button>
       </div>
