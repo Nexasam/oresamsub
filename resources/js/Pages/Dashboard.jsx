@@ -600,7 +600,7 @@ export default function Dashboard({ transactions: initialTransactions }) {
           {/* Header */}
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-lg font-bold text-gray-900 dark:text-white">
-              Popular Data Plans
+              Favourite Data Plans
             </h2>
 
             <button
