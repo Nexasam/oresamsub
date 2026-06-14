@@ -173,7 +173,7 @@ class UserDashboardController extends Controller
 
 
 
-        $data['transactions'] = Transaction::with(relations: 'product_plan')->where('user_id',auth()->id())->limit(10)->latest()->get();
+        $data['transactions'] = Transaction::with(relations: 'product_plan')->where('user_id',auth()->id())->limit(100)->latest()->get();
         $data['announcements'] = Announcement::where('status',1)->latest()->get();
         // return $data;
         // logger('thiss ran for inertia dashboard'.json_encode($data));
