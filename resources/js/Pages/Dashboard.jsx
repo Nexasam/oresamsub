@@ -148,7 +148,7 @@ export default function Dashboard({ transactions: initialTransactions }) {
         Popular Data Plans
       </button> */}
 
-      <div className="grid grid-cols-4 gap-2 mt-4">
+      <div className="grid grid-cols-1 lg:grid-cols-4  gap-2 mt-4">
         <button
           onClick={() => setShowPopularPlans(true)}
           className="group p-2 rounded-lg bg-white dark:bg-gray-800 border border-emerald-100 dark:border-emerald-900/40 hover:shadow-md transition flex flex-col items-center"
