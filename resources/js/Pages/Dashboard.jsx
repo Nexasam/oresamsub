@@ -32,6 +32,10 @@ export default function Dashboard({ transactions: initialTransactions }) {
   const [pendingState, setPendingState] = useState(pending);
   const [loading, setLoading] = useState(false);
 
+  const [showPopularPlans, setShowPopularPlans] = useState(false);
+
+  const [popularModal, setPopularModal] = useState(false);
+
     const [search, setSearch] = useState("");
     const [buyModal, setBuyModal] = useState(null);
     const [phone, setPhone] = useState("");
@@ -104,6 +108,20 @@ export default function Dashboard({ transactions: initialTransactions }) {
     return plan.includes(search.toLowerCase());
   });
 
+  const uniquePlans = Object.values(
+    transactions
+      .filter(tx => tx.transaction_category === "data" && tx.status === "1")
+      .reduce((acc, tx) => {
+        const key = tx.product_plan_id;
+  
+        if (!acc[key]) {
+          acc[key] = tx; // keep first occurrence
+        }
+  
+        return acc;
+      }, {})
+  );
+
   return (
     <DashboardLayout title="Dashboard">
 
@@ -121,6 +139,42 @@ export default function Dashboard({ transactions: initialTransactions }) {
 
       {/* Announcements */}
       <Announcements announcements={announcements} />
+
+
+      {/* <button
+        onClick={() => setShowPopularPlans(true)}
+        className="bg-blue-600 hover:bg-blue-700 text-white text-xs px-3 py-2 rounded-lg"
+      >
+        Popular Data Plans
+      </button> */}
+
+      <div className="grid grid-cols-4 gap-2 mt-4">
+        <button
+          onClick={() => setShowPopularPlans(true)}
+          className="group p-2 rounded-lg bg-white dark:bg-gray-800 border border-emerald-100 dark:border-emerald-900/40 hover:shadow-md transition flex flex-col items-center"
+        >
+          <div className="w-8 h-8 rounded-full bg-gradient-to-br from-emerald-500 to-green-600 flex items-center justify-center text-white text-sm shadow-sm group-hover:shadow-emerald-400/40 group-hover:scale-105 transition">
+            📊
+          </div>
+
+          <div className="mt-1 text-[11px] font-medium text-emerald-700 dark:text-emerald-300 text-center leading-tight">
+            Popular Data Plans
+          </div>
+        </button>
+      </div>
+
+      {/* <button
+        onClick={() => setShowPopularPlans(true)}
+        className="group flex flex-col items-center p-2 rounded-lg bg-white dark:bg-gray-800 border hover:shadow-sm transition"
+      >
+        <div className="w-8 h-8 flex items-center justify-center rounded-full bg-emerald-500 text-white text-sm">
+          📊
+        </div>
+
+        <div className="mt-1 text-[11px] font-medium text-gray-700 dark:text-gray-200 text-center leading-tight">
+          Popular
+        </div>
+      </button> */}
 
       {/* Product Actions */}
       <ProductButtons loggingOut={loggingOut} setLoggingOut={setLoggingOut} />
@@ -393,125 +447,190 @@ export default function Dashboard({ transactions: initialTransactions }) {
         </div>
     )}
 
-  {buyModal && (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-      <div className="bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 rounded-xl shadow-lg max-w-sm w-full p-6">
+    {buyModal && (
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+        <div className="bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 rounded-xl shadow-lg max-w-sm w-full p-6">
 
-        <h2 className="text-lg font-bold mb-4">
-          Buy Again
-        </h2>
+          <h2 className="text-lg font-bold mb-4">
+            Buy Again
+          </h2>
 
-        <div className="space-y-3 text-sm">
+          <div className="space-y-3 text-sm">
 
-          <div>
-            <label className="block text-xs mb-1 text-gray-600 dark:text-gray-300">
-              Plan
-            </label>
-            <div className="font-semibold">
-              {buyModal.product_plan?.product_plan_name}
+            <div>
+              <label className="block text-xs mb-1 text-gray-600 dark:text-gray-300">
+                Plan
+              </label>
+              <div className="font-semibold">
+                {buyModal.product_plan?.product_plan_name}
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-xs mb-1 text-gray-600 dark:text-gray-300">
+                Phone Number
+              </label>
+              <input
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500"
+              />
+            </div>
+
+            <div>
+              <label className="block text-xs mb-1 text-gray-600 dark:text-gray-300">
+                PIN
+              </label>
+              <input
+                type="password"
+                value={pin}
+                onChange={(e) => setPin(e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500"
+              />
+            </div>
+
+          </div>
+
+          <div className="mt-5 flex justify-between gap-2">
+            <button
+              onClick={() => setBuyModal(null)}
+              className="w-full py-2 bg-gray-300 dark:bg-gray-700 dark:text-white rounded-lg"
+            >
+              Cancel
+            </button>
+
+            <button
+              disabled={buying}
+              onClick={async () => {
+                if (!phone || !pin) {
+                  Swal.fire("Error", "Enter phone and PIN", "warning");
+                  return;
+                }
+
+                try {
+                  setBuying(true);
+                
+                  const res = await axios.post(route("user.data.buy_again_data_action"), {
+                    product_plan_id: buyModal.product_plan_id,
+                    phone_number: phone,
+                    pin: pin,
+                  });
+                
+                  const data = res?.data;
+                
+                  if (Number(data?.status) === 1) {
+                    Swal.fire("Success", data.message || "Purchase successful", "success");
+                    setBuyModal(null);
+                    setPhone("");
+                    setPin("");
+
+                
+
+                  // 🔥 ALWAYS update transaction list (SUCCESS OR FAILURE)
+                  // if (data?.transaction) {
+                  //   setTransactions((prev) =>
+                  //     prev.map((tx) =>
+                  //       tx.id === data.transaction.id
+                  //         ? data.transaction
+                  //         : tx
+                  //     )
+                  //   );
+                  // }
+                  
+
+                  } else {
+                    Swal.fire("Failed", data?.message || "Transaction failed", "error");
+                  }
+
+                  
+                
+                } catch (e) {
+                  const message =
+                    e?.response?.data?.message ||
+                    "Something went wrong";
+                
+                  Swal.fire("Error", message, "error");
+                
+                } finally {
+                  setBuying(false);
+                  window.location.reload();
+                }
+
+              }}
+              className="w-full py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg disabled:opacity-50"
+            >
+              {buying ? "Processing..." : "Buy Now"}
+            </button>
+          </div>
+
+        </div>
+      </div>
+    )}
+
+    {showPopularPlans && (
+      <div className="fixed inset-0 z-50 bg-black/60 flex items-center justify-center px-3">
+
+        <div className="bg-white dark:bg-gray-900 w-full max-w-2xl rounded-xl shadow-xl border border-gray-200 dark:border-gray-700 p-4 max-h-[85vh] overflow-y-auto">
+
+          {/* Header */}
+          <div className="flex justify-between items-center mb-4">
+            <h2 className="text-lg font-bold text-gray-900 dark:text-white">
+              Popular Data Plans
+            </h2>
+
+            <button
+              onClick={() => setShowPopularPlans(false)}
+              className="text-sm text-red-500 hover:text-red-600 dark:hover:text-red-400"
+            >
+              Close
+            </button>
+          </div>
+
+          {/* SECTION 1 */}
+          <div className="mb-6">
+            <h3 className="text-sm font-semibold mb-2 text-gray-700 dark:text-gray-300">
+              Most Used Plans
+            </h3>
+
+       
+       
+        
+
+            <div className="border rounded-lg border-gray-200 dark:border-gray-700 max-h-60 overflow-y-auto">
+
+            <div className="grid grid-cols-2 gap-2">
+            {uniquePlans.slice(0, 10).map((tx) => (
+              <button
+                key={tx.product_plan_id}
+                onClick={() => {
+                  setBuyModal(tx);
+                  setPhone(tx.phone_number);
+                  setShowPopularPlans(false);
+                }}
+                className="p-3 text-left rounded-lg border
+                          border-gray-200 dark:border-gray-700
+                          bg-white dark:bg-gray-800
+                          hover:bg-emerald-50 dark:hover:bg-gray-700
+                          transition"
+              >
+                <div className="text-xs font-semibold text-gray-900 dark:text-white">
+                  {tx.product_plan?.product_plan_name}
+                </div>
+
+                <div className="text-[10px] text-gray-500 dark:text-gray-400 mt-1">
+                  ₦{Number(tx.amount).toLocaleString()}
+                </div>
+              </button>
+            ))}
+          </div>
+
             </div>
           </div>
 
-          <div>
-            <label className="block text-xs mb-1 text-gray-600 dark:text-gray-300">
-              Phone Number
-            </label>
-            <input
-              value={phone}
-              onChange={(e) => setPhone(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500"
-            />
-          </div>
-
-          <div>
-            <label className="block text-xs mb-1 text-gray-600 dark:text-gray-300">
-              PIN
-            </label>
-            <input
-              type="password"
-              value={pin}
-              onChange={(e) => setPin(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500"
-            />
-          </div>
-
         </div>
-
-        <div className="mt-5 flex justify-between gap-2">
-          <button
-            onClick={() => setBuyModal(null)}
-            className="w-full py-2 bg-gray-300 dark:bg-gray-700 dark:text-white rounded-lg"
-          >
-            Cancel
-          </button>
-
-          <button
-            disabled={buying}
-            onClick={async () => {
-              if (!phone || !pin) {
-                Swal.fire("Error", "Enter phone and PIN", "warning");
-                return;
-              }
-
-              try {
-                setBuying(true);
-              
-                const res = await axios.post(route("user.data.buy_again_data_action"), {
-                  product_plan_id: buyModal.product_plan_id,
-                  phone_number: phone,
-                  pin: pin,
-                });
-              
-                const data = res?.data;
-              
-                if (Number(data?.status) === 1) {
-                  Swal.fire("Success", data.message || "Purchase successful", "success");
-                  setBuyModal(null);
-                  setPhone("");
-                  setPin("");
-
-               
-
-                // 🔥 ALWAYS update transaction list (SUCCESS OR FAILURE)
-                // if (data?.transaction) {
-                //   setTransactions((prev) =>
-                //     prev.map((tx) =>
-                //       tx.id === data.transaction.id
-                //         ? data.transaction
-                //         : tx
-                //     )
-                //   );
-                // }
-                 
-
-                } else {
-                  Swal.fire("Failed", data?.message || "Transaction failed", "error");
-                }
-
-                
-              
-              } catch (e) {
-                const message =
-                  e?.response?.data?.message ||
-                  "Something went wrong";
-              
-                Swal.fire("Error", message, "error");
-              
-              } finally {
-                setBuying(false);
-                window.location.reload();
-              }
-
-            }}
-            className="w-full py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg disabled:opacity-50"
-          >
-            {buying ? "Processing..." : "Buy Now"}
-          </button>
-        </div>
-
       </div>
-    </div>
-  )}
+    )}
+
 
 
     </DashboardLayout>

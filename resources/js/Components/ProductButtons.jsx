@@ -2,12 +2,15 @@ import { router } from "@inertiajs/react";
 import { Link } from "@inertiajs/react";
 
 export default function ProductButtons({ loggingOut, setLoggingOut }) {
+  
   return (
     <div className="grid grid-cols-4 gap-2 text-center mt-4">
 
       {/* Reusable Card */}
       {[
-        {
+   
+
+       {
           label: "Data",
           icon: "📶",
           href: route("inertia.data.index"),
