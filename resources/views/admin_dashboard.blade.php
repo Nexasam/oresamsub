@@ -48,12 +48,7 @@
                     </ul>
         
                     {{-- Optional: link to full list --}}
-                    <div class="mt-2">
-                        <a href="{{ route('transactions.issues') }}"
-                           class="text-sm text-indigo-600 hover:underline">
-                            View all problematic transactions →
-                        </a>
-                    </div>
+                
                 @endif
             </div>
         </div>
