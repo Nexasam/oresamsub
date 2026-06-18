@@ -37,7 +37,7 @@
                         @foreach($transactions_with_issues->take(5) as $txn)
                             <li class="flex justify-between items-center">
                                 <span>
-                                    #{{ $txn->id }} — {{ $txn->description ?? 'No description' }}
+                                    # {{ $txn->phone_number }} - {{ $txn->transaction_category }} — {{ $txn->description ?? 'No description' }}
                                 </span>
                                 <a href="{{ route('transactions.transaction_details', $txn->id) }}"
                                    class="text-blue-600 hover:underline">
