@@ -36,6 +36,10 @@ class DataAutomation{
         return $temp;
     }
 
+    private function safeDecode($value) {
+        return is_array($value) ? $value : json_decode($value, true);
+    }
+
 
 
     public function buyData($vendor_record = null,$input_phone_number = '',$vendor_plan_id,$ported_number = true,$input_network = '', $reference){
@@ -56,27 +60,34 @@ class DataAutomation{
             ];
         }
 
-        $request_url = $vendor_record->endpoint_url;
-        $request_params = $vendor_record->request_params;
-        $request_params_decode = json_decode($request_params,true);
+        // $request_params_decode = $this->safeDecode($vendor_record->request_params);
+        // $headers_params_decode = $this->safeDecode($vendor_record->headers);
+        // $networkdecode = $this->safeDecode($vendor_record->network_plans);
+        // $network = $networkdecode[$this->input_network] ?? '1'; //should not run default
+        // $success_conditions_decode = $this->safeDecode($vendor_record->success_conditions);
 
-        $headers_params = $vendor_record->headers;
-        $headers_params_decode = json_decode($headers_params,true);
+        $request_params_decode = $vendor_record->request_params;
+        // $request_params_decode = json_decode($request_params,true);
 
-        $networkdecode = json_decode($vendor_record->network_plans,true);
+        $headers_params_decode = $vendor_record->request_headers;
+        // $headers_params_decode = json_decode($headers_params,true);
+
+        $networkdecode = $vendor_record->network_plans;
         $network = $networkdecode[$this->input_network] ?? '1'; //should not run default
 
-        $success_conditions = $vendor_record->success_conditions; // stored as JSON
-        $success_conditions_decode = json_decode($success_conditions,true); // stored as JSON
+        $success_conditions_decode = $vendor_record->success_condition; // stored as JSON
+        // $success_conditions_decode = json_decode($success_conditions,true); 
 
         
         $plan = $this->vendor_plan_id;
-        $request_url = $vendor_record->endpoint_url;
+        $request_url = $vendor_record->data_url;
         $new_request_params = [];
 
 
         //now lets loop request params
         $new_request_params = [];
+
+
 
         foreach($request_params_decode as $param){
             $key = $param['key'];
@@ -86,9 +97,24 @@ class DataAutomation{
                 $new_request_params[$key] = $input_phone_number;
             } elseif($value == 'network'){
                 $new_request_params[$key] = $network;
-            } elseif($value == 1){  // ported number
-                $new_request_params[$key] = true;
-            } elseif($value == 'plan'){
+            }
+            elseif($value == 'reference'){
+                $new_request_params[$key] = $this->reference;
+            } 
+            elseif($value == 'ported_number'){
+                $new_request_params[$key] = true; //true
+            } 
+            elseif($value == "action"){  // ported number
+
+                //unique only to bilink
+                if($vendor_record->slug == 'bilink'){
+                    $new_request_params[$key] = "vend";
+                }else{
+                    $new_request_params[$key] = true;
+                }
+            } 
+            
+            elseif($value == 'plan'){
                 $new_request_params[$key] = $plan;
             } else {
                 $new_request_params[$key] = $value;
@@ -130,18 +156,60 @@ class DataAutomation{
 
         // logger('curl http code: '.$httpcode);
         // logger('curl error: '.$curl_error);
-        // logger('response: '.$response);
+        logger('dataaaaaresponse: '.$response);
         curl_close($curl);
 
         $response_dec = json_decode($response,true);
+     
+     
+     
+        //former
+        // $allPassed = true;
+        // foreach ($success_conditions_decode as $scondition) {
+        //     $temp = $response_dec;
+        //     foreach (explode('.', $scondition['key']) as $k) {
+        //         if (!isset($temp[$k])) { $temp = null; break; }
+        //         $temp = $temp[$k];
+        //     }
+        //     if ($temp != $scondition['value']) { $allPassed = false; break; }
+        // }
+
+
+        //updated
         $allPassed = true;
+
         foreach ($success_conditions_decode as $scondition) {
+
             $temp = $response_dec;
+
             foreach (explode('.', $scondition['key']) as $k) {
-                if (!isset($temp[$k])) { $temp = null; break; }
+                if (!isset($temp[$k])) {
+                    $temp = null;
+                    break;
+                }
                 $temp = $temp[$k];
             }
-            if ($temp != $scondition['value']) { $allPassed = false; break; }
+
+            // 🔥 normalize ONLY here
+            $actual = $temp;
+            $expected = $scondition['value'];
+
+            if (is_string($actual)) {
+                $actual = strtolower(trim($actual));
+                if ($actual === 'true') $actual = true;
+                if ($actual === 'false') $actual = false;
+            }
+
+            if (is_string($expected)) {
+                $expected = strtolower(trim($expected));
+                if ($expected === 'true') $expected = true;
+                if ($expected === 'false') $expected = false;
+            }
+
+            if ($actual != $expected) {
+                $allPassed = false;
+                break;
+            }
         }
         
         $success_message = match(count($steps = explode('.', $vendor_record->success_response))) {

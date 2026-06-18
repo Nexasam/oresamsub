@@ -12,7 +12,8 @@ class ResellerPlanController extends Controller
 {
     public function index(){
         // Gate::authorize('viewAny', UserPlan::class);
-        $user_product_plans = UserPlan::get();
+        // $user_product_plans  = UserPlan::orderBy('plan_level','asc')->get();
+        $user_product_plans = UserPlan::orderBy('plan_level', 'asc')->get();
         $data['user_plans'] = $user_product_plans;
         return view('admin.reseller_plans.index')->with($data);
     }

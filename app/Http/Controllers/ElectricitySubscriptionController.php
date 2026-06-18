@@ -539,7 +539,7 @@ class ElectricitySubscriptionController extends Controller
 
 
         }catch(Exception $exception){
-            logger($exception->getMessage().' on line: '. $exception->getLine());
+            logger($exception->getMessage().' on line4: '. $exception->getLine());
             DB::rollBack();
             return response()->json(['status'=>'-1', 'message'=>'Something went wrong... Please try again', 'data'=>[]]);
         }

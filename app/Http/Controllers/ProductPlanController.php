@@ -34,6 +34,103 @@ class ProductPlanController extends Controller
         return view('admin.product_plans.index')->with($data);
     }
 
+    public function manage($id)
+    {
+        $plan = ProductPlan::with([
+            'automationProductPlans.automation',
+            'product_plan_category.network',
+            'product_plan_category.product'
+        ])->findOrFail($id);
+
+        $automations = Automation::all();
+
+        return view('admin.product_plans.manage', compact('plan', 'automations'));
+    }
+
+    public function index2(Request $request){
+      // dd('na here');
+      // $product_plans = ProductPlan::with(['product','product_plan_category','automation'])
+      // ->where('visibility',1)
+      // ->get();
+      // $product_plan_categories = ProductPlanCategory::get();
+      // $data['product_plans'] = $product_plans;
+      // $data['product_plan_categories'] = $product_plan_categories;
+      // dd($data);
+      $query = ProductPlan::with([
+            'automation',
+            'product_plan_category.network',
+            'product_plan_category.product',
+            'automationProductPlans'
+        ])
+        // ->where('visibi')
+        ->orderBy('updated_at', 'desc');
+
+        // 🔍 FILTER: product_plan_name
+        if ($request->filled('product_plan_name')) {
+            $query->where('product_plan_name', 'like', '%' . $request->product_plan_name . '%');
+        }
+
+        // 🔍 FILTER: automation
+        if ($request->filled('automation_id')) {
+            $query->where('automation_id', $request->automation_id);
+        }
+
+        // 🔍 FILTER: product
+        if ($request->filled('product_id')) {
+            $query->whereHas('product_plan_category.product', function ($q) use ($request) {
+                $q->where('id', $request->product_id);
+            });
+        }
+
+        // 🔍 FILTER: network
+        if ($request->filled('network_id')) {
+            $query->whereHas('product_plan_category.network', function ($q) use ($request) {
+                $q->where('id', $request->network_id);
+            });
+        }
+
+        // 📅 DATE FILTER
+        if ($request->filled('from_date')) {
+            $query->whereDate('created_at', '>=', $request->from_date);
+        }
+
+        if ($request->filled('to_date')) {
+            $query->whereDate('created_at', '<=', $request->to_date);
+        }
+
+        $perPage = request('per_page', 10);
+
+        $data = $query->paginate($perPage)->withQueryString();
+
+        // dropdown data
+        $automations = Automation::all();
+        $products = Product::all();
+        $networks = Network::all();
+
+        return view('admin.product_plans.index2', compact(
+            'data',
+            'automations',
+            'products',
+            'networks'
+        ));
+    }
+
+      public function update_product_plan_new(Request $request, $id)
+      {
+        // dd('sdfs');
+          $plan = ProductPlan::findOrFail($id);
+
+          $plan->update([
+              'product_plan_name' => $request->product_plan_name,
+              'data_size_in_mb' => $request->data_size_in_mb,
+              'validity_in_days' => $request->validity_in_days,
+              'cost_price' => $request->cost_price,
+              'user_level_1_selling_price' => $request->user_level_1_selling_price,
+          ]);
+
+          return back()->with('success', 'Product plan updated successfully');
+      }
+
      /**
      * Show all product plans: api user: APIUSER
      */
@@ -341,6 +438,8 @@ class ProductPlanController extends Controller
         ->escapeColumns([])
         ->make(true);
     }
+
+
 
     public function fetch_public_product_plans(Request $request){
       $data = ProductPlan::with(['product_plan_category.network','product_plan_category.product'])

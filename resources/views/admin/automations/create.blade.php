@@ -1,299 +1,328 @@
 @extends('layouts.app')
+
 @section('content')
 
-      <!-- Start::main-content -->
-      <div class="main-content">
+<div class="main-content">
 
-        <!-- Page Header -->
-        <div class="block justify-between page-header md:flex">
-           
+    {{-- ALERTS --}}
+    <div class="mb-3">
+        @if (Session::has('success'))
+            <div class="bg-green-50 border border-green-200 text-green-700 p-2 text-xs rounded mb-2">
+                {{ Session::get('success') }}
+            </div>
+        @endif
 
-        </div>
-        <!-- Page Header Close -->
+        @if (Session::has('failure'))
+            <div class="bg-red-50 border border-red-200 text-red-700 p-2 text-xs rounded">
+                {{ Session::get('failure') }}
+            </div>
+        @endif
 
-        <!-- Start::row-1 -->
-        <div class="grid grid-cols-12 gap-1">
-
-          <div class="col-span-12">
-            @if (Session::has('success'))
-            <div class="bg-success/10 border border-success/10 alert text-success" role="alert">
-              Great! {{ Session::get('success') }}
-              </div>
-            @endif
-
-            @if (Session::has('failure'))
-              <div class="bg-danger/10 border border-danger/10 alert text-danger" role="alert">
-              Ops! {{ Session::get('failure') }}
-              </div>
-            @endif
-            
-            @if ($errors->any())
-              <div class="bg-danger/10 border border-danger/10 alert text-danger" role="alert">
-                <ul>
+        @if ($errors->any())
+            <div class="bg-red-50 border border-red-200 text-red-700 p-2 text-xs rounded mt-2">
+                <ul class="list-disc ml-4">
                     @foreach ($errors->all() as $error)
                         <li>{{ $error }}</li>
                     @endforeach
                 </ul>
-              </div>
-            @endif
-          </div>
-          
-         
-          <div class="col-span-12">
-          
-              <div class="box">
-                <div class="box-header flex items-center space-x-4 justify-between">
-                  <h5 class="box-title">Automations</h5>
-              
-
-                </div>
-
-                <div class="box-body">
-                  <nav class="flex space-x-2" aria-label="Tabs" role="tablist">
-                  </nav>
-
-                  <div class="mt-3">
-                    <div id="pills-with-brand-color-2"  role="tabpanel" aria-labelledby="pills-with-brand-color-item-1">
-                      <div class="overflow-auto">
-                          @if (Session::has('success'))
-                          <div class="bg-success/10 border border-success/10 alert text-success" role="alert">
-                            Great! {{ Session::get('success') }}
-                            </div>
-                          @endif
-          
-                          @if (Session::has('failure'))
-                            <div class="bg-danger/10 border border-danger/10 alert text-danger" role="alert">
-                            Ops! {{ Session::get('failure') }}
-                            </div>
-                          @endif
-                 
-                          <form method="POST" action="{{ route('admin.automation.storev2') }}" x-data="providerForm()">
-                            @csrf
-                        
-                            <!-- Provider Basic Info -->
-                            <h2 class="text-lg font-bold mb-2">Provider Information</h2>
-                        
-                            <div class="mb-4">
-                                <label class="font-semibold">Provider Name</label>
-                                <input type="text" name="name" class="w-full border rounded p-2">
-                            </div>
-                        
-                            <div class="mb-4">
-                                <label class="font-semibold">Slug</label>
-                                <input type="text" name="slug" class="w-full border rounded p-2"
-                                       x-model="slug"
-                                       @input="slug = slug.toLowerCase().replace(/ /g,'-')">
-                            </div>
-                        
-                            <!-- DATA CONFIG SECTION -->
-                            <h2 class="text-lg font-bold mt-6 mb-2">Data Configuration</h2>
-                        
-                            <div class="mb-4">
-                                <label class="font-semibold">Endpoint URL</label>
-                                <input type="text" name="endpoint_url" class="w-full border rounded p-2">
-                            </div>
-                        
-                            <!-- Request Key/Value parameters -->
-                            <div class="mb-4">
-                                <label class="font-semibold">Request Parameters</label>
-                        
-                                <template x-for="(item, index) in requestParams" :key="index">
-                                    <div class="flex gap-2 mb-2">
-                                        <input type="text" class="border rounded p-2 w-1/2"
-                                               placeholder="Key"
-                                               x-model="item.key"
-                                               :name="'request_params['+index+'][key]'">
-                        
-                                        <select class="border rounded p-2 w-1/2"
-                                                x-model="item.value"
-                                                :name="'request_params['+index+'][value]'">
-                                            <option value="">-- Select Field --</option>
-                                            @foreach($fields as $field)
-                                                <option value="{{ $field }}">{{ $field }}</option>
-                                            @endforeach
-                                        </select>
-                        
-                                        <button type="button" @click="removeRequestParam(index)" class="text-red-500 font-bold">
-                                            &times;
-                                        </button>
-                                    </div>
-                                </template>
-                        
-                                <button type="button" @click="addRequestParam" class="text-blue-500 mt-2">
-                                    + Add Parameter
-                                </button>
-                            </div>
-
-                            <div class="mb-4">
-                              <label class="font-semibold">Network Plans</label>
-                              
-                              <div class="flex gap-2 mb-2 items-center">
-                                  <span class="w-1/2 font-medium">MTN</span>
-                                  <input type="text" placeholder="Plan ID" class="border rounded p-2 w-1/2"
-                                         name="network_plans[MTN]">
-                              </div>
-                          
-                              <div class="flex gap-2 mb-2 items-center">
-                                  <span class="w-1/2 font-medium">GLO</span>
-                                  <input type="text" placeholder="Plan ID" class="border rounded p-2 w-1/2"
-                                         name="network_plans[GLO]">
-                              </div>
-                          
-                              <div class="flex gap-2 mb-2 items-center">
-                                  <span class="w-1/2 font-medium">AIRTEL</span>
-                                  <input type="text" placeholder="Plan ID" class="border rounded p-2 w-1/2"
-                                         name="network_plans[AIRTEL]">
-                              </div>
-                          
-                              <div class="flex gap-2 mb-2 items-center">
-                                  <span class="w-1/2 font-medium">9MOBILE</span>
-                                  <input type="text" placeholder="Plan ID" class="border rounded p-2 w-1/2"
-                                         name="network_plans[9MOBILE]">
-                              </div>
-                          
-                          </div>
-                          
-                          
-                          
-                            
-                        
-                            <!-- HEADER ARRAY -->
-                            <div class="mb-4">
-                                <label class="font-semibold">Request Headers</label>
-                        
-                                <template x-for="(item, index) in request_headers" :key="index">
-                                    <div class="flex gap-2 mb-2">
-                                        <input type="text" placeholder="Header Key" class="border rounded p-2 w-1/2"
-                                               x-model="item.key"
-                                               :name="'request_headers['+index+'][key]'">
-                                        <input type="text" placeholder="Header Value" class="border rounded p-2 w-1/2"
-                                               x-model="item.value"
-                                               :name="'request_headers['+index+'][value]'">
-                                        <button type="button" @click="removeHeader(index)" class="text-red-500 font-bold">&times;</button>
-                                    </div>
-                                </template>
-                        
-                                <button type="button" @click="addHeader" class="text-blue-500">+ Add Header</button>
-                            </div>
-                        
-                            <!-- REQUEST METHOD -->
-                            <div class="mb-4">
-                                <label class="font-semibold">Request Method</label>
-                                <select name="http_verb" class="border rounded p-2 w-full">
-                                    <option value="POST">POST</option>
-                                    <option value="GET">GET</option>
-                                </select>
-                            </div>
-                        
-                            <!-- SUCCESS CONDITION ARRAY -->
-                            <div class="mb-4">
-                                <label class="font-semibold">Success Condition</label>
-                        
-                                <template x-for="(item, index) in successConditions" :key="index">
-                                    <div class="flex gap-2 mb-2">
-                                        <input type="text" placeholder="Key" class="border rounded p-2 w-1/2"
-                                               x-model="item.key"
-                                               :name="'success_condition['+index+'][key]'">
-                                        <input type="text" placeholder="Value" class="border rounded p-2 w-1/2"
-                                               x-model="item.value"
-                                               :name="'success_condition['+index+'][value]'">
-                                        <button type="button" @click="removeSuccessCondition(index)" class="text-red-500 font-bold">&times;</button>
-                                    </div>
-                                </template>
-                                <button type="button" @click="addSuccessCondition" class="text-blue-500">+ Add Success Condition</button>
-                            </div>
-                        
-                            <!-- SUCCESS RESPONSE FIELD -->
-                            <div class="mb-4">
-                                <label class="font-semibold">Success Response</label>
-                                <input type="text" name="success_response" class="w-full border rounded p-2" placeholder="e.g reference,data.plan,status">
-                            </div>
-                        
-                            <!-- FAILED RESPONSE -->
-                            <div class="mb-4">
-                                <label class="font-semibold">Failed Response</label>
-                                <input type="text" name="failed_response" class="w-full border rounded p-2" placeholder="e.g message,error,details">
-                            </div>
-                        
-                            <!-- SUCCESS / FAILURE CODE -->
-                            <div class="grid grid-cols-2 gap-4">
-                                <div>
-                                    <label class="font-semibold">Success Code (optional)</label>
-                                    <input type="number" name="success_code" class="w-full border rounded p-2">
-                                </div>
-                                <div>
-                                    <label class="font-semibold">Failure Code (optional)</label>
-                                    <input type="number" name="failure_code" class="w-full border rounded p-2">
-                                </div>
-                            </div>
-                        
-                            <button type="submit" class="bg-blue-600 text-white px-6 py-3 rounded mt-6">
-                                Save Provider
-                            </button>
-                          </form>
-                        
-                     
-
-                      </div>                
-                    </div>
-                    <div id="pills-with-brand-color-2" class="hidden"  role="tabpanel" aria-labelledby="pills-with-brand-color-item-2">
-                      <div class="overflow-auto">
-                            <!-- Start::row-3 -->
-                          <div class="grid grid-cols-12 gap-x-6">
-                              
-                            <div class="col-span-12">
-                              @if (Session::has('success'))
-                              <div class="bg-success/10 border border-success/10 alert text-success" role="alert">
-                                Great! {{ Session::get('success') }}
-                                </div>
-                              @endif
-              
-                              @if (Session::has('failure'))
-                                <div class="bg-danger/10 border border-danger/10 alert text-danger" role="alert">
-                                 Ops! {{ Session::get('failure') }}
-                                </div>
-                              @endif
-                              
-                              @if ($errors->any())
-                                <div class="bg-danger/10 border border-danger/10 alert text-danger" role="alert">
-                                  <ul>
-                                      @foreach ($errors->all() as $error)
-                                          <li>{{ $error }}</li>
-                                      @endforeach
-                                  </ul>
-                                </div>
-                              @endif
-                            </div>
-
-                     
-                        </div>
-                        <!-- End::row-3 -->   
-                      </div>  
-                    </div>
-                    <div id="pills-with-brand-color-3" class="hidden" role="tabpanel" aria-labelledby="pills-with-brand-color-item-3">
-                      <p class="text-gray-500 dark:text-white/70 p-5 border rounded-sm dark:border-white/10 border-gray-200">
-                        Unbelievable healthy snack success stories. 12 facts about safe food handling tips that will impress your friends. Restaurant weeks by the numbers. Will mexican food ever rule the world? The 10 best thai restaurant youtube videos. How restaurant weeks can make you sick. The complete beginner's guide to cooking healthy food. Unbelievable food stamp success stories. How whole foods markets are making the world a better place. 16 things that won't happen in dish reviews.
-                      </p>
-                    </div>
-                  </div>
-                </div>
-               
-                {{-- <div class="box-body">
-                 
-                </div> --}}
-              </div>
-             
-               
-                
             </div>
-          </div>
+        @endif
+    </div>
+
+    <div class="box p-4">
+
+        <div class="flex justify-between items-center mb-4">
+            <h2 class="text-sm font-semibold">Automations</h2>
         </div>
-        <!-- End::row-1 -->
 
-      </div>
-      <!-- Start::main-content -->
+        <form method="POST"
+              action="{{ route('admin.automation.storev2') }}"
+              x-data="providerForm()"
+              class="space-y-4">
 
-       
+            @csrf
+
+            {{-- PROVIDER INFO --}}
+            <div>
+                <h3 class="text-xs font-semibold mb-2">Provider Information</h3>
+
+                <div class="grid md:grid-cols-2 gap-3 text-xs">
+
+                    <div class="flex flex-col gap-1">
+                        <label class="text-[10px] text-gray-400">Provider Name</label>
+                        <input type="text" name="name" class="ti-form-input h-9 text-xs">
+                    </div>
+
+                    <div class="flex flex-col gap-1">
+                        <label class="text-[10px] text-gray-400">Slug</label>
+                        <input type="text" name="slug"
+                               class="ti-form-input h-9 text-xs"
+                               x-model="slug"
+                               @input="slug = slug.toLowerCase().replace(/ /g,'-')">
+                    </div>
+
+                </div>
+            </div>
+
+            {{-- API + BANK --}}
+            <div>
+                <h3 class="text-xs font-semibold mb-2">API & Bank</h3>
+
+                <div class="grid md:grid-cols-3 gap-3 text-xs">
+
+                    <div class="flex flex-col gap-1">
+                        <label class="text-[10px] text-gray-400">API Public Key</label>
+                        <input type="text" name="api_public_key" class="ti-form-input h-9 text-xs">
+                    </div>
+
+                    <div class="flex flex-col gap-1">
+                        <label class="text-[10px] text-gray-400">API Secret Key</label>
+                        <input type="text" name="api_secret_key" class="ti-form-input h-9 text-xs">
+                    </div>
+
+                    <div class="flex flex-col gap-1">
+                        <label class="text-[10px] text-gray-400">API Password</label>
+                        <input type="text" name="api_password" class="ti-form-input h-9 text-xs">
+                    </div>
+
+                    <div class="flex flex-col gap-1">
+                        <label class="text-[10px] text-gray-400">Bank Name</label>
+                        <input type="text" name="bank_name" class="ti-form-input h-9 text-xs">
+                    </div>
+
+                    <div class="flex flex-col gap-1 md:col-span-2">
+                        <label class="text-[10px] text-gray-400">Account Numbers</label>
+                        <input type="text" name="bank_accounts"
+                               class="ti-form-input h-9 text-xs"
+                               placeholder="comma separated">
+                    </div>
+
+                </div>
+            </div>
+
+            {{-- CONFIG --}}
+                  {{-- CONFIG --}}
+            <div>
+              <h3 class="text-xs font-semibold mb-2">Service Endpoints</h3>
+
+              <div class="grid md:grid-cols-2 gap-3 text-xs">
+
+                  <div class="flex flex-col gap-1">
+                    <label class="text-[10px] text-gray-400">Base Endpoint URL</label>
+                    <input type="text" name="endpoint_url"
+                          class="ti-form-input h-9 text-xs"
+                          placeholder="https://.../api">
+                </div>
+
+                  <div class="flex flex-col gap-1">
+                      <label class="text-[10px] text-gray-400">Data Endpoint URL</label>
+                      <input type="text" name="data_url"
+                            class="ti-form-input h-9 text-xs"
+                            placeholder="https://.../data">
+                  </div>
+
+                  <div class="flex flex-col gap-1">
+                      <label class="text-[10px] text-gray-400">Airtime Endpoint URL</label>
+                      <input type="text" name="airtime_url"
+                            class="ti-form-input h-9 text-xs"
+                            placeholder="https://.../airtime">
+                  </div>
+
+                  <div class="flex flex-col gap-1">
+                      <label class="text-[10px] text-gray-400">Cable Endpoint URL</label>
+                      <input type="text" name="cable_url"
+                            class="ti-form-input h-9 text-xs"
+                            placeholder="https://.../cable">
+                  </div>
+
+                  <div class="flex flex-col gap-1">
+                      <label class="text-[10px] text-gray-400">Electricity Endpoint URL</label>
+                      <input type="text" name="electricity_url"
+                            class="ti-form-input h-9 text-xs"
+                            placeholder="https://.../electricity">
+                  </div>
+
+              </div>
+            </div>
+
+            {{-- REQUEST PARAMS --}}
+            <div>
+                <h3 class="text-xs font-semibold mb-1">Request Parameters</h3>
+
+                <template x-for="(item, index) in requestParams" :key="index">
+                    <div class="flex gap-2 mb-1">
+
+                        <input type="text"
+                               class="ti-form-input h-8 text-xs w-1/2"
+                               placeholder="Key"
+                               x-model="item.key"
+                               :name="'request_params['+index+'][key]'">
+
+                        <select class="ti-form-select h-8 text-xs w-1/2"
+                                x-model="item.value"
+                                :name="'request_params['+index+'][value]'">
+
+                            <option value="">Select Field</option>
+                            @foreach($fields as $field)
+                                <option value="{{ $field }}">{{ $field }}</option>
+                            @endforeach
+                        </select>
+
+                        <button type="button"
+                                @click="removeRequestParam(index)"
+                                class="text-red-500 text-xs px-2">
+                            ✕
+                        </button>
+                    </div>
+                </template>
+
+                <button type="button"
+                        @click="addRequestParam"
+                        class="text-blue-500 text-xs mt-1">
+                    + Add Parameter
+                </button>
+            </div>
+
+            {{-- NETWORK PLANS --}}
+            <div>
+                <h3 class="text-xs font-semibold mb-1">Network Plans</h3>
+
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-2 text-xs">
+
+                    @foreach(['MTN','GLO','AIRTEL','9MOBILE'] as $net)
+                        <div class="flex flex-col gap-1">
+                            <label class="text-[10px] text-gray-400">{{ $net }}</label>
+                            <input type="text"
+                                   name="network_plans[{{ $net }}]"
+                                   class="ti-form-input h-8 text-xs"
+                                   placeholder="Plan ID">
+                        </div>
+                    @endforeach
+
+                </div>
+            </div>
+
+            {{-- HEADERS --}}
+            <div>
+                <h3 class="text-xs font-semibold mb-1">Request Headers</h3>
+
+                <template x-for="(item, index) in request_headers" :key="index">
+                    <div class="flex gap-2 mb-1">
+
+                        <input type="text"
+                               class="ti-form-input h-8 text-xs w-1/2"
+                               placeholder="Key"
+                               x-model="item.key"
+                               :name="'request_headers['+index+'][key]'">
+
+                        <input type="text"
+                               class="ti-form-input h-8 text-xs w-1/2"
+                               placeholder="Value"
+                               x-model="item.value"
+                               :name="'request_headers['+index+'][value]'">
+
+                        <button type="button"
+                                @click="removeHeader(index)"
+                                class="text-red-500 text-xs px-2">
+                            ✕
+                        </button>
+                    </div>
+                </template>
+
+                <button type="button"
+                        @click="addHeader"
+                        class="text-blue-500 text-xs mt-1">
+                    + Add Header
+                </button>
+            </div>
+
+            {{-- METHOD --}}
+            <div>
+                <label class="text-xs font-semibold">Request Method</label>
+                <select name="http_verb" class="ti-form-select h-9 text-xs w-full mt-1">
+                    <option value="POST">POST</option>
+                    <option value="GET">GET</option>
+                </select>
+            </div>
+
+            {{-- SUCCESS CONDITIONS --}}
+            <div>
+                <h3 class="text-xs font-semibold mb-1">Success Conditions</h3>
+
+                <template x-for="(item, index) in successConditions" :key="index">
+                    <div class="flex gap-2 mb-1">
+
+                        <input type="text"
+                               class="ti-form-input h-8 text-xs w-1/2"
+                               placeholder="Key"
+                               x-model="item.key"
+                               :name="'success_condition['+index+'][key]'">
+
+                        <input type="text"
+                               class="ti-form-input h-8 text-xs w-1/2"
+                               placeholder="Value"
+                               x-model="item.value"
+                               :name="'success_condition['+index+'][value]'">
+
+                        <button type="button"
+                                @click="removeSuccessCondition(index)"
+                                class="text-red-500 text-xs px-2">
+                            ✕
+                        </button>
+                    </div>
+                </template>
+
+                <button type="button"
+                        @click="addSuccessCondition"
+                        class="text-blue-500 text-xs mt-1">
+                    + Add Condition
+                </button>
+            </div>
+
+            {{-- RESPONSES --}}
+            <div class="grid md:grid-cols-2 gap-3">
+
+                <div class="flex flex-col gap-1">
+                    <label class="text-[10px] text-gray-400">Success Response</label>
+                    <input type="text" name="success_response" class="ti-form-input h-9 text-xs">
+                </div>
+
+                <div class="flex flex-col gap-1">
+                    <label class="text-[10px] text-gray-400">Failed Response</label>
+                    <input type="text" name="failed_response" class="ti-form-input h-9 text-xs">
+                </div>
+
+            </div>
+
+            {{-- CODES --}}
+            <div class="grid md:grid-cols-2 gap-3">
+
+                <div class="flex flex-col gap-1">
+                    <label class="text-[10px] text-gray-400">Success Code</label>
+                    <input type="number" name="success_code" class="ti-form-input h-9 text-xs">
+                </div>
+
+                <div class="flex flex-col gap-1">
+                    <label class="text-[10px] text-gray-400">Failure Code</label>
+                    <input type="number" name="failure_code" class="ti-form-input h-9 text-xs">
+                </div>
+
+            </div>
+
+            {{-- SUBMIT --}}
+            <div class="flex justify-end pt-3">
+                <button type="submit"
+                        class="bg-blue-600 hover:bg-blue-700 text-white text-xs px-6 py-2 rounded">
+                    Save Provider
+                </button>
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
 @endsection
 
 @push('scripts')

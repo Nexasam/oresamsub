@@ -62,6 +62,9 @@ class AutomationController extends Controller
             'amount',
             'email',
             'user',
+            'ported_number',
+            'reference',
+            'action'
             // Add more fields based on your system logic
         ];
 
@@ -75,8 +78,100 @@ class AutomationController extends Controller
     }
 
 
-    
     public function storev2(Request $request)
+    {
+        // Validate incoming request
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'slug' => 'required|string|max:255|unique:automations,slug',
+
+            // 'domain_url' => 'required|string',
+            'http_verb' => 'required|in:POST,GET',
+
+            'network_plans' => 'required|array',
+            'request_params' => 'required|array',
+            'request_headers' => 'required|array',
+            'success_condition' => 'required|array',
+
+            'success_response' => 'required|string',
+            'failed_response' => 'required|string',
+
+            'success_code' => 'nullable|string',
+            'failure_code' => 'nullable|string',
+
+            'api_public_key' => 'required|string',
+            'api_secret_key' =>'required|string',
+            'api_password' => 'required|string',
+
+            'endpoint_url' => 'nullable|string',
+            'data_url' => 'nullable|string',
+            'cable_url' => 'nullable|string',
+            'electricity_url' => 'nullable|string',
+            'airtime_url' => 'nullable|string',
+
+
+            'bank_name' => 'required|string',
+            'bank_accounts' => 'required|string',
+        ]);
+
+        $automation = Automation::create([
+            'id' => Str::uuid(),
+
+            // basic identity
+            'automation_name' => $request->name,
+            'slug' => $request->slug,
+
+            // service grouping (optional)
+            'automation_group' => "v2",
+
+            // API config
+            'http_verb' => $request->http_verb,
+
+            'network_plans' => $request->network_plans ?? [],
+            'request_params' => $request->request_params ?? [],
+            'request_headers' => $request->request_headers ?? [],
+            'success_condition' => $request->success_condition ?? [],
+
+            'success_response' => $request->success_response,
+            'failed_response' => $request->failed_response,
+
+            'success_code' => $request->success_code ?? '200',
+            'failure_code' => $request->failure_code ?? '404',
+
+            // credentials
+            'api_secret_key' => $request->api_secret_key ?? null,
+            'api_public_key' => $request->api_public_key ?? null,
+            'api_password' => $request->api_password ?? null,
+
+
+            'endpoint_url' => $request->endpoint_url ?? null,
+            'domain_url' => $request->endpoint_url ?? null,
+            'data_url' => $request->data_url ?? null,
+            'cable_url' => $request->cable_url ?? null,
+            'electricity_url' => $request->electricity_url ?? null,
+            'airtime_url' => $request->airtime_url ?? null,
+
+
+            'bank_accounts' => $request->bank_accounts ?? null,
+
+            'bank_name' => $request->bank_name ?? null,
+
+
+            // support
+            'whatsapp_support_link' => $request->whatsapp_support_link ?? null,
+
+            // status
+            'activation_status' => $request->activation_status ?? 1,
+        ]);
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Automation saved successfully',
+            'data' => $automation
+        ], 201);
+    }
+
+    public function storev2old(Request $request)
     {
         // Validate incoming request
         $request->validate([

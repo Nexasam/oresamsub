@@ -164,6 +164,7 @@ class AutomationLogic{
         $automation_details = $data['automation_details'];
         $apikey = $automation_details->api_public_key ?? $automation_details->userAutomation->api_key;
         $secret = $automation_details->api_secret_key ?? $automation_details->userAutomation->api_secret;
+        $secret = $secret == null ? 'nil':$secret;
         $url = $automation_details->data_url ?? $automation_details->userAutomation->automation->data_url;
         $automation_plan_id = $automation_details->automation_product_plan_id ?? 'nil';
         $automation_id = $automation_details->id ?? $automation_details->userAutomation_id;
@@ -236,6 +237,30 @@ class AutomationLogic{
         else if($slug == 'paultechs'){
             //logic stays here...
             $buy_data = (new PaultechsAutomation($data))->buyData();    
+        } else if($automation_group == 'v2'){
+              
+                $reference = substr(uniqid(rand(), true), 0, 15);
+                
+                $plan_details = ProductPlan::with('product_plan_category.network')
+                ->where('visibility',1)
+                ->where('id',$product_plan_id)->first();
+                if(! $plan_details){
+                    return [
+                    'status' => -1,
+                    'user_message' => 'An error occurred while processing this transaction. Please try again or reach out to support',
+                    'admin_message' => 'Wrong plan Id',
+                    ];
+                }
+                
+                $vendor_record = $automation_details;
+                $input_phone_number = $validated_phone_number;
+                $vendor_plan_id = $plan_details->automation_product_plan_id ?? '';
+                $ported_number = true; //lets make this a default for now
+                $input_network = $plan_details->product_plan_category->network->network_name; //lets get the network
+                $buy_data = (new DataAutomation())->buyData($vendor_record,$input_phone_number,$vendor_plan_id,$ported_number,$input_network,$reference);    
+
+                logger('automation deetails: '.json_encode($buy_data));
+
         }
         else{
             //this will be like this until other automations are processed
@@ -354,17 +379,19 @@ class AutomationLogic{
         else if($automation_details->slug == 'megasubplug'){
             $buy_airtime = (new MegaSubVendAirtime($validated_phone_number,$product_plan_id,$amount,$validatephonenetwork))->buyAirtime();
         }
-        else if($automation_details->slug == '9javtu'){
-            $buy_airtime = (new Nine9javtuAutomation($validated_phone_number,$product_plan_id,$validatephonenetwork,$amount))->buyAirtime();
+        // else if($automation_details->slug == '9javtu'){
+        //     $buy_airtime = (new Nine9javtuAutomation($validated_phone_number,$product_plan_id,$validatephonenetwork,$amount))->buyAirtime();
 
-        }
+        // }
         else if($automation_details->automation_group == 'msorg'){
             $data['mobile_number'] = $validated_phone_number;
             $buy_airtime = (new MsOrgGroupAutomation($data))->buyAirtime();
-        }else if($automation_details->slug == 'simserver'){
-            $data['mobile_number'] = $validated_phone_number;
-            $buy_airtime = (new SimserverAutomation($data))->buyAirtime();
-        }else if($automation_details->slug == 'smeplug'){
+        }
+        // else if($automation_details->slug == 'simserver'){
+        //     $data['mobile_number'] = $validated_phone_number;
+        //     $buy_airtime = (new SimserverAutomation($data))->buyAirtime();
+        // }
+        else if($automation_details->slug == 'smeplug'){
             // logger('smeplug ran: '.json_encode($data));
             $buy_airtime = (new SmeplugAutomation($data))->buyAirtime();
         }

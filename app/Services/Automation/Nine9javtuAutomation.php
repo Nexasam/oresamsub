@@ -9,6 +9,8 @@ use App\Models\RecurringFailedMessagePattern;
 class Nine9javtuAutomation{
 
     private $network_id;
+    private $network_api_id;
+
 
     private $automation_id;
     private $automation_plan_id;

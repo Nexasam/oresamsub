@@ -911,7 +911,7 @@ class DataController extends Controller
 
 
         }catch(Exception $exception){
-            logger($exception->getMessage().' on line: '. $exception->getLine());
+            logger($exception->getMessage().' on line3: '. $exception->getLine(). ' on file'. $exception->getFile());
             DB::rollBack();
             return response()->json(['status'=> -1, 'message'=>'Something went wrong... Please try again', 'data'=>[]]);
         }

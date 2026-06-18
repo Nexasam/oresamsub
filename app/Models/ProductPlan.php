@@ -46,6 +46,11 @@ class ProductPlan extends Model
         return $this->belongsTo(Automation::class, 'reprocess_automation_id', 'id');
         // return $this->belongsTo(ProductPlanCategory::class, 'product_plan_category_id', 'id')->where('active_status',1);
     }
+
+    public function automationProductPlans()
+    {
+        return $this->hasMany(AutomationProductPlan::class);
+    }
     
 
     

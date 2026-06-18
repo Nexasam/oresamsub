@@ -20,6 +20,14 @@ class Automation extends Model
         'api_password',
     ];
 
+
+    protected $casts = [
+        'network_plans' => 'array',
+        'request_params' => 'array',
+        'request_headers' => 'array',
+        'success_condition' => 'array',
+    ];
+
      
 
 }
