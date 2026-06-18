@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\AutomationProductPlan;
 use Exception;
 use App\Models\User;
 use App\Models\Network;
@@ -14,11 +15,8 @@ use App\Models\Transaction;
 use App\Models\UserContact;
 use App\Models\SiteTemplate;
 use Illuminate\Http\Request;
-use App\Models\ProductCategory;
 use Illuminate\Validation\Rule;
 use Yajra\DataTables\DataTables;
-use App\Models\UniqueProductPlan;
-use Illuminate\Http\JsonResponse;
 use App\Models\UsedUserCouponCode;
 use App\Models\UserBulkDataWallet;
 use App\Models\UserVirtualAccount;
@@ -931,129 +929,210 @@ class DataController extends Controller
 
         $automation_cost_price  = $plan_details->cost_price;
         $amounnt_paid  = $amount;
+
+
         
-        $network_plan_categories_arr = ProductPlanCategory::where('network_id',$data['network_id'])
-        ->where('product_id', $data['product_id'])
-        ->pluck('id')
-        ->toArray();
-    
-        $get_associated_plans = ProductPlan::with([
-            'automation',
-            'product_plan_category.product',
-            'product_plan_category.network'
-        ])
-        ->where('data_size_in_mb', $plan_details->data_size_in_mb)
-        ->where('validity_in_days', $plan_details->validity_in_days)
-        ->whereIn('product_plan_category_id', $network_plan_categories_arr)
-        ->where('visibility', 1)
+        $automation_plans = AutomationProductPlan::with('automation')
+        ->where('product_plan_id',$plan_id)
+        ->where('is_active',1)
         ->orderByRaw('CAST(cost_price AS UNSIGNED) ASC') // ✅ Sort numerically
+        ->orderByRaw('CAST(priority AS UNSIGNED) DESC') // ✅ Sort numerically
         ->get();
-    
-        if(count($get_associated_plans) <= 0){
-            logger('no vendor found for: '. json_encode($data));
+
+        if(count($automation_plans)  >= 1 ){
+          //fix
+
+              //NEW SWITCH HERE
+              $retry_count = 0;
+              foreach($automation_plans  as $key=>$get_associated_plan){
+                      // if(auth()->user()->email == 'oreofe@gmail.com'){
+                      if ( ($amounnt_paid - $get_associated_plan->cost_price) > 5 ) {
+                          //give room for just 5 naira loss.
+                          logger('Automation cost v2 price is greater than the amount customer paid: Skip....dont process..');
+                          continue; // Skip to next product plan if its a loss game
+                      }
+  
+                      //only these changes
+                      $data['automation_details'] = $get_associated_plan->automation;
+                      $data['plan_id'] = $get_associated_plan->product_plan_id;
+                      $automationname = $get_associated_plan->automation->automation_name;
+  
+                      $sell_data = AutomationLogic::initiateDataPurchase($data);
+                      // logger('TESTTTTTTTT'.json_encode($sell_data));
+                      $status = $sell_data['status'];
+                      $failed_message = $sell_data['user_message'] ?? 'failed';
+                      $set_for_manual = $sell_data['set_for_manual'] ?? 0;
+  
+                      if($set_for_manual == 0 && $status == 1){
+                          //it shows its  a success
+                          //lets get the actual automation and plan id
+  
+                          return [
+                              'status' => 1,
+                              'set_for_manual' => 0,
+                              'case_critical' => 0,
+                              'retry_count' => $retry_count,
+                              'user_message' => $sell_data['user_message'],
+                              'admin_message' => $sell_data['admin_message'],
+                              'plan_id' => $get_associated_plan->id,
+                          ];
+                      }
+  
+                      logger("Trial $key: Data purchase with $automationname failed . $failed_message");
+  
+                  // }
+                  $retry_count++;
+                  sleep(1);
+              }
+
+
+              $number = $phone_number; // user number
+              $plan   = $plan_details->product_plan_name; // plan name
+  
+              // Encode for URL safety
+              $waMessage = urlencode("Hello Support, please help me process this transaction: {$plan} for {$number}");
+  
+              // Build message with HEREDOC
+              $messageeeee = <<<HTML
+              <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; text-align: center;">
+                  <p style="font-size: 16px; margin-bottom: 12px;">
+                      Your transaction was <strong>not successful</strong> and has been <strong>automatically refunded...</strong>.
+                  </p>
+                  <!-- <p style="font-size: 15px; margin-bottom: 16px;">
+                      If you’d like, our support team can help you process this transaction manually.
+                  </p> -->
+                  <a href="https://wa.me/2348168509044?text={$waMessage}"
+                  target="_blank"
+                  style="display: inline-block; padding: 12px 20px; background-color: #16a34a; color: #fff; font-size: 15px; 
+                          border-radius: 8px; text-decoration: none; font-weight: bold; box-shadow: 0 2px 6px rgba(0,0,0,0.15);">
+                      💬 Contact Support to process manually...
+                  </a>
+              </div>
+              HTML;
+          
+  
+              //no automation went through: it means, refund, no processing
+              return [
+                  'status' => 2,
+                  'set_for_manual' => 0,
+                  'case_critical' => 0,
+                  'retry_count' => 50,//for refund code
+                  'user_message' => $messageeeee,
+                  'admin_message' => $sell_data['admin_message'] ?? 'Transaction failed...could not be processed...' ,
+                  'plan_id' => $get_associated_plan->id, //this will be the last tried automation
+              ];
+
+
+
+        }else{
+            $network_plan_categories_arr = ProductPlanCategory::where('network_id',$data['network_id'])
+            ->where('product_id', $data['product_id'])
+            ->pluck('id')
+            ->toArray();
+        
+            $get_associated_plans = ProductPlan::with([
+                'automation',
+                'product_plan_category.product',
+                'product_plan_category.network'
+            ])
+            ->where('data_size_in_mb', $plan_details->data_size_in_mb)
+            ->where('validity_in_days', $plan_details->validity_in_days)
+            ->whereIn('product_plan_category_id', $network_plan_categories_arr)
+            ->where('visibility', 1)
+            ->orderByRaw('CAST(cost_price AS UNSIGNED) ASC') // ✅ Sort numerically
+            ->get();
+        
+            if(count($get_associated_plans) <= 0){
+                logger('no vendor found for: '. json_encode($data));
+                return [
+                    'status' => 1,
+                    'case_critical' => 1,
+                    'set_for_manual' => 1,
+                    'retry_count' => 0,
+                    'user_message' => 'Transaction is being processed',
+                    'admin_message' => 'No automation found',
+                    'plan_id' => NULL,
+                ];
+            } 
+
+            //NEW SWITCH HERE
+            $retry_count = 0;
+            foreach($get_associated_plans  as $key=>$get_associated_plan){
+                    // if(auth()->user()->email == 'oreofe@gmail.com'){
+                    if ($automation_cost_price > $amounnt_paid) {
+                        logger('Automation cost price is greater than the amount customer paid: Skip....dont process..');
+                        continue; // Skip to next product plan if its a loss game
+                    }
+
+                    //only these changes
+                    $data['automation_details'] = $get_associated_plan->automation;
+                    $data['plan_id'] = $get_associated_plan->id;
+                    $automationname = $get_associated_plan->automation->automation_name;
+
+                    $sell_data = AutomationLogic::initiateDataPurchase($data);
+                    // logger('TESTTTTTTTT'.json_encode($sell_data));
+                    $status = $sell_data['status'];
+                    $failed_message = $sell_data['user_message'] ?? 'failed';
+                    $set_for_manual = $sell_data['set_for_manual'] ?? 0;
+
+                    if($set_for_manual == 0 && $status == 1){
+                        //it shows its  a success
+                        //lets get the actual automation and plan id
+
+                        return [
+                            'status' => 1,
+                            'set_for_manual' => 0,
+                            'case_critical' => 0,
+                            'retry_count' => $retry_count,
+                            'user_message' => $sell_data['user_message'],
+                            'admin_message' => $sell_data['admin_message'],
+                            'plan_id' => $get_associated_plan->id,
+                        ];
+                    }
+
+                    logger("Trial $key: Data purchase with $automationname failed . $failed_message");
+
+                // }
+                $retry_count++;
+                sleep(2);
+            }
+
+            $number = $phone_number; // user number
+            $plan   = $plan_details->product_plan_name; // plan name
+
+            // Encode for URL safety
+            $waMessage = urlencode("Hello Support, please help me process this transaction: {$plan} for {$number}");
+
+            // Build message with HEREDOC
+            $messageeeee = <<<HTML
+            <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; text-align: center;">
+                <p style="font-size: 16px; margin-bottom: 12px;">
+                    Your transaction was <strong>not successful</strong> and has been <strong>automatically refunded</strong>.
+                </p>
+                <!-- <p style="font-size: 15px; margin-bottom: 16px;">
+                    If you’d like, our support team can help you process this transaction manually.
+                </p> -->
+                <a href="https://wa.me/2348168509044?text={$waMessage}"
+                target="_blank"
+                style="display: inline-block; padding: 12px 20px; background-color: #16a34a; color: #fff; font-size: 15px; 
+                        border-radius: 8px; text-decoration: none; font-weight: bold; box-shadow: 0 2px 6px rgba(0,0,0,0.15);">
+                    💬 Contact Support to process manually
+                </a>
+            </div>
+            HTML;
+        
+
+            //no automation went through: it means, refund, no processing
             return [
-                'status' => 1,
-                'case_critical' => 1,
-                'set_for_manual' => 1,
-                'retry_count' => 0,
-                'user_message' => 'Transaction is being processed',
-                'admin_message' => 'No automation found',
-                'plan_id' => NULL,
+                'status' => 2,
+                'set_for_manual' => 0,
+                'case_critical' => 0,
+                'retry_count' => 50,//for refund code
+                'user_message' => $messageeeee,
+                'admin_message' => $sell_data['admin_message'] ?? 'Transaction failed...could not be processed' ,
+                'plan_id' => $get_associated_plan->id, //this will be the last tried automation
             ];
-        } 
-
-        
-        //NEW SWITCH HERE
-        $retry_count = 0;
-        foreach($get_associated_plans  as $key=>$get_associated_plan){
-                // if(auth()->user()->email == 'oreofe@gmail.com'){
-                if ($automation_cost_price > $amounnt_paid) {
-                    logger('Automation cost price is greater than the amount customer paid: Skip....dont process..');
-                    continue; // Skip to next product plan if its a loss game
-                }
-
-                //only these changes
-                $data['automation_details'] = $get_associated_plan->automation;
-                $data['plan_id'] = $get_associated_plan->id;
-                $automationname = $get_associated_plan->automation->automation_name;
-
-                $sell_data = AutomationLogic::initiateDataPurchase($data);
-                // logger('TESTTTTTTTT'.json_encode($sell_data));
-                $status = $sell_data['status'];
-                $failed_message = $sell_data['user_message'] ?? 'failed';
-                $set_for_manual = $sell_data['set_for_manual'] ?? 0;
-
-                if($set_for_manual == 0 && $status == 1){
-                    //it shows its  a success
-                    //lets get the actual automation and plan id
-
-                    return [
-                        'status' => 1,
-                        'set_for_manual' => 0,
-                        'case_critical' => 0,
-                        'retry_count' => $retry_count,
-                        'user_message' => $sell_data['user_message'],
-                        'admin_message' => $sell_data['admin_message'],
-                        'plan_id' => $get_associated_plan->id,
-                    ];
-                }
-
-                logger("Trial $key: Data purchase with $automationname failed . $failed_message");
-
-            // }
-            $retry_count++;
-            sleep(2);
-        }
-
-
-        
-        // $supportline = '2348168509044';
-        // $manualrequest = urlencode("Hello Support, please help me process this transaction: $productplan .");
-        // $messageeee = '
-        //     <a href="https://wa.me/'.$supportline.'?text='.$manualrequest.'" 
-        //     target="_blank"
-        //     class="inline-flex items-center px-4 py-2 bg-green-600 text-white rounded-lg shadow hover:bg-green-700 transition">
-        //         YES, PROCESS
-        //     </a>
-        // ';
-
-
-
-        $number = $phone_number; // user number
-        $plan   = $plan_details->product_plan_name; // plan name
-
-        // Encode for URL safety
-        $waMessage = urlencode("Hello Support, please help me process this transaction: {$plan} for {$number}");
-
-        // Build message with HEREDOC
-        $messageeeee = <<<HTML
-        <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; text-align: center;">
-            <p style="font-size: 16px; margin-bottom: 12px;">
-                Your transaction was <strong>not successful</strong> and has been <strong>automatically refunded</strong>.
-            </p>
-            <!-- <p style="font-size: 15px; margin-bottom: 16px;">
-                If you’d like, our support team can help you process this transaction manually.
-            </p> -->
-            <a href="https://wa.me/2348168509044?text={$waMessage}"
-               target="_blank"
-               style="display: inline-block; padding: 12px 20px; background-color: #16a34a; color: #fff; font-size: 15px; 
-                      border-radius: 8px; text-decoration: none; font-weight: bold; box-shadow: 0 2px 6px rgba(0,0,0,0.15);">
-                💬 Contact Support to process manually
-            </a>
-        </div>
-        HTML;
-    
-
-        //no automation went through: it means, refund, no processing
-        return [
-            'status' => 2,
-            'set_for_manual' => 0,
-            'case_critical' => 0,
-            'retry_count' => 50,//for refund code
-            'user_message' => $messageeeee,
-            'admin_message' => $sell_data['admin_message'] ?? 'Transaction failed...could not be processed' ,
-            'plan_id' => $get_associated_plan->id, //this will be the last tried automation
-        ];
+        }      
 
     }
         

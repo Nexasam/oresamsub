@@ -48,6 +48,15 @@
         <form method="POST" action="{{ route('admin.product_plans.update_product_plan_new', $plan->id) }}">
             @csrf
             @method('PUT')
+
+
+            <input type="hidden" name="user_level_1_selling_price" id="input_level_1" value="{{ $plan->user_level_1_selling_price }}">
+            <input type="hidden" name="user_level_2_selling_price" id="input_level_2" value="{{ $plan->user_level_2_selling_price }}">
+            <input type="hidden" name="user_level_3_selling_price" id="input_level_3" value="{{ $plan->user_level_3_selling_price }}">
+            <input type="hidden" name="user_level_4_selling_price" id="input_level_4" value="{{ $plan->user_level_4_selling_price }}">
+            <input type="hidden" name="user_level_5_selling_price" id="input_level_5" value="{{ $plan->user_level_5_selling_price }}">
+            <input type="hidden" name="user_level_6_selling_price" id="input_level_6" value="{{ $plan->user_level_6_selling_price }}">
+            <input type="hidden" name="user_level_7_selling_price" id="input_level_7" value="{{ $plan->user_level_7_selling_price }}">
         
             <div class="grid md:grid-cols-2 gap-2 text-xs">
         
@@ -67,6 +76,16 @@
                            name="data_size_in_mb"
                            value="{{ $plan->data_size_in_mb }}"
                            class="ti-form-input h-8 text-xs">
+                </div>
+
+                                {{-- VISIBILITY --}}
+                <div class="flex flex-col gap-1">
+                    <label class="text-[10px] text-gray-400">Visibility</label>
+
+                    <select name="is_visible" class="ti-form-select h-10 text-xs">
+                        <option value="1" {{ $plan->visibility ? 'selected' : '' }}>Visible</option>
+                        <option value="0" {{ !$plan->visibility ? 'selected' : '' }}>Hidden</option>
+                    </select>
                 </div>
         
                 {{-- VALIDITY --}}
@@ -88,22 +107,55 @@
                            class="ti-form-input h-8 text-xs">
                 </div>
         
-                {{-- SELLING --}}
+             
+
+
+                <div class="flex flex-col gap-1 md:col-span-12">
+
+                    <div class="divide-y border rounded-lg overflow-hidden mt-4">
+
+                        @for($i = 1; $i <= 7; $i++)
+                            @php
+                                $label = $labels[$i] ?? 'LEVEL '.$i;
+                                $price = $plan->{'user_level_'.$i.'_selling_price'} ?? 0;
+                            @endphp
+                        
+                            <div class="flex justify-between items-center p-2 text-xs">
+                                <div>
+                                    <div class="font-medium">{{ $label }}</div>
+                                    <div class="text-[10px] text-gray-400">Level {{ $i }}</div>
+                                </div>
+                        
+                                <div class="font-bold text-green-600">
+                                    ₦{{ number_format($price, 2) }}
+                                </div>
+                            </div>
+                        @endfor
+                        
+                        </div>
+                </div>
+
+
+                   {{-- SELLING --}}
                {{-- SELLING PRICE TIER --}}
-                <div class="flex flex-col gap-1 md:col-span-2">
+               <div class="flex flex-col gap-1 md:col-span-2">
 
                     <label class="text-[10px] text-gray-400">
                         Selling Price Base (Level 4: Popular Level)
+                        {{-- {{$newplan}} --}}
+                        {{-- {{ json_decode($newplan,true)[2][1] }} --}}
+                        {{-- {{ json_decode($newplan,true)[1][1] }} --}}
                     </label>
 
                     <input type="number"
                         id="base_price"
-                        name="user_level_4_selling_price"
+                        {{-- name="user_level_4_selling_price" --}}
+                        name="base_price"
                         value="{{ $plan->user_level_4_selling_price ?? $plan->user_level_1_selling_price }}"
                         class="ti-form-input h-8 text-xs">
-
                 </div>
 
+                
                 {{-- DIFFERENCE --}}
                 <div class="flex flex-col gap-1 md:col-span-2">
 
@@ -124,16 +176,20 @@
                 Update Plan
             </button>
         </form>
-        <div class="mt-3 grid grid-cols-6 gap-1 text-[10px]">
 
+        <div class="mt-3 grid grid-cols-7 mt-3 gap-1 text-[13px]">
+            <div>PRICE PREVIEW</div>
             @for($i = 1; $i <= 7; $i++)
                 <div class="border rounded p-1 text-center">
                     <div class="text-gray-400">L{{ $i }}</div>
-                    <div id="level_{{ $i }}">-</div>
+                    <div id="level_{{ $i }}">
+                        ₦{{ number_format($plan->{'user_level_'.$i.'_selling_price'} ?? 0, 2) }}
+                    </div>
                 </div>
             @endfor
         
         </div>
+     
 
 
         @php
@@ -145,7 +201,7 @@
     $safeMin = $minCost ? $minCost + 6 : 0; // enforce +₦6 rule
 @endphp
 
-<div class="mb-2 grid grid-cols-3 gap-2 text-[11px]">
+<div class="mb-2 grid grid-cols-3 gap-2 mt-3 text-[11px]">
 
     <div class="border rounded p-2">
         <div class="text-gray-400">Lowest Cost</div>
@@ -188,6 +244,7 @@
   
       @csrf
       @method('PUT')
+
   
       {{-- NAME --}}
       <div class="col-span-3 px-1 leading-tight">
@@ -231,7 +288,7 @@
       <div class="col-span-2 flex flex-col">
           <span class="text-[9px] text-gray-400">Status</span>
           <select name="is_active"
-                  class="ti-form-select text-xs h-7 px-1">
+                  class="ti-form-select text-xs h-10 px-1">
                   <option value="1" {{ (int)$provider->is_active === 1 ? 'selected' : '' }}>Active</option>
                   <option value="0" {{ (int)$provider->is_active === 0 ? 'selected' : '' }}>Off</option>
           </select>
@@ -314,13 +371,15 @@
 </div>
 
 <script>
+    let isFirstLoad = true;
+
     function calculateLevels() {
+
         let base = parseFloat(document.getElementById('base_price').value || 0);
         let diff = parseFloat(document.getElementById('diff_step').value || 0);
-    
-        // backend rule injection
+
         let minAllowed = {{ $safeMin ?? 0 }};
-    
+
         let levels = {
             1: base + (3 * diff),
             2: base + (2 * diff),
@@ -330,30 +389,23 @@
             6: base - (2 * diff),
             7: base - (3 * diff),
         };
-    
+
         for (let i = 1; i <= 7; i++) {
-    
+
             let value = levels[i];
-    
-          // 🚨 ENFORCE MIN PRICE RULE (AUTO FIX)
+
             if (value < minAllowed) {
-
-            value = minAllowed; // force minimum instead of warning
-
-            document.getElementById('level_' + i).innerHTML =
-                `<span class="text-green-600 font-semibold">₦${value.toFixed(2)}</span>`;
-
-            } else {
-
-            document.getElementById('level_' + i).innerText =
-                '₦' + value.toFixed(2);
+                value = minAllowed;
             }
+
+            document.getElementById('level_' + i).innerText = '₦' + value.toFixed(2);
+            document.getElementById('input_level_' + i).value = value.toFixed(2);
         }
     }
-    
+
+    // ONLY recalc when user edits
     document.getElementById('base_price').addEventListener('input', calculateLevels);
     document.getElementById('diff_step').addEventListener('input', calculateLevels);
-    
     calculateLevels();
     </script>
 @endsection

@@ -2,13 +2,11 @@
 
 namespace App\Http\Services;
 
-use App\Models\User;
+use App\Models\AutomationProductPlan;
 use App\Models\UserPlan;
 use App\Models\ProductPlan;
 use App\Models\PlanProfitSetting;
 use App\Models\ProductPlanCategory;
-use Illuminate\Support\Facades\Hash;
-use App\Models\ProductPlanCustomPricing;
 
 class DataPlansService{
 
@@ -157,13 +155,38 @@ class DataPlansService{
         $user_details = $data['user'];
         $upline_commission = 0;
 
-    
-            
         $user_plan_id = $user_details->user_plan_id;
         $user_id = $user_details->id;
         $user_level = UserPlan::select('plan_level')->where('id',$user_plan_id)->first();
         $plan_level = $user_level->plan_level  ??  1;
 
+
+        $check_automation_product_plans = AutomationProductPlan::where('product_plan_id', $product_plan->id)
+        ->where('is_active',1)
+        ->first();
+
+        if($check_automation_product_plans){
+            //if it exists, then use the new flow
+          
+            $spp = 'user_level_'.$plan_level.'_selling_price'; 
+            $sppdefault = 'user_level_1_selling_price'; 
+            $selling_price = $product_plan->$spp ?? $product_plan->$sppdefault; 
+           
+
+            logger('new price model for customers');
+            return [
+                'status' => 1,
+                'message' => $selling_price,
+                'upline_commission' => $upline_commission
+            ];
+        }
+
+        ////////////////////////BELOW SHOWS THAT PLAN HAS NOT BEEN MIGRATED SO LET IT STAY WITH THE OLD FLOW.
+
+        logger('still old price model for customers');
+    
+            
+  
 
         $get_planprofit = PlanProfitSetting::where('network_id',$network_id)
         ->where('product_id',$product_id)

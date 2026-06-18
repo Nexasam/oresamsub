@@ -42,9 +42,24 @@ class ProductPlanController extends Controller
             'product_plan_category.product'
         ])->findOrFail($id);
 
+        $userplans = UserPlan::get();
+        $levels = [1,2,3,4,5,6,7];
+
+     
+
+        foreach($userplans as $key=>$usp){
+          if(in_array($usp->plan_level,$levels) ){
+            $newplan[] = [
+              $key+1 => $usp->updated_user_plan_name ?? $usp->user_plan_name
+            ];
+          }
+        }
+
+      $newplan = json_encode($newplan);
+
         $automations = Automation::all();
 
-        return view('admin.product_plans.manage', compact('plan', 'automations'));
+        return view('admin.product_plans.manage', compact('plan', 'automations','userplans','newplan'));
     }
 
     public function index2(Request $request){
@@ -121,12 +136,19 @@ class ProductPlanController extends Controller
           $plan = ProductPlan::findOrFail($id);
 
           $plan->update([
-              'product_plan_name' => $request->product_plan_name,
-              'data_size_in_mb' => $request->data_size_in_mb,
-              'validity_in_days' => $request->validity_in_days,
-              'cost_price' => $request->cost_price,
-              'user_level_1_selling_price' => $request->user_level_1_selling_price,
-          ]);
+            'product_plan_name' => $request->product_plan_name,
+            'data_size_in_mb' => $request->data_size_in_mb,
+            'validity_in_days' => $request->validity_in_days,
+            'cost_price' => $request->cost_price,
+        
+            'user_level_1_selling_price' => $request->user_level_1_selling_price,
+            'user_level_2_selling_price' => $request->user_level_2_selling_price,
+            'user_level_3_selling_price' => $request->user_level_3_selling_price,
+            'user_level_4_selling_price' => $request->user_level_4_selling_price,
+            'user_level_5_selling_price' => $request->user_level_5_selling_price,
+            'user_level_6_selling_price' => $request->user_level_6_selling_price,
+            'user_level_7_selling_price' => $request->user_level_7_selling_price,
+        ]);
 
           return back()->with('success', 'Product plan updated successfully');
       }

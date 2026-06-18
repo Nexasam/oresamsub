@@ -14,7 +14,51 @@
         <div>
             {{-- <p>Current locale: {{ app()->getLocale() }}</p> --}}
             <h3 class="text-gray-700 hover:text-gray-900 dark:text-gray-900 dark:hover:text-white text-2xl font-medium"> <small style=" font-size: 14px;">{{ __('messages.Welcome') }} <strong>{{ $user->first_name. ' '. $user->last_name }}</strong></small> </h3>
+            <h5>Trannsaction with issues: {{ count($transactions_with_issues) }}</h5>
         </div>
+
+
+        <div class="block justify-between page-header md:flex">
+            <div>
+                <h3 class="text-gray-700 hover:text-gray-900 dark:text-gray-900 dark:hover:text-white text-2xl font-medium">
+                    <small style="font-size: 14px;">
+                        {{ __('messages.Welcome') }}
+                        <strong>{{ $user->first_name . ' ' . $user->last_name }}</strong>
+                    </small>
+                </h3>
+        
+                <h5 class="mt-2">
+                    Transactions with issues: {{ count($transactions_with_issues) }}
+                </h5>
+        
+                {{-- List a few transactions with links --}}
+                @if(count($transactions_with_issues) > 0)
+                    <ul class="mt-3 space-y-1 text-sm">
+                        @foreach($transactions_with_issues->take(5) as $txn)
+                            <li class="flex justify-between items-center">
+                                <span>
+                                    #{{ $txn->id }} — {{ $txn->description ?? 'No description' }}
+                                </span>
+                                <a href="{{ route('transactions.transaction_details', $txn->id) }}"
+                                   class="text-blue-600 hover:underline">
+                                    View / Fix
+                                </a>
+                            </li>
+                        @endforeach
+                    </ul>
+        
+                    {{-- Optional: link to full list --}}
+                    <div class="mt-2">
+                        <a href="{{ route('transactions.issues') }}"
+                           class="text-sm text-indigo-600 hover:underline">
+                            View all problematic transactions →
+                        </a>
+                    </div>
+                @endif
+            </div>
+        </div>
+
+
         
     </div>
     <div class="block justify-between">
