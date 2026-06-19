@@ -180,6 +180,27 @@
                                                     <input x-model="form.user_level_4_selling_price" type="text" 
                                                         class="w-full border rounded p-2 text-sm dark:bg-gray-700 dark:text-white" />
                                                 </div>
+
+                                                   <!-- Level 4 -->
+                                                   <div>
+                                                    <label class="block text-xs text-gray-500 dark:text-gray-400 mb-1">Level 5</label>
+                                                    <input x-model="form.user_level_5_selling_price" type="text" 
+                                                        class="w-full border rounded p-2 text-sm dark:bg-gray-700 dark:text-white" />
+                                                </div>
+
+                                                   <!-- Level 4 -->
+                                                   <div>
+                                                    <label class="block text-xs text-gray-500 dark:text-gray-400 mb-1">Level 6</label>
+                                                    <input x-model="form.user_level_6_selling_price" type="text" 
+                                                        class="w-full border rounded p-2 text-sm dark:bg-gray-700 dark:text-white" />
+                                                </div>
+
+                                                   <!-- Level 4 -->
+                                                   <div>
+                                                    <label class="block text-xs text-gray-500 dark:text-gray-400 mb-1">Level 7</label>
+                                                    <input x-model="form.user_level_7_selling_price" type="text" 
+                                                        class="w-full border rounded p-2 text-sm dark:bg-gray-700 dark:text-white" />
+                                                </div>
                                             </div>
                                         </div>
                                         
@@ -1451,7 +1472,10 @@
               user_level_1_selling_price: '{{ $data->product_plan->user_level_1_selling_price }}',
               user_level_2_selling_price: '{{ $data->product_plan->user_level_2_selling_price }}',
               user_level_3_selling_price: '{{ $data->product_plan->user_level_3_selling_price }}',
-              user_level_4_selling_price: '{{ $data->product_plan->user_level_4_selling_price }}'
+              user_level_4_selling_price: '{{ $data->product_plan->user_level_4_selling_price }}',
+              user_level_5_selling_price: '{{ $data->product_plan->user_level_5_selling_price }}',
+              user_level_6_selling_price: '{{ $data->product_plan->user_level_6_selling_price }}',
+              user_level_7_selling_price: '{{ $data->product_plan->user_level_7_selling_price }}'
           },
           updatePlan() {
             this.loading = true;

@@ -583,7 +583,10 @@ class ProductPlanController extends Controller
           'user_level_1_selling_price' => 'required|numeric',
           'user_level_2_selling_price' => 'required|numeric',
           'user_level_3_selling_price' => 'required|numeric',
-          'user_level_4_selling_price' => 'required|numeric'
+          'user_level_4_selling_price' => 'required|numeric',
+          'user_level_5_selling_price' => 'required|numeric',
+          'user_level_6_selling_price' => 'required|numeric',
+          'user_level_7_selling_price' => 'required|numeric'
 
         ]);
 
@@ -607,6 +610,9 @@ class ProductPlanController extends Controller
          $user_level_2_selling_price =  $request->user_level_2_selling_price;
          $user_level_3_selling_price =  $request->user_level_3_selling_price;
          $user_level_4_selling_price =  $request->user_level_4_selling_price;
+         $user_level_5_selling_price =  $request->user_level_5_selling_price;
+         $user_level_6_selling_price =  $request->user_level_6_selling_price;
+         $user_level_7_selling_price =  $request->user_level_7_selling_price;
          $data_size_in_mb =  $request->data_size_in_mb;
          $product_plan_name =  $request->product_plan_name;
          $validity_in_days =  $request->validity_in_days;
@@ -628,6 +634,9 @@ class ProductPlanController extends Controller
           "user_level_2_selling_price"=>  $user_level_2_selling_price,
           "user_level_3_selling_price" =>  $user_level_3_selling_price,
           "user_level_4_selling_price" =>  $user_level_4_selling_price,
+          "user_level_5_selling_price" =>  $user_level_5_selling_price,
+          "user_level_6_selling_price" =>  $user_level_6_selling_price,
+          "user_level_7_selling_price" =>  $user_level_7_selling_price,
           // "user_level_1_commission" =>  $user_level_1_commission,
           // "user_level_2_commission"=>  $user_level_2_commission,
           // "user_level_3_commission" =>  $user_level_3_commission,

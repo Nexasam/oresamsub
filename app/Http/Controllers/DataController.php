@@ -946,11 +946,15 @@ class DataController extends Controller
               $retry_count = 0;
               foreach($automation_plans  as $key=>$get_associated_plan){
                       // if(auth()->user()->email == 'oreofe@gmail.com'){
-                      if ( ($amounnt_paid - $get_associated_plan->cost_price) > 5 ) {
-                          //give room for just 5 naira loss.
-                          logger('Automation cost v2 price is greater than the amount customer paid: Skip....dont process..');
-                          continue; // Skip to next product plan if its a loss game
-                      }
+                        $allowed_loss = 5;
+
+                        if (($get_associated_plan->cost_price - $amounnt_paid) > $allowed_loss) {
+                            logger('Automation cost v2 exceeds allowed ₦5 loss: Skip...provider_price: '.$get_associated_plan->cost_price.'  ::::: customer paid: '.$amounnt_paid);
+                            continue; // Skip if loss is more than ₦5
+                        }
+
+                        logger('I think we good...provider_price: '.$get_associated_plan->cost_price.'  ::::: customer paid: '.$amounnt_paid);
+
   
                       //only these changes
                       $data['automation_details'] = $get_associated_plan->automation;
