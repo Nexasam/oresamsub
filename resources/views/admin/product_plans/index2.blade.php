@@ -132,7 +132,8 @@
                         
                                         <td>
                                             <div class="font-semibold">
-                                                {{ $plan->product_plan_name }} 
+                                                {{ $plan->product_plan_name }} <br>
+                                                {{ count($plan->automationProductPlans) .' providers'}}
                                             </div>
                                             <div class="text-xs text-gray-500">
                                                 {{ $plan->product_plan_category->product->product_name ?? '-' }} <br>
