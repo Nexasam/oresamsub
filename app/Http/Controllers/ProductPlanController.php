@@ -140,6 +140,7 @@ class ProductPlanController extends Controller
             'data_size_in_mb' => $request->data_size_in_mb,
             'validity_in_days' => $request->validity_in_days,
             'cost_price' => $request->cost_price,
+            'visibility' => $request->visibility,
         
             'user_level_1_selling_price' => $request->user_level_1_selling_price,
             'user_level_2_selling_price' => $request->user_level_2_selling_price,
