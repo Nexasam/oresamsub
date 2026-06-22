@@ -629,32 +629,75 @@ export default function Dashboard({ transactions: initialTransactions }) {
             <div className="border rounded-lg border-gray-200 dark:border-gray-700 max-h-60 overflow-y-auto">
 
             <div className="grid grid-cols-2 gap-2">
-                 
 
-                  {popular_plans.map((plan) => (
-                    <button
-                      key={plan.product_plan_id}
-                      onClick={() => {
-                        setBuyModal(plan);
-                        setPhone(plan.phone_number);
-                        setShowPopularPlans(false);
-                      }}
-                      className="p-3 text-left rounded-lg border
-                                border-gray-200 dark:border-gray-700
-                                bg-white dark:bg-gray-800
-                                hover:bg-emerald-50 dark:hover:bg-gray-700
-                                transition"
-                    >
-                      <div className="text-xs font-semibold text-gray-900 dark:text-white">
-                        {plan.product_plan_name}
-                      </div>
+              {popular_plans.map((plan) => (
+                <button
+                  key={plan.product_plan_id}
+                  onClick={() => {
+                    setBuyModal(plan);
+                    setPhone(plan.phone_number);
+                    setShowPopularPlans(false);
+                  }}
+                  className="p-3 text-left rounded-lg border
+                            border-gray-200 dark:border-gray-700
+                            bg-white dark:bg-gray-800
+                            hover:bg-emerald-50 dark:hover:bg-gray-700
+                            transition"
+                >
+                  <div className="text-xs font-semibold text-gray-900 dark:text-white">
+                    {plan.product_plan_name}
+                  </div>
 
-                      <div className="text-[10px] text-gray-500 dark:text-gray-400 mt-1">
-                        ₦{Number(plan.current_price).toLocaleString()}
-                      </div>
-                    </button>
-                  ))}
-            </div>
+                  <div className="text-[10px] text-gray-500 dark:text-gray-400 mt-1">
+                    ₦{Number(plan.current_price).toLocaleString()}
+                  </div>
+                </button>
+              ))}
+
+              </div>
+
+              {popular_plans.length === 0 && (
+              <div className="mt-4 text-center text-sm text-gray-500 dark:text-gray-400">
+                No popular plans found yet.
+              </div>
+              )}
+
+              <div className="mt-4 border-t pt-4">
+              <p className="text-xs text-gray-500 dark:text-gray-400 mb-3">
+                  Didn't find what you're looking for?
+                  Browse all available services below.
+              </p>
+
+              <div className="grid grid-cols-2 gap-2">
+                <Link
+                  href={route("inertia.data.index")}
+                  className="text-center p-2 rounded-lg bg-emerald-50 dark:bg-gray-700 text-sm"
+                >
+                  Buy Data
+                </Link>
+
+                <Link
+                  href={route("inertia.airtime.index")}
+                  className="text-center p-2 rounded-lg bg-emerald-50 dark:bg-gray-700 text-sm"
+                >
+                  Buy Airtime
+                </Link>
+
+                <Link
+                  href={route("ore.cable")}
+                  className="text-center p-2 rounded-lg bg-emerald-50 dark:bg-gray-700 text-sm"
+                >
+                  Cable TV
+                </Link>
+
+                <Link
+                  href={route("ore.electricity")}
+                  className="text-center p-2 rounded-lg bg-emerald-50 dark:bg-gray-700 text-sm"
+                >
+                  Electricity
+                </Link>
+              </div>
+              </div>
 
             </div>
           </div>
