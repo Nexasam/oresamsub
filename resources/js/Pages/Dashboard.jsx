@@ -291,8 +291,7 @@ export default function Dashboard({ transactions: initialTransactions }) {
         </div>
 
         {/* BUY AGAIN BUTTON */}
-       {/* BUY AGAIN BUTTON (DATA ONLY) */}
-        {tx.transaction_category === "data" &&
+        {/* {tx.transaction_category === "data" &&
           status.text === "Success" &&
           Number(tx.service_charge || 0) === 0 && (
             <div className="mt-2 text-right">
@@ -321,7 +320,7 @@ export default function Dashboard({ transactions: initialTransactions }) {
                 Buy Again
               </button>
             </div>
-          )}
+          )} */}
       </div>
     );
   })
