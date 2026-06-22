@@ -645,46 +645,79 @@ export default function Dashboard({ transactions: initialTransactions }) {
               </div>
 
               {popular_plans.length === 0 && (
-              <div className="mt-4 text-center text-sm text-gray-500 dark:text-gray-400">
-                No popular plans found yet.
-              </div>
+                <div className="mt-4 text-center text-sm text-gray-500 dark:text-gray-400">
+                  No popular plans found yet.
+                </div>
               )}
 
-              <div className="mt-4 border-t pt-4">
-              <p className="text-xs text-gray-500 dark:text-gray-400 mb-3">
+              <div className="mt-4 border-t border-gray-200 dark:border-gray-700 pt-4">
+
+                <p className="text-xs text-gray-500 dark:text-gray-400 mb-3 text-center">
                   Didn't find what you're looking for?
+                  <br />
                   Browse all available services below.
-              </p>
+                </p>
 
-              <div className="grid grid-cols-2 gap-2">
-                <Link
-                  href={route("inertia.data.index")}
-                  className="text-center p-2 rounded-lg bg-emerald-50 dark:bg-gray-700 text-sm"
-                >
-                  Buy Data
-                </Link>
+                <div className="grid grid-cols-2 gap-2">
 
-                <Link
-                  href={route("inertia.airtime.index")}
-                  className="text-center p-2 rounded-lg bg-emerald-50 dark:bg-gray-700 text-sm"
-                >
-                  Buy Airtime
-                </Link>
+                  <Link
+                    href={route("inertia.data.index")}
+                    className="
+                      text-center p-3 rounded-lg text-sm font-medium
+                      border border-emerald-200 dark:border-gray-600
+                      bg-emerald-50 dark:bg-gray-800
+                      text-emerald-700 dark:text-emerald-400
+                      hover:bg-emerald-100 dark:hover:bg-gray-700
+                      transition
+                    "
+                  >
+                    📶 Buy Data
+                  </Link>
 
-                <Link
-                  href={route("ore.cable")}
-                  className="text-center p-2 rounded-lg bg-emerald-50 dark:bg-gray-700 text-sm"
-                >
-                  Cable TV
-                </Link>
+                  <Link
+                    href={route("inertia.airtime.index")}
+                    className="
+                      text-center p-3 rounded-lg text-sm font-medium
+                      border border-emerald-200 dark:border-gray-600
+                      bg-emerald-50 dark:bg-gray-800
+                      text-emerald-700 dark:text-emerald-400
+                      hover:bg-emerald-100 dark:hover:bg-gray-700
+                      transition
+                    "
+                  >
+                    📱 Buy Airtime
+                  </Link>
 
-                <Link
-                  href={route("ore.electricity")}
-                  className="text-center p-2 rounded-lg bg-emerald-50 dark:bg-gray-700 text-sm"
-                >
-                  Electricity
-                </Link>
-              </div>
+                  <Link
+                    href={route("ore.cable")}
+                    className="
+                      text-center p-3 rounded-lg text-sm font-medium
+                      border border-emerald-200 dark:border-gray-600
+                      bg-emerald-50 dark:bg-gray-800
+                      text-emerald-700 dark:text-emerald-400
+                      hover:bg-emerald-100 dark:hover:bg-gray-700
+                      transition
+                    "
+                  >
+                    📺 Cable TV
+                  </Link>
+
+                  <Link
+                    href={route("ore.electricity")}
+                    className="
+                      text-center p-3 rounded-lg text-sm font-medium
+                      border border-emerald-200 dark:border-gray-600
+                      bg-emerald-50 dark:bg-gray-800
+                      text-emerald-700 dark:text-emerald-400
+                      hover:bg-emerald-100 dark:hover:bg-gray-700
+                      transition
+                    "
+                  >
+                    ⚡ Electricity
+                  </Link>
+
+                </div>
+
               </div>
 
             </div>
