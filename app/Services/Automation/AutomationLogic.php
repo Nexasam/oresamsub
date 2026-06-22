@@ -234,6 +234,10 @@ class AutomationLogic{
             //logic stays here...
             $buy_data = (new Twins10Automation($data))->buyData();    
         }
+        else if($automation_details->slug == 'foxdatahub'){
+            $buy_data = (new FoxdataHubAutomation($data))->buyData();
+            logger('foxdatahub ran for data subscription: '.json_encode($data));
+        }
         else if($slug == 'paultechs'){
             //logic stays here...
             $buy_data = (new PaultechsAutomation($data))->buyData();    
