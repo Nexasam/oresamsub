@@ -1,7 +1,7 @@
 // resources/js/Pages/Dashboard.jsx
 import { useState } from "react";
 import DashboardLayout from "@/Layouts/DashboardLayout";
-import { usePage } from "@inertiajs/react";
+import { usePage, Link } from "@inertiajs/react";
 import ProductButtons from "@/Components/ProductButtons";
 import InviteEarn from "@/Components/InviteEarn";
 import CommunityCard from "@/Components/CommunityCard";
