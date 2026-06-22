@@ -92,6 +92,7 @@ class AutomationProductPlanController extends Controller
     
         $provider->update([
             'priority' => $request->priority,
+            'provider_plan_id' => $request->provider_plan_id,
             'cost_price' => $request->cost_price,
             'selling_price' => $request->selling_price,
             'is_active' => $request->is_active,
