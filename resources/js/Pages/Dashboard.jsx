@@ -165,18 +165,6 @@ export default function Dashboard({ transactions: initialTransactions }) {
         </button>
       </div>
 
-      {/* <button
-        onClick={() => setShowPopularPlans(true)}
-        className="group flex flex-col items-center p-2 rounded-lg bg-white dark:bg-gray-800 border hover:shadow-sm transition"
-      >
-        <div className="w-8 h-8 flex items-center justify-center rounded-full bg-emerald-500 text-white text-sm">
-          📊
-        </div>
-
-        <div className="mt-1 text-[11px] font-medium text-gray-700 dark:text-gray-200 text-center leading-tight">
-          Popular
-        </div>
-      </button> */}
 
       {/* Product Actions */}
       <ProductButtons loggingOut={loggingOut} setLoggingOut={setLoggingOut} />
