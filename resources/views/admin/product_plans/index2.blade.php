@@ -91,11 +91,11 @@
 
 
                             
-                            <input type="number" name="validity_in_days"
+                            <input type="text" name="validity_in_days"
                             value="{{ request('validity_in_days') }}"
                             class="ti-form-input py-1 text-xs">
 
-                            <input type="number" name="data_size_in_mb"
+                            <input type="text" name="data_size_in_mb"
                             value="{{ request('data_size_in_mb') }}"
                             class="ti-form-input py-1 text-xs">
 
