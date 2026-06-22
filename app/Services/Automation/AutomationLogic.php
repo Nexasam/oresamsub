@@ -236,7 +236,7 @@ class AutomationLogic{
         }
         else if($automation_details->slug == 'foxdatahub'){
             $buy_data = (new FoxdataHubAutomation($data))->buyData();
-            logger('foxdatahub ran for data subscription: '.json_encode($data));
+            logger('foxdatahub ran for data subscription: '.json_encode($buy_data));
         }
         else if($slug == 'paultechs'){
             //logic stays here...
