@@ -92,11 +92,11 @@
 
                             
                             <input type="text" name="validity_in_days"
-                            value="{{ request('validity_in_days') }}"
+                            value="{{ request('validity_in_days') }}" placeholder="Validity"
                             class="ti-form-input py-1 text-xs">
 
                             <input type="text" name="data_size_in_mb"
-                            value="{{ request('data_size_in_mb') }}"
+                            value="{{ request('data_size_in_mb') }}"  placeholder="data size"
                             class="ti-form-input py-1 text-xs">
 
                             <select name="per_page" class="ti-form-select py-1 text-xs">
