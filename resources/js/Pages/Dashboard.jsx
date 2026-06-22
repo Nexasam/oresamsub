@@ -34,6 +34,8 @@ export default function Dashboard({ transactions: initialTransactions }) {
 
   const [showPopularPlans, setShowPopularPlans] = useState(false);
 
+  const { popular_plans = [] } = usePage().props;
+
   const [popularModal, setPopularModal] = useState(false);
 
     const [search, setSearch] = useState("");
@@ -624,30 +626,32 @@ export default function Dashboard({ transactions: initialTransactions }) {
             <div className="border rounded-lg border-gray-200 dark:border-gray-700 max-h-60 overflow-y-auto">
 
             <div className="grid grid-cols-2 gap-2">
-            {uniquePlans.slice(0, 10).map((tx) => (
-              <button
-                key={tx.product_plan_id}
-                onClick={() => {
-                  setBuyModal(tx);
-                  setPhone(tx.phone_number);
-                  setShowPopularPlans(false);
-                }}
-                className="p-3 text-left rounded-lg border
-                          border-gray-200 dark:border-gray-700
-                          bg-white dark:bg-gray-800
-                          hover:bg-emerald-50 dark:hover:bg-gray-700
-                          transition"
-              >
-                <div className="text-xs font-semibold text-gray-900 dark:text-white">
-                  {tx.product_plan?.product_plan_name}
-                </div>
+                 
 
-                <div className="text-[10px] text-gray-500 dark:text-gray-400 mt-1">
-                  ₦{Number(tx.amount).toLocaleString()}
-                </div>
-              </button>
-            ))}
-          </div>
+                  {popular_plans.map((plan) => (
+                    <button
+                      key={plan.product_plan_id}
+                      onClick={() => {
+                        setBuyModal(plan);
+                        setPhone(plan.phone_number);
+                        setShowPopularPlans(false);
+                      }}
+                      className="p-3 text-left rounded-lg border
+                                border-gray-200 dark:border-gray-700
+                                bg-white dark:bg-gray-800
+                                hover:bg-emerald-50 dark:hover:bg-gray-700
+                                transition"
+                    >
+                      <div className="text-xs font-semibold text-gray-900 dark:text-white">
+                        {plan.product_plan_name}
+                      </div>
+
+                      <div className="text-[10px] text-gray-500 dark:text-gray-400 mt-1">
+                        ₦{Number(plan.current_price).toLocaleString()}
+                      </div>
+                    </button>
+                  ))}
+            </div>
 
             </div>
           </div>

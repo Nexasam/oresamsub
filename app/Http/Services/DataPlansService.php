@@ -179,6 +179,8 @@ class DataPlansService{
             $spp = 'user_level_'.$plan_level.'_selling_price'; 
             $sppdefault = 'user_level_1_selling_price'; 
             $selling_price = $product_plan->$spp ?? $product_plan->$sppdefault; 
+
+            
            
 
             logger('new price model for customers');

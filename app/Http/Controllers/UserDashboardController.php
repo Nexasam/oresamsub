@@ -2,30 +2,31 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\User;
-use App\Models\UserWalletFundingLog;
-use Inertia\Inertia;
-use App\Models\UserPlan;
-use App\Models\WalletLog;
-use App\Models\Commissions;
-use App\Models\ProductPlan;
-use App\Models\Transaction;
-use App\Models\UserContact;
-use App\Models\Announcement;
-use App\Models\SiteTemplate;
-use Illuminate\Http\Request;
-use App\Models\UserProductPlan;
-use App\Models\AdminColorSetting;
-use App\Models\UserBulkDataWallet;
-use App\Models\UserVirtualAccount;
-use App\Models\LandingPagesSetting;
-use App\Models\ProductPlanCategory;
 use App\Http\Controllers\Controller;
+use App\Http\Services\DataPlansService;
+use App\Models\AdminColorSetting;
+use App\Models\Announcement;
 use App\Models\BulkDataProductPlans;
-use App\Models\FundingWebhookPayload;
-use Illuminate\Support\Facades\Route;
+use App\Models\Commissions;
 use App\Models\FundingOptionBankCodes;
+use App\Models\FundingWebhookPayload;
+use App\Models\LandingPagesSetting;
+use App\Models\ProductPlan;
+use App\Models\ProductPlanCategory;
+use App\Models\SiteTemplate;
+use App\Models\Transaction;
+use App\Models\User;
+use App\Models\UserBulkDataWallet;
+use App\Models\UserContact;
+use App\Models\UserPlan;
+use App\Models\UserProductPlan;
+use App\Models\UserVirtualAccount;
+use App\Models\UserWalletFundingLog;
+use App\Models\WalletLog;
 use Carbon\Carbon;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
+use Inertia\Inertia;
 
 
 class UserDashboardController extends Controller
@@ -51,6 +52,8 @@ class UserDashboardController extends Controller
     $product_plan = $request->product_plan;
     $date_from = $request->date_from;
     $date_to = $request->date_to;
+
+
 
     $transactions = Transaction::query()
 
@@ -92,29 +95,7 @@ class UserDashboardController extends Controller
         ->paginate($perPage)
         ->withQueryString();
 
-        // return $transactions;
-
-    // $transactions = Transaction::when(!empty($date_from) && !empty($date_to), function ($query) use ($date_from, $date_to) {
-    //         $date_to = date('Y-m-d', strtotime('+1 day', strtotime($date_to)));
-    //         $query->whereBetween('created_at', [$date_from, $date_to]);
-    //     })
-    //     ->when(!empty($product_plan_category_filter), function ($query) use ($product_plan_category_filter) {
-    //         $product_plan_ids = ProductPlan::where('product_plan_category_id', $product_plan_category_filter)
-    //             ->pluck('id');
-    //         $query->whereIn('product_plan_id', $product_plan_ids);
-    //     })
-    //     ->when(!empty($phone), function ($query) use ($phone) {
-    //         $query->where('phone_number', $phone);
-    //     })
-    //     ->where('wallet_category', '!=', 'data_wallet')
-    //     ->with(['user', 'product_plan.product_plan_category', 'product_plan.automation'])
-    //     ->latest()
-    //     ->paginate($perPage)
-    //     ->withQueryString();
-
-
-
-
+        
 
     $data['transactions'] = $transactions;
     // dd($transactions);
@@ -171,7 +152,62 @@ class UserDashboardController extends Controller
             ]);
             $data['contacts'] = $contacts;
 
-          // }
+
+              $recentPlans = Transaction::query()
+              ->where('user_id', auth()->id())
+              ->whereNotNull('product_plan_id')
+              ->with([
+                  'product_plan.product_plan_category.product',
+                  'product_plan.product_plan_category.network'
+              ])
+              ->latest()
+              ->get()
+              ->unique('product_plan_id')
+              ->values();
+
+              $dataplanservice = new DataPlansService();
+
+              $popularPlans = $recentPlans->map(function ($tx) use ($dataplanservice) {
+
+                  $plan = $tx->product_plan;
+
+                  if (!$plan) {
+                      return null;
+                  }
+
+                  try {
+
+                      $dat = [
+                          'product_id' => $plan->product_plan_category->product->id,
+                          'network_id' => $plan->product_plan_category->network->id,
+                          'user' => auth()->user(),
+                          'plan_details' => $plan,
+                      ];
+
+                      $priceData = $dataplanservice->get_customer_price_per_plan($dat);
+
+                      return [
+                          'product_plan_id' => $plan->id,
+                          'product_plan_name' => $plan->product_plan_name,
+                          'current_price' => $priceData['message'],
+                          'phone_number' => $tx->phone_number,
+                      ];
+
+                  } catch (\Throwable $e) {
+
+                      return [
+                          'product_plan_id' => $plan->id,
+                          'product_plan_name' => $plan->product_plan_name,
+                          'current_price' => null,
+                          'phone_number' => $tx->phone_number,
+                      ];
+                  }
+              })
+              ->filter()
+              ->take(10)
+              ->values();
+
+              $data['popular_plans'] = $popularPlans;
 
 
 
