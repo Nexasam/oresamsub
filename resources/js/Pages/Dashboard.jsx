@@ -543,7 +543,7 @@ export default function Dashboard({ transactions: initialTransactions }) {
                       <div><b>Phone:</b> ${phone}</div>
                       <div><b>Plan:</b> ${buyModal.product_plan_name}</div>
                       <div><b>Amount:</b> ₦${Number(buyModal.current_price).toLocaleString()}</div>
-                      <div><b>Amount:</b> ₦${Number(buyModal.amount).toLocaleString()}</div>
+                     
                     </div>
                   `,
                   icon: "question",
