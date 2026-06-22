@@ -12,7 +12,7 @@ class ProductPlan extends Model
 
     //TODO: revamp productplan with global scope for visibility in all its instance in the code
 
-    protected $guarded = ['id'];
+    protected $guarded = [];
 
     
      /**

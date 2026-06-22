@@ -92,6 +92,8 @@ class UserDashboardController extends Controller
         ->paginate($perPage)
         ->withQueryString();
 
+        // return $transactions;
+
     // $transactions = Transaction::when(!empty($date_from) && !empty($date_to), function ($query) use ($date_from, $date_to) {
     //         $date_to = date('Y-m-d', strtotime('+1 day', strtotime($date_to)));
     //         $query->whereBetween('created_at', [$date_from, $date_to]);
@@ -427,7 +429,10 @@ class UserDashboardController extends Controller
       $data['main_wallet_balances'] = User::select('main_wallet')->sum('main_wallet');
       $data['bulk_data_wallet_sum'] = UserBulkDataWallet::select('bulk_wallet_balance_mb')->sum('bulk_wallet_balance_mb');
       $data['alltime_bulk_wallet_balance_mb'] = UserBulkDataWallet::select('alltime_bulk_wallet_balance_mb')->sum('alltime_bulk_wallet_balance_mb');
-      $data['transactions_with_issues'] = Transaction::where('set_for_manual',1)->get();
+      $data['transactions_with_issues'] = Transaction::where('set_for_manual',1)
+      ->get();
+
+    //  return $data;
       //no need here
       return view('admin_dashboard')->with($data);
     }

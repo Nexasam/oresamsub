@@ -3,10 +3,11 @@
 namespace App\Http\Services;
 
 use App\Models\AutomationProductPlan;
-use App\Models\UserPlan;
-use App\Models\ProductPlan;
 use App\Models\PlanProfitSetting;
+use App\Models\ProductPlan;
 use App\Models\ProductPlanCategory;
+use App\Models\ProductPlanCustomPricing;
+use App\Models\UserPlan;
 
 class DataPlansService{
 
@@ -88,6 +89,13 @@ class DataPlansService{
                 $dat['network_id'] = $network_id;
                 $selling_price = $this->get_customer_price_per_plan($dat)['message'];
                 $upline_commission = $this->get_customer_price_per_plan($dat)['upline_commission'] ?? 5;
+
+                //HERE SELLING PRICE CHANGES IF THEHRE IS A CUSTOM SETTING: put in a service later::::WATCH THIS IN PROD.
+                $check_custom_setting = ProductPlanCustomPricing::where('product_plan_id', $product_plan->id)
+                ->where('user_id',$user_details->id)
+                ->first();
+                $selling_price = $check_custom_setting == NULL ? $selling_price : $check_custom_setting->price;  
+             
     
              
                 if($is_api != NULL){

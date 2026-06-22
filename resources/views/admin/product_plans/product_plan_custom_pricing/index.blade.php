@@ -166,6 +166,29 @@
                             Ops! {{ Session::get('failure') }}
                             </div>
                           @endif
+
+                          <form method="GET" class="mb-4">
+                            <div class="flex gap-2">
+                        
+                                <input
+                                    type="text"
+                                    name="search"
+                                    value="{{ request('search') }}"
+                                    class="ti-form-input"
+                                    placeholder="Search username or product plan">
+                        
+                                <button type="submit" class="ti-btn ti-btn-primary">
+                                    Search
+                                </button>
+                        
+                                @if(request('search'))
+                                    <a href="{{ url()->current() }}" class="ti-btn ti-btn-light">
+                                        Clear
+                                    </a>
+                                @endif
+                        
+                            </div>
+                        </form>
                             
                         <table  class="ti-custom-table ti-custom-table-head ti-striped-table ti-custom-table-hover ">
                             <thead>
@@ -207,7 +230,7 @@
                                             <div class="ti-modal-content">
                                               <div class="ti-modal-header">
                                                 <h3 class="ti-modal-title">
-                                                  Edit Funding Promo for this record: <br> {{$cc->id}}
+                                                  Edit Custom Pricing: <br> {{$cc->id}}
                                                 </h3>
                                                 <button type="button" class="hs-dropdown-toggle ti-modal-clode-btn"
                                                   data-hs-overlay="#hs-basic-modal">
@@ -223,27 +246,115 @@
                                               <div class="ti-modal-body">
                                                 <div class="overflow-auto">
                         
-                                                  <form 
-                                                  x-data="{ 
-                                                      rateCategory: 'percent' 
-                                                  }" 
-                                                  method="POST" 
-                                                  action="{{ route('admin.user_wallet_funding_promo.update_user',['id'=>$cc->id]) }}"
-                                                  >
+                                                  <form
+                                                  method="POST"
+                                                  action="{{ route('admin.product_plan_custom_pricing.update',['id'=>$cc->id]) }}">
                                                   @csrf
+                                                  @method('PUT')
+                                              
                                                   <div class="grid w-full lg:w-full lg:grid-cols-1 gap-6 space-y-4 lg:space-y-0">
                                                       <div class="grid grid-cols-1 gap-2">
-                                                          
-                  
-                                                          <!-- Beneficiary (Username) nullable-->    
-                                                          <input name="username" value="{{ $cc->user->username }}" type="hidden" class="my-auto ti-form-input" placeholder="username of customer">
-                                                      
-                                                       
-                                                          
-                  
-                                                      <div class="space-y-2">
-                                                          <button type="submit" class="ti-btn ti-btn-primary w-full">Update User Wallet Funding Promo</button>
+                                              
+                                                          {{-- Username --}}
+                                                          <div class="mt-2">
+                                                              <label class="ti-form-label mb-0">Enter Username</label>
+                                                              <input
+                                                                  name="username"
+                                                                  type="text"
+                                                                  value="{{ $cc->user->username ?? '' }}"
+                                                                  class="my-auto ti-form-input"
+                                                                  placeholder="username of customer">
+                                                          </div>
+                                              
+                                                          {{-- Network --}}
+                                                          <div>
+                                                              <label class="ti-form-label mb-0">Network</label>
+                                                              <select
+                                                                  required
+                                                                  name="network_id"
+                                                                  class="my-auto ti-form-select">
+                                              
+                                                                  <option value="">Select</option>
+                                              
+                                                                  @foreach ($networks as $network)
+                                                                      <option
+                                                                          value="{{ $network->id }}"
+                                                                          {{ $cc->network_id == $network->id ? 'selected' : '' }}>
+                                                                          {{ $network->network_name }}
+                                                                      </option>
+                                                                  @endforeach
+                                              
+                                                              </select>
+                                                          </div>
+                                              
+                                                          {{-- Product Slug --}}
+                                                          <input
+                                                              type="hidden"
+                                                              name="product_slug"
+                                                              value="{{ $cc->product_slug ?? 'data' }}">
+                                              
+                                                          {{-- Product Plan --}}
+                                                          <div class="space-y-2">
+                                                              <label class="ti-form-label mb-0">
+                                                                  {{ __('messages.Product Plans List') }}
+                                                              </label>
+                                              
+                                                              <select
+                                                                  required
+                                                                  name="product_plan_id"
+                                                                  class="my-auto ti-form-select">
+                                              
+                                                                  <option value="">Select</option>
+                                              
+                                                                  @foreach ($product_plans as $product_plan)
+                                                                      <option
+                                                                          value="{{ $product_plan->id }}"
+                                                                          {{ $cc->product_plan_id == $product_plan->id ? 'selected' : '' }}>
+                                                                          {{ $product_plan->product_plan_name }}
+                                                                      </option>
+                                                                  @endforeach
+                                              
+                                                              </select>
+                                                          </div>
+                                              
+                                                          {{-- Custom Price --}}
+                                                          <div>
+                                                              <label class="ti-form-label mb-0">Custom Price</label>
+                                                              <input
+                                                                  name="price"
+                                                                  required
+                                                                  type="number"
+                                                                  value="{{ $cc->price }}"
+                                                                  class="my-auto ti-form-input"
+                                                                  placeholder="value">
+                                                          </div>
+                                              
+                                                          {{-- Status --}}
+                                                          <div>
+                                                              <label class="ti-form-label mb-0">Status</label>
+                                                              <select
+                                                                  required
+                                                                  name="status"
+                                                                  class="my-auto ti-form-select">
+                                              
+                                                                  <option value="1" {{ $cc->status == 1 ? 'selected' : '' }}>
+                                                                      Active
+                                                                  </option>
+                                              
+                                                                  <option value="0" {{ $cc->status == 0 ? 'selected' : '' }}>
+                                                                      Inactive
+                                                                  </option>
+                                                              </select>
+                                                          </div>
+                                              
                                                       </div>
+                                              
+                                                      <div class="space-y-2">
+                                                          <button type="submit" class="ti-btn ti-btn-primary w-full">
+                                                              Update Custom Pricing
+                                                          </button>
+                                                      </div>
+                                              
                                                       <br>
                                                   </div>
                                               </form>

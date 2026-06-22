@@ -87,6 +87,29 @@
                         <option value="0" {{ !$plan->visibility ? 'selected' : '' }}>Hidden</option>
                     </select>
                 </div>
+
+                {{-- PRODUCT PLAN CATEGORY --}}
+                <div class="flex flex-col gap-1">
+                    <label class="text-[10px] text-gray-400">
+                        Plan Category
+                    </label>
+
+                    <select
+                        name="product_plan_category_id"
+                        class="ti-form-select h-10 text-xs">
+
+                        <option value="">Select Category</option>
+
+                        @foreach($productPlanCategories as $category)
+                            <option
+                                value="{{ $category->id }}"
+                                {{ $plan->product_plan_category_id == $category->id ? 'selected' : '' }}>
+                                {{ $category->product_plan_category_name }}
+                            </option>
+                        @endforeach
+
+                    </select>
+                </div>
         
                 {{-- VALIDITY --}}
                 <div class="flex flex-col gap-1">
@@ -177,6 +200,8 @@
             </button>
         </form>
 
+
+
         <div class="mt-3 grid grid-cols-7 mt-3 gap-1 text-[13px]">
             <div>PRICE PREVIEW</div>
             @for($i = 1; $i <= 7; $i++)
@@ -192,35 +217,89 @@
      
 
 
+
+
         @php
-    $providerCosts = $plan->automationProductPlans->pluck('cost_price')->filter();
+            $providerCosts = $plan->automationProductPlans->pluck('cost_price')->filter();
 
-    $minCost = $providerCosts->min();
-    $maxCost = $providerCosts->max();
+            $minCost = $providerCosts->min();
+            $maxCost = $providerCosts->max();
 
-    $safeMin = $minCost ? $minCost + 6 : 0; // enforce +₦6 rule
-@endphp
+            $safeMin = $minCost ? $minCost + 6 : 0; // enforce +₦6 rule
+        @endphp
 
-<div class="mb-2 grid grid-cols-3 gap-2 mt-3 text-[11px]">
+        <div class="mb-2 grid grid-cols-3 gap-2 mt-3 text-[11px]">
 
-    <div class="border rounded p-2">
-        <div class="text-gray-400">Lowest Cost</div>
-        <div class="font-semibold">₦{{ number_format($minCost, 2) }}</div>
-    </div>
+            <div class="border rounded p-2">
+                <div class="text-gray-400">Lowest Cost</div>
+                <div class="font-semibold">₦{{ number_format($minCost, 2) }}</div>
+            </div>
 
-    <div class="border rounded p-2">
-        <div class="text-gray-400">Highest Cost</div>
-        <div class="font-semibold">₦{{ number_format($maxCost, 2) }}</div>
-    </div>
+            <div class="border rounded p-2">
+                <div class="text-gray-400">Highest Cost</div>
+                <div class="font-semibold">₦{{ number_format($maxCost, 2) }}</div>
+            </div>
 
-    <div class="border rounded p-2 bg-green-50 dark:bg-green-900/10">
-        <div class="text-gray-400">Min Allowed Selling (Cost + 6)</div>
-        <div class="font-semibold text-green-600">
-            ₦{{ number_format($safeMin, 2) }}
+            <div class="border rounded p-2 bg-green-50 dark:bg-green-900/10">
+                <div class="text-gray-400">Min Allowed Selling (Cost + 6)</div>
+                <div class="font-semibold text-green-600">
+                    ₦{{ number_format($safeMin, 2) }}
+                </div>
+            </div>
+
         </div>
+
+        </form>
+
+
+
+        <form method="POST"
+      action="{{ route('admin.product_plans.update_selling_prices', $plan->id) }}"
+      class="mt-4">
+
+    @csrf
+    @method('PUT')
+
+    <div class="border rounded-lg p-4">
+
+        <h5 class="font-semibold mb-3">
+            Update Selling Prices
+        </h5>
+
+        <div class="grid md:grid-cols-2 gap-3">
+
+            @for($i = 1; $i <= 7; $i++)
+                @php
+                    $label = $labels[$i] ?? 'LEVEL '.$i;
+                @endphp
+
+                <div>
+                    <label class="block text-xs text-gray-500 mb-1">
+                        {{ $label }}
+                    </label>
+
+                    <input type="number"
+                           step="0.01"
+                           name="user_level_{{ $i }}_selling_price"
+                           value="{{ $plan->{'user_level_'.$i.'_selling_price'} }}"
+                           class="ti-form-input">
+                </div>
+            @endfor
+
+        </div>
+
+        <button type="submit"
+                class="ti-btn ti-btn-success mt-4">
+            Update Selling Prices
+        </button>
+
     </div>
 
-</div>
+        </form>
+
+
+
+
 
         <hr class="my-6">
 

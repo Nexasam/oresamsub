@@ -576,6 +576,15 @@ Route::middleware(['set_locale'])->group(function () {
              //product plan custom pricing
              Route::middleware(['auth','verified','admin'])->get('product_plan_custom_pricing/index', [ProductPlanCustomPricingController::class, 'index'])->name('admin.product_plan_custom_pricing.index');
              Route::middleware(['auth','verified','admin'])->post('product_plan_custom_pricing/store', [ProductPlanCustomPricingController::class, 'store'])->name('admin.product_plan_custom_pricing.store');
+             Route::middleware(['auth','verified','admin'])->put(
+                '/product-plan-custom-pricing/{id}',
+                [ProductPlanCustomPricingController::class, 'update']
+            )->name('admin.product_plan_custom_pricing.update');
+
+            Route::middleware(['auth','verified','admin'])->post(
+                '/product-plans/{id}/duplicate',
+                [ProductPlanController::class, 'duplicate']
+            )->name('admin.product_plans.duplicate');
 
             //ANNOUNCEMENT
             Route::middleware(['auth','verified','admin'])->get('announcements/index', [AnnouncementsController::class, 'index'])->name('admin.announcements.index');
@@ -735,11 +744,17 @@ Route::middleware(['set_locale'])->group(function () {
 
 
 
-            Route::middleware(['auth','verified','user'])->get('/product-plans', [ProductPlanController::class, 'indexUser'])
+            Route::middleware(['auth','verified','admin'])->get('/product-plans', [ProductPlanController::class, 'indexUser'])
             ->name('product_plans.index');
     
-            Route::middleware(['auth','verified','user'])->post('/product-plans/favourite', [ProductPlanController::class, 'addFavourite'])
+            Route::middleware(['auth','verified','admin'])->post('/product-plans/favourite', [ProductPlanController::class, 'addFavourite'])
                 ->name('product_plans.favourite.store');
+
+            
+            Route::middleware(['auth','verified','admin'])->put(
+                '/product-plans/{plan}/selling-prices',
+                [ProductPlanController::class, 'updateSellingPrices']
+            )->name('admin.product_plans.update_selling_prices');
 
 
             Route::middleware(['auth','verified','admin'])->get('admin/product_plans', [ProductPlanController::class, 'index'])->name('admin.product_plans.index');

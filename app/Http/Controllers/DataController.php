@@ -978,7 +978,7 @@ class DataController extends Controller
                               'retry_count' => $retry_count,
                               'user_message' => $sell_data['user_message'],
                               'admin_message' => $sell_data['admin_message'],
-                              'plan_id' => $get_associated_plan->id,
+                              'plan_id' => $get_associated_plan->product_plan_id,
                           ];
                       }
   

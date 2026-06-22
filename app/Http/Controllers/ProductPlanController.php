@@ -34,12 +34,55 @@ class ProductPlanController extends Controller
         return view('admin.product_plans.index')->with($data);
     }
 
+    public function duplicate(Request $request, $id)
+    {
+        $request->validate([
+            'product_plan_name' => 'required|string|max:255',
+            'product_plan_category_id' => 'required|exists:product_plan_categories,id',
+        ]);
+
+        $plan = ProductPlan::findOrFail($id);
+
+        $newPlan = $plan->replicate();
+
+        $newPlan->product_plan_name = $request->product_plan_name;
+        $newPlan->product_plan_category_id = $request->product_plan_category_id;
+
+        $newPlan->save();
+
+        return redirect()->back()
+            ->with('success', 'Plan duplicated successfully.');
+    }
+
+    public function updateSellingPrices(Request $request, ProductPlan $plan)
+    {
+        $validated = $request->validate([
+            'user_level_1_selling_price' => 'required|numeric|min:0',
+            'user_level_2_selling_price' => 'required|numeric|min:0',
+            'user_level_3_selling_price' => 'required|numeric|min:0',
+            'user_level_4_selling_price' => 'required|numeric|min:0',
+            'user_level_5_selling_price' => 'required|numeric|min:0',
+            'user_level_6_selling_price' => 'required|numeric|min:0',
+            'user_level_7_selling_price' => 'required|numeric|min:0',
+        ]);
+
+        $plan->update($validated);
+
+        return back()->with(
+            'success',
+            'Selling prices updated successfully.'
+        );
+    }
+
     public function manage($id)
     {
+      $productPlanCategories = ProductPlanCategory::orderBy('product_plan_category_name')->get();
+       
         $plan = ProductPlan::with([
             'automationProductPlans.automation',
             'product_plan_category.network',
-            'product_plan_category.product'
+            'product_plan_category.product',
+          
         ])->findOrFail($id);
 
         $userplans = UserPlan::get();
@@ -59,7 +102,7 @@ class ProductPlanController extends Controller
 
         $automations = Automation::all();
 
-        return view('admin.product_plans.manage', compact('plan', 'automations','userplans','newplan'));
+        return view('admin.product_plans.manage', compact('plan', 'automations','userplans','newplan','productPlanCategories'));
     }
 
     public function index2(Request $request){
@@ -67,12 +110,13 @@ class ProductPlanController extends Controller
       // $product_plans = ProductPlan::with(['product','product_plan_category','automation'])
       // ->where('visibility',1)
       // ->get();
-      // $product_plan_categories = ProductPlanCategory::get();
+      $product_plan_categories = ProductPlanCategory::orderBy('product_plan_category_name')->get();
       // $data['product_plans'] = $product_plans;
       // $data['product_plan_categories'] = $product_plan_categories;
       // dd($data);
       $query = ProductPlan::with([
             'automation',
+            'product_plan_category',
             'product_plan_category.network',
             'product_plan_category.product',
             'automationProductPlans'
@@ -125,6 +169,7 @@ class ProductPlanController extends Controller
         return view('admin.product_plans.index2', compact(
             'data',
             'automations',
+            'product_plan_categories',
             'products',
             'networks'
         ));
@@ -141,6 +186,8 @@ class ProductPlanController extends Controller
             'validity_in_days' => $request->validity_in_days,
             'cost_price' => $request->cost_price,
             'visibility' => $request->is_visible,
+            'product_plan_category_id' => $request->product_plan_category_id,
+            // 'visibility' => $request->is_visible,
         
             'user_level_1_selling_price' => $request->user_level_1_selling_price,
             'user_level_2_selling_price' => $request->user_level_2_selling_price,

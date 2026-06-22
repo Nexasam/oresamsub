@@ -133,7 +133,8 @@
                                         <td>
                                             <div class="font-semibold">
                                                 {{ $plan->product_plan_name }} <br>
-                                                {{ count($plan->automationProductPlans) .' providers'}}
+                                                {{ count($plan->automationProductPlans) .' providers'}} <br>
+                                                {{ 'Type: '.$plan->product_plan_category->product_plan_category_name }}
                                             </div>
                                             <div class="text-xs text-gray-500">
                                                 {{ $plan->product_plan_category->product->product_name ?? '-' }} <br>
@@ -167,6 +168,100 @@
                                                class="ti-btn ti-btn-primary ti-btn-sm">
                                                 Manage
                                             </a>
+
+                                            <button
+                                            type="button"
+                                            class="ti-btn ti-btn-warning ti-btn-sm"
+                                            data-hs-overlay="#duplicate-plan-modal-{{ $plan->id }}">
+                                            Duplicate 
+                                        </button>
+
+                                                <div id="duplicate-plan-modal-{{ $plan->id }}" class="hs-overlay ti-modal hidden">
+                                                    <div class="ti-modal-box">
+                                                        <div class="ti-modal-content">
+                                                
+                                                            <div class="ti-modal-header">
+                                                                <h3 class="ti-modal-title">
+                                                                    Duplicate Plan
+                                                                </h3>
+                                                
+                                                                <button
+                                                                    type="button"
+                                                                    class="hs-dropdown-toggle ti-modal-clode-btn"
+                                                                    data-hs-overlay="#duplicate-plan-modal-{{ $plan->id }}">
+                                                                    ✕
+                                                                </button>
+                                                            </div>
+                                                
+                                                            <div class="ti-modal-body">
+                                                
+                                                                <form
+                                                                    method="POST"
+                                                                    action="{{ route('admin.product_plans.duplicate', $plan->id) }}">
+                                                
+                                                                    @csrf
+                                                
+                                                                    <div class="mb-4">
+                                                                        <label class="ti-form-label">
+                                                                            Existing Plan
+                                                                        </label>
+                                                
+                                                                        <input
+                                                                            type="text"
+                                                                            readonly
+                                                                            value="{{ $plan->product_plan_name }}"
+                                                                            class="ti-form-input">
+                                                                    </div>
+                                                
+                                                                    <div class="mb-4">
+                                                                        <label class="ti-form-label">
+                                                                            New Plan Name
+                                                                        </label>
+                                                
+                                                                        <input
+                                                                            type="text"
+                                                                            name="product_plan_name"
+                                                                            required
+                                                                            class="ti-form-input"
+                                                                            placeholder="e.g MTN 10GB SME">
+                                                                    </div>
+
+                                                                    <div class="mb-4">
+                                                                        <label class="ti-form-label">
+                                                                            Product Plan Category
+                                                                        </label>
+                                                                    
+                                                                        <select
+                                                                            name="product_plan_category_id"
+                                                                            required
+                                                                            class="ti-form-select">
+                                                                    
+                                                                            <option value="">Select Category</option>
+                                                                    
+                                                                            @foreach($product_plan_categories as $category)
+                                                                                <option
+                                                                                    value="{{ $category->id }}"
+                                                                                    {{ $plan->product_plan_category_id == $category->id ? 'selected' : '' }}>
+                                                                                    {{ $category->product_plan_category_name }}
+                                                                                </option>
+                                                                            @endforeach
+                                                                    
+                                                                        </select>
+                                                                    </div>
+                                                
+                                                                    <button
+                                                                        type="submit"
+                                                                        class="ti-btn ti-btn-primary w-full">
+                                                                        Duplicate Plan
+                                                                    </button>
+                                                
+                                                                </form>
+                                                
+                                                            </div>
+                                                
+                                                        </div>
+                                                    </div>
+                                                </div>
                                         </td>
                         
                                     </tr>
