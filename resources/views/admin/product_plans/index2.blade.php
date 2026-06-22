@@ -89,6 +89,16 @@
                                    value="{{ request('to_date') }}"
                                    class="ti-form-input py-1 text-xs">
 
+
+                            
+                            <input type="number" name="validity_in_days"
+                            value="{{ request('validity_in_days') }}"
+                            class="ti-form-input py-1 text-xs">
+
+                            <input type="number" name="data_size_in_mb"
+                            value="{{ request('data_size_in_mb') }}"
+                            class="ti-form-input py-1 text-xs">
+
                             <select name="per_page" class="ti-form-select py-1 text-xs">
                                 <option value="50" {{ request('per_page', 100) == 50 ? 'selected' : '' }}>50</option>
                                 <option value="100" {{ request('per_page', 100) == 100 ? 'selected' : '' }}>100</option>

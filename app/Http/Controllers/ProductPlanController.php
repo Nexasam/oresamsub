@@ -153,6 +153,17 @@ class ProductPlanController extends Controller
             $query->whereDate('created_at', '>=', $request->from_date);
         }
 
+        if ($request->filled('validity_in_days')) {
+          $query->whereDate('validity_in_days', '>=', $request->validity_in_days);
+        }
+
+        if ($request->filled('data_size_in_mb')) {
+          $query->whereDate('data_size_in_mb', '=', $request->from_date);
+      }
+
+        
+        
+
         if ($request->filled('to_date')) {
             $query->whereDate('created_at', '<=', $request->to_date);
         }
