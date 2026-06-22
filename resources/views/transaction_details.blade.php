@@ -484,6 +484,8 @@
                                 <div x-data="{ copied: false }" class="flex items-center space-x-2 text-gray-700 dark:text-gray-200">
                                     <span class="font-medium">Fund {{ $pdplan->automation->automation_name }} Account:</span>
                                     <span class="font-semibold">{{ $pdplan->automation->bank_name ?? '' }}</span>
+                                    <span>AUTOMATION ID: {{ $pdplan->automation_product_plan_id ?? ''  }}</span>
+
                                     <span x-ref="account" class="font-mono text-sm">{{ $pdplan->automation->bank_accounts ?? '' }}</span>
                             
                                     <button 
