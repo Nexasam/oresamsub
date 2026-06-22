@@ -477,7 +477,8 @@ export default function Dashboard({ transactions: initialTransactions }) {
                 Plan
               </label>
               <div className="font-semibold">
-                {buyModal.product_plan?.product_plan_name}
+                {/* {buyModal.product_plan?.product_plan_name} */}
+                {buyModal.product_plan_name}
               </div>
             </div>
 
@@ -487,7 +488,8 @@ export default function Dashboard({ transactions: initialTransactions }) {
                 Amount
               </label>
               <div className="font-bold text-emerald-600 dark:text-emerald-400">
-                ₦{Number(buyModal.amount).toLocaleString()}
+              
+                ₦{Number(buyModal.current_price).toLocaleString()}
               </div>
             </div>
 
@@ -537,8 +539,10 @@ export default function Dashboard({ transactions: initialTransactions }) {
                   title: "Confirm Purchase",
                   html: `
                     <div style="text-align:left; line-height:1.6">
-                      <div><b>Plan:</b> ${buyModal.product_plan?.product_plan_name}</div>
+               
                       <div><b>Phone:</b> ${phone}</div>
+                      <div><b>Plan:</b> ${buyModal.product_plan_name}</div>
+                      <div><b>Amount:</b> ₦${Number(buyModal.current_price).toLocaleString()}</div>
                       <div><b>Amount:</b> ₦${Number(buyModal.amount).toLocaleString()}</div>
                     </div>
                   `,
