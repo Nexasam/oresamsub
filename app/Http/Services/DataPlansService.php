@@ -90,11 +90,7 @@ class DataPlansService{
                 $selling_price = $this->get_customer_price_per_plan($dat)['message'];
                 $upline_commission = $this->get_customer_price_per_plan($dat)['upline_commission'] ?? 5;
 
-                //HERE SELLING PRICE CHANGES IF THEHRE IS A CUSTOM SETTING: put in a service later::::WATCH THIS IN PROD.
-                $check_custom_setting = ProductPlanCustomPricing::where('product_plan_id', $product_plan->id)
-                ->where('user_id',$user_details->id)
-                ->first();
-                $selling_price = $check_custom_setting == NULL ? $selling_price : $check_custom_setting->price;  
+             
              
     
              
@@ -180,6 +176,12 @@ class DataPlansService{
             $sppdefault = 'user_level_1_selling_price'; 
             $selling_price = $product_plan->$spp ?? $product_plan->$sppdefault; 
 
+               //HERE SELLING PRICE CHANGES IF THEHRE IS A CUSTOM SETTING: put in a service later::::WATCH THIS IN PROD.
+               $check_custom_setting = ProductPlanCustomPricing::where('product_plan_id', $product_plan->id)
+               ->where('user_id',$user_details->id)
+               ->first();
+               $selling_price = $check_custom_setting == NULL ? $selling_price : $check_custom_setting->price;  
+
             
            
 
@@ -225,6 +227,11 @@ class DataPlansService{
         // ->first();
         // $selling_price = $check_custom_setting == NULL ? $selling_price : $check_custom_setting->price; 
 
+           //HERE SELLING PRICE CHANGES IF THEHRE IS A CUSTOM SETTING: put in a service later::::WATCH THIS IN PROD.
+           $check_custom_setting = ProductPlanCustomPricing::where('product_plan_id', $product_plan->id)
+           ->where('user_id',$user_details->id)
+           ->first();
+           $selling_price = $check_custom_setting == NULL ? $selling_price : $check_custom_setting->price;  
 
         $augmentsp = $cost_price + 50;
 
