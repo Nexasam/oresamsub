@@ -154,12 +154,12 @@ class ProductPlanController extends Controller
         }
 
         if ($request->filled('validity_in_days')) {
-          $query->whereDate('validity_in_days', '>=', $request->validity_in_days);
+          $query->where('validity_in_days', '>=', $request->validity_in_days);
         }
 
-        if ($request->filled('data_size_in_mb')) {
-          $query->whereDate('data_size_in_mb', '=', $request->from_date);
-      }
+          if ($request->filled('data_size_in_mb')) {
+            $query->where('data_size_in_mb', '=', $request->from_date);
+        }
 
         
         
