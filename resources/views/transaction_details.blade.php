@@ -318,10 +318,7 @@
 
 
 
-                      {{-- PROCESSING WITH OTHER AUTOMATION --}}
-
-
-                      
+                      {{-- PROCESSING WITH OTHER AUTOMATION --}}         
                       @php
                       $networkkk = $data->product_plan->product_plan_category->network->id ?? NULL;
                       $network_plan_categories_arr = App\Models\ProductPlanCategory::where('network_id',$networkkk)
@@ -415,6 +412,7 @@
                                       <p>
                                           Fund {{ $pdplan->automation->automation_name }} Account:
                                           <span>{{ $pdplan->automation->bank_name ?? ''  }}</span>
+                                          <span>AUTOMATION ID: {{ $pdplan->automation_product_plan_id ?? ''  }}</span>
                                           <span x-ref="account">{{ $pdplan->automation->bank_accounts ?? '' }}</span>
                                           <button 
                                               @click="navigator.clipboard.writeText($refs.account.innerText).then(() => { copied = true; setTimeout(() => copied = false, 2000) })"
