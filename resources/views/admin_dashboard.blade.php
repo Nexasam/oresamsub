@@ -489,9 +489,10 @@
                                             {{ $data->phone_number }}
                                             <small>
                                                 Provider:
-                                                {{ optional($data->automation)->automation_name
+                                                <b>{{ optional($data->automation)->automation_name
                                                     ?? optional(optional($data->product_plan)->automation)->automation_name
                                                     ?? 'N/A' }}
+                                                </b>
                                             </small>
                                             <details>
                                                
