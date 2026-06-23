@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Services\Whatsapp;
 
 use Illuminate\Support\Facades\Http;
