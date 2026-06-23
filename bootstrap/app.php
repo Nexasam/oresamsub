@@ -32,6 +32,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'marketer' => MarketerMiddleware::class, 
             'validate_user' => ValidateSanctumUser::class,
             'api_token' => ValidateApiToken::class,
+            'whatsapp.token' => ValidateWhatsappApiToken::class,
             'set_transaction_pin' => SetTransactionPin::class,
             'set_locale' => \App\Http\Middleware\SetLocale::class,
          ]);

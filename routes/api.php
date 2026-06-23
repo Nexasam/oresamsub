@@ -21,6 +21,9 @@ use App\Http\Controllers\ExternalIntegration\ApiIntegrationPasswordResetControll
 // use App\Http\ExternalIntegration\Controllers\ApiIntegrationPasswordResetController;
 
 
+//whatsapp:::
+Route::middleware('whatsapp.token')->post('/webhook/whatsapp', [ProductsVendorController::class, 'whatsappHook'])->name('rawapi.user.buy_datav2');
+
 
 ///////STRICTLY MSORG STYLE
 Route::middleware('api_token')->post('data', [ProductsVendorController::class, 'buy_datav2'])->name('rawapi.user.buy_datav2');
