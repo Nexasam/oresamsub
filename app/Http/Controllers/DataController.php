@@ -434,7 +434,7 @@ class DataController extends Controller
     }
 
     public function buy_again_data_action(Request $request){
-        logger('buy again '.json_encode($request->all()));
+        
         $getnetwork = ProductPlan::with('product_plan_category.network')
         ->where('id',$request->product_plan_id)
         ->first();
@@ -448,7 +448,7 @@ class DataController extends Controller
             'product_plan_category_id' => $product_plan_category_id,
         ]);
 
-        logger('buy again: '.json_encode($request->all()));
+    
         return $this->buy_data_action($request);
     }
 
