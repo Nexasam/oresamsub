@@ -24,6 +24,9 @@ class WhatsappWebhookController extends Controller
             return response()->json(['success' => true]);
         }
 
+
+        logger('omo2');
+
         $phone = $message['from'] ?? null;
         $text = trim($message['text']['body'] ?? '');
 
