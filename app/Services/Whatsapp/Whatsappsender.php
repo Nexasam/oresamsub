@@ -4,7 +4,7 @@ namespace App\Services\Whatsapp;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
-class WhatsappSender
+class Whatsappsender
 {
     public function send(string $phone, string $message): array
     {

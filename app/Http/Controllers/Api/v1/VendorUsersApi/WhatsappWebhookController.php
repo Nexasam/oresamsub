@@ -2,7 +2,7 @@
 namespace App\Http\Controllers\Api\v1\VendorUsersApi;
 
 use App\Http\Controllers\Controller;
-use App\Services\Whatsapp\WhatsappSender;
+use App\Services\Whatsapp\Whatsappsender;
 use App\Traits\JsonResponseWrapper;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -16,7 +16,7 @@ class WhatsappWebhookController extends Controller
 
     public function receive(
         Request $request,
-        WhatsappSender $sender
+        Whatsappsender $sender
     ) {
     
         $message = $request->input(
