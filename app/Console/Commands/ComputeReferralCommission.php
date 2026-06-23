@@ -84,7 +84,7 @@ class ComputeReferralCommission extends Command
                             }
                             
                         }else{
-                            logger('commission is likely 0 or no upline for user: '.$user->username.' with txn id: '.$txn_id);
+                            // logger('commission is likely 0 or no upline for user: '.$user->username.' with txn id: '.$txn_id);
                         }
                     }
                 }else{
