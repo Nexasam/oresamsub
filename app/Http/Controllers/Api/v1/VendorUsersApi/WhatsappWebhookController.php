@@ -20,6 +20,7 @@ class WhatsappWebhookController extends Controller
         $message = $request->input('entry.0.changes.0.value.messages.0');
 
         if (!$message) {
+            logger('omo..na this one oh');
             return response()->json(['success' => true]);
         }
 
