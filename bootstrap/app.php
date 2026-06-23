@@ -1,20 +1,21 @@
 <?php
 
-use App\Http\Middleware\RoleAssess;
 use App\Http\Middleware\AdminSettings;
-use Illuminate\Foundation\Application;
-use App\Http\Middleware\RoleUserAccess;
+use App\Http\Middleware\ApiTokenMiddleware;
+use App\Http\Middleware\AuthenticateExternalIntegration;
+use App\Http\Middleware\HandleInertiaRequests;
+use App\Http\Middleware\MarketerMiddleware;
 use App\Http\Middleware\RoleAdminAccess;
+use App\Http\Middleware\RoleAssess;
+use App\Http\Middleware\RoleUserAccess;
+use App\Http\Middleware\SetTransactionPin;
 use App\Http\Middleware\TemplateSetting;
 use App\Http\Middleware\ValidateApiToken;
-use App\Http\Middleware\SetTransactionPin;
-use App\Http\Middleware\ApiTokenMiddleware;
-use App\Http\Middleware\MarketerMiddleware;
 use App\Http\Middleware\ValidateSanctumUser;
-use App\Http\Middleware\HandleInertiaRequests;
+use App\Http\Middleware\ValidateWhatsappApiToken;
+use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
-use App\Http\Middleware\AuthenticateExternalIntegration;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
