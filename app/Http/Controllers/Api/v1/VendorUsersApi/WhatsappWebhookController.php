@@ -13,14 +13,29 @@ class WhatsappWebhookController extends Controller
  
     use JsonResponseWrapper;
 
-    public function receive(Request $request){
-        Log::info(
-            'WHATSAPP WEBHOOK',
-            json_decode(
-                json_encode($request->all()),
-                true
-            )
+    public function receive(Request $request)
+    {
+        $message = $request->input(
+            'entry.0.changes.0.value.messages.0'
         );
+    
+        if (!$message) {
+            return response()->json([
+                'success' => true
+            ]);
+        }
+    
+        $phone = $message['from'] ?? null;
+    
+        $text = $message['text']['body'] ?? null;
+    
+        Log::info('Incoming WhatsApp Message', [
+            'phone' => $phone,
+            'text' => $text,
+        ]);
+    
+        // Later:
+        // ProcessWhatsappMessage::dispatch($phone, $text);
     
         return response()->json([
             'success' => true
