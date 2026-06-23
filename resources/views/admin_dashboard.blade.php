@@ -488,7 +488,7 @@
                                         <td class="p-2">
                                             {{ $data->phone_number }}
                                             <details>
-                                                <small>Automation: {{ $data->automation->automation_name }}</small>
+                                                <small>Provider: {{ $data->automation->automation_name ?? $data->product_plan_automation->automation_name }}</small>
                                                 <summary>View</summary>
 
                                                 <div>
