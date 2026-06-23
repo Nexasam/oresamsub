@@ -255,6 +255,19 @@
                 </li>
                 <!-- End::slide -->
 
+                   <!-- Start::slide -->
+                   <li class="slide  has-sub">
+                    <a href="{{ route('admin.product_plans.index2')}}" class="side-menu__item">
+                        <i class="ti ti-artboard side-menu__icon"></i>
+                        <span class="side-menu__label">Plans v2</span>
+                        <i class="ri ri-arrow-right-s-line side-menu__angle"></i>
+                    </a>
+                    <ul class="slide-menu child1">
+                        {{-- <li class="slide"><a href="#" class="side-menu__item">View Networks</a></li> --}}
+                    </ul>
+                </li>
+                <!-- End::slide -->
+
                
 
                 @if (env('APP_NAME') == 'OresamSub' || env('APP_NAME') == 'Mega-sub')
