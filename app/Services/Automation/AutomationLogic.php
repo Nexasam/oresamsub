@@ -258,7 +258,7 @@ class AutomationLogic{
                 
                 $vendor_record = $automation_details;
                 $input_phone_number = $validated_phone_number;
-                $vendor_plan_id = $plan_details->automation_product_plan_id ?? '';
+                $vendor_plan_id = $data['provider_plan_id'] ?? $plan_details->automation_product_plan_id ?? '';
                 $ported_number = true; //lets make this a default for now
                 $input_network = $plan_details->product_plan_category->network->network_name; //lets get the network
                 $buy_data = (new DataAutomation())->buyData($vendor_record,$input_phone_number,$vendor_plan_id,$ported_number,$input_network,$reference);    

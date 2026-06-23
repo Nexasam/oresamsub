@@ -958,6 +958,7 @@ class DataController extends Controller
   
                       //only these changes
                       $data['automation_details'] = $get_associated_plan->automation;
+                      $data['provider_plan_id'] = $get_associated_plan->provider_plan_id;
                       $data['plan_id'] = $get_associated_plan->product_plan_id;
                       $automationname = $get_associated_plan->automation->automation_name;
   
