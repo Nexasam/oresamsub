@@ -13,8 +13,11 @@ class WhatsappWebhookController extends Controller
  
     use JsonResponseWrapper;
 
-    public function receive(Request $request)
-    {
+    public function receive(
+        Request $request,
+        WhatsappSender $sender
+    ) {
+    
         $message = $request->input(
             'entry.0.changes.0.value.messages.0'
         );
@@ -26,16 +29,29 @@ class WhatsappWebhookController extends Controller
         }
     
         $phone = $message['from'] ?? null;
+        $text = trim($message['text']['body'] ?? '');
     
-        $text = $message['text']['body'] ?? null;
+        switch (strtoupper($text)) {
     
-        Log::info('Incoming WhatsApp Message', [
-            'phone' => $phone,
-            'text' => $text,
-        ]);
+            case 'PING':
+                $response = 'PONG 🚀';
+                break;
     
-        // Later:
-        // ProcessWhatsappMessage::dispatch($phone, $text);
+            case 'HELLO':
+            case 'HI':
+                $response = "Hello 👋\nWelcome to Oresamsub";
+                break;
+    
+            case 'HELP':
+                $response = "Available commands:\nPING\nHELP";
+                break;
+    
+            default:
+                $response = "You said: {$text}";
+                break;
+        }
+    
+        $sender->send($phone, $response);
     
         return response()->json([
             'success' => true
