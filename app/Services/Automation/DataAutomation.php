@@ -49,7 +49,7 @@ class DataAutomation{
         $this->vendor_plan_id = $vendor_plan_id;
         $this->ported_number = $ported_number;
         $this->input_network = $input_network;
-        $this->reference = $reference;
+        $this->reference = uniqid('sdd-'.time().rand(111111,999999));
 
         $network_details = Network::where('visibility',1)->where('network_name',$this->input_network)->first();
         if(! $network_details){
