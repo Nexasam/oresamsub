@@ -43,6 +43,12 @@ class WhatsappWebhookController extends Controller
             default => "🤖 I didn't understand that.\nTry: DATA, ACCOUNT, OFFERS"
         };
 
+        Log::info('WhatsApp Outgoing Response', [
+            'phone' => $phone,
+            'response' => $response,
+            'intent' => $intentData['intent'] ?? null,
+        ]);
+
         $sender->send($phone, $response);
 
         return response()->json(['success' => true]);
