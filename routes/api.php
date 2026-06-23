@@ -22,8 +22,25 @@ use App\Http\Controllers\ExternalIntegration\ApiIntegrationPasswordResetControll
 
 
 //whatsapp:::
-Route::post('/webhook/whatsapp', [ProductsVendorController::class, 'whatsappHook'])->name('rawapi.whatsapp.hook');
+// Route::post('/webhook/whatsapp', [ProductsVendorController::class, 'whatsappHook'])->name('rawapi.whatsapp.hook');
 // middleware('whatsapp.token')->
+Route::get('/webhook/whatsapp', function (Request $request) {
+
+    $verifyToken = '7fK9xQmP2vL8NwR4YtH3cZd6JbS1eUaG5nX9kMfT2qVp8CrW';
+
+    if (
+        $request->hub_mode === 'subscribe' &&
+        $request->hub_verify_token === $verifyToken
+    ) {
+        logger('whatsapp:::your head dey there');
+        return response($request->hub_challenge, 200);
+    }
+
+    logger('whatsapp:::forbidden');
+    return response('Forbidden', 403);
+});
+
+
 
 ///////STRICTLY MSORG STYLE
 Route::middleware('api_token')->post('data', [ProductsVendorController::class, 'buy_datav2'])->name('rawapi.user.buy_datav2');
