@@ -487,13 +487,14 @@
                                         {{-- PHONE / MESSAGE --}}
                                         <td class="p-2">
                                             {{ $data->phone_number }}
+                                            <small>
+                                                Provider:
+                                                {{ optional($data->automation)->automation_name
+                                                    ?? optional(optional($data->product_plan)->automation)->automation_name
+                                                    ?? 'N/A' }}
+                                            </small>
                                             <details>
-                                                <small>
-                                                    Provider:
-                                                    {{ optional($data->automation)->automation_name
-                                                        ?? optional(optional($data->product_plan)->automation)->automation_name
-                                                        ?? 'N/A' }}
-                                                </small>
+                                               
                                                 <summary>View</summary>
 
                                                 <div>
