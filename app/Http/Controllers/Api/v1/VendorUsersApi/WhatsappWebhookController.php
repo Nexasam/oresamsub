@@ -2,6 +2,7 @@
 namespace App\Http\Controllers\Api\v1\VendorUsersApi;
 
 use App\Http\Controllers\Controller;
+use App\Services\Whatsapp\IntentRouter;
 use App\Services\Whatsapp\Whatsappsender;
 use App\Traits\JsonResponseWrapper;
 use Illuminate\Http\Request;
@@ -14,7 +15,40 @@ class WhatsappWebhookController extends Controller
  
     use JsonResponseWrapper;
 
-    public function receive(
+    public function receive(Request $request, Whatsappsender $sender, IntentRouter $router)
+    {
+        $message = $request->input('entry.0.changes.0.value.messages.0');
+
+        if (!$message) {
+            return response()->json(['success' => true]);
+        }
+
+        $phone = $message['from'] ?? null;
+        $text = trim($message['text']['body'] ?? '');
+
+        $intentData = $router->resolve($text);
+
+        $response = match ($intentData['intent']) {
+
+            'account' => app(\App\Services\Whatsapp\AccountHandler::class)->handle($phone),
+
+            'services' => app(\App\Services\Whatsapp\ServicesHandler::class)->handle($intentData['raw']),
+
+            'favorites' => app(\App\Services\Whatsapp\FavouritesHandler::class)->handle($phone),
+
+            'offers' => app(\App\Services\Whatsapp\OffersHandler::class)->handle($phone),
+
+            'about' => app(\App\Services\Whatsapp\AboutHandler::class)->handle(),
+
+            default => "🤖 I didn't understand that.\nTry: DATA, ACCOUNT, OFFERS"
+        };
+
+        $sender->send($phone, $response);
+
+        return response()->json(['success' => true]);
+    }
+
+    public function receiveold(
         Request $request,
         Whatsappsender $sender
     ) {
