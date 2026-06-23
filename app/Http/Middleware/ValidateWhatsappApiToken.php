@@ -21,6 +21,7 @@ class ValidateWhatsappApiToken
       
 
         if ($token != '7fK9xQmP2vL8NwR4YtH3cZd6JbS1eUaG5nX9kMfT2qVp8CrW') {
+            logger('errrrr ni oooohhhh');
             return response()->json([
                 'error' => 'Unauthorized. Invalid API token.....'
             ], 401);
