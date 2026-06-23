@@ -126,13 +126,11 @@ class FoxdataHubAutomation{
 
             // $usermsg = isset($response_dec['message']) ? $response_dec['message'].'sss' : "Sorry, transaction failed. Please try again";
             $realresponse = $response_dec['message'] ??  "Sorry, transaction failed with code: $httpcode";
-
             return [
                 'status' => -1,
                 'user_message' =>$realresponse,
                 'admin_message' => $response,
             ];
-
         }        
     }
 

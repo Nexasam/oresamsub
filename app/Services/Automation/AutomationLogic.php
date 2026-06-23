@@ -263,7 +263,13 @@ class AutomationLogic{
                 $input_network = $plan_details->product_plan_category->network->network_name; //lets get the network
                 $buy_data = (new DataAutomation())->buyData($vendor_record,$input_phone_number,$vendor_plan_id,$ported_number,$input_network,$reference);    
 
-                logger('automation deetails: '.json_encode($buy_data));
+                logger('req111: '.json_encode([
+                    'vendor_record' =>$vendor_record,
+                    'input_phone_number' => $input_phone_number,
+                    'input_network' => $input_network,
+                    'vendor_plan_id' => $vendor_plan_id,
+                ]));
+                logger('result111: '.json_encode($buy_data));
 
         }
         else{
