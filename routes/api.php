@@ -37,7 +37,7 @@ Route::get('/webhook/whatsapp', function (Request $request) {
     }
 
     logger('whatsapp:::forbidden');
-    return response('Forbidden', 403);
+    return response('Forbiddennnnnn', 403);
 });
 
 
