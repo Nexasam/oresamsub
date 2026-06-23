@@ -32,6 +32,10 @@ class Transaction extends Model
         return $this->belongsTo(ProductPlan::class,'product_plan_id','id');
     }
 
+    public function automation(){
+        return $this->belongsTo(Automation::class,'automation_id','id');
+    }
+
     public function getCreatedAtAttribute($value)
     {
         return \Carbon\Carbon::parse($value)->timezone('Africa/Lagos')->toIso8601String();

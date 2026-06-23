@@ -632,6 +632,7 @@ class DataController extends Controller
                                     $sell_data = $this->processDataViaAutomations($dataa);
                                     $product_plan_id = $sell_data['plan_id'];
                                     $retry_count = $sell_data['retry_count'] ?? 0;
+                                    $automation_id = $sell_data['automation_id'] ?? null;
 
                                     //incase there are no plans to use.
                                     if($sell_data['case_critical'] == 1){
@@ -733,6 +734,7 @@ class DataController extends Controller
                                 
                                 $description = 'Purchase of data';
                                 $creationData['transaction_category'] = 'data';
+                                $creationData['automation_id'] = $automation_id ?? null;
                                 $creationData['retry_count'] = $retry_count ?? 0;
                                 $creationData['set_for_manual'] = $set_for_manual ?? 0;
                                 $creationData['user_id'] = $user_id;
@@ -980,6 +982,7 @@ class DataController extends Controller
                               'user_message' => $sell_data['user_message'],
                               'admin_message' => $sell_data['admin_message'],
                               'plan_id' => $get_associated_plan->product_plan_id,
+                              'automation_id' => $get_associated_plan->automation->id,
                           ];
                       }
   
