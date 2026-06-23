@@ -12,9 +12,20 @@ class WhatsappWebhookController extends Controller
  
     use JsonResponseWrapper;
 
-    public function whatsappHook(Request $request){
-
+    public function receive(Request $request){
+        \Log::info('WHATSAPP WEBHOOK', [
+            'payload' => $request->all()
+        ]);
+    
+        return response()->json([
+            'success' => true
+        ]);
     }
+   
+
+    // public function whatsappHook(Request $request){
+
+    // }
    
 
 }

@@ -1,21 +1,22 @@
 <?php
 
-use App\Http\Controllers\SecurewaveWebhookController;
-use App\Models\ProductPlan;
-use Illuminate\Http\Request;
-use App\Models\ProductPlanCategory;
-use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AddonController;
-use App\Http\Controllers\UsersController;
-use App\Http\Controllers\NetworkController;
-use App\Http\Controllers\WalletsController;
-use App\Http\Controllers\UserDashboardController;
-use App\Http\Controllers\ProductWebhookController;
-use App\Http\Controllers\ExternalIntegration\ApiIntegrationController;
 use App\Http\Controllers\Api\v1\VendorUsersApi\ProductsVendorController;
+use App\Http\Controllers\Api\v1\VendorUsersApi\WhatsappWebhookController;
+use App\Http\Controllers\ExternalIntegration\ApiIntegrationController;
+use App\Http\Controllers\ExternalIntegration\ApiIntegrationPasswordResetController;
 use App\Http\Controllers\ExternalIntegration\Products\ProductsController;
 use App\Http\Controllers\ExternalIntegration\Wallets\FundingOptionsController;
-use App\Http\Controllers\ExternalIntegration\ApiIntegrationPasswordResetController;
+use App\Http\Controllers\NetworkController;
+use App\Http\Controllers\ProductWebhookController;
+use App\Http\Controllers\SecurewaveWebhookController;
+use App\Http\Controllers\UserDashboardController;
+use App\Http\Controllers\UsersController;
+use App\Http\Controllers\WalletsController;
+use App\Models\ProductPlan;
+use App\Models\ProductPlanCategory;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
 // use App\Http\Controllers\ExternalIntegration\ApiIntegrationController;
 // use App\Http\Controllers\ExternalIntegration\Products\ProductsController;
 // use App\Http\ExternalIntegration\Controllers\ApiIntegrationPasswordResetController;
@@ -39,6 +40,8 @@ Route::get('/webhook/whatsapp', function (Request $request) {
     logger('whatsapp:::forbidden');
     return response('Forbiddennnnnn', 403);
 });
+
+Route::post('/webhook/whatsapp', [WhatsappWebhookController::class, 'receive']);
 
 
 
