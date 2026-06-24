@@ -18,6 +18,7 @@ class WalletAutoFundingService
         //         $this->process($automation);
         //     }
         // });
+        exit;
 
         $automations = AutomationWalletFunding::with('automation')
         ->where('automatic_funding', true)

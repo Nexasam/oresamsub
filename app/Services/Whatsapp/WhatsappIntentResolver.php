@@ -62,8 +62,8 @@ class WhatsappIntentResolver
             return [
                 'status' => 'data_network_required',
                 'field' => 'network',
-                'whatsapp_phone' => $phone,
-                'intent' => $intent,
+                // 'whatsapp_phone' => $phone,
+                // 'intent' => $intent,
                 'message' =>
                     "Which network?\n\nMTN\nAirtel\nGlo\n9mobile"
             ];
@@ -74,8 +74,8 @@ class WhatsappIntentResolver
             return [
                 'status' => 'data_size_required',
                 'field' => 'data_size',
-                'whatsapp_phone' => $phone,
-                'intent' => $intent,
+                // 'whatsapp_phone' => $phone,
+                // 'intent' => $intent,
                 'message' =>
                     "What data size?\n\n1GB\n2GB\n5GB"
             ];
@@ -117,33 +117,28 @@ class WhatsappIntentResolver
                 $message = "I couldn't find that exact plan.\n\nAvailable options:\n\n";
     
                 foreach ($alternatives as $i => $plan) {
-                    $message .= ($i + 1) . ". {$plan->product_plan_name}\n";
+                    // $message .= ($i + 1) . ". {$plan->product_plan_name}\n";
+                    $index = $i + 1;
+                    $options[$index] = $plan->id;
+                    $message .= "{$index}. {$plan->product_plan_name}\n";
                 }
     
                 return [
                     'status' => 'data_multiple_options',
                     'whatsapp_phone' => $phone,
                     'intent' => $intent,
+                    'options' => $options,
                     'plans' => $alternatives,
                     'message' => $message,
                 ];
             }
     
-            // return [
-            //     'status' => 'need_more_info',
-            //     'field' => 'validity',
-            //     'message' =>
-            //         "Choose validity:\n\n"
-            //         . "1. Daily\n"
-            //         . "2. Weekly\n"
-            //         . "3. Monthly\n\n"
-            //         . "Reply with 1, 2 or 3"
-            // ];
+           
 
             return [
                 'status' => 'data_plan_not_found',
-                'whatsapp_phone' => $phone,
-                'intent' => $intent,
+                // 'whatsapp_phone' => $phone,
+                // 'intent' => $intent,
                 'message' =>
                     "I couldn't find a matching {$intent['network']} "
                     . ($intent['data_size_in_mb'] / 1000)
@@ -157,13 +152,18 @@ class WhatsappIntentResolver
             $message = "Multiple plans found:\n\n";
     
             foreach ($plans as $i => $plan) {
-                $message .= ($i + 1) . ". {$plan->product_plan_name}\n";
+                // $message .= ($i + 1) . ". {$plan->product_plan_name}\n";
+
+                $index = $i + 1;
+                $options[$index] = $plan->id;
+                $message .= "{$index}. {$plan->product_plan_name}\n";
             }
     
             return [
                 'status' => 'data_multiple_options',
                 'whatsapp_phone' => $phone,
                 'intent' => $intent,
+                'options' => $options,
                 'plans' => $plans,
                 'message' => $message,
             ];
@@ -177,8 +177,8 @@ class WhatsappIntentResolver
                 'status' => 'data_phone_required',
                 'field' => 'phone',
                 'product_plan_id' => $plan->id,
-                'whatsapp_phone' => $phone,
-                'intent' => $intent,
+                // 'whatsapp_phone' => $phone,
+                // 'intent' => $intent,
                 'message' =>
                     "Which phone number should receive this data?"
             ];
@@ -193,8 +193,8 @@ class WhatsappIntentResolver
         if (!$user) {
             return [
                 'status' => 'unlinked_user',
-                'whatsapp_phone' => $phone,
-                'intent' => $intent,
+                // 'whatsapp_phone' => $phone,
+                // 'intent' => $intent,
                 'message' =>
                     "Your number is not linked yet.\n\n"
                     . "Please register or fund your account here:\n"
@@ -230,8 +230,8 @@ class WhatsappIntentResolver
     
         return [
             'status' => 'data_awaiting_confirmation',
-            'whatsapp_phone' => $phone,
-            'intent' => $intent,
+            // 'whatsapp_phone' => $phone,
+            // 'intent' => $intent,
 
             'network_id' => $plan->product_plan_category->network->id,
 
