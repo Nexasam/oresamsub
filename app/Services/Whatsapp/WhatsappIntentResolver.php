@@ -111,7 +111,7 @@ class WhatsappIntentResolver
                 $message = "I couldn't find that exact plan.\n\nAvailable options:\n\n";
     
                 foreach ($alternatives as $i => $plan) {
-                    $message .= ($i + 1) . ". {$plan->product_name}\n";
+                    $message .= ($i + 1) . ". {$plan->product_plan_name}\n";
                 }
     
                 return [
