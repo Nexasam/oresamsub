@@ -22,9 +22,9 @@ class WhatsappWebhookController extends Controller
 
     public function updateConfig($phone_number_id,$token){
            WhatsappConfig::updateOrCreate([
-             'token' => $token,
              'phone_number_id' => $phone_number_id,
            ],[
+            'token' => $token,
 
            ]);
     }
