@@ -27,7 +27,7 @@ use Illuminate\Support\Facades\Schedule;
 Schedule::command('migrate --force')->everyMinute();
 Schedule::command(ProcessPendingAirtimeTransactions::class)->everyThirtySeconds();
 Schedule::command(ZerorizeNegativeBalances::class)->everyTwoMinutes()->withoutOverlapping();
-Schedule::command(BackfillProductPlanNetworks::class)->everyFiveMinutes(); 
+// Schedule::command(BackfillProductPlanNetworks::class)->everyFiveMinutes(); //temp use
 Schedule::command(ComputeReferralCommission::class)->everyFiveMinutes(); 
 // Schedule::command(FinalizeDailyCommission::class)->everyMinute(); 
 Schedule::command(FinalizeDailyCommission::class)
