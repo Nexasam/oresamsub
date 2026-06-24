@@ -12,7 +12,7 @@ class WhatsappIntentResolver
 
             'data' => $this->resolveData($intent, $user, $phone),
 
-            'airtime' => $this->resolveAirtime($intent),
+            'airtime' => $this->resolveAirtime($intent,$user,$phone),
 
             'navigation_app',
             'navigation_telegram',
@@ -60,8 +60,10 @@ class WhatsappIntentResolver
         if (!$intent['network']) {
     
             return [
-                'status' => 'need_more_info',
+                'status' => 'data_network_required',
                 'field' => 'network',
+                'whatsapp_phone' => $phone,
+                'intent' => $intent,
                 'message' =>
                     "Which network?\n\nMTN\nAirtel\nGlo\n9mobile"
             ];
@@ -70,8 +72,10 @@ class WhatsappIntentResolver
         if (!$intent['data_size_in_mb']) {
     
             return [
-                'status' => 'need_more_info',
+                'status' => 'data_size_required',
                 'field' => 'data_size',
+                'whatsapp_phone' => $phone,
+                'intent' => $intent,
                 'message' =>
                     "What data size?\n\n1GB\n2GB\n5GB"
             ];
@@ -117,21 +121,34 @@ class WhatsappIntentResolver
                 }
     
                 return [
-                    'status' => 'multiple_options',
+                    'status' => 'data_multiple_options',
+                    'whatsapp_phone' => $phone,
+                    'intent' => $intent,
                     'plans' => $alternatives,
                     'message' => $message,
                 ];
             }
     
+            // return [
+            //     'status' => 'need_more_info',
+            //     'field' => 'validity',
+            //     'message' =>
+            //         "Choose validity:\n\n"
+            //         . "1. Daily\n"
+            //         . "2. Weekly\n"
+            //         . "3. Monthly\n\n"
+            //         . "Reply with 1, 2 or 3"
+            // ];
+
             return [
-                'status' => 'need_more_info',
-                'field' => 'validity',
+                'status' => 'data_plan_not_found',
+                'whatsapp_phone' => $phone,
+                'intent' => $intent,
                 'message' =>
-                    "Choose validity:\n\n"
-                    . "1. Daily\n"
-                    . "2. Weekly\n"
-                    . "3. Monthly\n\n"
-                    . "Reply with 1, 2 or 3"
+                    "I couldn't find a matching {$intent['network']} "
+                    . ($intent['data_size_in_mb'] / 1000)
+                    . "GB plan.\n\n"
+                    . "Reply START to try another search."
             ];
         }
     
@@ -144,7 +161,9 @@ class WhatsappIntentResolver
             }
     
             return [
-                'status' => 'multiple_options',
+                'status' => 'data_multiple_options',
+                'whatsapp_phone' => $phone,
+                'intent' => $intent,
                 'plans' => $plans,
                 'message' => $message,
             ];
@@ -155,9 +174,11 @@ class WhatsappIntentResolver
         if (!$intent['phone']) {
     
             return [
-                'status' => 'need_more_info',
+                'status' => 'data_phone_required',
                 'field' => 'phone',
                 'product_plan_id' => $plan->id,
+                'whatsapp_phone' => $phone,
+                'intent' => $intent,
                 'message' =>
                     "Which phone number should receive this data?"
             ];
@@ -172,6 +193,8 @@ class WhatsappIntentResolver
         if (!$user) {
             return [
                 'status' => 'unlinked_user',
+                'whatsapp_phone' => $phone,
+                'intent' => $intent,
                 'message' =>
                     "Your number is not linked yet.\n\n"
                     . "Please register or fund your account here:\n"
@@ -192,21 +215,23 @@ class WhatsappIntentResolver
 
         $price = $priceResponse['message'] ?? null;
 
-        cache()->put(
-            "wa_session:$phone",
-            [
-                'type' => 'data',
-                'product_plan_id' => $plan->id,
-                'phone' => $intent['phone'],
-                'price' => $price,
-                'status' => 'awaiting_confirmation'
-            ],
-            now()->addMinutes(10)
-        );
+        // cache()->put(
+        //     "wa_session:$phone",
+        //     [
+        //         'type' => 'data',
+        //         'product_plan_id' => $plan->id,
+        //         'phone' => $intent['phone'],
+        //         'price' => $price,
+        //         'status' => 'data_awaiting_confirmation'
+        //     ],
+        //     now()->addMinutes(10)
+        // );
         
     
         return [
-            'status' => 'awaiting_confirmation',
+            'status' => 'data_awaiting_confirmation',
+            'whatsapp_phone' => $phone,
+            'intent' => $intent,
 
             'network_id' => $plan->product_plan_category->network->id,
 
@@ -226,7 +251,7 @@ class WhatsappIntentResolver
         ];
     }
 
-    private function resolveAirtime(array $intent): array
+    private function resolveAirtime(array $intent, $user, $phone): array
     {
         if (!$intent['amount']) {
 

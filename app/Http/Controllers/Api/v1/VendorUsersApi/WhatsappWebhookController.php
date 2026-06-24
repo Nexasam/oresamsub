@@ -19,6 +19,136 @@ class WhatsappWebhookController extends Controller
  
     use JsonResponseWrapper;
 
+    public function receive(Request $request)
+    {
+        $phone = $request->input(
+            'entry.0.changes.0.value.messages.0.from'
+        );
+
+        $text = $request->input(
+            'entry.0.changes.0.value.messages.0.text.body'
+        );
+
+        $text = strtolower(trim($text));
+
+        /*
+        Reset conversation
+        */
+        if ($text === 'start') {
+
+            cache()->forget("wa_session:$phone");
+
+            app(Whatsappsender::class)->send(
+                $phone,
+                "Welcome to OresamSub 👋\n\nWhat would you like to buy today?"
+            );
+
+            return response()->json(['ok' => true]);
+        }
+
+        /*
+        Load whatsapp user
+        */
+        $user = app(WhatsappUserResolver::class)
+            ->resolve($phone);
+
+        /*
+        Existing conversation?
+        */
+        $session = cache()->get("wa_session:$phone");
+
+        $conversation = app(
+            WhatsappConversationService::class
+        );
+
+        if ($session) {
+
+            return match ($session['status']) {
+
+                'data_network_required'
+                    => $conversation->handleDataNetworkSelection(
+                        $text,
+                        $session
+                    ),
+
+                'data_size_required'
+                    => $conversation->handleDataSizeSelection(
+                        $text,
+                        $session
+                    ),
+
+                'data_phone_required'
+                    => $conversation->handleDataPhoneInput(
+                        $text,
+                        $session
+                    ),
+
+                'data_multiple_options'
+                    => $conversation->handleDataPlanSelection(
+                        $text,
+                        $session
+                    ),
+
+                'data_awaiting_confirmation'
+                    => $conversation->handleConfirmation(
+                        $text,
+                        $user,
+                        $session
+                    ),
+
+                'unlinked_user'
+                    => $conversation->handleUnlinkedUser(
+                        $text,
+                        $session
+                    ),
+
+                default => response()->json([
+                    'ok' => true
+                ]),
+            };
+        }
+
+        /*
+        Fresh request
+        */
+        $intent = app(WhatsappIntentParser::class)
+            ->parse($text);
+
+        $result = app(WhatsappIntentResolver::class)
+            ->resolve(
+                $intent,
+                $user,
+                $phone
+            );
+
+        /*
+        Save conversation state
+        */
+        cache()->put(
+            "wa_session:$phone",
+            array_merge(
+                $result,
+                [
+                    'whatsapp_phone' => $phone,
+                    'intent' => $intent,
+                ]
+            ),
+            now()->addMinutes(10)
+        );
+
+        /*
+        Send reply
+        */
+        app(Whatsappsender::class)->send(
+            $phone,
+            $result['message']
+        );
+
+        return response()->json([
+            'ok' => true
+        ]);
+    }
+
     public function receiveold(Request $request, Whatsappsender $sender, IntentRouter $router)
     {
         $message = $request->input('entry.0.changes.0.value.messages.0');
@@ -62,12 +192,26 @@ class WhatsappWebhookController extends Controller
         return response()->json(['success' => true]);
     }
 
-    public function receive(Request $request)
+    public function receivenewold(Request $request)
     {
         $phone = $request->input('entry.0.changes.0.value.messages.0.from');
         $text  = $request->input('entry.0.changes.0.value.messages.0.text.body');
     
         $text = strtolower(trim($text)); #customer text
+
+        $text = strtolower(trim($text));
+
+        if ($text === 'start') {
+
+            cache()->forget("wa_session:$phone");
+
+            app(Whatsappsender::class)->send(
+                $phone,
+                "Welcome to OresamSub 👋\n\nWhat would you like to buy today?"
+            );
+
+            return response()->json(['ok' => true]);
+        }
     
         // STEP 1: Load user
         $user = app(WhatsappUserResolver::class)->resolve($phone);
@@ -75,8 +219,34 @@ class WhatsappWebhookController extends Controller
         // STEP 2: Check if user is in a pending transaction state
         $session = cache()->get("wa_session:$phone");
     
-        if ($session && $session['status'] === 'awaiting_confirmation') {
-            return  (new WhatsappConversationService())->handleConfirmation($text, $user, $session);
+     
+
+        $conversation = (new WhatsappConversationService());
+
+        if ($session) {
+
+            return match ($session['status']) {
+        
+                'data_network_required'
+                    => $conversation->handleDataNetworkSelection($text, $session),
+        
+                'data_size_required'
+                    => $conversation->handleDataSizeSelection($text, $session),
+        
+                'data_phone_required'
+                    => $conversation->handleDataPhoneInput($text, $session),
+        
+                'data_multiple_options'
+                    => $conversation->handleDataPlanSelection($text, $session),
+        
+                'data_awaiting_confirmation'
+                    => $conversation->handleConfirmation($text, $user, $session),
+        
+                'unlinked_user'
+                    => $conversation->handleUnlinkedUser($text, $session),
+        
+                default => null,
+            };
         }
     
         // STEP 3: Normal flow → intent parsing

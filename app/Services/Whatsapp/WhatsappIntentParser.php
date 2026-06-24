@@ -168,7 +168,7 @@ class WhatsappIntentParser
 
     
     
-    private function extractDataSize(string $message): ?int
+    public function extractDataSize(string $message): ?int
     {
         $message = $this->normalizeNumbers($message);
 

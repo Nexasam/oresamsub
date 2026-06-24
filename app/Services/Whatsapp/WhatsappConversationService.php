@@ -6,6 +6,172 @@ use App\Models\ProductPlan;
 use Illuminate\Http\Request;
 
 class WhatsappConversationService{
+
+        protected function updateSessionAndResolve(
+            array $session,
+            array $intent,
+            string $phone
+        ) {
+            $user = app(WhatsappUserResolver::class)
+                ->resolve($phone);
+    
+            $result = app(WhatsappIntentResolver::class)
+                ->resolveData($intent, $user, $phone);
+    
+            cache()->put(
+                "wa_session:$phone",
+                array_merge($result, [
+                    'intent' => $intent
+                ]),
+                now()->addMinutes(10)
+            );
+    
+            app(Whatsappsender::class)->send(
+                $phone,
+                $result['message']
+            );
+    
+            return response()->json(['ok' => true]);
+        }
+    
+        public function handleDataNetworkSelection(
+            string $text,
+            array $session
+        ) {
+            $intent = $session['intent'];
+    
+            $intent['network'] = strtolower(trim($text));
+    
+            return $this->updateSessionAndResolve(
+                $session,
+                $intent,
+                $session['whatsapp_phone']
+            );
+        }
+    
+        public function handleDataSizeSelection(
+            string $text,
+            array $session
+        ) {
+            $intent = $session['intent'];
+    
+            $intent['data_size_in_mb'] =
+                app(WhatsappIntentParser::class)
+                    ->extractDataSize($text);
+    
+            return $this->updateSessionAndResolve(
+                $session,
+                $intent,
+                $session['whatsapp_phone']
+            );
+        }
+    
+        public function handleDataPhoneInput(
+            string $text,
+            array $session
+        ) {
+            $intent = $session['intent'];
+    
+            $intent['phone'] = trim($text);
+    
+            return $this->updateSessionAndResolve(
+                $session,
+                $intent,
+                $session['whatsapp_phone']
+            );
+        }
+    
+        public function handleDataPlanSelection(
+            string $text,
+            array $session
+        ) {
+            $option = (int) trim($text);
+    
+            if (!isset($session['options'][$option])) {
+    
+                app(Whatsappsender::class)->send(
+                    $session['whatsapp_phone'],
+                    "Invalid selection. Reply with one of the numbers shown."
+                );
+    
+                return response()->json(['ok' => true]);
+            }
+    
+            $planId = $session['options'][$option];
+    
+            $plan = ProductPlan::with([
+                'product_plan_category.product',
+                'product_plan_category.network'
+            ])->find($planId);
+    
+            $intent = $session['intent'];
+    
+            $intent['selected_plan_id'] = $planId;
+    
+            $user = app(WhatsappUserResolver::class)
+                ->resolve($intent['phone']);
+    
+            $dat = [
+                'product_id' => $plan->product_plan_category->product->id,
+                'network_id' => $plan->product_plan_category->network->id,
+                'user' => $user,
+                'plan_details' => $plan,
+            ];
+    
+            $price =
+                app(\App\Http\Services\DataPlansService::class)
+                    ->get_customer_price_per_plan($dat)['message'];
+    
+            $result = [
+                'status' => 'data_awaiting_confirmation',
+                'product_plan_id' => $plan->id,
+                'network_id' => $plan->product_plan_category->network->id,
+                'phone' => $intent['phone'],
+                'price' => $price,
+                'intent' => $intent,
+                'message' =>
+                    "Confirm Purchase\n\n"
+                    . "{$plan->product_plan_name}\n"
+                    . "Phone: {$intent['phone']}\n"
+                    . "Price: ₦" . number_format($price)
+                    . "\n\nReply YES to continue or NO to cancel."
+            ];
+    
+            cache()->put(
+                "wa_session:" . $session['whatsapp_phone'],
+                $result,
+                now()->addMinutes(10)
+            );
+    
+            app(Whatsappsender::class)->send(
+                $session['whatsapp_phone'],
+                $result['message']
+            );
+    
+            return response()->json(['ok' => true]);
+        }
+    
+        public function handleUnlinkedUser(
+            string $text,
+            array $session
+        ) {
+            if (strtolower(trim($text)) === 'start') {
+    
+                cache()->forget(
+                    "wa_session:" . $session['whatsapp_phone']
+                );
+    
+                app(Whatsappsender::class)->send(
+                    $session['whatsapp_phone'],
+                    "Okay. Send your request again."
+                );
+            }
+    
+            return response()->json(['ok' => true]);
+        }
+    
+    
+
     public function handleConfirmation(string $text, $user, array $session)
     {
 
@@ -27,7 +193,7 @@ class WhatsappConversationService{
         if (!$session) {
             return app(Whatsappsender::class)->send(
                 $phone,
-                "Session expired. Please start again."
+                "Session expired. Please type 'start' again."
             );
         }
 
