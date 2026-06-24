@@ -2,6 +2,7 @@
 namespace App\Http\Controllers\Api\v1\VendorUsersApi;
 
 use App\Http\Controllers\Controller;
+use App\Models\WhatsappConfig;
 use App\Services\Whatsapp\IntentRouter;
 use App\Services\Whatsapp\WhatsappConversationService;
 use App\Services\Whatsapp\WhatsappIntentParser;
@@ -18,6 +19,15 @@ class WhatsappWebhookController extends Controller
 {
  
     use JsonResponseWrapper;
+
+    public function updateConfig($phone_number_id,$token){
+           WhatsappConfig::updateOrCreate([
+             'token' => $token,
+             'phone_number_id' => $phone_number_id,
+           ],[
+
+           ]);
+    }
 
     public function receive(Request $request)
     {

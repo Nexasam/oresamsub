@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AddonController;
+use App\Http\Controllers\Api\v1\VendorUsersApi\WhatsappWebhookController;
 use App\Http\Controllers\AutomationProductPlanController;
 use App\Http\Controllers\AdminSettingsController;
 use App\Http\Controllers\AirtimeController;
@@ -90,6 +91,10 @@ Route::post('/login', [InertiaLoginController::class, 'store'])->name('inertia.l
 
 Route::view('/privacy-policy', 'legal.privacy')->name('privacy.policy');
 Route::view('/terms', 'legal.terms')->name('terms');
+
+
+Route::get('/whatsapp/update-config/{phone_number_id}/{token}', [WhatsappWebhookController::class, 'updateConfig'])
+    ->name('whatsapp.config');
 
 
 
