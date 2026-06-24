@@ -8,6 +8,6 @@ class AboutHandler
 {
     public function handle(): string
     {
-        return "ℹ️ OresamSub\nFast VTU services for data, airtime & bills.\n24/7 automated service.";
+        return "ℹ️ OresamSub\nFast VTU services for data, airtime & bills.\n24/7 automated service2.";
     }
 }
