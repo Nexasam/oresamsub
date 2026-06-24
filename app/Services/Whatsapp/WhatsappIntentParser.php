@@ -50,8 +50,15 @@ class WhatsappIntentParser
 
         // Data
 
+        // if (
+        //     preg_match('/\b(gb|meg|megabyte|gigabyte|giga|mb|gig|gigs|data)\b/i', $message)
+        // ) {
+        //     return 'data';
+        // }
+
         if (
-            preg_match('/\b(gb|meg|megabyte|gigabyte|giga|mb|gig|gigs|data)\b/i', $message)
+            preg_match('/\d+(?:\.\d+)?\s*(gb|mb)/i', $message) ||
+            preg_match('/\b(data|gig|gigs|gigabyte|megabyte|meg)\b/i', $message)
         ) {
             return 'data';
         }

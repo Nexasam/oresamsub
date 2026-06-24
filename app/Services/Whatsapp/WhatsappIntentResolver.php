@@ -78,6 +78,7 @@ class WhatsappIntentResolver
         }
     
         $query = ProductPlan::query()
+            ->where('visibility',1)
             ->where('network', strtolower($intent['network']))
             ->where('data_size_in_mb', $intent['data_size_in_mb']);
     
@@ -102,6 +103,7 @@ class WhatsappIntentResolver
         if ($plans->isEmpty()) {
     
             $alternatives = ProductPlan::query()
+                ->where('visibility',1)
                 ->where('network', strtolower($intent['network']))
                 ->where('data_size_in_mb', $intent['data_size_in_mb'])
                 ->get();
@@ -138,7 +140,7 @@ class WhatsappIntentResolver
             $message = "Multiple plans found:\n\n";
     
             foreach ($plans as $i => $plan) {
-                $message .= ($i + 1) . ". {$plan->product_name}\n";
+                $message .= ($i + 1) . ". {$plan->product_plan_name}\n";
             }
     
             return [
@@ -217,7 +219,7 @@ class WhatsappIntentResolver
         
             'message' =>
                 "Confirm Purchase\n\n"
-                . "{$plan->product_name}\n"
+                . "{$plan->product_planprod_name}\n"
                 . "Phone: {$intent['phone']}\n"
                 . "Price: ₦" . number_format($price)
                 . "\n\nReply YES to continue or NO to cancel."
