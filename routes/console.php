@@ -1,5 +1,6 @@
 <?php
 
+use App\Console\Commands\BackfillProductPlanNetworks;
 use App\Console\Commands\ClearErrorLogs;
 use App\Console\Commands\ComputeReferralCommission;
 use App\Console\Commands\FinalizeDailyCommission;
@@ -26,6 +27,7 @@ use Illuminate\Support\Facades\Schedule;
 Schedule::command('migrate --force')->everyMinute();
 Schedule::command(ProcessPendingAirtimeTransactions::class)->everyThirtySeconds();
 Schedule::command(ZerorizeNegativeBalances::class)->everyTwoMinutes()->withoutOverlapping();
+Schedule::command(BackfillProductPlanNetworks::class)->everyFiveMinutes(); 
 Schedule::command(ComputeReferralCommission::class)->everyFiveMinutes(); 
 // Schedule::command(FinalizeDailyCommission::class)->everyMinute(); 
 Schedule::command(FinalizeDailyCommission::class)

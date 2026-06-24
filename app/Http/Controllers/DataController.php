@@ -471,6 +471,8 @@ class DataController extends Controller
             return response()->json(['status'=> -1, 'message'=>$validator->errors()->first(),'data' => $request->all() ]);
         }
 
+        
+
 
         $data1['days_count'] = [1,7,30];
         $data1['user_id'] = auth()->id();
