@@ -14,7 +14,7 @@ class BackfillProductPlanNetworks extends Command
         $this->info("Starting network backfill...");
 
 
-        logger('this actually ran');
+        logger('this actually ran for network filling');
         ProductPlan::with([
             'product_plan_category.network'
         ])->chunk(200, function ($plans) {

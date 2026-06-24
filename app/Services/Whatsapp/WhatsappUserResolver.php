@@ -9,7 +9,7 @@ class WhatsappUserResolver
     {
         $phone = $this->normalizePhone($phone);
 
-        return User::where('phone', $phone)->first();
+        return User::where('phone_number', $phone)->first();
     }
 
     private function normalizePhone(string $phone): string
