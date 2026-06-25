@@ -78,7 +78,7 @@ class WhatsappConversationService{
             return $phone;
         }
     
-        public function handleDataPhoneInput(
+        public function handleDataPhoneInputold(
             string $text,
             array $session
         ) {
@@ -97,7 +97,127 @@ class WhatsappConversationService{
             );
         }
 
+        public function handleDataPhoneInput(
+            string $text,
+            array $session
+        )
+        {
+            $intent = $session['intent'];
+        
+            /*
+            Selected saved contact
+            */
+            $option = (int) trim($text);
+        
+            if (
+                isset($session['options']) &&
+                isset($session['options'][$option])
+            ) {
+        
+                $intent['phone'] =
+                    $session['options'][$option];
+        
+                return $this->updateSessionAndResolve(
+                    $session,
+                    $intent,
+                    $session['whatsapp_phone']
+                );
+            }
+        
+            /*
+            Typed/shared number
+            */
+            $intent['phone'] = $this->normalizeWhatsappNumber($text);
+        
+            return $this->updateSessionAndResolve(
+                $session,
+                $intent,
+                $session['whatsapp_phone']
+            );
+        }
+
     
+
+        private function sendPhoneRequestWithContacts(
+            $user,
+            string $whatsappPhone,
+            array $session
+        )
+        {
+            $contacts = UserContact::query()
+                ->where('user_id', $user->id)
+                ->latest('last_used_at')
+                ->take(5)
+                ->get();
+
+            $cachePayload = [
+                ...$session,
+                'status' => 'data_phone_required',
+                'whatsapp_phone' => $whatsappPhone,
+            ];
+
+            /*
+            Saved contacts available
+            */
+            if ($contacts->isNotEmpty()) {
+
+                $message =
+                    "📱 Who should receive this data?\n\n"
+                    . "Saved Contacts:\n\n";
+
+                $options = [];
+
+                foreach ($contacts as $index => $contact) {
+
+                    $number = $index + 1;
+
+                    $message .=
+                        "{$number}. {$contact->name} - {$contact->phone_number}\n";
+
+                    $options[$number] = $contact->phone_number;
+                }
+
+                $message .=
+                    "\nYou can:\n"
+                    . "• Reply with a contact number above\n"
+                    . "• Type a phone number\n"
+                    . "• Share a WhatsApp contact";
+
+                $cachePayload['options'] = $options;
+
+                cache()->put(
+                    "wa_session:$whatsappPhone",
+                    $cachePayload,
+                    now()->addMinutes(10)
+                );
+
+                app(Whatsappsender::class)->send(
+                    $whatsappPhone,
+                    $message
+                );
+
+                return;
+            }
+
+            /*
+            No saved contacts
+            */
+            cache()->put(
+                "wa_session:$whatsappPhone",
+                $cachePayload,
+                now()->addMinutes(10)
+            );
+
+            app(Whatsappsender::class)->send(
+                $whatsappPhone,
+                "📱 Who should receive this data?\n\n"
+                . "You can:\n"
+                . "• Type the phone number\n"
+                . "• Share a WhatsApp contact\n\n"
+                . "Example:\n"
+                . "08168509044"
+            );
+        }
     
         public function handleDataPlanSelection(
             string $text,
@@ -191,28 +311,43 @@ class WhatsappConversationService{
             );
 
             //this means we already captured the plan beforer asking for the number.
+            // if (empty($intent['phone'])) {
+
+            //     cache()->put(
+            //         "wa_session:" . $session['whatsapp_phone'],
+            //         [
+            //             'status' => 'data_phone_required',
+            //             'intent' => $intent,
+            //             'whatsapp_phone' => $session['whatsapp_phone'],
+            //         ],
+            //         now()->addMinutes(10)
+            //     );
+
+            //     app(Whatsappsender::class)->send(
+            //         $session['whatsapp_phone'],
+            //         "📱 Who should receive this data?\n\n"
+            //         . "You can:\n"
+            //         . "• Type the phone number\n"
+            //         . "• Or share a contact from WhatsApp\n\n"
+            //         . "Example:\n"
+            //         . "08168509044"
+            //     );
+
+            //     return response()->json(['ok' => true]);
+            // }
             if (empty($intent['phone'])) {
 
-                cache()->put(
-                    "wa_session:" . $session['whatsapp_phone'],
-                    [
-                        'status' => 'data_phone_required',
-                        'intent' => $intent,
-                        'whatsapp_phone' => $session['whatsapp_phone'],
-                    ],
-                    now()->addMinutes(10)
-                );
-
-                app(Whatsappsender::class)->send(
+                $user = app(WhatsappUserResolver::class)
+                    ->resolve($phone);
+            
+                $this->sendPhoneRequestWithContacts(
+                    $user,
                     $session['whatsapp_phone'],
-                    "📱 Who should receive this data?\n\n"
-                    . "You can:\n"
-                    . "• Type the phone number\n"
-                    . "• Or share a contact from WhatsApp\n\n"
-                    . "Example:\n"
-                    . "08168509044"
+                    [
+                        'intent' => $intent
+                    ]
                 );
-
+            
                 return response()->json(['ok' => true]);
             }
 
