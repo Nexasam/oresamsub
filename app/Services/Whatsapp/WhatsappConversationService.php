@@ -332,7 +332,7 @@ class WhatsappConversationService{
             //     'intent_phone' => $intent['phone'] ?? null,
             // ]));
 
-            $intent['selected_plan_id'] = $planId;
+            // $intent['selected_plan_id'] = $planId;
 
       
 
@@ -488,7 +488,8 @@ class WhatsappConversationService{
         logger('fav fix::::'.json_encode($selection));
     
         $planId = $selection['product_plan_id'];
-        $recipientPhone = $selection['phone'];
+        $recipientPhone = $selection['phone'] ?? null;
+        $intent['selected_plan_id'] = $planId;
     
         $plan = ProductPlan::with([
             'product_plan_category.product',
