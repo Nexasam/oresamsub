@@ -50,7 +50,7 @@ class WhatsappWebhookController extends Controller
         );
     }
     
-    private function extractText(array $payload): ?string
+    private function extractText2(array $payload): ?string
     {
         /*
         Normal text message
@@ -81,6 +81,65 @@ class WhatsappWebhookController extends Controller
         }
     
         return null;
+    }
+
+    private function extractText(array $payload): ?string
+    {
+        /*
+        Normal text message
+        */
+        $text = data_get(
+            $payload,
+            'entry.0.changes.0.value.messages.0.text.body'
+        );
+
+        if (!empty($text)) {
+            return strtolower(trim($text));
+        }
+
+        /*
+        Contact shared
+        */
+        $contactPhone = data_get(
+            $payload,
+            'entry.0.changes.0.value.messages.0.contacts.0.phones.0.phone'
+        );
+
+        if (!empty($contactPhone)) {
+
+            return preg_replace(
+                '/\D/',
+                '',
+                $contactPhone
+            );
+        }
+
+        /*
+        Interactive button reply
+        */
+        $buttonId = data_get(
+            $payload,
+            'entry.0.changes.0.value.messages.0.interactive.button_reply.id'
+        );
+
+        return match ($buttonId) {
+
+            'data_confirm_purchase' => 'yes',
+
+            'data_cancel_purchase' => 'no',
+
+            default => null,
+        };
+    }
+
+    private function extractPhoneFromContact(
+        array $payload
+    ): ?string
+    {
+        return data_get(
+            $payload,
+            'entry.0.changes.0.value.messages.0.contacts.0.phones.0.phone'
+        );
     }
 
     public function receive(Request $request)

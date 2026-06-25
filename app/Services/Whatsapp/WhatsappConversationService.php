@@ -202,7 +202,12 @@ class WhatsappConversationService{
 
                 app(Whatsappsender::class)->send(
                     $session['whatsapp_phone'],
-                    "Enter the phone number to receive this data."
+                    "📱 Who should receive this data?\n\n"
+                    . "You can:\n"
+                    . "• Type the phone number\n"
+                    . "• Or share a contact from WhatsApp\n\n"
+                    . "Example:\n"
+                    . "08168509044"
                 );
 
                 return response()->json(['ok' => true]);
