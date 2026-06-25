@@ -485,6 +485,7 @@ class WhatsappConversationService{
         }
     
         $selection = $session['options'][$option];
+        logger('fav fix::::'.json_encode($selection));
     
         $planId = $selection['product_plan_id'];
         $recipientPhone = $selection['phone'];
