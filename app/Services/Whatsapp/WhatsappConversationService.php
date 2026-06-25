@@ -252,6 +252,7 @@ class WhatsappConversationService{
             'wallet_category' => 'main_wallet',
             'validatephonenetwork' => 0,
             'pin' =>$user->pin,
+            'user' =>$user,
         ]);
 
         $result = app(\App\Http\Controllers\DataController::class)
