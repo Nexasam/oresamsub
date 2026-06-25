@@ -65,14 +65,29 @@ class WhatsappConversationService{
                 $session['whatsapp_phone']
             );
         }
+
+        private function normalizeWhatsappNumber(string $phone): string
+        {
+            $phone = preg_replace('/\D/', '', $phone);
+
+            if (str_starts_with($phone, '0')) {
+                $phone = '234' . substr($phone, 1);
+            }
+
+            return $phone;
+        }
     
         public function handleDataPhoneInput(
             string $text,
             array $session
         ) {
             $intent = $session['intent'];
+
+            $textt = $this->normalizeWhatsappNumber($text);
     
-            $intent['phone'] = trim($text);
+            $intent['phone'] = trim($textt);
+
+            logger('phone input: '.$textt);
     
             return $this->updateSessionAndResolve(
                 $session,
