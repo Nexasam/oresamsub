@@ -232,7 +232,7 @@ class WhatsappWebhookController extends Controller
                 . "💰 Check Wallet Balance\n"
                 . "🆘 Contact Support\n\n"
             
-                . "Try any of these:\n\n"
+                . "Try any of these and its not case-sensitive:\n\n"
             
                 . "• MTN 1GB weekly\n"
                 . "• Glo 2GB 3 days\n"
