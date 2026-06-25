@@ -149,12 +149,20 @@ class WhatsappConversationService{
             $price =
                 app(\App\Http\Services\DataPlansService::class)
                     ->get_customer_price_per_plan($dat)['message'];
+
+
     
+            //if rec. phone exists, then normalize it
+            if(!empty($intent['phone'])){
+                $recphone = $this->normalizeWhatsappNumber($intent['phone']);
+            }else{
+                $recphone = null;
+            }
             $result = [
                 'status' => 'data_awaiting_confirmation',
                 'product_plan_id' => $plan->id,
                 'network_id' => $plan->product_plan_category->network->id,
-                'phone' => $intent['phone'],
+                'phone' => $recphone,
                 'price' => $price,
                 'intent' => $intent,
                 'message' =>
@@ -165,6 +173,9 @@ class WhatsappConversationService{
                     . "\n\nReply YES to continue or NO to cancel."
             ];
     
+
+          
+           
             cache()->put(
                 "wa_session:" . $session['whatsapp_phone'],
                 $result,
@@ -191,6 +202,9 @@ class WhatsappConversationService{
 
                 return response()->json(['ok' => true]);
             }
+
+          
+
     
             app(Whatsappsender::class)->send(
                 $session['whatsapp_phone'],
