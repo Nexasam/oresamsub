@@ -97,10 +97,10 @@ class WhatsappWebhookController extends Controller
          /*
         Load whatsapp user
         */     
-        $phone1 = $phone ?: ($session['whatsapp_phone'] ?? null);
+        // $phone1 = $phone ?: ($session['whatsapp_phone'] ?? null);
         $user = app(WhatsappUserResolver::class)
-        ->resolve($phone1);
-        logger('phone1: '.$phone1);
+        ->resolve($phone);
+        logger('phone1: '.$user);
 
 
         $conversation = app(
