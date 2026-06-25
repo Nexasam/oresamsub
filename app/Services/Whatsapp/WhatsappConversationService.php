@@ -113,9 +113,30 @@ class WhatsappConversationService{
                 'intent' => $intent,
                 'intent_phone' => $intent['phone'] ?? null,
             ]));
+
+            $intent['selected_plan_id'] = $planId;
+
+            if (empty($intent['phone'])) {
+
+                cache()->put(
+                    "wa_session:" . $session['whatsapp_phone'],
+                    [
+                        'status' => 'data_phone_required',
+                        'intent' => $intent,
+                        'whatsapp_phone' => $session['whatsapp_phone'],
+                    ],
+                    now()->addMinutes(10)
+                );
+
+                app(Whatsappsender::class)->send(
+                    $session['whatsapp_phone'],
+                    "Enter the phone number to receive this data."
+                );
+
+                return response()->json(['ok' => true]);
+            }
     
-            // $user = app(WhatsappUserResolver::class)
-            //     ->resolve($intent['phone']);
+      
 
             $user = app(WhatsappUserResolver::class)
                 ->resolve($phone);
