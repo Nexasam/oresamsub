@@ -31,32 +31,48 @@ class WhatsappWebhookController extends Controller
 
     public function receive(Request $request)
     {
-        $phone = $request->input(
-            'entry.0.changes.0.value.messages.0.from'
+        // $phone = $request->input(
+        //     'entry.0.changes.0.value.messages.0.from'
+        // );
+
+        // $text = $request->input(
+        //     'entry.0.changes.0.value.messages.0.text.body'
+        // );
+
+        // $text = strtolower(trim($text));
+
+         /*
+        Ignore status/delivery/read webhooks
+        */
+        $message = data_get(
+            $request->all(),
+            'entry.0.changes.0.value.messages.0'
         );
 
-        $text = $request->input(
-            'entry.0.changes.0.value.messages.0.text.body'
+        if (!$message) {
+
+            logger('Ignoring non-message webhook');
+
+            return response()->json([
+                'ok' => true
+            ]);
+        }
+
+        /*
+        Incoming message
+        */
+        $phone = $message['from'] ?? null;
+        $text  = strtolower(
+            trim($message['text']['body'] ?? '')
         );
 
-        $text = strtolower(trim($text));
+        logger("phone and text: {$phone}---{$text}");
 
-        
-        // if (!$phone || !$text) {
-        
-        //     logger('Ignoring non-message webhook', $request->all());
-        
-        //     // return response()->json(['ok' => true]);
-        // }
-
-        // logger('phone and text: '.$phone.'---'.$text);
 
         /*
         Reset conversation
         */
         if ($text === 'start') {
-
-               
 
             cache()->forget("wa_session:$phone");
 
@@ -68,9 +84,6 @@ class WhatsappWebhookController extends Controller
             return response()->json(['ok' => true]);
         }
 
-       
-
-     
 
         /*
         Existing conversation?
@@ -79,11 +92,9 @@ class WhatsappWebhookController extends Controller
 
          /*
         Load whatsapp user
-        */
-
-        $phonee = $phone ?? session('whatsapp_phone');
+        */     
         $user = app(WhatsappUserResolver::class)
-        ->resolve($phonee);
+        ->resolve($phone);
         // logger('userrr: '.$user);
 
 
