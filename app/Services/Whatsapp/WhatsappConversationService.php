@@ -95,49 +95,6 @@ class WhatsappConversationService{
                 $session['whatsapp_phone']
             );
         }
-
-        public function handleFavoritePhoneInput(
-            string $text,
-            array $session
-        )
-        {
-            $phone = trim($text);
-        
-            $plan = ProductPlan::with([
-                'product_plan_category.product',
-                'product_plan_category.network'
-            ])->find($session['product_plan_id']);
-        
-            $result = [
-                'status' => 'data_awaiting_confirmation',
-                'product_plan_id' => $session['product_plan_id'],
-                'network_id' => $session['network_id'],
-                'phone' => $phone,
-                'price' => $session['price'],
-                'whatsapp_phone' => $session['whatsapp_phone'],
-                'message' =>
-                    "🛒 Almost done!\n\n"
-                    . "📦 Plan: {$plan->product_plan_name}\n"
-                    . "📱 Number: {$phone}\n"
-                    . "💰 Amount: ₦" . number_format($session['price'])
-                    . "\n\n"
-                    . "Please confirm this purchase."
-            ];
-        
-            cache()->put(
-                "wa_session:{$session['whatsapp_phone']}",
-                $result,
-                now()->addMinutes(10)
-            );
-        
-            app(Whatsappsender::class)
-                ->sendConfirmationButtons(
-                    $session['whatsapp_phone'],
-                    $result['message']
-                );
-        
-            return response()->json(['ok' => true]);
-        }
     
         public function handleDataPlanSelection(
             string $text,
@@ -291,7 +248,7 @@ class WhatsappConversationService{
     }
     
 
-    public function handleFavoriteSelectionold(
+    public function handleFavoriteSelection(
         string $text,
         array $session,
         string $phone
@@ -374,157 +331,7 @@ class WhatsappConversationService{
         ]);
     }
 
-    public function handleFavoritePhoneChoice(
-        string $text,
-        array $session,
-        string $phone
-    )
-    {
-        $text = strtolower(trim($text));
     
-        /*
-        Use previous number
-        */
-        if ($text === 'favorite_use_same_number') {
-    
-            $plan = ProductPlan::with([
-                'product_plan_category.product',
-                'product_plan_category.network'
-            ])->find($session['product_plan_id']);
-    
-            $result = [
-                'status' => 'data_awaiting_confirmation',
-                'product_plan_id' => $session['product_plan_id'],
-                'network_id' => $session['network_id'],
-                'phone' => $session['phone'],
-                'price' => $session['price'],
-                'whatsapp_phone' => $session['whatsapp_phone'],
-                'message' =>
-                    "🛒 Almost done!\n\n"
-                    . "📦 Plan: {$plan->product_plan_name}\n"
-                    . "📱 Number: {$session['phone']}\n"
-                    . "💰 Amount: ₦" . number_format($session['price'])
-                    . "\n\n"
-                    . "Please confirm this purchase."
-            ];
-    
-            cache()->put(
-                "wa_session:{$session['whatsapp_phone']}",
-                $result,
-                now()->addMinutes(10)
-            );
-    
-            app(Whatsappsender::class)
-                ->sendConfirmationButtons(
-                    $session['whatsapp_phone'],
-                    $result['message']
-                );
-    
-            return response()->json(['ok' => true]);
-        }
-    
-        /*
-        Change number
-        */
-        if ($text === 'favorite_change_number') {
-    
-            $session['status'] = 'favorite_phone_required';
-    
-            cache()->put(
-                "wa_session:{$session['whatsapp_phone']}",
-                $session,
-                now()->addMinutes(10)
-            );
-    
-            app(Whatsappsender::class)->send(
-                $session['whatsapp_phone'],
-                "📱 Enter the new phone number.\n\nYou can:\n• Type the number\n• Share a contact from WhatsApp"
-            );
-    
-            return response()->json(['ok' => true]);
-        }
-    
-        /*
-        Invalid response
-        */
-        app(Whatsappsender::class)->sendFavoritePhoneChoiceButtons(
-            $session['whatsapp_phone'],
-            "Please choose one of the options below 👇"
-        );
-    
-        return response()->json(['ok' => true]);
-    }
-
-    public function handleFavoriteSelection(
-        string $text,
-        array $session,
-        string $phone
-    )
-    {
-        $option = (int) trim($text);
-    
-        if (!isset($session['options'][$option])) {
-    
-            app(Whatsappsender::class)->send(
-                $session['whatsapp_phone'],
-                "🤔 I couldn't find that option.\n\nPlease choose one of the numbers from the list above."
-            );
-    
-            return response()->json(['ok' => true]);
-        }
-    
-        $selection = $session['options'][$option];
-    
-        $plan = ProductPlan::find(
-            $selection['product_plan_id']
-        );
-    
-        if (!$plan) {
-    
-            app(Whatsappsender::class)->send(
-                $session['whatsapp_phone'],
-                "⚠️ Sorry, that plan is no longer available."
-            );
-    
-            return response()->json(['ok' => true]);
-        }
-    
-        $result = [
-    
-            'status' => 'favorites_phone_choice',
-    
-            'product_plan_id' => $selection['product_plan_id'],
-    
-            'phone' => $selection['phone'],
-    
-            'plan_name' => $plan->product_plan_name,
-    
-            'whatsapp_phone' => $session['whatsapp_phone'],
-        ];
-    
-        cache()->put(
-            "wa_session:" . $session['whatsapp_phone'],
-            $result,
-            now()->addMinutes(10)
-        );
-    
-        $message =
-            "📦 {$plan->product_plan_name}\n\n"
-            . "Last purchased for:\n"
-            . "📱 {$selection['phone']}\n\n"
-            . "What would you like to do?\n\n"
-            . "1. Continue with this number\n"
-            . "2. Use another number";
-    
-        app(Whatsappsender::class)->send(
-            $session['whatsapp_phone'],
-            $message
-        );
-    
-        return response()->json([
-            'ok' => true
-        ]);
-    }
     
 
     public function handleConfirmation(string $text, $user, array $session)

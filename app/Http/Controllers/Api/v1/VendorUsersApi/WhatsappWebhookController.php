@@ -135,15 +135,15 @@ class WhatsappWebhookController extends Controller
         };
     }
 
-    private function extractPhoneFromContact(
-        array $payload
-    ): ?string
-    {
-        return data_get(
-            $payload,
-            'entry.0.changes.0.value.messages.0.contacts.0.phones.0.phone'
-        );
-    }
+        private function extractPhoneFromContact(
+            array $payload
+        ): ?string
+        {
+            return data_get(
+                $payload,
+                'entry.0.changes.0.value.messages.0.contacts.0.phones.0.phone'
+            );
+        }
 
     public function receive(Request $request)
     {
@@ -168,9 +168,6 @@ class WhatsappWebhookController extends Controller
                 'ok' => true
             ]);
         }
-
-  
-
 
         $greetings = [
             'start',
@@ -212,25 +209,40 @@ class WhatsappWebhookController extends Controller
             )) {
         
             cache()->forget("wa_session:$phone");
+
+            $user = app(WhatsappUserResolver::class)
+            ->resolve($phone); 
+
+            $firstName = $user?->first_name ?? $user?->username;
         
+            $welcome = $firstName
+            ? "👋 Hi {$firstName}, welcome to OresamSub!\n\n"
+            : "👋 Welcome to OresamSub!\n\n";
+            
             app(Whatsappsender::class)->send(
                 $phone,
-                "👋 Welcome to OresamSub\n\n"
-                . "I'm your personal vtu assistant.\n\n"
+                $welcome
+                . "I'm your personal VTU assistant ⚡\n\n"
+            
+                . "Here's what I can help you with:\n\n"
+            
                 . "📶 Buy Data\n"
                 . "📞 Buy Airtime\n"
                 . "📋 Repeat Recent Purchases\n"
-                . "💰 Check Balance\n"
-                . "🆘 Get Support\n\n"
-                . "Try:\n"
-                . "• mtn 1gb weekly\n"
-                . "• glo 2 gb 3 days\n"
-                . "• airtime 1000 MTN\n"
-                . "• recent\n"
-                . "• buy again\n"
-                . "• fav\n"
-                . "• balance\n\n"
-                . "What would you like to do today?"
+                . "💰 Check Wallet Balance\n"
+                . "🆘 Contact Support\n\n"
+            
+                . "Try any of these:\n\n"
+            
+                . "• MTN 1GB weekly\n"
+                . "• Glo 2GB 3 days\n"
+                . "• Airtime 1000 MTN\n"
+                . "• Recent\n"
+                . "• Buy Again\n"
+                . "• Favourites\n"
+                . "• Balance\n\n"
+            
+                . "What would you like to do today? 😊"
             );
         
             return response()->json(['ok' => true]);
@@ -263,18 +275,18 @@ class WhatsappWebhookController extends Controller
 
             // logger('Lets see session content: '.json_encode($session));
             return match ($session['status']) {
-                'favorite_phone_choice'
-                    => $conversation->handleFavoritePhoneChoice(
-                        $text,
-                        $session,
-                        $phone
-                    ),
+                // 'favorite_phone_choice'
+                //     => $conversation->handleFavoritePhoneChoice(
+                //         $text,
+                //         $session,
+                //         $phone
+                //     ),
 
-                'favorite_phone_required'
-                    => $conversation->handleFavoritePhoneInput(
-                        $text,
-                        $session
-                    ),
+                // 'favorite_phone_required'
+                //     => $conversation->handleFavoritePhoneInput(
+                //         $text,
+                //         $session
+                //     ),
                 'data_network_required'
                     => $conversation->handleDataNetworkSelection(
                         $text,
