@@ -31,69 +31,87 @@ class WhatsappIntentResolver
         };
     }
 
-    protected function resolveFavorites($user, string $phone): array
+    public function resolveFavorites($user, string $phone): array
     {
         if (!$user) {
-
+    
             return [
                 'status' => 'unlinked_user',
                 'message' =>
                     "Your WhatsApp number is not linked to an account.\n\nPlease contact support."
             ];
         }
-
+    
         $transactions = Transaction::query()
-        ->where('user_id', $user->id)
-        ->where('status', 1)
-        ->whereNotNull('product_plan_id')
-        ->whereHas('product_plan', function ($query) {
-            $query->where('visibility', 1);
-        })
-        ->with('product_plan')
-        ->latest()
-        ->take(20)
-        ->get();
-
+            ->where('user_id', $user->id)
+            ->where('status', 1)
+            ->whereNotNull('product_plan_id')
+            ->whereHas('product_plan', function ($query) {
+                $query->where('visibility', 1);
+            })
+            ->with([
+                'product_plan.product_plan_category.product',
+                'product_plan.product_plan_category.network'
+            ])
+            ->latest()
+            ->take(20)
+            ->get();
+    
         if ($transactions->isEmpty()) {
-
+    
             return [
                 'status' => 'favorites_empty',
                 'message' =>
                     "No recent purchases found.\n\nTry:\nMTN 1GB Weekly"
             ];
         }
-
-        /*
-        Unique plans only
-        */
+    
         $transactions = $transactions
             ->unique('product_plan_id')
             ->take(5)
             ->values();
+    
+        return $this->buildFavoriteOptionsResponse(
+            $transactions,
+            $user
+        );
+    }
 
+    protected function buildFavoriteOptionsResponse(
+        $transactions,
+        $user
+    ): array {
+    
         $message = "📌 Recent / Favourite Plans\n\n";
-
+    
         $options = [];
-
+    
         foreach ($transactions as $index => $txn) {
-
+    
             if (!$txn->product_plan) {
                 continue;
             }
-
+    
             $number = $index + 1;
-
-            $message .=
-                "{$number}. {$txn->product_plan->product_plan_name}\n";
-
+    
+            $price = $this->getCustomerPlanPrice(
+                $txn->product_plan,
+                $user
+            );
+    
             $options[$number] = [
                 'product_plan_id' => $txn->product_plan_id,
                 'phone' => $txn->phone_number,
             ];
+    
+            $message .=
+                "{$number}. {$txn->product_plan->product_plan_name}\n"
+                . "💰 ₦" . number_format($price)
+                . "\n\n";
         }
-
-        $message .= "\nReply with a number.";
-
+    
+        $message .= "Reply with a number to continue.";
+    
         return [
             'status' => 'favorites_selection',
             'message' => $message,
