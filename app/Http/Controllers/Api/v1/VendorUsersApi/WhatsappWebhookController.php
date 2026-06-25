@@ -55,10 +55,7 @@ class WhatsappWebhookController extends Controller
         $phone = $this->extractPhone($payload);
         $text  = $this->extractText($payload);
 
-        logger(json_encode([
-            'phone' => $phone,
-            'text' => $text,
-        ]));
+       
 
         if (empty($text)) {
 
@@ -68,6 +65,11 @@ class WhatsappWebhookController extends Controller
                 'ok' => true
             ]);
         }
+
+        logger(json_encode([
+            'phone' => $phone,
+            'text' => $text,
+        ]));
 
   
 
