@@ -73,9 +73,17 @@ class WhatsappIntentParser
 
         // Favorites
 
+        // if (
+        //     preg_match(
+        //         '/\b(fav|favs|favorite|favorites|favourite|favourites|buy again|recent)\b/i',
+        //         $message
+        //     )
+        // ) {
+        //     return 'favorites';
+        // }
         if (
             preg_match(
-                '/\b(fav|favs|favorite|favorites|favourite|favourites|buy again|recent)\b/i',
+                '/\b(fav|favs|favorite|favorites|favourite|favourites|buy again|recent|history|popular)\b/i',
                 $message
             )
         ) {

@@ -66,7 +66,7 @@ class WhatsappWebhookController extends Controller
 
         if (empty($text) || empty($phone)) {
 
-            logger('Ignoring non-message webhook', $request->all());
+            // logger('Ignoring non-message webhook', $request->all());
         
             return response()->json([
                 'ok' => true
@@ -121,7 +121,7 @@ class WhatsappWebhookController extends Controller
             // $user = app(WhatsappUserResolver::class)
             // ->resolve($session['whatsapp_phone']);
 
-            logger('Lets see session content: '.json_encode($session));
+            // logger('Lets see session content: '.json_encode($session));
             return match ($session['status']) {
 
                 'data_network_required'
@@ -161,6 +161,13 @@ class WhatsappWebhookController extends Controller
                         $text,
                         $session
                     ),
+
+                'favorites_selection'
+                => $conversation->handleFavoriteSelection(
+                    $text,
+                    $session,
+                    $phone
+                ),
 
                 default => response()->json([
                     'ok' => true
@@ -217,12 +224,12 @@ class WhatsappWebhookController extends Controller
         $message = $request->input('entry.0.changes.0.value.messages.0');
 
         if (!$message) {
-            logger('omo..na this one oh');
+            // logger('omo..na this one oh');
             return response()->json(['success' => true]);
         }
 
 
-        logger('omo2');
+   
 
         $phone = $message['from'] ?? null;
         $text = trim($message['text']['body'] ?? '');

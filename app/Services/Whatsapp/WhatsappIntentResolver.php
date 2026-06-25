@@ -3,6 +3,7 @@ namespace App\Services\Whatsapp;
 
 use App\Http\Services\DataPlansService;
 use App\Models\ProductPlan;
+use App\Models\Transaction;
 
 class WhatsappIntentResolver
 {
@@ -13,6 +14,8 @@ class WhatsappIntentResolver
             'data' => $this->resolveData($intent, $user, $phone),
 
             'airtime' => $this->resolveAirtime($intent,$user,$phone),
+
+            'favorites' => $this->resolveFavorites($user, $phone),
 
             'navigation_app',
             'navigation_telegram',
@@ -26,6 +29,73 @@ class WhatsappIntentResolver
 
         
         };
+    }
+
+    protected function resolveFavorites($user, string $phone): array
+    {
+        if (!$user) {
+
+            return [
+                'status' => 'unlinked_user',
+                'message' =>
+                    "Your WhatsApp number is not linked to an account.\n\nPlease contact support."
+            ];
+        }
+
+        $transactions = Transaction::query()
+            ->where('user_id', $user->id)
+            ->where('status', 1)
+            ->whereNotNull('product_plan_id')
+            ->with('product_plan')
+            ->latest()
+            ->take(20)
+            ->get();
+
+        if ($transactions->isEmpty()) {
+
+            return [
+                'status' => 'favorites_empty',
+                'message' =>
+                    "No recent purchases found.\n\nTry:\nMTN 1GB Weekly"
+            ];
+        }
+
+        /*
+        Unique plans only
+        */
+        $transactions = $transactions
+            ->unique('product_plan_id')
+            ->take(5)
+            ->values();
+
+        $message = "📌 Recent / Favourite Plans\n\n";
+
+        $options = [];
+
+        foreach ($transactions as $index => $txn) {
+
+            if (!$txn->product_plan) {
+                continue;
+            }
+
+            $number = $index + 1;
+
+            $message .=
+                "{$number}. {$txn->product_plan->product_plan_name}\n";
+
+            $options[$number] = [
+                'product_plan_id' => $txn->product_plan_id,
+                'phone' => $txn->phone_number,
+            ];
+        }
+
+        $message .= "\nReply with a number.";
+
+        return [
+            'status' => 'favorites_selection',
+            'message' => $message,
+            'options' => $options,
+        ];
     }
 
     private function resolveNavigation(string $type): array

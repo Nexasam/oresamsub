@@ -87,7 +87,7 @@ class WhatsappConversationService{
     
             $intent['phone'] = trim($textt);
 
-            logger('phone input: '.$textt);
+            // logger('phone input: '.$textt);
     
             return $this->updateSessionAndResolve(
                 $session,
@@ -124,10 +124,10 @@ class WhatsappConversationService{
     
             $intent['selected_plan_id'] = $planId;
 
-            logger(json_encode([
-                'intent' => $intent,
-                'intent_phone' => $intent['phone'] ?? null,
-            ]));
+            // logger(json_encode([
+            //     'intent' => $intent,
+            //     'intent_phone' => $intent['phone'] ?? null,
+            // ]));
 
             $intent['selected_plan_id'] = $planId;
 
@@ -135,9 +135,9 @@ class WhatsappConversationService{
 
             $user = app(WhatsappUserResolver::class)
                 ->resolve($phone);
-            logger(json_encode([
-                'DATA selection user' => $user,
-            ]));
+            // logger(json_encode([
+            //     'DATA selection user' => $user,
+            // ]));
     
             $dat = [
                 'product_id' => $plan->product_plan_category->product->id,
@@ -175,7 +175,7 @@ class WhatsappConversationService{
     
 
           
-           logger('handle data plan selection: '.json_encode($session));
+        //    logger('handle data plan selection: '.json_encode($session));
             $result['whatsapp_phone']
            = $session['whatsapp_phone'];
             cache()->put(
@@ -233,8 +233,91 @@ class WhatsappConversationService{
             }
     
             return response()->json(['ok' => true]);
+    }
+    
+
+    public function handleFavoriteSelection(
+        string $text,
+        array $session,
+        string $phone
+    )
+    {
+        $option = (int) trim($text);
+    
+        if (!isset($session['options'][$option])) {
+    
+            app(Whatsappsender::class)->send(
+                $session['whatsapp_phone'],
+                "Invalid selection. Reply with one of the numbers shown."
+            );
+    
+            return response()->json(['ok' => true]);
         }
     
+        $selection = $session['options'][$option];
+    
+        $planId = $selection['product_plan_id'];
+        $recipientPhone = $selection['phone'];
+    
+        $plan = ProductPlan::with([
+            'product_plan_category.product',
+            'product_plan_category.network'
+        ])->find($planId);
+    
+        if (!$plan) {
+    
+            app(Whatsappsender::class)->send(
+                $session['whatsapp_phone'],
+                "Selected plan no longer exists."
+            );
+    
+            return response()->json(['ok' => true]);
+        }
+    
+        $user = app(WhatsappUserResolver::class)
+            ->resolve($phone);
+    
+        $dat = [
+            'product_id' => $plan->product_plan_category->product->id,
+            'network_id' => $plan->product_plan_category->network->id,
+            'user' => $user,
+            'plan_details' => $plan,
+        ];
+    
+        $price =
+            app(DataPlansService::class)
+                ->get_customer_price_per_plan($dat)['message'];
+    
+        $result = [
+            'status' => 'data_awaiting_confirmation',
+            'product_plan_id' => $plan->id,
+            'network_id' => $plan->product_plan_category->network->id,
+            'phone' => $recipientPhone,
+            'price' => $price,
+            'whatsapp_phone' => $session['whatsapp_phone'],
+            'message' =>
+                "Confirm Purchase\n\n"
+                . "{$plan->product_plan_name}\n"
+                . "Phone: {$recipientPhone}\n"
+                . "Price: ₦" . number_format($price)
+                . "\n\nReply YES to continue or NO to cancel."
+        ];
+    
+        cache()->put(
+            "wa_session:" . $session['whatsapp_phone'],
+            $result,
+            now()->addMinutes(10)
+        );
+    
+        app(Whatsappsender::class)->send(
+            $session['whatsapp_phone'],
+            $result['message']
+        );
+    
+        return response()->json([
+            'ok' => true
+        ]);
+    }
     
 
     public function handleConfirmation(string $text, $user, array $session)
