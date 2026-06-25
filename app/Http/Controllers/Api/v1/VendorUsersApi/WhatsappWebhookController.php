@@ -46,7 +46,7 @@ class WhatsappWebhookController extends Controller
         
             logger('Ignoring non-message webhook', $request->all());
         
-            return response()->json(['ok' => true]);
+            // return response()->json(['ok' => true]);
         }
 
         logger('phone and text: '.$phone.'---'.$text);
