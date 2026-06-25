@@ -175,7 +175,9 @@ class WhatsappConversationService{
     
 
           
-           
+           logger('handle data plan selection: '.json_encode($session));
+            $result['whatsapp_phone']
+           = $session['whatsapp_phone'];
             cache()->put(
                 "wa_session:" . $session['whatsapp_phone'],
                 $result,
