@@ -204,7 +204,7 @@ class WhatsappWebhookController extends Controller
         ];
         
             if (preg_match(
-                '/^(start|hi|hello|hey|yo|sup|whats?up|howdy|how far|how you dey|how u dey|how body|wetin dey|bawo ni|sanu|pele|good morning|good afternoon|good evening)$/i',
+                '/^(start|hi|clear|hello|hey|yo|sup|whats?up|howdy|how far|how you dey|how u dey|how body|wetin dey|bawo ni|sanu|pele|good morning|good afternoon|good evening)$/i',
                 trim($text)
             )) {
         
