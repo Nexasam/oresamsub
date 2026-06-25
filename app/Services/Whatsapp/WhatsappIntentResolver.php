@@ -43,13 +43,16 @@ class WhatsappIntentResolver
         }
 
         $transactions = Transaction::query()
-            ->where('user_id', $user->id)
-            ->where('status', 1)
-            ->whereNotNull('product_plan_id')
-            ->with('product_plan')
-            ->latest()
-            ->take(20)
-            ->get();
+        ->where('user_id', $user->id)
+        ->where('status', 1)
+        ->whereNotNull('product_plan_id')
+        ->whereHas('product_plan', function ($query) {
+            $query->where('visibility', 1);
+        })
+        ->with('product_plan')
+        ->latest()
+        ->take(20)
+        ->get();
 
         if ($transactions->isEmpty()) {
 

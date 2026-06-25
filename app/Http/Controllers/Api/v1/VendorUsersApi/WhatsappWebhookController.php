@@ -92,44 +92,37 @@ class WhatsappWebhookController extends Controller
             $payload,
             'entry.0.changes.0.value.messages.0.text.body'
         );
-
+    
         if (!empty($text)) {
             return strtolower(trim($text));
         }
-
+    
         /*
-        Contact shared
+        Shared contact
         */
         $contactPhone = data_get(
             $payload,
             'entry.0.changes.0.value.messages.0.contacts.0.phones.0.phone'
         );
-
+    
         if (!empty($contactPhone)) {
-
-            return preg_replace(
-                '/\D/',
-                '',
-                $contactPhone
-            );
+            return preg_replace('/\D/', '', $contactPhone);
         }
-
+    
         /*
-        Interactive button reply
+        Interactive buttons
         */
         $buttonId = data_get(
             $payload,
             'entry.0.changes.0.value.messages.0.interactive.button_reply.id'
         );
-
-        return match ($buttonId) {
-
+    
+        return [
             'data_confirm_purchase' => 'yes',
-
-            'data_cancel_purchase' => 'no',
-
-            default => null,
-        };
+            'data_cancel_purchase'  => 'no',
+            'retry_purchase'        => 'yes',
+            'start_over'            => 'start',
+        ][$buttonId] ?? null;
     }
 
     private function extractPhoneFromContact(

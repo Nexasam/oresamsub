@@ -260,7 +260,7 @@ class WhatsappConversationService{
     
             app(Whatsappsender::class)->send(
                 $session['whatsapp_phone'],
-                "Invalid selection. Reply with one of the numbers shown."
+                "Oops 😅\n\nThat option isn't on the list.\n\nPlease choose one of the numbers shown above."
             );
     
             return response()->json(['ok' => true]);
@@ -312,7 +312,7 @@ class WhatsappConversationService{
                 . "{$plan->product_plan_name}\n"
                 . "Phone: {$recipientPhone}\n"
                 . "Price: ₦" . number_format($price)
-                . "\n\nReply YES to continue or NO to cancel."
+                . "\n\nReply YES/Confirm to continue or NO/Cancel to cancel."
         ];
     
         cache()->put(
@@ -321,7 +321,7 @@ class WhatsappConversationService{
             now()->addMinutes(10)
         );
     
-        app(Whatsappsender::class)->send(
+        app(Whatsappsender::class)->sendConfirmationButtons(
             $session['whatsapp_phone'],
             $result['message']
         );
@@ -349,9 +349,9 @@ class WhatsappConversationService{
     
             cache()->forget("wa_session:$chatPhone");
     
-            app(Whatsappsender::class)->send(
+            app(Whatsappsender::class)->sendStartButton(
                 $chatPhone,
-                "❌ Transaction cancelled."
+                "❌ Purchase cancelled.\n\nNo worries — you can type *START* anytime to make another purchase."
             );
     
             return response()->json(['ok' => true]);
@@ -362,9 +362,9 @@ class WhatsappConversationService{
         */
         if ($text !== 'yes') {
 
-            app(Whatsappsender::class)->send(
+            app(Whatsappsender::class)->sendConfirmationButtons(
                 $chatPhone,
-                "Reply YES to continue or NO to cancel."
+                "🤔 I didn't quite get that.\n\nPlease confirm whether you'd like to continue with this purchase."
             );
 
             return response()->json(['ok' => true]);
@@ -372,10 +372,12 @@ class WhatsappConversationService{
 
 
         if (!$session) {
-            return app(Whatsappsender::class)->send(
+             app(Whatsappsender::class)->sendStartButton(
                 $chatPhone,
-                "Session expired. Please type 'start' again."
+                "⌛ This session has expired.\n\nType *START* to begin a new purchase."
             );
+            return response()->json(['ok' => true]);
+
         }
 
         try {
@@ -415,8 +417,12 @@ class WhatsappConversationService{
                 cache()->forget("wa_session:$chatPhone");
     
                 $reply =
-                    "✅ Transaction Successful\n\n"
-                    . $message;
+                "🎉 Purchase Successful!\n\n"
+                . $message
+                . "\n\nThank you for choosing OresamSub 💙";
+
+               return response()->json(['ok' => true]);
+
     
             }
             /*
@@ -425,9 +431,18 @@ class WhatsappConversationService{
             elseif ($status === 2) {
     
                 $reply =
-                    "❌ Transaction Failed\n\n"
-                    . $message
-                    . "\n\nReply YES to retry or START to begin again.";
+                "❌ Purchase Failed\n\n"
+                . $message
+                . "\n\nWould you like to try again?";
+
+                
+                app(Whatsappsender::class)->sendRetryButtons(
+                    $chatPhone,
+                    $reply
+                );
+
+               return response()->json(['ok' => true]);
+
     
             }
             /*
@@ -436,20 +451,18 @@ class WhatsappConversationService{
             else {
     
                 $reply =
-                    "⚠️ Transaction Error\n\n"
-                    . $message
-                    . "\n\nReply YES to retry or START to begin again.";
+                "⚠️ We couldn't complete that request.\n\n"
+                . $message
+                . "\n\nYou can try again or start a new request.";
+
+                app(Whatsappsender::class)->sendRetryButtons(
+                    $chatPhone,
+                    $reply
+                );
+               return response()->json(['ok' => true]);
+
             }
     
-            /*
-            Send WhatsApp response
-            */
-            app(\App\Services\Whatsapp\Whatsappsender::class)->send(
-                $chatPhone,
-                $reply
-            );
-    
-            return response()->json(['ok' => true]);
         }catch (\Throwable $e) {
 
             logger('WhatsApp confirmation error', [
@@ -458,9 +471,9 @@ class WhatsappConversationService{
                 'file' => $e->getFile(),
             ]);
     
-            app(Whatsappsender::class)->send(
+            app(Whatsappsender::class)->sendRetryButtons(
                 $chatPhone,
-                "⚠️ Something went wrong while processing your request.\n\nReply YES to retry or START to begin again."
+                "⚠️ Something unexpected happened while processing your request.\n\nWould you like to try again?"
             );
     
             return response()->json([

@@ -81,4 +81,96 @@ class Whatsappsender
             ->post($url, $payload)
             ->json();
     }
+
+
+    public function sendRetryButtons(
+        string $phone,
+        string $message
+    )
+    {
+        $wconfig = WhatsappConfig::first();
+    
+        $url = "https://graph.facebook.com/v23.0/{$wconfig->phone_number_id}/messages";
+
+        return Http::withToken($wconfig->token)
+            ->post(
+               $url,
+                [
+                    'messaging_product' => 'whatsapp',
+                    'to' => $phone,
+                    'type' => 'interactive',
+    
+                    'interactive' => [
+                        'type' => 'button',
+    
+                        'body' => [
+                            'text' => $message,
+                        ],
+    
+                        'action' => [
+                            'buttons' => [
+    
+                                [
+                                    'type' => 'reply',
+                                    'reply' => [
+                                        'id' => 'retry_purchase',
+                                        'title' => '🔄 Retry',
+                                    ],
+                                ],
+    
+                                [
+                                    'type' => 'reply',
+                                    'reply' => [
+                                        'id' => 'start_over',
+                                        'title' => '🏠 Start',
+                                    ],
+                                ],
+    
+                            ],
+                        ],
+                    ],
+                ]
+            );
+    }
+
+    public function sendStartButton(
+        string $phone,
+        string $message
+    )
+    {
+        $wconfig = WhatsappConfig::first();
+    
+        $url = "https://graph.facebook.com/v23.0/{$wconfig->phone_number_id}/messages";
+
+        return Http::withToken($wconfig->token)
+            ->post(
+               $url,
+                [
+                    'messaging_product' => 'whatsapp',
+                    'to' => $phone,
+                    'type' => 'interactive',
+    
+                    'interactive' => [
+                        'type' => 'button',
+    
+                        'body' => [
+                            'text' => $message,
+                        ],
+    
+                        'action' => [
+                            'buttons' => [
+                                [
+                                    'type' => 'reply',
+                                    'reply' => [
+                                        'id' => 'start_over',
+                                        'title' => '🏠 Start Again',
+                                    ],
+                                ],
+    
+                            ],
+                        ],
+                    ],
+                ]
+            );
+    }
 }
