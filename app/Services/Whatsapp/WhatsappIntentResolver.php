@@ -101,7 +101,7 @@ class WhatsappIntentResolver
     
             $options[$number] = [
                 'product_plan_id' => $txn->product_plan_id,
-                'phone' => $txn->phone_number,
+                // 'phone' => $txn->phone_number,
             ];
     
             $message .=
@@ -119,82 +119,7 @@ class WhatsappIntentResolver
         ];
     }
 
-    protected function resolveFavoritesnew($user, string $phone): array
-{
-    if (!$user) {
 
-        return [
-            'status' => 'unlinked_user',
-            'message' =>
-                "🔒 Your WhatsApp number is not linked to an account yet.\n\nPlease contact support for assistance."
-        ];
-    }
-
-    $transactions = Transaction::query()
-        ->where('user_id', $user->id)
-        ->where('status', 1)
-        ->whereNotNull('product_plan_id')
-        ->whereHas('product_plan', function ($query) {
-            $query->where('visibility', 1);
-        })
-        ->with('product_plan')
-        ->latest()
-        ->take(20)
-        ->get();
-
-    if ($transactions->isEmpty()) {
-
-        return [
-            'status' => 'favorites_empty',
-            'message' =>
-                "📭 No recent purchases found.\n\n"
-                . "Try something like:\n"
-                . "• MTN 1GB Weekly\n"
-                . "• Airtel 2GB Monthly"
-        ];
-    }
-
-    /*
-    Keep only unique plans
-    */
-    $transactions = $transactions
-        ->unique('product_plan_id')
-        ->take(5)
-        ->values();
-
-    $message =
-        "📌 Your Recent / Favourite Plans\n\n"
-        . "Choose a plan you'd like to buy again:\n\n";
-
-    $options = [];
-
-    foreach ($transactions as $index => $txn) {
-
-        if (!$txn->product_plan) {
-            continue;
-        }
-
-        $number = $index + 1;
-
-        $message .=
-            "{$number}. {$txn->product_plan->product_plan_name}\n"
-            . "   📱 Last used: {$txn->phone_number}\n\n";
-
-        $options[$number] = [
-            'product_plan_id' => $txn->product_plan_id,
-            'phone' => $txn->phone_number,
-            'plan_name' => $txn->product_plan->product_plan_name,
-        ];
-    }
-
-    $message .= "Reply with the number of your preferred plan.";
-
-    return [
-        'status' => 'favorites_selection',
-        'message' => $message,
-        'options' => $options,
-    ];
-}
 
     private function resolveNavigation(string $type): array
     {
@@ -428,7 +353,7 @@ class WhatsappIntentResolver
         ];
     }
 
-    protected function getCustomerPlanPrice(
+    public function getCustomerPlanPrice(
         ProductPlan $plan,
         $user
     ): float {

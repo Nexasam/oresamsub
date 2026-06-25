@@ -278,6 +278,14 @@ class WhatsappWebhookController extends Controller
 
             // logger('Lets see session content: '.json_encode($session));
             return match ($session['status']) {
+
+                'favorite_phone_required'
+                => $conversation->handleFavoritePhoneInput(
+                    $text,
+                    $session,
+                    $phone
+                ),
+                
              
                 'contact_save_prompt'
                 => $conversation->handleSaveContactPrompt(
@@ -477,7 +485,7 @@ class WhatsappWebhookController extends Controller
                     => $conversation->handleDataPhoneInput($text, $session),
         
                 'data_multiple_options'
-                    => $conversation->handleDataPlanSelection($text, $session),
+                    => $conversation->handleDataPlanSelection($text, $session,$phone),
         
                 'data_awaiting_confirmation'
                     => $conversation->handleConfirmation($text, $user, $session),

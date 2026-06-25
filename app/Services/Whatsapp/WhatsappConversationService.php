@@ -4,6 +4,8 @@ namespace App\Services\Whatsapp;
 use App\Http\Services\DataPlansService;
 use App\Models\ProductPlan;
 use App\Models\UserContact;
+use App\Services\Whatsapp\WhatsappIntentResolver;
+use App\Services\Whatsapp\WhatsappUserResolver;
 use Illuminate\Http\Request;
 
 class WhatsappConversationService{
@@ -95,6 +97,84 @@ class WhatsappConversationService{
                 $intent,
                 $session['whatsapp_phone']
             );
+        }
+
+        protected function resolveSelectedPhone(
+            string $text,
+            array $session
+        ): ?string
+        {
+            $option = (int) trim($text);
+        
+            /*
+            Saved contact selected
+            */
+            if (isset($session['contacts'][$option])) {
+                return $session['contacts'][$option]['phone_number'];
+            }
+        
+            /*
+            User typed a phone directly
+            */
+            $phone = preg_replace('/\D/', '', $text);
+        
+            if (strlen($phone) >= 10) {
+                return $this->normalizeWhatsappNumber($phone);
+            }
+        
+            return null;
+        }
+
+        public function handleFavoritePhoneInput(
+            string $text,
+            array $session,
+            string $phone
+        )
+        {
+            $recipientPhone = $this->resolveSelectedPhone(
+                $text,
+                $session
+            );
+        
+            $plan = ProductPlan::with([
+                'product_plan_category.product',
+                'product_plan_category.network'
+            ])->find($session['product_plan_id']);
+        
+            $user = app(WhatsappUserResolver::class)
+                ->resolve($phone);
+        
+            $price = app(WhatsappIntentResolver::class)
+            ->getCustomerPlanPrice(
+                $plan,
+                $user
+            );
+        
+            $result = [
+                'status' => 'data_awaiting_confirmation',
+                'product_plan_id' => $plan->id,
+                'network_id' => $plan->product_plan_category->network->id,
+                'phone' => $recipientPhone,
+                'price' => $price,
+                'whatsapp_phone' => $session['whatsapp_phone'],
+            ];
+        
+            cache()->put(
+                "wa_session:{$session['whatsapp_phone']}",
+                $result,
+                now()->addMinutes(10)
+            );
+        
+            app(Whatsappsender::class)->sendConfirmationButtons(
+                $session['whatsapp_phone'],
+                "🛒 Almost done!\n\n"
+                . "📦 Plan: {$plan->product_plan_name}\n"
+                . "📱 Number: {$recipientPhone}\n"
+                . "💰 Amount: ₦" . number_format($price)
+                . "\n\nPlease confirm to continue."
+            );
+        
+            return response()->json(['ok' => true]);
         }
 
         public function handleDataPhoneInput(
@@ -439,12 +519,12 @@ class WhatsappConversationService{
                 ->get_customer_price_per_plan($dat)['message'];
     
         $result = [
-            'status' => 'data_awaiting_confirmation',
+            'status' => 'favorite_phone_required',
             'product_plan_id' => $plan->id,
             'network_id' => $plan->product_plan_category->network->id,
+            'whatsapp_phone' => $session['whatsapp_phone'],
             'phone' => $recipientPhone,
             'price' => $price,
-            'whatsapp_phone' => $session['whatsapp_phone'],
             'message' =>
                 "Confirm Purchase\n\n"
                 . "{$plan->product_plan_name}\n"
@@ -459,15 +539,26 @@ class WhatsappConversationService{
             now()->addMinutes(10)
         );
     
-        app(Whatsappsender::class)->sendConfirmationButtons(
+        // app(Whatsappsender::class)->sendConfirmationButtons(
+        //     $session['whatsapp_phone'],
+        //     $result['message']
+        // );
+
+        $user = app(WhatsappUserResolver::class)
+        ->resolve($phone);
+
+        $this->sendPhoneRequestWithContacts(
+            $user,
             $session['whatsapp_phone'],
-            $result['message']
+            $result
         );
     
         return response()->json([
             'ok' => true
         ]);
     }
+
+    
 
     public function handleSaveContactName(
         string $text,
