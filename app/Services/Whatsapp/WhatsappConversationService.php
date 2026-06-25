@@ -240,79 +240,138 @@ class WhatsappConversationService{
 
         //you must specify if its data or airtime or ccable or elecc later oh.
 
-        $phone = $session['phone'];
-        $text = strtolower($text);
+        $chatPhone = $session['whatsapp_phone'];
+        $beneficiaryPhone = $session['phone'];
     
-        if ($text !== 'yes') {
+        $text = strtolower(trim($text));
     
-            cache()->forget("wa_session:$phone");
+        /*
+        User cancelled
+        */
+        if ($text === 'no') {
     
-            return app(Whatsappsender::class)->send(
-                $phone,
-                "Transaction cancelled."
+            cache()->forget("wa_session:$chatPhone");
+    
+            app(Whatsappsender::class)->send(
+                $chatPhone,
+                "❌ Transaction cancelled."
             );
+    
+            return response()->json(['ok' => true]);
         }
+
+        /*
+        Invalid response
+        */
+        if ($text !== 'yes') {
+
+            app(Whatsappsender::class)->send(
+                $chatPhone,
+                "Reply YES to continue or NO to cancel."
+            );
+
+            return response()->json(['ok' => true]);
+        }
+
 
         if (!$session) {
             return app(Whatsappsender::class)->send(
-                $phone,
+                $chatPhone,
                 "Session expired. Please type 'start' again."
             );
         }
 
-        $request = new Request([
-            'product_plan_id' => $session['product_plan_id'],
-            'phone_number' => $session['phone'],
-            'network_id' => $session['network_id'],
-            'wallet_category' => 'main_wallet',
-            'validatephonenetwork' => 0,
-            'pin' =>$user->pin,
-            'user' =>$user,
-        ]);
-
-        $result = app(\App\Http\Controllers\DataController::class)
-            ->buy_data_action($request);
-
-            
-        /*
-        Convert response object → array
-        */
-        $data = $result->getData(true);
-
-        /*
-        Read status
-        */
-        $status  = $data['status'] ?? -1;
-        $message = $data['message'] ?? 'Transaction completed';
-
-
+        try {
+            $request = new Request([
+                'product_plan_id' => $session['product_plan_id'],
+                'phone_number' => $session['phone'],
+                'network_id' => $session['network_id'],
+                'wallet_category' => 'main_wallet',
+                'validatephonenetwork' => 0,
+                'pin' =>$user->pin,
+                'user' =>$user,
+            ]);
     
+            $result = app(\App\Http\Controllers\DataController::class)
+                ->buy_data_action($request);
     
+                
+            /*
+            Convert response object → array
+            */
+            $data = $result->getData(true);
+    
+            /*
+            Read status
+            */
+            $status  = $data['status'] ?? -1;
+            $message = $data['message'] ?? 'Transaction completed';
+    
+            /*
+            Build WhatsApp message
+            */
+           /*
+            SUCCESS
+            */
+            if ($status === 1) {
+    
+                cache()->forget("wa_session:$chatPhone");
+    
+                $reply =
+                    "✅ Transaction Successful\n\n"
+                    . $message;
+    
+            }
+            /*
+            FAILED / REFUNDED / ISSUE FOUND
+            */
+            elseif ($status === 2) {
+    
+                $reply =
+                    "❌ Transaction Failed\n\n"
+                    . $message
+                    . "\n\nReply YES to retry or START to begin again.";
+    
+            }
+            /*
+            VALIDATION / SYSTEM ERROR
+            */
+            else {
+    
+                $reply =
+                    "⚠️ Transaction Error\n\n"
+                    . $message
+                    . "\n\nReply YES to retry or START to begin again.";
+            }
+    
+            /*
+            Send WhatsApp response
+            */
+            app(\App\Services\Whatsapp\Whatsappsender::class)->send(
+                $chatPhone,
+                $reply
+            );
+    
+            return response()->json(['ok' => true]);
+        }catch (\Throwable $e) {
 
-        /*
-        Build WhatsApp message
-        */
-        if ((int)$status === 1) {
-
-                // clear session
-            cache()->forget("wa_session:$phone");
-            $reply = "✅ Transaction Successful\n\n" . $message;
-
-
-        } else {
-
-            $reply = "❌ Transaction Failed...You can click YES to retry or START to do it all over again. \n\n" . $message;
+            logger('WhatsApp confirmation error', [
+                'message' => $e->getMessage(),
+                'line' => $e->getLine(),
+                'file' => $e->getFile(),
+            ]);
+    
+            app(Whatsappsender::class)->send(
+                $chatPhone,
+                "⚠️ Something went wrong while processing your request.\n\nReply YES to retry or START to begin again."
+            );
+    
+            return response()->json([
+                'ok' => true
+            ]);
         }
 
-        /*
-        Send WhatsApp response
-        */
-        app(\App\Services\Whatsapp\Whatsappsender::class)->send(
-            $phone,
-            $reply
-        );
-
-        return response()->json(['ok' => true]);
+       
     }
 }
 

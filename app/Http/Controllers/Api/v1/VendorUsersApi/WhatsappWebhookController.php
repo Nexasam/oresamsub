@@ -36,6 +36,13 @@ class WhatsappWebhookController extends Controller
             ?? data_get($payload, 'entry.0.changes.0.value.statuses.0.recipient_id');
     }
 
+    private function whatsappStatus(array $payload): ?string
+    {
+        return
+            data_get($payload, 'entry.0.changes.0.value.messages.0.from')
+            ?? data_get($payload, 'entry.0.changes.0.value.statuses.0.recipient_id');
+    }
+
     private function extractText(array $payload): ?string
     {
         return data_get(
