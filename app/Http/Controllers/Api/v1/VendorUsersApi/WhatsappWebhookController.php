@@ -49,7 +49,7 @@ class WhatsappWebhookController extends Controller
         //     // return response()->json(['ok' => true]);
         // }
 
-        logger('phone and text: '.$phone.'---'.$text);
+        // logger('phone and text: '.$phone.'---'.$text);
 
         /*
         Reset conversation
@@ -83,7 +83,7 @@ class WhatsappWebhookController extends Controller
 
         $user = app(WhatsappUserResolver::class)
         ->resolve($phone);
-        logger('userrr: '.$user);
+        // logger('userrr: '.$user);
 
 
         $conversation = app(
@@ -91,6 +91,8 @@ class WhatsappWebhookController extends Controller
         );
 
         if ($session) {
+
+            
 
             logger('Lets see session content: '.json_encode($session));
             return match ($session['status']) {
@@ -139,6 +141,8 @@ class WhatsappWebhookController extends Controller
             };
         }
 
+
+    
         /*
         Fresh request
         */
