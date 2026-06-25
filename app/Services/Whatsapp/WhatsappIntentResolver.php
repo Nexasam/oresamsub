@@ -21,7 +21,7 @@ class WhatsappIntentResolver
         
             default => [
                 'status' => 'unsupported',
-                'message' => "I didn't understand that."
+                'message' => "I didn't understand that2..."
             ]
 
         
@@ -49,7 +49,7 @@ class WhatsappIntentResolver
 
             default => [
                 'status' => 'unknown',
-                'message' => "I didn't understand that."
+                'message' => "I didn't understand that...."
             ]
         };
     }
