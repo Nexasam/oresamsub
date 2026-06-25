@@ -765,7 +765,7 @@ class DataController extends Controller
                                 $walletLog['balance_before'] = $wallet_before;
                                 $walletLog['balance_after'] = $wallet_after;
                                 $walletLog['transaction_id'] = $transaction->id;
-                                $walletLog['action_by'] = auth()->user()->id;           
+                                $walletLog['action_by'] = $user_details->id;           
                                 $walletLog['description'] = 'Data Purchase from main wallet';
                                 $this->log_wallet_transactions($walletLog);
                     
