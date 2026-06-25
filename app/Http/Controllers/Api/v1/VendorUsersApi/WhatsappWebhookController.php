@@ -57,7 +57,7 @@ class WhatsappWebhookController extends Controller
 
        
 
-        if (empty($text)) {
+        if (empty($text) || empty($phone)) {
 
             logger('Ignoring non-message webhook', $request->all());
         
@@ -110,9 +110,9 @@ class WhatsappWebhookController extends Controller
 
         if ($session) {
 
-            logger('this raaan1 in session.'.json_encode($session));
-            $user = app(WhatsappUserResolver::class)
-            ->resolve($session['whatsapp_phone']);
+            // logger('this raaan1 in session.'.json_encode($session));
+            // $user = app(WhatsappUserResolver::class)
+            // ->resolve($session['whatsapp_phone']);
 
             logger('Lets see session content: '.json_encode($session));
             return match ($session['status']) {
