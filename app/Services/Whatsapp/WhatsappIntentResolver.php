@@ -62,8 +62,8 @@ class WhatsappIntentResolver
             return [
                 'status' => 'data_network_required',
                 'field' => 'network',
-                // 'whatsapp_phone' => $phone,
-                // 'intent' => $intent,
+                'whatsapp_phone' => $phone,
+                'intent' => $intent,
                 'message' =>
                     "Which network?\n\nMTN\nAirtel\nGlo\n9mobile"
             ];
@@ -74,8 +74,8 @@ class WhatsappIntentResolver
             return [
                 'status' => 'data_size_required',
                 'field' => 'data_size',
-                // 'whatsapp_phone' => $phone,
-                // 'intent' => $intent,
+                'whatsapp_phone' => $phone,
+                'intent' => $intent,
                 'message' =>
                     "What data size?\n\n1GB\n2GB\n5GB"
             ];
@@ -137,8 +137,8 @@ class WhatsappIntentResolver
 
             return [
                 'status' => 'data_plan_not_found',
-                // 'whatsapp_phone' => $phone,
-                // 'intent' => $intent,
+                'whatsapp_phone' => $phone,
+                'intent' => $intent,
                 'message' =>
                     "I couldn't find a matching {$intent['network']} "
                     . ($intent['data_size_in_mb'] / 1000)
@@ -177,8 +177,8 @@ class WhatsappIntentResolver
                 'status' => 'data_phone_required',
                 'field' => 'phone',
                 'product_plan_id' => $plan->id,
-                // 'whatsapp_phone' => $phone,
-                // 'intent' => $intent,
+                'whatsapp_phone' => $phone,
+                'intent' => $intent,
                 'message' =>
                     "Which phone number should receive this data?"
             ];
@@ -193,8 +193,8 @@ class WhatsappIntentResolver
         if (!$user) {
             return [
                 'status' => 'unlinked_user',
-                // 'whatsapp_phone' => $phone,
-                // 'intent' => $intent,
+                'whatsapp_phone' => $phone,
+                'intent' => $intent,
                 'message' =>
                     "Your number is not linked yet.\n\n"
                     . "Please register or fund your account here:\n"
