@@ -41,6 +41,14 @@ class WhatsappWebhookController extends Controller
 
         $text = strtolower(trim($text));
 
+        
+        if (!$phone || !$text) {
+        
+            logger('Ignoring non-message webhook', $request->all());
+        
+            return response()->json(['ok' => true]);
+        }
+
         logger('phone and text: '.$phone.'---'.$text);
 
         /*
@@ -176,6 +184,8 @@ class WhatsappWebhookController extends Controller
 
         $phone = $message['from'] ?? null;
         $text = trim($message['text']['body'] ?? '');
+
+        
 
         $intentData = $router->resolve($text);
 
