@@ -49,13 +49,17 @@ class WhatsappWebhookController extends Controller
             'entry.0.changes.0.value.messages.0'
         );
 
+        $phonesent = true;
+
+
         if (!$message) {
 
             logger('Ignoring non-message webhook');
+            $phonesent = false;
 
-            return response()->json([
-                'ok' => true
-            ]);
+            // return response()->json([
+            //     'ok' => true
+            // ]);
         }
 
         /*
