@@ -107,7 +107,7 @@ class WhatsappConversationService{
     
                 app(Whatsappsender::class)->send(
                     $session['whatsapp_phone'],
-                    "Invalid selection. Reply with one of the numbers shown."
+                    "🤔 I couldn't match that selection.\n\nPlease choose one of the options above by replying with its number."
                 );
     
                 return response()->json(['ok' => true]);
@@ -166,11 +166,14 @@ class WhatsappConversationService{
                 'price' => $price,
                 'intent' => $intent,
                 'message' =>
-                    "Confirm Purchase\n\n"
-                    . "{$plan->product_plan_name}\n"
-                    . "Phone: {$intent['phone']}\n"
-                    . "Price: ₦" . number_format($price)
-                    . "\n\nReply YES to continue or NO to cancel."
+                    "🛒 Almost done!\n\n"
+                    . "📦 Plan: {$plan->product_plan_name}\n"
+                    . "📱 Number: {$recphone}\n"
+                    . "💰 Amount: ₦" . number_format($price)
+                    . "\n\n"
+                    . "Please review the details above.\n\n"
+                    . "✅ Reply YES to complete this purchase\n"
+                    . "❌ Reply NO to cancel."
             ];
     
 
@@ -208,7 +211,11 @@ class WhatsappConversationService{
           
 
     
-            app(Whatsappsender::class)->send(
+            // app(Whatsappsender::class)->send(
+            //     $session['whatsapp_phone'],
+            //     $result['message']
+            // );
+            app(Whatsappsender::class)->sendConfirmationButtons(
                 $session['whatsapp_phone'],
                 $result['message']
             );

@@ -32,67 +32,145 @@ class WhatsappWebhookController extends Controller
     private function extractPhone(array $payload): ?string
     {
         return
-            data_get($payload, 'entry.0.changes.0.value.messages.0.from')
-            ?? data_get($payload, 'entry.0.changes.0.value.statuses.0.recipient_id');
+            data_get(
+                $payload,
+                'entry.0.changes.0.value.messages.0.from'
+            )
+            ?? data_get(
+                $payload,
+                'entry.0.changes.0.value.statuses.0.recipient_id'
+            );
     }
-
+    
     private function whatsappStatus(array $payload): ?string
-    {
-        return
-            data_get($payload, 'entry.0.changes.0.value.messages.0.from')
-            ?? data_get($payload, 'entry.0.changes.0.value.statuses.0.recipient_id');
-    }
-
-    private function extractText(array $payload): ?string
     {
         return data_get(
             $payload,
+            'entry.0.changes.0.value.statuses.0.status'
+        );
+    }
+    
+    private function extractText(array $payload): ?string
+    {
+        /*
+        Normal text message
+        */
+        $text = data_get(
+            $payload,
             'entry.0.changes.0.value.messages.0.text.body'
         );
+    
+        if (!empty($text)) {
+            return strtolower(trim($text));
+        }
+    
+        /*
+        Interactive button reply
+        */
+        $buttonId = data_get(
+            $payload,
+            'entry.0.changes.0.value.messages.0.interactive.button_reply.id'
+        );
+    
+        if ($buttonId === 'data_confirm_purchase') {
+            return 'yes';
+        }
+    
+        if ($buttonId === 'data_cancel_purchase') {
+            return 'no';
+        }
+    
+        return null;
     }
 
     public function receive(Request $request)
     {
 
-        /*
-        Incoming message
-        */
-        //OLD $phone = $message['from'] ?? null;
         $payload = $request->all();
+
         $phone = $this->extractPhone($payload);
         $text  = $this->extractText($payload);
-
-       
-
+    
+        logger(json_encode([
+            'phone' => $phone,
+            'text' => $text,
+            'status' => $this->whatsappStatus($payload),
+        ]));
+    
+        /*
+        Ignore delivery/read/sent webhooks
+        */
         if (empty($text) || empty($phone)) {
-
-            // logger('Ignoring non-message webhook', $request->all());
-        
+    
             return response()->json([
                 'ok' => true
             ]);
         }
 
-        logger(json_encode([
-            'phone' => $phone,
-            'text' => $text,
-        ]));
-
   
 
 
-        /*
-        Reset conversation
-        */
-        if ($text === 'start') {
-
+        $greetings = [
+            'start',
+        
+            // Standard
+            'hi',
+            'hello',
+            'hey',
+            'yo',
+            'howdy',
+        
+            // Nigerian
+            'sup',
+            'whatsup',
+            "what's up",
+            'how far',
+            'how you dey',
+            'how u dey',
+            'how body',
+            'wetin dey',
+        
+            // Yoruba
+            'bawo ni',
+            'eku',
+            'eku ojo',
+            'eku aro',
+            'sanu',
+            'pele',
+        
+            // Time-based
+            'good morning',
+            'good afternoon',
+            'good evening',
+        ];
+        
+            if (preg_match(
+                '/^(start|hi|hello|hey|yo|sup|whats?up|howdy|how far|how you dey|how u dey|how body|wetin dey|bawo ni|sanu|pele|good morning|good afternoon|good evening)$/i',
+                trim($text)
+            )) {
+        
             cache()->forget("wa_session:$phone");
-
+        
             app(Whatsappsender::class)->send(
                 $phone,
-                "Welcome to OresamSub 👋\n\nWhat would you like to buy today?"
+                "👋 Welcome to OresamSub\n\n"
+                . "I'm your personal vtu assistant.\n\n"
+                . "📶 Buy Data\n"
+                . "📞 Buy Airtime\n"
+                . "📋 Repeat Recent Purchases\n"
+                . "💰 Check Balance\n"
+                . "🆘 Get Support\n\n"
+                . "Try:\n"
+                . "• mtn 1gb weekly\n"
+                . "• glo 2 gb 3 days\n"
+                . "• airtime 1000 MTN\n"
+                . "• recent\n"
+                . "• buy again\n"
+                . "• fav\n"
+                . "• balance\n\n"
+                . "What would you like to do today?"
             );
-
+        
             return response()->json(['ok' => true]);
         }
 

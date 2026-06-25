@@ -36,4 +36,49 @@ class Whatsappsender
 
         return $response->json();
     }
+
+    public function sendConfirmationButtons(
+        string $phone,
+        string $message
+    )
+    {
+        $wconfig = WhatsappConfig::first();
+    
+        $url = "https://graph.facebook.com/v23.0/{$wconfig->phone_number_id}/messages";
+    
+        $payload = [
+            'messaging_product' => 'whatsapp',
+            'recipient_type' => 'individual',
+            'to' => $phone,
+            'type' => 'interactive',
+            'interactive' => [
+                'type' => 'button',
+                'body' => [
+                    'text' => $message,
+                ],
+                'action' => [
+                    'buttons' => [
+                        [
+                            'type' => 'reply',
+                            'reply' => [
+                                'id' => 'data_confirm_purchase',
+                                'title' => 'Confirm',
+                            ],
+                        ],
+                        [
+                            'type' => 'reply',
+                            'reply' => [
+                                'id' => 'data_cancel_purchase',
+                                'title' => 'Cancel',
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+        ];
+    
+        return Http::withToken($wconfig->token)
+            ->post($url, $payload)
+            ->json();
+    }
 }
