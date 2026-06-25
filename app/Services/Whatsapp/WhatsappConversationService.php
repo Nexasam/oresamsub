@@ -83,7 +83,8 @@ class WhatsappConversationService{
     
         public function handleDataPlanSelection(
             string $text,
-            array $session
+            array $session,
+            $phone
         ) {
             $option = (int) trim($text);
     
@@ -113,8 +114,14 @@ class WhatsappConversationService{
                 'intent_phone' => $intent['phone'] ?? null,
             ]));
     
+            // $user = app(WhatsappUserResolver::class)
+            //     ->resolve($intent['phone']);
+
             $user = app(WhatsappUserResolver::class)
-                ->resolve($intent['phone']);
+                ->resolve($phone);
+            logger(json_encode([
+                'DATA selection user' => $user,
+            ]));
     
             $dat = [
                 'product_id' => $plan->product_plan_category->product->id,
