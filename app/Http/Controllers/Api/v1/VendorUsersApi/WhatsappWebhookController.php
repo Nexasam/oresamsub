@@ -56,6 +56,8 @@ class WhatsappWebhookController extends Controller
         */
         if ($text === 'start') {
 
+               
+
             cache()->forget("wa_session:$phone");
 
             app(Whatsappsender::class)->send(
@@ -66,17 +68,23 @@ class WhatsappWebhookController extends Controller
             return response()->json(['ok' => true]);
         }
 
-        /*
-        Load whatsapp user
-        */
-        $user = app(WhatsappUserResolver::class)
-            ->resolve($phone);
-        logger('userrr: '.$user);
+       
+
+     
 
         /*
         Existing conversation?
         */
         $session = cache()->get("wa_session:$phone");
+
+         /*
+        Load whatsapp user
+        */
+
+        $user = app(WhatsappUserResolver::class)
+        ->resolve($phone);
+        logger('userrr: '.$user);
+
 
         $conversation = app(
             WhatsappConversationService::class
@@ -84,6 +92,7 @@ class WhatsappWebhookController extends Controller
 
         if ($session) {
 
+            logger('Lets see session content: '.$session);
             return match ($session['status']) {
 
                 'data_network_required'
