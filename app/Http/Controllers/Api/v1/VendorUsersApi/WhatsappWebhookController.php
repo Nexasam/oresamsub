@@ -117,12 +117,22 @@ class WhatsappWebhookController extends Controller
             'entry.0.changes.0.value.messages.0.interactive.button_reply.id'
         );
     
-        return [
+        return match ($buttonId) {
+
             'data_confirm_purchase' => 'yes',
-            'data_cancel_purchase'  => 'no',
-            'retry_purchase'        => 'yes',
-            'start_over'            => 'start',
-        ][$buttonId] ?? null;
+            'data_cancel_purchase' => 'no',
+        
+            'favorite_use_same_number'
+                => 'favorite_use_same_number',
+        
+            'favorite_change_number'
+                => 'favorite_change_number',
+        
+            'start_over'
+                => 'start',
+        
+            default => null,
+        };
     }
 
     private function extractPhoneFromContact(
@@ -253,7 +263,18 @@ class WhatsappWebhookController extends Controller
 
             // logger('Lets see session content: '.json_encode($session));
             return match ($session['status']) {
+                'favorite_phone_choice'
+                    => $conversation->handleFavoritePhoneChoice(
+                        $text,
+                        $session,
+                        $phone
+                    ),
 
+                'favorite_phone_required'
+                    => $conversation->handleFavoritePhoneInput(
+                        $text,
+                        $session
+                    ),
                 'data_network_required'
                     => $conversation->handleDataNetworkSelection(
                         $text,
