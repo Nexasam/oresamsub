@@ -273,9 +273,7 @@ class WhatsappConversationService{
         $result = app(\App\Http\Controllers\DataController::class)
             ->buy_data_action($request);
 
-        // clear session
-        cache()->forget("wa_session:$phone");
-
+            
         /*
         Convert response object → array
         */
@@ -287,16 +285,23 @@ class WhatsappConversationService{
         $status  = $data['status'] ?? -1;
         $message = $data['message'] ?? 'Transaction completed';
 
+
+    
+    
+
         /*
         Build WhatsApp message
         */
         if ((int)$status === 1) {
 
+                // clear session
+            cache()->forget("wa_session:$phone");
             $reply = "✅ Transaction Successful\n\n" . $message;
+
 
         } else {
 
-            $reply = "❌ Transaction Failed\n\n" . $message;
+            $reply = "❌ Transaction Failed...You can click YES to retry or START to do it all over again. \n\n" . $message;
         }
 
         /*
