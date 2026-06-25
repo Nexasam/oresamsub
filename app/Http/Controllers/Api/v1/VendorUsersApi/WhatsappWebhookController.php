@@ -42,14 +42,14 @@ class WhatsappWebhookController extends Controller
         $text = strtolower(trim($text));
 
         
-        if (!$phone || !$text) {
+        // if (!$phone || !$text) {
         
-            logger('Ignoring non-message webhook', $request->all());
+        //     logger('Ignoring non-message webhook', $request->all());
         
-            // return response()->json(['ok' => true]);
-        }
+        //     // return response()->json(['ok' => true]);
+        // }
 
-        logger('phone and text: '.$phone.'---'.$text);
+        // logger('phone and text: '.$phone.'---'.$text);
 
         /*
         Reset conversation

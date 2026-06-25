@@ -107,6 +107,11 @@ class WhatsappConversationService{
             $intent = $session['intent'];
     
             $intent['selected_plan_id'] = $planId;
+
+            logger(json_encode([
+                'intent' => $intent,
+                'intent_phone' => $intent['phone'] ?? null,
+            ]));
     
             $user = app(WhatsappUserResolver::class)
                 ->resolve($intent['phone']);
