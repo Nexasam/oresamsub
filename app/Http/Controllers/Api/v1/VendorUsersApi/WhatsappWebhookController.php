@@ -60,6 +60,15 @@ class WhatsappWebhookController extends Controller
             'text' => $text,
         ]));
 
+        if (empty($text)) {
+
+            logger('Ignoring non-message webhook', $request->all());
+        
+            return response()->json([
+                'ok' => true
+            ]);
+        }
+
   
 
 
