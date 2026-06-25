@@ -127,6 +127,9 @@ class WhatsappWebhookController extends Controller
         
             'favorite_change_number'
                 => 'favorite_change_number',
+
+            'save_contact_yes' => 'save_contact_yes',
+            'save_contact_no'  => 'save_contact_no',
         
             'start_over'
                 => 'start',
@@ -275,18 +278,20 @@ class WhatsappWebhookController extends Controller
 
             // logger('Lets see session content: '.json_encode($session));
             return match ($session['status']) {
-                // 'favorite_phone_choice'
-                //     => $conversation->handleFavoritePhoneChoice(
-                //         $text,
-                //         $session,
-                //         $phone
-                //     ),
+             
+                'contact_save_prompt'
+                => $conversation->handleSaveContactPrompt(
+                    $text,
+                    $session
+                ),
 
-                // 'favorite_phone_required'
-                //     => $conversation->handleFavoritePhoneInput(
-                //         $text,
-                //         $session
-                //     ),
+            'contact_name_required'
+                => $conversation->handleSaveContactName(
+                    $text,
+                    $session,
+                    $user
+                ),
+
                 'data_network_required'
                     => $conversation->handleDataNetworkSelection(
                         $text,

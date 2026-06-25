@@ -3,6 +3,7 @@ namespace App\Services\Whatsapp;
 
 use App\Http\Services\DataPlansService;
 use App\Models\ProductPlan;
+use App\Models\UserContact;
 use Illuminate\Http\Request;
 
 class WhatsappConversationService{
@@ -95,6 +96,8 @@ class WhatsappConversationService{
                 $session['whatsapp_phone']
             );
         }
+
+    
     
         public function handleDataPlanSelection(
             string $text,
@@ -331,9 +334,98 @@ class WhatsappConversationService{
         ]);
     }
 
+    public function handleSaveContactName(
+        string $text,
+        array $session,
+        $user
+    )
+    {
+        $name = trim($text);
     
+        if (strlen($name) < 3) {
     
-
+            app(Whatsappsender::class)->send(
+                $session['whatsapp_phone'],
+                "Please enter a valid contact name with atleast 3 characters."
+            );
+    
+            return response()->json(['ok' => true]);
+        }
+    
+        UserContact::updateOrCreate(
+            [
+                'user_id' => $user->id,
+                'phone_number' => $session['phone'],
+            ],
+            [
+                'name' => $name,
+                'network_id' => $session['network_id'] ?? null,
+                'product' => 'data',
+                'product_plan_id' => $session['product_plan_id'] ?? null,
+                'last_used_at' => now(),
+            ]
+        );
+    
+        cache()->forget(
+            "wa_session:{$session['whatsapp_phone']}"
+        );
+    
+        app(Whatsappsender::class)->sendStartButton(
+            $session['whatsapp_phone'],
+            "✅ Awesome. Contact Saved\n\n"
+            . "{$name}\n"
+            . "{$session['phone']}\n\n"
+            . "Next time you can simply choose this contact instead of typing the number again."
+        );
+    
+        return response()->json(['ok' => true]);
+    }
+    
+    public function handleSaveContactPrompt(
+        string $text,
+        array $session
+    )
+    {
+        if ($text === 'save_contact_no') {
+    
+            cache()->forget(
+                "wa_session:{$session['whatsapp_phone']}"
+            );
+    
+            app(Whatsappsender::class)->sendStartButton(
+                $session['whatsapp_phone'],
+                "👍 Alright.\n\nSee you again soon."
+            );
+    
+            return response()->json(['ok' => true]);
+        }
+    
+        if ($text !== 'save_contact_yes') {
+    
+            app(Whatsappsender::class)->sendSaveContactButtons(
+                $session['whatsapp_phone'],
+                "Would you like to save this number for future purchases?"
+            );
+    
+            return response()->json(['ok' => true]);
+        }
+    
+        cache()->put(
+            "wa_session:{$session['whatsapp_phone']}",
+            [
+                ...$session,
+                'status' => 'contact_name_required',
+            ],
+            now()->addMinutes(10)
+        );
+    
+        app(Whatsappsender::class)->send(
+            $session['whatsapp_phone'],
+            "💾 Great!\n\nWhat name would you like to save this contact as?\n\nExamples:\n• Mum\n• Dad\n• John"
+        );
+    
+        return response()->json(['ok' => true]);
+    }
     public function handleConfirmation(string $text, $user, array $session)
     {
 
@@ -415,18 +507,29 @@ class WhatsappConversationService{
             SUCCESS
             */
             if ($status === 1) {
-    
-                cache()->forget("wa_session:$chatPhone");
-    
-                $reply =
-                "🎉 Purchase Successful!\n\n"
-                . $message
-                . "\n\nThank you for choosing OresamSub 💙";
 
-               return response()->json(['ok' => true]);
-
-    
+                cache()->put(
+                    "wa_session:$chatPhone",
+                    [
+                        'status' => 'contact_save_prompt',
+                        'phone' => $session['phone'],
+                        'network_id' => $session['network_id'],
+                        'product_plan_id' => $session['product_plan_id'],
+                        'whatsapp_phone' => $chatPhone,
+                    ],
+                    now()->addMinutes(10)
+                );
+            
+                app(Whatsappsender::class)->sendSaveContactButtons(
+                    $chatPhone,
+                    "🎉 Purchase Successful!\n\n"
+                    . $message
+                    . "\n\nWould you like to save this number for future purchases?"
+                );
+            
+                return response()->json(['ok' => true]);
             }
+            
             /*
             FAILED / REFUNDED / ISSUE FOUND
             */
