@@ -496,6 +496,9 @@ class DataController extends Controller
         $remaining_slots = NULL;
         $upline_commission = 0;
 
+        $user_details = auth()->user() ?? $request->user;
+
+
         $dat = [];
 
         // if(auth()->user()->email == 'oreofe@gmail.com'){
@@ -522,7 +525,7 @@ class DataController extends Controller
             $product_plan_id = $plan_details->id;
             // $user_plan_id = auth()->user()->user_plan_id;
             // $user_level = UserPlan::select('plan_level')->where('id',$user_plan_id)->first();
-            $plan_level = auth()->user()->user_plan->plan_level ?? 1;
+            $plan_level = $user_details->user_plan->plan_level ?? 1;
             // $plan_level = $user_level->plan_level;
             $user_plan_selling_price = 'user_level_'.$plan_level.'_selling_price';
             $amount = abs($plan_details->$user_plan_selling_price); 
@@ -531,7 +534,6 @@ class DataController extends Controller
 
 
    
-        $user_details = auth()->user();
         if(! $user_details){
             //end session and redirect to login
             redirect(url('/login'));
@@ -586,7 +588,7 @@ class DataController extends Controller
             
             UserContact::firstOrCreate(
                 [
-                    'user_id' => auth()->id(),
+                    'user_id' =>$user_details->id,
                     'phone_number' => $contactData['phone_number'],
                 ],
                 [
