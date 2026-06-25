@@ -92,7 +92,7 @@ class WhatsappWebhookController extends Controller
 
         if ($session) {
 
-            logger('Lets see session content: '.$session);
+            logger('Lets see session content: '.json_encode($session));
             return match ($session['status']) {
 
                 'data_network_required'
