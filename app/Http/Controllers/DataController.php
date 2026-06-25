@@ -461,7 +461,7 @@ class DataController extends Controller
         $validator = Validator::make($request->all(), [
             'network_id' => 'required',
             'phone_number' => 'required',
-            'user' => 'nullablee', #for whatsapp users
+            'user' => 'nullable', #for whatsapp users
             'product_plan_category_id' => 'nullable', #watchh, changed 4th aug. 25
             'product_plan_id' => 'required',
             'pin' => ['required','regex:/^\d{4,5}$/'],
