@@ -41,6 +41,8 @@ class WhatsappWebhookController extends Controller
 
         $text = strtolower(trim($text));
 
+        logger('phone and text: '.$phone.'---'.$text);
+
         /*
         Reset conversation
         */
