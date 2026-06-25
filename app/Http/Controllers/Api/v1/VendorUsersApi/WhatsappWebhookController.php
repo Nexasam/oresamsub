@@ -29,48 +29,38 @@ class WhatsappWebhookController extends Controller
            ]);
     }
 
+    private function extractPhone(array $payload): ?string
+    {
+        return
+            data_get($payload, 'entry.0.changes.0.value.messages.0.from')
+            ?? data_get($payload, 'entry.0.changes.0.value.statuses.0.recipient_id');
+    }
+
+    private function extractText(array $payload): ?string
+    {
+        return data_get(
+            $payload,
+            'entry.0.changes.0.value.messages.0.text.body'
+        );
+    }
+
     public function receive(Request $request)
     {
-        // $phone = $request->input(
-        //     'entry.0.changes.0.value.messages.0.from'
-        // );
-
-        // $text = $request->input(
-        //     'entry.0.changes.0.value.messages.0.text.body'
-        // );
-
-        // $text = strtolower(trim($text));
-
-         /*
-        Ignore status/delivery/read webhooks
-        */
-        $message = data_get(
-            $request->all(),
-            'entry.0.changes.0.value.messages.0'
-        );
-
-        $phonesent = true;
-
-
-        if (!$message) {
-
-            logger('Ignoring non-message webhook');
-            $phonesent = false;
-
-            // return response()->json([
-            //     'ok' => true
-            // ]);
-        }
 
         /*
         Incoming message
         */
-        $phone = $message['from'] ?? null;
-        $text  = strtolower(
-            trim($message['text']['body'] ?? '')
-        );
+        //OLD $phone = $message['from'] ?? null;
+        $payload = $request->all();
+        $phone = $this->extractPhone($payload);
+        $text  = $this->extractText($payload);
 
-        logger("phone and text: {$phone}---{$text}");
+        logger(json_encode([
+            'phone' => $phone,
+            'text' => $text,
+        ]));
+
+  
 
 
         /*
@@ -159,6 +149,7 @@ class WhatsappWebhookController extends Controller
                 ]),
             };
         }
+
 
 
     
