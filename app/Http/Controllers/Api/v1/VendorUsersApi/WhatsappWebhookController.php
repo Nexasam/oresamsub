@@ -49,7 +49,7 @@ class WhatsappWebhookController extends Controller
         //     // return response()->json(['ok' => true]);
         // }
 
-        // logger('phone and text: '.$phone.'---'.$text);
+        logger('phone and text: '.$phone.'---'.$text);
 
         /*
         Reset conversation
