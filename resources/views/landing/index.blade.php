@@ -537,7 +537,8 @@
     </div>
 
     <!-- ABOUT -->
-    <section id="about">
+    {{-- old --}}
+    {{-- <section id="about">
         <div class="container">
             <div class="row align-items-center g-5">
                 <div class="col-lg-6">
@@ -557,6 +558,74 @@
                         <a href="{{ url('/register') }}" class="btn btn-brand mt-3">{{ __('messages.Get Started') }}</a>
                     </div>
                 </div>
+            </div>
+        </div>
+    </section> --}}
+
+    <!-- ABOUT -->
+    <section id="about">
+        <div class="container">
+            <div class="row align-items-center g-5">
+
+                <div class="col-lg-6">
+                    @if (isset($aboutus_image))
+                        <img src="{{ asset(env('APP_ASSETS_BASE_URL').'landing_page_assets/img/aboutus_image/'.$aboutus_image) }}"
+                            alt="About OresamSub"
+                            style="width:100%;border-radius:14px;object-fit:cover;max-height:440px;box-shadow:0 12px 40px rgba(0,0,0,0.12);">
+                    @else
+                        <img src="{{ asset(env('APP_ASSETS_BASE_URL').'img/authentication/auth11.jpg') }}"
+                            alt="About OresamSub"
+                            style="width:100%;border-radius:14px;object-fit:cover;max-height:440px;box-shadow:0 12px 40px rgba(0,0,0,0.12);">
+                    @endif
+                </div>
+
+                <div class="col-lg-6">
+                    <div class="about-card">
+
+                        <h6>About OresamSub</h6>
+
+                        <h1>
+                            Reliable Digital Services for Everyday Needs
+                        </h1>
+
+                        <p>
+                            OresamSub is a digital services platform operated by
+                            <strong>Oresam Telecoms Global Concept</strong>,
+                            dedicated to providing fast, secure, and affordable access
+                            to essential digital services across Nigeria.
+                        </p>
+
+                        <p>
+                            We make it easy for individuals, businesses, and agents
+                            to purchase airtime, subscribe to mobile data plans,
+                            pay electricity bills, renew cable TV subscriptions,
+                            and access other value-added services from a single platform.
+                        </p>
+
+                        <p>
+                            Our mission is to simplify digital transactions by
+                            delivering reliable services, competitive pricing,
+                            and excellent customer support. We leverage trusted
+                            technology and partnerships with leading service providers
+                            to ensure seamless transaction processing and a smooth
+                            user experience.
+                        </p>
+
+                        <p>
+                            At OresamSub, customer satisfaction, transparency,
+                            and security remain at the core of everything we do.
+                            Whether you're purchasing data for personal use or
+                            managing transactions as a reseller, we are committed
+                            to providing a dependable platform you can trust.
+                        </p>
+
+                        <a href="{{ url('/register') }}" class="btn btn-brand mt-3">
+                            Get Started
+                        </a>
+
+                    </div>
+                </div>
+
             </div>
         </div>
     </section>
@@ -865,48 +934,55 @@
         </div>
     </footer> --}}
 
-    <footer class="bg-gray-900 text-white py-10">
-        <div class="container mx-auto px-4 text-center">
+    <footer style="background:#111827;padding:40px 0;color:#fff;">
+        <div class="container text-center">
     
-            <p class="font-semibold">
-                OresamSub
-            </p>
     
-            {{-- <p class="text-sm text-gray-400 mt-2">
-                Operated by Oresam Telecoms Global Concept
-            </p> --}}
+        <p style="font-weight:600;color:#fff;">
+            OresamSub
+        </p>
     
-            <div class="mt-4 flex justify-center gap-4">
+        <div class="mt-4 d-flex justify-content-center flex-wrap gap-3">
     
-                <a href="mailto:info@oresamsub.com"
-                   class="text-gray-400 hover:text-white ">
-                    Email Us
-                </a>
+            <a href="mailto:info@oresamsub.com"
+               style="color:#cbd5e1;text-decoration:none;">
+                Email Us
+            </a>
     
-                <span>|</span>
+            <span style="color:#94a3b8;">|</span>
     
-                <a href="https://wa.me/2348168509044?text=Hello%20OresamSub,%20I%20need%20assistance"
-                   target="_blank"
-                   class=" hover:text-green-300  text-gray-400">
-                    WhatsApp Support
-                </a>
+            <a href="https://wa.me/2348168509044?text=Hello%20OresamSub,%20I%20need%20assistance"
+               target="_blank"
+               style="color:#22c55e;text-decoration:none;">
+                WhatsApp Support
+            </a>
     
-                <span>|</span>
+            <span style="color:#94a3b8;">|</span>
     
-                <a href="{{ route('privacy.policy') }}"
-                   class=" hover:text-white text-gray-400">
-                    Privacy Policy
-                </a>
+            <a href="{{ route('privacy.policy') }}"
+               style="color:#cbd5e1;text-decoration:none;">
+                Privacy Policy
+            </a>
     
-            </div>
+            <span style="color:#94a3b8;">|</span>
     
-            <p class="text-sm text-gray-400 mt-4">
-                © {{ date('Y') }} Oresam Telecoms Global Concept.
-                All rights reserved.
-            </p>
+            <a href="{{ route('terms.conditions') }}"
+               style="color:#cbd5e1;text-decoration:none;">
+                Terms & Conditions
+            </a>
     
         </div>
+    
+        <p style="color:#94a3b8;font-size:14px;margin-top:20px;">
+            © {{ date('Y') }} Oresam Telecoms Global Concept.
+            All rights reserved.
+        </p>
+    
+    </div>
+
+    
     </footer>
+    
 
     <!-- Scripts -->
     <script src="{{ asset(env('APP_ASSETS_BASE_URL').'landing_page_assets/js/bootstrap.bundle.min.js') }}"></script>
