@@ -3,21 +3,22 @@
 namespace App\Services\Automation;
 
 use App\Models\ProductPlan;
-use App\Services\Utils\UtilService;
 use App\Models\VendorAutomationSetting;
+use App\Services\Automation\AirtimeAutomation;
 use App\Services\Automation\DataAutomation;
-use App\Services\Automation\VtpassAutomation;
-use App\Services\Automation\SmeplugAutomation;
-use App\Services\Automation\Twins10Automation;
-use App\Services\Automation\PaultechsAutomation;
-use App\Services\Automation\Nine9javtuAutomation;
 use App\Services\Automation\DirectCouponAutomation;
 use App\Services\Automation\MegaSubPlugAutomation\MegaSubCableTV;
-use App\Services\Automation\MegaSubPlugAutomation\MegaSubVendData;
 use App\Services\Automation\MegaSubPlugAutomation\MegaSubElectricity;
 use App\Services\Automation\MegaSubPlugAutomation\MegaSubVendAirtime;
-use App\Services\Automation\MsOrgGroupAutomation\SimserverAutomation;
+use App\Services\Automation\MegaSubPlugAutomation\MegaSubVendData;
 use App\Services\Automation\MsOrgGroupAutomation\MsOrgGroupAutomation;
+use App\Services\Automation\MsOrgGroupAutomation\SimserverAutomation;
+use App\Services\Automation\Nine9javtuAutomation;
+use App\Services\Automation\PaultechsAutomation;
+use App\Services\Automation\SmeplugAutomation;
+use App\Services\Automation\Twins10Automation;
+use App\Services\Automation\VtpassAutomation;
+use App\Services\Utils\UtilService;
 
 class AutomationLogic{
 
@@ -397,10 +398,12 @@ class AutomationLogic{
             $data['mobile_number'] = $validated_phone_number;
             $buy_airtime = (new MsOrgGroupAutomation($data))->buyAirtime();
         }
-        // else if($automation_details->slug == 'simserver'){
-        //     $data['mobile_number'] = $validated_phone_number;
-        //     $buy_airtime = (new SimserverAutomation($data))->buyAirtime();
-        // }
+        else if($automation_details->slug == 'simserver'){
+            $data['mobile_number'] = $validated_phone_number;
+            $reference = uniqid('simserver_');
+            $buy_airtime = (new AirtimeAutomation())->buySimServerAirtime($automation_details,$validated_phone_number,$amount,$product_plan_id, true, $reference);
+             logger('simserverrr ran: '.json_encode($buy_airtime));
+        }
         else if($automation_details->slug == 'smeplug'){
             // logger('smeplug ran: '.json_encode($data));
             $buy_airtime = (new SmeplugAutomation($data))->buyAirtime();
