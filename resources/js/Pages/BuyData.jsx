@@ -196,7 +196,7 @@ export default function BuyData() {
                 border-radius:10px;
                 margin-top:10px;
               ">
-                <p><strong>Network:</strong> ${selectedPlan.product_name}</p>
+                <p><strong>Network:</strong> ${selectedNetwork?.network_name ?? "N/A"}</p>
                 <p><strong>Plan:</strong> ${selectedPlan.product_plan_name}</p>
                 <p><strong>Amount:</strong> ₦${Number(
                   selectedPlan.selling_price
@@ -213,7 +213,6 @@ export default function BuyData() {
           showCancelButton: true,
           confirmButtonText: "Proceed with Purchase",
           cancelButtonText: "Cancel",
-          confirmButtonColor: "#059669",
         });
       
         if (!result.isConfirmed) return;
