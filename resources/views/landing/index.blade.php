@@ -462,9 +462,10 @@
                     <li class="nav-item">
                         <a class="nav-link" href="#services">{{ __('messages.Services') }}</a>
                     </li>
-                  <!--  <li class="nav-item">
-                        <a class="nav-link" href="#reviews">{{ __('messages.Testimonials') }}</a>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#contact">Contact</a>
                     </li>
+               
 
                     <!-- Language Switcher -->
                     <li class="nav-item position-relative" x-data="{ open: false }">
@@ -875,8 +876,33 @@
                 Operated by Oresam Telecoms Global Concept
             </p>
     
-            <p class="text-sm text-gray-400 mt-1">
-                © {{ date('Y') }} Oresam Telecoms Global Concept. All rights reserved.
+            <div class="mt-4 flex justify-center gap-4">
+    
+                <a href="mailto:info@oresamsub.com"
+                   class="text-gray-300 hover:text-white">
+                    Email Us
+                </a>
+    
+                <span>|</span>
+    
+                <a href="https://wa.me/2348168509044?text=Hello%20OresamSub,%20I%20need%20assistance"
+                   target="_blank"
+                   class="text-green-400 hover:text-green-300">
+                    WhatsApp Support
+                </a>
+    
+                <span>|</span>
+    
+                <a href="{{ route('privacy.policy') }}"
+                   class="text-gray-300 hover:text-white">
+                    Privacy Policy
+                </a>
+    
+            </div>
+    
+            <p class="text-sm text-gray-400 mt-4">
+                © {{ date('Y') }} Oresam Telecoms Global Concept.
+                All rights reserved.
             </p>
     
         </div>
