@@ -88,7 +88,7 @@ class ComputeReferralCommission extends Command
                         }
                     }
                 }else{
-                    logger('no commissions recorded');
+                    // logger('no commissions recorded');
                 }
        
 

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Http\Services\DataPlansService;
+use App\Http\Services\VirtualAccountService;
 use App\Models\AdminColorSetting;
 use App\Models\Announcement;
 use App\Models\BulkDataProductPlans;
@@ -34,10 +35,12 @@ class UserDashboardController extends Controller
  
   public function index(Request $request){
 
-      
+    
+   
     $template = SiteTemplate::first();
 
     $userid = auth()->id();
+    $user = auth()->user();
     $commissionData = null;
 
 
@@ -52,6 +55,8 @@ class UserDashboardController extends Controller
     $product_plan = $request->product_plan;
     $date_from = $request->date_from;
     $date_to = $request->date_to;
+
+
 
 
 
@@ -110,6 +115,16 @@ class UserDashboardController extends Controller
         // ->limit(25)
         // ->latest()
         // ->get();
+
+
+        // $dataaa['user'] = $user;
+        // $va = (new VirtualAccountService())->generate_accounts($dataaa);
+        // if($va['status'] == 1){
+        //     logger('account generated for '.$user->username);
+        // }else{
+        //     logger('account generated for asd'.$user->username);
+
+        // }
 
          // if (auth()->user()->email === 'oreofe@gmail.com') {
             // logger('thiss ran for comss');

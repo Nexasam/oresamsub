@@ -527,9 +527,9 @@ class WhatsappConversationService{
             'whatsapp_phone' => $session['whatsapp_phone'],
             'phone' => $recipientPhone,
             'price' => $price,
-            'intent' => [
-                'selected_plan_id' => $planId,
-            ],
+            // 'intent' => [
+            //     'selected_plan_id' => $planId,
+            // ],
             'message' =>
                 "Confirm Purchase\n\n"
                 . "{$plan->product_plan_name}\n"

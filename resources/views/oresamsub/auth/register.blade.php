@@ -130,10 +130,10 @@
         <select name="transaction_volume"
           class="w-full px-4 py-2 rounded-lg bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600">
           <option value="">Select</option>
-          <option>100 - 199</option>
-          <option>200 - 999</option>
-          <option>1000 - 4999</option>
-          <option>5000+</option>
+          <option value="100_199">100 - 199</option>
+          <option value="200_999">200 - 999</option>
+          <option value="1000_4999">1000 - 4999</option>
+          <option value="5000+">5000+</option>
         </select>
       </div>
     </div>

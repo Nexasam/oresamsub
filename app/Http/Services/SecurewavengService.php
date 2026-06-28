@@ -21,8 +21,8 @@ class SecurewavengService{
     
         $funding_option = FundingOption::where('slug','securewaveng')->first();
         if(! $funding_option){
-            // logger('na here oh');
-            exit;
+            logger('na here oh');
+            // exit;
         }
         $api_secret_key = $funding_option->api_secret_key;
         $api_public_key = $funding_option->api_public_key;
@@ -35,7 +35,7 @@ class SecurewavengService{
         ->where('funding_option_id',$funding_option->id)
         ->pluck('bank_code')->toArray();
         if(! $bank_codes){
-            // logger('na here oh2');
+            logger('na here oh2');
             exit;
         }
     

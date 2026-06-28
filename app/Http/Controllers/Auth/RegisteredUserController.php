@@ -166,6 +166,8 @@ class RegisteredUserController extends Controller
 
      public function store2(Request $request): RedirectResponse
     {
+
+        logger('reg payloa:'.json_encode($request->all()));
         // 1. Validate input
         $validated = $request->validate([
             'username' => ['required', 'string', 'unique:users,username'],
@@ -206,12 +208,13 @@ class RegisteredUserController extends Controller
         $roleId = Role::where('role_name', 'User')->value('id');
 
         if($request->usage == 'Personal'){
-            $defaultPlanId = UserPlan::where('is_default', 1)->value('id');
+            $defaultPlanId = UserPlan::where('is_default', 4)->value('id');
 
         }else{
             //for business: if after a whhile no show, we downgrade the customer
-            $defaultPlanId = UserPlan::where('plan_level', 3)->value('id');
+            $defaultPlanId = UserPlan::where('plan_level', 4)->value('id');
         }
+
 
 
         // 6. Create user
@@ -233,6 +236,12 @@ class RegisteredUserController extends Controller
 
         // 7. Dispatch event
         // event(new Registered($user));
+
+        // $dataaa['user'] = $user;
+        // $va = (new VirtualAccountService())->generate_accounts($dataaa);
+        // if($va['status'] == 1){
+        //     logger('account generated for '.$request->fullname);
+        // }
 
         // 8. Login and redirect
         Auth::login($user);
