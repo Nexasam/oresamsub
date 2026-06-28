@@ -431,8 +431,8 @@ export default function Dashboard({ transactions: initialTransactions }) {
               <span>Message:</span> <br />
 
               <span className="font-semibold">
-                {selectedTx.status !== 1
-                  ? "Transaction was not successful"+selectedTx.status+'bb'
+                {selectedTx.status != 1
+                  ? "Transaction was not successful"
                   : selectedTx.user_screen_message}
               </span>
             </div>
