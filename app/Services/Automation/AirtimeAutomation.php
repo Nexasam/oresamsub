@@ -320,7 +320,7 @@ class AirtimeAutomation{
         }        
     }
 
-    public function buyBilinkServerAirtime($vendor_record = null,$input_phone_number = '',$amount,$vendor_plan_id,$ported_number = true, $reference){
+    public function buyBilinkAirtime($vendor_record = null,$input_phone_number = '',$amount,$vendor_plan_id,$ported_number = true, $reference){
         
         $plan_details = ProductPlan::with('product_plan_category.network')
         ->where('visibility',1)
@@ -352,13 +352,12 @@ class AirtimeAutomation{
         ];
 
         $encoded_array = json_encode($array);
-        logger('sim Encoded arr: '.$encoded_array);
         $header_array = array(
             'Authorization: Bearer '.$vendor_record->api_public_key,
             'Content-Type: application/json'
         );
         $header_json = json_encode($header_array);
-        logger('sim header: '.$header_json);
+      
 
         $curl = curl_init();
         curl_setopt_array(

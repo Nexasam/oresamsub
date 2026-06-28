@@ -407,7 +407,7 @@ class AutomationLogic{
         else if($automation_details->slug == 'bilink'){
             $data['mobile_number'] = $validated_phone_number;
             $reference = uniqid('bilink_');
-            $buy_airtime = (new AirtimeAutomation())->buyBilinkServerAirtime($automation_details,$validated_phone_number,$amount,$product_plan_id, true, $reference);
+            $buy_airtime = (new AirtimeAutomation())->buyBilinkAirtime($automation_details,$validated_phone_number,$amount,$product_plan_id, true, $reference);
              logger('bilink ran: '.json_encode($buy_airtime));
         }
         else if($automation_details->slug == 'smeplug'){
