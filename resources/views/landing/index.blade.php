@@ -879,7 +879,7 @@
             <div class="mt-4 flex justify-center gap-4">
     
                 <a href="mailto:info@oresamsub.com"
-                   class="text-gray-300 hover:text-white text-gray-400">
+                   class="text-gray-400 hover:text-white ">
                     Email Us
                 </a>
     
@@ -887,14 +887,14 @@
     
                 <a href="https://wa.me/2348168509044?text=Hello%20OresamSub,%20I%20need%20assistance"
                    target="_blank"
-                   class="text-green-400 hover:text-green-300  text-gray-400">
+                   class=" hover:text-green-300  text-gray-400">
                     WhatsApp Support
                 </a>
     
                 <span>|</span>
     
                 <a href="{{ route('privacy.policy') }}"
-                   class="text-gray-300 hover:text-white text-gray-400">
+                   class=" hover:text-white text-gray-400">
                     Privacy Policy
                 </a>
     
