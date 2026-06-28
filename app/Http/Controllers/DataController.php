@@ -1115,37 +1115,46 @@ class DataController extends Controller
             $plan   = $plan_details->product_plan_name; // plan name
 
             // Encode for URL safety
-            $waMessage = urlencode("Hello Support, please help me process this transaction: {$plan} for {$number}");
-
-            // Build message with HEREDOC
-            $messageeeee = <<<HTML
-            <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; text-align: center;">
-                <p style="font-size: 16px; margin-bottom: 12px;">
-                    Your transaction was <strong>not successful</strong> and has been <strong>automatically refunded</strong>.
-                </p>
-                <!-- <p style="font-size: 15px; margin-bottom: 16px;">
-                    If you’d like, our support team can help you process this transaction manually.
-                </p> -->
-                <a href="https://wa.me/2348168509044?text={$waMessage}"
-                target="_blank"
-                style="display: inline-block; padding: 12px 20px; background-color: #16a34a; color: #fff; font-size: 15px; 
-                        border-radius: 8px; text-decoration: none; font-weight: bold; box-shadow: 0 2px 6px rgba(0,0,0,0.15);">
-                    💬 Contact Support to process manually
-                </a>
-            </div>
-            HTML;
+            // $waMessage = urlencode("Hello Support, please help me process this transaction: {$plan} for {$number}");
+            // // Build message with HEREDOC
+            // $messageeeee = <<<HTML
+            // <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; text-align: center;">
+            //     <p style="font-size: 16px; margin-bottom: 12px;">
+            //         Your transaction was <strong>not successful</strong> and has been <strong>automatically refunded</strong>.
+            //     </p>
+            //     <!-- <p style="font-size: 15px; margin-bottom: 16px;">
+            //         If you’d like, our support team can help you process this transaction manually.
+            //     </p> -->
+            //     <a href="https://wa.me/2348168509044?text={$waMessage}"
+            //     target="_blank"
+            //     style="display: inline-block; padding: 12px 20px; background-color: #16a34a; color: #fff; font-size: 15px; 
+            //             border-radius: 8px; text-decoration: none; font-weight: bold; box-shadow: 0 2px 6px rgba(0,0,0,0.15);">
+            //         💬 Contact Support to process manually
+            //     </a>
+            // </div>
+            // HTML;
         
 
             //no automation went through: it means, refund, no processing
+            // return [
+            //     'status' => 2,
+            //     'set_for_manual' => 0,
+            //     'case_critical' => 0,
+            //     'retry_count' => 50,//for refund code
+            //     'user_message' => $messageeeee,
+            //     'admin_message' => $sell_data['admin_message'] ?? 'Transaction failed...could not be processed' ,
+            //     'plan_id' => $get_associated_plan->id, //this will be the last tried automation
+            // ];
             return [
                 'status' => 2,
                 'set_for_manual' => 0,
                 'case_critical' => 0,
-                'retry_count' => 50,//for refund code
-                'user_message' => $messageeeee,
-                'admin_message' => $sell_data['admin_message'] ?? 'Transaction failed...could not be processed' ,
-                'plan_id' => $get_associated_plan->id, //this will be the last tried automation
+                'retry_count' => 50, // refund trigger
+                'user_message' => 'We were unable to process your transaction at this time. Your wallet has been refunded.',
+                'admin_message' => $sell_data['admin_message'] ?? 'Transaction failed and was refunded.',
+                'plan_id' => $get_associated_plan->id,
             ];
+
         }      
 
     }

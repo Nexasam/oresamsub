@@ -171,20 +171,49 @@ export default function BuyData() {
 
       
         // 🔹 Purchase confirmation modal
+        // const result = await Swal.fire({
+        //    title: "Confirm Purchase",
+        //     html: `
+        //       Are you sure you want to purchase 
+        //       <b>${selectedPlan.product_plan_name}</b> 
+        //       for <b>₦${Number(selectedPlan.selling_price).toLocaleString("en-NG")}</b> 
+        //       to <b>${data.phone_number}</b>?
+        //     `,
+        //     icon: "question",
+        //     showCancelButton: true,
+        //     confirmButtonText: "Yes, Buy Now ✅",
+        //     cancelButtonText: "Cancel ❌",
+        //     confirmButtonColor: "#059669",
+        //     cancelButtonColor: "#d33",
+        // });
         const result = await Swal.fire({
-           title: "Confirm Purchase",
-            html: `
-              Are you sure you want to purchase 
-              <b>${selectedPlan.product_plan_name}</b> 
-              for <b>₦${Number(selectedPlan.selling_price).toLocaleString("en-NG")}</b> 
-              to <b>${data.phone_number}</b>?
-            `,
-            icon: "question",
-            showCancelButton: true,
-            confirmButtonText: "Yes, Buy Now ✅",
-            cancelButtonText: "Cancel ❌",
-            confirmButtonColor: "#059669",
-            cancelButtonColor: "#d33",
+          title: "Confirm Purchase",
+          html: `
+            <div style="text-align:left">
+              <div style="
+                background:#f8fafc;
+                padding:14px;
+                border-radius:10px;
+                margin-top:10px;
+              ">
+                <p><strong>Network:</strong> ${selectedPlan.product_name}</p>
+                <p><strong>Plan:</strong> ${selectedPlan.product_plan_name}</p>
+                <p><strong>Amount:</strong> ₦${Number(
+                  selectedPlan.selling_price
+                ).toLocaleString("en-NG")}</p>
+                <p><strong>Phone Number:</strong> ${data.phone_number}</p>
+              </div>
+        
+              <p style="margin-top:12px;">
+                Please confirm the details above before proceeding.
+              </p>
+            </div>
+          `,
+          icon: "question",
+          showCancelButton: true,
+          confirmButtonText: "Proceed with Purchase",
+          cancelButtonText: "Cancel",
+          confirmButtonColor: "#059669",
         });
       
         if (!result.isConfirmed) return;
@@ -202,7 +231,43 @@ export default function BuyData() {
             await Swal.fire("✅ Success", response.data.message, "success");
             window.location.reload();
           } else {
-            Swal.fire("⚠️ Failed", response.data.message, "error");
+            // Swal.fire("⚠️ Failed", response.data.message, "error");
+            const phoneNumber = data.phone_number;
+            const planName = selectedPlan.product_plan_name;
+
+            const waMessage = encodeURIComponent(
+              `Hello Support, please help me process this transaction: ${planName} for ${phoneNumber}`
+            );
+
+            Swal.fire({
+              icon: "warning",
+              title: "Transaction Not Completed",
+              html: `
+                <p style="margin-bottom:12px;">
+                  ${response.data.message}
+                </p>
+
+                <p style="margin-bottom:15px;">
+                  If you'd like, our support team can help process this transaction manually.
+                </p>
+
+                <a
+                  href="https://wa.me/2348168509044?text=${waMessage}"
+                  target="_blank"
+                  style="
+                    display:inline-block;
+                    background:#16a34a;
+                    color:white;
+                    padding:10px 16px;
+                    border-radius:8px;
+                    text-decoration:none;
+                    font-weight:600;
+                  "
+                >
+                  💬 Contact Support
+                </a>
+              `,
+            });
           }
         } catch (error) {
           console.error("Error submitting form:", error);
