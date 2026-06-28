@@ -813,7 +813,7 @@
                         <div class="contact-icon" style="background:#25d366;"><i class='bx bxl-whatsapp'></i></div>
                         <div>
                             <h6>WhatsApp</h6>
-                            <a href="https://api.whatsapp.com/send?phone={{ $support_whatsapp_number }}&text=Hello,%20Please%20I%20need%20help%20on%20your%20website" target="_blank">
+                            <a href="https://api.whatsapp.com/send?phone=2348168509044&text=Hello,%20Please%20I%20need%20help%20on%20your%20website" target="_blank">
                                 {{ __('messages.Reach us on whatsapp by') }} clicking this link
                             </a>
                         </div>
@@ -872,14 +872,14 @@
                 OresamSub
             </p>
     
-            <p class="text-sm text-gray-400 mt-2">
+            {{-- <p class="text-sm text-gray-400 mt-2">
                 Operated by Oresam Telecoms Global Concept
-            </p>
+            </p> --}}
     
             <div class="mt-4 flex justify-center gap-4">
     
                 <a href="mailto:info@oresamsub.com"
-                   class="text-gray-300 hover:text-white">
+                   class="text-gray-300 hover:text-white text-gray-400">
                     Email Us
                 </a>
     
@@ -887,14 +887,14 @@
     
                 <a href="https://wa.me/2348168509044?text=Hello%20OresamSub,%20I%20need%20assistance"
                    target="_blank"
-                   class="text-green-400 hover:text-green-300">
+                   class="text-green-400 hover:text-green-300  text-gray-400">
                     WhatsApp Support
                 </a>
     
                 <span>|</span>
     
                 <a href="{{ route('privacy.policy') }}"
-                   class="text-gray-300 hover:text-white">
+                   class="text-gray-300 hover:text-white text-gray-400">
                     Privacy Policy
                 </a>
     
