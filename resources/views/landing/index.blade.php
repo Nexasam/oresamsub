@@ -835,7 +835,7 @@
 
     <!-- FOOTER -->
     <footer>
-        <div class="container">
+        {{-- <div class="container">
             <div class="row align-items-center justify-content-between gy-3">
                 <div class="col-auto">
                     @if ($logo != 'nil')
@@ -861,6 +861,24 @@
                     {{ __('messages.All rights reserved') }}
                 </p>
             </div>
+        </div>
+    </footer> --}}
+
+    <footer class="bg-gray-900 text-white py-10">
+        <div class="container mx-auto px-4 text-center">
+    
+            <p class="font-semibold">
+                OresamSub
+            </p>
+    
+            <p class="text-sm text-gray-400 mt-2">
+                Operated by Oresam Telecoms Global Concept
+            </p>
+    
+            <p class="text-sm text-gray-400 mt-1">
+                © {{ date('Y') }} Oresam Telecoms Global Concept. All rights reserved.
+            </p>
+    
         </div>
     </footer>
 
