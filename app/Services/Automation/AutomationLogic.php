@@ -404,6 +404,12 @@ class AutomationLogic{
             $buy_airtime = (new AirtimeAutomation())->buySimServerAirtime($automation_details,$validated_phone_number,$amount,$product_plan_id, true, $reference);
              logger('simserverrr ran: '.json_encode($buy_airtime));
         }
+        else if($automation_details->slug == 'bilink'){
+            $data['mobile_number'] = $validated_phone_number;
+            $reference = uniqid('bilink_');
+            $buy_airtime = (new AirtimeAutomation())->buyBilinkServerAirtime($automation_details,$validated_phone_number,$amount,$product_plan_id, true, $reference);
+             logger('bilink ran: '.json_encode($buy_airtime));
+        }
         else if($automation_details->slug == 'smeplug'){
             // logger('smeplug ran: '.json_encode($data));
             $buy_airtime = (new SmeplugAutomation($data))->buyAirtime();
