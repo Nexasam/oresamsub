@@ -966,7 +966,7 @@
     
             <span style="color:#94a3b8;">|</span>
     
-            <a href="{{ route('terms.conditions') }}"
+            <a href="{{ route('terms') }}"
                style="color:#cbd5e1;text-decoration:none;">
                 Terms & Conditions
             </a>
