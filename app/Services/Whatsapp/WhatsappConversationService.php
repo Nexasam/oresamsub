@@ -280,7 +280,7 @@ class WhatsappConversationService{
 
 
             public function showDataConfirmation(
-                int $planId,
+                 $planId,
                 string $phoneNumber,
                 string $whatsappPhone,
                 array $intent
