@@ -184,6 +184,7 @@ class WhatsappIntentResolver
             ];
         }
 
+
         $plans = $this->findMatchingPlans($intent);
 
         if ($plans->isEmpty()) {

@@ -439,77 +439,7 @@ class WhatsappWebhookController extends Controller
         return response()->json(['success' => true]);
     }
 
-    public function receivenewold(Request $request)
-    {
-        $phone = $request->input('entry.0.changes.0.value.messages.0.from');
-        $text  = $request->input('entry.0.changes.0.value.messages.0.text.body');
-    
-        $text = strtolower(trim($text)); #customer text
-
-        $text = strtolower(trim($text));
-
-        if ($text === 'start') {
-
-            cache()->forget("wa_session:$phone");
-
-            app(Whatsappsender::class)->send(
-                $phone,
-                "Welcome to OresamSub 👋\n\nWhat would you like to buy today?"
-            );
-
-            return response()->json(['ok' => true]);
-        }
-    
-        // STEP 1: Load user
-        $user = app(WhatsappUserResolver::class)->resolve($phone);
-    
-        // STEP 2: Check if user is in a pending transaction state
-        $session = cache()->get("wa_session:$phone");
-    
-     
-
-        $conversation = (new WhatsappConversationService());
-
-        if ($session) {
-
-            return match ($session['status']) {
-        
-                'data_network_required'
-                    => $conversation->handleDataNetworkSelection($text, $session),
-        
-                'data_size_required'
-                    => $conversation->handleDataSizeSelection($text, $session),
-        
-                'data_phone_required'
-                    => $conversation->handleDataPhoneInput($text, $session),
-        
-                'data_multiple_options'
-                    => $conversation->handleDataPlanSelection($text, $session,$phone),
-        
-                'data_awaiting_confirmation'
-                    => $conversation->handleConfirmation($text, $user, $session),
-        
-                'unlinked_user'
-                    => $conversation->handleUnlinkedUser($text, $session),
-        
-                default => null,
-            };
-        }
-    
-        // STEP 3: Normal flow → intent parsing
-        $intent = app(WhatsappIntentParser::class)->parse($text);
-    
-        // , $user, $phone
-        $result =app(WhatsappIntentResolver::class)->resolve($intent,$user,$phone);
-    
-        // STEP 4: store session (important)
-        cache()->put("wa_session:$phone", $result, now()->addMinutes(10));
-    
-        // STEP 5: send response
-        app(Whatsappsender::class)->send($phone, $result['message']);
-    
-        return response()->json(['ok' => true]);
-    }
+  
    
 
    

@@ -177,7 +177,7 @@ class WhatsappConversationService{
             return response()->json(['ok' => true]);
         }
 
-        public function handleDataPhoneInput(
+        public function handleDataPhoneInputnewestold(
             string $text,
             array $session
         )
@@ -215,6 +215,154 @@ class WhatsappConversationService{
                 $session['whatsapp_phone']
             );
         }
+
+        public function handleDataPhoneInput(
+            string $text,
+            array $session
+            )
+            {
+            $intent = $session['intent'];
+            
+        
+            /*
+            Saved contact selected
+            */
+            $option = (int) trim($text);
+            
+            if (
+                isset($session['options']) &&
+                isset($session['options'][$option])
+            ) {
+                $intent['phone']
+                    = $session['options'][$option];
+            } else {
+            
+                /*
+                Typed/shared number
+                */
+                $intent['phone']
+                    = $this->normalizeWhatsappNumber($text);
+            }
+            
+            /*
+            Must already have a selected plan
+            */
+            if (empty($intent['selected_plan_id'])) {
+            
+                app(Whatsappsender::class)->send(
+                    $session['whatsapp_phone'],
+                    "❌ Your session has expired. Please start again.\n\nExample:\nMTN 1GB Weekly"
+                );
+            
+                cache()->forget(
+                    "wa_session:" . $session['whatsapp_phone']
+                );
+            
+                return response()->json([
+                    'ok' => true
+                ]);
+            }
+            
+            $planId = $intent['selected_plan_id'];
+            
+            /*
+            Continue directly to confirmation
+            */
+            return $this->showDataConfirmation(
+                $planId,
+                $intent['phone'],
+                $session['whatsapp_phone'],
+                $intent
+            );
+            
+            
+            }
+
+
+            private function showDataConfirmation(
+                int $planId,
+                string $phoneNumber,
+                string $whatsappPhone,
+                array $intent
+                )
+                {
+                $plan = ProductPlan::with([
+                'product_plan_category.product',
+                'product_plan_category.network'
+                ])->find($planId);
+                
+                
+                if (!$plan) {
+                
+                    app(Whatsappsender::class)->send(
+                        $whatsappPhone,
+                        "❌ Unable to find the selected plan. Please try again."
+                    );
+                
+                    return response()->json([
+                        'ok' => true
+                    ]);
+                }
+                
+                $user = app(WhatsappUserResolver::class)
+                    ->resolve($whatsappPhone);
+                
+                $dat = [
+                    'product_id'
+                        => $plan->product_plan_category->product->id,
+                
+                    'network_id'
+                        => $plan->product_plan_category->network->id,
+                
+                    'user'
+                        => $user,
+                
+                    'plan_details'
+                        => $plan,
+                ];
+                
+                $price =
+                    app(\App\Http\Services\DataPlansService::class)
+                        ->get_customer_price_per_plan($dat)['message'];
+                
+                $result = [
+                    'status' => 'data_awaiting_confirmation',
+                    'product_plan_id' => $planId,
+                    'network_id'
+                        => $plan->product_plan_category->network->id,
+                    'phone' => $phoneNumber,
+                    'price' => $price,
+                    'intent' => $intent,
+                    'whatsapp_phone' => $whatsappPhone,
+                    'message' =>
+                        "🛒 Almost done!\n\n"
+                        . "📦 Plan: {$plan->product_plan_name}\n"
+                        . "📱 Number: {$phoneNumber}\n"
+                        . "💰 Amount: ₦" . number_format($price) . "\n\n"
+                        . "Please review the details above.\n\n"
+                        . "✅ Reply YES to complete this purchase\n"
+                        . "❌ Reply NO to cancel."
+                ];
+                
+                cache()->put(
+                    "wa_session:$whatsappPhone",
+                    $result,
+                    now()->addMinutes(10)
+                );
+                
+                app(Whatsappsender::class)->sendConfirmationButtons(
+                    $whatsappPhone,
+                    $result['message']
+                );
+                
+                return response()->json([
+                    'ok' => true
+                ]);
+                
+                
+                }
+                
+            
 
     
 
