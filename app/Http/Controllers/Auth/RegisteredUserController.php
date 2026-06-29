@@ -208,8 +208,7 @@ class RegisteredUserController extends Controller
         $roleId = Role::where('role_name', 'User')->value('id');
 
         if($request->usage == 'Personal'){
-            $defaultPlanId = UserPlan::where('is_default', 4)->value('id');
-
+            $defaultPlanId = UserPlan::where('plan_level', 4)->value('id');
         }else{
             //for business: if after a whhile no show, we downgrade the customer
             $defaultPlanId = UserPlan::where('plan_level', 4)->value('id');
