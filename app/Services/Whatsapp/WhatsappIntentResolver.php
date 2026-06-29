@@ -348,6 +348,7 @@ class WhatsappIntentResolver
                     $message
                 )
             ) {
+                logger('loads:   '.$contact->phone_number);
                 return $contact->phone_number;
             }
         }
