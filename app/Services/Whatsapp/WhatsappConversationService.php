@@ -326,7 +326,7 @@ class WhatsappConversationService{
             $intent = $session['intent'];
     
             $intent['selected_plan_id'] = $planId;
-            $intent['product_plan_id'] = $planId;
+            // $intent['product_plan_id'] = $planId;
 
             // logger(json_encode([
             //     'intent' => $intent,

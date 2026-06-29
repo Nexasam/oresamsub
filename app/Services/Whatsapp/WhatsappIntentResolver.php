@@ -238,7 +238,7 @@ class WhatsappIntentResolver
 
         if (!$intent['phone']) {
 
-            $intent['product_plan_id'] = $plan->id;
+            // $intent['product_plan_id'] = $plan->id;
 
             return [
                 'status' => 'data_phone_required',
