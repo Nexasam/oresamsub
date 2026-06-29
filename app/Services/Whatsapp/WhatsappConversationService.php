@@ -221,7 +221,7 @@ class WhatsappConversationService{
             array $session
             )
             {
-            $intent = $session['intent'];
+            $intent = $session['intent'] ?? null;
             
         
             /*
