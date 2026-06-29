@@ -341,7 +341,7 @@ class WhatsappIntentParser
             $match
         );
 
-        logger('phone intent: '.$message.' '.$match[1]);
+        // logger('phone intent: '.$message.' '.$match[1]);
 
         return $match[1] ?? null;
     }
