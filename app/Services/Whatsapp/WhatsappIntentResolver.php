@@ -159,22 +159,25 @@ class WhatsappIntentResolver
         | Resolve saved contact names
         |--------------------------------------------------------------------------
         */
-        if (
-            empty($intent['phone'])
-            && !empty($intent['raw_message'])
-        ) {
+         /*
+    |--------------------------------------------------------------------------
+    | Resolve saved contact names
+    |--------------------------------------------------------------------------
+    */
+    if (
+        empty($intent['phone'])
+        && !empty($intent['raw_message'])
+    ) {
 
-            $savedContactPhone =
-                $this->resolvePhoneFromSavedContacts(
-                    $intent['raw_message'],
-                    $user
-                );
+        $contactPhone = $this->resolvePhoneFromSavedContacts(
+            $intent['raw_message'],
+            $user
+        );
 
-            if ($savedContactPhone) {
-
-                $intent['phone'] = $savedContactPhone;
-            }
+        if ($contactPhone) {
+            $intent['phone'] = $contactPhone;
         }
+    }
 
         if (!$intent['network']) {
 
