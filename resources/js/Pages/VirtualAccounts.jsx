@@ -47,73 +47,7 @@ export default function VirtualAccounts() {
           Fund any of the accounts below:
         </div>
 
-       {/* Manual Funding Account (with amount input) */}
-       <div className="p-4 bg-white dark:bg-gray-900 rounded-xl shadow space-y-1 border border-emerald-100 dark:border-emerald-800 mb-4">
-          {/* Header */}
-          <div className="flex items-center justify-between">
-            <div className="font-semibold text-emerald-600 dark:text-emerald-400">
-              MANUAL OPTION - NO CHARGES: Palmpay
-            </div>
-            {copiedAcct === "8168509044" && (
-              <span className="text-xs text-emerald-500">Copied ✅</span>
-            )}
-          </div>
-
-          {/* Account Name */}
-          <div className="text-sm text-gray-700 dark:text-gray-300">
-            Acct Name: Adebunmi Olusola Samuel
-          </div>
-
-          {/* Instruction */}
-          <div className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-            MANUAL FUNDING (FREE charges). Pay to the account below, enter amount and notify via WhatsApp.
-          </div>
-
-          {/* Amount Input */}
-          <div className="mt-2">
-            <input
-              type="number"
-              value={amount}
-              onChange={(e) => setAmount(e.target.value)}
-              placeholder="Enter amount sent"
-              className="w-full px-3 py-2 border rounded-md text-gray-900 dark:text-white dark:bg-gray-800 border-gray-300 dark:border-gray-700 focus:outline-none focus:ring-2 focus:ring-emerald-500"
-            />
-          </div>
-
-          {/* Account Number + Buttons */}
-          <div className="flex justify-between items-center mt-2 space-x-2">
-            <div className="text-lg font-mono tracking-wide text-gray-900 dark:text-white">
-              8168509044
-            </div>
-
-            <button
-              onClick={() => handleCopy("8168509044", "8168509044")}
-              className="text-xs px-3 py-1 rounded-md bg-emerald-600 hover:bg-emerald-700 text-white dark:bg-emerald-500 dark:hover:bg-emerald-600 transition"
-            >
-              Copy
-            </button>
-
-            {/* WhatsApp Admin Sam */}
-            <a
-              href={`https://wa.me/2348168509044?text=${encodeURIComponent(message)}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-xs px-3 py-1 rounded-md bg-green-600 hover:bg-green-700 text-white dark:bg-green-500 dark:hover:bg-green-600 transition"
-            >
-              Notify Admin Sam
-            </a>
-
-            {/* WhatsApp Admin Ore */}
-            <a
-              href={`https://wa.me/2349011988807?text=${encodeURIComponent(message)}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-xs px-3 py-1 rounded-md bg-green-600 hover:bg-green-700 text-white dark:bg-green-500 dark:hover:bg-green-600 transition"
-            >
-              Notify Admin Ore
-            </a>
-          </div>
-        </div>
+      
 
 
 
