@@ -286,14 +286,13 @@ class WhatsappWebhookController extends Controller
                     $phone
                 ),
                 
-             
                 'contact_save_prompt'
                 => $conversation->handleSaveContactPrompt(
                     $text,
                     $session
                 ),
 
-            'contact_name_required'
+                'contact_name_required'
                 => $conversation->handleSaveContactName(
                     $text,
                     $session,
