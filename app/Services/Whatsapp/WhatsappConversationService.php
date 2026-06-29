@@ -363,7 +363,7 @@ class WhatsappConversationService{
             }
             $result = [
                 'status' => 'data_awaiting_confirmation',
-                'product_plan_id' => $plan->id,
+                'product_plan_id' => $planId,
                 'network_id' => $plan->product_plan_category->network->id,
                 'phone' => $recphone,
                 'price' => $price,
