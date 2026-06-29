@@ -4,6 +4,7 @@ namespace App\Services\Whatsapp;
 use App\Http\Services\DataPlansService;
 use App\Models\ProductPlan;
 use App\Models\Transaction;
+use App\Models\UserContact;
 
 class WhatsappIntentResolver
 {
@@ -152,6 +153,29 @@ class WhatsappIntentResolver
 
     public function resolveData($intent, $user, $phone): array
     {
+
+        /*
+        |--------------------------------------------------------------------------
+        | Resolve saved contact names
+        |--------------------------------------------------------------------------
+        */
+        if (
+            empty($intent['phone'])
+            && !empty($intent['raw_message'])
+        ) {
+
+            $savedContactPhone =
+                $this->resolvePhoneFromSavedContacts(
+                    $intent['raw_message'],
+                    $user
+                );
+
+            if ($savedContactPhone) {
+
+                $intent['phone'] = $savedContactPhone;
+            }
+        }
+
         if (!$intent['network']) {
 
             return [
@@ -291,6 +315,44 @@ class WhatsappIntentResolver
                 . "💰 Amount: ₦" . number_format($price) . "\n\n"
                 . "Please confirm to continue."
         ];
+    }
+
+
+    private function resolvePhoneFromSavedContacts(
+        string $message,
+        $user
+    ): ?string
+    {
+        if (!$user) {
+            return null;
+        }
+    
+        $message = strtolower(trim($message));
+    
+        $contacts = UserContact::where(
+            'user_id',
+            $user->id
+        )->get();
+    
+        foreach ($contacts as $contact) {
+    
+            $name = strtolower(trim($contact->name));
+    
+            if (empty($name)) {
+                continue;
+            }
+    
+            if (
+                preg_match(
+                    '/\b' . preg_quote($name, '/') . '\b/i',
+                    $message
+                )
+            ) {
+                return $contact->phone_number;
+            }
+        }
+    
+        return null;
     }
 
     protected function findMatchingPlans(array $intent)
