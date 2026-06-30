@@ -337,6 +337,55 @@ class WhatsappWebhookController extends Controller
         
             return response()->json(['ok' => true]);
         }
+
+
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | Global commands (work even during active sessions)
+        |--------------------------------------------------------------------------
+        */
+        if (in_array($text, [
+            'account',
+            'balance',
+            'wallet',
+            'fund'
+        ])) {
+
+            $result = app(WhatsappIntentResolver::class)
+                ->resolveAccount($user, $phone);
+
+            app(Whatsappsender::class)->sendAccountButtons(
+                $phone,
+                $result['message']
+            );
+
+            return response()->json([
+                'ok' => true
+            ]);
+        }
+
+        if (in_array($text, [
+            'help',
+            'support',
+            'contact',
+            'agent',
+            'customer care'
+        ])) {
+
+            $result = app(WhatsappIntentResolver::class)
+                ->resolveHelp();
+
+            app(Whatsappsender::class)->send(
+                $phone,
+                $result['message']
+            );
+
+            return response()->json([
+                'ok' => true
+            ]);
+        }
         
       
 
