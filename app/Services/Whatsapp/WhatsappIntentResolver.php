@@ -96,6 +96,7 @@ class WhatsappIntentResolver
         }
     
         $virtualAccounts = UserVirtualAccount::query()
+            ->where('funding_slug','!=','crystal_pay')
             ->where('user_id', $user->id)
             ->get();
     
