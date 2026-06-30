@@ -2,17 +2,18 @@
 
 namespace App\Http\Controllers;
 
-use Inertia\Inertia;
+use App\Http\Controllers\Controller;
+use App\Http\Services\VirtualAccountService;
+use App\Models\Announcement;
 use App\Models\Network;
 use App\Models\Product;
+use App\Models\ProductPlanCategory;
 use App\Models\Transaction;
 use App\Models\UserContact;
-use App\Models\Announcement;
-use Illuminate\Http\Request;
 use App\Models\UserVirtualAccount;
-use App\Models\ProductPlanCategory;
-use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Inertia\Inertia;
 
 class InertiaDashboardController extends Controller
 {
@@ -96,6 +97,9 @@ class InertiaDashboardController extends Controller
 
     public function virtual_accounts()
     {
+        $data['user'] = auth()->user();
+        (new VirtualAccountService())->generate_accounts($data);
+
         $virtualccts = UserVirtualAccount::select(
                 'user_virtual_accounts.id',
                 'user_virtual_accounts.bank_name',

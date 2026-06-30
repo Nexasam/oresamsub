@@ -9,7 +9,7 @@ class VirtualAccountService{
 
     public function generate_accounts($data){
             $dataaa['user'] = $data['user'];
-            (new CrystalPayService())->generate_accounts($dataaa);
+            // (new CrystalPayService())->generate_accounts($dataaa);
             if(config('app.name') == 'OresamSub'){
                 $xixa =  (new XixaPayService())->generate_accounts($dataaa);
                 if($xixa['status'] == 1){

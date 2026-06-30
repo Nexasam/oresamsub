@@ -36,7 +36,7 @@ class SecurewavengService{
         ->pluck('bank_code')->toArray();
         if(! $bank_codes){
             logger('na here oh2');
-            exit;
+            // exit;
         }
     
 

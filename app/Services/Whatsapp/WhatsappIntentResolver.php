@@ -18,6 +18,7 @@ class WhatsappIntentResolver
 
             'favorites' => $this->resolveFavorites($user, $phone),
 
+
             'navigation_app',
             'navigation_telegram',
             'navigation_support'
@@ -25,7 +26,7 @@ class WhatsappIntentResolver
         
             default => [
                 'status' => 'unsupported',
-                'message' => "I didn't understand that2..."
+                'message' => "I didn't understand that message..."
             ]
 
         
@@ -63,7 +64,7 @@ class WhatsappIntentResolver
             return [
                 'status' => 'favorites_empty',
                 'message' =>
-                    "No recent purchases found.\n\nTry:\nMTN 1GB Weekly"
+                    "No recent purchases found.\n\nTry something like:\nMTN 1GB Weekly"
             ];
         }
     
