@@ -238,7 +238,7 @@ class WhatsappWebhookController extends Controller
             
                 . "You can type commands in ANY format (not case-sensitive).\n\n"
             
-                . "📶 DATA EXAMPLES\n\n"
+                . "📶 DATA EXAMPLES\n"
             
                 . "• MTN 1GB Weekly\n"
                 . "• Glo 2GB 3 Days\n"
@@ -247,7 +247,7 @@ class WhatsappWebhookController extends Controller
                 . "• MTN 1GB Weekly 09034556677\n"
                 . "• MTN 1GB Weekly to Mom\n\n"
             
-                . "📞 AIRTIME EXAMPLES\n\n"
+                . "📞 AIRTIME EXAMPLES\n"
             
                 . "• Airtime 1000 MTN\n"
                 . "• MTN Airtime 500\n"
@@ -255,19 +255,19 @@ class WhatsappWebhookController extends Controller
                 . "• MTN Airtime 300 09011223344\n"
                 . "• MTN Airtime 500 to Dad\n\n"
             
-                . "⭐ QUICK ACTIONS\n\n"
+                . "⭐ QUICK ACTIONS\n"
             
                 . "• Recent\n"
                 . "• Buy Again\n"
                 . "• Favourites\n"
                 . "• Popular\n\n"
             
-                . "💰 ACCOUNT\n\n"
+                . "💰 ACCOUNT\n"
             
                 . "• Balance\n"
                 . "• Wallet\n\n"
             
-                . "🆘 HELP\n\n"
+                . "🆘 HELP\n"
             
                 . "• Support\n"
                 . "• Help\n\n"
