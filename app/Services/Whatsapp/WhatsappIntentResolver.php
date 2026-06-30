@@ -796,7 +796,7 @@ class WhatsappIntentResolver
                 . "💳 Amount Charged: ₦" . number_format($finalAmount) . "\n"
                 . "📱 Number: {$intent['phone']}\n\n"
                 . "Please review the details above.\n\n"
-                . "Tap a button below to continue."
+                . "Tap a button below to continue or YES/NO."
         ];
     }
 }
