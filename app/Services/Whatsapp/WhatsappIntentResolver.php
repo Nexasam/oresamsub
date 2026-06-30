@@ -105,11 +105,11 @@ class WhatsappIntentResolver
     
             . "Wallet Balance: ₦"
             . number_format($user->main_wallet, 2)
-            . "\n\n";
+            . "\n";
     
         if ($virtualAccounts->count()) {
     
-            $message .= "🏦 FUND YOUR WALLET\n\n";
+            $message .= "🏦 FUND YOUR WALLET\n";
     
             foreach ($virtualAccounts as $account) {
     
