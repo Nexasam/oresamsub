@@ -362,6 +362,7 @@ class WhatsappIntentResolver
 
     public function findMatchingPlans(array $intent)
     {
+        logger('find matching plans: '.json_encode($intent));
         $query = ProductPlan::query()
             ->where('visibility', 1)
             ->where('network', strtolower($intent['network']))
