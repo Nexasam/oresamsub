@@ -101,7 +101,7 @@ class WhatsappIntentResolver
             ->get();
     
         $message =
-            "💰 ACCOUNT INFORMATION\n\n"
+            "💰 ACCOUNT INFORMATION\n"
     
             . "Wallet Balance: ₦"
             . number_format($user->main_wallet, 2)
