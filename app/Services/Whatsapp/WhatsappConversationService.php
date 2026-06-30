@@ -270,7 +270,7 @@ class WhatsappConversationService{
         
                 $response = app(
                     \App\Http\Controllers\AirtimeController::class
-                )->buy_airtime_action($request);
+                )->buy_airtime_action_1($request);
         
                 $payload = $response->getData(true);
         
