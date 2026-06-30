@@ -269,8 +269,8 @@ class WhatsappWebhookController extends Controller
             
                 . "💰 ACCOUNT\n"
                 . "• Balance\n"
-                . "• Wallet\n\n"
-                . "• Account\n\n"
+                . "• Wallet\n"
+                . "• Account\n"
                 . "• fund\n\n"
             
                 . "🆘 HELP\n"
