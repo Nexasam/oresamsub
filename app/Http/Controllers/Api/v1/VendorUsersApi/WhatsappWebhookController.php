@@ -130,8 +130,8 @@ class WhatsappWebhookController extends Controller
 
             // Account buttons
             'account_refresh_balance' => 'account_refresh_balance',
-            'account_buy_data'        => 'account_buy_data',
-            'account_buy_airtime'     => 'account_buy_airtime',
+            'account_data_help'        => 'account_buy_data',
+            'account_airtime_help'     => 'account_buy_airtime',
 
             'save_contact_yes' => 'save_contact_yes',
             'save_contact_no'  => 'save_contact_no',
