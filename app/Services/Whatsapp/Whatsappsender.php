@@ -69,7 +69,7 @@ class Whatsappsender
                             'type' => 'reply',
                             'reply' => [
                                 'id' => 'account_data_airtime_help',
-                                'title' => 'Buy Data',
+                                'title' => 'Buy Data/Airtime',
                             ],
                         ],
                         [
