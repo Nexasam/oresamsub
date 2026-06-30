@@ -109,12 +109,15 @@ class WhatsappConversationService{
             /*
             Saved contact selected
             */
-            if (isset($session['contacts'][$option])) {
-                return $session['contacts'][$option]['phone_number'];
+            if (
+                isset($session['options']) &&
+                isset($session['options'][$option])
+            ) {
+                return $session['options'][$option];
             }
         
             /*
-            User typed a phone directly
+            User typed phone directly
             */
             $phone = preg_replace('/\D/', '', $text);
         
