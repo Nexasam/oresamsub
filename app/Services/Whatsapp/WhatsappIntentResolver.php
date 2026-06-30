@@ -29,22 +29,27 @@ class WhatsappIntentResolver
             'navigation_support'
                 => $this->resolveNavigation($intent['type']),
         
-            default => [
-              
+                default => [
+
                     'status' => 'unsupported',
+                
                     'message' =>
                         "🤔 I couldn't quite understand that request.\n\n"
                 
-                        . "Here are some things I can help you with:\n\n"
+                        . "I can help you with the following (it's not case-sensitive):\n\n"
                 
                         . "📶 Buy Data\n"
                         . "• MTN 1GB Weekly\n"
                         . "• Airtel 2GB Monthly\n"
-                        . "• Glo 500MB\n\n"
+                        . "• Glo 500MB\n"
+                        . "• MTN 1GB Weekly 09034556677\n"
+                        . "• Airtel 2GB Monthly 08123456789\n\n"
                 
                         . "📞 Buy Airtime\n"
                         . "• Airtime 1000 MTN\n"
-                        . "• Airtel Airtime 500\n\n"
+                        . "• Airtel Airtime 500\n"
+                        . "• MTN Airtime 300 09011223344\n"
+                        . "• Glo Airtime 1000 08123456789\n\n"
                 
                         . "📋 Repeat Purchases\n"
                         . "• Recent\n"
@@ -58,10 +63,14 @@ class WhatsappIntentResolver
                         . "🆘 Support\n"
                         . "• Support\n\n"
                 
+                        . "Examples can be typed in any format:\n"
+                        . "• mtn 1gb weekly\n"
+                        . "• MTN 1GB WEEKLY\n"
+                        . "• Mtn Airtime 500\n\n"
+                
                         . "If you're not sure where to start, simply type:\n"
                         . "👉 START"
-                
-            ]
+                ]
 
         
         };

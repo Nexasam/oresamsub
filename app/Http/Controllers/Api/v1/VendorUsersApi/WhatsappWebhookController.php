@@ -229,21 +229,52 @@ class WhatsappWebhookController extends Controller
             
                 . "Here's what I can help you with:\n\n"
             
-                . "📶 Buy Data\n"
+                . "📶 Buy Data Bundles\n"
                 . "📞 Buy Airtime\n"
                 . "📋 Repeat Recent Purchases\n"
+                . "⭐ Buy for Saved Contacts\n"
                 . "💰 Check Wallet Balance\n"
                 . "🆘 Contact Support\n\n"
             
-                . "Try any of these and its not case-sensitive:\n\n"
+                . "You can type commands in ANY format (not case-sensitive).\n\n"
             
-                . "• MTN 1GB weekly\n"
-                . "• Glo 2GB 3 days\n"
+                . "📶 DATA EXAMPLES\n\n"
+            
+                . "• MTN 1GB Weekly\n"
+                . "• Glo 2GB 3 Days\n"
+                . "• Airtel 5GB Monthly\n"
+                . "• 1GB MTN Weekly\n"
+                . "• MTN 1GB Weekly 09034556677\n"
+                . "• MTN 1GB Weekly to Mom\n\n"
+            
+                . "📞 AIRTIME EXAMPLES\n\n"
+            
                 . "• Airtime 1000 MTN\n"
+                . "• MTN Airtime 500\n"
+                . "• Airtel Airtime 2000\n"
+                . "• MTN Airtime 300 09011223344\n"
+                . "• MTN Airtime 500 to Dad\n\n"
+            
+                . "⭐ QUICK ACTIONS\n\n"
+            
                 . "• Recent\n"
                 . "• Buy Again\n"
                 . "• Favourites\n"
-                . "• Balance\n\n"
+                . "• Popular\n\n"
+            
+                . "💰 ACCOUNT\n\n"
+            
+                . "• Balance\n"
+                . "• Wallet\n\n"
+            
+                . "🆘 HELP\n\n"
+            
+                . "• Support\n"
+                . "• Help\n\n"
+            
+                // . "You can also use saved contact names:\n"
+                // . "• MTN 1GB Weekly to Mom\n"
+                // . "• Airtime 500 to John\n\n"
             
                 . "What would you like to do today? 😊"
             );
