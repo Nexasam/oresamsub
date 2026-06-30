@@ -258,6 +258,7 @@ class WhatsappConversationService{
                     'product_plan_id' => $session['product_plan_id'],
                     'amount' => $session['amount'],
                     'wallet_category' => 'main_wallet',
+                    'user'=>$user,
         
                     /*
                     WhatsApp users should not need PIN every time.
