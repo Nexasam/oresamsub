@@ -362,6 +362,21 @@ class AirtimeController extends Controller
 
     
 
+    public function buy_airtime_action_1(Request $request){
+        
+        // $getnetwork = ProductPlan::with('product_plan_category.network')
+        // ->where('id',$request->product_plan_id)
+        // ->first();
+        // $product_plan_category_id = $getnetwork->product_plan_category->id;
+        // $network_id = $getnetwork->product_plan_category->network->id;
+
+        $request->merge([
+            'user' => auth()->user() ?? $request->user
+        ]);
+
+    
+        return $this->buy_airtime_action($request);
+    }
 
     /**
      * Handle airtime purchase.
@@ -392,7 +407,7 @@ class AirtimeController extends Controller
         }
 
         $data1['days_count'] = [1,7,30];
-        $data1['user_id'] = auth()->id();
+        $data1['user_id'] = auth()->id() ?? $request->user->id;
         $check_purchase_limit =  ProductsService::check_purchase_limit($data1);
         if($check_purchase_limit['status'] == -1){
             return response()->json(['status'=> -1, 'message'=>$check_purchase_limit['message'] ]);
@@ -409,7 +424,7 @@ class AirtimeController extends Controller
         $message = 'Pending';
         $display_results = [];
 
-        $user_details = auth()->user();
+        $user_details = auth()->user() ?? $request->user;
         $user_plan_id = $user_details->user_plan_id;
         $user_id = $user_details->id;
         $user_level = UserPlan::select('plan_level')->where('id',$user_plan_id)->first();
