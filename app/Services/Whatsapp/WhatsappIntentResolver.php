@@ -9,6 +9,7 @@ use App\Models\ProductPlan;
 use App\Models\ProductPlanCategory;
 use App\Models\Transaction;
 use App\Models\UserContact;
+use App\Models\UserPlan;
 
 class WhatsappIntentResolver
 {
@@ -621,36 +622,65 @@ class WhatsappIntentResolver
             $intent['network_id'] = Network::where('network_name',strtoupper($intent['network']))->first()->id;
         }
     
+            /*
+        |--------------------------------------------------------------------------
+        | Airtime pricing (apply user discount)
+        |--------------------------------------------------------------------------
+        */
+        $userPlan = UserPlan::find($user->user_plan_id);
+
+        $planLevel = $userPlan?->plan_level ?? 1;
+
+        $userLevelSelling =
+            "user_level_{$planLevel}_selling_price";
+
+        $purchaseDiscount =
+            (float) ($plan->$userLevelSelling ?? 0);
+
+        $actualAmount = abs($intent['amount']);
+
+        $discountValue = ceil(
+            ($purchaseDiscount / 100) * $actualAmount
+        );
+
+        $finalAmount =
+            $discountValue < 0 ||
+            $discountValue > $actualAmount
+                ? $actualAmount
+                : ($actualAmount - $discountValue);
+
         /*
-        |--------------------------------------------ame------------------------------
+        |--------------------------------------------------------------------------
         | Confirmation
         |--------------------------------------------------------------------------
         */
         return [
             'status' => 'airtime_awaiting_confirmation',
-    
-            'amount' => $intent['amount'],
-    
+
+            'amount' => $actualAmount,
+
+            'payable_amount' => $finalAmount,
+
             'network' => strtoupper($intent['network']),
 
             'product_plan_id' => $plan->id,
 
-            'network_id' => Network::where('network_name',strtoupper($intent['network']))->first()->id,
-    
+            'network_id' => $intent['network_id'],
+
             'phone' => $intent['phone'],
-    
+
             'whatsapp_phone' => $phone,
-    
+
             'intent' => $intent,
-    
+
             'message' =>
                 "🛒 Almost done!\n\n"
                 . "📞 Network: " . strtoupper($intent['network']) . "\n"
-                . "💰 Amount: ₦" . number_format($intent['amount']) . "\n"
+                . "💰 Airtime Value: ₦" . number_format($actualAmount) . "\n"
+                . "💳 Amount Charged: ₦" . number_format($finalAmount) . "\n"
                 . "📱 Number: {$intent['phone']}\n\n"
                 . "Please review the details above.\n\n"
-                . "✅ Reply YES to complete this purchase\n"
-                . "❌ Reply NO to cancel."
+                . "Tap a button below to continue."
         ];
     }
 }
