@@ -89,6 +89,7 @@ class WhatsappIntentResolver
                 'product_plan.product_plan_category.product',
                 'product_plan.product_plan_category.network'
             ])
+            ->where('transaction_category','data')
             ->latest()
             ->take(20)
             ->get();
