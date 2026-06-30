@@ -27,6 +27,8 @@ class WhatsappIntentResolver
             'account'
             => $this->resolveAccount($user, $phone),
 
+            'help' => $this->resolveHelp(),
+
 
             'navigation_app',
             'navigation_telegram',
@@ -78,6 +80,54 @@ class WhatsappIntentResolver
 
         
         };
+    }
+
+
+    public function resolveHelp(): array
+    {
+        return [
+
+            'status' => 'help',
+
+            'message' =>
+                "🆘 OresamSub Help Center\n\n"
+
+                . "📱 Mobile App\n"
+                . "Login:\n"
+                . "https://oresamsub.com/login\n\n"
+
+                . "Forgot Password?\n"
+                . "https://oresamsub.com/forgot-password\n\n"
+
+                . "Forgot PIN?\n"
+                . "Please contact support.\n\n"
+
+                . "💬 WhatsApp Support\n"
+                . "• 09011988807\n"
+                . "• 08168509044\n\n"
+
+                . "📞 Call Support\n"
+                . "• 09011988807\n"
+                . "• 08168509044\n\n"
+
+                . "📶 Data Examples\n"
+                . "• MTN 1GB Weekly\n"
+                . "• Airtel 2GB Monthly\n"
+                . "• MTN 1GB Weekly to Mom\n\n"
+
+                . "📞 Airtime Examples\n"
+                . "• MTN Airtime 500\n"
+                . "• Airtime 1000 MTN\n"
+                . "• Airtime 1000 to Dad\n\n"
+
+                . "💰 Account Commands\n"
+                . "• Account\n"
+                . "• Balance\n"
+                . "• Wallet\n\n"
+
+                . "🔄 To start a new transaction anytime, type:\n"
+                . "👉 START"
+        ];
     }
 
 

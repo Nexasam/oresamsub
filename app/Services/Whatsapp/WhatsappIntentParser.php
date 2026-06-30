@@ -71,6 +71,15 @@ class WhatsappIntentParser
             return 'airtime';
         }
 
+        if (
+            preg_match(
+                '/\b(help|support|contact|customer care|agent|assist|assistance)\b/i',
+                $message
+            )
+        ) {
+            return 'help';
+        }
+
         // Favorites
 
         // if (
