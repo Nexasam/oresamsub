@@ -5,6 +5,7 @@ use App\Http\Services\DataPlansService;
 use App\Models\Product;
 use App\Models\ProductCategory;
 use App\Models\ProductPlan;
+use App\Models\ProductPlanCategory;
 use App\Models\Transaction;
 use App\Models\UserContact;
 
@@ -588,7 +589,7 @@ class WhatsappIntentResolver
         if (empty($intent['product_plan_id'])) {
 
             $product = Product::where('slug','airtime')->first();
-            $product_plan_categoriesarr = ProductCategory::where('product_id',$product->id)
+            $product_plan_categoriesarr = ProductPlanCategory::where('product_id',$product->id)
             ->pluck('id')
             ->toArray();
             $plan = ProductPlan::query()
