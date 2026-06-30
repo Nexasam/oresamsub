@@ -632,6 +632,10 @@ class WhatsappIntentResolver
             'amount' => $intent['amount'],
     
             'network' => strtoupper($intent['network']),
+
+            'product_plan_id' => $plan->id,
+
+            'network_id' => Network::where('network_name',strtoupper($intent['network']))->first()->id,
     
             'phone' => $intent['phone'],
     
