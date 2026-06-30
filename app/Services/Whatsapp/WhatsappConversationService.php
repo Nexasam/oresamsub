@@ -248,8 +248,7 @@ class WhatsappConversationService{
                 "⏳ Processing your airtime purchase..."
             );
 
-            logger('testingggrrrrr: '.json_encode($session));
-        
+     
             try {
         
                 $request = new \Illuminate\Http\Request([
@@ -269,22 +268,7 @@ class WhatsappConversationService{
                     'validatephonenetwork' => 0,
                 ]);
 
-                logger('whatsup airtime: '.json_encode([
-                    'network_id' => $session['network_id'],
-                    'phone_number' => $session['phone'],
-                    'product_plan_id' => $session['product_plan_id'],
-                    'amount' => $session['amount'],
-                    'wallet_category' => 'main_wallet',
-                    'user'=>$user,
-        
-                    /*
-                    WhatsApp users should not need PIN every time.
-                    Use stored pin if available or bypass with a dedicated service.
-                    */
-                    'pin' => $user->pin,
-        
-                    'validatephonenetwork' => 0,
-                ]));
+                
         
                 $response = app(
                     \App\Http\Controllers\AirtimeController::class
@@ -296,7 +280,7 @@ class WhatsappConversationService{
         
                 if ($payload['status']  == 1) {
         
-                    app(Whatsappsender::class)->send(
+                    app(Whatsappsender::class)->sendStartButton(
                         $session['whatsapp_phone'],
                         "✅ Airtime purchase successful.\n\n"
                         . ($payload['message'] ?? '')
@@ -308,7 +292,7 @@ class WhatsappConversationService{
         
                 } else {
         
-                    app(Whatsappsender::class)->send(
+                    app(Whatsappsender::class)->sendRetryButtons(
                         $session['whatsapp_phone'],
                         "❌ Airtime purchase failed.\n\n"
                         . ($payload['message'] ?? 'Unknown error')
@@ -323,7 +307,7 @@ class WhatsappConversationService{
                     "wa_session:" . $session['whatsapp_phone']
                 );
         
-                app(Whatsappsender::class)->send(
+                app(Whatsappsender::class)->sendStartButton(
                     $session['whatsapp_phone'],
                     "❌ Airtime purchase failed.\n\nPlease try again later."
                 );

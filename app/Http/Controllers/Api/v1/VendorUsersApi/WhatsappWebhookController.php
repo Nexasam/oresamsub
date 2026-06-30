@@ -138,15 +138,15 @@ class WhatsappWebhookController extends Controller
         };
     }
 
-        private function extractPhoneFromContact(
-            array $payload
-        ): ?string
-        {
-            return data_get(
-                $payload,
-                'entry.0.changes.0.value.messages.0.contacts.0.phones.0.phone'
-            );
-        }
+    private function extractPhoneFromContact(
+        array $payload
+    ): ?string
+    {
+        return data_get(
+            $payload,
+            'entry.0.changes.0.value.messages.0.contacts.0.phones.0.phone'
+        );
+    }
 
     public function receive(Request $request)
     {
