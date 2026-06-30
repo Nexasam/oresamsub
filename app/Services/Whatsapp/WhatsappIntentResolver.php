@@ -105,7 +105,7 @@ class WhatsappIntentResolver
     
             . "Wallet Balance: ₦"
             . number_format($user->main_wallet, 2)
-            . "\n";
+            . "\n\n";
     
         if ($virtualAccounts->count()) {
     
