@@ -177,46 +177,9 @@ class WhatsappConversationService{
             return response()->json(['ok' => true]);
         }
 
-        public function handleDataPhoneInputnewestold(
-            string $text,
-            array $session
-        )
-        {
-            $intent = $session['intent'];
-        
-            /*
-            Selected saved contact
-            */
-            $option = (int) trim($text);
-        
-            if (
-                isset($session['options']) &&
-                isset($session['options'][$option])
-            ) {
-        
-                $intent['phone'] =
-                    $session['options'][$option];
-        
-                return $this->updateSessionAndResolve(
-                    $session,
-                    $intent,
-                    $session['whatsapp_phone']
-                );
-            }
-        
-            /*
-            Typed/shared number
-            */
-            $intent['phone'] = $this->normalizeWhatsappNumber($text);
-        
-            return $this->updateSessionAndResolve(
-                $session,
-                $intent,
-                $session['whatsapp_phone']
-            );
-        }
+   
 
-        public function handleDataPhoneInput(
+        public function handleDataPhoneInputooo(
             string $text,
             array $session
             )
@@ -276,6 +239,113 @@ class WhatsappConversationService{
             );
             
             
+            }
+
+            public function handleDataPhoneInput(
+                string $text,
+                array $session
+            )
+            {
+                $intent = $session['intent'] ?? [];
+            
+                /*
+                |--------------------------------------------------------------------------
+                | Resolve selected contact or typed number
+                |--------------------------------------------------------------------------
+                */
+                $option = (int) trim($text);
+            
+                if (
+                    isset($session['options']) &&
+                    isset($session['options'][$option])
+                ) {
+                    $intent['phone'] = $session['options'][$option];
+                } else {
+                    $intent['phone'] = $this->normalizeWhatsappNumber($text);
+                }
+            
+                /*
+                |--------------------------------------------------------------------------
+                | No selected plan? Re-display available plans instead of killing session
+                |--------------------------------------------------------------------------
+                */
+                if (empty($intent['selected_plan_id'])) {
+            
+                    $plans = app(WhatsappIntentResolver::class)
+                        ->findMatchingPlans($intent);
+            
+                    if ($plans->isEmpty()) {
+            
+                        app(Whatsappsender::class)->send(
+                            $session['whatsapp_phone'],
+                            "😔 I couldn't find any matching plan.\n\nPlease start again.\nExample:\nMTN 1GB Weekly"
+                        );
+            
+                        return response()->json([
+                            'ok' => true
+                        ]);
+                    }
+            
+                    return $this->sendPlanOptions(
+                        $plans,
+                        $session['whatsapp_phone'],
+                        $intent
+                    );
+                }
+            
+                /*
+                |--------------------------------------------------------------------------
+                | Continue to confirmation
+                |--------------------------------------------------------------------------
+                */
+                return $this->showDataConfirmation(
+                    $intent['selected_plan_id'],
+                    $intent['phone'],
+                    $session['whatsapp_phone'],
+                    $intent
+                );
+            }
+
+
+            protected function sendPlanOptions(
+                $plans,
+                string $whatsappPhone,
+                array $intent
+            )
+            {
+                $message = "📦 Multiple plans found:\n\n";
+            
+                $options = [];
+            
+                foreach ($plans as $index => $plan) {
+            
+                    $number = $index + 1;
+            
+                    $message .=
+                        "{$number}. {$plan->product_plan_name}\n";
+            
+                    $options[$number] = $plan->id;
+                }
+            
+                cache()->put(
+                    "wa_session:$whatsappPhone",
+                    [
+                        'status' => 'data_multiple_options',
+                        'options' => $options,
+                        'intent' => $intent,
+                        'whatsapp_phone' => $whatsappPhone,
+                    ],
+                    now()->addMinutes(10)
+                );
+            
+                app(Whatsappsender::class)->send(
+                    $whatsappPhone,
+                    $message . "\nReply with the plan number."
+                );
+            
+                return response()->json([
+                    'ok' => true
+                ]);
             }
 
 

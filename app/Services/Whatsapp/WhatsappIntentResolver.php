@@ -359,7 +359,7 @@ class WhatsappIntentResolver
         return null;
     }
 
-    protected function findMatchingPlans(array $intent)
+    public function findMatchingPlans(array $intent)
     {
         $query = ProductPlan::query()
             ->where('visibility', 1)
