@@ -269,7 +269,7 @@ class WhatsappConversationService{
                 ]);
         
                 $response = app(
-                    \App\Http\Controllers\User\AirtimeController::class
+                    \App\Http\Controllers\AirtimeController::class
                 )->buy_airtime_action($request);
         
                 $payload = $response->getData(true);
