@@ -10,6 +10,306 @@ use Illuminate\Http\Request;
 
 class WhatsappConversationService{
 
+
+        public function handleAirtimeNetworkSelection(
+            string $text,
+            array $session
+        )
+        {
+            $intent = $session['intent'];
+        
+            $networkMap = [
+                '1' => 'mtn',
+                '2' => 'airtel',
+                '3' => 'glo',
+                '4' => '9mobile',
+        
+                'mtn' => 'mtn',
+                'airtel' => 'airtel',
+                'glo' => 'glo',
+                '9mobile' => '9mobile',
+                'etisalat' => '9mobile',
+            ];
+        
+            $selected = strtolower(trim($text));
+        
+            if (!isset($networkMap[$selected])) {
+        
+                app(Whatsappsender::class)->send(
+                    $session['whatsapp_phone'],
+                    "📞 Please choose a valid network:\n\n"
+                    . "1. MTN\n"
+                    . "2. Airtel\n"
+                    . "3. Glo\n"
+                    . "4. 9mobile"
+                );
+        
+                return response()->json(['ok' => true]);
+            }
+        
+            $intent['network'] = $networkMap[$selected];
+        
+            return $this->updateSessionAndResolve(
+                $session,
+                $intent,
+                $session['whatsapp_phone']
+            );
+        }
+
+
+        public function handleAirtimeAmountInput(
+            string $text,
+            array $session
+        )
+        {
+            $intent = $session['intent'];
+        
+            $amount = (int) preg_replace('/[^\d]/', '', $text);
+        
+            if ($amount < 50) {
+        
+                app(Whatsappsender::class)->send(
+                    $session['whatsapp_phone'],
+                    "💰 Please enter a valid airtime amount.\n\nExample:\n500"
+                );
+        
+                return response()->json(['ok' => true]);
+            }
+        
+            $intent['amount'] = $amount;
+
+            /*
+            Phone still needed?
+            */
+            if (empty($intent['phone'])) {
+
+                $user = app(WhatsappUserResolver::class)
+                    ->resolve($session['whatsapp_phone']);
+
+                $this->sendAirtimePhoneRequestWithContacts(
+                    $user,
+                    $session['whatsapp_phone'],
+                    [
+                        'intent' => $intent
+                    ]
+                );
+
+                return response()->json([
+                    'ok' => true
+                ]);
+            }
+        
+            return $this->updateSessionAndResolve(
+                $session,
+                $intent,
+                $session['whatsapp_phone']
+            );
+        }
+
+        public function handleAirtimePhoneInput(
+            string $text,
+            array $session
+        )
+        {
+            $intent = $session['intent'];
+        
+            /*
+            Saved contact selected
+            */
+            $option = (int) trim($text);
+        
+            if (
+                isset($session['options']) &&
+                isset($session['options'][$option])
+            ) {
+        
+                $intent['phone']
+                    = $session['options'][$option];
+        
+            } else {
+        
+                $intent['phone']
+                    = $this->normalizeWhatsappNumber($text);
+            }
+        
+            return $this->updateSessionAndResolve(
+                $session,
+                $intent,
+                $session['whatsapp_phone']
+            );
+        }
+
+        private function sendAirtimePhoneRequestWithContacts(
+            $user,
+            string $whatsappPhone,
+            array $session
+        )
+        {
+            $contacts = UserContact::query()
+                ->where('user_id', $user->id)
+                ->latest('last_used_at')
+                ->take(5)
+                ->get();
+        
+            $cachePayload = [
+                ...$session,
+                'status' => 'airtime_phone_required',
+                'whatsapp_phone' => $whatsappPhone,
+            ];
+        
+            if ($contacts->isNotEmpty()) {
+        
+                $message =
+                    "📱 Who should receive this airtime?\n\n"
+                    . "Saved Contacts:\n\n";
+        
+                $options = [];
+        
+                foreach ($contacts as $index => $contact) {
+        
+                    $number = $index + 1;
+        
+                    $message .=
+                        "{$number}. {$contact->name} - {$contact->phone_number}\n";
+        
+                    $options[$number]
+                        = $contact->phone_number;
+                }
+        
+                $message .=
+                    "\nYou can:\n"
+                    . "• Reply with a contact number above\n"
+                    . "• Type a phone number\n"
+                    . "• Share a WhatsApp contact";
+        
+                $cachePayload['options']
+                    = $options;
+        
+                cache()->put(
+                    "wa_session:$whatsappPhone",
+                    $cachePayload,
+                    now()->addMinutes(10)
+                );
+        
+                app(Whatsappsender::class)->send(
+                    $whatsappPhone,
+                    $message
+                );
+        
+                return;
+            }
+        
+            cache()->put(
+                "wa_session:$whatsappPhone",
+                $cachePayload,
+                now()->addMinutes(10)
+            );
+        
+            app(Whatsappsender::class)->send(
+                $whatsappPhone,
+                "📱 Who should receive this airtime?\n\n"
+                . "You can:\n"
+                . "• Type a phone number\n"
+                . "• Share a WhatsApp contact\n\n"
+                . "Example:\n"
+                . "08168509044"
+            );
+        }
+
+        public function handleAirtimeConfirmation(
+            string $text,
+            $user,
+            array $session
+        )
+        {
+            $text = strtolower(trim($text));
+        
+            if (!in_array($text, ['yes', 'y'])) {
+        
+                cache()->forget(
+                    "wa_session:" . $session['whatsapp_phone']
+                );
+        
+                app(Whatsappsender::class)->send(
+                    $session['whatsapp_phone'],
+                    "❌ Airtime purchase cancelled."
+                );
+        
+                return response()->json([
+                    'ok' => true
+                ]);
+            }
+        
+            app(Whatsappsender::class)->send(
+                $session['whatsapp_phone'],
+                "⏳ Processing your airtime purchase..."
+            );
+        
+            try {
+        
+                $request = new \Illuminate\Http\Request([
+                    'network_id' => $session['network_id'],
+                    'phone_number' => $session['phone'],
+                    'product_plan_id' => $session['product_plan_id'],
+                    'amount' => $session['amount'],
+                    'wallet_category' => 'main_wallet',
+        
+                    /*
+                    WhatsApp users should not need PIN every time.
+                    Use stored pin if available or bypass with a dedicated service.
+                    */
+                    'pin' => $user->pin,
+        
+                    'validatephonenetwork' => 0,
+                ]);
+        
+                $response = app(
+                    \App\Http\Controllers\User\AirtimeController::class
+                )->buy_whatsapp_airtime_action($request);
+        
+                $payload = $response->getData(true);
+        
+                cache()->forget(
+                    "wa_session:" . $session['whatsapp_phone']
+                );
+        
+                if (($payload['status'] ?? -1) == 1) {
+        
+                    app(Whatsappsender::class)->send(
+                        $session['whatsapp_phone'],
+                        "✅ Airtime purchase successful.\n\n"
+                        . ($payload['message'] ?? '')
+                    );
+        
+                } else {
+        
+                    app(Whatsappsender::class)->send(
+                        $session['whatsapp_phone'],
+                        "❌ Airtime purchase failed.\n\n"
+                        . ($payload['message'] ?? 'Unknown error')
+                    );
+                }
+        
+            } catch (\Throwable $e) {
+        
+                logger($e);
+        
+                cache()->forget(
+                    "wa_session:" . $session['whatsapp_phone']
+                );
+        
+                app(Whatsappsender::class)->send(
+                    $session['whatsapp_phone'],
+                    "❌ Airtime purchase failed.\n\nPlease try again later."
+                );
+            }
+        
+            return response()->json([
+                'ok' => true
+            ]);
+        }
+
+
         protected function updateSessionAndResolve(
             array $session,
             array $intent,

@@ -279,6 +279,31 @@ class WhatsappWebhookController extends Controller
             // logger('Lets see session content: '.json_encode($session));
             return match ($session['status']) {
 
+                'airtime_network_required'
+                    => $conversation->handleAirtimeNetworkSelection(
+                        $text,
+                        $session
+                    ),
+
+                'airtime_amount_required'
+                    => $conversation->handleAirtimeAmountInput(
+                        $text,
+                        $session
+                    ),
+
+                'airtime_phone_required'
+                    => $conversation->handleAirtimePhoneInput(
+                        $text,
+                        $session
+                    ),
+
+                'airtime_awaiting_confirmation'
+                    => $conversation->handleAirtimeConfirmation(
+                        $text,
+                        $user,
+                        $session
+                    ),
+
                 'favorite_phone_required'
                 => $conversation->handleFavoritePhoneInput(
                     $text,

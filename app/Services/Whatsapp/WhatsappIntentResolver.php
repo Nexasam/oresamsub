@@ -2,6 +2,8 @@
 namespace App\Services\Whatsapp;
 
 use App\Http\Services\DataPlansService;
+use App\Models\Product;
+use App\Models\ProductCategory;
 use App\Models\ProductPlan;
 use App\Models\Transaction;
 use App\Models\UserContact;
@@ -475,12 +477,12 @@ class WhatsappIntentResolver
         return (float) ($response['message'] ?? 0);
     }
 
-    private function resolveAirtime(array $intent, $user, $phone): array
+    private function resolveAirtimeooo(array $intent, $user, $phone): array
     {
         if (empty($intent['amount'])) {
 
             return [
-                'status' => 'need_more_info',
+                'status' => 'airtime_amount_required',
                 'field' => 'amount',
                 'message' =>
                     "How much airtime do you want?"
@@ -490,7 +492,7 @@ class WhatsappIntentResolver
         if (empty($intent['phone'])) {
 
             return [
-                'status' => 'need_more_info',
+                'status' => 'airtime_phone_required',
                 'field' => 'phone',
                 'message' =>
                     "Which phone number should receive the airtime?"
@@ -498,7 +500,7 @@ class WhatsappIntentResolver
         }
 
         return [
-            'status' => 'confirmation',
+            'status' => 'airtime_awaiting_confirmation',
 
             'amount' => $intent['amount'],
 
@@ -511,6 +513,138 @@ class WhatsappIntentResolver
                 . "Amount: ₦" . number_format($intent['amount']) . "\n"
                 . "Phone: {$intent['phone']}\n\n"
                 . "Reply YES to continue."
+        ];
+    }
+
+    private function resolveAirtime(
+        array $intent,
+        $user,
+        string $phone
+    ): array
+    {
+        /*
+        |--------------------------------------------------------------------------
+        | Network
+        |--------------------------------------------------------------------------
+        */
+        if (empty($intent['network'])) {
+    
+            return [
+                'status' => 'airtime_network_required',
+                'field' => 'network',
+                'whatsapp_phone' => $phone,
+                'intent' => $intent,
+                'message' =>
+                    "📞 Which network would you like to recharge?\n\n"
+                    . "1. MTN\n"
+                    . "2. Airtel\n"
+                    . "3. Glo\n"
+                    . "4. 9mobile"
+            ];
+        }
+    
+        /*
+        |--------------------------------------------------------------------------
+        | Amount
+        |--------------------------------------------------------------------------
+        */
+        if (empty($intent['amount'])) {
+    
+            return [
+                'status' => 'airtime_amount_required',
+                'field' => 'amount',
+                'whatsapp_phone' => $phone,
+                'intent' => $intent,
+                'message' =>
+                    "💰 How much airtime would you like to buy?\n\n"
+                    . "Examples:\n"
+                    . "• 500\n"
+                    . "• 1000\n"
+                    . "• 2000"
+            ];
+        }
+    
+        /*
+        |--------------------------------------------------------------------------
+        | Phone
+        |--------------------------------------------------------------------------
+        */
+        if (empty($intent['phone'])) {
+    
+            return [
+                'status' => 'airtime_phone_required',
+                'field' => 'phone',
+                'whatsapp_phone' => $phone,
+                'intent' => $intent,
+                'message' =>
+                    "📱 Which number should receive the airtime?\n\n"
+                    . "You can:\n"
+                    . "• Type a phone number\n"
+                    . "• Use a saved contact name\n"
+                    . "• Share a WhatsApp contact"
+            ];
+        }
+
+        if (empty($intent['product_plan_id'])) {
+
+            $product = Product::where('slug','airtime')->first();
+            $product_plan_categoriesarr = ProductCategory::where('product_id',$product->id)
+            ->pluck('id')
+            ->toArray();
+            $plan = ProductPlan::query()
+                ->where('visibility', 1)
+                ->whereIn('product_plan_category_id',$product_plan_categoriesarr)
+                ->where('network',$intent['network'])
+                // ->where('product_plan_name','like','%virtual topup%')
+                // ->whereHas(
+                //     'product_plan_category.network',
+                //     fn ($q) => $q->where(
+                //         'network_name',
+                //         strtoupper($intent['network'])
+                //     )
+                // )
+                ->first();
+        
+            if (!$plan) {
+        
+                return [
+                    'status' => 'airtime_plan_not_found',
+                    'message' =>
+                        "⚠️ Airtime is currently unavailable for "
+                        . strtoupper($intent['network'])
+                ];
+            }
+        
+            $intent['product_plan_id'] = $plan->id;
+            $intent['network_id'] = $plan->network_id;
+        }
+    
+        /*
+        |--------------------------------------------------------------------------
+        | Confirmation
+        |--------------------------------------------------------------------------
+        */
+        return [
+            'status' => 'airtime_awaiting_confirmation',
+    
+            'amount' => $intent['amount'],
+    
+            'network' => strtoupper($intent['network']),
+    
+            'phone' => $intent['phone'],
+    
+            'whatsapp_phone' => $phone,
+    
+            'intent' => $intent,
+    
+            'message' =>
+                "🛒 Almost done!\n\n"
+                . "📞 Network: " . strtoupper($intent['network']) . "\n"
+                . "💰 Amount: ₦" . number_format($intent['amount']) . "\n"
+                . "📱 Number: {$intent['phone']}\n\n"
+                . "Please review the details above.\n\n"
+                . "✅ Reply YES to complete this purchase\n"
+                . "❌ Reply NO to cancel."
         ];
     }
 }
