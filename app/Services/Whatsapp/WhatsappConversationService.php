@@ -486,13 +486,38 @@ class WhatsappConversationService{
                 $result,
                 now()->addMinutes(10)
             );
+
+
+            $currentBalance = $user->main_wallet;
+            $remainingBalance = $currentBalance - $price;
+    
+            $balanceSection =
+                "💰 Wallet Balance: ₦" . number_format($currentBalance) . "\n";
+    
+            if ($currentBalance >= $price) {
+    
+                $balanceSection .=
+                    "✅ Sufficient Balance\n"
+                    . "💳 Balance After Purchase: ₦"
+                    . number_format($remainingBalance) . "\n\n";
+    
+            } else {
+    
+                $shortfall = $price - $currentBalance;
+    
+                $balanceSection .=
+                    "❌ Insufficient Balance\n"
+                    . "📉 Shortfall: ₦" . number_format($shortfall) . "\n\n"
+                    . "Type ACCOUNT, WALLET or FUND to view your funding details.\n\n";
+            }
         
             app(Whatsappsender::class)->sendConfirmationButtons(
                 $session['whatsapp_phone'],
                 "🛒 Almost done!\n\n"
                 . "📦 Plan: {$plan->product_plan_name}\n"
                 . "📱 Number: {$recipientPhone}\n"
-                . "💰 Amount: ₦" . number_format($price)
+                . "💰 Amount: ₦" . number_format($price) . "\n\n"
+                . $balanceSection
                 . "\n\nPlease confirm to continue."
             );
         
@@ -699,6 +724,30 @@ class WhatsappConversationService{
                 $price =
                     app(\App\Http\Services\DataPlansService::class)
                         ->get_customer_price_per_plan($dat)['message'];
+
+
+                $currentBalance = $user->main_wallet;
+                $remainingBalance = $currentBalance - $price;
+        
+                $balanceSection =
+                    "💰 Wallet Balance: ₦" . number_format($currentBalance) . "\n";
+        
+                if ($currentBalance >= $price) {
+        
+                    $balanceSection .=
+                        "✅ Sufficient Balance\n"
+                        . "💳 Balance After Purchase: ₦"
+                        . number_format($remainingBalance) . "\n\n";
+        
+                } else {
+        
+                    $shortfall = $price - $currentBalance;
+        
+                    $balanceSection .=
+                        "❌ Insufficient Balance\n"
+                        . "📉 Shortfall: ₦" . number_format($shortfall) . "\n\n"
+                        . "Type ACCOUNT, WALLET or FUND to view your funding details.\n\n";
+                }
                 
                 $result = [
                     'status' => 'data_awaiting_confirmation',
@@ -714,6 +763,7 @@ class WhatsappConversationService{
                         . "📦 Plan: {$plan->product_plan_name}\n"
                         . "📱 Number: {$phoneNumber}\n"
                         . "💰 Amount: ₦" . number_format($price) . "\n\n"
+                        . $balanceSection
                         . "Please review the details above.\n\n"
                         . "✅ Reply YES to complete this purchase\n"
                         . "❌ Reply NO to cancel."
@@ -961,6 +1011,31 @@ class WhatsappConversationService{
             }else{
                 $recphone = null;
             }
+
+
+            $currentBalance = $user->main_wallet;
+            $remainingBalance = $currentBalance - $price;
+    
+            $balanceSection =
+                "💰 Wallet Balance: ₦" . number_format($currentBalance) . "\n";
+    
+            if ($currentBalance >= $price) {
+    
+                $balanceSection .=
+                    "✅ Sufficient Balance\n"
+                    . "💳 Balance After Purchase: ₦"
+                    . number_format($remainingBalance) . "\n\n";
+    
+            } else {
+    
+                $shortfall = $price - $currentBalance;
+    
+                $balanceSection .=
+                    "❌ Insufficient Balance\n"
+                    . "📉 Shortfall: ₦" . number_format($shortfall) . "\n\n"
+                    . "Type ACCOUNT, WALLET or FUND to view your funding details.\n\n";
+            }
+
             $result = [
                 'status' => 'data_awaiting_confirmation',
                 'product_plan_id' => $planId,
@@ -974,6 +1049,7 @@ class WhatsappConversationService{
                     . "📱 Number: {$recphone}\n"
                     . "💰 Amount: ₦" . number_format($price)
                     . "\n\n"
+                    . $balanceSection
                     . "Please review the details above.\n\n"
                     . "✅ Reply YES to complete this purchase\n"
                     . "❌ Reply NO to cancel."

@@ -453,6 +453,29 @@ class WhatsappIntentResolver
             $beneficiaryUser
         );
 
+        $currentBalance = $user->main_wallet;
+        $remainingBalance = $currentBalance - $price;
+
+        $balanceSection =
+            "💰 Wallet Balance: ₦" . number_format($currentBalance) . "\n";
+
+        if ($currentBalance >= $price) {
+
+            $balanceSection .=
+                "✅ Sufficient Balance\n"
+                . "💳 Balance After Purchase: ₦"
+                . number_format($remainingBalance) . "\n\n";
+
+        } else {
+
+            $shortfall = $price - $currentBalance;
+
+            $balanceSection .=
+                "❌ Insufficient Balance\n"
+                . "📉 Shortfall: ₦" . number_format($shortfall) . "\n\n"
+                . "Type ACCOUNT, WALLET or FUND to view your funding details.\n\n";
+        }
+
         return [
             'status' => 'data_awaiting_confirmation',
             'network_id' => $plan->product_plan_category->network->id,
@@ -468,6 +491,7 @@ class WhatsappIntentResolver
                 . "📦 Plan: {$plan->product_plan_name}\n"
                 . "📱 Number: {$intent['phone']}\n"
                 . "💰 Amount: ₦" . number_format($price) . "\n\n"
+                . $balanceSection
                 . "Please confirm to continue."
         ];
     }
@@ -765,6 +789,32 @@ class WhatsappIntentResolver
                 ? $actualAmount
                 : ($actualAmount - $discountValue);
 
+
+
+
+        $currentBalance = $user->main_wallet;
+        $remainingBalance = $currentBalance - $finalAmount;
+
+        $balanceSection =
+            "💰 Wallet Balance: ₦" . number_format($currentBalance) . "\n";
+
+        if ($currentBalance >= $finalAmount) {
+
+            $balanceSection .=
+                "✅ Sufficient Balance\n"
+                . "💳 Balance After Purchase: ₦"
+                . number_format($remainingBalance) . "\n\n";
+
+        } else {
+
+            $shortfall = $finalAmount - $currentBalance;
+
+            $balanceSection .=
+                "❌ Insufficient Balance\n"
+                . "📉 Shortfall: ₦" . number_format($shortfall) . "\n\n"
+                . "Type ACCOUNT, WALLET or FUND to view your funding details.\n\n";
+        }
+
         /*
         |--------------------------------------------------------------------------
         | Confirmation
@@ -793,7 +843,8 @@ class WhatsappIntentResolver
                 "🛒 Almost done!\n\n"
                 . "📞 Network: " . strtoupper($intent['network']) . "\n"
                 . "💰 Airtime Value: ₦" . number_format($actualAmount) . "\n"
-                . "💳 Amount Charged: ₦" . number_format($finalAmount) . "\n"
+                . "💳 Amount Charged: ₦" . number_format($finalAmount) . "\n\n"
+                . $balanceSection
                 . "📱 Number: {$intent['phone']}\n\n"
                 . "Please review the details above.\n\n"
                 . "Tap a button below to continue. You can also type YES or NO."
