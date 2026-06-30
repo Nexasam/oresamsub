@@ -130,9 +130,8 @@ class WhatsappWebhookController extends Controller
 
             // Account buttons
             'account_refresh_balance' => 'account_refresh_balance',
-            'account_data_help'        => 'account_buy_data',
-            'account_airtime_help'     => 'account_buy_airtime',
-
+            'account_data_airtime_help'        => 'account_buy_data_airtime',
+           
             'save_contact_yes' => 'save_contact_yes',
             'save_contact_no'  => 'save_contact_no',
         
@@ -314,34 +313,32 @@ class WhatsappWebhookController extends Controller
             return response()->json(['ok' => true]);
         }
         
-        if ($text === 'account_buy_data') {
-        
+        if ($text === 'account_buy_data_airtime') {
+
             app(Whatsappsender::class)->send(
                 $phone,
-                "📶 To buy data, send a message like:\n\n"
+                "📶 *To Buy Data*\n\n"
+        
+                . "Examples:\n"
                 . "• MTN 1GB Weekly\n"
                 . "• Airtel 2GB Monthly\n"
                 . "• Glo 500MB\n"
                 . "• MTN 1GB Weekly 09034556677\n"
-                . "Messages are not case-sensitive."
-            );
         
-            return response()->json(['ok' => true]);
-        }
+                . "📞 *To Buy Airtime*\n\n"
         
-        if ($text === 'account_buy_airtime') {
-        
-            app(Whatsappsender::class)->send(
-                $phone,
-                "📞 To buy airtime, send a message like:\n\n"
+                . "Examples:\n"
                 . "• MTN Airtime 500\n"
                 . "• Airtime 1000 MTN\n"
                 . "• MTN Airtime 300 09011223344\n"
-                . "Messages are not case-sensitive."
+        
+                . "💡 Messages are not case-sensitive."
             );
         
             return response()->json(['ok' => true]);
         }
+        
+      
 
 
         $conversation = app(

@@ -68,15 +68,15 @@ class Whatsappsender
                         [
                             'type' => 'reply',
                             'reply' => [
-                                'id' => 'account_data_help',
+                                'id' => 'account_data_airtime_help',
                                 'title' => 'Buy Data',
                             ],
                         ],
                         [
                             'type' => 'reply',
                             'reply' => [
-                                'id' => 'account_airtime_help',
-                                'title' => 'Buy Airtime',
+                                'id' => 'start_over',
+                                'title' => 'Start',
                             ],
                         ],
                     ],
