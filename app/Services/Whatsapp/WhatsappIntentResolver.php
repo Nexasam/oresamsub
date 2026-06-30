@@ -121,7 +121,8 @@ class WhatsappIntentResolver
         }
     
         $message .=
-            "After making a transfer, wait for about 10 seconds and tap Refresh Balance below to check if your funds have reflected.";
+            "After making a transfer, wait about 10 seconds and tap *Refresh Balance* below to check if your funds have reflected.";
+        $message .= "🔄 To return to the main menu and start fresh, type *START* anytime.\n\n";
     
         return [
             'status' => 'account_view',
