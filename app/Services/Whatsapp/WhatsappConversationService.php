@@ -233,7 +233,7 @@ class WhatsappConversationService{
                     "wa_session:" . $session['whatsapp_phone']
                 );
         
-                app(Whatsappsender::class)->send(
+                app(Whatsappsender::class)->sendStartButton(
                     $session['whatsapp_phone'],
                     "❌ Airtime purchase cancelled."
                 );
