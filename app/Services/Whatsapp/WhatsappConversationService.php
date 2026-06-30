@@ -247,6 +247,8 @@ class WhatsappConversationService{
                 $session['whatsapp_phone'],
                 "⏳ Processing your airtime purchase..."
             );
+
+            logger('testingggrrrrr: '.json_encode($session));
         
             try {
         
