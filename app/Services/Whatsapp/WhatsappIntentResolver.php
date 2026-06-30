@@ -286,10 +286,10 @@ class WhatsappIntentResolver
                 'message' => "Join our Telegram channel:\nhttps://t.me/oresamsub"
             ],
 
-            'navigation_support' => [
-                'status' => 'navigation',
-                'message' => "Chat support here:\nhttps://wa.me/234xxxxxxxxx"
-            ],
+            // 'navigation_support' => [
+            //     'status' => 'navigation',
+            //     'message' => "Chat support here:\nhttps://wa.me/234xxxxxxxxx"
+            // ],
 
             default => [
                 'status' => 'unknown',
