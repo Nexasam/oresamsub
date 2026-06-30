@@ -119,7 +119,7 @@ class WhatsappIntentResolver
                 . "📞 Airtime Examples\n"
                 . "• MTN Airtime 500\n"
                 . "• Airtime 1000 MTN\n"
-                . "• Airtime 1000 to 09011223344\n\n"
+                . "• MTN Airtime 1000 to 09011223344 (Best prompt)\n\n"
     
                 . "💰 Account Commands\n"
                 . "• Account\n"
