@@ -10,6 +10,7 @@ use App\Models\ProductPlanCategory;
 use App\Models\Transaction;
 use App\Models\UserContact;
 use App\Models\UserPlan;
+use App\Models\UserVirtualAccount;
 
 class WhatsappIntentResolver
 {
@@ -22,6 +23,9 @@ class WhatsappIntentResolver
             'airtime' => $this->resolveAirtime($intent,$user,$phone),
 
             'favorites' => $this->resolveFavorites($user, $phone),
+
+            'account'
+            => $this->resolveAccount($user, $phone),
 
 
             'navigation_app',
@@ -74,6 +78,55 @@ class WhatsappIntentResolver
 
         
         };
+    }
+
+
+    public function resolveAccount(
+        $user,
+        string $phone
+    ): array
+    {
+        if (! $user) {
+    
+            return [
+                'status' => 'unlinked_user',
+                'message' =>
+                    "⚠️ Your WhatsApp number is not linked to an OresamSub account."
+            ];
+        }
+    
+        $virtualAccounts = UserVirtualAccount::query()
+            ->where('user_id', $user->id)
+            ->get();
+    
+        $message =
+            "💰 ACCOUNT INFORMATION\n\n"
+    
+            . "Wallet Balance: ₦"
+            . number_format($user->main_wallet, 2)
+            . "\n\n";
+    
+        if ($virtualAccounts->count()) {
+    
+            $message .= "🏦 FUND YOUR WALLET\n\n";
+    
+            foreach ($virtualAccounts as $account) {
+    
+                $message .=
+                    "Bank: {$account->bank_name}\n"
+                    . "Account No: {$account->account_number}\n"
+                    . "Account Name: {$account->account_name}\n\n";
+            }
+        }
+    
+        $message .=
+            "After making a transfer, tap Refresh Balance below to check if your funds have reflected.";
+    
+        return [
+            'status' => 'account_view',
+            'whatsapp_phone' => $phone,
+            'message' => $message,
+        ];
     }
 
     public function resolveFavorites($user, string $phone): array

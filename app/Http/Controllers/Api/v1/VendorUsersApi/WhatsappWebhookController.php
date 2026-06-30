@@ -128,6 +128,11 @@ class WhatsappWebhookController extends Controller
             'favorite_change_number'
                 => 'favorite_change_number',
 
+            // Account buttons
+            'account_refresh_balance' => 'account_refresh_balance',
+            'account_buy_data'        => 'account_buy_data',
+            'account_buy_airtime'     => 'account_buy_airtime',
+
             'save_contact_yes' => 'save_contact_yes',
             'save_contact_no'  => 'save_contact_no',
         
@@ -171,6 +176,8 @@ class WhatsappWebhookController extends Controller
                 'ok' => true
             ]);
         }
+
+        
 
         $greetings = [
             'start',
@@ -239,36 +246,34 @@ class WhatsappWebhookController extends Controller
                 . "You can type commands in ANY format (not case-sensitive).\n\n"
             
                 . "📶 DATA EXAMPLES\n"
-            
                 . "• MTN 1GB Weekly\n"
                 . "• Glo 2GB 3 Days\n"
                 . "• Airtel 5GB Monthly\n"
                 . "• 1GB MTN Weekly\n"
-                . "• MTN 1GB Weekly 09034556677\n"
-                . "• MTN 1GB Weekly to Mom\n\n"
+                . "• MTN 1GB Weekly 09034556677\n\n"
+              
             
                 . "📞 AIRTIME EXAMPLES\n"
-            
                 . "• Airtime 1000 MTN\n"
                 . "• MTN Airtime 500\n"
                 . "• Airtel Airtime 2000\n"
                 . "• MTN Airtime 300 09011223344\n"
                 . "• MTN Airtime 500 to Dad\n\n"
             
-                . "⭐ QUICK ACTIONS\n"
-            
+                . "⭐ RECENT DATA TXNS\n"
                 . "• Recent\n"
                 . "• Buy Again\n"
                 . "• Favourites\n"
+                . "• fav\n"
                 . "• Popular\n\n"
             
                 . "💰 ACCOUNT\n"
-            
                 . "• Balance\n"
                 . "• Wallet\n\n"
+                . "• Account\n\n"
+                . "• fund\n\n"
             
                 . "🆘 HELP\n"
-            
                 . "• Support\n"
                 . "• Help\n\n"
             
@@ -294,6 +299,48 @@ class WhatsappWebhookController extends Controller
         if(! empty($phone) ){
             $user = app(WhatsappUserResolver::class)
             ->resolve($phone);    
+        }
+
+        if ($text === 'account_refresh_balance') {
+
+            $result = app(WhatsappIntentResolver::class)
+                ->resolveAccount($user, $phone);
+        
+            app(Whatsappsender::class)->sendAccountButtons(
+                $phone,
+                $result['message']
+            );
+        
+            return response()->json(['ok' => true]);
+        }
+        
+        if ($text === 'account_buy_data') {
+        
+            app(Whatsappsender::class)->send(
+                $phone,
+                "📶 To buy data, send a message like:\n\n"
+                . "• MTN 1GB Weekly\n"
+                . "• Airtel 2GB Monthly\n"
+                . "• Glo 500MB\n"
+                . "• MTN 1GB Weekly 09034556677\n"
+                . "Messages are not case-sensitive."
+            );
+        
+            return response()->json(['ok' => true]);
+        }
+        
+        if ($text === 'account_buy_airtime') {
+        
+            app(Whatsappsender::class)->send(
+                $phone,
+                "📞 To buy airtime, send a message like:\n\n"
+                . "• MTN Airtime 500\n"
+                . "• Airtime 1000 MTN\n"
+                . "• MTN Airtime 300 09011223344\n"
+                . "Messages are not case-sensitive."
+            );
+        
+            return response()->json(['ok' => true]);
         }
 
 
@@ -436,6 +483,20 @@ class WhatsappWebhookController extends Controller
             ),
             now()->addMinutes(10)
         );
+
+
+        /////cccount view
+        if ($result['status'] === 'account_view') {
+
+            app(Whatsappsender::class)->sendAccountButtons(
+                $phone,
+                $result['message']
+            );
+        
+            return response()->json([
+                'ok' => true
+            ]);
+        }
 
         /*
         Send reply

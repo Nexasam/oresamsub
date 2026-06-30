@@ -37,6 +37,58 @@ class Whatsappsender
         return $response->json();
     }
 
+    public function sendAccountButtons(
+        string $phone,
+        string $message
+    )
+    {
+        $wconfig = WhatsappConfig::first();
+    
+        $url = "https://graph.facebook.com/v23.0/{$wconfig->phone_number_id}/messages";
+    
+        $payload = [
+            'messaging_product' => 'whatsapp',
+            'recipient_type' => 'individual',
+            'to' => $phone,
+            'type' => 'interactive',
+            'interactive' => [
+                'type' => 'button',
+                'body' => [
+                    'text' => $message,
+                ],
+              'action' => [
+                    'buttons' => [
+                        [
+                            'type' => 'reply',
+                            'reply' => [
+                                'id' => 'account_refresh_balance',
+                                'title' => 'Refresh',
+                            ],
+                        ],
+                        [
+                            'type' => 'reply',
+                            'reply' => [
+                                'id' => 'account_data_help',
+                                'title' => 'Buy Data',
+                            ],
+                        ],
+                        [
+                            'type' => 'reply',
+                            'reply' => [
+                                'id' => 'account_airtime_help',
+                                'title' => 'Airtime',
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+        ];
+    
+        return Http::withToken($wconfig->token)
+            ->post($url, $payload)
+            ->json();
+    }
+
     public function sendConfirmationButtons(
         string $phone,
         string $message
