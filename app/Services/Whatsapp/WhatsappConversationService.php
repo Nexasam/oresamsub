@@ -52,7 +52,8 @@ class WhatsappConversationService{
             return $this->updateSessionAndResolve(
                 $session,
                 $intent,
-                $session['whatsapp_phone']
+                $session['whatsapp_phone'],
+                'airtime'
             );
         }
 
@@ -102,7 +103,8 @@ class WhatsappConversationService{
             return $this->updateSessionAndResolve(
                 $session,
                 $intent,
-                $session['whatsapp_phone']
+                $session['whatsapp_phone'],
+                'airtime'
             );
         }
 
@@ -135,7 +137,8 @@ class WhatsappConversationService{
             return $this->updateSessionAndResolve(
                 $session,
                 $intent,
-                $session['whatsapp_phone']
+                $session['whatsapp_phone'],
+                'airtime'
             );
         }
 
@@ -265,7 +268,7 @@ class WhatsappConversationService{
         
                 $response = app(
                     \App\Http\Controllers\User\AirtimeController::class
-                )->buy_whatsapp_airtime_action($request);
+                )->buy_airtime_action($request);
         
                 $payload = $response->getData(true);
         
@@ -313,13 +316,23 @@ class WhatsappConversationService{
         protected function updateSessionAndResolve(
             array $session,
             array $intent,
-            string $phone
+            string $phone,
+            string $product = 'data'
         ) {
             $user = app(WhatsappUserResolver::class)
                 ->resolve($phone);
-    
-            $result = app(WhatsappIntentResolver::class)
+
+            if($product == 'data'){
+                $result = app(WhatsappIntentResolver::class)
                 ->resolveData($intent, $user, $phone);
+            }
+
+            if($product == 'airtime'){
+                $result = app(WhatsappIntentResolver::class)
+                ->resolveAirtime($intent, $user, $phone);
+            }
+    
+     
     
             cache()->put(
                 "wa_session:$phone",

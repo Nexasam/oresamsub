@@ -516,7 +516,7 @@ class WhatsappIntentResolver
         ];
     }
 
-    private function resolveAirtime(
+    public function resolveAirtime(
         array $intent,
         $user,
         string $phone
