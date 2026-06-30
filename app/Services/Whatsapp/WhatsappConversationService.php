@@ -248,58 +248,41 @@ class WhatsappConversationService{
             {
                 $intent = $session['intent'] ?? [];
             
-                /*
-                |--------------------------------------------------------------------------
-                | Resolve selected contact or typed number
-                |--------------------------------------------------------------------------
-                */
                 $option = (int) trim($text);
             
                 if (
                     isset($session['options']) &&
                     isset($session['options'][$option])
                 ) {
-                    $intent['phone'] = $session['options'][$option];
+                    $intent['phone']
+                        = $session['options'][$option];
                 } else {
-                    $intent['phone'] = $this->normalizeWhatsappNumber($text);
+            
+                    $intent['phone']
+                        = $this->normalizeWhatsappNumber($text);
                 }
             
-                /*
-                |--------------------------------------------------------------------------
-                | No selected plan? Re-display available plans instead of killing session
-                |--------------------------------------------------------------------------
-                */
-                if (empty($intent['selected_plan_id'])) {
+                $planId =
+                    $intent['selected_plan_id']
+                    ?? $session['product_plan_id']
+                    ?? null;
             
-                    $plans = app(WhatsappIntentResolver::class)
-                        ->findMatchingPlans($intent);
+                if (!$planId) {
             
-                    if ($plans->isEmpty()) {
-            
-                        app(Whatsappsender::class)->send(
-                            $session['whatsapp_phone'],
-                            "😔 I couldn't find any matching plan.\n\nPlease start again.\nExample:\nMTN 1GB Weekly"
-                        );
-            
-                        return response()->json([
-                            'ok' => true
-                        ]);
-                    }
-            
-                    return $this->sendPlanOptions(
-                        $plans,
+                    app(Whatsappsender::class)->send(
                         $session['whatsapp_phone'],
-                        $intent
+                        "❌ Unable to continue because the selected plan was lost.\n\nPlease select the plan again."
                     );
+            
+                    return response()->json([
+                        'ok' => true
+                    ]);
                 }
             
-                /*
-                |--------------------------------------------------------------------------
-                | Continue to confirmation
-                |--------------------------------------------------------------------------
-                */
+                $intent['selected_plan_id'] = $planId;
+            
                 return $this->showDataConfirmation(
-                    $intent['selected_plan_id'],
+                    $planId,
                     $intent['phone'],
                     $session['whatsapp_phone'],
                     $intent
@@ -434,9 +417,85 @@ class WhatsappConversationService{
                 
             
 
+                private function sendPhoneRequestWithContacts(
+                    $user,
+                    string $whatsappPhone,
+                    array $session
+                )
+                {
+                    $contacts = UserContact::query()
+                        ->where('user_id', $user->id)
+                        ->latest('last_used_at')
+                        ->take(5)
+                        ->get();
+                
+                    $cachePayload = array_merge(
+                        $session,
+                        [
+                            'status' => $session['status'] ?? 'data_phone_required',
+                            'whatsapp_phone' => $whatsappPhone,
+                        ]
+                    );
+                
+                    if ($contacts->isNotEmpty()) {
+                
+                        $message =
+                            "📱 Who should receive this data?\n\n"
+                            . "Saved Contacts:\n\n";
+                
+                        $options = [];
+                
+                        foreach ($contacts as $index => $contact) {
+                
+                            $number = $index + 1;
+                
+                            $message .=
+                                "{$number}. {$contact->name} - {$contact->phone_number}\n";
+                
+                            $options[$number] = $contact->phone_number;
+                        }
+                
+                        $message .=
+                            "\nYou can:\n"
+                            . "• Reply with a contact number above\n"
+                            . "• Type a phone number\n"
+                            . "• Share a WhatsApp contact";
+                
+                        $cachePayload['options'] = $options;
+                
+                        cache()->put(
+                            "wa_session:$whatsappPhone",
+                            $cachePayload,
+                            now()->addMinutes(10)
+                        );
+                
+                        app(Whatsappsender::class)->send(
+                            $whatsappPhone,
+                            $message
+                        );
+                
+                        return;
+                    }
+                
+                    cache()->put(
+                        "wa_session:$whatsappPhone",
+                        $cachePayload,
+                        now()->addMinutes(10)
+                    );
+                
+                    app(Whatsappsender::class)->send(
+                        $whatsappPhone,
+                        "📱 Who should receive this data?\n\n"
+                        . "You can:\n"
+                        . "• Type the phone number\n"
+                        . "• Share a WhatsApp contact\n\n"
+                        . "Example:\n"
+                        . "08168509044"
+                    );
+                }
     
 
-        private function sendPhoneRequestWithContacts(
+        private function sendPhoneRequestWithContactsooold(
             $user,
             string $whatsappPhone,
             array $session
@@ -686,7 +745,7 @@ class WhatsappConversationService{
     }
     
 
-    public function handleFavoriteSelection(
+    public function handleFavoriteSelectionoldd(
         string $text,
         array $session,
         string $phone
@@ -772,6 +831,90 @@ class WhatsappConversationService{
         $user = app(WhatsappUserResolver::class)
         ->resolve($phone);
 
+        $this->sendPhoneRequestWithContacts(
+            $user,
+            $session['whatsapp_phone'],
+            $result
+        );
+    
+        return response()->json([
+            'ok' => true
+        ]);
+    }
+
+    public function handleFavoriteSelection(
+        string $text,
+        array $session,
+        string $phone
+    )
+    {
+        $option = (int) trim($text);
+    
+        if (!isset($session['options'][$option])) {
+    
+            app(Whatsappsender::class)->send(
+                $session['whatsapp_phone'],
+                "Oops 😅\n\nThat option isn't on the list.\n\nPlease choose one of the numbers shown above."
+            );
+    
+            return response()->json(['ok' => true]);
+        }
+    
+        $selection = $session['options'][$option];
+    
+        $planId = $selection['product_plan_id'];
+        $recipientPhone = $selection['phone'] ?? null;
+    
+        $plan = ProductPlan::with([
+            'product_plan_category.product',
+            'product_plan_category.network'
+        ])->find($planId);
+    
+        if (!$plan) {
+    
+            app(Whatsappsender::class)->send(
+                $session['whatsapp_phone'],
+                "Selected plan no longer exists."
+            );
+    
+            return response()->json(['ok' => true]);
+        }
+    
+        $user = app(WhatsappUserResolver::class)
+            ->resolve($phone);
+    
+        $dat = [
+            'product_id' => $plan->product_plan_category->product->id,
+            'network_id' => $plan->product_plan_category->network->id,
+            'user' => $user,
+            'plan_details' => $plan,
+        ];
+    
+        $price = app(DataPlansService::class)
+            ->get_customer_price_per_plan($dat)['message'];
+    
+        $intent = [
+            'type' => 'data',
+            'selected_plan_id' => $planId,
+            'network' => strtolower(
+                $plan->product_plan_category->network->network_name
+            ),
+            'phone' => $recipientPhone,
+        ];
+    
+        $result = [
+            'status' => 'favorite_phone_required',
+            'product_plan_id' => $plan->id,
+            'network_id' => $plan->product_plan_category->network->id,
+            'whatsapp_phone' => $session['whatsapp_phone'],
+            'phone' => $recipientPhone,
+            'price' => $price,
+            'intent' => $intent,
+        ];
+    
+        $user = app(WhatsappUserResolver::class)
+            ->resolve($phone);
+    
         $this->sendPhoneRequestWithContacts(
             $user,
             $session['whatsapp_phone'],

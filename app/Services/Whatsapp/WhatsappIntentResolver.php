@@ -25,8 +25,37 @@ class WhatsappIntentResolver
                 => $this->resolveNavigation($intent['type']),
         
             default => [
-                'status' => 'unsupported',
-                'message' => "I didn't understand that message..."
+              
+                    'status' => 'unsupported',
+                    'message' =>
+                        "🤔 I couldn't quite understand that request.\n\n"
+                
+                        . "Here are some things I can help you with:\n\n"
+                
+                        . "📶 Buy Data\n"
+                        . "• MTN 1GB Weekly\n"
+                        . "• Airtel 2GB Monthly\n"
+                        . "• Glo 500MB\n\n"
+                
+                        . "📞 Buy Airtime\n"
+                        . "• Airtime 1000 MTN\n"
+                        . "• Airtel Airtime 500\n\n"
+                
+                        . "📋 Repeat Purchases\n"
+                        . "• Recent\n"
+                        . "• Buy Again\n"
+                        . "• Favourites\n\n"
+                
+                        . "💰 Account Information\n"
+                        . "• Balance\n"
+                        . "• Wallet\n\n"
+                
+                        . "🆘 Support\n"
+                        . "• Support\n\n"
+                
+                        . "If you're not sure where to start, simply type:\n"
+                        . "👉 START"
+                
             ]
 
         
@@ -180,7 +209,7 @@ class WhatsappIntentResolver
         }
     }
 
-        if (!$intent['network']) {
+        if (empty($intent['network'])) {
 
             return [
                 'status' => 'data_network_required',
@@ -196,7 +225,7 @@ class WhatsappIntentResolver
             ];
         }
 
-        if (!$intent['data_size_in_mb']) {
+        if (empty($intent['data_size_in_mb'])) {
 
             return [
                 'status' => 'data_size_required',
@@ -214,6 +243,7 @@ class WhatsappIntentResolver
 
 
         $plans = $this->findMatchingPlans($intent);
+        logger('is it here: '.$plans);
 
         if ($plans->isEmpty()) {
 
@@ -265,7 +295,7 @@ class WhatsappIntentResolver
 
         $plan = $plans->first();
 
-        if (!$intent['phone']) {
+        if ( empty($intent['phone']) ) {
 
             // $intent['product_plan_id'] = $plan->id;
 
@@ -447,7 +477,7 @@ class WhatsappIntentResolver
 
     private function resolveAirtime(array $intent, $user, $phone): array
     {
-        if (!$intent['amount']) {
+        if (empty($intent['amount'])) {
 
             return [
                 'status' => 'need_more_info',
@@ -457,7 +487,7 @@ class WhatsappIntentResolver
             ];
         }
 
-        if (!$intent['phone']) {
+        if (empty($intent['phone'])) {
 
             return [
                 'status' => 'need_more_info',
