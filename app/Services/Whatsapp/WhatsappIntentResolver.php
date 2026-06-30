@@ -2,6 +2,7 @@
 namespace App\Services\Whatsapp;
 
 use App\Http\Services\DataPlansService;
+use App\Models\Network;
 use App\Models\Product;
 use App\Models\ProductCategory;
 use App\Models\ProductPlan;
@@ -617,11 +618,11 @@ class WhatsappIntentResolver
             }
         
             $intent['product_plan_id'] = $plan->id;
-            $intent['network_id'] = $plan->network_id;
+            $intent['network_id'] = Network::where('network_name',strtoupper($intent['network']))->first()->id;
         }
     
         /*
-        |--------------------------------------------------------------------------
+        |--------------------------------------------ame------------------------------
         | Confirmation
         |--------------------------------------------------------------------------
         */
