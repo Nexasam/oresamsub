@@ -92,8 +92,8 @@ class WhatsappIntentResolver
             'message' =>
                 "🆘 OresamSub Help Center\n\n"
 
-                . "📱 Mobile App\n"
-                . "Login:\n"
+                . "📱 Web Version\n"
+                . "Login:"
                 . "https://oresamsub.com/login\n\n"
 
                 . "Forgot Password?\n"
@@ -118,7 +118,7 @@ class WhatsappIntentResolver
                 . "📞 Airtime Examples\n"
                 . "• MTN Airtime 500\n"
                 . "• Airtime 1000 MTN\n"
-                . "• Airtime 1000 to Dad\n\n"
+                . "• Airtime 1000 to 09011223344\n\n"
 
                 . "💰 Account Commands\n"
                 . "• Account\n"
