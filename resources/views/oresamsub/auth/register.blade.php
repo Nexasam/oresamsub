@@ -70,6 +70,14 @@
         <x-input-error :messages="$errors->get('phone_number')" />
       </div>
 
+      <div>
+        <label class="block text-sm mb-1">Whatsapp Number</label>
+        <input type="tel" name="whatsapp_number" value="{{ old('whatsapp_number') }}" required
+          placeholder="08012345678"
+          class="w-full px-4 py-2 rounded-lg bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600">
+        <x-input-error :messages="$errors->get('whatsapp_number')" />
+      </div>
+
       <!-- Email -->
       <div>
         <label class="block text-sm mb-1">Email Address</label>
