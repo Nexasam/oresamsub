@@ -66,27 +66,108 @@
 </div>
 
 <script>
-let deferredPrompt;
-
-window.addEventListener('beforeinstallprompt', (e) => {
-    e.preventDefault();
-    deferredPrompt = e;
-});
-
-document.getElementById('manualInstallBtn').addEventListener('click', async () => {
-
-    if (deferredPrompt) {
-        deferredPrompt.prompt();
-
-        const { outcome } = await deferredPrompt.userChoice;
-        console.log('Install result:', outcome);
-
-        deferredPrompt = null;
-    } else {
-        alert(
-            "Installation prompt is not available yet.\n\nAndroid: Open Chrome menu and tap 'Install App'.\n\niPhone: Use 'Add to Home Screen'."
+    let deferredPrompt;
+    
+    // Check if app is already installed
+    function isAppInstalled() {
+        return (
+            window.matchMedia('(display-mode: standalone)').matches ||
+            window.navigator.standalone === true
         );
     }
-});
-</script>
-@endsection
+    
+    // Update button state
+    function updateInstallButton() {
+        const btn = document.getElementById('manualInstallBtn');
+    
+        if (!btn) return;
+    
+        if (isAppInstalled()) {
+            btn.innerHTML = '✅ App Already Installed';
+            btn.disabled = true;
+            btn.classList.add('opacity-50', 'cursor-not-allowed');
+        }
+    }
+    
+    // Capture install prompt when available
+    window.addEventListener('beforeinstallprompt', (e) => {
+        e.preventDefault();
+        deferredPrompt = e;
+    
+        const btn = document.getElementById('manualInstallBtn');
+    
+        if (btn && !isAppInstalled()) {
+            btn.innerHTML = '📱 Install App';
+            btn.disabled = false;
+        }
+    });
+    
+    // Detect successful install
+    window.addEventListener('appinstalled', () => {
+        console.log('PWA installed');
+    
+        deferredPrompt = null;
+    
+        const btn = document.getElementById('manualInstallBtn');
+    
+        if (btn) {
+            btn.innerHTML = '✅ App Installed';
+            btn.disabled = true;
+            btn.classList.add('opacity-50', 'cursor-not-allowed');
+        }
+    });
+    
+    // Initial check
+    window.addEventListener('load', () => {
+        updateInstallButton();
+    });
+    
+    // Install button click
+    document.getElementById('manualInstallBtn').addEventListener('click', async () => {
+    
+        // Already installed
+        if (isAppInstalled()) {
+            alert('OresamSub is already installed on this device.');
+            return;
+        }
+    
+        // Install prompt available
+        if (deferredPrompt) {
+    
+            deferredPrompt.prompt();
+    
+            const { outcome } = await deferredPrompt.userChoice;
+    
+            console.log('Install result:', outcome);
+    
+            if (outcome === 'accepted') {
+                console.log('User accepted install');
+            } else {
+                console.log('User dismissed install');
+            }
+    
+            deferredPrompt = null;
+    
+            return;
+        }
+    
+        // Fallback instructions
+        const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
+    
+        if (isIOS) {
+            alert(
+                'To install OresamSub on iPhone:\n\n' +
+                '1. Tap the Share button\n' +
+                '2. Select "Add to Home Screen"\n' +
+                '3. Tap "Add"'
+            );
+        } else {
+            alert(
+                'Installation prompt is not available.\n\n' +
+                'If you are using Chrome:\n' +
+                'Tap the browser menu (⋮)\n' +
+                'Then tap "Install App" or "Add to Home Screen".'
+            );
+        }
+    });
+    </script>
