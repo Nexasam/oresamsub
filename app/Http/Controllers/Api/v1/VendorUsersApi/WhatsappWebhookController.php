@@ -724,7 +724,7 @@ class WhatsappWebhookController extends Controller
             "⚠️ Sorry, we could not find an account associated with this WhatsApp number.\n\n"
             . "If you already have an OresamSub account, reply with your email address and we will send an OTP to verify your account and link this WhatsApp number.\n\n"
             . "If you do not have an account yet, register here:\n"
-            . config('app.url') . "/register\n\n"
+            . config('app.url') . "register\n\n"
             . "After registration, return here and type START."
         );
     
