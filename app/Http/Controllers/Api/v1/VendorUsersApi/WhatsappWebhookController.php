@@ -256,8 +256,7 @@ class WhatsappWebhookController extends Controller
                 . "• Airtime 1000 MTN\n"
                 . "• MTN Airtime 500\n"
                 . "• Airtel Airtime 2000\n"
-                . "• MTN Airtime 300 09011223344\n"
-                . "• MTN Airtime 500 to Dad\n\n"
+                . "• MTN Airtime 300 09011223344\n\n"
             
                 . "⭐ RECENT DATA TXNS\n"
                 . "• Recent\n"

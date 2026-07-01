@@ -7,6 +7,7 @@ import InviteEarn from "@/Components/InviteEarn";
 import CommunityCard from "@/Components/CommunityCard";
 import WalletBalance from "@/Components/WalletBalance";
 import Announcements from "@/Components/Announcements";
+import PWAInstallButton from "@/Components/PWAInstallButton";
 import axios from "axios";
 import Swal from "sweetalert2";
 
@@ -129,6 +130,15 @@ export default function Dashboard({ transactions: initialTransactions }) {
 
       {/* Wallet */}
       <WalletBalance user={user} />
+
+      {/* Install App */}
+      {/* <PWAInstallButton /> */}
+      <a
+    href="/oresamsub/install-app"
+        class="block w-full text-center py-3 my-2 bg-emerald-600 text-white rounded-lg font-semibold"
+    >
+        📱 Install Mobile App
+    </a>
 
       {/* Admin / Marketer shortcut */}
       {(user.is_marketer === 1 || user.role?.role_name === "Admin") && (

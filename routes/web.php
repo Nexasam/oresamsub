@@ -164,6 +164,10 @@ Route::middleware(['set_locale'])->group(function () {
                     return view('oresamsub.pages.cable')->with($data);
                 })->name('ore.cable');
 
+                Route::get('oresamsub/install-app', function () {
+                    return view('oresamsub.pages.install_app');
+                })->name('ore.install_app');
+
                 Route::get('oresamsub/electricity', function () {
                     $product = App\Models\Product::select('id')->where('slug', 'utility_bills')->first();
                     $product_plan_categories = App\Models\ProductPlanCategory::select('id','product_plan_category_name')->where('product_id', $product->id)->get();
