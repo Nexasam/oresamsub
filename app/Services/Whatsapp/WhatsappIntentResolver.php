@@ -92,6 +92,10 @@ class WhatsappIntentResolver
             'message' =>
                 "🆘 OresamSub Help Center\n\n"
     
+                . "📱 Mobile Version: If you already have it installed.\n"
+                . "Login:\n"
+                . "https://oresamsub.com/dashboard\n\n"
+
                 . "📱 Web Version\n"
                 . "Login:\n"
                 . "https://oresamsub.com/login\n\n"
