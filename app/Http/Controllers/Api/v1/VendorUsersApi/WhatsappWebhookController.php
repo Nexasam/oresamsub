@@ -373,11 +373,18 @@ class WhatsappWebhookController extends Controller
     
                                 return response()->json(['ok' => true]);
                             }
-    
+
+                            $normalizedPhone = preg_replace('/^234/', '0', $phone);
+
                             User::where('id', $otpData['user_id'])
                                 ->update([
-                                    'whatsapp_number' => $phone,
+                                    'whatsapp_number' => $normalizedPhone,
                                 ]);
+    
+                            // User::where('id', $otpData['user_id'])
+                            //     ->update([
+                            //         'whatsapp_number' => $phone,
+                            //     ]);
     
                             Cache::forget("wa_session:{$phone}");
                             Cache::forget("wa_link_otp:{$phone}");
