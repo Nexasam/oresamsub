@@ -39,8 +39,20 @@
             <li>✅ Faster access to your dashboard</li>
             <li>✅ Works like a mobile app</li>
             <li>✅ Easy airtime, data, cable and electricity purchases</li>
-            <li>✅ No need to open browser every time</li>
+            <li>✅ No need to open your browser every time</li>
+            <li>✅ Quick access directly from your phone</li>
         </ul>
+        
+        <div class="bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-700 rounded-lg p-4 text-sm text-left mb-6">
+            <p class="font-semibold text-emerald-700 dark:text-emerald-300 mb-2">
+                Important:
+            </p>
+        
+            <p class="text-gray-700 dark:text-gray-300">
+                After installation, check your phone's app list/menu for <strong>OresamSub</strong>.
+                For easier access, you can add it to your Home Screen, Favorites, or App Shortcuts depending on your device.
+            </p>
+        </div>
 
         <button
             id="manualInstallBtn"
@@ -66,108 +78,31 @@
 </div>
 
 <script>
-    let deferredPrompt;
-    
-    // Check if app is already installed
-    function isAppInstalled() {
-        return (
-            window.matchMedia('(display-mode: standalone)').matches ||
-            window.navigator.standalone === true
-        );
-    }
-    
-    // Update button state
-    function updateInstallButton() {
-        const btn = document.getElementById('manualInstallBtn');
-    
-        if (!btn) return;
-    
-        if (isAppInstalled()) {
-            btn.innerHTML = '✅ App Already Installed';
-            btn.disabled = true;
-            btn.classList.add('opacity-50', 'cursor-not-allowed');
-        }
-    }
-    
-    // Capture install prompt when available
-    window.addEventListener('beforeinstallprompt', (e) => {
-        e.preventDefault();
-        deferredPrompt = e;
-    
-        const btn = document.getElementById('manualInstallBtn');
-    
-        if (btn && !isAppInstalled()) {
-            btn.innerHTML = '📱 Install App';
-            btn.disabled = false;
-        }
-    });
-    
-    // Detect successful install
-    window.addEventListener('appinstalled', () => {
-        console.log('PWA installed');
-    
+let deferredPrompt;
+
+window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+});
+
+document.getElementById('manualInstallBtn').addEventListener('click', async () => {
+
+    if (deferredPrompt) {
+        deferredPrompt.prompt();
+
+        const { outcome } = await deferredPrompt.userChoice;
+        console.log('Install result:', outcome);
+
         deferredPrompt = null;
-    
-        const btn = document.getElementById('manualInstallBtn');
-    
-        if (btn) {
-            btn.innerHTML = '✅ App Installed';
-            btn.disabled = true;
-            btn.classList.add('opacity-50', 'cursor-not-allowed');
-        }
-    });
-    
-    // Initial check
-    window.addEventListener('load', () => {
-        updateInstallButton();
-    });
-    
-    // Install button click
-    document.getElementById('manualInstallBtn').addEventListener('click', async () => {
-    
-        // Already installed
-        if (isAppInstalled()) {
-            alert('OresamSub is already installed on this device.');
-            return;
-        }
-    
-        // Install prompt available
-        if (deferredPrompt) {
-    
-            deferredPrompt.prompt();
-    
-            const { outcome } = await deferredPrompt.userChoice;
-    
-            console.log('Install result:', outcome);
-    
-            if (outcome === 'accepted') {
-                console.log('User accepted install');
-            } else {
-                console.log('User dismissed install');
-            }
-    
-            deferredPrompt = null;
-    
-            return;
-        }
-    
-        // Fallback instructions
-        const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
-    
-        if (isIOS) {
-            alert(
-                'To install OresamSub on iPhone:\n\n' +
-                '1. Tap the Share button\n' +
-                '2. Select "Add to Home Screen"\n' +
-                '3. Tap "Add"'
-            );
-        } else {
-            alert(
-                'Installation prompt is not available.\n\n' +
-                'If you are using Chrome:\n' +
-                'Tap the browser menu (⋮)\n' +
-                'Then tap "Install App" or "Add to Home Screen".'
-            );
-        }
-    });
-    </script>
+    } else {
+        alert(
+            "OresamSub may already be installed on your device. If not, the installation prompt is not available right now.\n\n" +
+            "After installation, check your phone's app menu for OresamSub and add it to your Home Screen or Favorites for quick access.\n\n" +
+            "Android: Open the Chrome menu and tap 'Install App'.\n\n" +
+            "iPhone: Tap Share and select 'Add to Home Screen'."
+        );
+
+    }
+});
+</script>
+@endsection
