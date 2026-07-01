@@ -308,112 +308,11 @@ class WhatsappWebhookController extends Controller
 
             if (!$user) {
 
-                if ($session) {
-
-                    switch ($session['status']) {
-    
-                        case 'link_whatsapp':
-    
-                            $email = trim($text);
-    
-                            $user = User::where('email', $email)->first();
-    
-                            if (!$user) {
-    
-                                app(Whatsappsender::class)->send(
-                                    $phone,
-                                    "❌ No account was found with that email address. Please try again."
-                                );
-    
-                                return response()->json(['ok' => true]);
-                            }
-    
-                            $otp = rand(100000, 999999);
-    
-                            Cache::put(
-                                "wa_link_otp:{$phone}",
-                                [
-                                    'user_id' => $user->id,
-                                    'otp'     => $otp,
-                                ],
-                                now()->addMinutes(10)
-                            );
-    
-                            Mail::to($user->email)
-                            ->send(new WhatsappLinkOtpMail($otp));
-                            
-                            Cache::put(
-                                "wa_session:{$phone}",
-                                [
-                                    'status' => 'verify_link_otp',
-                                    'user_id' => $user->id,
-                                ],
-                                now()->addMinutes(15)
-                            );
-    
-                            // Send OTP via email here
-    
-                            app(Whatsappsender::class)->send(
-                                $phone,
-                                "📧 An OTP has been sent to {$email}.\n\nPlease reply with the OTP to continue."
-                            );
-    
-                            return response()->json(['ok' => true]);
-    
-                        case 'verify_link_otp':
-    
-                            $otpData = Cache::get("wa_link_otp:{$phone}");
-    
-                            if (!$otpData || $otpData['otp'] != trim($text)) {
-    
-                                app(Whatsappsender::class)->send(
-                                    $phone,
-                                    "❌ Invalid OTP. Please try again."
-                                );
-    
-                                return response()->json(['ok' => true]);
-                            }
-
-                            $normalizedPhone = preg_replace('/^234/', '0', $phone);
-
-                            User::where('id', $otpData['user_id'])
-                                ->update([
-                                    'whatsapp_number' => $normalizedPhone,
-                                ]);
-    
-                            // User::where('id', $otpData['user_id'])
-                            //     ->update([
-                            //         'whatsapp_number' => $phone,
-                            //     ]);
-    
-                            Cache::forget("wa_session:{$phone}");
-                            Cache::forget("wa_link_otp:{$phone}");
-    
-                            app(Whatsappsender::class)->send(
-                                $phone,
-                                "✅ Success! Your WhatsApp number has been linked to your OresamSub account. Type: START to begin using the service."
-                            );
-    
-                            return response()->json(['ok' => true]);
-                    }
-                }
-
-                Cache::put(
-                    "wa_session:{$phone}",
-                    [
-                        'status' => 'link_whatsapp',
-                        'phone'  => $phone,
-                    ],
-                    now()->addMinutes(15)
-                );
-            
-                app(Whatsappsender::class)->send(
+                return $this->handleWhatsappLinking(
                     $phone,
-                    "⚠️ Sorry, we could not find an account associated with this WhatsApp number.\n\n"
-                    . "If you already have an OresamSub account, please reply with your email address and we will send an OTP to verify your account and link this WhatsApp number to it."
+                    $text,
+                    $session
                 );
-            
-                return response()->json(['ok' => true]);
             }
 
 
@@ -703,6 +602,133 @@ class WhatsappWebhookController extends Controller
         return response()->json([
             'ok' => true
         ]);
+    }
+
+    private function normalizeLocalPhone(string $phone): string
+    {
+        $phone = preg_replace('/\D/', '', $phone);
+
+        if (str_starts_with($phone, '234')) {
+            return '0' . substr($phone, 3);
+        }
+
+        return $phone;
+    }
+
+    private function handleWhatsappLinking(
+        string $phone,
+        string $text,
+        ?array $session
+    )
+    {
+        if ($session) {
+    
+            switch ($session['status']) {
+    
+                case 'link_whatsapp':
+    
+                    $email = trim($text);
+    
+                    $user = User::where('email', $email)->first();
+    
+                    if (!$user) {
+    
+                        app(Whatsappsender::class)->send(
+                            $phone,
+                            "❌ No account was found with that email address.\n\n"
+                            . "If you do not have an account yet, register here:\n"
+                            . config('app.url') . "/register\n\n"
+                            . "After registering, return here and type START."
+                        );
+    
+                        return response()->json(['ok' => true]);
+                    }
+    
+                    $otp = rand(100000, 999999);
+    
+                    Cache::put(
+                        "wa_link_otp:{$phone}",
+                        [
+                            'user_id' => $user->id,
+                            'otp' => $otp,
+                        ],
+                        now()->addMinutes(10)
+                    );
+    
+                    Mail::to($user->email)
+                        ->send(new WhatsappLinkOtpMail($otp));
+    
+                    Cache::put(
+                        "wa_session:{$phone}",
+                        [
+                            'status' => 'verify_link_otp',
+                            'user_id' => $user->id,
+                        ],
+                        now()->addMinutes(15)
+                    );
+    
+                    app(Whatsappsender::class)->send(
+                        $phone,
+                        "📧 An OTP has been sent to {$email}. Also check your spam.\n\n"
+                        . "Please reply with the 6-digit OTP to continue."
+                    );
+    
+                    return response()->json(['ok' => true]);
+    
+                case 'verify_link_otp':
+    
+                    $otpData = Cache::get("wa_link_otp:{$phone}");
+    
+                    if (
+                        !$otpData ||
+                        trim($text) !== (string) $otpData['otp']
+                    ) {
+    
+                        app(Whatsappsender::class)->send(
+                            $phone,
+                            "❌ Invalid OTP. Please try again."
+                        );
+    
+                        return response()->json(['ok' => true]);
+                    }
+    
+                    User::where('id', $otpData['user_id'])
+                        ->update([
+                            'whatsapp_number' => $this->normalizeLocalPhone($phone),
+                        ]);
+    
+                    Cache::forget("wa_session:{$phone}");
+                    Cache::forget("wa_link_otp:{$phone}");
+    
+                    app(Whatsappsender::class)->send(
+                        $phone,
+                        "✅ Success! Your WhatsApp number has been linked to your OresamSub account.\n\n"
+                        . "Type START to begin using the service."
+                    );
+    
+                    return response()->json(['ok' => true]);
+            }
+        }
+    
+        Cache::put(
+            "wa_session:{$phone}",
+            [
+                'status' => 'link_whatsapp',
+                'phone' => $phone,
+            ],
+            now()->addMinutes(15)
+        );
+    
+        app(Whatsappsender::class)->send(
+            $phone,
+            "⚠️ Sorry, we could not find an account associated with this WhatsApp number.\n\n"
+            . "If you already have an OresamSub account, reply with your email address and we will send an OTP to verify your account and link this WhatsApp number.\n\n"
+            . "If you do not have an account yet, register here:\n"
+            . config('app.url') . "/register\n\n"
+            . "After registration, return here and type START."
+        );
+    
+        return response()->json(['ok' => true]);
     }
 
  
