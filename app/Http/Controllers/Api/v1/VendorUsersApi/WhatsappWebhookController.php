@@ -637,7 +637,7 @@ class WhatsappWebhookController extends Controller
                             $phone,
                             "❌ No account was found with that email address.\n\n"
                             . "If you do not have an account yet, register here:\n"
-                            . config('app.url') . "/register\n\n"
+                            . config('app.url') . "register\n\n"
                             . "After registering, return here and type START."
                         );
     
