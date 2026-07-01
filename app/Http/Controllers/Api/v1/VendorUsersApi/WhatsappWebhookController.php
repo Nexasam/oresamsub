@@ -297,6 +297,16 @@ class WhatsappWebhookController extends Controller
         if(! empty($phone) ){
             $user = app(WhatsappUserResolver::class)
             ->resolve($phone);    
+
+            if(!$user){
+                app(Whatsappsender::class)->send(
+                    $phone,
+                    "⚠️ Sorry, we could not find an account associated with this WhatsApp number.\n\n"
+                    . "Please ensure you are using the correct number or contact support for assistance."
+                );
+        
+                return response()->json(['ok' => true]);
+            }
         }
 
         if ($text === 'account_refresh_balance') {
