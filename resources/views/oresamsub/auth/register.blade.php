@@ -79,7 +79,7 @@
       </div>
 
       <!-- Email -->
-      <div>
+      <div class="sm:col-span-2">
         <label class="block text-sm mb-1">Email Address</label>
         <input type="email" name="email" value="{{ old('email') }}" required
           class="w-full px-4 py-2 rounded-lg bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600">
