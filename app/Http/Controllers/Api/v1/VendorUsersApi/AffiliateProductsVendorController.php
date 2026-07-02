@@ -38,7 +38,7 @@ class AffiliateProductsVendorController extends Controller
 
         $user = $request->api_user ?? null;
 
-        logger('AffiliateProductsVendorController syncplans22222: ', ['user' => $user]);
+        logger('AffiliateProductsVendorController syncplans22222: ', ['user' => $user->id]);
 
     
         $plans = (new ProductPlanService())->fetch_all_data_plans($fetchpplans,$user);
