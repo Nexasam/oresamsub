@@ -36,7 +36,9 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap" rel="stylesheet">
 
-    <title>{{ $site_title }} - Oresamsub</title>
+    <title>
+        OresamSub | Oresam Telecoms Global Concept
+        </title>
 
     @php
        $hero1 = isset($hero_image1) ? env('APP_URL').'assets/landing_page_assets/img/hero_image1/'.$hero_image1 : env('APP_URL').'assets/landing_page_assets/img/bg_banner1.jpg';
@@ -536,31 +538,7 @@
         </div>
     </div>
 
-    <!-- ABOUT -->
-    {{-- old --}}
-    {{-- <section id="about">
-        <div class="container">
-            <div class="row align-items-center g-5">
-                <div class="col-lg-6">
-                    @if (isset($aboutus_image))
-                        <img src="{{ asset(env('APP_ASSETS_BASE_URL').'landing_page_assets/img/aboutus_image/'.$aboutus_image) }}"
-                             alt="About Us" style="width:100%;border-radius:14px;object-fit:cover;max-height:440px;box-shadow:0 12px 40px rgba(0,0,0,0.12);">
-                    @else
-                        <img src="{{ asset(env('APP_ASSETS_BASE_URL').'img/authentication/auth11.jpg') }}"
-                             alt="About Us" style="width:100%;border-radius:14px;object-fit:cover;max-height:440px;box-shadow:0 12px 40px rgba(0,0,0,0.12);">
-                    @endif
-                </div>
-                <div class="col-lg-6">
-                    <div class="about-card">
-                        <h6>{{ __('messages.About Us') }}</h6>
-                        <h1>{{ __('messages.Who we are') }}</h1>
-                        <p>{{ $aboutus_introduction }}</p>
-                        <a href="{{ url('/register') }}" class="btn btn-brand mt-3">{{ __('messages.Get Started') }}</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section> --}}
+  
 
     <!-- ABOUT -->
     <section id="about">
@@ -801,63 +779,7 @@
         </div>
     </section>
 
-    <!-- REVIEWS 
-    <section id="reviews">
-        <div class="container">
-            <div class="text-center section-intro">
-                <h6 class="reviews-section-sub" style="color:rgba(255,255,255,0.6);font-weight:700;text-transform:uppercase;letter-spacing:.1em;font-size:.8rem;">{{ __('messages.Testimonials') }}</h6>
-                <h1 class="reviews-section-title fw-bold">{{ __('messages.What our customers say') }}</h1>
-            </div>
-            <div class="owl-theme owl-carousel reviews-slider">
-                <div class="review-card">
-                    <div class="quote-icon"><i class='bx bxs-quote-alt-left'></i></div>
-                    <p class="review-text">{{ $review1 }}</p>
-                    <div class="stars mb-3">
-                        <i class='bx bxs-star'></i><i class='bx bxs-star'></i><i class='bx bxs-star'></i>
-                        <i class='bx bxs-star'></i><i class='bx bxs-star-half'></i>
-                    </div>
-                    <div class="d-flex align-items-center gap-3">
-                        <div class="reviewer-avatar">{{ strtoupper(substr($reviewer_name1, 0, 1)) }}</div>
-                        <div>
-                            <p class="reviewer-name">{{ $reviewer_name1 }}</p>
-                            <span class="reviewer-pos">{{ $reviewer_position1 }}</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="review-card">
-                    <div class="quote-icon"><i class='bx bxs-quote-alt-left'></i></div>
-                    <p class="review-text">{{ $review2 }}</p>
-                    <div class="stars mb-3">
-                        <i class='bx bxs-star'></i><i class='bx bxs-star'></i><i class='bx bxs-star'></i>
-                        <i class='bx bxs-star'></i><i class='bx bxs-star-half'></i>
-                    </div>
-                    <div class="d-flex align-items-center gap-3">
-                        <div class="reviewer-avatar">{{ strtoupper(substr($reviewer_name2, 0, 1)) }}</div>
-                        <div>
-                            <p class="reviewer-name">{{ $reviewer_name2 }}</p>
-                            <span class="reviewer-pos">{{ $reviewer_position2 }}</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="review-card">
-                    <div class="quote-icon"><i class='bx bxs-quote-alt-left'></i></div>
-                    <p class="review-text">{{ $review3 }}</p>
-                    <div class="stars mb-3">
-                        <i class='bx bxs-star'></i><i class='bx bxs-star'></i><i class='bx bxs-star'></i>
-                        <i class='bx bxs-star'></i><i class='bx bxs-star-half'></i>
-                    </div>
-                    <div class="d-flex align-items-center gap-3">
-                        <div class="reviewer-avatar">{{ strtoupper(substr($reviewer_name3, 0, 1)) }}</div>
-                        <div>
-                            <p class="reviewer-name">{{ $reviewer_name3 }}</p>
-                            <span class="reviewer-pos">{{ $reviewer_position3 }}</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-    -->
+
 
     <!-- CONTACT -->
     <section id="contact">
