@@ -35,8 +35,10 @@ class AffiliateProductsVendorController extends Controller
             'product_plan_category.product',
             'product_plan_category.network'
         ])->get();
+
+        $user = $request->api_user ?? null;
     
-        $plans = (new ProductPlanService())->fetch_all_data_plans($fetchpplans);
+        $plans = (new ProductPlanService())->fetch_all_data_plans($fetchpplans,$user);
        
         return $this->success('All plans successfully fetched',data: $plans);  
     }

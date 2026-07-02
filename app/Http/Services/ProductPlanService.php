@@ -2,15 +2,16 @@
 
 namespace App\Http\Services;
 
-use App\Models\User;
+use App\Models\AutomationProductPlan;
 use App\Models\Network;
-use App\Models\Product;
-use App\Models\UserPlan;
-use App\Models\ProductPlan;
 use App\Models\PlanProfitSetting;
+use App\Models\Product;
+use App\Models\ProductPlan;
 use App\Models\ProductPlanCategory;
-use Illuminate\Support\Facades\Hash;
 use App\Models\ProductPlanCustomPricing;
+use App\Models\User;
+use App\Models\UserPlan;
+use Illuminate\Support\Facades\Hash;
 
 class ProductPlanService{
 
@@ -105,8 +106,9 @@ class ProductPlanService{
 
 
 
-    public function fetch_all_data_plans($data){
+    public function fetch_all_data_plans($data,$user){
             $product_planss = [];
+            $user_details = $user ?? null;
 
             foreach ($data as $key => $product_plan) {
                 $cost_price = $product_plan->cost_price;
@@ -123,14 +125,55 @@ class ProductPlanService{
 
                     if (in_array($slug, ['data', 'cable_subscription'])) {
                         if ($slug === 'data') {
-                            $get_planprofit = PlanProfitSetting::where('network_id', $network_id)
-                                ->where('product_id', $product_id)
-                                ->where('data_size_in_mb', $data_size_in_mb)
-                                ->first();
+                            // $get_planprofit = PlanProfitSetting::where('network_id', $network_id)
+                            //     ->where('product_id', $product_id)
+                            //     ->where('data_size_in_mb', $data_size_in_mb)
+                            //     ->first();
 
-                            $profitlevel_for_user = "profit_$i";
-                            $profit_value = $get_planprofit?->$profitlevel_for_user ?? 50;
-                            $selling_price = $cost_price + abs($profit_value);
+                            // $profitlevel_for_user = "profit_$i";
+                            // $profit_value = $get_planprofit?->$profitlevel_for_user ?? 50;
+                            // $selling_price = $cost_price + abs($profit_value);
+
+
+
+                              // Check if this plan uses the new automation pricing model
+                                $automationPlan = AutomationProductPlan::where('product_plan_id', $product_plan->id)
+                                ->where('is_active', 1)
+                                ->exists();
+
+                            if ($automationPlan) {
+
+                                if($i > 7){
+                                    $i = 7;
+                                }
+                                $spp = 'user_level_' . $i . '_selling_price';
+                                $sppDefault = 'user_level_1_selling_price';
+
+                                $selling_price = $product_plan->$spp ?? $product_plan->$sppDefault;
+
+                                $customPricing = ProductPlanCustomPricing::where('product_plan_id', $product_plan->id)
+                                    ->where('user_id', $user_details->id)
+                                    ->first();
+
+                                $selling_price = $customPricing
+                                    ? $customPricing->price
+                                    : $selling_price;
+
+                            } else {
+
+                                // Existing profit model
+                                $get_planprofit = PlanProfitSetting::where('network_id', $network_id)
+                                    ->where('product_id', $product_id)
+                                    ->where('data_size_in_mb', $data_size_in_mb)
+                                    ->first();
+
+                                $profitlevel_for_user = "profit_$i";
+                                $profit_value = $get_planprofit?->$profitlevel_for_user ?? 50;
+
+                                $selling_price = $cost_price + abs($profit_value);
+                            }
+
+
                             
                         } else {
                             $selling_price = $product_plan->$user_level ?? 5000;

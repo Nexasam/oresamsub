@@ -194,7 +194,6 @@ class DataPlansService{
         }
 
         ////////////////////////BELOW SHOWS THAT PLAN HAS NOT BEEN MIGRATED SO LET IT STAY WITH THE OLD FLOW.
-
         logger('still old price model for customers');
     
             
