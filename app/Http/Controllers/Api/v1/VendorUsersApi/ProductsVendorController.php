@@ -39,6 +39,8 @@ class ProductsVendorController extends Controller
     
         $user = $request->api_user ?? null;
         $plans = (new ProductPlanService())->fetch_all_data_plans($fetchpplans,$user);
+        logger('AffiliateProductsVendorController syncplans: ', ['plans' => $plans]);
+
        
         return $this->success('All plans successfully fetched',data: $plans);  
     }
