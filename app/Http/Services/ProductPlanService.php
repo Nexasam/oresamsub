@@ -106,9 +106,9 @@ class ProductPlanService{
 
 
 
-    public function fetch_all_data_plans($data,$user){
+    public function fetch_all_data_plans($data,$user_id){
             $product_planss = [];
-            $user_details = $user ?? null;
+            // $user_id = $user ?? null;
 
             foreach ($data as $key => $product_plan) {
                 $cost_price = $product_plan->cost_price;
@@ -152,7 +152,7 @@ class ProductPlanService{
                                 $selling_price = $product_plan->$spp ?? $product_plan->$sppDefault;
 
                                 $customPricing = ProductPlanCustomPricing::where('product_plan_id', $product_plan->id)
-                                    ->where('user_id', $user_details->id)
+                                    ->where('user_id', $user_id)
                                     ->first();
 
                                 $selling_price = $customPricing
