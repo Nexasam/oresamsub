@@ -532,7 +532,7 @@
                     <div class="col-12 col-lg-9 text-white hero-text-animate">
                         <h6 class="text-white text-uppercase mb-3" style="letter-spacing:.15em;font-size:.85rem;opacity:.9;">{{ $sub_hero2 }}</h6>
                         <h1 class="display-3 my-4 fw-bold">{{ $hero2_part1 }}<br>{{ $hero2_part2 }}</h1>
-                        <p class="lead text-white mx-auto mb-4"
+                        <p class="lead text-white  mb-4"
                         style="max-width:800px;font-size:1.15rem;line-height:1.8;">
                             <strong>OresamSub</strong> is a digital services platform operated by
                             <strong>Oresam Telecoms Global Concept</strong>,
