@@ -170,7 +170,7 @@ class WhatsappWebhookController extends Controller
         // }
     }
 
-    private function extractTextoo(array $payload): ?string
+    private function extractText(array $payload): ?string
 {
     /*
     |--------------------------------------------------------------------------
