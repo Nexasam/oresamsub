@@ -257,6 +257,13 @@ class WhatsappWebhookController extends Controller
         'entry.0.changes.0.value.messages.0.interactive.list_reply.id'
     );
 
+    logger('INTERACTIVE OBJECT', [
+        'interactive' => data_get(
+            $payload,
+            'entry.0.changes.0.value.messages.0.interactive'
+        )
+    ]);
+
     if (!empty($listId)) {
         return $listId;
     }
@@ -279,7 +286,7 @@ class WhatsappWebhookController extends Controller
 
         $payload = $request->all();
 
-        Log::info('WHATSAPP PAYLOAD', $request->all());
+    
 
         $phone = $this->extractPhone($payload);
         $text  = $this->extractText($payload);
