@@ -220,8 +220,11 @@ class WhatsappWebhookController extends Controller
         return match ($buttonId) {
 
             // Purchase confirmation
-            'data_confirm_purchase' => 'data_confirm_purchase',
-            'data_cancel_purchase'  => 'data_cancel_purchase',
+            // 'data_confirm_purchase' => 'data_confirm_purchase',
+            // 'data_cancel_purchase'  => 'data_cancel_purchase',
+
+            'data_confirm_purchase' => 'yes',
+            'data_cancel_purchase'  => 'no',
 
             // Favorites
             'favorite_use_same_number'
@@ -422,11 +425,11 @@ class WhatsappWebhookController extends Controller
 
             . "🆘 HELP\n"
             . "• Support\n"
-            . "• Help\n\n"
+            . "• Help\n\n";
 
-            . "👇 Or use the quick buttons below.";
+            // . "👇 Or use the quick buttonsc below.";
 
-        app(Whatsappsender::class)->sendMainMenu(
+        app(Whatsappsender::class)->send(
             $phone,
             $message
         );
