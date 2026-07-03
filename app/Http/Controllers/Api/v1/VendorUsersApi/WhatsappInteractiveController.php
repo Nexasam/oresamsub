@@ -19,10 +19,8 @@ use Illuminate\Support\Facades\Mail;
 // use App\Http\Services\Api\v1\VendorUsersApi\Products\ProductsService;
 // use App\Services\Api\Automation\MegaSubPlugAutomation\MegaSubCableTV;
 
-
-
-//POWER MODE- PARSER MODE - LOL
-class WhatsappWebhookController extends Controller
+//INTERACTIVE BUTTON MODE
+class WhatsappInteractiveController extends Controller
 {
  
     use JsonResponseWrapper;
@@ -57,9 +55,40 @@ class WhatsappWebhookController extends Controller
         );
     }
     
+    private function extractText2(array $payload): ?string
+    {
+        /*
+        Normal text message
+        */
+        $text = data_get(
+            $payload,
+            'entry.0.changes.0.value.messages.0.text.body'
+        );
+    
+        if (!empty($text)) {
+            return strtolower(trim($text));
+        }
+    
+        /*
+        Interactive button reply
+        */
+        $buttonId = data_get(
+            $payload,
+            'entry.0.changes.0.value.messages.0.interactive.button_reply.id'
+        );
+    
+        if ($buttonId === 'data_confirm_purchase') {
+            return 'yes';
+        }
+    
+        if ($buttonId === 'data_cancel_purchase') {
+            return 'no';
+        }
+    
+        return null;
+    }
 
-
-    private function extractTexoldt(array $payload): ?string
+    private function extractText(array $payload): ?string
     {
         /*
         Normal text message
@@ -93,176 +122,30 @@ class WhatsappWebhookController extends Controller
             'entry.0.changes.0.value.messages.0.interactive.button_reply.id'
         );
     
-        // return match ($buttonId) {
-
-        //     'data_confirm_purchase' => 'yes',
-        //     'data_cancel_purchase' => 'no',
-        
-        //     'favorite_use_same_number'
-        //         => 'favorite_use_same_number',
-        
-        //     'favorite_change_number'
-        //         => 'favorite_change_number',
-
-        //     // Account buttons
-        //     'account_refresh_balance' => 'account_refresh_balance',
-        //     'account_data_airtime_help'        => 'account_buy_data_airtime',
-           
-        //     'save_contact_yes' => 'save_contact_yes',
-        //     'save_contact_no'  => 'save_contact_no',
-        
-        //     'start_over'
-        //         => 'start',
-        
-        //     default => null,
-        // };
-
-
-        // if ($type === 'interactive') {
-
-        //     $buttonId = $request->input(
-        //         'entry.0.changes.0.value.messages.0.interactive.button_reply.id'
-        //     );
-        
-        //     if ($buttonId) {
-        
-        //         return match ($buttonId) {
-        
-        //             'data_confirm_purchase' => 'data_confirm_purchase',
-        
-        //             'data_cancel_purchase' => 'data_cancel_purchase',
-        
-        //             'save_contact_yes' => 'save_contact_yes',
-        
-        //             'save_contact_no' => 'save_contact_no',
-
-
-        //             // 'data_confirm_purchase' => 'yes',
-        //             // 'data_cancel_purchase' => 'no',
-                
-        //             'favorite_use_same_number'
-        //                 => 'favorite_use_same_number',
-                
-        //             'favorite_change_number'
-        //                 => 'favorite_change_number',
-        
-        //             // Account buttons
-        //             'account_refresh_balance' => 'account_refresh_balance',
-        //             'account_data_airtime_help'        => 'account_buy_data_airtime',
-                   
-              
-                
-        //             'start_over'
-        //                 => 'start',
-        
-        //             default => $buttonId
-        //         };
-        //     }
-        
-        //     $listId = $request->input(
-        //         'entry.0.changes.0.value.messages.0.interactive.list_reply.id'
-        //     );
-        
-        //     if ($listId) {
-        //         return $listId;
-        //     }
-        // }
-    }
-
-    private function extractText(array $payload): ?string
-{
-    /*
-    |--------------------------------------------------------------------------
-    | Normal Text Message
-    |--------------------------------------------------------------------------
-    */
-    $text = data_get(
-        $payload,
-        'entry.0.changes.0.value.messages.0.text.body'
-    );
-
-    if (!empty($text)) {
-        return strtolower(trim($text));
-    }
-
-    /*
-    |--------------------------------------------------------------------------
-    | Shared Contact
-    |--------------------------------------------------------------------------
-    */
-    $contactPhone = data_get(
-        $payload,
-        'entry.0.changes.0.value.messages.0.contacts.0.phones.0.phone'
-    );
-
-    if (!empty($contactPhone)) {
-        return preg_replace('/\D/', '', $contactPhone);
-    }
-
-    /*
-    |--------------------------------------------------------------------------
-    | Interactive Button Reply
-    |--------------------------------------------------------------------------
-    */
-    $buttonId = data_get(
-        $payload,
-        'entry.0.changes.0.value.messages.0.interactive.button_reply.id'
-    );
-
-    if (!empty($buttonId)) {
-
         return match ($buttonId) {
 
-            // Purchase confirmation
-            'data_confirm_purchase' => 'data_confirm_purchase',
-            'data_cancel_purchase'  => 'data_cancel_purchase',
-
-            // Favorites
+            'data_confirm_purchase' => 'yes',
+            'data_cancel_purchase' => 'no',
+        
             'favorite_use_same_number'
                 => 'favorite_use_same_number',
-
+        
             'favorite_change_number'
                 => 'favorite_change_number',
 
-            // Account
-            'account_refresh_balance'
-                => 'account_refresh_balance',
-
-            'account_data_airtime_help'
-                => 'account_buy_data_airtime',
-
-            // Contacts
-            'save_contact_yes'
-                => 'save_contact_yes',
-
-            'save_contact_no'
-                => 'save_contact_no',
-
-            // Restart
+            // Account buttons
+            'account_refresh_balance' => 'account_refresh_balance',
+            'account_data_airtime_help'        => 'account_buy_data_airtime',
+           
+            'save_contact_yes' => 'save_contact_yes',
+            'save_contact_no'  => 'save_contact_no',
+        
             'start_over'
                 => 'start',
-
-            // NEW INTERACTIVE FLOW
-            default => $buttonId,
+        
+            default => null,
         };
     }
-
-    /*
-    |--------------------------------------------------------------------------
-    | Interactive List Reply
-    |--------------------------------------------------------------------------
-    */
-    $listId = data_get(
-        $payload,
-        'entry.0.changes.0.value.messages.0.interactive.list_reply.id'
-    );
-
-    if (!empty($listId)) {
-        return $listId;
-    }
-
-    return null;
-}
 
     private function extractPhoneFromContact(
         array $payload
@@ -345,68 +228,64 @@ class WhatsappWebhookController extends Controller
             ->resolve($phone); 
 
             $firstName = $user?->first_name ?? $user?->username;
-
-            
-            app(Whatsappsender::class)->sendMainMenu(
-                $phone,
-                $firstName
-            );
         
-            // $welcome = $firstName
-            // ? "👋 Hi {$firstName}, welcome to OresamSub!\n\n"
-            // : "👋 Welcome to OresamSub!\n\n";
+            $welcome = $firstName
+            ? "👋 Hi {$firstName}, welcome to OresamSub!\n\n"
+            : "👋 Welcome to OresamSub!\n\n";
             
-            // app(Whatsappsender::class)->send(
-            //     $phone,
-            //     $welcome
-            //     . "I'm your personal VTU assistant ⚡\n\n"
+            app(Whatsappsender::class)->send(
+                $phone,
+                $welcome
+                . "I'm your personal VTU assistant ⚡\n\n"
             
-            //     . "Here's what I can help you with:\n\n"
+                . "Here's what I can help you with:\n\n"
             
-            //     . "📶 Buy Data Bundles\n"
-            //     . "📞 Buy Airtime\n"
-            //     . "📋 Repeat Recent Purchases\n"
-            //     . "⭐ Buy for Saved Contacts\n"
-            //     . "💰 Check Wallet Balance\n"
-            //     . "🆘 Contact Support\n\n"
+                . "📶 Buy Data Bundles\n"
+                . "📞 Buy Airtime\n"
+                . "📋 Repeat Recent Purchases\n"
+                . "⭐ Buy for Saved Contacts\n"
+                . "💰 Check Wallet Balance\n"
+                . "🆘 Contact Support\n\n"
             
-            //     . "You can type commands in ANY format (not case-sensitive).\n\n"
+                . "You can type commands in ANY format (not case-sensitive).\n\n"
             
-            //     . "📶 DATA EXAMPLES\n"
-            //     . "• MTN 1GB Weekly\n"
-            //     . "• Glo 2GB 3 Days\n"
-            //     . "• Airtel 5GB Monthly\n"
-            //     . "• 1GB MTN Weekly\n"
-            //     . "• MTN 1GB Weekly 09034556677\n\n"
+                . "📶 DATA EXAMPLES\n"
+                . "• MTN 1GB Weekly\n"
+                . "• Glo 2GB 3 Days\n"
+                . "• Airtel 5GB Monthly\n"
+                . "• 1GB MTN Weekly\n"
+                . "• MTN 1GB Weekly 09034556677\n\n"
               
             
-            //     . "📞 AIRTIME EXAMPLES\n"
-            //     . "• Airtime 1000 MTN\n"
-            //     . "• MTN Airtime 500\n"
-            //     . "• Airtel Airtime 2000\n"
-            //     . "• MTN Airtime 300 09011223344\n\n"
+                . "📞 AIRTIME EXAMPLES\n"
+                . "• Airtime 1000 MTN\n"
+                . "• MTN Airtime 500\n"
+                . "• Airtel Airtime 2000\n"
+                . "• MTN Airtime 300 09011223344\n\n"
             
-            //     . "⭐ RECENT DATA TXNS\n"
-            //     . "• Recent\n"
-            //     . "• Buy Again\n"
-            //     . "• Favourites\n"
-            //     . "• fav\n"
-            //     . "• Popular\n\n"
+                . "⭐ RECENT DATA TXNS\n"
+                . "• Recent\n"
+                . "• Buy Again\n"
+                . "• Favourites\n"
+                . "• fav\n"
+                . "• Popular\n\n"
             
-            //     . "💰 ACCOUNT\n"
-            //     . "• Balance\n"
-            //     . "• Wallet\n"
-            //     . "• Account\n"
-            //     . "• fund\n\n"
+                . "💰 ACCOUNT\n"
+                . "• Balance\n"
+                . "• Wallet\n"
+                . "• Account\n"
+                . "• fund\n\n"
             
-            //     . "🆘 HELP\n"
-            //     . "• Support\n"
-            //     . "• Help\n\n"
+                . "🆘 HELP\n"
+                . "• Support\n"
+                . "• Help\n\n"
             
+                // . "You can also use saved contact names:\n"
+                // . "• MTN 1GB Weekly to Mom\n"
+                // . "• Airtime 500 to John\n\n"
             
-            
-            //     . "What would you like to do today? 😊"
-            // );
+                . "What would you like to do today? 😊"
+            );
         
             return response()->json(['ok' => true]);
         }
@@ -436,6 +315,13 @@ class WhatsappWebhookController extends Controller
                     $session
                 );
             }
+
+
+
+           
+
+
+
         }
 
 
