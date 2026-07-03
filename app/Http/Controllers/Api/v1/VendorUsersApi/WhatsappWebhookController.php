@@ -9,6 +9,7 @@ use App\Services\Whatsapp\IntentRouter;
 use App\Services\Whatsapp\WhatsappConversationService;
 use App\Services\Whatsapp\WhatsappIntentParser;
 use App\Services\Whatsapp\WhatsappIntentResolver;
+use App\Services\Whatsapp\WhatsappInteractiveService;
 use App\Services\Whatsapp\Whatsappsender;
 use App\Services\Whatsapp\WhatsappUserResolver;
 use App\Traits\JsonResponseWrapper;
@@ -243,11 +244,11 @@ class WhatsappWebhookController extends Controller
             'save_contact_no'
                 => 'save_contact_no',
 
-            'product_data'=>'product_data',
+            'interactive_product_data'=>'interactive_product_data',
 
-            'product_airtime'=>'product_airtime',
+            'interactive_product_airtime'=>'interactive_product_airtime',
             
-            'how_to'=>'how_to',
+            'interactive_how_to'=>'interactive_how_to',
 
             // Restart
             'start_over'
@@ -426,62 +427,6 @@ class WhatsappWebhookController extends Controller
         );
                 
         
-            // $welcome = $firstName
-            // ? "👋 Hi {$firstName}, welcome to OresamSub!\n\n"
-            // : "👋 Welcome to OresamSub!\n\n";
-            
-            // app(Whatsappsender::class)->send(
-            //     $phone,
-            //     $welcome
-            //     . "I'm your personal VTU assistant ⚡\n\n"
-            
-            //     . "Here's what I can help you with:\n\n"
-            
-            //     . "📶 Buy Data Bundles\n"
-            //     . "📞 Buy Airtime\n"
-            //     . "📋 Repeat Recent Purchases\n"
-            //     . "⭐ Buy for Saved Contacts\n"
-            //     . "💰 Check Wallet Balance\n"
-            //     . "🆘 Contact Support\n\n"
-            
-            //     . "You can type commands in ANY format (not case-sensitive).\n\n"
-            
-            //     . "📶 DATA EXAMPLES\n"
-            //     . "• MTN 1GB Weekly\n"
-            //     . "• Glo 2GB 3 Days\n"
-            //     . "• Airtel 5GB Monthly\n"
-            //     . "• 1GB MTN Weekly\n"
-            //     . "• MTN 1GB Weekly 09034556677\n\n"
-              
-            
-            //     . "📞 AIRTIME EXAMPLES\n"
-            //     . "• Airtime 1000 MTN\n"
-            //     . "• MTN Airtime 500\n"
-            //     . "• Airtel Airtime 2000\n"
-            //     . "• MTN Airtime 300 09011223344\n\n"
-            
-            //     . "⭐ RECENT DATA TXNS\n"
-            //     . "• Recent\n"
-            //     . "• Buy Again\n"
-            //     . "• Favourites\n"
-            //     . "• fav\n"
-            //     . "• Popular\n\n"
-            
-            //     . "💰 ACCOUNT\n"
-            //     . "• Balance\n"
-            //     . "• Wallet\n"
-            //     . "• Account\n"
-            //     . "• fund\n\n"
-            
-            //     . "🆘 HELP\n"
-            //     . "• Support\n"
-            //     . "• Help\n\n"
-            
-            
-            
-            //     . "What would you like to do today? 😊"
-            // );
-        
             return response()->json(['ok' => true]);
         }
 
@@ -490,10 +435,6 @@ class WhatsappWebhookController extends Controller
         Existing conversation?
         */
         $session = cache()->get("wa_session:$phone");
-
-
-
-
 
          /*
         Load whatsapp user
@@ -513,8 +454,48 @@ class WhatsappWebhookController extends Controller
         }
 
 
-       
 
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | QUICK INTERACTIVE ROUTER
+        |--------------------------------------------------------------------------
+        */
+        $interactiveFlows = [
+            'interactive_product_data',
+            'interactive_product_airtime',
+            'interactive_how_to',
+            //will work onn below...make airtitme and data work
+            'interactive_user_account',
+            'interactive_recent_transactions',
+            'interactive_support',
+        ];
+        
+        if (in_array($text, $interactiveFlows)) {
+        
+            cache()->put(
+                "wa_session:$phone",
+                [
+                    'status' => $text,
+                ],
+                now()->addMinutes(30)
+            );
+        
+            app(WhatsappInteractiveService::class)->handle(
+                $phone,
+                $text,
+                $user
+            );
+        
+            return response()->json([
+                'ok' => true
+            ]);
+        }
+
+
+
+        ////////////////////////////////LETS TREAT THIS AS V1 UNDER POWER MODE AND INTERCCEPT WITH INTERACTIVE ABOVE
 
         if ($text === 'account_refresh_balance') {
 

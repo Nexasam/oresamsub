@@ -323,7 +323,7 @@ class Whatsappsender
                             [
                                 'type' => 'reply',
                                 'reply' => [
-                                    'id' => 'product_data',
+                                    'id' => 'interactive_product_data',
                                     'title' => '📱 Data',
                                 ],
                             ],
@@ -331,7 +331,7 @@ class Whatsappsender
                             [
                                 'type' => 'reply',
                                 'reply' => [
-                                    'id' => 'product_airtime',
+                                    'id' => 'interactive_product_airtime',
                                     'title' => '📞 Airtime',
                                 ],
                             ],
@@ -339,7 +339,7 @@ class Whatsappsender
                             [
                                 'type' => 'reply',
                                 'reply' => [
-                                    'id' => 'how_to',
+                                    'id' => 'interactive_how_to',
                                     'title' => '❓ Help',
                                 ],
                             ],
