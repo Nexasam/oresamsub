@@ -92,6 +92,7 @@ class WhatsappWebhookController extends Controller
             $payload,
             'entry.0.changes.0.value.messages.0.interactive.button_reply.id'
         );
+
     
         // return match ($buttonId) {
 
@@ -209,6 +210,10 @@ class WhatsappWebhookController extends Controller
         'entry.0.changes.0.value.messages.0.interactive.button_reply.id'
     );
 
+    logger('BUTTON ID', [
+        'button_id' => $buttonId
+    ]);
+
     if (!empty($buttonId)) {
 
         return match ($buttonId) {
@@ -256,6 +261,9 @@ class WhatsappWebhookController extends Controller
         $payload,
         'entry.0.changes.0.value.messages.0.interactive.list_reply.id'
     );
+    logger('LIST ID', [
+        'list_id' => $listId
+    ]);
 
     logger('INTERACTIVE OBJECT', [
         'interactive' => data_get(
