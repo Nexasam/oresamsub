@@ -94,29 +94,29 @@ class WhatsappWebhookController extends Controller
         );
 
     
-        // return match ($buttonId) {
+        return match ($buttonId) {
 
-        //     'data_confirm_purchase' => 'yes',
-        //     'data_cancel_purchase' => 'no',
+            'data_confirm_purchase' => 'yes',
+            'data_cancel_purchase' => 'no',
         
-        //     'favorite_use_same_number'
-        //         => 'favorite_use_same_number',
+            'favorite_use_same_number'
+                => 'favorite_use_same_number',
         
-        //     'favorite_change_number'
-        //         => 'favorite_change_number',
+            'favorite_change_number'
+                => 'favorite_change_number',
 
-        //     // Account buttons
-        //     'account_refresh_balance' => 'account_refresh_balance',
-        //     'account_data_airtime_help'        => 'account_buy_data_airtime',
+            // Account buttons
+            'account_refresh_balance' => 'account_refresh_balance',
+            'account_data_airtime_help'        => 'account_buy_data_airtime',
            
-        //     'save_contact_yes' => 'save_contact_yes',
-        //     'save_contact_no'  => 'save_contact_no',
+            'save_contact_yes' => 'save_contact_yes',
+            'save_contact_no'  => 'save_contact_no',
         
-        //     'start_over'
-        //         => 'start',
+            'start_over'
+                => 'start',
         
-        //     default => null,
-        // };
+            default => null,
+        };
 
 
         // if ($type === 'interactive') {
@@ -171,113 +171,116 @@ class WhatsappWebhookController extends Controller
     }
 
     private function extractText(array $payload): ?string
-{
-    /*
-    |--------------------------------------------------------------------------
-    | Normal Text Message
-    |--------------------------------------------------------------------------
-    */
-    $text = data_get(
-        $payload,
-        'entry.0.changes.0.value.messages.0.text.body'
-    );
-
-    if (!empty($text)) {
-        return strtolower(trim($text));
-    }
-
-    /*
-    |--------------------------------------------------------------------------
-    | Shared Contact
-    |--------------------------------------------------------------------------
-    */
-    $contactPhone = data_get(
-        $payload,
-        'entry.0.changes.0.value.messages.0.contacts.0.phones.0.phone'
-    );
-
-    if (!empty($contactPhone)) {
-        return preg_replace('/\D/', '', $contactPhone);
-    }
-
-    /*
-    |--------------------------------------------------------------------------
-    | Interactive Button Reply
-    |--------------------------------------------------------------------------
-    */
-    $buttonId = data_get(
-        $payload,
-        'entry.0.changes.0.value.messages.0.interactive.button_reply.id'
-    );
-
-    logger('BUTTON ID', [
-        'button_id' => $buttonId
-    ]);
-
-    if (!empty($buttonId)) {
-
-        return match ($buttonId) {
-
-            // Purchase confirmation
-            'data_confirm_purchase' => 'data_confirm_purchase',
-            'data_cancel_purchase'  => 'data_cancel_purchase',
-
-            // Favorites
-            'favorite_use_same_number'
-                => 'favorite_use_same_number',
-
-            'favorite_change_number'
-                => 'favorite_change_number',
-
-            // Account
-            'account_refresh_balance'
-                => 'account_refresh_balance',
-
-            'account_data_airtime_help'
-                => 'account_buy_data_airtime',
-
-            // Contacts
-            'save_contact_yes'
-                => 'save_contact_yes',
-
-            'save_contact_no'
-                => 'save_contact_no',
-
-            // Restart
-            'start_over'
-                => 'start',
-
-            // NEW INTERACTIVE FLOW
-            default => $buttonId,
-        };
-    }
-
-    /*
-    |--------------------------------------------------------------------------
-    | Interactive List Reply
-    |--------------------------------------------------------------------------
-    */
-    $listId = data_get(
-        $payload,
-        'entry.0.changes.0.value.messages.0.interactive.list_reply.id'
-    );
-    logger('LIST ID', [
-        'list_id' => $listId
-    ]);
-
-    logger('INTERACTIVE OBJECT', [
-        'interactive' => data_get(
+    {
+        /*
+        |--------------------------------------------------------------------------
+        | Debug
+        |--------------------------------------------------------------------------
+        */
+        logger('INTERACTIVE OBJECT', [
+            'interactive' => data_get(
+                $payload,
+                'entry.0.changes.0.value.messages.0.interactive'
+            ),
+        ]);
+    
+        /*
+        |--------------------------------------------------------------------------
+        | Normal Text Message
+        |--------------------------------------------------------------------------
+        */
+        $text = data_get(
             $payload,
-            'entry.0.changes.0.value.messages.0.interactive'
-        )
-    ]);
-
-    if (!empty($listId)) {
-        return $listId;
+            'entry.0.changes.0.value.messages.0.text.body'
+        );
+    
+        if (!empty($text)) {
+            return strtolower(trim($text));
+        }
+    
+        /*
+        |--------------------------------------------------------------------------
+        | Shared Contact
+        |--------------------------------------------------------------------------
+        */
+        $contactPhone = data_get(
+            $payload,
+            'entry.0.changes.0.value.messages.0.contacts.0.phones.0.phone'
+        );
+    
+        if (!empty($contactPhone)) {
+            return preg_replace('/\D/', '', $contactPhone);
+        }
+    
+        /*
+        |--------------------------------------------------------------------------
+        | Interactive Button Reply
+        |--------------------------------------------------------------------------
+        */
+        $buttonId = data_get(
+            $payload,
+            'entry.0.changes.0.value.messages.0.interactive.button_reply.id'
+        );
+    
+        logger('BUTTON ID', [
+            'button_id' => $buttonId,
+        ]);
+    
+        if ($buttonId) {
+    
+            return match ($buttonId) {
+    
+                // Purchase confirmation
+                'data_confirm_purchase' => 'data_confirm_purchase',
+                'data_cancel_purchase'  => 'data_cancel_purchase',
+    
+                // Favorites
+                'favorite_use_same_number' => 'favorite_use_same_number',
+                'favorite_change_number'   => 'favorite_change_number',
+    
+                // Account
+                'account_refresh_balance' => 'account_refresh_balance',
+                'account_data_airtime_help' => 'account_buy_data_airtime',
+    
+                // Contacts
+                'save_contact_yes' => 'save_contact_yes',
+                'save_contact_no'  => 'save_contact_no',
+    
+                // Restart
+                'start_over' => 'start',
+    
+                // Interactive flow
+                default => $buttonId,
+            };
+        }
+    
+        /*
+        |--------------------------------------------------------------------------
+        | Interactive List Reply
+        |--------------------------------------------------------------------------
+        */
+        $listId = data_get(
+            $payload,
+            'entry.0.changes.0.value.messages.0.interactive.list_reply.id'
+        );
+    
+        logger('LIST ID', [
+            'list_id' => $listId,
+        ]);
+    
+        if ($listId) {
+            return $listId;
+        }
+    
+        logger('NO TEXT EXTRACTED', [
+            'message_type' => data_get(
+                $payload,
+                'entry.0.changes.0.value.messages.0.type'
+            ),
+        ]);
+    
+        return null;
     }
-
-    return null;
-}
 
     private function extractPhoneFromContact(
         array $payload
