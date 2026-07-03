@@ -352,7 +352,7 @@ class Whatsappsender
 
 
 
-    public function sendNetworkList(
+    public function sendNetworkListold(
         string $phone
     )
     {
@@ -394,31 +394,106 @@ class Whatsappsender
                                     'rows' => [
     
                                         [
-                                            'id' => 'network_1',
+                                            'id' => 'interactive_data_mtn',
                                             'title' => 'MTN',
-                                            'description' => 'MTN Data Plans'
+                                            'description' => 'MTN'
                                         ],
     
                                         [
-                                            'id' => 'network_2',
+                                            'id' => 'interactive_data_airtel',
                                             'title' => 'Airtel',
-                                            'description' => 'Airtel Data Plans'
+                                            'description' => 'Airtel'
                                         ],
     
                                         [
-                                            'id' => 'network_3',
+                                            'id' => 'interactive_data_glo',
                                             'title' => 'Glo',
-                                            'description' => 'Glo Data Plans'
+                                            'description' => 'Glo'
                                         ],
     
-                                        [
-                                            'id' => 'network_4',
-                                            'title' => '9mobile',
-                                            'description' => '9mobile Data Plans'
-                                        ],
+                                        // [
+                                        //     'id' => 'network_4',
+                                        //     'title' => '9mobile',
+                                        //     'description' => '9mobile Data Plans'
+                                        // ],
     
                                     ]
                                 ]
+                            ]
+                        ]
+                    ]
+                ]
+            );
+    }
+
+
+    public function sendNetworkList(
+        string $phone
+    )
+    {
+        $wconfig = WhatsappConfig::first();
+    
+        $url = "https://graph.facebook.com/v23.0/{$wconfig->phone_number_id}/messages";
+    
+        return Http::withToken($wconfig->token)
+            ->post(
+                $url,
+                [
+                    'messaging_product' => 'whatsapp',
+                    'to' => $phone,
+                    'type' => 'interactive',
+    
+                    'interactive' => [
+                        'type' => 'button',
+    
+                        'header' => [
+                            'type' => 'text',
+                            'text' => '📱 Buy Data'
+                        ],
+    
+                        'body' => [
+                            'text' => "Select your preferred network"
+                        ],
+    
+                        'footer' => [
+                            'text' => 'OresamSub'
+                        ],
+    
+                        'action' => [
+                            'buttons' => [
+    
+                                [
+                                    'type' => 'reply',
+                                    'reply' => [
+                                        'id' => 'interactive_data_mtn',
+                                        'title' => 'MTN'
+                                    ]
+                                ],
+    
+                                [
+                                    'type' => 'reply',
+                                    'reply' => [
+                                        'id' => 'interactive_data_airtel',
+                                        'title' => 'Airtel'
+                                    ]
+                                ],
+    
+                                [
+                                    'type' => 'reply',
+                                    'reply' => [
+                                        'id' => 'interactive_data_glo',
+                                        'title' => 'Glo'
+                                    ]
+                                ],
+    
+                                [
+                                    'type' => 'reply',
+                                    'reply' => [
+                                        'id' => 'interactive_data_9mobile',
+                                        'title' => '9mobile'
+                                    ]
+                                ],
+    
                             ]
                         ]
                     ]

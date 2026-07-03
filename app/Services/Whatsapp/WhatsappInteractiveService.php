@@ -52,6 +52,8 @@ class WhatsappInteractiveService
                 $this->sender->sendNetworkList($phone);
 
                 break;
+
+            
         }
 
         return true;

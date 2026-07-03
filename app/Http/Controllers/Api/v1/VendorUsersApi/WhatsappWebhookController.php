@@ -247,6 +247,10 @@ class WhatsappWebhookController extends Controller
             'interactive_product_data'=>'interactive_product_data',
 
             'interactive_product_airtime'=>'interactive_product_airtime',
+
+            'interactive_data_mtn' => 'interactive_data_mtn',
+            'interactive_data_airtel' => 'interactive_data_airtel',
+            'interactive_data_glo' => 'interactive_data_glo',
             
             'interactive_how_to'=>'interactive_how_to',
 
@@ -465,6 +469,9 @@ class WhatsappWebhookController extends Controller
         $interactiveFlows = [
             'interactive_product_data',
             'interactive_product_airtime',
+            'interactive_data_mtn',
+            'interactive_data_airtel',
+            'interactive_data_glo',
             'interactive_how_to',
             //will work onn below...make airtitme and data work
             'interactive_user_account',
