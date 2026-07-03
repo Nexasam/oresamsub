@@ -281,24 +281,24 @@ class Whatsappsender
 
     public function sendMainMenu(
         string $phone,
-        string $firstName = 'there'
+        string $message
     )
     {
         $wconfig = WhatsappConfig::first();
     
         $url = "https://graph.facebook.com/v23.0/{$wconfig->phone_number_id}/messages";
     
-        $message =
-            "👋 Welcome " . $firstName . "!\n\n"
-            . "Welcome to OresamSub ⚡\n\n"
-            . "Your fastest VTU platform for Airtime & Data in Nigeria.\n\n"
-            . "Choose an option below to continue or simply type your request.\n\n"
-            . "⚡ POWER USERS EXAMPLES:\n"
-            . "• MTN 1GB\n"
-            . "• Airtel Airtime 1000\n"
-            . "• Glo 2GB Monthly\n\n"
-            . "🚀 QUICK TIP:\n"
-            . "You can type naturally OR use buttons below.";
+        // $message =
+        //     "👋 Welcome " . $firstName . "!\n\n"
+        //     . "Welcome to OresamSub ⚡\n\n"
+        //     . "Your fastest VTU platform for Airtime & Data in Nigeria.\n\n"
+        //     . "Choose an option below to continue or simply type your request.\n\n"
+        //     . "⚡ POWER USERS EXAMPLES:\n"
+        //     . "• MTN 1GB\n"
+        //     . "• Airtel Airtime 1000\n"
+        //     . "• Glo 2GB Monthly\n\n"
+        //     . "🚀 QUICK TIP:\n"
+        //     . "You can type naturally OR use buttons below.";
     
         return Http::withToken($wconfig->token)
             ->post($url, [

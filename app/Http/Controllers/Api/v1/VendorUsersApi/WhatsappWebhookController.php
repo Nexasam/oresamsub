@@ -346,11 +346,62 @@ class WhatsappWebhookController extends Controller
 
             $firstName = $user?->first_name ?? $user?->username;
 
-            
-            app(Whatsappsender::class)->sendMainMenu(
-                $phone,
-                $firstName
-            );
+            $welcome = $firstName
+            ? "👋 Hi {$firstName}, welcome to OresamSub!\n\n"
+            : "👋 Welcome to OresamSub!\n\n";
+
+            $message =
+            $welcome
+            . "I'm your personal VTU assistant ⚡\n\n"
+
+            . "Here's what I can help you with:\n\n"
+
+            . "📶 Buy Data Bundles\n"
+            . "📞 Buy Airtime\n"
+            . "📋 Repeat Recent Purchases\n"
+            . "⭐ Buy for Saved Contacts\n"
+            . "💰 Check Wallet Balance\n"
+            . "🆘 Contact Support\n\n"
+
+            . "You can type commands in ANY format (not case-sensitive).\n\n"
+
+            . "📶 DATA EXAMPLES\n"
+            . "• MTN 1GB Weekly\n"
+            . "• Glo 2GB 3 Days\n"
+            . "• Airtel 5GB Monthly\n"
+            . "• 1GB MTN Weekly\n"
+            . "• MTN 1GB Weekly 09034556677\n\n"
+
+            . "📞 AIRTIME EXAMPLES\n"
+            . "• Airtime 1000 MTN\n"
+            . "• MTN Airtime 500\n"
+            . "• Airtel Airtime 2000\n"
+            . "• MTN Airtime 300 09011223344\n\n"
+
+            . "⭐ RECENT DATA TXNS\n"
+            . "• Recent\n"
+            . "• Buy Again\n"
+            . "• Favourites\n"
+            . "• fav\n"
+            . "• Popular\n\n"
+
+            . "💰 ACCOUNT\n"
+            . "• Balance\n"
+            . "• Wallet\n"
+            . "• Account\n"
+            . "• Fund\n\n"
+
+            . "🆘 HELP\n"
+            . "• Support\n"
+            . "• Help\n\n"
+
+            . "👇 Or use the quick buttons below.";
+
+        app(Whatsappsender::class)->sendMainMenu(
+            $phone,
+            $message
+        );
+                
         
             // $welcome = $firstName
             // ? "👋 Hi {$firstName}, welcome to OresamSub!\n\n"
