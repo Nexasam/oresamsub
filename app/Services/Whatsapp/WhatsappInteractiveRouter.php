@@ -17,7 +17,7 @@ class WhatsappInteractiveRouter
              $phone,
             $buttonId,
              $user,
-             $session
+           
         );
     }
 }

@@ -24,7 +24,7 @@ class WhatsappInteractiveService
 
         switch ($replyId) {
 
-            case 'product_data':
+            case 'interactive_product_data':
 
                 Cache::put(
                     "wa_interactive:$phone",
@@ -38,7 +38,7 @@ class WhatsappInteractiveService
 
                 break;
 
-            case 'product_airtime':
+            case 'interactive_product_airtime':
 
                 Cache::put(
                     "wa_interactive:$phone",
