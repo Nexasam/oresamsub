@@ -170,7 +170,7 @@ class WhatsappWebhookController extends Controller
         // }
     }
 
-    private function extractText(array $payload): ?string
+    private function extractTextoo(array $payload): ?string
 {
     /*
     |--------------------------------------------------------------------------
@@ -242,6 +242,12 @@ class WhatsappWebhookController extends Controller
 
             'save_contact_no'
                 => 'save_contact_no',
+
+            'product_data'=>'product_data',
+
+            'product_airtime'=>'product_airtime',
+            
+            'how_to'=>'how_to',
 
             // Restart
             'start_over'
