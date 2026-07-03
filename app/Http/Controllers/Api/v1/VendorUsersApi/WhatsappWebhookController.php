@@ -279,6 +279,8 @@ class WhatsappWebhookController extends Controller
 
         $payload = $request->all();
 
+        Log::info('WHATSAPP PAYLOAD', $request->all());
+
         $phone = $this->extractPhone($payload);
         $text  = $this->extractText($payload);
     
