@@ -429,7 +429,7 @@ class WhatsappWebhookController extends Controller
 
             // . "👇 Or use the quick buttonsc below.";
 
-        app(Whatsappsender::class)->sendStartButton(
+        app(Whatsappsender::class)->send(
             $phone,
             $message
         );
