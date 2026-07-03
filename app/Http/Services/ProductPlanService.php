@@ -144,9 +144,11 @@ class ProductPlanService{
                             if ($automationPlan) {
 
                                 if($i > 7){
-                                    $i = 7;
+                                    $ii = 7;
+                                }else{
+                                    $ii = $i;
                                 }
-                                $spp = 'user_level_' . $i . '_selling_price';
+                                $spp = 'user_level_' . $ii . '_selling_price';
                                 $sppDefault = 'user_level_1_selling_price';
 
                                 $selling_price = $product_plan->$spp ?? $product_plan->$sppDefault;
