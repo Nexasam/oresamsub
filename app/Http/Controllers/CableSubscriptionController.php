@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Services\Automation\BilinkAutomation;
+use App\Services\Automation\CableAutomation;
 use Exception;
 use App\Models\User;
 use App\Models\Network;
@@ -253,7 +254,7 @@ class CableSubscriptionController extends Controller
             $validate_smart_card_number = (new PaultechsAutomation($dataa))->validateSmartCard();
             return $validate_smart_card_number;
         }
-        else if($automation_slug == 'bilink'){
+        else if($automation_slug == 'payeelord'){
             $token = $plan_details->automation->api_public_key;
             $dataa['automation_id'] =  $plan_details->automation->id;
             $dataa['smart_card_number'] = $request->smart_card_number;
@@ -262,8 +263,8 @@ class CableSubscriptionController extends Controller
             $dataa['token'] = $token;
             $dataa['user_id'] = $user_id;
             $dataa['url'] = $plan_details->automation->cable_url;
-            $validate_smart_card_number = (new BilinkAutomation($dataa))->validateCable();
-            logger('validate smart card bilink: '.json_encode($validate_smart_card_number));
+            $validate_smart_card_number = (new CableAutomation($dataa))->validatePayeelordCable();
+            logger('validate smart card payeeleord: '.json_encode($validate_smart_card_number));
             return $validate_smart_card_number;
         }
         else if($automation_group == 'msorg'){
