@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\Automation\BilinkAutomation;
 use Exception;
 use App\Models\User;
 use App\Models\Network;
@@ -229,6 +230,7 @@ class CableSubscriptionController extends Controller
          }
  
          $user_id = auth()->id();
+         $user = auth()->user();
          $automation_slug = $plan_details->automation->slug;
          $automation_group = $plan_details->automation->automation_group;
          if($automation_slug == 'megasubplug'){
@@ -250,7 +252,21 @@ class CableSubscriptionController extends Controller
             $dataa['url'] = $plan_details->automation->cable_url;
             $validate_smart_card_number = (new PaultechsAutomation($dataa))->validateSmartCard();
             return $validate_smart_card_number;
-        }else if($automation_group == 'msorg'){
+        }
+        else if($automation_slug == 'bilink'){
+            $token = $plan_details->automation->api_public_key;
+            $dataa['automation_id'] =  $plan_details->automation->id;
+            $dataa['smart_card_number'] = $request->smart_card_number;
+            $dataa['mobile_number'] = $user->mobile_number;
+            $dataa['plan_id'] = $request->plan_id;
+            $dataa['token'] = $token;
+            $dataa['user_id'] = $user_id;
+            $dataa['url'] = $plan_details->automation->cable_url;
+            $validate_smart_card_number = (new BilinkAutomation($dataa))->validateCable();
+            logger('validate smart card bilink: '.json_encode($validate_smart_card_number));
+            return $validate_smart_card_number;
+        }
+        else if($automation_group == 'msorg'){
             $token = $plan_details->automation->api_public_key;
             $dataa['automation_id'] =  $plan_details->automation->id;
             $dataa['smart_card_number'] = $request->smart_card_number;
