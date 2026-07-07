@@ -947,6 +947,8 @@ class DataController extends Controller
         ->orderByRaw('CAST(priority AS UNSIGNED) DESC') // ✅ Sort numerically
         ->get();
 
+        $automationid = null;
+
         if(count($automation_plans)  >= 1 ){
           //fix
 
@@ -955,6 +957,8 @@ class DataController extends Controller
               foreach($automation_plans  as $key=>$get_associated_plan){
                       // if(auth()->user()->email == 'oreofe@gmail.com'){
                         $allowed_loss = 5;
+                    
+                      $automationid = $get_associated_plan->automation->id;
 
                         if (($get_associated_plan->cost_price - $amounnt_paid) > $allowed_loss) {
                             logger('Automation cost v2 exceeds allowed ₦5 loss: Skip...provider_price: '.$get_associated_plan->cost_price.'  ::::: customer paid: '.$amounnt_paid);
@@ -982,13 +986,13 @@ class DataController extends Controller
   
                           return [
                               'status' => 1,
+                              'automation_id' => $get_associated_plan->automation->id ?? null,
                               'set_for_manual' => 0,
                               'case_critical' => 0,
                               'retry_count' => $retry_count,
                               'user_message' => $sell_data['user_message'],
                               'admin_message' => $sell_data['admin_message'],
-                              'plan_id' => $get_associated_plan->product_plan_id,
-                              'automation_id' => $get_associated_plan->automation->id,
+                              'plan_id' => $get_associated_plan->product_plan_id
                           ];
                       }
   
@@ -1028,6 +1032,7 @@ class DataController extends Controller
               //no automation went through: it means, refund, no processing
               return [
                   'status' => 2,
+                  'automation_id' => $get_associated_plan?->automation?->id ?? $automationid,
                   'set_for_manual' => 0,
                   'case_critical' => 0,
                   'retry_count' => 50,//for refund code
@@ -1060,6 +1065,7 @@ class DataController extends Controller
                 logger('no vendor found for: '. json_encode($data));
                 return [
                     'status' => 1,
+                    'automation_id' => $get_associated_plan->automation->id ?? null,
                     'case_critical' => 1,
                     'set_for_manual' => 1,
                     'retry_count' => 0,
@@ -1096,6 +1102,7 @@ class DataController extends Controller
                         return [
                             'status' => 1,
                             'set_for_manual' => 0,
+                            'automation_id' => $get_associated_plan->automation->id ?? null,
                             'case_critical' => 0,
                             'retry_count' => $retry_count,
                             'user_message' => $sell_data['user_message'],
@@ -1153,6 +1160,7 @@ class DataController extends Controller
                 'user_message' => 'We were unable to process your transaction at this time. Your wallet has been refunded.',
                 'admin_message' => $sell_data['admin_message'] ?? 'Transaction failed and was refunded.',
                 'plan_id' => $get_associated_plan->id,
+                'automation_id' => $get_associated_plan?->automation?->id ?? $automationid,
             ];
 
         }      
