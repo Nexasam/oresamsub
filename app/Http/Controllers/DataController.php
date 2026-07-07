@@ -948,6 +948,7 @@ class DataController extends Controller
         ->get();
 
         $automationid = null;
+        $planidd = null;
 
         if(count($automation_plans)  >= 1 ){
           //fix
@@ -959,6 +960,7 @@ class DataController extends Controller
                         $allowed_loss = 5;
                     
                       $automationid = $get_associated_plan->automation->id;
+                      $planidd = $get_associated_plan->product_plan_id;
 
                         if (($get_associated_plan->cost_price - $amounnt_paid) > $allowed_loss) {
                             logger('Automation cost v2 exceeds allowed ₦5 loss: Skip...provider_price: '.$get_associated_plan->cost_price.'  ::::: customer paid: '.$amounnt_paid);
@@ -992,7 +994,7 @@ class DataController extends Controller
                               'retry_count' => $retry_count,
                               'user_message' => $sell_data['user_message'],
                               'admin_message' => $sell_data['admin_message'],
-                              'plan_id' => $get_associated_plan->product_plan_id
+                              'plan_id' => $planidd, //this will be the last tried automation
                           ];
                       }
   
@@ -1038,7 +1040,7 @@ class DataController extends Controller
                   'retry_count' => 50,//for refund code
                   'user_message' => $messageeeee,
                   'admin_message' => $sell_data['admin_message'] ?? 'Transaction failed...could not be processed...' ,
-                  'plan_id' => $get_associated_plan->id, //this will be the last tried automation
+                  'plan_id' => $get_associated_plan?->product_plan_id ?? $planidd, //this will be the last tried automation
               ];
 
 
@@ -1079,6 +1081,7 @@ class DataController extends Controller
             $retry_count = 0;
             foreach($get_associated_plans  as $key=>$get_associated_plan){
                     // if(auth()->user()->email == 'oreofe@gmail.com'){
+                    $planidd = $get_associated_plan->id;
                     if ($automation_cost_price > $amounnt_paid) {
                         logger('Automation cost price is greater than the amount customer paid: Skip....dont process..');
                         continue; // Skip to next product plan if its a loss game
@@ -1159,7 +1162,7 @@ class DataController extends Controller
                 'retry_count' => 50, // refund trigger
                 'user_message' => 'We were unable to process your transaction at this time. Your wallet has been refunded.',
                 'admin_message' => $sell_data['admin_message'] ?? 'Transaction failed and was refunded.',
-                'plan_id' => $get_associated_plan->id,
+                'plan_id' => $get_associated_plan?->id ?? $planidd,
                 'automation_id' => $get_associated_plan?->automation?->id ?? $automationid,
             ];
 
