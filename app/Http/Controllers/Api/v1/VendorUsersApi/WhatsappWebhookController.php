@@ -3,11 +3,9 @@ namespace App\Http\Controllers\Api\v1\VendorUsersApi;
 
 use App\Http\Controllers\Controller;
 use App\Mail\WhatsappLinkOtpMail;
-use App\Models\MegaWhatsappConversation;
 use App\Models\User;
 use App\Models\WhatsappConfig;
 use App\Services\Whatsapp\MegaWhatsappConversationService;
-use App\Services\Whatsapp\IntentRouter;
 use App\Services\Whatsapp\WhatsappConversationService;
 use App\Services\Whatsapp\WhatsappIntentParser;
 use App\Services\Whatsapp\WhatsappIntentResolver;
@@ -17,7 +15,6 @@ use App\Services\Whatsapp\WhatsappUserResolver;
 use App\Traits\JsonResponseWrapper;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 // use App\Http\Services\Api\v1\VendorUsersApi\Products\ProductsService;
 // use App\Services\Api\Automation\MegaSubPlugAutomation\MegaSubCableTV;
@@ -150,6 +147,13 @@ class WhatsappWebhookController extends Controller
             // 'interactive_data_9mobile'=> 'interactive_data_9mobile',
             
             'interactive_how_to'=>'interactive_how_to',
+
+            'confirm_data_purchase'
+            => 'confirm_data_purchase',
+    
+            'cancel_data_purchase'
+                => 'cancel_data_purchase',
+        
 
             // Restart
             'start_over'

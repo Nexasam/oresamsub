@@ -558,23 +558,167 @@ class MegaWhatsappConversationService
         string $message
     )
     {
-        //
-    }
+        $plan = ProductPlan::find($message);
     
+        if (! $plan) {
+    
+            return $this->whatsapp->sendText(
+                $conversation->phone,
+                '⚠️ Invalid plan selected. Please try again.'
+            );
+        }
+    
+        $payload = $conversation->payload ?? [];
+    
+        $payload['product_plan_id'] = $plan->id;
+    
+        $this->updateConversation(
+            $conversation,
+            WhatsappState::DATA_PHONE,
+            $payload
+        );
+    
+        // $size = $this->formatDataSize(
+        //     $plan->data_size_in_mb
+        // );
+
+        $sizeee = $this->formatDataSize($plan->data_size_in_mb);
+    
+        return $this->whatsapp->sendText(
+            $conversation->phone,
+            "✅ Plan Selected\n\n" .
+            "📦 {$sizeee}\n" .
+            "⏳ {$plan->validity_in_days} Days\n" .
+            "💰 ₦" . number_format(
+                $plan->user_level_1_selling_price,
+                2
+            ) .
+            "\n\n📱 Enter the phone number you want to receive this data."
+        );
+    }
+
+
     private function processDataPhone(
         MegaWhatsappConversation $conversation,
         string $message
     )
     {
-        //
+        $phone = preg_replace(
+            '/[^0-9]/',
+            '',
+            $message
+        );
+    
+        if (strlen($phone) < 11) {
+    
+            return $this->whatsapp->sendText(
+                $conversation->phone,
+                '⚠️ Please enter a valid phone number.'
+            );
+        }
+    
+        $payload = $conversation->payload ?? [];
+    
+        $payload['beneficiary_phone'] = $phone;
+    
+        $plan = ProductPlan::find(
+            $payload['product_plan_id']
+        );
+    
+        if (! $plan) {
+    
+            return $this->showMainMenu(
+                $conversation
+            );
+        }
+    
+        $this->updateConversation(
+            $conversation,
+            WhatsappState::DATA_CONFIRM,
+            $payload
+        );
+    
+        return $this->whatsapp->sendButtons(
+            $conversation->phone,
+            "📋 Please confirm your purchase\n\n" .
+            "📶 Plan: {$plan->product_plan_name}\n" .
+            "📱 Number: {$phone}\n" .
+            "💰 Amount: ₦" .
+            number_format(
+                $plan->user_level_1_selling_price,
+                2
+            ),
+            [
+                [
+                    'id' => 'confirm_data_purchase',
+                    'title' => 'CONFIRM'
+                ],
+                [
+                    'id' => 'cancel_data_purchase',
+                    'title' => 'CANCEL'
+                ]
+            ]
+        );
     }
+    
+
     
     private function processDataConfirmation(
         MegaWhatsappConversation $conversation,
         string $message
     )
     {
-        //
+        if ($message === 'cancel_data_purchase') {
+    
+            return $this->showMainMenu(
+                $conversation
+            );
+        }
+    
+        if ($message !== 'confirm_data_purchase') {
+    
+            return $this->whatsapp->sendText(
+                $conversation->phone,
+                'Please click the confirm button.'
+            );
+        }
+    
+        $payload = $conversation->payload ?? [];
+    
+        $plan = ProductPlan::find(
+            $payload['product_plan_id']
+        );
+    
+        if (! $plan) {
+    
+            return $this->showMainMenu(
+                $conversation
+            );
+        }
+    
+        /*
+        |--------------------------------------------------------------------------
+        | Actual Purchase Happens Here
+        |--------------------------------------------------------------------------
+        |
+        | Later:
+        |
+        | $this->dataService->purchase(...)
+        |
+        */
+    
+        $this->updateConversation(
+            $conversation,
+            WhatsappState::MAIN_MENU,
+            []
+        );
+    
+        return $this->whatsapp->sendText(
+            $conversation->phone,
+            "✅ Success!\n\n" .
+            "{$plan->product_plan_name} has been queued for processing.\n\n" .
+            "Thank you for choosing MegaSub 🚀"
+        );
     }
 
 
