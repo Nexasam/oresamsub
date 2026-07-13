@@ -455,10 +455,12 @@ class MegaWhatsappConversationService
             );
         }
 
+        $titlesize = 
+
         $planss = $plans->map(
             fn ($plan) => [
                 'id' => $plan->id,
-                'title' => "{$plan->data_size_in_mb} - {$plan->validity_in_days} days",
+                'title' => "{$this->formatDataSize($plans->data_size_in_mb)} - {$plan->validity_in_days} days",
                 'description' => '₦' . number_format(
                     $plan->user_level_1_selling_price,
                     2
@@ -476,6 +478,27 @@ class MegaWhatsappConversationService
            $planss,
             'View Plans'
         );
+    }
+
+    private function formatDataSize(
+        int|float $sizeInMb
+    ): string {
+    
+        if ($sizeInMb >= 1000) {
+    
+            return rtrim(
+                rtrim(
+                    number_format(
+                        $sizeInMb / 1000,
+                        2
+                    ),
+                    '0'
+                ),
+                '.'
+            ) . 'GB';
+        }
+    
+        return $sizeInMb . 'MB';
     }
     
     private function processDataPlan(
