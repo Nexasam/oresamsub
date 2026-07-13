@@ -589,7 +589,7 @@ class MegaWhatsappConversationService
             "✅ Plan Selected\n\n" .
             "📦 {$sizeee}\n" .
             "⏳ {$plan->validity_in_days} Days\n" .
-            "💰 ₦" . number_format(
+            "💰 N" . number_format(
                 $plan->user_level_1_selling_price,
                 2
             ) .
