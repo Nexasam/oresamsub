@@ -64,6 +64,8 @@ use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Session;
 use Rap2hpoutre\LaravelLogViewer\LogViewerController;
+use App\Http\Controllers\MegaWhatsappWebhookController;
+
 
    
 //test ui
@@ -79,27 +81,54 @@ Route::get('/testui', function () {
 // Inertia routes
 Route::get('/login', [InertiaLoginController::class, 'create'])->name('login');
 Route::post('/login', [InertiaLoginController::class, 'store'])->name('inertia.login.store');
-
-// Route::get('/privacy-policy', function () {
-//     return inertia('Legal/PrivacyPolicy');
-// })->name('privacy.policy');
-
-// Route::get('/terms', function () {
-//     return inertia('Legal/Terms');
-// })->name('terms');
-
-
 Route::view('/privacy-policy', 'legal.privacy')->name('privacy.policy');
 Route::view('/terms', 'legal.terms')->name('terms');
-
 
 Route::get('/whatsapp/update-config/{phone_number_id}/{token}', [WhatsappWebhookController::class, 'updateConfig'])
     ->name('whatsapp.config');
 
+// WE ARE REVAMPING
+// WE ARE REVAMPING
+// WE ARE REVAMPING
+// WE ARE REVAMPING
+// WE ARE REVAMPING
+// WE ARE REVAMPING
+// WE ARE REVAMPING
+// WE ARE REVAMPING
+// WE ARE REVAMPING
+// WE ARE REVAMPING
+// WE ARE REVAMPING
+// QUALIFIED AND CHECKED ROUTES ARE ABOVE
+// QUALIFIED AND CHECKED ROUTES ARE ABOVE
+// QUALIFIED AND CHECKED ROUTES ARE ABOVE
+// QUALIFIED AND CHECKED ROUTES ARE ABOVE
+// QUALIFIED AND CHECKED ROUTES ARE ABOVE
+// QUALIFIED AND CHECKED ROUTES ARE ABOVE
+// QUALIFIED AND CHECKED ROUTES ARE ABOVE
+// QUALIFIED AND CHECKED ROUTES ARE ABOVE
+// QUALIFIED AND CHECKED ROUTES ARE ABOVE
+// QUALIFIED AND CHECKED ROUTES ARE ABOVE
+// QUALIFIED AND CHECKED ROUTES ARE ABOVE
+// QUALIFIED AND CHECKED ROUTES ARE ABOVE
+// QUALIFIED AND CHECKED ROUTES ARE ABOVE
+// QUALIFIED AND CHECKED ROUTES ARE ABOVE
+// QUALIFIED AND CHECKED ROUTES ARE ABOVE
+// QUALIFIED AND CHECKED ROUTES ARE ABOVE
+// QUALIFIED AND CHECKED ROUTES ARE ABOVE
+// QUALIFIED AND CHECKED ROUTES ARE ABOVE
+
+
+// STRICTLY FOR MEGA-SUB - WE'LL TRANSFER LATER:
+
+Route::post(
+    '/whatsapp/webhook',
+    [MegaWhatsappWebhookController::class, 'webhook']
+);
+
+
 
 
 Route::get('oresamsub/newlanding', fn () => view('oresamsub.landing.new'))->name('ore.landing');
-
 Route::get('oresamsub/register', fn () => view('oresamsub.auth.register'))->name('ore.register');
             
 Route::middleware(['set_locale'])->group(function () {

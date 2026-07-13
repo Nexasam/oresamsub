@@ -1,0 +1,419 @@
+<?php
+
+namespace App\Services;
+
+use App\Enums\WhatsappState;
+use App\Models\MegaWhatsappConversation;
+use App\Services\Whatsapp\MegaWhatsappUserResolverService;
+
+class MegaWhatsappConversationService
+{
+    public function __construct(
+        protected MegaWhatsappService $whatsapp,
+        protected MegaWhatsappUserResolverService $userResolver
+    ) {
+    }
+
+    public function handle(
+        array $payload
+    ) {
+    
+        $phone = data_get(
+            $payload,
+            'phone'
+        );
+    
+        $message = strtolower(
+            trim(
+                data_get(
+                    $payload,
+                    'message'
+                )
+            )
+        );
+    
+        $user = $this->userResolver->resolve(
+            $phone
+        );
+        
+        if (! $user) {
+
+            return $this->whatsapp->sendText(
+                $phone,
+                'You do not have a MegaSub account. Please register first.'
+            );
+        }
+
+        $conversation =
+            MegaWhatsappConversation::firstOrCreate([
+                'phone' => $phone
+            ]);
+    
+        if (
+            $user &&
+            $conversation->user_id !== $user->id
+        ) {
+    
+            $conversation->update([
+                'user_id' => $user->id
+            ]);
+        }
+    
+        if ($message === 'mega') {
+    
+            return $this->showMainMenu(
+                $conversation
+            );
+        }
+    
+        return $this->handleState(
+            $conversation,
+            $message
+        );
+    }
+
+
+    private function showMainMenu(
+        MegaWhatsappConversation $conversation
+    ) {
+    
+        // $conversation->update([
+        //     'current_state' => WhatsappState::MAIN_MENU,
+        //     'payload' => []
+        // ]);
+
+        $this->updateConversation(
+            $conversation,
+            WhatsappState::MAIN_MENU,
+            []
+        );
+    
+        return $this->whatsapp->sendButtons(
+            $conversation->phone,
+            'Welcome to MegaSub',
+    
+            [
+                [
+                    'id' => 'data',
+                    'title' => 'DATA'
+                ],
+                [
+                    'id' => 'airtime',
+                    'title' => 'AIRTIME'
+                ],
+                [
+                    'id' => 'wallet',
+                    'title' => 'WALLET'
+                ]
+            ]
+        );
+    }
+
+
+
+    private function handleState(
+        MegaWhatsappConversation $conversation,
+        string $message
+    ) {
+    
+        return match ($conversation->current_state) {
+    
+            // MAIN MENU
+            WhatsappState::MAIN_MENU =>
+                $this->handleMainMenu(
+                    $conversation,
+                    $message
+                ),
+    
+            // DATA FLOW
+            WhatsappState::DATA_NETWORK =>
+                $this->processDataNetwork(
+                    $conversation,
+                    $message
+                ),
+    
+            WhatsappState::DATA_TYPE =>
+                $this->processDataType(
+                    $conversation,
+                    $message
+                ),
+    
+            WhatsappState::DATA_PLAN =>
+                $this->processDataPlan(
+                    $conversation,
+                    $message
+                ),
+    
+            WhatsappState::DATA_PHONE =>
+                $this->processDataPhone(
+                    $conversation,
+                    $message
+                ),
+    
+            WhatsappState::DATA_CONFIRM =>
+                $this->processDataConfirmation(
+                    $conversation,
+                    $message
+                ),
+    
+            // AIRTIME FLOW
+            WhatsappState::AIRTIME_NETWORK =>
+                $this->processAirtimeNetwork(
+                    $conversation,
+                    $message
+                ),
+    
+            WhatsappState::AIRTIME_AMOUNT =>
+                $this->processAirtimeAmount(
+                    $conversation,
+                    $message
+                ),
+    
+            WhatsappState::AIRTIME_PHONE =>
+                $this->processAirtimePhone(
+                    $conversation,
+                    $message
+                ),
+    
+            WhatsappState::AIRTIME_CONFIRM =>
+                $this->processAirtimeConfirmation(
+                    $conversation,
+                    $message
+                ),
+    
+            // WALLET FLOW
+            WhatsappState::WALLET =>
+                $this->processWallet(
+                    $conversation,
+                    $message
+                ),
+    
+            // HELP FLOW
+            WhatsappState::HELP =>
+                $this->processHelp(
+                    $conversation,
+                    $message
+                ),
+    
+            default =>
+                $this->showMainMenu(
+                    $conversation
+                )
+        };
+    }
+
+    private function updateConversation(
+        MegaWhatsappConversation $conversation,
+        string $state,
+        array $payload = []
+    )
+    {
+        $conversation->update([
+            'current_state' => $state,
+            'payload' => $payload
+        ]);
+    }
+
+    private function handleMainMenu(
+        MegaWhatsappConversation $conversation,
+        string $message
+    )
+    {
+        return match ($message) {
+    
+            'data' =>
+                $this->showDataNetworks(
+                    $conversation
+                ),
+    
+            'airtime' =>
+                $this->showAirtimeNetworks(
+                    $conversation
+                ),
+    
+            'wallet' =>
+                $this->showWallet(
+                    $conversation
+                ),
+    
+            'help' =>
+                $this->showHelp(
+                    $conversation
+                ),
+    
+            default =>
+                $this->showMainMenu(
+                    $conversation
+                )
+        };
+    }
+
+
+
+    //DATA
+    private function showDataNetworks(
+        MegaWhatsappConversation $conversation
+    )
+    {
+        $this->updateConversation(
+            $conversation,
+            WhatsappState::DATA_NETWORK,
+            $conversation->payload ?? []
+        );
+    
+        return $this->whatsapp->sendList(
+            $conversation->phone,
+            'Select Network',
+            [
+                [
+                    'id' => 'mtn',
+                    'title' => 'MTN'
+                ],
+                [
+                    'id' => 'airtel',
+                    'title' => 'AIRTEL'
+                ],
+                [
+                    'id' => 'glo',
+                    'title' => 'GLO'
+                ],
+                [
+                    'id' => '9mobile',
+                    'title' => '9MOBILE'
+                ]
+            ]
+        );
+    }
+    
+    private function processDataNetwork(
+        MegaWhatsappConversation $conversation,
+        string $message
+    )
+    {
+        //
+    }
+    
+    private function processDataType(
+        MegaWhatsappConversation $conversation,
+        string $message
+    )
+    {
+        //
+    }
+    
+    private function processDataPlan(
+        MegaWhatsappConversation $conversation,
+        string $message
+    )
+    {
+        //
+    }
+    
+    private function processDataPhone(
+        MegaWhatsappConversation $conversation,
+        string $message
+    )
+    {
+        //
+    }
+    
+    private function processDataConfirmation(
+        MegaWhatsappConversation $conversation,
+        string $message
+    )
+    {
+        //
+    }
+
+
+
+    ///AIRTIME
+    private function showAirtimeNetworks(
+        MegaWhatsappConversation $conversation
+    )
+    {
+        return $this->whatsapp->sendText(
+            $conversation->phone,
+            'Airtime module coming next'
+        );
+    }
+    
+    private function processAirtimeNetwork(
+        MegaWhatsappConversation $conversation,
+        string $message
+    )
+    {
+        //
+    }
+    
+    private function processAirtimeAmount(
+        MegaWhatsappConversation $conversation,
+        string $message
+    )
+    {
+        //
+    }
+    
+    private function processAirtimePhone(
+        MegaWhatsappConversation $conversation,
+        string $message
+    )
+    {
+        //
+    }
+    
+    private function processAirtimeConfirmation(
+        MegaWhatsappConversation $conversation,
+        string $message
+    )
+    {
+        //
+    }
+
+    private function showWallet(
+        MegaWhatsappConversation $conversation
+    )
+    {
+        return $this->whatsapp->sendText(
+            $conversation->phone,
+            'Wallet module coming next'
+        );
+    }
+    
+    private function processWallet(
+        MegaWhatsappConversation $conversation,
+        string $message
+    )
+    {
+        //
+    }
+
+    private function showHelp(
+        MegaWhatsappConversation $conversation
+    )
+    {
+        return $this->whatsapp->sendText(
+            $conversation->phone,
+            '
+    Support WhatsApp:
+    2348168509044
+    
+    Email:
+    info@megasub.com
+            '
+        );
+    }
+    
+    private function processHelp(
+        MegaWhatsappConversation $conversation,
+        string $message
+    )
+    {
+        return $this->showMainMenu(
+            $conversation
+        );
+    }
+
+
+
+}
