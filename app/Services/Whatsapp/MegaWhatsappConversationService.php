@@ -442,7 +442,8 @@ class MegaWhatsappConversationService
             //     'visibility',
             //     1
             // )
-            // ->orderBy('user_level_1_selling_price')
+            ->take(10)
+            ->orderBy('user_level_1_selling_price')
             ->get();
     
         if ($plans->isEmpty()) {
