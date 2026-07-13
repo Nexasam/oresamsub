@@ -117,26 +117,26 @@ class MegaWhatsappConversationService
     
         return $this->whatsapp->sendList(
             $conversation->phone,
-            'Welcome to MegaSub',
-    
+            "👋 Welcome to MegaSub!\n\nWhat would you like to do today?",
             [
                 [
                     'id' => 'data',
-                    'title' => 'DATA'
+                    'title' => 'Buy Data'
                 ],
                 [
                     'id' => 'airtime',
-                    'title' => 'AIRTIME'
+                    'title' => 'Buy Airtime'
                 ],
                 [
                     'id' => 'wallet',
-                    'title' => 'WALLET'
+                    'title' => 'My Wallet'
                 ],
                 [
                     'id' => 'help',
-                    'title' => 'SUPPORT'
+                    'title' => 'Get Help'
                 ]
-            ]
+            ],
+            'View Menu'
         );
     }
 
@@ -294,7 +294,7 @@ class MegaWhatsappConversationService
     
         return $this->whatsapp->sendList(
             $conversation->phone,
-            'Select Network',
+            "📶 Great choice!\n\nPlease select your preferred network.",
             [
                 [
                     'id' => 'mtn',
@@ -302,17 +302,18 @@ class MegaWhatsappConversationService
                 ],
                 [
                     'id' => 'airtel',
-                    'title' => 'AIRTEL'
+                    'title' => 'Airtel'
                 ],
                 [
                     'id' => 'glo',
-                    'title' => 'GLO'
+                    'title' => 'Glo'
                 ],
                 [
                     'id' => '9mobile',
-                    'title' => '9MOBILE'
+                    'title' => '9mobile'
                 ]
-            ]
+            ],
+            'Select Network'
         );
     }
     
