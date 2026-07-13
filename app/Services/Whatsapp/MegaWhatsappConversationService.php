@@ -434,8 +434,7 @@ class MegaWhatsappConversationService
             $payload
         );
     
-        $plans = ProductPlan::query()
-            ->where(
+        $plans = ProductPlan::where(
                 'product_plan_category_id',
                 $category->id
             )
@@ -443,7 +442,7 @@ class MegaWhatsappConversationService
             //     'visibility',
             //     1
             // )
-            ->orderBy('user_level_1_selling_price')
+            // ->orderBy('user_level_1_selling_price')
             ->get();
     
         if ($plans->isEmpty()) {
@@ -459,7 +458,7 @@ class MegaWhatsappConversationService
                 'id' => $plan->id,
                 'title' => $plan->product_plan_name,
                 'description' =>
-                    '₦' .
+                    'N' .
                     number_format(
                         $plan->user_level_1_selling_price,
                         2
@@ -467,14 +466,14 @@ class MegaWhatsappConversationService
             ]
         )->toArray();
 
-        logger('planssss: '.json_encode($planss));
+        
 
 
     
         return $this->whatsapp->sendList(
             $conversation->phone,
             "🎯 *{$category->product_plan_category_name}* selected.\n\nChoose your preferred data plan below.",
-           $planss,
+           $plans->toArray(),
             'View Plans'
         );
     }
