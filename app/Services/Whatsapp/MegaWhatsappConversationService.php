@@ -434,17 +434,37 @@ class MegaWhatsappConversationService
             $payload
         );
     
-        $plans = ProductPlan::where(
-                'product_plan_category_id',
-                $category->id
-            )
-            // ->where(
-            //     'visibility',
-            //     1
-            // )
-            ->take(10)
-            ->orderBy('user_level_1_selling_price')
-            ->get();
+        // $plans = ProductPlan::where(
+        //         'product_plan_category_id',
+        //         $category->id
+        //     )
+        //     // ->where(
+        //     //     'visibility',
+        //     //     1
+        //     // )
+        //     ->take(10)
+        //     ->orderBy('user_level_1_selling_price')
+        //     ->get();
+
+        $plans = ProductPlan::query()
+        ->where(
+            'product_plan_category_id',
+            $category->id
+        )
+        ->where('visibility', 1)
+        ->orderByRaw("
+            CASE
+                WHEN data_size_in_mb = 500 THEN 1
+                WHEN data_size_in_mb = 1000 THEN 2
+                WHEN data_size_in_mb = 2000 THEN 3
+                WHEN data_size_in_mb = 3000 THEN 4
+                WHEN data_size_in_mb = 5000 THEN 5
+                ELSE 6
+            END
+        ")
+        ->orderByRaw('CAST(data_size_in_mb AS UNSIGNED) DESC')
+        ->take(10)
+        ->get();
     
         if ($plans->isEmpty()) {
     
