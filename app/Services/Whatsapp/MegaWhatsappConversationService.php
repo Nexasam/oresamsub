@@ -390,14 +390,14 @@ class MegaWhatsappConversationService
     
         return $this->whatsapp->sendList(
             $conversation->phone,
-            "📦 {$network->name} selected.\n\nPlease choose a data category.",
+            "✅ Great choice!\n\nYou're about to purchase *{$network->name}* data.\n\nPlease select the type of data bundle you'd like.",
             $categories
                 ->map(fn ($category) => [
                     'id' => $category->id,
                     'title' => $category->product_plan_category_name,
                 ])
                 ->toArray(),
-            'Select Type'
+            'View Types'
         );
     }
     
