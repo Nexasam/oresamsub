@@ -4,6 +4,9 @@ namespace App\Services\Whatsapp;
 
 use App\Enums\WhatsappState;
 use App\Models\MegaWhatsappConversation;
+use App\Models\Network;
+use App\Models\Product;
+use App\Models\ProductPlanCategory;
 use App\Services\Whatsapp\MegaWhatsappService;
 use App\Services\Whatsapp\MegaWhatsappUserResolverService;
 use Illuminate\Support\Facades\Cache;
@@ -317,12 +320,85 @@ class MegaWhatsappConversationService
         );
     }
     
+
+    
     private function processDataNetwork(
         MegaWhatsappConversation $conversation,
         string $message
     )
     {
-        //
+        
+        $network = Network::query()
+            ->whereRaw(
+                'UPPER(network_name) = ?',
+                [strtolower($message)]
+            )
+            ->first();
+    
+        if (! $network) {
+    
+            return $this->showDataNetworks(
+                $conversation
+            );
+        }
+    
+        $payload = $conversation->payload ?? [];
+    
+        $payload['network_id'] = $network->id;
+    
+        $this->updateConversation(
+            $conversation,
+            WhatsappState::DATA_TYPE,
+            $payload
+        );
+    
+        $dataProduct = Product::query()
+            ->whereRaw(
+                'LOWER(slug) = ?',
+                ['data']
+            )
+            ->first();
+    
+        if (! $dataProduct) {
+    
+            return $this->whatsapp->sendText(
+                $conversation->phone,
+                '⚠️ Data product configuration is missing.'
+            );
+        }
+    
+        $categories = ProductPlanCategory::query()
+            ->where(
+                'network_id',
+                $network->id
+            )
+            ->where(
+                'product_id',
+                $dataProduct->id
+            )
+            ->where('visibility',1)
+            ->orderBy('product_plan_category_name')
+            ->get();
+    
+        if ($categories->isEmpty()) {
+    
+            return $this->whatsapp->sendText(
+                $conversation->phone,
+                "😔 No data categories are currently available for {$network->network_name}."
+            );
+        }
+    
+        return $this->whatsapp->sendList(
+            $conversation->phone,
+            "📦 {$network->name} selected.\n\nPlease choose a data category.",
+            $categories
+                ->map(fn ($category) => [
+                    'id' => $category->id,
+                    'title' => $category->product_plan_category_name,
+                ])
+                ->toArray(),
+            'Select Type'
+        );
     }
     
     private function processDataType(
