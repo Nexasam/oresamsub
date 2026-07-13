@@ -490,7 +490,7 @@ class MegaWhatsappConversationService
                 -$size,
             ];
         })
-        ->take(10)
+        ->take(20)
         ->values();
     
         if ($plans->isEmpty()) {
