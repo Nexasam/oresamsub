@@ -412,6 +412,8 @@ class MegaWhatsappConversationService
         $category = ProductPlanCategory::find(
             $message
         );
+
+        logger('catid: '.$message);
     
         if (! $category) {
     
