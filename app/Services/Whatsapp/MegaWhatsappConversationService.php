@@ -468,12 +468,12 @@ class MegaWhatsappConversationService
 
         
 
-
+        logger('planssssss::'.json_encode($planss));
     
         return $this->whatsapp->sendList(
             $conversation->phone,
             "🎯 *{$category->product_plan_category_name}* selected.\n\nChoose your preferred data plan below.",
-           $plans->toArray(),
+           $planss,
             'View Plans'
         );
     }
