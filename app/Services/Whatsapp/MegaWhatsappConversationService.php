@@ -458,7 +458,7 @@ class MegaWhatsappConversationService
         $planss = $plans->map(
             fn ($plan) => [
                 'id' => $plan->id,
-                'title' => "{$plan->data_size_in_mb} - {$plan->validity_in_days}",
+                'title' => "{$plan->data_size_in_mb} - {$plan->validity_in_days} days",
                 'description' => '₦' . number_format(
                     $plan->user_level_1_selling_price,
                     2
