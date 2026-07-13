@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services;
+namespace App\Services\Whatsapp;
 
 use App\Models\WhatsappConfig;
 use Illuminate\Support\Facades\Http;

@@ -6,7 +6,7 @@ use App\Mail\WhatsappLinkOtpMail;
 use App\Models\MegaWhatsappConversation;
 use App\Models\User;
 use App\Models\WhatsappConfig;
-use App\Services\MegaWhatsappConversationService;
+use App\Services\Whatsapp\MegaWhatsappConversationService;
 use App\Services\Whatsapp\IntentRouter;
 use App\Services\Whatsapp\WhatsappConversationService;
 use App\Services\Whatsapp\WhatsappIntentParser;

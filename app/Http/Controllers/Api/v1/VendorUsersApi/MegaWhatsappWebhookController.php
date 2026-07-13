@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Services\MegaWhatsappConversationService;
+use App\Services\Whatsapp\MegaWhatsappConversationService;
 use Illuminate\Http\Request;
 use Throwable;
 

@@ -1,9 +1,10 @@
 <?php
 
-namespace App\Services;
+namespace App\Services\Whatsapp;
 
 use App\Enums\WhatsappState;
 use App\Models\MegaWhatsappConversation;
+use App\Services\Whatsapp\MegaWhatsappService;
 use App\Services\Whatsapp\MegaWhatsappUserResolverService;
 use Illuminate\Support\Facades\Cache;
 
