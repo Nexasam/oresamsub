@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Enums\WhatsappState;
 use App\Models\MegaWhatsappConversation;
 use App\Services\Whatsapp\MegaWhatsappUserResolverService;
+use Illuminate\Support\Facades\Cache;
 
 class MegaWhatsappConversationService
 {
@@ -31,6 +32,31 @@ class MegaWhatsappConversationService
                 )
             )
         );
+
+
+
+         /*
+        |--------------------------------------------------------------------------
+        | Exit Mega Bot
+        |--------------------------------------------------------------------------
+        */
+        if ($message === 'start') {
+
+            Cache::forget(
+                "mega_session:{$phone}"
+            );
+
+            MegaWhatsappConversation::where(
+                'phone',
+                $phone
+            )->delete();
+
+            return $this->whatsapp->sendText(
+                $phone,
+                'Mega session ended. Returning to the main menu...'
+            );
+        }
+
     
         $user = $this->userResolver->resolve(
             $phone

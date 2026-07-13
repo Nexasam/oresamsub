@@ -3,8 +3,10 @@ namespace App\Http\Controllers\Api\v1\VendorUsersApi;
 
 use App\Http\Controllers\Controller;
 use App\Mail\WhatsappLinkOtpMail;
+use App\Models\MegaWhatsappConversation;
 use App\Models\User;
 use App\Models\WhatsappConfig;
+use App\Services\MegaWhatsappConversationService;
 use App\Services\Whatsapp\IntentRouter;
 use App\Services\Whatsapp\WhatsappConversationService;
 use App\Services\Whatsapp\WhatsappIntentParser;
@@ -60,116 +62,7 @@ class WhatsappWebhookController extends Controller
     
 
 
-    private function extractTexoldt(array $payload): ?string
-    {
-        /*
-        Normal text message
-        */
-        $text = data_get(
-            $payload,
-            'entry.0.changes.0.value.messages.0.text.body'
-        );
-    
-        if (!empty($text)) {
-            return strtolower(trim($text));
-        }
-    
-        /*
-        Shared contact
-        */
-        $contactPhone = data_get(
-            $payload,
-            'entry.0.changes.0.value.messages.0.contacts.0.phones.0.phone'
-        );
-    
-        if (!empty($contactPhone)) {
-            return preg_replace('/\D/', '', $contactPhone);
-        }
-    
-        /*
-        Interactive buttons
-        */
-        $buttonId = data_get(
-            $payload,
-            'entry.0.changes.0.value.messages.0.interactive.button_reply.id'
-        );
-
-    
-        // return match ($buttonId) {
-
-        //     'data_confirm_purchase' => 'yes',
-        //     'data_cancel_purchase' => 'no',
-        
-        //     'favorite_use_same_number'
-        //         => 'favorite_use_same_number',
-        
-        //     'favorite_change_number'
-        //         => 'favorite_change_number',
-
-        //     // Account buttons
-        //     'account_refresh_balance' => 'account_refresh_balance',
-        //     'account_data_airtime_help'        => 'account_buy_data_airtime',
-           
-        //     'save_contact_yes' => 'save_contact_yes',
-        //     'save_contact_no'  => 'save_contact_no',
-        
-        //     'start_over'
-        //         => 'start',
-        
-        //     default => null,
-        // };
-
-
-        // if ($type === 'interactive') {
-
-        //     $buttonId = $request->input(
-        //         'entry.0.changes.0.value.messages.0.interactive.button_reply.id'
-        //     );
-        
-        //     if ($buttonId) {
-        
-        //         return match ($buttonId) {
-        
-        //             'data_confirm_purchase' => 'data_confirm_purchase',
-        
-        //             'data_cancel_purchase' => 'data_cancel_purchase',
-        
-        //             'save_contact_yes' => 'save_contact_yes',
-        
-        //             'save_contact_no' => 'save_contact_no',
-
-
-        //             // 'data_confirm_purchase' => 'yes',
-        //             // 'data_cancel_purchase' => 'no',
-                
-        //             'favorite_use_same_number'
-        //                 => 'favorite_use_same_number',
-                
-        //             'favorite_change_number'
-        //                 => 'favorite_change_number',
-        
-        //             // Account buttons
-        //             'account_refresh_balance' => 'account_refresh_balance',
-        //             'account_data_airtime_help'        => 'account_buy_data_airtime',
-                   
-              
-                
-        //             'start_over'
-        //                 => 'start',
-        
-        //             default => $buttonId
-        //         };
-        //     }
-        
-        //     $listId = $request->input(
-        //         'entry.0.changes.0.value.messages.0.interactive.list_reply.id'
-        //     );
-        
-        //     if ($listId) {
-        //         return $listId;
-        //     }
-        // }
-    }
+ 
 
     private function extractText(array $payload): ?string
 {
@@ -330,6 +223,53 @@ class WhatsappWebhookController extends Controller
             ]);
         }
 
+
+
+         /*
+        |--------------------------------------------------------------------------
+        | Mega Session
+        |--------------------------------------------------------------------------
+        */
+        $megaSession = Cache::has(
+            "mega_session:{$phone}"
+        );
+
+        /*
+        |--------------------------------------------------------------------------
+        | Start Mega Bot
+        |--------------------------------------------------------------------------
+        */
+        if ($text === 'mega') {
+
+            Cache::put(
+                "mega_session:{$phone}",
+                [
+                    'started_at' => now()
+                ],
+                now()->addHours(12)
+            );
+
+            $megaSession = true;
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | Route Active Mega Session
+        |--------------------------------------------------------------------------
+        */
+        if ($megaSession) {
+
+            app(
+                MegaWhatsappConversationService::class
+            )->handle([
+                'phone' => $phone,
+                'message' => $text,
+            ]);
+
+            return response()->json([
+                'ok' => true
+            ]);
+        }
         
 
         $greetings = [
