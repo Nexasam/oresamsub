@@ -463,7 +463,7 @@ class MegaWhatsappConversationService
             END
         ")
         ->orderByRaw('CAST(data_size_in_mb AS UNSIGNED) DESC')
-        ->take(10)
+        ->take(20)
         ->get();
     
         if ($plans->isEmpty()) {
