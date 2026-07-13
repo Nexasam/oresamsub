@@ -15,7 +15,7 @@ class MegaWhatsappUserResolverService
         );
 
         return User::query()
-            ->where('phone', $phone)
+            ->where('phone_number', $phone)
             ->first();
     }
 
