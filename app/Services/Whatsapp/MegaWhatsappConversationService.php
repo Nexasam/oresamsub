@@ -437,10 +437,10 @@ class MegaWhatsappConversationService
                 'product_plan_category_id',
                 $category->id
             )
-            ->where(
-                'visibility',
-                1
-            )
+            // ->where(
+            //     'visibility',
+            //     1
+            // )
             ->orderBy('user_level_1_selling_price')
             ->get();
     
