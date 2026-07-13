@@ -455,7 +455,7 @@ class MegaWhatsappConversationService
             );
         }
 
-        $titlesize = 
+        
 
         $planss = $plans->map(
             fn ($plan) => [
