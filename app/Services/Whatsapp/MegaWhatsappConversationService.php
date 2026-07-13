@@ -460,14 +460,19 @@ class MegaWhatsappConversationService
         $planss = $plans->map(
             fn ($plan) => [
                 'id' => $plan->id,
-                'title' => "{$this->formatDataSize($plans->data_size_in_mb)} - {$plan->validity_in_days} days",
+                'title' => sprintf(
+                    '%s - %s Days',
+                    $this->formatDataSize(
+                        $plan->data_size_in_mb
+                    ),
+                    $plan->validity_in_days
+                ),
                 'description' => '₦' . number_format(
                     $plan->user_level_1_selling_price,
                     2
                 ),
             ]
         )->toArray();
-
         
 
         logger('planssssss::'.json_encode($planss));
