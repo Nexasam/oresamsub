@@ -435,10 +435,10 @@ class MegaWhatsappConversationService
         );
     
         $plans = ProductPlan::query()
-            // ->where(
-            //     'product_plan_category_id',
-            //     $category->id
-            // )
+            ->where(
+                'product_plan_category_id',
+                $category->id
+            )
             // ->where(
             //     'visibility',
             //     1
