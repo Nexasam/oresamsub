@@ -460,7 +460,7 @@ class MegaWhatsappConversationService
             $plans->map(
                 fn ($plan) => [
                     'id' => $plan->id,
-                    'title' => $plan->name,
+                    'title' => $plan->product_plan_name,
                     'description' =>
                         '₦' .
                         number_format(
