@@ -115,7 +115,7 @@ class MegaWhatsappConversationService
             []
         );
     
-        return $this->whatsapp->sendButtons(
+        return $this->whatsapp->sendList(
             $conversation->phone,
             'Welcome to MegaSub',
     
@@ -131,6 +131,10 @@ class MegaWhatsappConversationService
                 [
                     'id' => 'wallet',
                     'title' => 'WALLET'
+                ],
+                [
+                    'id' => 'help',
+                    'title' => 'SUPPORT'
                 ]
             ]
         );
