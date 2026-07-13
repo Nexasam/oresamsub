@@ -377,7 +377,7 @@ class MegaWhatsappConversationService
                 'product_id',
                 $dataProduct->id
             )
-            ->where('visibility',1)
+            // ->where('visibility',1)
             ->orderBy('product_plan_category_name')
             ->get();
     
@@ -391,7 +391,7 @@ class MegaWhatsappConversationService
     
         return $this->whatsapp->sendList(
             $conversation->phone,
-            "✅ Great choice!\n\nYou're about to purchase *{$network->name}* data.\n\nPlease select the type of data bundle you'd like.",
+            "✅ Great choice!\n\nYou're about to purchase *{$network->network_name}* data.\n\nPlease select the type of data bundle you'd like.",
             $categories
                 ->map(fn ($category) => [
                     'id' => $category->id,
