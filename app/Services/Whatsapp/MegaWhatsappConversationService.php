@@ -6,6 +6,7 @@ use App\Enums\WhatsappState;
 use App\Models\MegaWhatsappConversation;
 use App\Models\Network;
 use App\Models\Product;
+use App\Models\ProductPlan;
 use App\Models\ProductPlanCategory;
 use App\Services\Whatsapp\MegaWhatsappService;
 use App\Services\Whatsapp\MegaWhatsappUserResolverService;
@@ -401,12 +402,73 @@ class MegaWhatsappConversationService
         );
     }
     
+   
+
     private function processDataType(
         MegaWhatsappConversation $conversation,
         string $message
     )
     {
-        //
+        $category = ProductPlanCategory::find(
+            $message
+        );
+    
+        if (! $category) {
+    
+            return $this->whatsapp->sendText(
+                $conversation->phone,
+                '⚠️ Invalid selection. Please try again.'
+            );
+        }
+    
+        $payload = $conversation->payload ?? [];
+    
+        $payload['product_plan_category_id']
+            = $category->id;
+    
+        $this->updateConversation(
+            $conversation,
+            WhatsappState::DATA_PLAN,
+            $payload
+        );
+    
+        $plans = ProductPlan::query()
+            ->where(
+                'product_plan_category_id',
+                $category->id
+            )
+            ->where(
+                'visibility',
+                1
+            )
+            ->orderBy('user_level_1_selling_price')
+            ->get();
+    
+        if ($plans->isEmpty()) {
+    
+            return $this->whatsapp->sendText(
+                $conversation->phone,
+                '😔 No plans are currently available for this category.'
+            );
+        }
+    
+        return $this->whatsapp->sendList(
+            $conversation->phone,
+            "🎯 *{$category->product_plan_category_name}* selected.\n\nChoose your preferred data plan below.",
+            $plans->map(
+                fn ($plan) => [
+                    'id' => $plan->id,
+                    'title' => $plan->name,
+                    'description' =>
+                        '₦' .
+                        number_format(
+                            $plan->user_level_1_selling_price,
+                            2
+                        ),
+                ]
+            )->toArray(),
+            'View Plans'
+        );
     }
     
     private function processDataPlan(
