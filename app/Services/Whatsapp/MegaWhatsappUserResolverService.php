@@ -16,8 +16,7 @@ class MegaWhatsappUserResolverService
 
         logger('normalized phone: '.$phone);
 
-        return User::query()
-            ->where('phone_number', $phone)
+        return User::where('phone_number', $phone)
             ->first();
     }
 
