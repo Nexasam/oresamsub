@@ -453,22 +453,28 @@ class MegaWhatsappConversationService
                 '😔 No plans are currently available for this category.'
             );
         }
+
+        $planss = $plans->map(
+            fn ($plan) => [
+                'id' => $plan->id,
+                'title' => $plan->product_plan_name,
+                'description' =>
+                    '₦' .
+                    number_format(
+                        $plan->user_level_1_selling_price,
+                        2
+                    ),
+            ]
+        )->toArray();
+
+        logger('planssss: '.json_encode($planss));
+
+
     
         return $this->whatsapp->sendList(
             $conversation->phone,
             "🎯 *{$category->product_plan_category_name}* selected.\n\nChoose your preferred data plan below.",
-            $plans->map(
-                fn ($plan) => [
-                    'id' => $plan->id,
-                    'title' => $plan->product_plan_name,
-                    'description' =>
-                        '₦' .
-                        number_format(
-                            $plan->user_level_1_selling_price,
-                            2
-                        ),
-                ]
-            )->toArray(),
+           $planss,
             'View Plans'
         );
     }
