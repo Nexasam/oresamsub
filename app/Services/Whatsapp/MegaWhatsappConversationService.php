@@ -448,6 +448,7 @@ class MegaWhatsappConversationService
     
         if ($plans->isEmpty()) {
     
+            logger('maybe na this onne');
             return $this->whatsapp->sendText(
                 $conversation->phone,
                 '😔 No plans are currently available for this category.'
