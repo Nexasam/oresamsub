@@ -663,7 +663,7 @@ class MegaWhatsappConversationService
     
 
     
-    private function processDataConfirmation(
+    private function processDataConfirmationold(
         MegaWhatsappConversation $conversation,
         string $message
     )
@@ -707,6 +707,7 @@ class MegaWhatsappConversationService
         |
         */
     
+        
         $this->updateConversation(
             $conversation,
             WhatsappState::MAIN_MENU,
@@ -719,6 +720,120 @@ class MegaWhatsappConversationService
             "{$plan->product_plan_name} has been queued for processing.\n\n" .
             "Thank you for choosing MegaSub 🚀"
         );
+    }
+
+
+    private function processDataConfirmation(
+        MegaWhatsappConversation $conversation,
+        string $message
+    )
+    {
+        if ($message === 'cancel_data_purchase') {
+    
+            return $this->showMainMenu(
+                $conversation
+            );
+        }
+    
+        if ($message !== 'confirm_data_purchase') {
+    
+            return $this->whatsapp->sendText(
+                $conversation->phone,
+                'Please click the confirm button.'
+            );
+        }
+    
+        $payload = $conversation->payload ?? [];
+    
+        $plan = ProductPlan::find(
+            $payload['product_plan_id'] ?? null
+        );
+    
+        $user = $conversation->user;
+    
+        if (! $plan || ! $user) {
+    
+            return $this->whatsapp->sendText(
+                $conversation->phone,
+                '⚠️ Unable to process request. Please start again.'
+            );
+        }
+    
+        try {
+    
+            /*
+            Inform customer
+            */
+            $this->whatsapp->sendText(
+                $conversation->phone,
+                "⏳ Processing your request...\n\nPlease wait."
+            );
+    
+            $request = new \Illuminate\Http\Request([
+                'product_plan_id' => $plan->id,
+                'phone_number' => $payload['beneficiary_phone'],
+                'network_id' => $payload['network_id'] ?? null,
+                'wallet_category' => 'main_wallet',
+                'validatephonenetwork' => 0,
+                'pin' => $user->pin,
+                'user' => $user,
+            ]);
+    
+            $result = app(
+                \App\Http\Controllers\DataController::class
+            )->buy_again_data_action(
+                $request
+            );
+    
+            $data = $result->getData(true);
+    
+            $status = $data['status'] ?? 0;
+    
+            $responseMessage =
+                $data['message']
+                ?? 'Transaction completed';
+    
+            /*
+            Reset conversation
+            */
+            $this->updateConversation(
+                $conversation,
+                WhatsappState::MAIN_MENU,
+                []
+            );
+    
+            if ($status == 1) {
+    
+                return $this->whatsapp->sendText(
+                    $conversation->phone,
+                    "✅ Data Purchase Successful\n\n" .
+                    "📶 {$plan->product_plan_name}\n" .
+                    "📱 {$payload['beneficiary_phone']}\n\n" .
+                    "{$responseMessage}"
+                );
+            }
+    
+            return $this->whatsapp->sendText(
+                $conversation->phone,
+                "❌ Purchase Failed\n\n" .
+                $responseMessage
+            );
+    
+        } catch (\Throwable $exception) {
+    
+            logger()->error(
+                'Mega Data Purchase Error',
+                [
+                    'error' => $exception->getMessage(),
+                    'payload' => $payload,
+                ]
+            );
+    
+            return $this->whatsapp->sendText(
+                $conversation->phone,
+                "❌ An error occurred while processing your request.\n\nPlease try again later."
+            );
+        }
     }
 
 
