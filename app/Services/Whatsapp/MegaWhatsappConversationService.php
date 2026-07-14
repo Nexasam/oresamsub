@@ -1128,11 +1128,11 @@ class MegaWhatsappConversationService
     }
 
     private function showRecentTransactions(
-        MegaWhatsappConversation $conversation
+        MegaWhatsappConversation $conversation,
+        int $page = 0
     ) {
         $transactions = Transaction::query()
             ->where('user_id', $conversation->user_id)
-            ->where('status', 1)
             ->whereIn('transaction_category', ['data', 'airtime'])
             ->whereNotNull('product_plan_id')
             ->whereHas('product_plan', fn ($query) =>
@@ -1143,7 +1143,7 @@ class MegaWhatsappConversationService
                 'product_plan.product_plan_category.network',
             ])
             ->latest()
-            ->take(15)
+            ->take(20)
             ->get();
 
         if ($transactions->isEmpty()) {
@@ -1155,27 +1155,39 @@ class MegaWhatsappConversationService
 
             return $this->whatsapp->sendButtons(
                 $conversation->phone,
-                "📋 You don't have any successful DATA or AIRTIME transactions to repeat yet.",
+                "📋 You don't have any DATA or AIRTIME transactions to show yet.",
                 [
                     ['id' => 'mega_main_menu', 'title' => 'Main Menu'],
                 ]
             );
         }
 
-        $options = [];
-        $message = "📋 Recent Transactions\n\n";
+        $options = $transactions
+            ->values()
+            ->mapWithKeys(fn ($transaction, $index) => [
+                (string) ($index + 1) => $transaction->id,
+            ])
+            ->all();
 
-        foreach ($transactions as $index => $transaction) {
-            $number = $index + 1;
+        $pageSize = 5;
+        $lastPage = (int) ceil($transactions->count() / $pageSize) - 1;
+        $page = max(0, min($page, $lastPage));
+        $visibleTransactions = $transactions
+            ->slice($page * $pageSize, $pageSize)
+            ->values();
+
+        $message = "📋 Recent Transactions\n\nYou can rebuy any of these.\n\n";
+
+        foreach ($visibleTransactions as $index => $transaction) {
+            $number = ($page * $pageSize) + $index + 1;
             $plan = $transaction->product_plan;
             $network = $plan?->product_plan_category?->network?->network_name;
             $category = strtoupper($transaction->transaction_category);
-
-            $options[(string) $number] = $transaction->id;
+            $status = $this->transactionStatusLabel($transaction->status);
 
             $message .= "{$number}. {$category}";
             $message .= $network ? " · {$network}" : '';
-            $message .= "\n{$plan->product_plan_name}";
+            $message .= "\n{$plan->product_plan_name}\nStatus: {$status}";
 
             if ($transaction->transaction_category === 'airtime') {
                 $message .= " · ₦" . number_format((float) $transaction->amount, 2);
@@ -1184,18 +1196,42 @@ class MegaWhatsappConversationService
             $message .= "\n\n";
         }
 
-        $message .= 'Reply with a number to buy the selected plan again.';
+        $message .= 'Reply with a number to buy it again.';
 
         $this->updateConversation(
             $conversation,
             WhatsappState::TRANSACTION_SELECT,
-            ['transaction_options' => $options]
+            [
+                'transaction_options' => $options,
+                'transaction_page' => $page,
+            ]
         );
 
-        return $this->whatsapp->sendText(
+        $buttons = [];
+
+        if ($page < $lastPage) {
+            $buttons[] = ['id' => 'more_transactions', 'title' => 'Show More'];
+        }
+
+        $buttons[] = ['id' => 'mega_main_menu', 'title' => 'Main Menu'];
+
+        return $this->whatsapp->sendButtons(
             $conversation->phone,
-            $message
+            $message,
+            $buttons
         );
+    }
+
+    private function transactionStatusLabel(string|int|null $status): string
+    {
+        return match ((string) $status) {
+            '1' => 'Successful ✅',
+            '0' => 'Pending ⏳',
+            '-1' => 'Failed ❌',
+            '2' => 'Refunded ↩️',
+            '3' => 'Processing ⏳',
+            default => 'Unknown',
+        };
     }
 
     private function processTransactionSelection(
@@ -1203,22 +1239,36 @@ class MegaWhatsappConversationService
         string $message
     ) {
         $payload = $conversation->payload ?? [];
+
+        if ($message === 'more_transactions') {
+            return $this->showRecentTransactions(
+                $conversation,
+                ((int) ($payload['transaction_page'] ?? 0)) + 1
+            );
+        }
+
+        if ($message === 'mega_main_menu') {
+            return $this->showMainMenu($conversation);
+        }
+
         $transactionId = data_get(
             $payload,
             "transaction_options.{$message}"
         );
 
         if (! $transactionId) {
-            return $this->whatsapp->sendText(
+            return $this->whatsapp->sendButtons(
                 $conversation->phone,
-                '⚠️ Reply with one of the transaction numbers shown above.'
+                '⚠️ Reply with one of the transaction numbers shown above.',
+                [
+                    ['id' => 'mega_main_menu', 'title' => 'Main Menu'],
+                ]
             );
         }
 
         $transaction = Transaction::query()
             ->where('id', $transactionId)
             ->where('user_id', $conversation->user_id)
-            ->where('status', 1)
             ->whereIn('transaction_category', ['data', 'airtime'])
             ->with('product_plan.product_plan_category.network')
             ->first();

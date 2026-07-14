@@ -128,6 +128,7 @@ class WhatsappWebhookController extends Controller
             'start_mega' => 'mega',
             'confirm_transaction_purchase' => 'confirm_transaction_purchase',
             'cancel_transaction_purchase' => 'cancel_transaction_purchase',
+            'more_transactions' => 'more_transactions',
 
             // Favorites
             'favorite_use_same_number'
