@@ -120,11 +120,9 @@ class WhatsappWebhookController extends Controller
             'confirm_airtime_purchase' => 'confirm_airtime_purchase',
             'cancel_airtime_purchase' => 'cancel_airtime_purchase',
 
-            // Mega help flow
-            'help_using_bot' => 'help_using_bot',
-            'help_login' => 'help_login',
-            'help_support' => 'help_support',
-            'help_main_menu' => 'help_main_menu',
+            // Mega account flow
+            'mega_refresh_balance' => 'mega_refresh_balance',
+            'mega_main_menu' => 'mega_main_menu',
 
             // Favorites
             'favorite_use_same_number'

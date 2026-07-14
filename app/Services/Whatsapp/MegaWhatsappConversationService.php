@@ -16,7 +16,8 @@ class MegaWhatsappConversationService
 {
     public function __construct(
         protected MegaWhatsappService $whatsapp,
-        protected MegaWhatsappUserResolverService $userResolver
+        protected MegaWhatsappUserResolverService $userResolver,
+        protected WhatsappIntentResolver $intentResolver
     ) {
     }
 
@@ -96,6 +97,14 @@ class MegaWhatsappConversationService
                 $conversation
             );
         }
+
+        if (in_array($message, ['wallet', 'account', 'fund'], true)) {
+            return $this->showWallet($conversation);
+        }
+
+        if (in_array($message, ['help', 'support'], true)) {
+            return $this->showHelp($conversation);
+        }
     
         return $this->handleState(
             $conversation,
@@ -133,7 +142,7 @@ class MegaWhatsappConversationService
                 ],
                 [
                     'id' => 'wallet',
-                    'title' => 'My Wallet'
+                    'title' => 'Account / Fund'
                 ],
                 [
                     'id' => 'help',
@@ -266,7 +275,7 @@ class MegaWhatsappConversationService
                     $conversation
                 ),
     
-            'wallet' =>
+            'wallet', 'account', 'fund' =>
                 $this->showWallet(
                     $conversation
                 ),
@@ -1083,9 +1092,33 @@ class MegaWhatsappConversationService
         MegaWhatsappConversation $conversation
     )
     {
-        return $this->whatsapp->sendText(
+        $user = $conversation->user()->first();
+
+        if (! $user) {
+            return $this->whatsapp->sendText(
+                $conversation->phone,
+                '⚠️ Unable to load your account. Please start again.'
+            );
+        }
+
+        $this->updateConversation(
+            $conversation,
+            WhatsappState::WALLET,
+            []
+        );
+
+        $result = $this->intentResolver->resolveAccount(
+            $user,
+            $conversation->phone
+        );
+
+        return $this->whatsapp->sendButtons(
             $conversation->phone,
-            'Wallet module coming next'
+            $result['message'],
+            [
+                ['id' => 'mega_refresh_balance', 'title' => 'REFRESH BALANCE'],
+                ['id' => 'mega_main_menu', 'title' => 'MAIN MENU'],
+            ]
         );
     }
     
@@ -1094,7 +1127,11 @@ class MegaWhatsappConversationService
         string $message
     )
     {
-        //
+        return match ($message) {
+            'mega_refresh_balance' => $this->showWallet($conversation),
+            'mega_main_menu' => $this->showMainMenu($conversation),
+            default => $this->showWallet($conversation),
+        };
     }
 
     private function showHelp(
@@ -1103,18 +1140,25 @@ class MegaWhatsappConversationService
     {
         $this->updateConversation(
             $conversation,
-            WhatsappState::HELP,
+            WhatsappState::MAIN_MENU,
             []
         );
 
-        return $this->whatsapp->sendButtons(
+        return $this->whatsapp->sendText(
             $conversation->phone,
-            "🆘 MegaSub Help Center\n\nHow can we help you today?",
-            [
-                ['id' => 'help_using_bot', 'title' => 'HOW TO BUY'],
-                ['id' => 'help_login', 'title' => 'LOGIN HELP'],
-                ['id' => 'help_support', 'title' => 'CONTACT SUPPORT'],
-            ]
+            "🆘 MegaSub Help Center\n\n" .
+            "🛒 HOW TO BUY\n" .
+            "Select DATA or AIRTIME from the main menu, choose the network and package or amount, enter the beneficiary number, then confirm the purchase.\n\n" .
+            "🔐 ACCOUNT ACCESS\n" .
+            "Login: https://oresamsub.com/login\n" .
+            "Forgot password: https://oresamsub.com/forgot-password\n" .
+            "For a forgotten transaction PIN, contact support.\n\n" .
+            "💬 WHATSAPP SUPPORT\n" .
+            "https://wa.me/2349011988807\n" .
+            "https://wa.me/2348168509044\n\n" .
+            "📧 EMAIL\n" .
+            "info@megasub.com\n\n" .
+            "Type MEGA to return to the main menu."
         );
     }
     
@@ -1123,46 +1167,7 @@ class MegaWhatsappConversationService
         string $message
     )
     {
-        if ($message === 'help_main_menu') {
-            return $this->showMainMenu($conversation);
-        }
-
-        $helpMessage = match ($message) {
-            'help_using_bot' =>
-                "🛒 How to buy on MegaSub\n\n" .
-                "1. Select DATA or AIRTIME from the main menu.\n" .
-                "2. Choose the network and package or amount.\n" .
-                "3. Enter the beneficiary phone number.\n" .
-                "4. Review the details and tap CONFIRM.\n\n" .
-                "Your main wallet will be charged after confirmation.",
-
-            'help_login' =>
-                "🔐 Account Access Help\n\n" .
-                "Login: https://oresamsub.com/login\n\n" .
-                "Forgot password: https://oresamsub.com/forgot-password\n\n" .
-                "For a forgotten transaction PIN, please contact support.",
-
-            'help_support' =>
-                "💬 Contact MegaSub Support\n\n" .
-                "WhatsApp:\n" .
-                "https://wa.me/2349011988807\n" .
-                "https://wa.me/2348168509044\n\n" .
-                "Email: info@megasub.com",
-
-            default => null,
-        };
-
-        if (! $helpMessage) {
-            return $this->showHelp($conversation);
-        }
-
-        return $this->whatsapp->sendButtons(
-            $conversation->phone,
-            $helpMessage,
-            [
-                ['id' => 'help_main_menu', 'title' => 'MAIN MENU'],
-            ]
-        );
+        return $this->showHelp($conversation);
     }
 
 
