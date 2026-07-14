@@ -116,6 +116,10 @@ class WhatsappWebhookController extends Controller
             'data_confirm_purchase' => 'yes',
             'data_cancel_purchase'  => 'no',
 
+            // Mega airtime purchase confirmation
+            'confirm_airtime_purchase' => 'confirm_airtime_purchase',
+            'cancel_airtime_purchase' => 'cancel_airtime_purchase',
+
             // Favorites
             'favorite_use_same_number'
                 => 'favorite_use_same_number',

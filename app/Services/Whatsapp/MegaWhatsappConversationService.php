@@ -843,9 +843,22 @@ class MegaWhatsappConversationService
         MegaWhatsappConversation $conversation
     )
     {
-        return $this->whatsapp->sendText(
+        $this->updateConversation(
+            $conversation,
+            WhatsappState::AIRTIME_NETWORK,
+            []
+        );
+
+        return $this->whatsapp->sendList(
             $conversation->phone,
-            'Airtime module coming next'
+            "📞 Which network would you like to recharge?",
+            [
+                ['id' => 'mtn', 'title' => 'MTN'],
+                ['id' => 'airtel', 'title' => 'Airtel'],
+                ['id' => 'glo', 'title' => 'Glo'],
+                ['id' => '9mobile', 'title' => '9mobile'],
+            ],
+            'Select Network'
         );
     }
     
@@ -854,7 +867,56 @@ class MegaWhatsappConversationService
         string $message
     )
     {
-        //
+        $network = Network::query()
+            ->whereRaw('LOWER(network_name) = ?', [strtolower($message)])
+            ->first();
+
+        if (! $network) {
+            return $this->showAirtimeNetworks($conversation);
+        }
+
+        $product = Product::query()
+            ->whereRaw('LOWER(slug) = ?', ['airtime'])
+            ->first();
+
+        if (! $product) {
+            return $this->whatsapp->sendText(
+                $conversation->phone,
+                '⚠️ Airtime product configuration is missing.'
+            );
+        }
+
+        $categoryIds = ProductPlanCategory::query()
+            ->where('product_id', $product->id)
+            ->where('network_id', $network->id)
+            ->pluck('id');
+
+        $plan = ProductPlan::query()
+            ->whereIn('product_plan_category_id', $categoryIds)
+            ->where('visibility', 1)
+            ->first();
+
+        if (! $plan) {
+            return $this->whatsapp->sendText(
+                $conversation->phone,
+                "😔 Airtime is currently unavailable for {$network->network_name}."
+            );
+        }
+
+        $this->updateConversation(
+            $conversation,
+            WhatsappState::AIRTIME_AMOUNT,
+            [
+                'network_id' => $network->id,
+                'network_name' => $network->network_name,
+                'product_plan_id' => $plan->id,
+            ]
+        );
+
+        return $this->whatsapp->sendText(
+            $conversation->phone,
+            "✅ {$network->network_name} selected.\n\n💰 Enter the airtime amount (minimum ₦50)."
+        );
     }
     
     private function processAirtimeAmount(
@@ -862,7 +924,29 @@ class MegaWhatsappConversationService
         string $message
     )
     {
-        //
+        $amount = str_replace(',', '', trim($message));
+        $amount = preg_replace('/^(?:₦|n|ngn)\s*/i', '', $amount);
+
+        if (! is_numeric($amount) || (float) $amount < 50) {
+            return $this->whatsapp->sendText(
+                $conversation->phone,
+                "⚠️ Enter a valid airtime amount of at least ₦50.\n\nExample: 500"
+            );
+        }
+
+        $payload = $conversation->payload ?? [];
+        $payload['amount'] = abs((float) $amount);
+
+        $this->updateConversation(
+            $conversation,
+            WhatsappState::AIRTIME_PHONE,
+            $payload
+        );
+
+        return $this->whatsapp->sendText(
+            $conversation->phone,
+            "📱 Enter the phone number that should receive the airtime."
+        );
     }
     
     private function processAirtimePhone(
@@ -870,7 +954,43 @@ class MegaWhatsappConversationService
         string $message
     )
     {
-        //
+        $phone = $this->userResolver->normalize($message);
+
+        if (! preg_match('/^0[789][01]\d{8}$/', $phone)) {
+            return $this->whatsapp->sendText(
+                $conversation->phone,
+                '⚠️ Please enter a valid Nigerian phone number.'
+            );
+        }
+
+        $payload = $conversation->payload ?? [];
+        $payload['beneficiary_phone'] = $phone;
+
+        if (
+            empty($payload['network_id']) ||
+            empty($payload['product_plan_id']) ||
+            empty($payload['amount'])
+        ) {
+            return $this->showMainMenu($conversation);
+        }
+
+        $this->updateConversation(
+            $conversation,
+            WhatsappState::AIRTIME_CONFIRM,
+            $payload
+        );
+
+        return $this->whatsapp->sendButtons(
+            $conversation->phone,
+            "📋 Please confirm your airtime purchase\n\n" .
+            "📞 Network: {$payload['network_name']}\n" .
+            "📱 Number: {$phone}\n" .
+            '💰 Amount: ₦' . number_format($payload['amount'], 2),
+            [
+                ['id' => 'confirm_airtime_purchase', 'title' => 'CONFIRM'],
+                ['id' => 'cancel_airtime_purchase', 'title' => 'CANCEL'],
+            ]
+        );
     }
     
     private function processAirtimeConfirmation(
@@ -878,7 +998,85 @@ class MegaWhatsappConversationService
         string $message
     )
     {
-        //
+        if ($message === 'cancel_airtime_purchase') {
+            return $this->showMainMenu($conversation);
+        }
+
+        if ($message !== 'confirm_airtime_purchase') {
+            return $this->whatsapp->sendText(
+                $conversation->phone,
+                'Please click the confirm or cancel button.'
+            );
+        }
+
+        $payload = $conversation->payload ?? [];
+        $plan = ProductPlan::find($payload['product_plan_id'] ?? null);
+        $user = $conversation->user;
+
+        if (! $plan || ! $user || empty($payload['beneficiary_phone'])) {
+            return $this->whatsapp->sendText(
+                $conversation->phone,
+                '⚠️ Unable to process request. Please start again.'
+            );
+        }
+
+        try {
+            $this->whatsapp->sendText(
+                $conversation->phone,
+                "⏳ Processing your airtime purchase...\n\nPlease wait."
+            );
+
+            $request = new \Illuminate\Http\Request([
+                'network_id' => $payload['network_id'],
+                'phone_number' => $payload['beneficiary_phone'],
+                'product_plan_id' => $plan->id,
+                'amount' => $payload['amount'],
+                'wallet_category' => 'main_wallet',
+                'validatephonenetwork' => 0,
+                'pin' => $user->pin,
+                'user' => $user,
+            ]);
+
+            $result = app(
+                \App\Http\Controllers\AirtimeController::class
+            )->buy_airtime_action_1($request);
+
+            $data = $result->getData(true);
+            $status = $data['status'] ?? 0;
+            $responseMessage = $data['message'] ?? 'Transaction completed';
+
+            $this->updateConversation(
+                $conversation,
+                WhatsappState::MAIN_MENU,
+                []
+            );
+
+            if ($status == 1) {
+                return $this->whatsapp->sendText(
+                    $conversation->phone,
+                    "✅ Airtime Purchase Successful\n\n" .
+                    "📞 {$payload['network_name']}\n" .
+                    "📱 {$payload['beneficiary_phone']}\n" .
+                    '💰 ₦' . number_format($payload['amount'], 2) .
+                    "\n\n{$responseMessage}"
+                );
+            }
+
+            return $this->whatsapp->sendText(
+                $conversation->phone,
+                "❌ Airtime Purchase Failed\n\n{$responseMessage}"
+            );
+        } catch (\Throwable $exception) {
+            logger()->error('Mega Airtime Purchase Error', [
+                'error' => $exception->getMessage(),
+                'payload' => $payload,
+            ]);
+
+            return $this->whatsapp->sendText(
+                $conversation->phone,
+                "❌ An error occurred while processing your airtime purchase.\n\nPlease try again later."
+            );
+        }
     }
 
     private function showWallet(
