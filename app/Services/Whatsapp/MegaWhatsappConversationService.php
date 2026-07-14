@@ -8,6 +8,7 @@ use App\Models\Network;
 use App\Models\Product;
 use App\Models\ProductPlan;
 use App\Models\ProductPlanCategory;
+use App\Models\Transaction;
 use App\Services\Whatsapp\MegaWhatsappService;
 use App\Services\Whatsapp\MegaWhatsappUserResolverService;
 use Illuminate\Support\Facades\Cache;
@@ -102,6 +103,10 @@ class MegaWhatsappConversationService
             return $this->showWallet($conversation);
         }
 
+        if (in_array($message, ['transactions', 'transaction', 'recent'], true)) {
+            return $this->showRecentTransactions($conversation);
+        }
+
         if (in_array($message, ['help', 'support'], true)) {
             return $this->showHelp($conversation);
         }
@@ -142,11 +147,15 @@ class MegaWhatsappConversationService
                 ],
                 [
                     'id' => 'wallet',
-                    'title' => 'Account / Fund'
+                    'title' => 'Account & Fund'
                 ],
                 [
                     'id' => 'help',
                     'title' => 'Get Help'
+                ],
+                [
+                    'id' => 'transactions',
+                    'title' => 'Transactions'
                 ]
             ],
             'View Menu'
@@ -224,6 +233,31 @@ class MegaWhatsappConversationService
                     $conversation,
                     $message
                 ),
+
+            // RECENT TRANSACTIONS FLOW
+            WhatsappState::TRANSACTION_SELECT =>
+                $this->processTransactionSelection(
+                    $conversation,
+                    $message
+                ),
+
+            WhatsappState::TRANSACTION_AMOUNT =>
+                $this->processTransactionAmount(
+                    $conversation,
+                    $message
+                ),
+
+            WhatsappState::TRANSACTION_PHONE =>
+                $this->processTransactionPhone(
+                    $conversation,
+                    $message
+                ),
+
+            WhatsappState::TRANSACTION_CONFIRM =>
+                $this->processTransactionConfirmation(
+                    $conversation,
+                    $message
+                ),
     
             // WALLET FLOW
             WhatsappState::WALLET =>
@@ -282,6 +316,11 @@ class MegaWhatsappConversationService
     
             'help' =>
                 $this->showHelp(
+                    $conversation
+                ),
+
+            'transactions', 'transaction', 'recent' =>
+                $this->showRecentTransactions(
                     $conversation
                 ),
     
@@ -660,11 +699,11 @@ class MegaWhatsappConversationService
             [
                 [
                     'id' => 'confirm_data_purchase',
-                    'title' => 'CONFIRM'
+                    'title' => 'Confirm'
                 ],
                 [
                     'id' => 'cancel_data_purchase',
-                    'title' => 'CANCEL'
+                    'title' => 'Cancel'
                 ]
             ]
         );
@@ -996,8 +1035,8 @@ class MegaWhatsappConversationService
             "📱 Number: {$phone}\n" .
             '💰 Amount: ₦' . number_format($payload['amount'], 2),
             [
-                ['id' => 'confirm_airtime_purchase', 'title' => 'CONFIRM'],
-                ['id' => 'cancel_airtime_purchase', 'title' => 'CANCEL'],
+                ['id' => 'confirm_airtime_purchase', 'title' => 'Confirm'],
+                ['id' => 'cancel_airtime_purchase', 'title' => 'Cancel'],
             ]
         );
     }
@@ -1088,6 +1127,323 @@ class MegaWhatsappConversationService
         }
     }
 
+    private function showRecentTransactions(
+        MegaWhatsappConversation $conversation
+    ) {
+        $transactions = Transaction::query()
+            ->where('user_id', $conversation->user_id)
+            ->where('status', 1)
+            ->whereIn('transaction_category', ['data', 'airtime'])
+            ->whereNotNull('product_plan_id')
+            ->whereHas('product_plan', fn ($query) =>
+                $query->where('visibility', 1)
+            )
+            ->with([
+                'product_plan.product_plan_category.product',
+                'product_plan.product_plan_category.network',
+            ])
+            ->latest()
+            ->take(15)
+            ->get();
+
+        if ($transactions->isEmpty()) {
+            $this->updateConversation(
+                $conversation,
+                WhatsappState::MAIN_MENU,
+                []
+            );
+
+            return $this->whatsapp->sendButtons(
+                $conversation->phone,
+                "📋 You don't have any successful DATA or AIRTIME transactions to repeat yet.",
+                [
+                    ['id' => 'mega_main_menu', 'title' => 'Main Menu'],
+                ]
+            );
+        }
+
+        $options = [];
+        $message = "📋 Recent Transactions\n\n";
+
+        foreach ($transactions as $index => $transaction) {
+            $number = $index + 1;
+            $plan = $transaction->product_plan;
+            $network = $plan?->product_plan_category?->network?->network_name;
+            $category = strtoupper($transaction->transaction_category);
+
+            $options[(string) $number] = $transaction->id;
+
+            $message .= "{$number}. {$category}";
+            $message .= $network ? " · {$network}" : '';
+            $message .= "\n{$plan->product_plan_name}";
+
+            if ($transaction->transaction_category === 'airtime') {
+                $message .= " · ₦" . number_format((float) $transaction->amount, 2);
+            }
+
+            $message .= "\n\n";
+        }
+
+        $message .= 'Reply with a number to buy the selected plan again.';
+
+        $this->updateConversation(
+            $conversation,
+            WhatsappState::TRANSACTION_SELECT,
+            ['transaction_options' => $options]
+        );
+
+        return $this->whatsapp->sendText(
+            $conversation->phone,
+            $message
+        );
+    }
+
+    private function processTransactionSelection(
+        MegaWhatsappConversation $conversation,
+        string $message
+    ) {
+        $payload = $conversation->payload ?? [];
+        $transactionId = data_get(
+            $payload,
+            "transaction_options.{$message}"
+        );
+
+        if (! $transactionId) {
+            return $this->whatsapp->sendText(
+                $conversation->phone,
+                '⚠️ Reply with one of the transaction numbers shown above.'
+            );
+        }
+
+        $transaction = Transaction::query()
+            ->where('id', $transactionId)
+            ->where('user_id', $conversation->user_id)
+            ->where('status', 1)
+            ->whereIn('transaction_category', ['data', 'airtime'])
+            ->with('product_plan.product_plan_category.network')
+            ->first();
+
+        $plan = $transaction?->product_plan;
+        $network = $plan?->product_plan_category?->network;
+
+        if (! $transaction || ! $plan || ! $network || ! $plan->visibility) {
+            return $this->whatsapp->sendText(
+                $conversation->phone,
+                '⚠️ That plan is no longer available. Please select another transaction.'
+            );
+        }
+
+        $payload = [
+            'transaction_id' => $transaction->id,
+            'transaction_category' => $transaction->transaction_category,
+            'product_plan_id' => $plan->id,
+            'network_id' => $network->id,
+            'network_name' => $network->network_name,
+        ];
+
+        if ($transaction->transaction_category === 'airtime') {
+            $this->updateConversation(
+                $conversation,
+                WhatsappState::TRANSACTION_AMOUNT,
+                $payload
+            );
+
+            return $this->whatsapp->sendText(
+                $conversation->phone,
+                "✅ {$network->network_name} airtime selected.\n\n💰 Enter the new airtime amount (minimum ₦50)."
+            );
+        }
+
+        $this->updateConversation(
+            $conversation,
+            WhatsappState::TRANSACTION_PHONE,
+            $payload
+        );
+
+        return $this->whatsapp->sendText(
+            $conversation->phone,
+            "✅ {$plan->product_plan_name} selected.\n\n📱 Enter the phone number that should receive this purchase."
+        );
+    }
+
+    private function processTransactionAmount(
+        MegaWhatsappConversation $conversation,
+        string $message
+    ) {
+        $amount = str_replace(',', '', trim($message));
+        $amount = preg_replace('/^(?:₦|n|ngn)\s*/i', '', $amount);
+
+        if (! is_numeric($amount) || (float) $amount < 50) {
+            return $this->whatsapp->sendText(
+                $conversation->phone,
+                "⚠️ Enter a valid airtime amount of at least ₦50.\n\nExample: 200"
+            );
+        }
+
+        $payload = $conversation->payload ?? [];
+
+        if (($payload['transaction_category'] ?? null) !== 'airtime') {
+            return $this->showRecentTransactions($conversation);
+        }
+
+        $payload['amount'] = abs((float) $amount);
+
+        $this->updateConversation(
+            $conversation,
+            WhatsappState::TRANSACTION_PHONE,
+            $payload
+        );
+
+        return $this->whatsapp->sendText(
+            $conversation->phone,
+            "📱 Enter the phone number that should receive the airtime."
+        );
+    }
+
+    private function processTransactionPhone(
+        MegaWhatsappConversation $conversation,
+        string $message
+    ) {
+        $phone = $this->userResolver->normalize($message);
+
+        if (! preg_match('/^0[789][01]\d{8}$/', $phone)) {
+            return $this->whatsapp->sendText(
+                $conversation->phone,
+                '⚠️ Please enter a valid Nigerian phone number.'
+            );
+        }
+
+        $payload = $conversation->payload ?? [];
+        $plan = ProductPlan::find($payload['product_plan_id'] ?? null);
+
+        if (! $plan || empty($payload['transaction_category'])) {
+            return $this->showRecentTransactions($conversation);
+        }
+
+        $payload['beneficiary_phone'] = $phone;
+
+        $this->updateConversation(
+            $conversation,
+            WhatsappState::TRANSACTION_CONFIRM,
+            $payload
+        );
+
+        $amount = $payload['transaction_category'] === 'airtime'
+            ? "\n💰 Amount: ₦" . number_format($payload['amount'], 2)
+            : '';
+
+        return $this->whatsapp->sendButtons(
+            $conversation->phone,
+            "📋 Confirm Repeat Purchase\n\n" .
+            "📦 {$plan->product_plan_name}\n" .
+            "📶 {$payload['network_name']}\n" .
+            "📱 {$phone}{$amount}",
+            [
+                ['id' => 'confirm_transaction_purchase', 'title' => 'Confirm'],
+                ['id' => 'cancel_transaction_purchase', 'title' => 'Cancel'],
+            ]
+        );
+    }
+
+    private function processTransactionConfirmation(
+        MegaWhatsappConversation $conversation,
+        string $message
+    ) {
+        if ($message === 'cancel_transaction_purchase') {
+            return $this->showMainMenu($conversation);
+        }
+
+        if ($message !== 'confirm_transaction_purchase') {
+            return $this->whatsapp->sendText(
+                $conversation->phone,
+                'Please click the confirm or cancel button.'
+            );
+        }
+
+        $payload = $conversation->payload ?? [];
+        $plan = ProductPlan::query()
+            ->where('id', $payload['product_plan_id'] ?? null)
+            ->where('visibility', 1)
+            ->first();
+        $user = $conversation->user()->first();
+
+        if (! $plan || ! $user || empty($payload['beneficiary_phone'])) {
+            return $this->whatsapp->sendText(
+                $conversation->phone,
+                '⚠️ Unable to process this repeat purchase. Please start again.'
+            );
+        }
+
+        try {
+            $this->whatsapp->sendText(
+                $conversation->phone,
+                "⏳ Processing your repeat purchase...\n\nPlease wait."
+            );
+
+            $requestData = [
+                'network_id' => $payload['network_id'],
+                'phone_number' => $payload['beneficiary_phone'],
+                'product_plan_id' => $plan->id,
+                'wallet_category' => 'main_wallet',
+                'validatephonenetwork' => 0,
+                'pin' => $user->pin,
+                'user' => $user,
+            ];
+
+            if ($payload['transaction_category'] === 'airtime') {
+                $requestData['amount'] = $payload['amount'];
+                $result = app(
+                    \App\Http\Controllers\AirtimeController::class
+                )->buy_airtime_action_1(new \Illuminate\Http\Request($requestData));
+            } else {
+                $result = app(
+                    \App\Http\Controllers\DataController::class
+                )->buy_again_data_action(new \Illuminate\Http\Request($requestData));
+            }
+
+            $data = $result->getData(true);
+            $status = $data['status'] ?? 0;
+            $responseMessage = $data['message'] ?? 'Transaction completed';
+
+            $this->updateConversation(
+                $conversation,
+                WhatsappState::MAIN_MENU,
+                []
+            );
+
+            if ($status == 1) {
+                return $this->whatsapp->sendButtons(
+                    $conversation->phone,
+                    "✅ Repeat Purchase Successful\n\n" .
+                    "📦 {$plan->product_plan_name}\n" .
+                    "📱 {$payload['beneficiary_phone']}\n\n" .
+                    $responseMessage,
+                    [
+                        ['id' => 'mega_main_menu', 'title' => 'Main Menu'],
+                    ]
+                );
+            }
+
+            return $this->whatsapp->sendButtons(
+                $conversation->phone,
+                "❌ Repeat Purchase Failed\n\n{$responseMessage}",
+                [
+                    ['id' => 'mega_main_menu', 'title' => 'Main Menu'],
+                ]
+            );
+        } catch (\Throwable $exception) {
+            logger()->error('Mega Repeat Purchase Error', [
+                'error' => $exception->getMessage(),
+                'payload' => $payload,
+            ]);
+
+            return $this->whatsapp->sendText(
+                $conversation->phone,
+                "❌ An error occurred while processing your repeat purchase.\n\nPlease try again later."
+            );
+        }
+    }
+
     private function showWallet(
         MegaWhatsappConversation $conversation
     )
@@ -1116,8 +1472,8 @@ class MegaWhatsappConversationService
             $conversation->phone,
             $result['message'],
             [
-                ['id' => 'mega_refresh_balance', 'title' => 'REFRESH BALANCE'],
-                ['id' => 'mega_main_menu', 'title' => 'MAIN MENU'],
+                ['id' => 'mega_refresh_balance', 'title' => 'Refresh Balance'],
+                ['id' => 'mega_main_menu', 'title' => 'Main Menu'],
             ]
         );
     }
@@ -1144,7 +1500,7 @@ class MegaWhatsappConversationService
             []
         );
 
-        return $this->whatsapp->sendText(
+        return $this->whatsapp->sendButtons(
             $conversation->phone,
             "🆘 MegaSub Help Center\n\n" .
             "🛒 HOW TO BUY\n" .
@@ -1157,8 +1513,10 @@ class MegaWhatsappConversationService
             "https://wa.me/2349011988807\n" .
             "https://wa.me/2348168509044\n\n" .
             "📧 EMAIL\n" .
-            "info@megasub.com\n\n" .
-            "Type MEGA to return to the main menu."
+            "info@megasub.com",
+            [
+                ['id' => 'mega_main_menu', 'title' => 'Main Menu'],
+            ]
         );
     }
     

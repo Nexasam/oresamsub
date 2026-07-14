@@ -6,6 +6,8 @@ use App\Mail\WhatsappLinkOtpMail;
 use App\Models\User;
 use App\Models\WhatsappConfig;
 use App\Services\Whatsapp\MegaWhatsappConversationService;
+use App\Services\Whatsapp\MegaWhatsappService;
+use App\Services\Whatsapp\MegaWhatsappUserResolverService;
 use App\Services\Whatsapp\WhatsappConversationService;
 use App\Services\Whatsapp\WhatsappIntentParser;
 use App\Services\Whatsapp\WhatsappIntentResolver;
@@ -123,6 +125,9 @@ class WhatsappWebhookController extends Controller
             // Mega account flow
             'mega_refresh_balance' => 'mega_refresh_balance',
             'mega_main_menu' => 'mega_main_menu',
+            'start_mega' => 'mega',
+            'confirm_transaction_purchase' => 'confirm_transaction_purchase',
+            'cancel_transaction_purchase' => 'cancel_transaction_purchase',
 
             // Favorites
             'favorite_use_same_number'
@@ -270,6 +275,19 @@ class WhatsappWebhookController extends Controller
         |--------------------------------------------------------------------------
         */
         if ($megaSession) {
+
+            $megaUser = app(
+                MegaWhatsappUserResolverService::class
+            )->resolve($phone);
+
+            if (! $megaUser) {
+                return $this->handleWhatsappLinking(
+                    $phone,
+                    $text,
+                    Cache::get("wa_session:{$phone}"),
+                    'MEGA'
+                );
+            }
 
             app(
                 MegaWhatsappConversationService::class
@@ -752,9 +770,12 @@ class WhatsappWebhookController extends Controller
     private function handleWhatsappLinking(
         string $phone,
         string $text,
-        ?array $session
+        ?array $session,
+        string $continueCommand = 'START'
     )
     {
+        $registerUrl = rtrim(config('app.url'), '/') . '/register';
+
         if ($session) {
     
             switch ($session['status']) {
@@ -767,12 +788,13 @@ class WhatsappWebhookController extends Controller
     
                     if (!$user) {
     
-                        app(Whatsappsender::class)->send(
+                        $this->sendWhatsappLinkingMessage(
                             $phone,
                             "❌ No account was found with that email address.\n\n"
                             . "If you do not have an account yet, register here:\n"
-                            . config('app.url') . "register\n\n"
-                            . "After registering, return here and type START."
+                            . "{$registerUrl}\n\n"
+                            . "After registering, return here and tap the button below.",
+                            $continueCommand
                         );
     
                         return response()->json(['ok' => true]);
@@ -834,10 +856,10 @@ class WhatsappWebhookController extends Controller
                     Cache::forget("wa_session:{$phone}");
                     Cache::forget("wa_link_otp:{$phone}");
     
-                    app(Whatsappsender::class)->send(
+                    $this->sendWhatsappLinkingMessage(
                         $phone,
-                        "✅ Success! Your WhatsApp number has been linked to your OresamSub account.\n\n"
-                        . "Type START to begin using the service."
+                        "✅ Success! Your WhatsApp number has been linked to your OresamSub account.",
+                        $continueCommand
                     );
     
                     return response()->json(['ok' => true]);
@@ -853,16 +875,38 @@ class WhatsappWebhookController extends Controller
             now()->addMinutes(15)
         );
     
-        app(Whatsappsender::class)->send(
+        $this->sendWhatsappLinkingMessage(
             $phone,
             "⚠️ Sorry, we could not find an account associated with this WhatsApp number.\n\n"
             . "If you already have an OresamSub account, reply with your email address and we will send an OTP to verify your account and link this WhatsApp number.\n\n"
             . "If you do not have an account yet, register here:\n"
-            . config('app.url') . "register\n\n"
-            . "After registration, return here and type START."
+            . "{$registerUrl}\n\n"
+            . "After registration, return here and tap the button below.",
+            $continueCommand
         );
     
         return response()->json(['ok' => true]);
+    }
+
+    private function sendWhatsappLinkingMessage(
+        string $phone,
+        string $message,
+        string $continueCommand
+    ): array {
+        if ($continueCommand === 'MEGA') {
+            return app(MegaWhatsappService::class)->sendButtons(
+                $phone,
+                $message,
+                [
+                    ['id' => 'start_mega', 'title' => 'Start Mega'],
+                ]
+            );
+        }
+
+        return app(Whatsappsender::class)->send(
+            $phone,
+            $message . "\n\nType {$continueCommand} to continue."
+        );
     }
 
  

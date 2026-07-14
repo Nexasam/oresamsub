@@ -24,6 +24,14 @@ class WhatsappState
 
     const AIRTIME_CONFIRM = 'airtime_confirm';
 
+    const TRANSACTION_SELECT = 'transaction_select';
+
+    const TRANSACTION_AMOUNT = 'transaction_amount';
+
+    const TRANSACTION_PHONE = 'transaction_phone';
+
+    const TRANSACTION_CONFIRM = 'transaction_confirm';
+
     const WALLET = 'wallet';
 
     const HELP = 'help';
