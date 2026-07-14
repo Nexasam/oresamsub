@@ -1101,15 +1101,20 @@ class MegaWhatsappConversationService
         MegaWhatsappConversation $conversation
     )
     {
-        return $this->whatsapp->sendText(
+        $this->updateConversation(
+            $conversation,
+            WhatsappState::HELP,
+            []
+        );
+
+        return $this->whatsapp->sendButtons(
             $conversation->phone,
-            '
-    Support WhatsApp:
-    2348168509044
-    
-    Email:
-    info@megasub.com
-            '
+            "🆘 MegaSub Help Center\n\nHow can we help you today?",
+            [
+                ['id' => 'help_using_bot', 'title' => 'HOW TO BUY'],
+                ['id' => 'help_login', 'title' => 'LOGIN HELP'],
+                ['id' => 'help_support', 'title' => 'CONTACT SUPPORT'],
+            ]
         );
     }
     
@@ -1118,8 +1123,45 @@ class MegaWhatsappConversationService
         string $message
     )
     {
-        return $this->showMainMenu(
-            $conversation
+        if ($message === 'help_main_menu') {
+            return $this->showMainMenu($conversation);
+        }
+
+        $helpMessage = match ($message) {
+            'help_using_bot' =>
+                "🛒 How to buy on MegaSub\n\n" .
+                "1. Select DATA or AIRTIME from the main menu.\n" .
+                "2. Choose the network and package or amount.\n" .
+                "3. Enter the beneficiary phone number.\n" .
+                "4. Review the details and tap CONFIRM.\n\n" .
+                "Your main wallet will be charged after confirmation.",
+
+            'help_login' =>
+                "🔐 Account Access Help\n\n" .
+                "Login: https://oresamsub.com/login\n\n" .
+                "Forgot password: https://oresamsub.com/forgot-password\n\n" .
+                "For a forgotten transaction PIN, please contact support.",
+
+            'help_support' =>
+                "💬 Contact MegaSub Support\n\n" .
+                "WhatsApp:\n" .
+                "https://wa.me/2349011988807\n" .
+                "https://wa.me/2348168509044\n\n" .
+                "Email: info@megasub.com",
+
+            default => null,
+        };
+
+        if (! $helpMessage) {
+            return $this->showHelp($conversation);
+        }
+
+        return $this->whatsapp->sendButtons(
+            $conversation->phone,
+            $helpMessage,
+            [
+                ['id' => 'help_main_menu', 'title' => 'MAIN MENU'],
+            ]
         );
     }
 
