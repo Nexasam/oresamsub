@@ -698,7 +698,7 @@ export default function Dashboard({ transactions: initialTransactions }) {
                     📱 Buy Airtime
                   </Link>
 
-                  <Link
+                  <a
                     href={route("ore.cable")}
                     className="
                       text-center p-3 rounded-lg text-sm font-medium
@@ -710,9 +710,9 @@ export default function Dashboard({ transactions: initialTransactions }) {
                     "
                   >
                     📺 Cable TV
-                  </Link>
+                  </a>
 
-                  <Link
+                  <a
                     href={route("ore.electricity")}
                     className="
                       text-center p-3 rounded-lg text-sm font-medium
@@ -724,7 +724,7 @@ export default function Dashboard({ transactions: initialTransactions }) {
                     "
                   >
                     ⚡ Electricity
-                  </Link>
+                  </a>
 
                 </div>
 

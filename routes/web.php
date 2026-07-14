@@ -64,7 +64,7 @@ use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Session;
 use Rap2hpoutre\LaravelLogViewer\LogViewerController;
-use App\Http\Controllers\MegaWhatsappWebhookController;
+use App\Http\Controllers\Api\v1\VendorUsersApi\MegaWhatsappWebhookController;
 
 
    

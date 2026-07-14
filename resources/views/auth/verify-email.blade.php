@@ -150,7 +150,7 @@
                                     If you having issues getting the email, you can also check your spam folder.
                                 </p>
                                 <p class="mt-3 text-sm text-gray-900 font-bold dark:text-white/70">
-                                    If you are having issues verifying your email, kindly reach out to our support team on whatsapp: <br> <a style="color: green;" href="https://api.whatsapp.com/send?phone={{  $support_whatsapp_number  }}&text=Hello,%20Please%20I%20need%20help%20on%20your%20website">Chat with our support</a>
+                                    If you are having issues verifying your email, kindly reach out to our support team on whatsapp: <br> <a style="color: green;" href="https://api.whatsapp.com/send?phone={{ $support_whatsapp_number ?? '' }}&text=Hello,%20Please%20I%20need%20help%20on%20your%20website">Chat with our support</a>
                                 </p>
                             </div>
 

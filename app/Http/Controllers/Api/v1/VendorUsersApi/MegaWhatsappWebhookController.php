@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api\v1\VendorUsersApi;
 
+use App\Http\Controllers\Controller;
 use App\Services\Whatsapp\MegaWhatsappConversationService;
 use Illuminate\Http\Request;
 use Throwable;

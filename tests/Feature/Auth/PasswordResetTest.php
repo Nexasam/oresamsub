@@ -49,6 +49,8 @@ test('password can be reset with valid token', function () {
             'email' => $user->email,
             'password' => 'password',
             'password_confirmation' => 'password',
+            'new_pin' => '4321',
+            'new_pin_confirmation' => '4321',
         ]);
 
         $response

@@ -3,14 +3,31 @@ self.addEventListener("install", (event) => {
     self.skipWaiting();
   });
   
-  self.addEventListener("activate", (event) => {
-    console.log("Service Worker activated.");
+self.addEventListener("activate", (event) => {
+    event.waitUntil(self.clients.claim());
   });
-  
-  self.addEventListener("fetch", (event) => {
+
+self.addEventListener("fetch", (event) => {
+    if (event.request.method !== "GET") {
+      return;
+    }
+
     event.respondWith(
-      caches.match(event.request).then((response) => {
-        return response || fetch(event.request);
+      fetch(event.request).catch(async () => {
+        const cachedResponse = await caches.match(event.request);
+
+        if (cachedResponse) {
+          return cachedResponse;
+        }
+
+        if (event.request.mode === "navigate") {
+          return new Response("You appear to be offline. Please reconnect and try again.", {
+            status: 503,
+            headers: { "Content-Type": "text/plain; charset=utf-8" },
+          });
+        }
+
+        return new Response(null, { status: 503, statusText: "Offline" });
       })
     );
 });

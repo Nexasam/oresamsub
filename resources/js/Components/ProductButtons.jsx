@@ -24,26 +24,32 @@ export default function ProductButtons({ loggingOut, setLoggingOut }) {
           label: "Power",
           icon: "⚡",
           href: route("ore.electricity"),
+          fullReload: true,
         },
         {
           label: "Cable",
           icon: "📺",
           href: route("ore.cable"),
+          fullReload: true,
         },
-      ].map((item, i) => (
-        <Link
-          key={i}
-          href={item.href}
-          className="group p-2 rounded-lg bg-white dark:bg-gray-800 border hover:shadow-sm transition flex flex-col items-center"
-        >
-          <div className="w-8 h-8 rounded-full bg-emerald-500 flex items-center justify-center text-white text-sm">
-            {item.icon}
-          </div>
-          <div className="mt-1 text-[11px] font-medium text-gray-700 dark:text-gray-200">
-            {item.label}
-          </div>
-        </Link>
-      ))}
+      ].map((item, i) => {
+        const NavigationElement = item.fullReload ? "a" : Link;
+
+        return (
+          <NavigationElement
+            key={i}
+            href={item.href}
+            className="group p-2 rounded-lg bg-white dark:bg-gray-800 border hover:shadow-sm transition flex flex-col items-center"
+          >
+            <div className="w-8 h-8 rounded-full bg-emerald-500 flex items-center justify-center text-white text-sm">
+              {item.icon}
+            </div>
+            <div className="mt-1 text-[11px] font-medium text-gray-700 dark:text-gray-200">
+              {item.label}
+            </div>
+          </NavigationElement>
+        );
+      })}
 
       {/* Transactions */}
       <button

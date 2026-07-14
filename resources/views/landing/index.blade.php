@@ -407,7 +407,7 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
 
     <!-- WhatsApp Float Button -->
-    <a href="https://api.whatsapp.com/send?phone={{ $support_whatsapp_number }}&text=Hello,%20Please%20I%20need%20help%20on%20your%20website"
+    <a href="https://api.whatsapp.com/send?phone={{ $support_whatsapp_number ?? '' }}&text=Hello,%20Please%20I%20need%20help%20on%20your%20website"
        class="float" target="_blank" title="Chat on WhatsApp">
         <i class="fa fa-whatsapp"></i>
     </a>
@@ -418,10 +418,10 @@
             <div class="row justify-content-between align-items-center">
                 <div class="col-auto d-flex flex-wrap gap-2">
                     <input value="{{ env('APP_URL') }}" type="hidden" class="root_url2">
-                    <p><i class='bx bxs-envelope me-1'></i>{{ $topnav_email }}</p>
+                    <p><i class='bx bxs-envelope me-1'></i>{{ $topnav_email ?? '' }}</p>
                     <p>
-                        <a style="text-decoration:none;color:#cbd5e1" href="tel:{{ $topnav_phone }}">
-                            <i class='bx bxs-phone-call me-1'></i>{{ $topnav_phone }}
+                        <a style="text-decoration:none;color:#cbd5e1" href="tel:{{ $topnav_phone ?? '' }}">
+                            <i class='bx bxs-phone-call me-1'></i>{{ $topnav_phone ?? '' }}
                         </a>
                     </p>
                 </div>
@@ -429,7 +429,7 @@
                     <a href="{{ $facebook_link }}" title="Facebook"><i class='bx bxl-facebook'></i></a>
                     <a href="{{ $twitter_link }}" title="Twitter"><i class='bx bxl-twitter'></i></a>
                     <a href="{{ $instagram_link }}" title="Instagram"><i class='bx bxl-instagram'></i></a>
-                    <a href="https://api.whatsapp.com/send?phone={{ $support_whatsapp_number }}" title="WhatsApp"><i class='bx bxl-whatsapp'></i></a>
+                    <a href="https://api.whatsapp.com/send?phone={{ $support_whatsapp_number ?? '' }}" title="WhatsApp"><i class='bx bxl-whatsapp'></i></a>
                 </div>
             </div>
         </div>
@@ -809,7 +809,7 @@
                         <div class="contact-icon"><i class='bx bxs-envelope'></i></div>
                         <div>
                             <h6>{{ __('messages.Email') }}</h6>
-                            <a href="mailto:{{ $topnav_email }}">{{ $topnav_email }}</a>
+                            <a href="mailto:{{ $topnav_email ?? '' }}">{{ $topnav_email ?? '' }}</a>
                         </div>
                     </div>
                 </div>
@@ -854,7 +854,7 @@
                     <a href="{{ $facebook_link }}" title="Facebook"><i class='bx bxl-facebook'></i></a>
                     <a href="{{ $twitter_link }}" title="Twitter"><i class='bx bxl-twitter'></i></a>
                     <a href="{{ $instagram_link }}" title="Instagram"><i class='bx bxl-instagram'></i></a>
-                    <a href="https://api.whatsapp.com/send?phone={{ $support_whatsapp_number }}" title="WhatsApp"><i class='bx bxl-whatsapp'></i></a>
+                    <a href="https://api.whatsapp.com/send?phone={{ $support_whatsapp_number ?? '' }}" title="WhatsApp"><i class='bx bxl-whatsapp'></i></a>
                 </div>
             </div>
             <div class="footer-bottom text-center">

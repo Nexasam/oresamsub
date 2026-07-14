@@ -1,9 +1,13 @@
 import '../css/app.css'
 import { createInertiaApp } from '@inertiajs/react'
 import { createRoot } from 'react-dom/client'
+import Alpine from 'alpinejs'
 import { route } from 'ziggy-js'
 import LoaderOverlay from '@/Components/LoaderOverlay.jsx'
 import PwaInstallPopup from "@/Components/PwaInstallPopup";
+
+window.Alpine = Alpine
+Alpine.start()
 
 createInertiaApp({
   resolve: name => {

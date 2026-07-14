@@ -25,6 +25,19 @@ class UserFactory extends Factory
      */
     public function definition(): array
     {
+        $role = Role::firstOrCreate([
+            'role_name' => 'User',
+        ]);
+
+        $userPlan = UserPlan::firstOrCreate(
+            ['user_plan_name' => 'Default'],
+            [
+                'plan_level' => 1,
+                'is_default' => 1,
+                'visibility' => 1,
+            ]
+        );
+
         $extension = ['0812','0803','0807','0803'];
         return [
             'username' => fake()->unique()->name(),
@@ -32,8 +45,8 @@ class UserFactory extends Factory
             'last_name' => fake()->name(),
             'pin' => rand(1111,9999),
             'phone_number' => $extension[rand(0,3)].rand(1111111,9999999),
-            'role_id' => Role::where('role_name','User')->first()->id,
-            'user_plan_id' => UserPlan::inRandomOrder()->first()->id,
+            'role_id' => $role->id,
+            'user_plan_id' => $userPlan->id,
             'email' => fake()->unique()->safeEmail(),
             'email_verified_at' => now(),
             'password' => static::$password ??= Hash::make('password'),
