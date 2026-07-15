@@ -4,7 +4,7 @@ namespace App\Models;
 
 use App\Models\AdminWebhookString;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Concerns\HasVersion4Uuids as HasUuids;
+use App\Models\Concerns\HasVersion4Uuids as HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class FundingOption extends Model
