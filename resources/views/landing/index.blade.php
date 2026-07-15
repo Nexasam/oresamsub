@@ -911,7 +911,7 @@
     
         <p style="color:#94a3b8;font-size:14px;margin-top:20px;">
             © {{ date('Y') }} Oresam Telecoms Global Concept.
-            All rights reserved....
+            All rights reserveddddddd
         </p>
     
     </div>
