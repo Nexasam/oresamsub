@@ -35,7 +35,6 @@ class UserDashboardController extends Controller
  
   public function index(Request $request){
 
-    
    
     $template = SiteTemplate::first();
 

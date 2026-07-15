@@ -87,6 +87,9 @@ Route::view('/terms', 'legal.terms')->name('terms');
 Route::get('/whatsapp/update-config/{phone_number_id}/{token}', [WhatsappWebhookController::class, 'updateConfig'])
     ->name('whatsapp.config');
 
+
+
+
 // WE ARE REVAMPING
 // WE ARE REVAMPING
 // WE ARE REVAMPING
@@ -98,24 +101,7 @@ Route::get('/whatsapp/update-config/{phone_number_id}/{token}', [WhatsappWebhook
 // WE ARE REVAMPING
 // WE ARE REVAMPING
 // WE ARE REVAMPING
-// QUALIFIED AND CHECKED ROUTES ARE ABOVE
-// QUALIFIED AND CHECKED ROUTES ARE ABOVE
-// QUALIFIED AND CHECKED ROUTES ARE ABOVE
-// QUALIFIED AND CHECKED ROUTES ARE ABOVE
-// QUALIFIED AND CHECKED ROUTES ARE ABOVE
-// QUALIFIED AND CHECKED ROUTES ARE ABOVE
-// QUALIFIED AND CHECKED ROUTES ARE ABOVE
-// QUALIFIED AND CHECKED ROUTES ARE ABOVE
-// QUALIFIED AND CHECKED ROUTES ARE ABOVE
-// QUALIFIED AND CHECKED ROUTES ARE ABOVE
-// QUALIFIED AND CHECKED ROUTES ARE ABOVE
-// QUALIFIED AND CHECKED ROUTES ARE ABOVE
-// QUALIFIED AND CHECKED ROUTES ARE ABOVE
-// QUALIFIED AND CHECKED ROUTES ARE ABOVE
-// QUALIFIED AND CHECKED ROUTES ARE ABOVE
-// QUALIFIED AND CHECKED ROUTES ARE ABOVE
-// QUALIFIED AND CHECKED ROUTES ARE ABOVE
-// QUALIFIED AND CHECKED ROUTES ARE ABOVE
+
 
 
 // STRICTLY FOR MEGA-SUB - WE'LL TRANSFER LATER:
@@ -133,6 +119,8 @@ Route::get('oresamsub/register', fn () => view('oresamsub.auth.register'))->name
             
 Route::middleware(['set_locale'])->group(function () {
 
+
+            Route::get('/dashboard', [UserDashboardController::class, 'index'])->name('dashboard');  #checked
 
             Route::get('set_pin', fn () => view('oresamsub.pages.set_pin'))->name('ore.set_pin');
            
@@ -152,7 +140,6 @@ Route::middleware(['set_locale'])->group(function () {
                 ->name('transactions.buyAgain');
                 
                 //   INERTIAJS
-                Route::get('/dashboard', [UserDashboardController::class, 'index'])->name('dashboard');   
                 Route::get('/data', [InertiaDashboardController::class, 'data'])->name('inertia.data.index');   
                 Route::get('/airtime', [InertiaDashboardController::class, 'airtime'])->name('inertia.airtime.index');   
                 Route::get('/cable', [InertiaDashboardController::class, 'cable'])->name('inertia.cable.index');   
@@ -251,19 +238,6 @@ Route::middleware(['set_locale'])->group(function () {
             })->name('lang.switch');
 
  
-            // NEW TEMPLATE START: temporal routes
-            Route::get('template2', [Template2Controller::class, 'index'])->name('template2.index');
-            Route::get('template2/login', [Template2Controller::class, 'login'])->name('template2.login');
-            Route::get('template2/signup', [Template2Controller::class, 'signup'])->name('template2.signup');
-            Route::get('template2/forgot-password', [Template2Controller::class, 'forgot_password'])->name('template2.forgot_password');
-            Route::get('template2/dashboard', [Template2Controller::class, 'dashboard'])->name('template2.dashboard');
-            Route::get('template2/buy_data', [Template2Controller::class, 'buy_data'])->name('template2.buy_data');
-            Route::get('template2/buy_airtime', [Template2Controller::class, 'buy_airtime'])->name('template2.buy_airtime');
-            Route::get('template2/buy_cable', [Template2Controller::class, 'buy_cable'])->name('template2.buy_cable');
-            Route::get('template2/buy_electricity', [Template2Controller::class, 'buy_electricity'])->name('template2.buy_electricity');
-            Route::get('template2/api_docs', [Template2Controller::class, 'api_docs'])->name('template2.api_docs');
-            // NEW TEMPLATE END
-
 
 
             //clear browser cache
@@ -573,7 +547,6 @@ Route::middleware(['set_locale'])->group(function () {
       
 
             //this will be adjusted later
-            // Route::middleware(['auth','verified'])->get('/dashboard', [UserDashboardController::class, 'index'])->name('dashboard');
             Route::get('product_plans/fetch_public_product_plans', [ProductPlanController::class, 'fetch_public_product_plans'])->name('fetch_public_product_plans');
 
             
@@ -641,7 +614,7 @@ Route::middleware(['set_locale'])->group(function () {
 
             Route::middleware(['auth','verified','admin'])->get('product_plans/changemegasubprice', [PriceChangeController::class, 'changeMegasubPrice'])->name('changeMegasubPrice');
 
-            Route::middleware(['auth','verified','admin'])->get('admin/users', [UsersController::class, 'index'])->name('admin.users.index');
+            Route::middleware(['auth','verified','admin'])->get('admin/users', [UsersController::class, 'index'])->name('admin.users.index'); #check
             Route::middleware(['auth','verified','admin'])->get('admin/users/create', [UsersController::class, 'create'])->name('admin.users.create');
             Route::middleware(['auth','verified','admin'])->get('admin/users/{id}/manage_user', [UsersController::class, 'manage_user'])->name('admin.users.manage_user');
             Route::middleware(['auth','verified','admin'])->post('admin/users/fund_user_wallet', [UsersController::class, 'fund_user_wallet'])->name('admin.users.fund_user_wallet');
@@ -972,364 +945,27 @@ Route::middleware(['set_locale'])->group(function () {
 
 
 
+          
+            //////////////////////////////MOST LIKELY REDUNDANT CODES:
+            //////////////////////////////MOST LIKELY REDUNDANT CODES:
+            //////////////////////////////MOST LIKELY REDUNDANT CODES:
+            //////////////////////////////MOST LIKELY REDUNDANT CODES:
+            //////////////////////////////MOST LIKELY REDUNDANT CODES:
+            //////////////////////////////MOST LIKELY REDUNDANT CODES:
+            //////////////////////////////MOST LIKELY REDUNDANT CODES:
+            // NEW TEMPLATE START: temporal routes
+            Route::get('template2', [Template2Controller::class, 'index'])->name('template2.index');
+            Route::get('template2/login', [Template2Controller::class, 'login'])->name('template2.login');
+            Route::get('template2/signup', [Template2Controller::class, 'signup'])->name('template2.signup');
+            Route::get('template2/forgot-password', [Template2Controller::class, 'forgot_password'])->name('template2.forgot_password');
+            Route::get('template2/dashboard', [Template2Controller::class, 'dashboard'])->name('template2.dashboard');
+            Route::get('template2/buy_data', [Template2Controller::class, 'buy_data'])->name('template2.buy_data');
+            Route::get('template2/buy_airtime', [Template2Controller::class, 'buy_airtime'])->name('template2.buy_airtime');
+            Route::get('template2/buy_cable', [Template2Controller::class, 'buy_cable'])->name('template2.buy_cable');
+            Route::get('template2/buy_electricity', [Template2Controller::class, 'buy_electricity'])->name('template2.buy_electricity');
+            Route::get('template2/api_docs', [Template2Controller::class, 'api_docs'])->name('template2.api_docs');
+            // NEW TEMPLATE END
 
-//Stay Connected with
-//             <!DOCTYPE html>
-// <html lang="en">
-
-// <head>
-//     <meta charset="UTF-8">
-//     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-//     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-//     <style>
-//         :root {
-//             --border-width: 1px;
-//             --border-radius: 0.5rem;
-//             --color-error: #c94b4b;
-//             --color-info: #157efb;
-//             --color-info-hover: #0f6ddb;
-//             --color-info-text: #fff
-//         }
-
-//         .__next-auth-theme-auto,
-//         .__next-auth-theme-light {
-//             --color-background: #ececec;
-//             --color-background-hover: hsla(0, 0%, 93%, .8);
-//             --color-background-card: #fff;
-//             --color-text: #000;
-//             --color-primary: #444;
-//             --color-control-border: #bbb;
-//             --color-button-active-background: #f9f9f9;
-//             --color-button-active-border: #aaa;
-//             --color-separator: #ccc
-//         }
-
-//         .__next-auth-theme-dark {
-//             --color-background: #161b22;
-//             --color-background-hover: rgba(22, 27, 34, .8);
-//             --color-background-card: #0d1117;
-//             --color-text: #fff;
-//             --color-primary: #ccc;
-//             --color-control-border: #555;
-//             --color-button-active-background: #060606;
-//             --color-button-active-border: #666;
-//             --color-separator: #444
-//         }
-
-//         @media (prefers-color-scheme:dark) {
-//             .__next-auth-theme-auto {
-//                 --color-background: #161b22;
-//                 --color-background-hover: rgba(22, 27, 34, .8);
-//                 --color-background-card: #0d1117;
-//                 --color-text: #fff;
-//                 --color-primary: #ccc;
-//                 --color-control-border: #555;
-//                 --color-button-active-background: #060606;
-//                 --color-button-active-border: #666;
-//                 --color-separator: #444
-//             }
-
-//             a.button,
-//             button {
-//                 background-color: var(--provider-dark-bg, var(--color-background));
-//                 color: var(--provider-dark-color, var(--color-primary))
-//             }
-
-//             a.button:hover,
-//             button:hover {
-//                 background-color: var(--provider-dark-bg-hover, var(--color-background-hover)) !important
-//             }
-
-//             #provider-logo {
-//                 display: none !important
-//             }
-
-//             #provider-logo-dark {
-//                 display: block !important;
-//                 width: 25px
-//             }
-//         }
-
-//         html {
-//             box-sizing: border-box
-//         }
-
-//         *,
-//         :after,
-//         :before {
-//             box-sizing: inherit;
-//             margin: 0;
-//             padding: 0
-//         }
-
-//         body {
-//             background-color: var(--color-background);
-//             font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica Neue, Arial, Noto Sans, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol, Noto Color Emoji;
-//             margin: 0;
-//             padding: 0
-//         }
-
-//         h1 {
-//             font-weight: 400
-//         }
-
-//         h1,
-//         p {
-//             color: var(--color-text);
-//             margin-bottom: 1.5rem;
-//             padding: 0 1rem
-//         }
-
-//         form {
-//             margin: 0;
-//             padding: 0
-//         }
-
-//         label {
-//             font-weight: 500;
-//             margin-bottom: .25rem;
-//             text-align: left
-//         }
-
-//         input[type],
-//         label {
-//             color: var(--color-text);
-//             display: block
-//         }
-
-//         input[type] {
-//             background: var(--color-background-card);
-//             border: var(--border-width) solid var(--color-control-border);
-//             border-radius: var(--border-radius);
-//             box-sizing: border-box;
-//             font-size: 1rem;
-//             padding: .5rem 1rem;
-//             width: 100%
-//         }
-
-//         input[type]:focus {
-//             box-shadow: none
-//         }
-
-//         p {
-//             font-size: 1.1rem;
-//             line-height: 2rem
-//         }
-
-//         a.button {
-//             line-height: 1rem;
-//             text-decoration: none
-//         }
-
-//         a.button:link,
-//         a.button:visited {
-//             background-color: var(--color-background);
-//             color: var(--color-primary)
-//         }
-
-//         button span {
-//             flex-grow: 1
-//         }
-
-//         a.button,
-//         button {
-//             align-items: center;
-//             background-color: var(--provider-bg);
-//             border-color: rgba(0, 0, 0, .1);
-//             border-radius: var(--border-radius);
-//             color: var(--provider-color, var(--color-primary));
-//             display: flex;
-//             font-size: 1.1rem;
-//             font-weight: 500;
-//             justify-content: center;
-//             min-height: 62px;
-//             padding: .75rem 1rem;
-//             position: relative;
-//             transition: all .1s ease-in-out
-//         }
-
-//         a.button:hover,
-//         button:hover {
-//             background-color: var(--provider-bg-hover, var(--color-background-hover));
-//             cursor: pointer
-//         }
-
-//         a.button:active,
-//         button:active {
-//             cursor: pointer
-//         }
-
-//         a.button #provider-logo,
-//         button #provider-logo {
-//             display: block;
-//             width: 25px
-//         }
-
-//         a.button #provider-logo-dark,
-//         button #provider-logo-dark {
-//             display: none
-//         }
-
-//         #submitButton {
-//             background-color: var(--brand-color, var(--color-info));
-//             color: var(--button-text-color, var(--color-info-text));
-//             width: 100%
-//         }
-
-//         #submitButton:hover {
-//             background-color: var(--button-hover-bg, var(--color-info-hover)) !important
-//         }
-
-//         a.site {
-//             color: var(--color-primary);
-//             font-size: 1rem;
-//             line-height: 2rem;
-//             text-decoration: none
-//         }
-
-//         a.site:hover {
-//             text-decoration: underline
-//         }
-
-//         .page {
-//             box-sizing: border-box;
-//             display: grid;
-//             height: 100%;
-//             margin: 0;
-//             padding: 0;
-//             place-items: center;
-//             position: absolute;
-//             width: 100%
-//         }
-
-//         .page>div {
-//             text-align: center
-//         }
-
-//         .error a.button {
-//             margin-top: .5rem;
-//             padding-left: 2rem;
-//             padding-right: 2rem
-//         }
-
-//         .error .message {
-//             margin-bottom: 1.5rem
-//         }
-
-//         .signin input[type=text] {
-//             display: block;
-//             margin-left: auto;
-//             margin-right: auto
-//         }
-
-//         .signin hr {
-//             border: 0;
-//             border-top: 1px solid var(--color-separator);
-//             display: block;
-//             margin: 2rem auto 1rem;
-//             overflow: visible
-//         }
-
-//         .signin hr:before {
-//             background: var(--color-background-card);
-//             color: #888;
-//             content: "or";
-//             padding: 0 .4rem;
-//             position: relative;
-//             top: -.7rem
-//         }
-
-//         .signin .error {
-//             background: #f5f5f5;
-//             background: var(--color-error);
-//             border-radius: .3rem;
-//             font-weight: 500
-//         }
-
-//         .signin .error p {
-//             color: var(--color-info-text);
-//             font-size: .9rem;
-//             line-height: 1.2rem;
-//             padding: .5rem 1rem;
-//             text-align: left
-//         }
-
-//         .signin form,
-//         .signin>div {
-//             display: block
-//         }
-
-//         .signin form input[type],
-//         .signin>div input[type] {
-//             margin-bottom: .5rem
-//         }
-
-//         .signin form button,
-//         .signin>div button {
-//             width: 100%
-//         }
-
-//         .signin .provider+.provider {
-//             margin-top: 1rem
-//         }
-
-//         .logo {
-//             display: inline-block;
-//             margin: 1.25rem 0;
-//             max-height: 70px;
-//             max-width: 150px
-//         }
-
-//         .card {
-//             background-color: var(--color-background-card);
-//             border-radius: 2rem;
-//             padding: 1.25rem 2rem
-//         }
-
-//         .card .header {
-//             color: var(--color-primary)
-//         }
-
-//         .section-header {
-//             color: var(--color-text)
-//         }
-
-//         @media screen and (min-width:450px) {
-//             .card {
-//                 margin: 2rem 0;
-//                 width: 368px
-//             }
-//         }
-
-//         @media screen and (max-width:450px) {
-//             .card {
-//                 margin: 1rem 0;
-//                 width: 343px
-//             }
-//         }
-//     </style>
-//     <title>Sign In</title>
-// </head>
-
-// <body class="__next-auth-theme-light">
-//     <div class="page">
-//         <div class="signin">
-//             <div class="card">
-//                 <div class="provider">
-//                     <form action="https://selfservice.mtn.ng/api/auth/callback/credentials" method="POST"><input type="hidden" name="csrfToken" value="a5753f0d5a43ae09e919504419ce10e3fa4bb34f94434b4e9f902ee82f715573" />
-//                         <div>
-//                             <label class="section-header" for="input-msisdn-for-credentials-provider">MSISDN</label><input name="msisdn" id="input-msisdn-for-credentials-provider" type="text" placeholder label="MSISDN" />
-//                         </div>
-//                         <div><label class="section-header" for="input-otp-for-credentials-provider">OTP</label><input name="otp" id="input-otp-for-credentials-provider" type="text" placeholder label="OTP" />
-//                         </div><button type="submit">Sign in with Credentials</button>
-//                     </form>
-//                 </div>
-//             </div>
-//         </div>
-//     </div>
-// </body>
-
-// </html>
 
 
 
