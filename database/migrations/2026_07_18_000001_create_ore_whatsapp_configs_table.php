@@ -8,7 +8,7 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('ore101_whatsapp_configs', function (Blueprint $table) {
+        Schema::create('ore_whatsapp_configs', function (Blueprint $table) {
             $table->id();
             $table->string('token');
             $table->string('phone_number_id')->unique();
@@ -18,6 +18,6 @@ return new class extends Migration
 
     public function down(): void
     {
-        Schema::dropIfExists('ore101_whatsapp_configs');
+        Schema::dropIfExists('ore_whatsapp_configs');
     }
 };

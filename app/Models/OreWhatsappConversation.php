@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Ore101WhatsappConversation extends Model
+class OreWhatsappConversation extends Model
 {
     protected $fillable = [
         'phone',

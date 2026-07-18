@@ -86,8 +86,8 @@ Route::view('/terms', 'legal.terms')->name('terms');
 
 Route::get('/whatsapp/update-config/{phone_number_id}/{token}', [WhatsappWebhookController::class, 'updateConfig'])
     ->name('whatsapp.config');
-Route::get('/whatsapp/ore101/update-config/{phone_number_id}/{token}', [WhatsappWebhookController::class, 'updateOre101Config'])
-    ->name('whatsapp.ore101.config');
+Route::get('/whatsapp/ore/update-config/{phone_number_id}/{token}', [WhatsappWebhookController::class, 'updateOreConfig'])
+    ->name('whatsapp.ore.config');
 
 
 

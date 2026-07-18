@@ -1,10 +1,10 @@
 <?php
 
 use App\Models\User;
-use App\Services\Whatsapp\Ore101WhatsappUserResolverService;
+use App\Services\Whatsapp\OreWhatsappUserResolverService;
 
 it('normalizes Nigerian international phone numbers', function (string $input, string $expected) {
-    expect(app(Ore101WhatsappUserResolverService::class)->normalize($input))->toBe($expected);
+    expect(app(OreWhatsappUserResolverService::class)->normalize($input))->toBe($expected);
 })->with([
     ['+234 801 234 5678', '08012345678'],
     ['2348012345678', '08012345678'],
@@ -14,7 +14,7 @@ it('normalizes Nigerian international phone numbers', function (string $input, s
 it('resolves a user by their registered phone number', function () {
     $user = User::factory()->create(['phone_number' => '08012345678']);
 
-    $resolved = app(Ore101WhatsappUserResolverService::class)->resolve('+2348012345678');
+    $resolved = app(OreWhatsappUserResolverService::class)->resolve('+2348012345678');
 
     expect($resolved?->is($user))->toBeTrue();
 });
@@ -25,11 +25,11 @@ it('resolves a user by their linked WhatsApp number', function () {
         'whatsapp_number' => '08012345678',
     ]);
 
-    $resolved = app(Ore101WhatsappUserResolverService::class)->resolve('2348012345678');
+    $resolved = app(OreWhatsappUserResolverService::class)->resolve('2348012345678');
 
     expect($resolved?->is($user))->toBeTrue();
 });
 
 it('returns null when a WhatsApp number is not linked', function () {
-    expect(app(Ore101WhatsappUserResolverService::class)->resolve('2348012345678'))->toBeNull();
+    expect(app(OreWhatsappUserResolverService::class)->resolve('2348012345678'))->toBeNull();
 });

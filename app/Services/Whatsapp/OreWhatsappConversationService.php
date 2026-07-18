@@ -3,21 +3,21 @@
 namespace App\Services\Whatsapp;
 
 use App\Enums\WhatsappState;
-use App\Models\Ore101WhatsappConversation;
+use App\Models\OreWhatsappConversation;
 use App\Models\Network;
 use App\Models\Product;
 use App\Models\ProductPlan;
 use App\Models\ProductPlanCategory;
 use App\Models\Transaction;
-use App\Services\Whatsapp\Ore101WhatsappService;
-use App\Services\Whatsapp\Ore101WhatsappUserResolverService;
+use App\Services\Whatsapp\OreWhatsappService;
+use App\Services\Whatsapp\OreWhatsappUserResolverService;
 use Illuminate\Support\Facades\Cache;
 
-class Ore101WhatsappConversationService
+class OreWhatsappConversationService
 {
     public function __construct(
-        protected Ore101WhatsappService $whatsapp,
-        protected Ore101WhatsappUserResolverService $userResolver,
+        protected OreWhatsappService $whatsapp,
+        protected OreWhatsappUserResolverService $userResolver,
         protected WhatsappIntentResolver $intentResolver
     ) {
     }
@@ -44,23 +44,23 @@ class Ore101WhatsappConversationService
 
          /*
         |--------------------------------------------------------------------------
-        | Exit Ore101 Bot
+        | Exit Ore Bot
         |--------------------------------------------------------------------------
         */
         if ($message === 'start') {
 
             Cache::forget(
-                "ore101_session:{$phone}"
+                "ore_session:{$phone}"
             );
 
-            Ore101WhatsappConversation::where(
+            OreWhatsappConversation::where(
                 'phone',
                 $phone
             )->delete();
 
             return $this->whatsapp->sendText(
                 $phone,
-                'Ore101 session ended. Returning to the main menu...'
+                'Ore session ended. Returning to the main menu...'
             );
         }
 
@@ -73,12 +73,12 @@ class Ore101WhatsappConversationService
 
             return $this->whatsapp->sendText(
                 $phone,
-                'You do not have a Ore101 account. Please register first.'
+                'You do not have a Ore account. Please register first.'
             );
         }
 
         $conversation =
-            Ore101WhatsappConversation::firstOrCreate([
+            OreWhatsappConversation::firstOrCreate([
                 'phone' => $phone
             ]);
     
@@ -92,7 +92,7 @@ class Ore101WhatsappConversationService
             ]);
         }
     
-        if ($message === 'ore101') {
+        if ($message === 'ore') {
     
             return $this->showMainMenu(
                 $conversation
@@ -119,7 +119,7 @@ class Ore101WhatsappConversationService
 
 
     private function showMainMenu(
-        Ore101WhatsappConversation $conversation
+        OreWhatsappConversation $conversation
     ) {
     
         // $conversation->update([
@@ -135,7 +135,7 @@ class Ore101WhatsappConversationService
     
         return $this->whatsapp->sendList(
             $conversation->phone,
-            "👋 Welcome to Ore101!\n\nWhat would you like to do today?",
+            "👋 Welcome to Ore!\n\nWhat would you like to do today?",
             [
                 [
                     'id' => 'data',
@@ -165,7 +165,7 @@ class Ore101WhatsappConversationService
 
 
     private function handleState(
-        Ore101WhatsappConversation $conversation,
+        OreWhatsappConversation $conversation,
         string $message
     ) {
     
@@ -281,7 +281,7 @@ class Ore101WhatsappConversationService
     }
 
     private function updateConversation(
-        Ore101WhatsappConversation $conversation,
+        OreWhatsappConversation $conversation,
         string $state,
         array $payload = []
     )
@@ -293,7 +293,7 @@ class Ore101WhatsappConversationService
     }
 
     private function handleMainMenu(
-        Ore101WhatsappConversation $conversation,
+        OreWhatsappConversation $conversation,
         string $message
     )
     {
@@ -335,7 +335,7 @@ class Ore101WhatsappConversationService
 
     //DATA
     private function showDataNetworks(
-        Ore101WhatsappConversation $conversation
+        OreWhatsappConversation $conversation
     )
     {
         $this->updateConversation(
@@ -372,7 +372,7 @@ class Ore101WhatsappConversationService
 
     
     private function processDataNetwork(
-        Ore101WhatsappConversation $conversation,
+        OreWhatsappConversation $conversation,
         string $message
     )
     {
@@ -453,7 +453,7 @@ class Ore101WhatsappConversationService
    
 
     private function processDataType(
-        Ore101WhatsappConversation $conversation,
+        OreWhatsappConversation $conversation,
         string $message
     )
     {
@@ -602,7 +602,7 @@ class Ore101WhatsappConversationService
     }
     
     private function processDataPlan(
-        Ore101WhatsappConversation $conversation,
+        OreWhatsappConversation $conversation,
         string $message
     )
     {
@@ -647,7 +647,7 @@ class Ore101WhatsappConversationService
 
 
     private function processDataPhone(
-        Ore101WhatsappConversation $conversation,
+        OreWhatsappConversation $conversation,
         string $message
     )
     {
@@ -712,7 +712,7 @@ class Ore101WhatsappConversationService
 
     
     private function processDataConfirmationold(
-        Ore101WhatsappConversation $conversation,
+        OreWhatsappConversation $conversation,
         string $message
     )
     {
@@ -766,13 +766,13 @@ class Ore101WhatsappConversationService
             $conversation->phone,
             "✅ Success!\n\n" .
             "{$plan->product_plan_name} has been queued for processing.\n\n" .
-            "Thank you for choosing Ore101 🚀"
+            "Thank you for choosing Ore 🚀"
         );
     }
 
 
     private function processDataConfirmation(
-        Ore101WhatsappConversation $conversation,
+        OreWhatsappConversation $conversation,
         string $message
     )
     {
@@ -870,7 +870,7 @@ class Ore101WhatsappConversationService
         } catch (\Throwable $exception) {
     
             logger()->error(
-                'Ore101 Data Purchase Error',
+                'Ore Data Purchase Error',
                 [
                     'error' => $exception->getMessage(),
                     'payload' => $payload,
@@ -888,7 +888,7 @@ class Ore101WhatsappConversationService
 
     ///AIRTIME
     private function showAirtimeNetworks(
-        Ore101WhatsappConversation $conversation
+        OreWhatsappConversation $conversation
     )
     {
         $this->updateConversation(
@@ -911,7 +911,7 @@ class Ore101WhatsappConversationService
     }
     
     private function processAirtimeNetwork(
-        Ore101WhatsappConversation $conversation,
+        OreWhatsappConversation $conversation,
         string $message
     )
     {
@@ -968,7 +968,7 @@ class Ore101WhatsappConversationService
     }
     
     private function processAirtimeAmount(
-        Ore101WhatsappConversation $conversation,
+        OreWhatsappConversation $conversation,
         string $message
     )
     {
@@ -998,7 +998,7 @@ class Ore101WhatsappConversationService
     }
     
     private function processAirtimePhone(
-        Ore101WhatsappConversation $conversation,
+        OreWhatsappConversation $conversation,
         string $message
     )
     {
@@ -1042,7 +1042,7 @@ class Ore101WhatsappConversationService
     }
     
     private function processAirtimeConfirmation(
-        Ore101WhatsappConversation $conversation,
+        OreWhatsappConversation $conversation,
         string $message
     )
     {
@@ -1115,7 +1115,7 @@ class Ore101WhatsappConversationService
                 "❌ Airtime Purchase Failed\n\n{$responseMessage}"
             );
         } catch (\Throwable $exception) {
-            logger()->error('Ore101 Airtime Purchase Error', [
+            logger()->error('Ore Airtime Purchase Error', [
                 'error' => $exception->getMessage(),
                 'payload' => $payload,
             ]);
@@ -1128,7 +1128,7 @@ class Ore101WhatsappConversationService
     }
 
     private function showRecentTransactions(
-        Ore101WhatsappConversation $conversation,
+        OreWhatsappConversation $conversation,
         int $page = 0
     ) {
         $transactions = Transaction::query()
@@ -1157,7 +1157,7 @@ class Ore101WhatsappConversationService
                 $conversation->phone,
                 "📋 You don't have any DATA or AIRTIME transactions to show yet.",
                 [
-                    ['id' => 'ore101_main_menu', 'title' => 'Main Menu'],
+                    ['id' => 'ore_main_menu', 'title' => 'Main Menu'],
                 ]
             );
         }
@@ -1213,7 +1213,7 @@ class Ore101WhatsappConversationService
             $buttons[] = ['id' => 'more_transactions', 'title' => 'Show More'];
         }
 
-        $buttons[] = ['id' => 'ore101_main_menu', 'title' => 'Main Menu'];
+        $buttons[] = ['id' => 'ore_main_menu', 'title' => 'Main Menu'];
 
         return $this->whatsapp->sendButtons(
             $conversation->phone,
@@ -1235,7 +1235,7 @@ class Ore101WhatsappConversationService
     }
 
     private function processTransactionSelection(
-        Ore101WhatsappConversation $conversation,
+        OreWhatsappConversation $conversation,
         string $message
     ) {
         $payload = $conversation->payload ?? [];
@@ -1247,7 +1247,7 @@ class Ore101WhatsappConversationService
             );
         }
 
-        if ($message === 'ore101_main_menu') {
+        if ($message === 'ore_main_menu') {
             return $this->showMainMenu($conversation);
         }
 
@@ -1261,7 +1261,7 @@ class Ore101WhatsappConversationService
                 $conversation->phone,
                 '⚠️ Reply with one of the transaction numbers shown above.',
                 [
-                    ['id' => 'ore101_main_menu', 'title' => 'Main Menu'],
+                    ['id' => 'ore_main_menu', 'title' => 'Main Menu'],
                 ]
             );
         }
@@ -1317,7 +1317,7 @@ class Ore101WhatsappConversationService
     }
 
     private function processTransactionAmount(
-        Ore101WhatsappConversation $conversation,
+        OreWhatsappConversation $conversation,
         string $message
     ) {
         $amount = str_replace(',', '', trim($message));
@@ -1351,7 +1351,7 @@ class Ore101WhatsappConversationService
     }
 
     private function processTransactionPhone(
-        Ore101WhatsappConversation $conversation,
+        OreWhatsappConversation $conversation,
         string $message
     ) {
         $phone = $this->userResolver->normalize($message);
@@ -1396,7 +1396,7 @@ class Ore101WhatsappConversationService
     }
 
     private function processTransactionConfirmation(
-        Ore101WhatsappConversation $conversation,
+        OreWhatsappConversation $conversation,
         string $message
     ) {
         if ($message === 'cancel_transaction_purchase') {
@@ -1469,7 +1469,7 @@ class Ore101WhatsappConversationService
                     "📱 {$payload['beneficiary_phone']}\n\n" .
                     $responseMessage,
                     [
-                        ['id' => 'ore101_main_menu', 'title' => 'Main Menu'],
+                        ['id' => 'ore_main_menu', 'title' => 'Main Menu'],
                     ]
                 );
             }
@@ -1478,11 +1478,11 @@ class Ore101WhatsappConversationService
                 $conversation->phone,
                 "❌ Repeat Purchase Failed\n\n{$responseMessage}",
                 [
-                    ['id' => 'ore101_main_menu', 'title' => 'Main Menu'],
+                    ['id' => 'ore_main_menu', 'title' => 'Main Menu'],
                 ]
             );
         } catch (\Throwable $exception) {
-            logger()->error('Ore101 Repeat Purchase Error', [
+            logger()->error('Ore Repeat Purchase Error', [
                 'error' => $exception->getMessage(),
                 'payload' => $payload,
             ]);
@@ -1495,7 +1495,7 @@ class Ore101WhatsappConversationService
     }
 
     private function showWallet(
-        Ore101WhatsappConversation $conversation
+        OreWhatsappConversation $conversation
     )
     {
         $user = $conversation->user()->first();
@@ -1522,26 +1522,26 @@ class Ore101WhatsappConversationService
             $conversation->phone,
             $result['message'],
             [
-                ['id' => 'ore101_refresh_balance', 'title' => 'Refresh Balance'],
-                ['id' => 'ore101_main_menu', 'title' => 'Main Menu'],
+                ['id' => 'ore_refresh_balance', 'title' => 'Refresh Balance'],
+                ['id' => 'ore_main_menu', 'title' => 'Main Menu'],
             ]
         );
     }
     
     private function processWallet(
-        Ore101WhatsappConversation $conversation,
+        OreWhatsappConversation $conversation,
         string $message
     )
     {
         return match ($message) {
-            'ore101_refresh_balance' => $this->showWallet($conversation),
-            'ore101_main_menu' => $this->showMainMenu($conversation),
+            'ore_refresh_balance' => $this->showWallet($conversation),
+            'ore_main_menu' => $this->showMainMenu($conversation),
             default => $this->showWallet($conversation),
         };
     }
 
     private function showHelp(
-        Ore101WhatsappConversation $conversation
+        OreWhatsappConversation $conversation
     )
     {
         $this->updateConversation(
@@ -1552,7 +1552,7 @@ class Ore101WhatsappConversationService
 
         return $this->whatsapp->sendButtons(
             $conversation->phone,
-            "🆘 Ore101 Help Center\n\n" .
+            "🆘 Ore Help Center\n\n" .
             "🛒 HOW TO BUY\n" .
             "Select DATA or AIRTIME from the main menu, choose the network and package or amount, enter the beneficiary number, then confirm the purchase.\n\n" .
             "🔐 ACCOUNT ACCESS\n" .
@@ -1563,15 +1563,15 @@ class Ore101WhatsappConversationService
             "https://wa.me/2349011988807\n" .
             "https://wa.me/2348168509044\n\n" .
             "📧 EMAIL\n" .
-            "info@ore101.com",
+            "info@ore.com",
             [
-                ['id' => 'ore101_main_menu', 'title' => 'Main Menu'],
+                ['id' => 'ore_main_menu', 'title' => 'Main Menu'],
             ]
         );
     }
     
     private function processHelp(
-        Ore101WhatsappConversation $conversation,
+        OreWhatsappConversation $conversation,
         string $message
     )
     {

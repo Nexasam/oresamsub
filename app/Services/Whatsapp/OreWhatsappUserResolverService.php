@@ -4,7 +4,7 @@ namespace App\Services\Whatsapp;
 
 use App\Models\User;
 
-class Ore101WhatsappUserResolverService
+class OreWhatsappUserResolverService
 {
     public function resolve(
         string $phone

@@ -2,15 +2,15 @@
 
 namespace App\Services\Whatsapp;
 
-use App\Models\Ore101WhatsappConfig;
+use App\Models\OreWhatsappConfig;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
-class Ore101WhatsappService
+class OreWhatsappService
 {
-    protected function config(): Ore101WhatsappConfig
+    protected function config(): OreWhatsappConfig
     {
-        return Ore101WhatsappConfig::firstOrFail();
+        return OreWhatsappConfig::firstOrFail();
     }
 
     protected function endpoint(): string
@@ -40,7 +40,7 @@ class Ore101WhatsappService
         );
 
         Log::info(
-            'Ore101 WhatsApp Response',
+            'Ore WhatsApp Response',
             [
                 'payload' => $payload,
                 'response' => $response->json(),

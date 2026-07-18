@@ -1,12 +1,12 @@
 <?php
 
-use App\Models\Ore101WhatsappConfig;
-use App\Services\Whatsapp\Ore101WhatsappService;
+use App\Models\OreWhatsappConfig;
+use App\Services\Whatsapp\OreWhatsappService;
 use Illuminate\Http\Client\Request;
 use Illuminate\Support\Facades\Http;
 
 beforeEach(function () {
-    Ore101WhatsappConfig::create([
+    OreWhatsappConfig::create([
         'token' => 'test-meta-token',
         'phone_number_id' => '123456789',
     ]);
@@ -17,7 +17,7 @@ beforeEach(function () {
 });
 
 it('sends a Meta WhatsApp text payload with authentication', function () {
-    $response = app(Ore101WhatsappService::class)->sendText('2348012345678', 'Hello');
+    $response = app(OreWhatsappService::class)->sendText('2348012345678', 'Hello');
 
     expect($response['messages'][0]['id'])->toBe('message-id');
 
@@ -32,7 +32,7 @@ it('sends a Meta WhatsApp text payload with authentication', function () {
 });
 
 it('formats reply buttons for Meta WhatsApp', function () {
-    app(Ore101WhatsappService::class)->sendButtons('2348012345678', 'Choose', [
+    app(OreWhatsappService::class)->sendButtons('2348012345678', 'Choose', [
         ['id' => 'main_menu', 'title' => 'Main menu'],
         ['id' => 'help', 'title' => 'Help'],
     ]);
@@ -48,7 +48,7 @@ it('formats reply buttons for Meta WhatsApp', function () {
 });
 
 it('formats selectable list rows for Meta WhatsApp', function () {
-    app(Ore101WhatsappService::class)->sendList('2348012345678', 'Recent transactions', [
+    app(OreWhatsappService::class)->sendList('2348012345678', 'Recent transactions', [
         ['id' => 15, 'title' => '1GB Data', 'description' => 'Successful'],
     ], 'View transactions');
 

@@ -4,14 +4,14 @@ namespace App\Http\Controllers\Api\v1\VendorUsersApi;
 use App\Http\Controllers\Controller;
 use App\Mail\WhatsappLinkOtpMail;
 use App\Models\User;
-use App\Models\Ore101WhatsappConfig;
+use App\Models\OreWhatsappConfig;
 use App\Models\WhatsappConfig;
 use App\Services\Whatsapp\MegaWhatsappConversationService;
 use App\Services\Whatsapp\MegaWhatsappService;
 use App\Services\Whatsapp\MegaWhatsappUserResolverService;
-use App\Services\Whatsapp\Ore101WhatsappConversationService;
-use App\Services\Whatsapp\Ore101WhatsappService;
-use App\Services\Whatsapp\Ore101WhatsappUserResolverService;
+use App\Services\Whatsapp\OreWhatsappConversationService;
+use App\Services\Whatsapp\OreWhatsappService;
+use App\Services\Whatsapp\OreWhatsappUserResolverService;
 use App\Services\Whatsapp\WhatsappConversationService;
 use App\Services\Whatsapp\WhatsappIntentParser;
 use App\Services\Whatsapp\WhatsappIntentResolver;
@@ -42,9 +42,9 @@ class WhatsappWebhookController extends Controller
            ]);
     }
 
-    public function updateOre101Config($phone_number_id, $token)
+    public function updateOreConfig($phone_number_id, $token)
     {
-        Ore101WhatsappConfig::updateOrCreate(
+        OreWhatsappConfig::updateOrCreate(
             ['phone_number_id' => $phone_number_id],
             ['token' => $token]
         );
@@ -138,9 +138,9 @@ class WhatsappWebhookController extends Controller
             'mega_refresh_balance' => 'mega_refresh_balance',
             'mega_main_menu' => 'mega_main_menu',
             'start_mega' => 'mega',
-            'ore101_refresh_balance' => 'ore101_refresh_balance',
-            'ore101_main_menu' => 'ore101_main_menu',
-            'start_ore101' => 'ore101',
+            'ore_refresh_balance' => 'ore_refresh_balance',
+            'ore_main_menu' => 'ore_main_menu',
+            'start_ore' => 'ore',
             'confirm_transaction_purchase' => 'confirm_transaction_purchase',
             'cancel_transaction_purchase' => 'cancel_transaction_purchase',
             'more_transactions' => 'more_transactions',
@@ -266,20 +266,20 @@ class WhatsappWebhookController extends Controller
         $megaSession = Cache::has(
             "mega_session:{$phone}"
         );
-        $ore101Session = Cache::has(
-            "ore101_session:{$phone}"
+        $oreSession = Cache::has(
+            "ore_session:{$phone}"
         );
 
-        if ($text === 'ore101') {
+        if ($text === 'ore') {
             Cache::forget("mega_session:{$phone}");
             Cache::put(
-                "ore101_session:{$phone}",
+                "ore_session:{$phone}",
                 ['started_at' => now()],
                 now()->addHours(12)
             );
 
             $megaSession = false;
-            $ore101Session = true;
+            $oreSession = true;
         }
 
         /*
@@ -289,7 +289,7 @@ class WhatsappWebhookController extends Controller
         */
         if ($text === 'mega') {
 
-            Cache::forget("ore101_session:{$phone}");
+            Cache::forget("ore_session:{$phone}");
 
             Cache::put(
                 "mega_session:{$phone}",
@@ -300,25 +300,25 @@ class WhatsappWebhookController extends Controller
             );
 
             $megaSession = true;
-            $ore101Session = false;
+            $oreSession = false;
         }
 
-        if ($ore101Session) {
-            $ore101User = app(
-                Ore101WhatsappUserResolverService::class
+        if ($oreSession) {
+            $oreUser = app(
+                OreWhatsappUserResolverService::class
             )->resolve($phone);
 
-            if (! $ore101User) {
+            if (! $oreUser) {
                 return $this->handleWhatsappLinking(
                     $phone,
                     $text,
-                    Cache::get("ore101_wa_session:{$phone}"),
-                    'ORE101',
-                    'ore101_wa'
+                    Cache::get("ore_wa_session:{$phone}"),
+                    'ORE',
+                    'ore_wa'
                 );
             }
 
-            app(Ore101WhatsappConversationService::class)->handle([
+            app(OreWhatsappConversationService::class)->handle([
                 'phone' => $phone,
                 'message' => $text,
             ]);
@@ -963,12 +963,12 @@ class WhatsappWebhookController extends Controller
             );
         }
 
-        if ($continueCommand === 'ORE101') {
-            return app(Ore101WhatsappService::class)->sendButtons(
+        if ($continueCommand === 'ORE') {
+            return app(OreWhatsappService::class)->sendButtons(
                 $phone,
                 $message,
                 [
-                    ['id' => 'start_ore101', 'title' => 'Start Ore101'],
+                    ['id' => 'start_ore', 'title' => 'Start Ore'],
                 ]
             );
         }
@@ -986,7 +986,7 @@ class WhatsappWebhookController extends Controller
     ): array {
         return match ($continueCommand) {
             'MEGA' => app(MegaWhatsappService::class)->sendText($phone, $message),
-            'ORE101' => app(Ore101WhatsappService::class)->sendText($phone, $message),
+            'ORE' => app(OreWhatsappService::class)->sendText($phone, $message),
             default => app(Whatsappsender::class)->send($phone, $message),
         };
     }
