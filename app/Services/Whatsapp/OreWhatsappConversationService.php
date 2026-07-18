@@ -14,6 +14,7 @@ use App\Models\User;
 use App\Services\Whatsapp\OreWhatsappService;
 use App\Services\Whatsapp\OreWhatsappUserResolverService;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Str;
 
 class OreWhatsappConversationService
 {
@@ -337,7 +338,8 @@ class OreWhatsappConversationService
 
     //DATA
     private function showDataNetworks(
-        OreWhatsappConversation $conversation
+        OreWhatsappConversation $conversation,
+        bool $showMore = false
     )
     {
         $this->updateConversation(
@@ -346,28 +348,24 @@ class OreWhatsappConversationService
             $conversation->payload ?? []
         );
     
-        return $this->whatsapp->sendList(
+        $buttons = $showMore
+            ? [
+                ['id' => 'glo', 'title' => 'Glo'],
+                ['id' => '9mobile', 'title' => '9mobile'],
+                ['id' => 'back_data_networks', 'title' => 'Back'],
+            ]
+            : [
+                ['id' => 'mtn', 'title' => 'MTN'],
+                ['id' => 'airtel', 'title' => 'Airtel'],
+                ['id' => 'more_data_networks', 'title' => 'More Networks'],
+            ];
+
+        return $this->whatsapp->sendButtons(
             $conversation->phone,
-            "📶 Great choice!\n\nPlease select your preferred network.",
-            [
-                [
-                    'id' => 'mtn',
-                    'title' => 'MTN'
-                ],
-                [
-                    'id' => 'airtel',
-                    'title' => 'Airtel'
-                ],
-                [
-                    'id' => 'glo',
-                    'title' => 'Glo'
-                ],
-                [
-                    'id' => '9mobile',
-                    'title' => '9mobile'
-                ]
-            ],
-            'Select Network'
+            $showMore
+                ? "📶 Select another network."
+                : "📶 Great choice!\n\nPlease select your preferred network.",
+            $buttons
         );
     }
     
@@ -378,208 +376,229 @@ class OreWhatsappConversationService
         string $message
     )
     {
-        
+        if ($message === 'more_data_networks') {
+            return $this->showDataNetworks($conversation, true);
+        }
+
+        if ($message === 'back_data_networks') {
+            return $this->showDataNetworks($conversation);
+        }
+
         $network = Network::query()
             ->whereRaw(
                 'UPPER(network_name) = ?',
-                [strtolower($message)]
+                [strtoupper($message)]
             )
             ->first();
-    
+
         if (! $network) {
-    
-            return $this->showDataNetworks(
-                $conversation
-            );
+            return $this->showDataNetworks($conversation);
         }
-    
-        $payload = $conversation->payload ?? [];
-    
-        $payload['network_id'] = $network->id;
-    
-        $this->updateConversation(
-            $conversation,
-            WhatsappState::DATA_TYPE,
-            $payload
-        );
-    
+
         $dataProduct = Product::query()
-            ->whereRaw(
-                'LOWER(slug) = ?',
-                ['data']
-            )
+            ->whereRaw('LOWER(slug) = ?', ['data'])
             ->first();
-    
+
         if (! $dataProduct) {
-    
             return $this->whatsapp->sendText(
                 $conversation->phone,
                 '⚠️ Data product configuration is missing.'
             );
         }
-    
-        $categories = ProductPlanCategory::query()
-            ->where(
-                'network_id',
-                $network->id
+
+        $payload = $conversation->payload ?? [];
+        $payload['network_id'] = $network->id;
+        $payload['network_name'] = $network->network_name;
+        $payload['product_id'] = $dataProduct->id;
+        $payload['data_size_page'] = 0;
+
+        $this->updateConversation(
+            $conversation,
+            WhatsappState::DATA_TYPE,
+            $payload
+        );
+
+        return $this->showDataSizes($conversation, 0);
+    }
+
+    private function showDataSizes(
+        OreWhatsappConversation $conversation,
+        int $page
+    ) {
+        $payload = $conversation->payload ?? [];
+        $networkId = $payload['network_id'] ?? null;
+        $productId = $payload['product_id'] ?? null;
+
+        $sizes = ProductPlan::query()
+            ->where('visibility', 1)
+            ->whereHas('product_plan_category', fn ($query) => $query
+                ->where('network_id', $networkId)
+                ->where('product_id', $productId)
             )
-            ->where(
-                'product_id',
-                $dataProduct->id
-            )
-            // ->where('visibility',1)
-            ->orderBy('product_plan_category_name')
-            ->get();
-    
-        if ($categories->isEmpty()) {
-    
+            ->pluck('data_size_in_mb')
+            ->filter(fn ($size) => is_numeric($size) && (float) $size > 0)
+            ->unique(fn ($size) => (string) (float) $size)
+            ->sortBy(fn ($size) => (float) $size)
+            ->values();
+
+        if ($sizes->isEmpty()) {
             return $this->whatsapp->sendText(
                 $conversation->phone,
-                "😔 No data categories are currently available for {$network->network_name}."
+                "😔 No data plans are currently available for {$payload['network_name']}."
             );
         }
-    
+
+        $page = max(0, $page);
+        $offset = $page * 9;
+
+        if ($offset >= $sizes->count()) {
+            $page = 0;
+            $offset = 0;
+        }
+
+        $remaining = $sizes->count() - $offset;
+        $take = $remaining <= 10 ? $remaining : 9;
+        $rows = $sizes
+            ->slice($offset, $take)
+            ->map(fn ($size) => [
+                'id' => 'data_size_' . (string) (float) $size,
+                'title' => $this->formatDataSize((float) $size),
+                'description' => 'View available plans',
+            ])
+            ->values()
+            ->toArray();
+
+        if ($remaining > $take) {
+            $rows[] = [
+                'id' => 'more_data_sizes',
+                'title' => 'More Sizes',
+                'description' => 'View the next sizes',
+            ];
+        }
+
+        $payload['data_size_page'] = $page;
+        $this->updateConversation($conversation, WhatsappState::DATA_TYPE, $payload);
+
         return $this->whatsapp->sendList(
             $conversation->phone,
-            "✅ Great choice!\n\nYou're about to purchase *{$network->network_name}* data.\n\nPlease select the type of data bundle you'd like.",
-            $categories
-                ->map(fn ($category) => [
-                    'id' => $category->id,
-                    'title' => $category->product_plan_category_name,
-                ])
-                ->toArray(),
-            'View Types'
+            "📦 Select your preferred {$payload['network_name']} data size.",
+            $rows,
+            'View Sizes'
         );
     }
-    
-   
 
     private function processDataType(
         OreWhatsappConversation $conversation,
         string $message
     )
     {
-        $category = ProductPlanCategory::find(
-            $message
-        );
+        $payload = $conversation->payload ?? [];
 
-        logger('catid: '.$message);
-    
-        if (! $category) {
-    
-            return $this->whatsapp->sendText(
-                $conversation->phone,
-                '⚠️ Invalid selection. Please try again.'
+        if ($message === 'more_data_sizes') {
+            return $this->showDataSizes(
+                $conversation,
+                ((int) ($payload['data_size_page'] ?? 0)) + 1
             );
         }
-    
-        $payload = $conversation->payload ?? [];
-    
-        $payload['product_plan_category_id']
-            = $category->id;
-    
+
+        if (! str_starts_with($message, 'data_size_')) {
+            return $this->showDataSizes($conversation, (int) ($payload['data_size_page'] ?? 0));
+        }
+
+        $size = (float) substr($message, strlen('data_size_'));
+
+        if ($size <= 0) {
+            return $this->showDataSizes($conversation, 0);
+        }
+
+        $payload['data_size_in_mb'] = $size;
+        $payload['data_plan_page'] = 0;
+
         $this->updateConversation(
             $conversation,
             WhatsappState::DATA_PLAN,
             $payload
         );
-    
-        // $plans = ProductPlan::where(
-        //         'product_plan_category_id',
-        //         $category->id
-        //     )
-        //     // ->where(
-        //     //     'visibility',
-        //     //     1
-        //     // )
-        //     ->take(10)
-        //     ->orderBy('user_level_1_selling_price')
-        //     ->get();
 
-        // $plans = ProductPlan::query()
-        // ->where(
-        //     'product_plan_category_id',
-        //     $category->id
-        // )
-        // ->where('visibility', 1)
-        // ->orderByRaw("
-        //     CASE
-        //         WHEN data_size_in_mb = 500 THEN 1
-        //         WHEN data_size_in_mb = 1000 THEN 2
-        //         WHEN data_size_in_mb = 2000 THEN 3
-        //         WHEN data_size_in_mb = 3000 THEN 4
-        //         WHEN data_size_in_mb = 5000 THEN 5
-        //         ELSE 6
-        //     END
-        // ")
-        // ->orderByRaw('CAST(data_size_in_mb AS UNSIGNED) DESC')
-        // ->take(20)
-        // ->get();
+        return $this->showMatchingDataPlans($conversation, 0);
+    }
 
-        $plans = ProductPlan::query()
-        ->where(
-            'product_plan_category_id',
-            $category->id
-        )
-        ->where('visibility', 1)
-        ->get()
-        ->sortBy(function ($plan) {
+    private function showMatchingDataPlans(
+        OreWhatsappConversation $conversation,
+        int $page
+    ) {
+        $payload = $conversation->payload ?? [];
+        $plans = $this->matchingDataPlansQuery($payload)
+            ->orderByDesc('validity_in_days')
+            ->orderBy('product_plan_name')
+            ->get();
 
-            $priority = [
-                500 => 1,
-                1000 => 2,
-                2000 => 3,
-                3000 => 4,
-                5000 => 5,
-            ];
-
-            $size = (int) $plan->data_size_in_mb;
-
-            return [
-                $priority[$size] ?? 999,
-                -$size,
-            ];
-        })
-        ->take(10)
-        ->values();
-    
         if ($plans->isEmpty()) {
-    
-            logger('maybe na this onne');
             return $this->whatsapp->sendText(
                 $conversation->phone,
-                '😔 No plans are currently available for this category.'
+                '😔 No plans are currently available for this data size.'
             );
         }
 
-        
+        $page = max(0, $page);
+        $offset = $page * 9;
 
-        $planss = $plans->map(
-            fn ($plan) => [
+        if ($offset >= $plans->count()) {
+            $page = 0;
+            $offset = 0;
+        }
+
+        $remaining = $plans->count() - $offset;
+        $take = $remaining <= 10 ? $remaining : 9;
+        $rows = $plans
+            ->slice($offset, $take)
+            ->map(fn ($plan) => [
                 'id' => $plan->id,
-                'title' => sprintf(
-                    '%s - %s Days',
-                    $this->formatDataSize(
-                        $plan->data_size_in_mb
-                    ),
-                    $plan->validity_in_days
+                'title' => Str::limit(
+                    ($plan->product_plan_category?->product_plan_category_name ?? 'Data')
+                    . " · {$plan->validity_in_days} Days",
+                    24,
+                    ''
                 ),
-                'description' => '₦' . number_format(
-                    $this->dataPriceForUser($conversation, $plan),
-                    2
+                'description' => Str::limit(
+                    '₦' . number_format($this->dataPriceForUser($conversation, $plan), 2)
+                    . ' · ' . $plan->product_plan_name,
+                    72,
+                    ''
                 ),
-            ]
-        )->toArray();
-        
+            ])
+            ->values()
+            ->toArray();
 
-        logger('planssssss::'.json_encode($planss));
-    
+        if ($remaining > $take) {
+            $rows[] = [
+                'id' => 'more_data_plans',
+                'title' => 'More Plans',
+                'description' => 'View the next available plans',
+            ];
+        }
+
+        $payload['data_plan_page'] = $page;
+        $this->updateConversation($conversation, WhatsappState::DATA_PLAN, $payload);
+
         return $this->whatsapp->sendList(
             $conversation->phone,
-            "🎯 *{$category->product_plan_category_name}* selected.\n\nChoose your preferred data plan below.",
-           $planss,
+            "🎯 {$this->formatDataSize($payload['data_size_in_mb'])} selected.\n\nChoose a plan. Price is based on your account level.",
+            $rows,
             'View Plans'
         );
+    }
+
+    private function matchingDataPlansQuery(array $payload)
+    {
+        return ProductPlan::query()
+            ->with('product_plan_category')
+            ->where('visibility', 1)
+            ->where('data_size_in_mb', $payload['data_size_in_mb'] ?? null)
+            ->whereHas('product_plan_category', fn ($query) => $query
+                ->where('network_id', $payload['network_id'] ?? null)
+                ->where('product_id', $payload['product_id'] ?? null)
+            );
     }
 
     private function formatDataSize(
@@ -655,7 +674,18 @@ class OreWhatsappConversationService
         string $message
     )
     {
-        $plan = ProductPlan::find($message);
+        $payload = $conversation->payload ?? [];
+
+        if ($message === 'more_data_plans') {
+            return $this->showMatchingDataPlans(
+                $conversation,
+                ((int) ($payload['data_plan_page'] ?? 0)) + 1
+            );
+        }
+
+        $plan = $this->matchingDataPlansQuery($payload)
+            ->where('id', $message)
+            ->first();
     
         if (! $plan) {
     
@@ -664,8 +694,6 @@ class OreWhatsappConversationService
                 '⚠️ Invalid plan selected. Please try again.'
             );
         }
-    
-        $payload = $conversation->payload ?? [];
     
         $payload['product_plan_id'] = $plan->id;
     
