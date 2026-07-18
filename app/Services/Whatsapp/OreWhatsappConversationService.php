@@ -5,6 +5,7 @@ namespace App\Services\Whatsapp;
 use App\Enums\WhatsappState;
 use App\Http\Services\DataPlansService;
 use App\Models\OreWhatsappConversation;
+use App\Models\OreWhatsappFavorite;
 use App\Models\Network;
 use App\Models\Product;
 use App\Models\ProductPlan;
@@ -18,11 +19,29 @@ use Illuminate\Support\Str;
 
 class OreWhatsappConversationService
 {
+    private const FAVORITE_SELECT = 'ore_favorite_select';
+    private const FAVORITE_SAVE_CHOICE = 'ore_favorite_save_choice';
+    private const FAVORITE_NAME = 'ore_favorite_name';
+
     public function __construct(
         protected OreWhatsappService $whatsapp,
         protected OreWhatsappUserResolverService $userResolver,
         protected WhatsappIntentResolver $intentResolver
     ) {
+    }
+
+    public function hasFavoriteShortcut(string $phone, string $shortcut): bool
+    {
+        $user = $this->userResolver->resolve($phone);
+
+        if (! $user) {
+            return false;
+        }
+
+        return OreWhatsappFavorite::query()
+            ->where('user_id', $user->id)
+            ->where('shortcut', strtolower(trim($shortcut)))
+            ->exists();
     }
 
     public function handle(
@@ -113,6 +132,21 @@ class OreWhatsappConversationService
         if (in_array($message, ['help', 'support'], true)) {
             return $this->showHelp($conversation);
         }
+
+        if (in_array($message, ['favorites', 'favourites', 'favorite', 'favourite'], true)) {
+            return $this->showFavorites($conversation);
+        }
+
+        if ($conversation->current_state !== self::FAVORITE_NAME) {
+            $favorite = OreWhatsappFavorite::query()
+                ->where('user_id', $user->id)
+                ->where('shortcut', $message)
+                ->first();
+
+            if ($favorite) {
+                return $this->activateFavorite($conversation, $favorite);
+            }
+        }
     
         return $this->handleState(
             $conversation,
@@ -159,6 +193,10 @@ class OreWhatsappConversationService
                 [
                     'id' => 'transactions',
                     'title' => 'Transactions'
+                ],
+                [
+                    'id' => 'favorites',
+                    'title' => 'Favorites'
                 ]
             ],
             'View Menu'
@@ -275,6 +313,15 @@ class OreWhatsappConversationService
                     $conversation,
                     $message
                 ),
+
+            self::FAVORITE_SELECT =>
+                $this->processFavoriteSelection($conversation, $message),
+
+            self::FAVORITE_SAVE_CHOICE =>
+                $this->processFavoriteSaveChoice($conversation, $message),
+
+            self::FAVORITE_NAME =>
+                $this->processFavoriteName($conversation, $message),
     
             default =>
                 $this->showMainMenu(
@@ -326,6 +373,9 @@ class OreWhatsappConversationService
                 $this->showRecentTransactions(
                     $conversation
                 ),
+
+            'favorites', 'favourites', 'favorite', 'favourite' =>
+                $this->showFavorites($conversation),
     
             default =>
                 $this->showMainMenu(
@@ -718,7 +768,7 @@ class OreWhatsappConversationService
                 $this->dataPriceForUser($conversation, $plan),
                 2
             ) .
-            "\n\n📱 Enter the phone number you want to receive this data."
+            "\n\n📱 Type the recipient's phone number or share a WhatsApp contact."
         );
     }
 
@@ -728,13 +778,9 @@ class OreWhatsappConversationService
         string $message
     )
     {
-        $phone = preg_replace(
-            '/[^0-9]/',
-            '',
-            $message
-        );
+        $phone = $this->userResolver->normalize($message);
     
-        if (strlen($phone) < 11) {
+        if (! preg_match('/^0[789][01]\d{8}$/', $phone)) {
     
             return $this->whatsapp->sendText(
                 $conversation->phone,
@@ -918,25 +964,50 @@ class OreWhatsappConversationService
                 $data['message']
                 ?? 'Transaction completed';
     
-            /*
-            Reset conversation
-            */
+            if ($status == 1) {
+
+                $successMessage =
+                    "✅ Data Purchase Successful\n\n" .
+                    "📶 {$plan->product_plan_name}\n" .
+                    "📱 {$payload['beneficiary_phone']}\n\n" .
+                    "{$responseMessage}";
+
+                if (! empty($payload['favorite_id'])) {
+                    $this->updateConversation(
+                        $conversation,
+                        WhatsappState::MAIN_MENU,
+                        []
+                    );
+
+                    return $this->whatsapp->sendButtons(
+                        $conversation->phone,
+                        $successMessage,
+                        [['id' => 'ore_main_menu', 'title' => 'Main Menu']]
+                    );
+                }
+
+                $this->updateConversation(
+                    $conversation,
+                    self::FAVORITE_SAVE_CHOICE,
+                    $payload
+                );
+
+                return $this->whatsapp->sendButtons(
+                    $conversation->phone,
+                    $successMessage . "\n\nWould you like to save this purchase as a favorite?",
+                    [
+                        ['id' => 'save_favorite_plan', 'title' => 'Save Plan'],
+                        ['id' => 'save_favorite_full', 'title' => 'Plan & Number'],
+                        ['id' => 'skip_favorite', 'title' => 'Not Now'],
+                    ]
+                );
+            }
+
             $this->updateConversation(
                 $conversation,
                 WhatsappState::MAIN_MENU,
                 []
             );
-    
-            if ($status == 1) {
-    
-                return $this->whatsapp->sendText(
-                    $conversation->phone,
-                    "✅ Data Purchase Successful\n\n" .
-                    "📶 {$plan->product_plan_name}\n" .
-                    "📱 {$payload['beneficiary_phone']}\n\n" .
-                    "{$responseMessage}"
-                );
-            }
     
             return $this->whatsapp->sendText(
                 $conversation->phone,
@@ -962,6 +1033,223 @@ class OreWhatsappConversationService
     }
 
 
+
+    private function showFavorites(OreWhatsappConversation $conversation, int $page = 0)
+    {
+        $favorites = OreWhatsappFavorite::query()
+            ->where('user_id', $conversation->user_id)
+            ->whereHas('productPlan', fn ($query) => $query->where('visibility', 1))
+            ->with('productPlan.product_plan_category')
+            ->latest()
+            ->get();
+
+        if ($favorites->isEmpty()) {
+            return $this->whatsapp->sendButtons(
+                $conversation->phone,
+                "⭐ You have no saved favorites yet.\n\nAfter a successful data purchase, choose Save Plan or Plan & Number.",
+                [['id' => 'ore_main_menu', 'title' => 'Main Menu']]
+            );
+        }
+
+        $page = max(0, $page);
+        $offset = $page * 9;
+
+        if ($offset >= $favorites->count()) {
+            $page = 0;
+            $offset = 0;
+        }
+
+        $remaining = $favorites->count() - $offset;
+        $take = $remaining <= 10 ? $remaining : 9;
+        $rows = $favorites->slice($offset, $take)
+            ->map(function (OreWhatsappFavorite $favorite) {
+                $plan = $favorite->productPlan;
+                $mode = $favorite->beneficiary_phone ?: 'Choose number when buying';
+
+                return [
+                    'id' => 'ore_favorite_' . $favorite->id,
+                    'title' => Str::limit($favorite->shortcut, 24, ''),
+                    'description' => Str::limit("{$plan->product_plan_name} · {$mode}", 72, ''),
+                ];
+            })->values()->toArray();
+
+        if ($remaining > $take) {
+            $rows[] = [
+                'id' => 'more_ore_favorites',
+                'title' => 'More Favorites',
+                'description' => 'View the next saved options',
+            ];
+        }
+
+        $this->updateConversation(
+            $conversation,
+            self::FAVORITE_SELECT,
+            ['favorite_page' => $page]
+        );
+
+        return $this->whatsapp->sendList(
+            $conversation->phone,
+            "⭐ Saved Favorites\n\nSelect one, or type its shortcut anytime while Ore is active.",
+            $rows,
+            'View Favorites'
+        );
+    }
+
+    private function processFavoriteSelection(
+        OreWhatsappConversation $conversation,
+        string $message
+    ) {
+        $payload = $conversation->payload ?? [];
+
+        if ($message === 'more_ore_favorites') {
+            return $this->showFavorites(
+                $conversation,
+                ((int) ($payload['favorite_page'] ?? 0)) + 1
+            );
+        }
+
+        if ($message === 'ore_main_menu') {
+            return $this->showMainMenu($conversation);
+        }
+
+        if (! str_starts_with($message, 'ore_favorite_')) {
+            return $this->showFavorites($conversation, (int) ($payload['favorite_page'] ?? 0));
+        }
+
+        $favorite = OreWhatsappFavorite::query()
+            ->where('id', substr($message, strlen('ore_favorite_')))
+            ->where('user_id', $conversation->user_id)
+            ->first();
+
+        return $favorite
+            ? $this->activateFavorite($conversation, $favorite)
+            : $this->showFavorites($conversation);
+    }
+
+    private function activateFavorite(
+        OreWhatsappConversation $conversation,
+        OreWhatsappFavorite $favorite
+    ) {
+        $plan = ProductPlan::query()
+            ->with('product_plan_category')
+            ->where('id', $favorite->product_plan_id)
+            ->where('visibility', 1)
+            ->first();
+        $category = $plan?->product_plan_category;
+
+        if (! $plan || ! $category) {
+            return $this->whatsapp->sendText(
+                $conversation->phone,
+                '⚠️ The plan saved in this favorite is no longer available.'
+            );
+        }
+
+        $payload = [
+            'favorite_id' => $favorite->id,
+            'product_plan_id' => $plan->id,
+            'network_id' => $category->network_id,
+            'product_id' => $category->product_id,
+            'data_size_in_mb' => $plan->data_size_in_mb,
+        ];
+
+        $this->updateConversation($conversation, WhatsappState::DATA_PHONE, $payload);
+
+        if ($favorite->beneficiary_phone) {
+            return $this->processDataPhone($conversation, $favorite->beneficiary_phone);
+        }
+
+        return $this->whatsapp->sendText(
+            $conversation->phone,
+            "⭐ {$favorite->shortcut}\n\n📦 {$plan->product_plan_name}\n💰 ₦" .
+            number_format($this->dataPriceForUser($conversation, $plan), 2) .
+            "\n\n📱 Type the recipient's number or share a WhatsApp contact."
+        );
+    }
+
+    private function processFavoriteSaveChoice(
+        OreWhatsappConversation $conversation,
+        string $message
+    ) {
+        if ($message === 'skip_favorite') {
+            return $this->showMainMenu($conversation);
+        }
+
+        if (! in_array($message, ['save_favorite_plan', 'save_favorite_full'], true)) {
+            return $this->whatsapp->sendButtons(
+                $conversation->phone,
+                'Choose how you would like to save this purchase.',
+                [
+                    ['id' => 'save_favorite_plan', 'title' => 'Save Plan'],
+                    ['id' => 'save_favorite_full', 'title' => 'Plan & Number'],
+                    ['id' => 'skip_favorite', 'title' => 'Not Now'],
+                ]
+            );
+        }
+
+        $payload = $conversation->payload ?? [];
+        $payload['favorite_mode'] = $message === 'save_favorite_full'
+            ? 'plan_and_number'
+            : 'plan_only';
+
+        $this->updateConversation($conversation, self::FAVORITE_NAME, $payload);
+
+        return $this->whatsapp->sendText(
+            $conversation->phone,
+            "✏️ Enter a unique shortcut.\n\nExamples: 1gbplan or 1gb4mom\nUse 3–30 letters, numbers, underscores, or hyphens."
+        );
+    }
+
+    private function processFavoriteName(
+        OreWhatsappConversation $conversation,
+        string $message
+    ) {
+        $shortcut = strtolower(trim($message));
+        $reserved = [
+            'ore', 'start', 'data', 'airtime', 'wallet', 'account', 'fund',
+            'transactions', 'transaction', 'recent', 'favorites', 'favourites',
+            'favorite', 'favourite', 'help', 'support',
+        ];
+
+        if (! preg_match('/^[a-z0-9_-]{3,30}$/', $shortcut)
+            || in_array($shortcut, $reserved, true)) {
+            return $this->whatsapp->sendText(
+                $conversation->phone,
+                '⚠️ That shortcut is unavailable. Use 3–30 letters, numbers, underscores, or hyphens.'
+            );
+        }
+
+        if (OreWhatsappFavorite::query()
+            ->where('user_id', $conversation->user_id)
+            ->where('shortcut', $shortcut)
+            ->exists()) {
+            return $this->whatsapp->sendText(
+                $conversation->phone,
+                "⚠️ You already use *{$shortcut}*. Please enter another shortcut."
+            );
+        }
+
+        $payload = $conversation->payload ?? [];
+        $favorite = OreWhatsappFavorite::create([
+            'user_id' => $conversation->user_id,
+            'shortcut' => $shortcut,
+            'product_plan_id' => $payload['product_plan_id'],
+            'beneficiary_phone' => ($payload['favorite_mode'] ?? null) === 'plan_and_number'
+                ? ($payload['beneficiary_phone'] ?? null)
+                : null,
+        ]);
+
+        $this->updateConversation($conversation, WhatsappState::MAIN_MENU, []);
+
+        $description = $favorite->beneficiary_phone
+            ? 'The plan and recipient number were saved.'
+            : 'The plan was saved. You will choose a number when buying.';
+
+        return $this->whatsapp->sendButtons(
+            $conversation->phone,
+            "✅ Favorite saved as *{$shortcut}*.\n\n{$description}\n\nType *{$shortcut}* anytime in Ore to use it.",
+            [['id' => 'ore_main_menu', 'title' => 'Main Menu']]
+        );
+    }
 
     ///AIRTIME
     private function showAirtimeNetworks(

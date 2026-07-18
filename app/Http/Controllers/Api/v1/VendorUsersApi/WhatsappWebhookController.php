@@ -270,6 +270,22 @@ class WhatsappWebhookController extends Controller
             "ore_session:{$phone}"
         );
 
+        if (
+            ! $oreSession
+            && app(OreWhatsappConversationService::class)
+                ->hasFavoriteShortcut($phone, $text)
+        ) {
+            Cache::forget("mega_session:{$phone}");
+            Cache::put(
+                "ore_session:{$phone}",
+                ['started_at' => now(), 'started_from_favorite' => true],
+                now()->addHours(12)
+            );
+
+            $megaSession = false;
+            $oreSession = true;
+        }
+
         if ($text === 'ore') {
             Cache::forget("mega_session:{$phone}");
             Cache::put(
