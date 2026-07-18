@@ -9,8 +9,10 @@ class OreWhatsappFavorite extends Model
     protected $fillable = [
         'user_id',
         'shortcut',
+        'product_type',
         'product_plan_id',
         'beneficiary_phone',
+        'amount',
     ];
 
     public function productPlan()
@@ -21,5 +23,12 @@ class OreWhatsappFavorite extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    protected function casts(): array
+    {
+        return [
+            'amount' => 'decimal:2',
+        ];
     }
 }

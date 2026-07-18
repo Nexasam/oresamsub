@@ -1064,12 +1064,13 @@ class OreWhatsappConversationService
         $rows = $favorites->slice($offset, $take)
             ->map(function (OreWhatsappFavorite $favorite) {
                 $plan = $favorite->productPlan;
-                $mode = $favorite->beneficiary_phone ?: 'Choose number when buying';
+                $mode = $favorite->beneficiary_phone ?: 'Complete details when buying';
+                $type = strtoupper($favorite->product_type ?? 'data');
 
                 return [
                     'id' => 'ore_favorite_' . $favorite->id,
                     'title' => Str::limit($favorite->shortcut, 24, ''),
-                    'description' => Str::limit("{$plan->product_plan_name} · {$mode}", 72, ''),
+                    'description' => Str::limit("{$type} · {$plan->product_plan_name} · {$mode}", 72, ''),
                 ];
             })->values()->toArray();
 
@@ -1146,11 +1147,31 @@ class OreWhatsappConversationService
 
         $payload = [
             'favorite_id' => $favorite->id,
+            'favorite_type' => $favorite->product_type ?? 'data',
             'product_plan_id' => $plan->id,
             'network_id' => $category->network_id,
             'product_id' => $category->product_id,
             'data_size_in_mb' => $plan->data_size_in_mb,
         ];
+
+        if (($favorite->product_type ?? 'data') === 'airtime') {
+            $payload['network_name'] = $category->network?->network_name
+                ?? Network::find($category->network_id)?->network_name;
+
+            if ($favorite->amount !== null && $favorite->beneficiary_phone) {
+                $payload['amount'] = (float) $favorite->amount;
+                $this->updateConversation($conversation, WhatsappState::AIRTIME_PHONE, $payload);
+
+                return $this->processAirtimePhone($conversation, $favorite->beneficiary_phone);
+            }
+
+            $this->updateConversation($conversation, WhatsappState::AIRTIME_AMOUNT, $payload);
+
+            return $this->whatsapp->sendText(
+                $conversation->phone,
+                "⭐ {$favorite->shortcut}\n\n📞 {$payload['network_name']} airtime\n\n💰 Enter the airtime amount (minimum ₦50)."
+            );
+        }
 
         $this->updateConversation($conversation, WhatsappState::DATA_PHONE, $payload);
 
@@ -1170,6 +1191,9 @@ class OreWhatsappConversationService
         OreWhatsappConversation $conversation,
         string $message
     ) {
+        $payload = $conversation->payload ?? [];
+        $isAirtime = ($payload['favorite_type'] ?? 'data') === 'airtime';
+
         if ($message === 'skip_favorite') {
             return $this->showMainMenu($conversation);
         }
@@ -1178,15 +1202,20 @@ class OreWhatsappConversationService
             return $this->whatsapp->sendButtons(
                 $conversation->phone,
                 'Choose how you would like to save this purchase.',
-                [
-                    ['id' => 'save_favorite_plan', 'title' => 'Save Plan'],
-                    ['id' => 'save_favorite_full', 'title' => 'Plan & Number'],
-                    ['id' => 'skip_favorite', 'title' => 'Not Now'],
-                ]
+                $isAirtime
+                    ? [
+                        ['id' => 'save_favorite_plan', 'title' => 'Save Network'],
+                        ['id' => 'save_favorite_full', 'title' => 'Save Full Setup'],
+                        ['id' => 'skip_favorite', 'title' => 'Not Now'],
+                    ]
+                    : [
+                        ['id' => 'save_favorite_plan', 'title' => 'Save Plan'],
+                        ['id' => 'save_favorite_full', 'title' => 'Plan & Number'],
+                        ['id' => 'skip_favorite', 'title' => 'Not Now'],
+                    ]
             );
         }
 
-        $payload = $conversation->payload ?? [];
         $payload['favorite_mode'] = $message === 'save_favorite_full'
             ? 'plan_and_number'
             : 'plan_only';
@@ -1232,17 +1261,28 @@ class OreWhatsappConversationService
         $favorite = OreWhatsappFavorite::create([
             'user_id' => $conversation->user_id,
             'shortcut' => $shortcut,
+            'product_type' => $payload['favorite_type'] ?? 'data',
             'product_plan_id' => $payload['product_plan_id'],
             'beneficiary_phone' => ($payload['favorite_mode'] ?? null) === 'plan_and_number'
                 ? ($payload['beneficiary_phone'] ?? null)
                 : null,
+            'amount' => ($payload['favorite_mode'] ?? null) === 'plan_and_number'
+                && ($payload['favorite_type'] ?? 'data') === 'airtime'
+                    ? ($payload['amount'] ?? null)
+                    : null,
         ]);
 
         $this->updateConversation($conversation, WhatsappState::MAIN_MENU, []);
 
-        $description = $favorite->beneficiary_phone
-            ? 'The plan and recipient number were saved.'
-            : 'The plan was saved. You will choose a number when buying.';
+        if (($favorite->product_type ?? 'data') === 'airtime') {
+            $description = $favorite->beneficiary_phone
+                ? 'The network, amount, and recipient number were saved.'
+                : 'The airtime network was saved. You will enter an amount and number when buying.';
+        } else {
+            $description = $favorite->beneficiary_phone
+                ? 'The plan and recipient number were saved.'
+                : 'The plan was saved. You will choose a number when buying.';
+        }
 
         return $this->whatsapp->sendButtons(
             $conversation->phone,
@@ -1358,7 +1398,7 @@ class OreWhatsappConversationService
 
         return $this->whatsapp->sendText(
             $conversation->phone,
-            "📱 Enter the phone number that should receive the airtime."
+            "📱 Type the recipient's phone number or share a WhatsApp contact."
         );
     }
     
@@ -1458,22 +1498,51 @@ class OreWhatsappConversationService
             $status = $data['status'] ?? 0;
             $responseMessage = $data['message'] ?? 'Transaction completed';
 
+            if ($status == 1) {
+                $successMessage =
+                    "✅ Airtime Purchase Successful\n\n" .
+                    "📞 {$payload['network_name']}\n" .
+                    "📱 {$payload['beneficiary_phone']}\n" .
+                    '💰 ₦' . number_format($payload['amount'], 2) .
+                    "\n\n{$responseMessage}";
+
+                if (! empty($payload['favorite_id'])) {
+                    $this->updateConversation(
+                        $conversation,
+                        WhatsappState::MAIN_MENU,
+                        []
+                    );
+
+                    return $this->whatsapp->sendButtons(
+                        $conversation->phone,
+                        $successMessage,
+                        [['id' => 'ore_main_menu', 'title' => 'Main Menu']]
+                    );
+                }
+
+                $payload['favorite_type'] = 'airtime';
+                $this->updateConversation(
+                    $conversation,
+                    self::FAVORITE_SAVE_CHOICE,
+                    $payload
+                );
+
+                return $this->whatsapp->sendButtons(
+                    $conversation->phone,
+                    $successMessage . "\n\nWould you like to save this airtime purchase as a favorite?",
+                    [
+                        ['id' => 'save_favorite_plan', 'title' => 'Save Network'],
+                        ['id' => 'save_favorite_full', 'title' => 'Save Full Setup'],
+                        ['id' => 'skip_favorite', 'title' => 'Not Now'],
+                    ]
+                );
+            }
+
             $this->updateConversation(
                 $conversation,
                 WhatsappState::MAIN_MENU,
                 []
             );
-
-            if ($status == 1) {
-                return $this->whatsapp->sendText(
-                    $conversation->phone,
-                    "✅ Airtime Purchase Successful\n\n" .
-                    "📞 {$payload['network_name']}\n" .
-                    "📱 {$payload['beneficiary_phone']}\n" .
-                    '💰 ₦' . number_format($payload['amount'], 2) .
-                    "\n\n{$responseMessage}"
-                );
-            }
 
             return $this->whatsapp->sendText(
                 $conversation->phone,
