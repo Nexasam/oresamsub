@@ -3,12 +3,14 @@
 namespace App\Services\Whatsapp;
 
 use App\Enums\WhatsappState;
+use App\Http\Services\DataPlansService;
 use App\Models\OreWhatsappConversation;
 use App\Models\Network;
 use App\Models\Product;
 use App\Models\ProductPlan;
 use App\Models\ProductPlanCategory;
 use App\Models\Transaction;
+use App\Models\User;
 use App\Services\Whatsapp\OreWhatsappService;
 use App\Services\Whatsapp\OreWhatsappUserResolverService;
 use Illuminate\Support\Facades\Cache;
@@ -563,7 +565,7 @@ class OreWhatsappConversationService
                     $plan->validity_in_days
                 ),
                 'description' => '₦' . number_format(
-                    $plan->user_level_1_selling_price,
+                    $this->dataPriceForUser($conversation, $plan),
                     2
                 ),
             ]
@@ -599,6 +601,53 @@ class OreWhatsappConversationService
         }
     
         return $sizeInMb . 'MB';
+    }
+
+    private function dataPriceForUser(
+        OreWhatsappConversation $conversation,
+        ProductPlan $plan
+    ): float {
+        $user = $conversation->user()->first();
+        $category = $plan->product_plan_category;
+
+        if (! $user) {
+            return (float) $plan->user_level_1_selling_price;
+        }
+
+        $fallbackPrice = $this->fallbackDataPriceForUser($user, $plan);
+
+        if (! $category) {
+            return $fallbackPrice;
+        }
+
+        try {
+            $pricing = app(DataPlansService::class)->get_customer_price_per_plan([
+                'product_id' => $category->product_id,
+                'user' => $user,
+                'plan_details' => $plan,
+                'network_id' => $category->network_id,
+            ]);
+
+            return (float) ($pricing['message'] ?? $fallbackPrice);
+        } catch (\Throwable $exception) {
+            logger()->warning('Ore data price resolution failed', [
+                'user_id' => $user->id,
+                'product_plan_id' => $plan->id,
+                'error' => $exception->getMessage(),
+            ]);
+
+            return $fallbackPrice;
+        }
+    }
+
+    private function fallbackDataPriceForUser(
+        User $user,
+        ProductPlan $plan
+    ): float {
+        $planLevel = $user->user_plan()->value('plan_level') ?? 1;
+        $priceColumn = "user_level_{$planLevel}_selling_price";
+
+        return (float) ($plan->{$priceColumn} ?? $plan->user_level_1_selling_price);
     }
     
     private function processDataPlan(
@@ -638,7 +687,7 @@ class OreWhatsappConversationService
             "📦 {$sizeee}\n" .
             "⏳ {$plan->validity_in_days} Days\n" .
             "💰 N" . number_format(
-                $plan->user_level_1_selling_price,
+                $this->dataPriceForUser($conversation, $plan),
                 2
             ) .
             "\n\n📱 Enter the phone number you want to receive this data."
@@ -693,7 +742,7 @@ class OreWhatsappConversationService
             "📱 Number: {$phone}\n" .
             "💰 Amount: ₦" .
             number_format(
-                $plan->user_level_1_selling_price,
+                $this->dataPriceForUser($conversation, $plan),
                 2
             ),
             [
@@ -1380,7 +1429,10 @@ class OreWhatsappConversationService
 
         $amount = $payload['transaction_category'] === 'airtime'
             ? "\n💰 Amount: ₦" . number_format($payload['amount'], 2)
-            : '';
+            : "\n💰 Amount: ₦" . number_format(
+                $this->dataPriceForUser($conversation, $plan),
+                2
+            );
 
         return $this->whatsapp->sendButtons(
             $conversation->phone,
