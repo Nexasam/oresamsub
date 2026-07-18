@@ -22,6 +22,7 @@ class OreWhatsappConversationService
     private const FAVORITE_SELECT = 'ore_favorite_select';
     private const FAVORITE_SAVE_CHOICE = 'ore_favorite_save_choice';
     private const FAVORITE_NAME = 'ore_favorite_name';
+    private const QUICK_BUY_SELECT = 'ore_quick_buy_select';
 
     public function __construct(
         protected OreWhatsappService $whatsapp,
@@ -121,6 +122,10 @@ class OreWhatsappConversationService
             );
         }
 
+        if (in_array($message, ['back', 'ore_back'], true)) {
+            return $this->goBack($conversation);
+        }
+
         if (in_array($message, ['wallet', 'account', 'fund'], true)) {
             return $this->showWallet($conversation);
         }
@@ -135,6 +140,10 @@ class OreWhatsappConversationService
 
         if (in_array($message, ['favorites', 'favourites', 'favorite', 'favourite'], true)) {
             return $this->showFavorites($conversation);
+        }
+
+        if (in_array($message, ['quick', 'quick buy', 'power mode'], true)) {
+            return $this->showQuickBuy($conversation);
         }
 
         if ($conversation->current_state !== self::FAVORITE_NAME) {
@@ -175,6 +184,14 @@ class OreWhatsappConversationService
             "👋 Welcome to Ore!\n\nWhat would you like to do today?",
             [
                 [
+                    'id' => 'favorites',
+                    'title' => 'Favorites'
+                ],
+                [
+                    'id' => 'quick_buy',
+                    'title' => 'Quick Buy'
+                ],
+                [
                     'id' => 'data',
                     'title' => 'Buy Data'
                 ],
@@ -193,13 +210,84 @@ class OreWhatsappConversationService
                 [
                     'id' => 'transactions',
                     'title' => 'Transactions'
-                ],
-                [
-                    'id' => 'favorites',
-                    'title' => 'Favorites'
                 ]
             ],
             'View Menu'
+        );
+    }
+
+    private function goBack(OreWhatsappConversation $conversation)
+    {
+        $payload = $conversation->payload ?? [];
+
+        return match ($conversation->current_state) {
+            WhatsappState::DATA_NETWORK,
+            WhatsappState::AIRTIME_NETWORK,
+            self::FAVORITE_SELECT,
+            self::QUICK_BUY_SELECT,
+            WhatsappState::WALLET,
+            WhatsappState::HELP => $this->showMainMenu($conversation),
+
+            WhatsappState::DATA_TYPE => $this->showDataNetworks($conversation),
+
+            WhatsappState::DATA_PLAN => $this->showDataSizes($conversation, 0),
+
+            WhatsappState::DATA_PHONE => $this->showMatchingDataPlans($conversation, 0),
+
+            WhatsappState::DATA_CONFIRM => $this->returnToDataPhone($conversation),
+
+            WhatsappState::AIRTIME_AMOUNT => $this->showAirtimeNetworks($conversation),
+
+            WhatsappState::AIRTIME_PHONE => $this->returnToAirtimeAmount($conversation),
+
+            WhatsappState::AIRTIME_CONFIRM => $this->returnToAirtimePhone($conversation),
+
+            self::FAVORITE_SAVE_CHOICE => $this->showMainMenu($conversation),
+
+            self::FAVORITE_NAME => $this->processFavoriteSaveChoice($conversation, ''),
+
+            WhatsappState::TRANSACTION_SELECT,
+            WhatsappState::TRANSACTION_AMOUNT,
+            WhatsappState::TRANSACTION_PHONE,
+            WhatsappState::TRANSACTION_CONFIRM => $this->showRecentTransactions($conversation),
+
+            default => $this->showMainMenu($conversation),
+        };
+    }
+
+    private function returnToDataPhone(OreWhatsappConversation $conversation)
+    {
+        $payload = $conversation->payload ?? [];
+        $this->updateConversation($conversation, WhatsappState::DATA_PHONE, $payload);
+
+        return $this->whatsapp->sendButtons(
+            $conversation->phone,
+            "📱 Type the recipient's phone number or share a WhatsApp contact.",
+            [['id' => 'ore_back', 'title' => 'Back']]
+        );
+    }
+
+    private function returnToAirtimeAmount(OreWhatsappConversation $conversation)
+    {
+        $payload = $conversation->payload ?? [];
+        $this->updateConversation($conversation, WhatsappState::AIRTIME_AMOUNT, $payload);
+
+        return $this->whatsapp->sendButtons(
+            $conversation->phone,
+            "💰 Enter the airtime amount (minimum ₦50).",
+            [['id' => 'ore_back', 'title' => 'Back']]
+        );
+    }
+
+    private function returnToAirtimePhone(OreWhatsappConversation $conversation)
+    {
+        $payload = $conversation->payload ?? [];
+        $this->updateConversation($conversation, WhatsappState::AIRTIME_PHONE, $payload);
+
+        return $this->whatsapp->sendButtons(
+            $conversation->phone,
+            "📱 Type the recipient's phone number or share a WhatsApp contact.",
+            [['id' => 'ore_back', 'title' => 'Back']]
         );
     }
 
@@ -322,6 +410,9 @@ class OreWhatsappConversationService
 
             self::FAVORITE_NAME =>
                 $this->processFavoriteName($conversation, $message),
+
+            self::QUICK_BUY_SELECT =>
+                $this->processQuickBuySelection($conversation, $message),
     
             default =>
                 $this->showMainMenu(
@@ -376,6 +467,9 @@ class OreWhatsappConversationService
 
             'favorites', 'favourites', 'favorite', 'favourite' =>
                 $this->showFavorites($conversation),
+
+            'quick_buy', 'quick', 'quick buy', 'power mode' =>
+                $this->showQuickBuy($conversation),
     
             default =>
                 $this->showMainMenu(
@@ -473,7 +567,8 @@ class OreWhatsappConversationService
 
     private function showDataSizes(
         OreWhatsappConversation $conversation,
-        int $page
+        int $page,
+        bool $showList = false
     ) {
         $payload = $conversation->payload ?? [];
         $networkId = $payload['network_id'] ?? null;
@@ -488,13 +583,43 @@ class OreWhatsappConversationService
             ->pluck('data_size_in_mb')
             ->filter(fn ($size) => is_numeric($size) && (float) $size > 0)
             ->unique(fn ($size) => (string) (float) $size)
-            ->sortBy(fn ($size) => (float) $size)
+            ->sortBy(function ($size) {
+                $popular = [1000 => 1, 2000 => 2, 500 => 3, 3000 => 4, 5000 => 5];
+
+                return [$popular[(int) $size] ?? 999, (float) $size];
+            })
             ->values();
 
         if ($sizes->isEmpty()) {
             return $this->whatsapp->sendText(
                 $conversation->phone,
                 "😔 No data plans are currently available for {$payload['network_name']}."
+            );
+        }
+
+        if (! $showList) {
+            $buttons = $sizes
+                ->take(2)
+                ->map(fn ($size) => [
+                    'id' => 'data_size_' . (string) (float) $size,
+                    'title' => Str::limit($this->formatDataSize((float) $size), 20, ''),
+                ])
+                ->values()
+                ->toArray();
+
+            if ($sizes->count() > 2) {
+                $buttons[] = ['id' => 'view_all_data_sizes', 'title' => 'View All Sizes'];
+            } else {
+                $buttons[] = ['id' => 'ore_back', 'title' => 'Back'];
+            }
+
+            $payload['data_size_page'] = 0;
+            $this->updateConversation($conversation, WhatsappState::DATA_TYPE, $payload);
+
+            return $this->whatsapp->sendButtons(
+                $conversation->phone,
+                "📦 Choose a popular {$payload['network_name']} data size, or view all sizes.",
+                $buttons
             );
         }
 
@@ -547,12 +672,21 @@ class OreWhatsappConversationService
         if ($message === 'more_data_sizes') {
             return $this->showDataSizes(
                 $conversation,
-                ((int) ($payload['data_size_page'] ?? 0)) + 1
+                ((int) ($payload['data_size_page'] ?? 0)) + 1,
+                true
             );
         }
 
+        if ($message === 'view_all_data_sizes') {
+            return $this->showDataSizes($conversation, 0, true);
+        }
+
         if (! str_starts_with($message, 'data_size_')) {
-            return $this->showDataSizes($conversation, (int) ($payload['data_size_page'] ?? 0));
+            return $this->showDataSizes(
+                $conversation,
+                (int) ($payload['data_size_page'] ?? 0),
+                true
+            );
         }
 
         $size = (float) substr($message, strlen('data_size_'));
@@ -575,7 +709,8 @@ class OreWhatsappConversationService
 
     private function showMatchingDataPlans(
         OreWhatsappConversation $conversation,
-        int $page
+        int $page,
+        bool $showList = false
     ) {
         $payload = $conversation->payload ?? [];
         $plans = $this->matchingDataPlansQuery($payload)
@@ -587,6 +722,43 @@ class OreWhatsappConversationService
             return $this->whatsapp->sendText(
                 $conversation->phone,
                 '😔 No plans are currently available for this data size.'
+            );
+        }
+
+        if (! $showList) {
+            $topPlans = $plans->take(2);
+            $buttons = $topPlans
+                ->map(fn ($plan) => [
+                    'id' => $plan->id,
+                    'title' => Str::limit(
+                        ($plan->product_plan_category?->product_plan_category_name ?? 'Data')
+                        . " {$plan->validity_in_days}d",
+                        20,
+                        ''
+                    ),
+                ])
+                ->values()
+                ->toArray();
+
+            if ($plans->count() > 2) {
+                $buttons[] = ['id' => 'view_all_data_plans', 'title' => 'View All Plans'];
+            } else {
+                $buttons[] = ['id' => 'ore_back', 'title' => 'Back'];
+            }
+
+            $summary = $topPlans->values()->map(function ($plan, $index) use ($conversation) {
+                return ($index + 1) . '. ' . $plan->product_plan_name
+                    . ' · ' . $plan->validity_in_days . ' days'
+                    . ' · ₦' . number_format($this->dataPriceForUser($conversation, $plan), 2);
+            })->implode("\n");
+
+            $payload['data_plan_page'] = 0;
+            $this->updateConversation($conversation, WhatsappState::DATA_PLAN, $payload);
+
+            return $this->whatsapp->sendButtons(
+                $conversation->phone,
+                "🎯 {$this->formatDataSize($payload['data_size_in_mb'])} selected.\n\n{$summary}\n\nChoose a plan or view all.",
+                $buttons
             );
         }
 
@@ -729,8 +901,13 @@ class OreWhatsappConversationService
         if ($message === 'more_data_plans') {
             return $this->showMatchingDataPlans(
                 $conversation,
-                ((int) ($payload['data_plan_page'] ?? 0)) + 1
+                ((int) ($payload['data_plan_page'] ?? 0)) + 1,
+                true
             );
+        }
+
+        if ($message === 'view_all_data_plans') {
+            return $this->showMatchingDataPlans($conversation, 0, true);
         }
 
         $plan = $this->matchingDataPlansQuery($payload)
@@ -759,7 +936,7 @@ class OreWhatsappConversationService
 
         $sizeee = $this->formatDataSize($plan->data_size_in_mb);
     
-        return $this->whatsapp->sendText(
+        return $this->whatsapp->sendButtons(
             $conversation->phone,
             "✅ Plan Selected\n\n" .
             "📦 {$sizeee}\n" .
@@ -768,7 +945,8 @@ class OreWhatsappConversationService
                 $this->dataPriceForUser($conversation, $plan),
                 2
             ) .
-            "\n\n📱 Type the recipient's phone number or share a WhatsApp contact."
+            "\n\n📱 Type the recipient's phone number or share a WhatsApp contact.",
+            [['id' => 'ore_back', 'title' => 'Back']]
         );
     }
 
@@ -827,6 +1005,10 @@ class OreWhatsappConversationService
                 [
                     'id' => 'cancel_data_purchase',
                     'title' => 'Cancel'
+                ],
+                [
+                    'id' => 'ore_back',
+                    'title' => 'Back'
                 ]
             ]
         );
@@ -1034,7 +1216,207 @@ class OreWhatsappConversationService
 
 
 
-    private function showFavorites(OreWhatsappConversation $conversation, int $page = 0)
+    private function showQuickBuy(
+        OreWhatsappConversation $conversation,
+        int $page = 0,
+        bool $showList = false
+    ) {
+        $transactions = Transaction::query()
+            ->where('user_id', $conversation->user_id)
+            ->where('status', 1)
+            ->whereIn('transaction_category', ['data', 'airtime'])
+            ->whereNotNull('product_plan_id')
+            ->whereHas('product_plan', fn ($query) => $query->where('visibility', 1))
+            ->with([
+                'product_plan.product_plan_category.network',
+                'product_plan.product_plan_category.product',
+            ])
+            ->latest()
+            ->take(50)
+            ->get()
+            ->unique(fn ($transaction) =>
+                $transaction->transaction_category . ':' . $transaction->product_plan_id
+            )
+            ->values();
+
+        if ($transactions->isEmpty()) {
+            return $this->whatsapp->sendButtons(
+                $conversation->phone,
+                "⚡ Quick Buy has no suggestions yet.\n\nComplete a data or airtime purchase and your unique recent plans will appear here.",
+                [['id' => 'ore_main_menu', 'title' => 'Main Menu']]
+            );
+        }
+
+        if (! $showList) {
+            $buttons = $transactions
+                ->take(2)
+                ->map(function ($transaction) {
+                    $plan = $transaction->product_plan;
+                    $network = $plan->product_plan_category?->network?->network_name ?? 'Network';
+                    $title = $transaction->transaction_category === 'airtime'
+                        ? "{$network} ₦" . number_format((float) $transaction->amount, 0)
+                        : $network . ' ' . $this->formatDataSize($plan->data_size_in_mb);
+
+                    return [
+                        'id' => 'ore_quick_' . $transaction->id,
+                        'title' => Str::limit($title, 20, ''),
+                    ];
+                })
+                ->values()
+                ->toArray();
+
+            if ($transactions->count() > 2) {
+                $buttons[] = ['id' => 'view_all_ore_quick_buy', 'title' => 'View All'];
+            } else {
+                $buttons[] = ['id' => 'ore_back', 'title' => 'Back'];
+            }
+
+            $this->updateConversation(
+                $conversation,
+                self::QUICK_BUY_SELECT,
+                ['quick_buy_page' => 0]
+            );
+
+            return $this->whatsapp->sendButtons(
+                $conversation->phone,
+                "⚡ Quick Buy\n\nChoose a recent unique purchase, or view all available options.",
+                $buttons
+            );
+        }
+
+        $page = max(0, $page);
+        $offset = $page * 9;
+
+        if ($offset >= $transactions->count()) {
+            $page = 0;
+            $offset = 0;
+        }
+
+        $remaining = $transactions->count() - $offset;
+        $take = $remaining <= 10 ? $remaining : 9;
+        $rows = $transactions->slice($offset, $take)
+            ->map(function ($transaction) use ($conversation) {
+                $plan = $transaction->product_plan;
+                $network = $plan->product_plan_category?->network?->network_name ?? 'Network';
+
+                if ($transaction->transaction_category === 'airtime') {
+                    $title = "{$network} Airtime";
+                    $description = '₦' . number_format((float) $transaction->amount, 2)
+                        . ' · Uses your latest amount';
+                } else {
+                    $title = $network . ' ' . $this->formatDataSize($plan->data_size_in_mb);
+                    $description = '₦' . number_format(
+                        $this->dataPriceForUser($conversation, $plan),
+                        2
+                    ) . " · {$plan->validity_in_days} Days · {$plan->product_plan_name}";
+                }
+
+                return [
+                    'id' => 'ore_quick_' . $transaction->id,
+                    'title' => Str::limit($title, 24, ''),
+                    'description' => Str::limit($description, 72, ''),
+                ];
+            })->values()->toArray();
+
+        if ($remaining > $take) {
+            $rows[] = [
+                'id' => 'more_ore_quick_buy',
+                'title' => 'More Options',
+                'description' => 'View more unique recent plans',
+            ];
+        }
+
+        $this->updateConversation(
+            $conversation,
+            self::QUICK_BUY_SELECT,
+            ['quick_buy_page' => $page]
+        );
+
+        return $this->whatsapp->sendList(
+            $conversation->phone,
+            "⚡ Quick Buy\n\nChoose from your unique successful data and airtime purchases.",
+            $rows,
+            'Quick Buy'
+        );
+    }
+
+    private function processQuickBuySelection(
+        OreWhatsappConversation $conversation,
+        string $message
+    ) {
+        $payload = $conversation->payload ?? [];
+
+        if ($message === 'more_ore_quick_buy') {
+            return $this->showQuickBuy(
+                $conversation,
+                ((int) ($payload['quick_buy_page'] ?? 0)) + 1,
+                true
+            );
+        }
+
+        if ($message === 'view_all_ore_quick_buy') {
+            return $this->showQuickBuy($conversation, 0, true);
+        }
+
+        if ($message === 'ore_main_menu') {
+            return $this->showMainMenu($conversation);
+        }
+
+        if (! str_starts_with($message, 'ore_quick_')) {
+            return $this->showQuickBuy(
+                $conversation,
+                (int) ($payload['quick_buy_page'] ?? 0),
+                true
+            );
+        }
+
+        $transaction = Transaction::query()
+            ->where('id', substr($message, strlen('ore_quick_')))
+            ->where('user_id', $conversation->user_id)
+            ->where('status', 1)
+            ->whereIn('transaction_category', ['data', 'airtime'])
+            ->with('product_plan.product_plan_category.network')
+            ->first();
+        $plan = $transaction?->product_plan;
+        $category = $plan?->product_plan_category;
+        $network = $category?->network;
+
+        if (! $transaction || ! $plan || ! $category || ! $network || ! $plan->visibility) {
+            return $this->whatsapp->sendText(
+                $conversation->phone,
+                '⚠️ That Quick Buy option is no longer available.'
+            );
+        }
+
+        $payload = [
+            'transaction_category' => $transaction->transaction_category,
+            'product_plan_id' => $plan->id,
+            'network_id' => $network->id,
+            'network_name' => $network->network_name,
+        ];
+
+        if ($transaction->transaction_category === 'airtime') {
+            $payload['amount'] = abs((float) $transaction->amount);
+        }
+
+        $this->updateConversation(
+            $conversation,
+            WhatsappState::TRANSACTION_PHONE,
+            $payload
+        );
+
+        return $this->whatsapp->sendButtons(
+            $conversation->phone,
+            "⚡ {$plan->product_plan_name} selected.\n\n📱 Type the recipient's number or share a WhatsApp contact."
+            ,[['id' => 'ore_back', 'title' => 'Back']]
+        );
+    }
+
+    private function showFavorites(
+        OreWhatsappConversation $conversation,
+        int $page = 0,
+        bool $showList = false
+    )
     {
         $favorites = OreWhatsappFavorite::query()
             ->where('user_id', $conversation->user_id)
@@ -1048,6 +1430,35 @@ class OreWhatsappConversationService
                 $conversation->phone,
                 "⭐ You have no saved favorites yet.\n\nAfter a successful data purchase, choose Save Plan or Plan & Number.",
                 [['id' => 'ore_main_menu', 'title' => 'Main Menu']]
+            );
+        }
+
+        if (! $showList) {
+            $buttons = $favorites
+                ->take(2)
+                ->map(fn (OreWhatsappFavorite $favorite) => [
+                    'id' => 'ore_favorite_' . $favorite->id,
+                    'title' => Str::limit($favorite->shortcut, 20, ''),
+                ])
+                ->values()
+                ->toArray();
+
+            if ($favorites->count() > 2) {
+                $buttons[] = ['id' => 'view_all_ore_favorites', 'title' => 'View All'];
+            } else {
+                $buttons[] = ['id' => 'ore_back', 'title' => 'Back'];
+            }
+
+            $this->updateConversation(
+                $conversation,
+                self::FAVORITE_SELECT,
+                ['favorite_page' => 0]
+            );
+
+            return $this->whatsapp->sendButtons(
+                $conversation->phone,
+                "⭐ Favorites\n\nChoose a saved shortcut, or view all your favorites.",
+                $buttons
             );
         }
 
@@ -1105,8 +1516,13 @@ class OreWhatsappConversationService
         if ($message === 'more_ore_favorites') {
             return $this->showFavorites(
                 $conversation,
-                ((int) ($payload['favorite_page'] ?? 0)) + 1
+                ((int) ($payload['favorite_page'] ?? 0)) + 1,
+                true
             );
+        }
+
+        if ($message === 'view_all_ore_favorites') {
+            return $this->showFavorites($conversation, 0, true);
         }
 
         if ($message === 'ore_main_menu') {
@@ -1114,7 +1530,11 @@ class OreWhatsappConversationService
         }
 
         if (! str_starts_with($message, 'ore_favorite_')) {
-            return $this->showFavorites($conversation, (int) ($payload['favorite_page'] ?? 0));
+            return $this->showFavorites(
+                $conversation,
+                (int) ($payload['favorite_page'] ?? 0),
+                true
+            );
         }
 
         $favorite = OreWhatsappFavorite::query()
@@ -1167,9 +1587,10 @@ class OreWhatsappConversationService
 
             $this->updateConversation($conversation, WhatsappState::AIRTIME_AMOUNT, $payload);
 
-            return $this->whatsapp->sendText(
+            return $this->whatsapp->sendButtons(
                 $conversation->phone,
-                "⭐ {$favorite->shortcut}\n\n📞 {$payload['network_name']} airtime\n\n💰 Enter the airtime amount (minimum ₦50)."
+                "⭐ {$favorite->shortcut}\n\n📞 {$payload['network_name']} airtime\n\n💰 Enter the airtime amount (minimum ₦50).",
+                [['id' => 'ore_back', 'title' => 'Back']]
             );
         }
 
@@ -1179,11 +1600,12 @@ class OreWhatsappConversationService
             return $this->processDataPhone($conversation, $favorite->beneficiary_phone);
         }
 
-        return $this->whatsapp->sendText(
+        return $this->whatsapp->sendButtons(
             $conversation->phone,
             "⭐ {$favorite->shortcut}\n\n📦 {$plan->product_plan_name}\n💰 ₦" .
             number_format($this->dataPriceForUser($conversation, $plan), 2) .
-            "\n\n📱 Type the recipient's number or share a WhatsApp contact."
+            "\n\n📱 Type the recipient's number or share a WhatsApp contact.",
+            [['id' => 'ore_back', 'title' => 'Back']]
         );
     }
 
@@ -1236,7 +1658,8 @@ class OreWhatsappConversationService
         $reserved = [
             'ore', 'start', 'data', 'airtime', 'wallet', 'account', 'fund',
             'transactions', 'transaction', 'recent', 'favorites', 'favourites',
-            'favorite', 'favourite', 'help', 'support',
+            'favorite', 'favourite', 'quick', 'quick_buy', 'power_mode',
+            'help', 'support',
         ];
 
         if (! preg_match('/^[a-z0-9_-]{3,30}$/', $shortcut)
@@ -1293,7 +1716,8 @@ class OreWhatsappConversationService
 
     ///AIRTIME
     private function showAirtimeNetworks(
-        OreWhatsappConversation $conversation
+        OreWhatsappConversation $conversation,
+        bool $showMore = false
     )
     {
         $this->updateConversation(
@@ -1302,16 +1726,22 @@ class OreWhatsappConversationService
             []
         );
 
-        return $this->whatsapp->sendList(
-            $conversation->phone,
-            "📞 Which network would you like to recharge?",
-            [
-                ['id' => 'mtn', 'title' => 'MTN'],
-                ['id' => 'airtel', 'title' => 'Airtel'],
+        $buttons = $showMore
+            ? [
                 ['id' => 'glo', 'title' => 'Glo'],
                 ['id' => '9mobile', 'title' => '9mobile'],
-            ],
-            'Select Network'
+                ['id' => 'back_airtime_networks', 'title' => 'Back'],
+            ]
+            : [
+                ['id' => 'mtn', 'title' => 'MTN'],
+                ['id' => 'airtel', 'title' => 'Airtel'],
+                ['id' => 'more_airtime_networks', 'title' => 'More Networks'],
+            ];
+
+        return $this->whatsapp->sendButtons(
+            $conversation->phone,
+            $showMore ? '📞 Select another network.' : '📞 Which network would you like to recharge?',
+            $buttons
         );
     }
     
@@ -1320,6 +1750,14 @@ class OreWhatsappConversationService
         string $message
     )
     {
+        if ($message === 'more_airtime_networks') {
+            return $this->showAirtimeNetworks($conversation, true);
+        }
+
+        if ($message === 'back_airtime_networks') {
+            return $this->showAirtimeNetworks($conversation);
+        }
+
         $network = Network::query()
             ->whereRaw('LOWER(network_name) = ?', [strtolower($message)])
             ->first();
@@ -1366,9 +1804,10 @@ class OreWhatsappConversationService
             ]
         );
 
-        return $this->whatsapp->sendText(
+        return $this->whatsapp->sendButtons(
             $conversation->phone,
-            "✅ {$network->network_name} selected.\n\n💰 Enter the airtime amount (minimum ₦50)."
+            "✅ {$network->network_name} selected.\n\n💰 Enter the airtime amount (minimum ₦50).",
+            [['id' => 'ore_back', 'title' => 'Back']]
         );
     }
     
@@ -1396,9 +1835,10 @@ class OreWhatsappConversationService
             $payload
         );
 
-        return $this->whatsapp->sendText(
+        return $this->whatsapp->sendButtons(
             $conversation->phone,
-            "📱 Type the recipient's phone number or share a WhatsApp contact."
+            "📱 Type the recipient's phone number or share a WhatsApp contact.",
+            [['id' => 'ore_back', 'title' => 'Back']]
         );
     }
     
@@ -1442,6 +1882,7 @@ class OreWhatsappConversationService
             [
                 ['id' => 'confirm_airtime_purchase', 'title' => 'Confirm'],
                 ['id' => 'cancel_airtime_purchase', 'title' => 'Cancel'],
+                ['id' => 'ore_back', 'title' => 'Back'],
             ]
         );
     }
@@ -1828,6 +2269,7 @@ class OreWhatsappConversationService
             [
                 ['id' => 'confirm_transaction_purchase', 'title' => 'Confirm'],
                 ['id' => 'cancel_transaction_purchase', 'title' => 'Cancel'],
+                ['id' => 'ore_back', 'title' => 'Back'],
             ]
         );
     }
