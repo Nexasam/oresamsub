@@ -2,9 +2,8 @@
 
 namespace App\Console\Commands;
 
-use App\Models\User;
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\Artisan;
+use Illuminate\Filesystem\Filesystem;
 
 class ClearErrorLogs extends Command
 {
@@ -25,14 +24,21 @@ class ClearErrorLogs extends Command
     /**
      * Execute the console command.
      */
-    public function handle()
+    public function handle(Filesystem $files): int
     {
+        $logDirectory = storage_path('logs');
+        $deleted = 0;
 
-        Artisan::call('clear-error-logs');
-    
-        //add some stuffs hhere
+        if ($files->isDirectory($logDirectory)) {
+            foreach ($files->glob($logDirectory.'/*.log') as $logFile) {
+                if ($files->isFile($logFile) && $files->delete($logFile)) {
+                    $deleted++;
+                }
+            }
+        }
 
-        // logger('sss');
-        
+        $this->components->info("Cleared {$deleted} error log file(s).");
+
+        return self::SUCCESS;
     }
 }
