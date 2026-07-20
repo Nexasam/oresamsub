@@ -550,10 +550,14 @@
   
                         <!-- Modal -->
                         <div 
-                        x-show="showModal" 
-                        x-transition 
-                        class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50"
-                    >
+                            x-cloak
+                            x-show="showModal"
+                            x-transition
+                            @keydown.escape.window="showModal = false"
+                            @click.self="showModal = false"
+                            style="display: none;"
+                            class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50"
+                        >
                         <div class="bg-white dark:bg-gray-900 rounded-xl p-6 w-full max-w-md shadow-lg">
                             <h2 class="text-lg font-bold mb-4 text-gray-800 dark:text-gray-200">
                                 Confirm Reprocessing

@@ -98,6 +98,10 @@
 
     <style>
 
+        [x-cloak] {
+            display: none !important;
+        }
+
         .nunito2 {
           font-family: "Nunito", sans-serif;
           font-optical-sizing: auto;
