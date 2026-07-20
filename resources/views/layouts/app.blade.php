@@ -2495,8 +2495,8 @@
     <script src="{{ asset(env('APP_ASSETS_BASE_URL').'js/custom-switcher.js') }}"></script>
 
       <!-- Choices JS -->
-    <script src="../assets/libs/choices.js/public/assets/scripts/choices.min.js"></script>
-    <script src="../assets/js/choices.js"></script>
+    <script src="{{ asset(env('APP_ASSETS_BASE_URL').'libs/choices.js/public/assets/scripts/choices.min.js') }}"></script>
+    <script src="{{ asset(env('APP_ASSETS_BASE_URL').'js/choices.js') }}"></script>
 
     <!-- Tom Select JS -->
     <script src="{{ asset(env('APP_ASSETS_BASE_URL').'libs/tom-select/js/tom-select.complete.min.js') }}"></script>

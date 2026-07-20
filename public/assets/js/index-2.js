@@ -113,11 +113,18 @@ var options = {
     },
   },
 };
-var chart = new ApexCharts(document.querySelector("#earnings"), options);
-chart.render();
+var earningsElement = document.querySelector("#earnings");
+var chart = null;
+
+if (earningsElement) {
+  chart = new ApexCharts(earningsElement, options);
+  chart.render();
+}
 
 function Earnings() {
-  chart.updateOptions({
-    colors: ["rgb(" + myVarVal + ")", "rgb(203,213,225)"],
-  });
+  if (chart) {
+    chart.updateOptions({
+      colors: ["rgb(" + myVarVal + ")", "rgb(203,213,225)"],
+    });
+  }
 }

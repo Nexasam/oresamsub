@@ -2,22 +2,25 @@
   "use strict";
 
   /* default multi select */
-  const secondElement = new Choices('#choices-multiple-default', { allowSearch: false }).setValue(['Choice 2', 'Choie 3']);
+  const choicesMultipleDefault = document.querySelector('#choices-multiple-default');
+  if (choicesMultipleDefault) {
+    new Choices(choicesMultipleDefault, { allowSearch: false }).setValue(['Choice 2', 'Choie 3']);
+  }
 
   /* multi select with remove button */
-  const multipleCancelButton = new Choices(
-    '#choices-multiple-remove-button',
-    {
+  const choicesMultipleRemove = document.querySelector('#choices-multiple-remove-button');
+  if (choicesMultipleRemove) {
+    new Choices(choicesMultipleRemove, {
       allowHTML: true,
       removeItemButton: true,
-    }
-  );
+    });
+  }
 
   /* multi select with option groups */
-  const multipleDefault = new Choices(
-    document.getElementById('choices-multiple-groups'),
-    { allowHTML: true }
-  );
+  const choicesMultipleGroups = document.getElementById('choices-multiple-groups');
+  if (choicesMultipleGroups) {
+    new Choices(choicesMultipleGroups, { allowHTML: true });
+  }
 
 
   /* Start::Choices JS */
@@ -33,7 +36,9 @@
     }
   });
   /* passing through values */
-  var textPresetVal = new Choices('#choices-text-preset-values', {
+  var choicesTextPreset = document.querySelector('#choices-text-preset-values');
+  if (choicesTextPreset) {
+    new Choices(choicesTextPreset, {
     allowHTML: true,
     items: [
       'one',
@@ -45,10 +50,13 @@
         },
       },
     ],
-  });
+    });
+  }
 
   /* email address only */
-  var textEmailFilter = new Choices('#choices-text-email-filter', {
+  var choicesTextEmail = document.querySelector('#choices-text-email-filter');
+  if (choicesTextEmail) {
+    new Choices(choicesTextEmail, {
     allowHTML: true,
     editItems: true,
     addItemFilter: function (value) {
@@ -59,10 +67,13 @@
       const expression = new RegExp(regex.source, 'i');
       return expression.test(value);
     },
-  }).setValue(['abc@hotmail.com']);
+    }).setValue(['abc@hotmail.com']);
+  }
 
   /* options added via config with no search */
-  var singleNoSearch = new Choices('#choices-single-no-search', {
+  var choicesSingleNoSearch = document.querySelector('#choices-single-no-search');
+  if (choicesSingleNoSearch) {
+    new Choices(choicesSingleNoSearch, {
     allowHTML: true,
     searchEnabled: false,
     removeItemButton: true,
@@ -80,13 +91,17 @@
     'value',
     'label',
     false
-  );
+    );
+  }
 
   /* passing unique values */
-  var textUniqueVals = new Choices('#choices-text-unique-values', {
+  var choicesTextUnique = document.querySelector('#choices-text-unique-values');
+  if (choicesTextUnique) {
+    new Choices(choicesTextUnique, {
     allowHTML: true,
     paste: false,
     duplicateItemsAllowed: false,
     editItems: true,
-  });
+    });
+  }
 })();

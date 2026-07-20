@@ -2,26 +2,34 @@
   "use strict";
 
   /* default input */
-  new TomSelect("#input-tags", {
-    persist: false,
-    createOnBlur: true,
-    create: true
-  });
+  if (document.querySelector("#input-tags")) {
+    new TomSelect("#input-tags", {
+      persist: false,
+      createOnBlur: true,
+      create: true
+    });
+  }
 
   /* Basic select */
-  new TomSelect("#select-beast", {
-    create: true,
-    sortField: {
-      field: "text",
-      direction: "asc"
-    }
-  });
+  if (document.querySelector("#select-beast")) {
+    new TomSelect("#select-beast", {
+      create: true,
+      sortField: {
+        field: "text",
+        direction: "asc"
+      }
+    });
+  }
 
   /* diasble select */
-  new TomSelect("#select-beast-disabled");
+  if (document.querySelector("#select-beast-disabled")) {
+    new TomSelect("#select-beast-disabled");
+  }
 
   /* Multiple select */
-  new TomSelect("#select-state", {
-    maxItems: 8
-  });
+  if (document.querySelector("#select-state")) {
+    new TomSelect("#select-state", {
+      maxItems: 8
+    });
+  }
 })();
