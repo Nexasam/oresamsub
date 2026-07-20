@@ -1458,6 +1458,9 @@
 
 
 @push('scripts')
+{{-- This layout does not currently compile @livewireScripts, so Alpine must be
+     loaded explicitly for this page's x-data/x-show/@click controls. --}}
+<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.9/dist/cdn.min.js"></script>
 <script>
   function planEditor() {
       return {
