@@ -273,7 +273,7 @@
                       <div 
                           x-data 
                           x-init="
-                              navigator.clipboard.writeText('{{ $data->phone_number }}')
+                              navigator.clipboard.writeText({{ json_encode((string) $data->phone_number) }})
                                   .then(() => {
                                       Swal.fire({
                                           icon: 'success',
@@ -295,7 +295,7 @@
                           
                           <button 
                               @click="
-                                  navigator.clipboard.writeText('{{ $data->phone_number }}')
+                                  navigator.clipboard.writeText({{ json_encode((string) $data->phone_number) }})
                                   .then(() => {
                                       Swal.fire({
                                           icon: 'success',
@@ -358,13 +358,13 @@
                                         'X-CSRF-TOKEN': '{{ csrf_token() }}',
                                     },
                                     body: JSON.stringify({
-                                        transaction_id: '{{ $data->id }}',
-                                        transaction_amount: '{{ $ammount }}',
+                                        transaction_id: {{ json_encode((string) $data->id) }},
+                                        transaction_amount: {{ json_encode((string) $ammount) }},
                                         plan_id: this.selectedNewPlan.id,
                                         automation_id: this.selectedAutomation.id,
                                         automation_name: this.selectedAutomation.name,
-                                        phone_number: '{{ $data->phone_number }}',
-                                        network_id: '{{ $networrrk }}',
+                                        phone_number: {{ json_encode((string) $data->phone_number) }},
+                                        network_id: {{ json_encode((string) $networrrk) }},
                                     }),
                                 })
                                 .then(res => res.json())
@@ -508,7 +508,7 @@
                             
                                 <!-- Use Button -->
                                 <button 
-                                    @click="processWith('{{ $pdplan->id }}','{{ $data->id }}','{{ $pdplan->automation->id }}','{{ $pdplan->automation->automation_name }}')" 
+                                    @click="processWith({{ json_encode((string) $pdplan->id) }}, {{ json_encode((string) $data->id) }}, {{ json_encode((string) $pdplan->automation->id) }}, {{ json_encode((string) $pdplan->automation->automation_name) }})"
                                     class="w-full md:w-auto text-left text-blue-600 dark:text-blue-400 font-semibold hover:underline"
                                 >
                                     USE: {{ $pdplan->product_plan_name }} |  
@@ -614,7 +614,7 @@
                                           'X-CSRF-TOKEN': '{{ csrf_token() }}',
                                       },
                                       body: JSON.stringify({
-                                          transaction_id: '{{ $data->id }}',
+                                          transaction_id: {{ json_encode((string) $data->id) }},
                                       }),
                                   })
                                   .then(res => res.json())
@@ -1462,20 +1462,20 @@
           saved: false,
           message: '',
           form: {
-              cost_price: '{{ $data->product_plan->cost_price }}',
-              product_plan_name: '{{ $data->product_plan->product_plan_name }}',
-              product_plan_id: '{{ $data->product_plan->id }}',
-              validity_in_days: '{{ $data->product_plan->validity_in_days }}',
-              data_size_in_mb: '{{ $data->product_plan->data_size_in_mb }}',
-              default_selling_price: '{{ $data->product_plan->default_selling_price }}',
-              visibility: {{ $data->product_plan->visibility }},
-              user_level_1_selling_price: '{{ $data->product_plan->user_level_1_selling_price }}',
-              user_level_2_selling_price: '{{ $data->product_plan->user_level_2_selling_price }}',
-              user_level_3_selling_price: '{{ $data->product_plan->user_level_3_selling_price }}',
-              user_level_4_selling_price: '{{ $data->product_plan->user_level_4_selling_price }}',
-              user_level_5_selling_price: '{{ $data->product_plan->user_level_5_selling_price }}',
-              user_level_6_selling_price: '{{ $data->product_plan->user_level_6_selling_price }}',
-              user_level_7_selling_price: '{{ $data->product_plan->user_level_7_selling_price }}'
+              cost_price: @js((string) $data->product_plan->cost_price),
+              product_plan_name: @js((string) $data->product_plan->product_plan_name),
+              product_plan_id: @js((string) $data->product_plan->id),
+              validity_in_days: @js((string) $data->product_plan->validity_in_days),
+              data_size_in_mb: @js((string) $data->product_plan->data_size_in_mb),
+              default_selling_price: @js((string) $data->product_plan->default_selling_price),
+              visibility: @js((bool) $data->product_plan->visibility),
+              user_level_1_selling_price: @js((string) $data->product_plan->user_level_1_selling_price),
+              user_level_2_selling_price: @js((string) $data->product_plan->user_level_2_selling_price),
+              user_level_3_selling_price: @js((string) $data->product_plan->user_level_3_selling_price),
+              user_level_4_selling_price: @js((string) $data->product_plan->user_level_4_selling_price),
+              user_level_5_selling_price: @js((string) $data->product_plan->user_level_5_selling_price),
+              user_level_6_selling_price: @js((string) $data->product_plan->user_level_6_selling_price),
+              user_level_7_selling_price: @js((string) $data->product_plan->user_level_7_selling_price)
           },
           updatePlan() {
             this.loading = true;
@@ -1505,4 +1505,3 @@
 }
 </script>
 @endpush
-
