@@ -1,0 +1,27 @@
+# Dependencies and local Expo state
+node_modules/
+.expo/
+
+# Generated output and native projects
+dist/
+web-build/
+ios/
+android/
+
+# Tests and local-only development files
+**/*.test.ts
+**/*.test.tsx
+coverage/
+.env*.local
+*.tsbuildinfo
+
+# Editor, OS, logs, and credentials
+.DS_Store
+.claude/
+*.log
+*.jks
+*.p8
+*.p12
+*.key
+*.pem
+*.mobileprovision

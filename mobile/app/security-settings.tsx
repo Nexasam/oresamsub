@@ -1,0 +1,20 @@
+import { useMutation } from '@tanstack/react-query';
+import { Stack } from 'expo-router';
+import { useState } from 'react';
+import { Alert, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
+import { ApiError } from '../src/api/client';
+import { mobileApi } from '../src/api/mobileApi';
+import { Screen } from '../src/components/Screen';
+import { colors } from '../src/theme/colors';
+
+export default function SecuritySettingsScreen() {
+  const [currentPassword, setCurrentPassword] = useState(''); const [password, setPassword] = useState(''); const [confirmPassword, setConfirmPassword] = useState('');
+  const [currentPin, setCurrentPin] = useState(''); const [pin, setPin] = useState(''); const [confirmPin, setConfirmPin] = useState('');
+  const passwordMutation = useMutation({ mutationFn: () => mobileApi.changePassword({ current_password: currentPassword, password, password_confirmation: confirmPassword }), onSuccess: () => { setCurrentPassword(''); setPassword(''); setConfirmPassword(''); Alert.alert('Password changed', 'Other sessions have been signed out.'); } });
+  const pinMutation = useMutation({ mutationFn: () => mobileApi.changePin({ current_pin: currentPin, pin, pin_confirmation: confirmPin }), onSuccess: () => { setCurrentPin(''); setPin(''); setConfirmPin(''); Alert.alert('PIN changed'); } });
+  return <><Stack.Screen options={{ headerShown: true, title: 'Security' }} /><Screen><Text style={styles.heading}>Change password</Text><Field label="Current password" value={currentPassword} onChange={setCurrentPassword} /><Field label="New password" value={password} onChange={setPassword} /><Field label="Confirm new password" value={confirmPassword} onChange={setConfirmPassword} />{passwordMutation.error && <ErrorText error={passwordMutation.error} />}<Button label={passwordMutation.isPending ? 'Saving…' : 'Change password'} disabled={passwordMutation.isPending || password.length < 8 || password !== confirmPassword} onPress={() => passwordMutation.mutate()} /><View style={styles.divider} /><Text style={styles.heading}>Change transaction PIN</Text><Field label="Current PIN" value={currentPin} onChange={setCurrentPin} numeric /><Field label="New PIN" value={pin} onChange={setPin} numeric /><Field label="Confirm new PIN" value={confirmPin} onChange={setConfirmPin} numeric />{pinMutation.error && <ErrorText error={pinMutation.error} />}<Button label={pinMutation.isPending ? 'Saving…' : 'Change PIN'} disabled={pinMutation.isPending || pin.length < 4 || pin !== confirmPin} onPress={() => pinMutation.mutate()} /></Screen></>;
+}
+function Field({ label, value, onChange, numeric = false }: { label: string; value: string; onChange: (value: string) => void; numeric?: boolean }) { return <><Text style={styles.label}>{label}</Text><TextInput keyboardType={numeric ? 'number-pad' : 'default'} maxLength={numeric ? 5 : undefined} onChangeText={onChange} secureTextEntry style={styles.input} value={value} /></>; }
+function Button({ label, disabled, onPress }: { label: string; disabled: boolean; onPress: () => void }) { return <Pressable disabled={disabled} onPress={onPress} style={[styles.button, disabled && styles.dim]}><Text style={styles.buttonText}>{label}</Text></Pressable>; }
+function ErrorText({ error }: { error: Error }) { return <Text style={styles.error}>{error instanceof ApiError ? error.message : 'Unable to save this change.'}</Text>; }
+const styles = StyleSheet.create({ heading: { color: colors.text, fontSize: 21, fontWeight: '800', marginBottom: 6 }, label: { color: colors.text, fontSize: 12, fontWeight: '700', marginBottom: 6, marginTop: 13 }, input: { backgroundColor: colors.surface, borderColor: colors.border, borderRadius: 11, borderWidth: 1, color: colors.text, padding: 13 }, button: { alignItems: 'center', backgroundColor: colors.primary, borderRadius: 12, marginTop: 18, padding: 14 }, buttonText: { color: colors.white, fontWeight: '800' }, dim: { opacity: 0.5 }, divider: { backgroundColor: colors.border, height: 1, marginVertical: 30 }, error: { color: colors.danger, marginTop: 10 } });

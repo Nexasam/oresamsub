@@ -83,6 +83,7 @@ Route::get('/login', [InertiaLoginController::class, 'create'])->name('login');
 Route::post('/login', [InertiaLoginController::class, 'store'])->name('inertia.login.store');
 Route::view('/privacy-policy', 'legal.privacy')->name('privacy.policy');
 Route::view('/terms', 'legal.terms')->name('terms');
+Route::view('/account-deletion', 'legal.account-deletion')->name('account.deletion');
 
 Route::get('/whatsapp/update-config/{phone_number_id}/{token}', [WhatsappWebhookController::class, 'updateConfig'])
     ->name('whatsapp.config');

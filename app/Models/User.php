@@ -3,21 +3,19 @@
 namespace App\Models;
 
 // use App\Models\User;
-use Laravel\Sanctum\HasApiTokens;
-use Illuminate\Notifications\Notifiable;
-use Laravel\Fortify\TwoFactorAuthenticatable;
-use Illuminate\Contracts\Auth\MustVerifyEmail;
 use App\Models\Concerns\HasVersion4Uuids as HasUuids;
-use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Str;
-
-
+use Laravel\Fortify\TwoFactorAuthenticatable;
+use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable implements MustVerifyEmail
 {
-    use HasFactory, Notifiable, TwoFactorAuthenticatable, HasApiTokens, HasUuids;
+    use HasApiTokens, HasFactory, HasUuids, Notifiable, TwoFactorAuthenticatable;
 
     /**
      * The attributes that are mass assignable.
@@ -36,7 +34,7 @@ class User extends Authenticatable implements MustVerifyEmail
         'remember_token',
     ];
 
-    protected $primaryKey='id';
+    protected $primaryKey = 'id';
 
     /**
      * Get the attributes that should be cast.
@@ -51,29 +49,44 @@ class User extends Authenticatable implements MustVerifyEmail
         ];
     }
 
-    public function user_plan(){
-        return $this->belongsTo(UserPlan::class,'user_plan_id','id');
+    public function user_plan()
+    {
+        return $this->belongsTo(UserPlan::class, 'user_plan_id', 'id');
     }
 
-    public function role(){
-        return $this->belongsTo(Role::class,'role_id','id');
+    public function role()
+    {
+        return $this->belongsTo(Role::class, 'role_id', 'id');
     }
 
-    public function upline(){
-        return $this->belongsTo(User::class,'upline_id','id');
+    public function upline()
+    {
+        return $this->belongsTo(User::class, 'upline_id', 'id');
     }
 
-    public function virtual_accounts(){
-        return $this->hasMany(UserVirtualAccount::class,'user_id','id');
+    public function virtual_accounts()
+    {
+        return $this->hasMany(UserVirtualAccount::class, 'user_id', 'id');
     }
 
-    public function transactions(){
-        return $this->hasMany(Transaction::class,'user_id','id');
+    public function transactions()
+    {
+        return $this->hasMany(Transaction::class, 'user_id', 'id');
+    }
+
+    public function mobileRefreshTokens(): HasMany
+    {
+        return $this->hasMany(MobileRefreshToken::class);
+    }
+
+    public function mobileDeviceInstallations(): HasMany
+    {
+        return $this->hasMany(MobileDeviceInstallation::class);
     }
 
     public function latestTransaction()
     {
-    return $this->hasOne(Transaction::class)->orderBy('created_at', 'desc');
+        return $this->hasOne(Transaction::class)->orderBy('created_at', 'desc');
     }
 
     public function referrals(): HasMany
@@ -85,6 +98,7 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         $this->api_token = Str::random(60);
         $this->save();
+
         return $this->api_token;
     }
 
@@ -92,7 +106,7 @@ class User extends Authenticatable implements MustVerifyEmail
     // {
     //     return $this->belongsToMany(
     //         Automation::class,
-         
+
     //         'user_automations',
     //         'user_id',
     //         'automation_id'
@@ -104,11 +118,8 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasMany(UserAutomation::class);
     }
 
-
-
     // public function getRoleDetailsAttribute(){
     //     return $this->role()->first();
     // }
 
-    
 }
