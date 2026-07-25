@@ -1,4 +1,4 @@
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
 import { router } from 'expo-router';
 import { Alert, Pressable, StyleSheet, Switch, Text, View } from 'react-native';
@@ -11,6 +11,7 @@ import { colors } from '../../src/theme/colors';
 export default function AccountScreen() {
   const user = useAuthStore((state) => state.user);
   const signOut = useAuthStore((state) => state.signOut);
+  const queryClient = useQueryClient();
   const [biometric, setBiometric] = useState(false);
   const preferences = useQuery({ queryKey: ['notification-preferences'], queryFn: async () => (await deviceApi.preferences()).data });
   const updatePreferences = useMutation({ mutationFn: deviceApi.updatePreferences, onSuccess: (response) => preferences.refetch().then(() => response) });
@@ -20,7 +21,12 @@ export default function AccountScreen() {
     if (enabled && !(await biometricLock.unlock())) return;
     await biometricLock.setEnabled(enabled); setBiometric(enabled);
   };
-  return <Screen><Text style={styles.title}>Account</Text><View style={styles.profile}><View style={styles.avatar}><Text style={styles.initial}>{user?.first_name?.[0]}{user?.last_name?.[0]}</Text></View><View><Text style={styles.name}>{user?.first_name} {user?.last_name}</Text><Text style={styles.email}>{user?.email}</Text></View></View><Pressable onPress={() => router.push('/edit-profile')} style={styles.edit}><Text style={styles.editText}>Edit profile</Text></Pressable><View style={styles.details}><Detail label="Username" value={`@${user?.username}`} /><Detail label="Phone" value={user?.phone_number ?? 'Not added'} /><Detail label="Phone verified" value={user?.phone_verified ? 'Yes' : 'No'} /></View><Text style={styles.section}>Security & notifications</Text><Pressable onPress={() => router.push('/security-settings')} style={styles.navigation}><Text style={styles.settingLabel}>Password and transaction PIN</Text><Text style={styles.arrow}>›</Text></Pressable><Setting label="Biometric unlock" value={biometric} onChange={(value) => void toggleBiometric(value)} /><Setting label="Transaction alerts" value={preferences.data?.transactional_enabled ?? true} onChange={(transactional_enabled) => updatePreferences.mutate({ transactional_enabled, promotional_enabled: preferences.data?.promotional_enabled ?? false })} /><Setting label="Offers and announcements" value={preferences.data?.promotional_enabled ?? false} onChange={(promotional_enabled) => updatePreferences.mutate({ transactional_enabled: preferences.data?.transactional_enabled ?? true, promotional_enabled })} /><Pressable onPress={() => router.push('/help')} style={styles.navigation}><Text style={styles.settingLabel}>Help, support and policies</Text><Text style={styles.arrow}>›</Text></Pressable><Pressable onPress={() => void signOut()} style={styles.logout}><Text style={styles.logoutText}>Sign out</Text></Pressable></Screen>;
+  const logout = async () => {
+    await signOut();
+    queryClient.clear();
+    router.replace('/(auth)/login');
+  };
+  return <Screen><Text style={styles.title}>Account</Text><View style={styles.profile}><View style={styles.avatar}><Text style={styles.initial}>{user?.first_name?.[0]}{user?.last_name?.[0]}</Text></View><View><Text style={styles.name}>{user?.first_name} {user?.last_name}</Text><Text style={styles.email}>{user?.email}</Text></View></View><Pressable onPress={() => router.push('/edit-profile')} style={styles.edit}><Text style={styles.editText}>Edit profile</Text></Pressable><View style={styles.details}><Detail label="Username" value={`@${user?.username}`} /><Detail label="Phone" value={user?.phone_number ?? 'Not added'} /><Detail label="Phone verified" value={user?.phone_verified ? 'Yes' : 'No'} /></View><Text style={styles.section}>Security & notifications</Text><Pressable onPress={() => router.push('/security-settings')} style={styles.navigation}><Text style={styles.settingLabel}>Password and transaction PIN</Text><Text style={styles.arrow}>›</Text></Pressable><Setting label="Biometric unlock" value={biometric} onChange={(value) => void toggleBiometric(value)} /><Setting label="Transaction alerts" value={preferences.data?.transactional_enabled ?? true} onChange={(transactional_enabled) => updatePreferences.mutate({ transactional_enabled, promotional_enabled: preferences.data?.promotional_enabled ?? false })} /><Setting label="Offers and announcements" value={preferences.data?.promotional_enabled ?? false} onChange={(promotional_enabled) => updatePreferences.mutate({ transactional_enabled: preferences.data?.transactional_enabled ?? true, promotional_enabled })} /><Pressable onPress={() => router.push('/help')} style={styles.navigation}><Text style={styles.settingLabel}>Help, support and policies</Text><Text style={styles.arrow}>›</Text></Pressable><Pressable onPress={() => void logout()} style={styles.logout}><Text style={styles.logoutText}>Sign out</Text></Pressable></Screen>;
 }
 
 function Detail({ label, value }: { label: string; value: string }) { return <View style={styles.detail}><Text style={styles.detailLabel}>{label}</Text><Text style={styles.detailValue}>{value}</Text></View>; }

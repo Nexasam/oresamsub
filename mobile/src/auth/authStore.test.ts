@@ -33,4 +33,15 @@ describe('auth session restoration', () => {
     expect(tokenVault.clear).toHaveBeenCalled();
     expect(useAuthStore.getState().status).toBe('guest');
   });
+
+  it('signs out locally even when the server session has expired', async () => {
+    useAuthStore.setState({ status: 'authenticated', user, onboarding });
+    jest.mocked(authApi.logout).mockRejectedValueOnce(new Error('expired'));
+
+    await expect(useAuthStore.getState().signOut()).resolves.toBeUndefined();
+
+    expect(tokenVault.clear).toHaveBeenCalled();
+    expect(useAuthStore.getState().status).toBe('guest');
+    expect(useAuthStore.getState().user).toBeNull();
+  });
 });

@@ -64,6 +64,9 @@ export const useAuthStore = create<AuthState>((set) => ({
   signOut: async () => {
     try {
       await authApi.logout();
+    } catch {
+      // Server logout is best-effort. An expired or unreachable session must
+      // never prevent the user from clearing local credentials.
     } finally {
       await tokenVault.clear();
       set({ status: 'guest', user: null, onboarding: null });

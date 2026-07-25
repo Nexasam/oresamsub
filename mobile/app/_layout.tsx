@@ -3,13 +3,14 @@ import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { useState } from 'react';
 import { useFonts, Manrope_400Regular, Manrope_500Medium, Manrope_600SemiBold, Manrope_700Bold, Manrope_800ExtraBold } from '@expo-google-fonts/manrope';
+import { MaterialSymbols_400Regular } from '@expo-google-fonts/material-symbols';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { NotificationManager } from '../src/device/NotificationManager';
 import { OfflineBanner } from '../src/components/OfflineBanner';
 import { BootstrapGate } from '../src/config/BootstrapGate';
 
 export default function RootLayout() {
-  const [fontsLoaded] = useFonts({ Manrope_400Regular, Manrope_500Medium, Manrope_600SemiBold, Manrope_700Bold, Manrope_800ExtraBold });
+  const [fontsLoaded] = useFonts({ Manrope_400Regular, Manrope_500Medium, Manrope_600SemiBold, Manrope_700Bold, Manrope_800ExtraBold, MaterialSymbols_400Regular });
   const [queryClient] = useState(
     () =>
       new QueryClient({
