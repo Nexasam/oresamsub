@@ -77,3 +77,21 @@ it('rejects duplicate idempotency references and scopes reconciliation by user',
     getJson('/api/mobile/v1/purchases/status/MOB-IDEMPOTENT-1', catalogueHeaders($owner))
         ->assertOk()->assertJsonPath('data.transaction.id', $transaction->id)->assertJsonPath('data.transaction.status', 'processing');
 });
+
+it('offers a safe buy again payload for a successful data transaction at the current user price', function () {
+    $user = User::factory()->create();
+    $user->user_plan->update(['plan_level' => 2]);
+    $plan = cataloguePlan();
+    $transaction = Transaction::create([
+        'user_id' => $user->id, 'product_plan_id' => $plan->id, 'transaction_category' => 'data', 'status' => '1',
+        'wallet_category' => 'main_wallet', 'phone_number' => '08030000000', 'amount' => '480', 'balance_before' => '1000',
+        'balance_after' => '520', 'description' => 'Data purchase', 'txn_reference' => 'MOB-BUY-AGAIN-1',
+    ]);
+
+    getJson("/api/mobile/v1/transactions/{$transaction->id}", catalogueHeaders($user))
+        ->assertOk()
+        ->assertJsonPath('data.transaction.repeat_purchase.product', 'data')
+        ->assertJsonPath('data.transaction.repeat_purchase.plan_id', $plan->id)
+        ->assertJsonPath('data.transaction.repeat_purchase.price', 450)
+        ->assertJsonPath('data.transaction.repeat_purchase.beneficiary', '08030000000');
+});

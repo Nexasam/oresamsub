@@ -17,6 +17,10 @@ class MobileDashboardController extends Controller
     {
         $user = $request->user();
         $recentTransactions = Transaction::query()
+            ->with([
+                'product_plan.product_plan_category.product',
+                'product_plan.product_plan_category.network',
+            ])
             ->where('user_id', $user->id)
             ->latest()
             ->limit(5)

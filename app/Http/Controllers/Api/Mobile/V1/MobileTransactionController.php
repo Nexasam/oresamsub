@@ -26,6 +26,10 @@ class MobileTransactionController extends Controller
         $status = ['pending' => '0', 'processing' => '3', 'successful' => '1', 'failed' => '-1', 'refunded' => '2'];
 
         $transactions = Transaction::query()
+            ->with([
+                'product_plan.product_plan_category.product',
+                'product_plan.product_plan_category.network',
+            ])
             ->where('user_id', $request->user()->id)
             ->when(isset($filters['status']), fn ($query) => $query->where('status', $status[$filters['status']]))
             ->when(isset($filters['category']), fn ($query) => $query->where('transaction_category', $filters['category']))
@@ -67,6 +71,9 @@ class MobileTransactionController extends Controller
 
     private function ownedTransaction(Request $request, string $id): Transaction
     {
-        return Transaction::where('user_id', $request->user()->id)->whereKey($id)->firstOrFail();
+        return Transaction::with([
+            'product_plan.product_plan_category.product',
+            'product_plan.product_plan_category.network',
+        ])->where('user_id', $request->user()->id)->whereKey($id)->firstOrFail();
     }
 }

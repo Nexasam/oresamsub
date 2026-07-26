@@ -29,6 +29,14 @@ export type MobileTransaction = {
   beneficiary: string | null;
   message: string | null;
   created_at: string;
+  repeat_purchase: {
+    product: 'data';
+    plan_id: string;
+    plan_name: string;
+    price: number;
+    provider: string;
+    beneficiary: string;
+  } | null;
 };
 
 export type Dashboard = {
