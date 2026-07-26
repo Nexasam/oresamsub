@@ -81,6 +81,12 @@ class AuthController extends Controller
             return $this->errorResponse('This account has been deactivated. Please contact support.', null, 403);
         }
 
+        // Temporary mobile-app bypass while phone OTP verification is disabled.
+        // Remove this block when phone verification becomes compulsory again.
+        if (! (bool) $user->phone_verification) {
+            $user->update(['phone_verification' => true]);
+        }
+
         $tokenData = $this->tokens->issue($user, $request->string('device_name')->toString(), $request);
 
         return $this->successResponse('Login successful.', $this->sessionPayload($user, $tokenData));

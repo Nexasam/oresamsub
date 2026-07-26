@@ -48,7 +48,7 @@ it('logs in with an exact identifier and returns a device session', function () 
     $user = User::factory()->create([
         'email' => 'mobile@example.com',
         'password' => Hash::make('SecurePass123!'),
-        'phone_verification' => true,
+        'phone_verification' => false,
     ]);
 
     $response = postJson('/api/mobile/v1/auth/login', [
@@ -76,7 +76,8 @@ it('logs in with an exact identifier and returns a device session', function () 
             ],
         ]);
 
-    expect(MobileRefreshToken::where('user_id', $user->id)->count())->toBe(1);
+    expect(MobileRefreshToken::where('user_id', $user->id)->count())->toBe(1)
+        ->and($user->refresh()->phone_verification)->toBeTruthy();
 });
 
 it('rejects incorrect credentials without creating a session', function () {

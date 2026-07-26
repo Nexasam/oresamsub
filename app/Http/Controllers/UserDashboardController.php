@@ -40,6 +40,11 @@ class UserDashboardController extends Controller
 
     $userid = auth()->id();
     $user = auth()->user();
+
+    if (! $user) {
+      return redirect()->guest(route('login'));
+    }
+
     $commissionData = null;
 
 
@@ -107,7 +112,7 @@ class UserDashboardController extends Controller
 
    
 
-    if((! $template || $template->template_name == 'template_1') && env('APP_NAME') == 'OresamSub' && auth()->user()->role->role_name == 'User'){
+    if((! $template || $template->template_name == 'template_1') && env('APP_NAME') == 'OresamSub' && $user->role?->role_name == 'User'){
         // $data['transactions'] = Transaction::with('product_plan')->where('user_id',auth()->id())->limit(10)->latest()->get();
         // $data['wallet_logs'] = WalletLog::with('user')
         // ->where('user_id',auth()->id())
