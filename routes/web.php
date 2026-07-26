@@ -123,7 +123,9 @@ Route::get('oresamsub/register', fn () => view('oresamsub.auth.register'))->name
 Route::middleware(['set_locale'])->group(function () {
 
 
-            Route::get('/dashboard', [UserDashboardController::class, 'index'])->name('dashboard');  #checked
+            Route::get('/dashboard', [UserDashboardController::class, 'index'])
+            ->middleware('auth')
+            ->name('dashboard');  #checked
 
             Route::get('set_pin', fn () => view('oresamsub.pages.set_pin'))->name('ore.set_pin');
            
