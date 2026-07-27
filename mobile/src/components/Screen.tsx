@@ -1,11 +1,14 @@
-import type { PropsWithChildren } from 'react';
+import type { PropsWithChildren, RefObject } from 'react';
 import { KeyboardAvoidingView, Platform, ScrollView, StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { colors } from '../theme/colors';
 
-type Props = PropsWithChildren<{ scroll?: boolean }>;
+type Props = PropsWithChildren<{
+  scroll?: boolean;
+  scrollRef?: RefObject<ScrollView | null>;
+}>;
 
-export function Screen({ children, scroll = true }: Props) {
+export function Screen({ children, scroll = true, scrollRef }: Props) {
   return (
     <KeyboardAvoidingView behavior="height" enabled={Platform.OS === 'android'} style={styles.flex}>
       <SafeAreaView edges={['top']} style={styles.safe}>
@@ -15,6 +18,7 @@ export function Screen({ children, scroll = true }: Props) {
             contentContainerStyle={styles.content}
             keyboardDismissMode={Platform.OS === 'ios' ? 'interactive' : 'on-drag'}
             keyboardShouldPersistTaps="handled"
+            ref={scrollRef}
           >
             {children}
           </ScrollView>

@@ -9,11 +9,12 @@ type PinInputProps = {
   autoFocus?: boolean;
   label: string;
   onChangeText: (value: string) => void;
+  onFocus?: () => void;
   style?: StyleProp<ViewStyle>;
   value: string;
 };
 
-export function PinInput({ autoFocus, label, onChangeText, style, value }: PinInputProps) {
+export function PinInput({ autoFocus, label, onChangeText, onFocus, style, value }: PinInputProps) {
   const [visible, setVisible] = useState(false);
 
   return (
@@ -27,6 +28,7 @@ export function PinInput({ autoFocus, label, onChangeText, style, value }: PinIn
           keyboardType="number-pad"
           maxLength={4}
           onChangeText={(nextValue) => onChangeText(nextValue.replace(/\D/g, '').slice(0, 4))}
+          onFocus={onFocus}
           placeholder="Enter 4 digits"
           placeholderTextColor={colors.muted}
           secureTextEntry={!visible}
