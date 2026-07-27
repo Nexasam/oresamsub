@@ -10,4 +10,10 @@ export const deviceApi = {
   updatePreferences(input: { transactional_enabled: boolean; promotional_enabled: boolean }) {
     return apiRequest<{ transactional_enabled: boolean; promotional_enabled: boolean }>('/notification-preferences', { authenticated: true, method: 'PUT', body: JSON.stringify(input) });
   },
+  status() {
+    return apiRequest<{ registered_devices: number; push_ready: boolean }>('/devices/status', { authenticated: true });
+  },
+  sendTest() {
+    return apiRequest<{ queued: boolean }>('/notifications/test', { authenticated: true, method: 'POST' });
+  },
 };

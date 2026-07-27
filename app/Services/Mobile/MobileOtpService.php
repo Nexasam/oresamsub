@@ -38,27 +38,27 @@ class MobileOtpService
             'phone_number' => $this->localPhone($normalizedPhone),
             'termii_pin_id' => $pinId,
             'termii_json' => json_encode($response->json(), JSON_THROW_ON_ERROR),
-            'phone_verification' => true, #true for now
+            'phone_verification' => false,
         ]);
     }
 
     public function verify(User $user, string $otp): void
     {
-        // if (! $user->termii_pin_id) {
-        //     throw new RuntimeException('Request a verification code first.');
-        // }
+        if (! $user->termii_pin_id) {
+            throw new RuntimeException('Request a verification code first.');
+        }
 
-        // $response = Http::acceptJson()
-        //     ->timeout(15)
-        //     ->post('https://api.ng.termii.com/api/sms/otp/verify', [
-        //         'api_key' => config('services.termii.api_key', env('TERMII_API_KEY')),
-        //         'pin_id' => $user->termii_pin_id,
-        //         'pin' => $otp,
-        //     ]);
+        $response = Http::acceptJson()
+            ->timeout(15)
+            ->post('https://api.ng.termii.com/api/sms/otp/verify', [
+                'api_key' => config('services.termii.api_key', env('TERMII_API_KEY')),
+                'pin_id' => $user->termii_pin_id,
+                'pin' => $otp,
+            ]);
 
-        // if (! $response->successful() || $response->json('verified') !== true) {
-        //     throw new RuntimeException('The verification code is invalid or expired.');
-        // }
+        if (! $response->successful() || $response->json('verified') !== true) {
+            throw new RuntimeException('The verification code is invalid or expired.');
+        }
 
         $user->update([
             'phone_verification' => true,

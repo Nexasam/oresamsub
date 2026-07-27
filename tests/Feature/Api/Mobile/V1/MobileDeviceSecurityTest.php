@@ -1,8 +1,10 @@
 <?php
 
+use App\Jobs\SendMobilePushNotification;
 use App\Models\MobileDeviceInstallation;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Queue;
 
 use function Pest\Laravel\deleteJson;
 use function Pest\Laravel\getJson;
@@ -42,6 +44,31 @@ it('stores transactional and promotional preferences separately', function () {
         ->assertOk()->assertJsonPath('data.transactional_enabled', true)->assertJsonPath('data.promotional_enabled', false);
     putJson('/api/mobile/v1/notification-preferences', ['transactional_enabled' => true, 'promotional_enabled' => true], $headers)
         ->assertOk()->assertJsonPath('data.promotional_enabled', true);
+});
+
+it('reports push readiness and queues a real test notification', function () {
+    Queue::fake([SendMobilePushNotification::class]);
+    $user = User::factory()->create();
+    $headers = mobileSecurityHeaders($user);
+
+    getJson('/api/mobile/v1/devices/status', $headers)
+        ->assertOk()
+        ->assertJsonPath('data.push_ready', false);
+    postJson('/api/mobile/v1/notifications/test', [], $headers)
+        ->assertUnprocessable();
+
+    MobileDeviceInstallation::create([
+        'user_id' => $user->id,
+        'device_uuid' => fake()->uuid(),
+        'expo_push_token' => 'ExponentPushToken[test_ready_token]',
+        'platform' => 'android',
+        'enabled' => true,
+    ]);
+
+    postJson('/api/mobile/v1/notifications/test', [], $headers)
+        ->assertStatus(202)
+        ->assertJsonPath('data.queued', true);
+    Queue::assertPushed(SendMobilePushNotification::class);
 });
 
 it('changes password and pin only after verifying existing credentials', function () {

@@ -15,7 +15,9 @@ export function NotificationManager() {
 
   useEffect(() => {
     if (!authenticated) return;
-    void registerForPushNotifications().catch(() => undefined);
+    void registerForPushNotifications().catch((error) => {
+      console.warn('Push notification registration failed', error);
+    });
     const subscription = Notifications.addNotificationResponseReceivedListener((response) => {
       routeNotificationData(response.notification.request.content.data);
     });
@@ -31,22 +33,33 @@ export function routeNotificationData(data: Record<string, unknown> | undefined)
   else if (data?.screen === 'wallet') router.push('/wallet');
 }
 
-async function registerForPushNotifications() {
-  if (!Device.isDevice) return;
-  if (Platform.OS === 'android') await Notifications.setNotificationChannelAsync('transactions', { name: 'Transactions', importance: Notifications.AndroidImportance.HIGH });
+export async function registerForPushNotifications() {
+  if (!Device.isDevice) throw new Error('Push notifications require a physical phone.');
+  if (Platform.OS === 'android') {
+    await Notifications.setNotificationChannelAsync('transactions', {
+      name: 'Transaction alerts',
+      importance: Notifications.AndroidImportance.HIGH,
+      sound: 'default',
+      vibrationPattern: [0, 250, 150, 250],
+    });
+  }
   const existing = await Notifications.getPermissionsAsync();
   const permission = existing.status === 'granted' ? existing : await Notifications.requestPermissionsAsync();
-  if (permission.status !== 'granted') return;
-  const projectId = process.env.EXPO_PUBLIC_EAS_PROJECT_ID ?? Constants.easConfig?.projectId;
-  if (!projectId) return;
+  if (permission.status !== 'granted') throw new Error('Notification permission is disabled. Enable it in your phone settings.');
+  const configuredProjectId = Constants.expoConfig?.extra?.eas?.projectId;
+  const projectId = process.env.EXPO_PUBLIC_EAS_PROJECT_ID
+    ?? (typeof configuredProjectId === 'string' ? configuredProjectId : undefined)
+    ?? Constants.easConfig?.projectId;
+  if (!projectId) throw new Error('The EAS project ID is missing from this build.');
   const token = await Notifications.getExpoPushTokenAsync({ projectId });
-  await deviceApi.register({
+  const response = await deviceApi.register({
     device_uuid: await getDeviceUuid(),
     expo_push_token: token.data,
     platform: Platform.OS as 'ios' | 'android',
     app_version: ApplicationVersion(),
     device_name: Device.deviceName,
   });
+  return response.data.device;
 }
 
 function ApplicationVersion() { return Constants.expoConfig?.version ?? null; }

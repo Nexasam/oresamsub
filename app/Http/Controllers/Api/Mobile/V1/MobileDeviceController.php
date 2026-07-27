@@ -6,10 +6,12 @@ use App\Http\Controllers\Api\Mobile\V1\Concerns\RespondsToMobileApi;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\Mobile\V1\RegisterDeviceRequest;
 use App\Http\Requests\Api\Mobile\V1\UpdateNotificationPreferencesRequest;
+use App\Jobs\SendMobilePushNotification;
 use App\Models\MobileDeviceInstallation;
 use App\Models\MobileNotificationPreference;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 class MobileDeviceController extends Controller
 {
@@ -38,6 +40,43 @@ class MobileDeviceController extends Controller
         $installation->update(['enabled' => false, 'revoked_at' => now()]);
 
         return $this->successResponse('Device notifications disabled.');
+    }
+
+    public function status(Request $request): JsonResponse
+    {
+        $registeredDevices = MobileDeviceInstallation::query()
+            ->where('user_id', $request->user()->id)
+            ->where('enabled', true)
+            ->whereNull('revoked_at')
+            ->count();
+
+        return $this->successResponse('Push notification status fetched.', [
+            'registered_devices' => $registeredDevices,
+            'push_ready' => $registeredDevices > 0,
+        ]);
+    }
+
+    public function testNotification(Request $request): JsonResponse
+    {
+        $hasDevice = MobileDeviceInstallation::query()
+            ->where('user_id', $request->user()->id)
+            ->where('enabled', true)
+            ->whereNull('revoked_at')
+            ->exists();
+
+        if (! $hasDevice) {
+            return $this->errorResponse('This phone is not registered for push notifications. Allow notifications and try again.', null, 422);
+        }
+
+        SendMobilePushNotification::dispatch(
+            (string) $request->user()->id,
+            'test:'.Str::uuid(),
+            'OresamSub notifications are ready',
+            'You will receive transaction and wallet updates on this phone.',
+            ['screen' => 'wallet'],
+        );
+
+        return $this->successResponse('Test notification queued. It should arrive shortly.', ['queued' => true], 202);
     }
 
     public function preferences(Request $request): JsonResponse

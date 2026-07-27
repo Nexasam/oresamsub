@@ -79,6 +79,12 @@ export default function TransactionDetailScreen() {
               <Row label="Reference" value={query.data.id} last />
             </View>
 
+            <Pressable onPress={() => router.push({ pathname: '/receipt/[id]', params: { id: query.data.id } })} style={({ pressed }) => [styles.receiptButton, pressed && styles.pressed]}>
+              <MaterialIcon color={colors.primaryDark} name="receipt_long" size={20} />
+              <Text style={styles.receiptButtonText}>View mobile receipt</Text>
+              <MaterialIcon color={colors.primaryDark} name="chevron_right" size={20} />
+            </Pressable>
+
             {query.data.repeat_purchase ? (
               <View style={styles.repeatCard}>
                 <View style={styles.repeatIcon}><MaterialIcon color={colors.primary} name="replay" size={23} /></View>
@@ -172,6 +178,8 @@ const styles = StyleSheet.create({
   label: { color: colors.muted, fontFamily: fonts.semiBold, fontSize: 9, letterSpacing: 0.6, textTransform: 'uppercase' },
   value: { color: colors.text, fontFamily: fonts.bold, fontSize: 12, marginTop: 5, textTransform: 'capitalize' },
   repeatCard: { backgroundColor: colors.primarySoft, borderRadius: 18, marginTop: 18, padding: 16 },
+  receiptButton: { alignItems: 'center', backgroundColor: colors.surface, borderColor: colors.border, borderRadius: 15, borderWidth: 1, flexDirection: 'row', gap: 9, marginTop: 13, paddingHorizontal: 15, paddingVertical: 14 },
+  receiptButtonText: { color: colors.primaryDark, flex: 1, fontFamily: fonts.extraBold, fontSize: 12 },
   repeatIcon: { alignItems: 'center', backgroundColor: colors.surface, borderRadius: 12, height: 42, justifyContent: 'center', marginBottom: 12, width: 42 },
   repeatCopy: { marginBottom: 14 },
   repeatTitle: { color: colors.primaryDark, fontFamily: fonts.extraBold, fontSize: 15 },

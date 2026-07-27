@@ -1,5 +1,5 @@
 import { apiRequest } from './client';
-import type { CatalogueCategory, CataloguePlan, CatalogueProduct, Dashboard, FundingHistoryItem, FundingOption, MobileAnnouncement, MobileTransaction, MobileUser, PaginationMeta, WalletAccount } from './types';
+import type { CatalogueCategory, CataloguePlan, CatalogueProduct, Dashboard, FundingHistoryItem, FundingOption, MobileAnnouncement, MobileReceipt, MobileTransaction, MobileUser, PaginationMeta, WalletAccount } from './types';
 
 export const mobileApi = {
   async dashboard() {
@@ -47,6 +47,9 @@ export const mobileApi = {
   },
   async transaction(id: string) {
     return (await apiRequest<{ transaction: MobileTransaction }>(`/transactions/${id}`, { authenticated: true })).data.transaction;
+  },
+  async receipt(id: string) {
+    return (await apiRequest<{ receipt: MobileReceipt }>(`/transactions/${id}/receipt`, { authenticated: true })).data.receipt;
   },
   async wallet() {
     return (await apiRequest<{ currency: string; balance: number; accounts_count: number }>('/wallet', { authenticated: true })).data;

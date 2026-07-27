@@ -20,6 +20,7 @@ use App\Http\Controllers\ElectricitySubscriptionController;
 use App\Http\Controllers\InertiaDashboardController;
 use App\Http\Controllers\InertiaLoginController;
 use App\Http\Controllers\MarketersController;
+use App\Http\Controllers\MobileEmailVerificationController;
 use App\Http\Controllers\MultilanguageController;
 use App\Http\Controllers\NetworkController;
 use App\Http\Controllers\PlanProfitSettingsController;
@@ -84,6 +85,9 @@ Route::post('/login', [InertiaLoginController::class, 'store'])->name('inertia.l
 Route::view('/privacy-policy', 'legal.privacy')->name('privacy.policy');
 Route::view('/terms', 'legal.terms')->name('terms');
 Route::view('/account-deletion', 'legal.account-deletion')->name('account.deletion');
+Route::get('/mobile/verify-email/{id}/{hash}', MobileEmailVerificationController::class)
+    ->middleware(['signed', 'throttle:6,1'])
+    ->name('mobile.email.verify');
 
 Route::get('/whatsapp/update-config/{phone_number_id}/{token}', [WhatsappWebhookController::class, 'updateConfig'])
     ->name('whatsapp.config');

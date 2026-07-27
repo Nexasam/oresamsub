@@ -51,6 +51,9 @@ class SendMobilePushNotification implements ShouldQueue
             if (($ticket['status'] ?? null) !== 'ok' && $errorCode !== 'DeviceNotRegistered') {
                 throw new \RuntimeException('Expo rejected the push notification.');
             }
+            if (($ticket['status'] ?? null) === 'ok' && isset($ticket['id'])) {
+                CheckExpoPushReceipt::dispatch($delivery->id)->delay(now()->addMinutes(5));
+            }
         });
     }
 }

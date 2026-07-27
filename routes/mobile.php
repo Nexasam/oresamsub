@@ -21,6 +21,7 @@ Route::get('/support', MobileSupportController::class)->name('support');
 
 Route::prefix('auth')->name('auth.')->group(function () {
     Route::post('/register', [AuthController::class, 'register'])->middleware('throttle:mobile-register')->name('register');
+    Route::post('/email/resend', [AuthController::class, 'resendEmailVerification'])->middleware('throttle:mobile-password')->name('email.resend');
     Route::post('/login', [AuthController::class, 'login'])->middleware('throttle:mobile-login')->name('login');
     Route::post('/refresh', [AuthController::class, 'refresh'])->middleware('throttle:mobile-refresh')->name('refresh');
     Route::post('/forgot-password', [AuthController::class, 'forgotPassword'])->middleware('throttle:mobile-password')->name('forgot-password');
@@ -58,7 +59,9 @@ Route::middleware(['auth:sanctum', 'mobile.user.active'])->group(function () {
     Route::put('/security/pin', [MobileSecurityController::class, 'pin'])->middleware('throttle:mobile-pin')->name('security.pin.update');
     Route::delete('/account', [MobileSecurityController::class, 'deactivate'])->middleware('throttle:mobile-password')->name('account.deactivate');
     Route::post('/devices', [MobileDeviceController::class, 'store'])->name('devices.store');
+    Route::get('/devices/status', [MobileDeviceController::class, 'status'])->name('devices.status');
     Route::delete('/devices/{device}', [MobileDeviceController::class, 'destroy'])->name('devices.destroy');
+    Route::post('/notifications/test', [MobileDeviceController::class, 'testNotification'])->middleware('throttle:mobile-purchase')->name('notifications.test');
     Route::get('/notification-preferences', [MobileDeviceController::class, 'preferences'])->name('notifications.preferences');
     Route::put('/notification-preferences', [MobileDeviceController::class, 'updatePreferences'])->name('notifications.preferences.update');
     Route::get('/profile', [MobileProfileController::class, 'show'])->name('profile.show');

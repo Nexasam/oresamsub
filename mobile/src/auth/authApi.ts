@@ -1,7 +1,7 @@
 import { Platform } from 'react-native';
 
 import { apiRequest } from '../api/client';
-import type { AuthSession } from '../api/types';
+import type { AuthSession, RegistrationResult } from '../api/types';
 
 const deviceName = `OresamSub ${Platform.OS}`;
 
@@ -22,9 +22,16 @@ export const authApi = {
     password_confirmation: string;
     referral_phone_number?: string;
   }) {
-    return apiRequest<AuthSession>('/auth/register', {
+    return apiRequest<RegistrationResult>('/auth/register', {
       method: 'POST',
       body: JSON.stringify({ ...input, device_name: deviceName, terms_accepted: true }),
+    });
+  },
+
+  resendEmailVerification(email: string) {
+    return apiRequest<null>('/auth/email/resend', {
+      method: 'POST',
+      body: JSON.stringify({ email }),
     });
   },
 

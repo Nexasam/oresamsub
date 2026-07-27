@@ -109,3 +109,16 @@ export type AuthSession = {
   tokens?: AuthTokens;
   onboarding: OnboardingState;
 };
+
+export type RegistrationResult = {
+  email: string;
+  verification_required: true;
+};
+
+export type MobileReceipt = {
+  reference: string;
+  wallet: string;
+  balance_before: number;
+  balance_after: number;
+  transaction: MobileTransaction;
+};

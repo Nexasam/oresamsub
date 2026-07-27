@@ -7,6 +7,8 @@ import { biometricLock } from '../../src/auth/biometricLock';
 import { Screen } from '../../src/components/Screen';
 import { TabPageHeader } from '../../src/components/TabPageHeader';
 import { deviceApi } from '../../src/device/deviceApi';
+import { registerForPushNotifications } from '../../src/device/NotificationManager';
+import { ApiError } from '../../src/api/client';
 import { colors, fonts } from '../../src/theme/colors';
 
 export default function AccountScreen() {
@@ -21,6 +23,17 @@ export default function AccountScreen() {
   const updatePreferences = useMutation({
     mutationFn: deviceApi.updatePreferences,
     onSuccess: (response) => preferences.refetch().then(() => response),
+  });
+  const testPush = useMutation({
+    mutationFn: async () => {
+      await registerForPushNotifications();
+      return deviceApi.sendTest();
+    },
+    onSuccess: (response) => Alert.alert('Test notification queued', response.message),
+    onError: (error) => Alert.alert(
+      'Push notification setup needs attention',
+      error instanceof ApiError || error instanceof Error ? error.message : 'Please try again.',
+    ),
   });
 
   useEffect(() => {
@@ -102,6 +115,13 @@ export default function AccountScreen() {
         })}
         value={preferences.data?.promotional_enabled ?? false}
       />
+      <Pressable disabled={testPush.isPending} onPress={() => testPush.mutate()} style={styles.navigation}>
+        <View style={styles.settingCopy}>
+          <Text style={styles.settingLabel}>{testPush.isPending ? 'Preparing test notification…' : 'Test push notifications'}</Text>
+          <Text style={styles.settingDescription}>Registers this phone and sends a real test alert.</Text>
+        </View>
+        <Text style={styles.arrow}>›</Text>
+      </Pressable>
       <Pressable onPress={() => router.push('/help')} style={styles.navigation}>
         <Text style={styles.settingLabel}>Help, support and policies</Text>
         <Text style={styles.arrow}>›</Text>

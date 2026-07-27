@@ -35,8 +35,8 @@ export default function RegisterScreen() {
 
   const submit = handleSubmit(async (values) => {
     try {
-      await register({ ...values, referral_phone_number: values.referral_phone_number || undefined });
-      router.replace('/(onboarding)/phone');
+      const result = await register({ ...values, referral_phone_number: values.referral_phone_number || undefined });
+      router.replace({ pathname: '/(auth)/verify-email', params: { email: result.email } });
     } catch (error) {
       if (error instanceof ApiError && error.errors) Object.entries(error.errors).forEach(([name, messages]) => setError(name as keyof FormValues, { message: messages[0] }));
       else setError('root', { message: error instanceof ApiError ? error.message : 'Unable to create your account.' });

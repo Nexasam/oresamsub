@@ -27,6 +27,7 @@ export default function LoginScreen() {
   const [biometricReady, setBiometricReady] = useState(false);
   const [biometricBusy, setBiometricBusy] = useState(false);
   const [passwordVisible, setPasswordVisible] = useState(false);
+  const [unverifiedEmail, setUnverifiedEmail] = useState<string | null>(null);
   const { control, handleSubmit, setError, formState: { errors, isSubmitting } } = useForm<FormValues>({
     resolver: zodResolver(schema),
     defaultValues: { login: '', password: '' },
@@ -52,11 +53,15 @@ export default function LoginScreen() {
 
   const submit = handleSubmit(async (values) => {
     try {
+      setUnverifiedEmail(null);
       const session = await signIn(values.login, values.password);
       if (!session.onboarding.phone_verified) router.replace('/(onboarding)/phone');
       else if (!session.onboarding.transaction_pin_set) router.replace('/(onboarding)/pin');
       else router.replace('/(tabs)');
     } catch (error) {
+      if (error instanceof ApiError && error.status === 403 && error.message.toLowerCase().includes('verify your email') && values.login.includes('@')) {
+        setUnverifiedEmail(values.login.trim());
+      }
       setError('root', { message: error instanceof ApiError ? error.message : 'Unable to sign in. Please try again.' });
     }
   });
@@ -124,6 +129,12 @@ export default function LoginScreen() {
               <Text style={styles.rootErrorText}>{errors.root.message}</Text>
             </View>
           )}
+          {unverifiedEmail ? (
+            <Pressable onPress={() => router.push({ pathname: '/(auth)/verify-email', params: { email: unverifiedEmail } })} style={styles.verifyLink}>
+              <MaterialIcon color={colors.primary} name="mark_email_unread" size={17} />
+              <Text style={styles.verifyLinkText}>Open email verification options</Text>
+            </Pressable>
+          ) : null}
 
           <Pressable disabled={isSubmitting} onPress={submit} style={({ pressed }) => [styles.button, pressed && styles.buttonPressed, isSubmitting && styles.buttonDisabled]}>
             {isSubmitting ? <ActivityIndicator color={colors.white} /> : <><Text style={styles.buttonText}>Sign in</Text><MaterialIcon color={colors.white} name="arrow_forward" size={19} /></>}
@@ -169,6 +180,8 @@ const styles = StyleSheet.create({
   formCard: { backgroundColor: colors.surface, borderColor: 'rgba(16,35,29,0.04)', borderRadius: 24, borderWidth: 1, elevation: 2, padding: 17, shadowColor: '#173B30', shadowOffset: { width: 0, height: 8 }, shadowOpacity: 0.06, shadowRadius: 18 },
   rootError: { alignItems: 'flex-start', backgroundColor: '#FFF1F1', borderRadius: 12, flexDirection: 'row', gap: 8, marginBottom: 14, padding: 11 },
   rootErrorText: { color: colors.danger, flex: 1, fontFamily: fonts.medium, fontSize: 10, lineHeight: 15 },
+  verifyLink: { alignItems: 'center', backgroundColor: colors.primarySoft, borderRadius: 12, flexDirection: 'row', gap: 7, marginBottom: 13, padding: 11 },
+  verifyLinkText: { color: colors.primaryDark, fontFamily: fonts.bold, fontSize: 10 },
   button: { alignItems: 'center', backgroundColor: colors.primary, borderRadius: 15, flexDirection: 'row', gap: 8, justifyContent: 'center', minHeight: 55, shadowColor: colors.primary, shadowOffset: { width: 0, height: 7 }, shadowOpacity: 0.2, shadowRadius: 12 },
   buttonPressed: { backgroundColor: colors.primaryDark, transform: [{ scale: 0.99 }] },
   buttonDisabled: { opacity: 0.65 },

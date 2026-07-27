@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 
-import type { AuthSession, MobileUser, OnboardingState } from '../api/types';
+import type { AuthSession, MobileUser, OnboardingState, RegistrationResult } from '../api/types';
 import { authApi } from './authApi';
 import { tokenVault } from './tokenVault';
 
@@ -12,7 +12,7 @@ type AuthState = {
   onboarding: OnboardingState | null;
   restore: () => Promise<void>;
   signIn: (login: string, password: string) => Promise<AuthSession>;
-  register: (input: Parameters<typeof authApi.register>[0]) => Promise<AuthSession>;
+  register: (input: Parameters<typeof authApi.register>[0]) => Promise<RegistrationResult>;
   refreshSession: () => Promise<AuthSession>;
   signOut: () => Promise<void>;
   declineRestore: () => void;
@@ -49,9 +49,8 @@ export const useAuthStore = create<AuthState>((set) => ({
 
   register: async (input) => {
     const response = await authApi.register(input);
-    if (!response.data.tokens) throw new Error('The server did not return session tokens.');
-    await tokenVault.save(response.data.tokens);
-    set({ status: 'authenticated', user: response.data.user, onboarding: response.data.onboarding });
+    await tokenVault.clear();
+    set({ status: 'guest', user: null, onboarding: null });
     return response.data;
   },
 

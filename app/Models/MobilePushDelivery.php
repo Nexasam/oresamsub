@@ -14,6 +14,15 @@ class MobilePushDelivery extends Model
 
     protected function casts(): array
     {
-        return ['attempted_at' => 'datetime'];
+        return [
+            'attempted_at' => 'datetime',
+            'receipt_checked_at' => 'datetime',
+            'delivered_at' => 'datetime',
+        ];
+    }
+
+    public function device()
+    {
+        return $this->belongsTo(MobileDeviceInstallation::class, 'mobile_device_installation_id');
     }
 }

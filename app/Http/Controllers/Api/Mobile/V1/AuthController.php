@@ -11,8 +11,8 @@ use App\Http\Resources\Api\Mobile\V1\UserResource;
 use App\Models\Role;
 use App\Models\User;
 use App\Models\UserPlan;
+use App\Notifications\MobileVerifyEmailNotification;
 use App\Services\Mobile\MobileTokenService;
-use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -52,15 +52,29 @@ class AuthController extends Controller
                 'upline_id' => $uplineId,
                 'pin' => null,
                 'phone_verification' => false,
-                'email_verified_at' => now(),
+                'email_verified_at' => null,
             ]);
         });
 
-        event(new Registered($user));
+        $user->notify(new MobileVerifyEmailNotification);
 
-        $tokenData = $this->tokens->issue($user, $request->string('device_name')->toString(), $request);
+        return $this->successResponse('Account created. Check your email to verify your account before signing in.', [
+            'email' => $user->email,
+            'verification_required' => true,
+        ], 201);
+    }
 
-        return $this->successResponse('Registration successful. Continue with phone verification.', $this->sessionPayload($user, $tokenData), 201);
+    public function resendEmailVerification(Request $request): JsonResponse
+    {
+        $request->validate(['email' => ['required', 'email:rfc']]);
+        $email = mb_strtolower(trim($request->string('email')->toString()));
+        $user = User::query()->where('email', $email)->first();
+
+        if ($user && ! $user->hasVerifiedEmail() && ! (bool) $user->is_deactivated) {
+            $user->notify(new MobileVerifyEmailNotification);
+        }
+
+        return $this->successResponse('If that email belongs to an unverified account, a new verification link has been sent.');
     }
 
     public function login(LoginRequest $request): JsonResponse
