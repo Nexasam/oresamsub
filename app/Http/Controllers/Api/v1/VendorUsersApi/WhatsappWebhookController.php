@@ -35,7 +35,7 @@ class WhatsappWebhookController extends Controller
     use JsonResponseWrapper;
 
     public function updateConfig($phone_number_id,$token){
-           WhatsappConfig::updateOrCreate([
+           OreWhatsappConfig::updateOrCreate([
              'phone_number_id' => $phone_number_id,
            ],[
             'token' => $token,
@@ -43,13 +43,13 @@ class WhatsappWebhookController extends Controller
            ]);
     }
 
-    public function updateOreConfig($phone_number_id, $token)
-    {
-        OreWhatsappConfig::updateOrCreate(
-            ['phone_number_id' => $phone_number_id],
-            ['token' => $token]
-        );
-    }
+    // public function updateOreConfig($phone_number_id, $token)
+    // {
+    //     OreWhatsappConfig::updateOrCreate(
+    //         ['phone_number_id' => $phone_number_id],
+    //         ['token' => $token]
+    //     );
+    // }
 
     private function extractPhone(array $payload): ?string
     {
