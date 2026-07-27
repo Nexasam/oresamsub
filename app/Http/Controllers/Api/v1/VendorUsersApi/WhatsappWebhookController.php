@@ -415,62 +415,9 @@ class WhatsappWebhookController extends Controller
             $user = app(WhatsappUserResolver::class)
             ->resolve($phone); 
 
-            $firstName = $user?->first_name ?? $user?->username;
-
-            $welcome = $firstName
-            ? "👋 Hi {$firstName}, welcome to OresamSub!\n\n"
-            : "👋 Welcome to OresamSub!\n\n";
-
-            $message =
-            $welcome
-            . "I'm your personal VTU assistant ⚡\n\n"
-
-            . "Here's what I can help you with:\n\n"
-
-            . "📶 Buy Data Bundles\n"
-            . "📞 Buy Airtime\n"
-            . "📋 Repeat Recent Purchases\n"
-            . "⭐ Buy for Saved Contacts\n"
-            . "💰 Check Wallet Balance\n"
-            . "🆘 Contact Support\n\n"
-
-            . "You can type commands in ANY format (not case-sensitive).\n\n"
-
-            . "📶 DATA EXAMPLES\n"
-            . "• MTN 1GB Weekly\n"
-            . "• Glo 2GB 3 Days\n"
-            . "• Airtel 5GB Monthly\n"
-            . "• 1GB MTN Weekly\n"
-            . "• MTN 1GB Weekly 09034556677\n\n"
-
-            . "📞 AIRTIME EXAMPLES\n"
-            . "• Airtime 1000 MTN\n"
-            . "• MTN Airtime 500\n"
-            . "• Airtel Airtime 2000\n"
-            . "• MTN Airtime 300 09011223344\n\n"
-
-            . "⭐ RECENT DATA TXNS\n"
-            . "• Recent\n"
-            . "• Buy Again\n"
-            . "• Favourites\n"
-            . "• fav\n"
-            . "• Popular\n\n"
-
-            . "💰 ACCOUNT\n"
-            . "• Balance\n"
-            . "• Wallet\n"
-            . "• Account\n"
-            . "• Fund\n\n"
-
-            . "🆘 HELP\n"
-            . "• Support\n"
-            . "• Help\n\n";
-
-            // . "👇 Or use the quick buttonsc below.";
-
         app(OreWhatsappService::class)->sendButtons(
             $phone,
-            $message,
+            $this->quickCommandsWelcomeMessage(),
             [
                 [
                     'id' => 'switch_to_guided_menu',
@@ -865,10 +812,7 @@ class WhatsappWebhookController extends Controller
             app(OreWhatsappService::class)->sendButtons(
                 $phone,
                 "✅ Quick Commands is now active.\n\n"
-                . "You can send requests directly, for example:\n"
-                . "• MTN 1GB Weekly 08168509044\n"
-                . "• Airtel Airtime 1000 08168509044\n\n"
-                . "Type *hello* anytime to see the examples again.",
+                . $this->quickCommandsWelcomeMessage(),
                 [
                     [
                         'id' => 'switch_to_guided_menu',
@@ -890,6 +834,30 @@ class WhatsappWebhookController extends Controller
         }
 
         return response()->json(['ok' => true]);
+    }
+
+    private function quickCommandsWelcomeMessage(): string
+    {
+        return "⚡ QUICK COMMANDS\n\n"
+            . "Send your request directly in any format. Commands are not case-sensitive.\n\n"
+            . "📶 DATA\n"
+            . "• MTN 1GB Weekly\n"
+            . "• MTN 1GB Weekly 09034556677\n\n"
+            . "📞 AIRTIME\n"
+            . "• MTN Airtime 500\n"
+            . "• MTN Airtime 300 09011223344\n\n"
+            . "📺 CABLE TV\n"
+            . "• DStv Compact 1234567890\n"
+            . "• GOtv Max 1234567890\n\n"
+            . "💡 ELECTRICITY\n"
+            . "• Ikeja Electric 5000 12345678901 Prepaid\n"
+            . "• Eko Electric 3000 12345678901 Postpaid\n\n"
+            . "⭐ RECENT PURCHASES\n"
+            . "• Recent • Buy Again • Favourites\n\n"
+            . "💰 ACCOUNT\n"
+            . "• Balance • Wallet • Fund\n\n"
+            . "🆘 HELP\n"
+            . "• Support • Help";
     }
 
     private function handleWhatsappLinking(

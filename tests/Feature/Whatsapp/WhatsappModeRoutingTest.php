@@ -141,3 +141,36 @@ it('supports normal and power as fallback switching commands', function () {
 
     expect($user->fresh()->whatsapp_mode)->toBe('normal');
 });
+
+it('shows only the selected experience when start is clicked', function () {
+    User::factory()->create([
+        'phone_number' => '08168509044',
+        'whatsapp_mode' => 'power',
+    ]);
+
+    $payload = whatsappTextPayload('ignored');
+    $payload['entry'][0]['changes'][0]['value']['messages'][0] = [
+        'from' => '2348168509044',
+        'interactive' => [
+            'button_reply' => [
+                'id' => 'start_over',
+            ],
+        ],
+    ];
+
+    $this->postJson('/api/webhook/whatsapp', $payload)
+        ->assertOk();
+
+    expect(Http::recorded())->toHaveCount(1);
+
+    Http::assertSent(fn (Request $request) =>
+        $request['interactive']['type'] === 'button'
+        && str_contains(
+            $request['interactive']['body']['text'],
+            '📶 DATA'
+        )
+        && str_contains($request['interactive']['body']['text'], '📞 AIRTIME')
+        && str_contains($request['interactive']['body']['text'], '📺 CABLE TV')
+        && str_contains($request['interactive']['body']['text'], '💡 ELECTRICITY')
+    );
+});
