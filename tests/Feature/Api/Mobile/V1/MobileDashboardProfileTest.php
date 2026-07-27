@@ -33,8 +33,9 @@ it('returns wallet summary and only safe recent transaction fields', function ()
         ->assertJsonPath('data.wallet.balance', 1250.5)
         ->assertJsonPath('data.summary.total_transactions', 1)
         ->assertJsonPath('data.recent_transactions.0.status', 'successful')
+        ->assertJsonPath('data.buy_again_plans', [])
         ->assertJsonMissing(['admin_screen_message' => 'private provider diagnostic'])
-        ->assertJsonStructure(['data' => ['wallet', 'summary', 'recent_transactions']]);
+        ->assertJsonStructure(['data' => ['wallet', 'summary', 'recent_transactions', 'buy_again_plans']]);
 });
 
 it('shows and updates only the authenticated user profile', function () {

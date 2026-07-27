@@ -94,4 +94,11 @@ it('offers a safe buy again payload for a successful data transaction at the cur
         ->assertJsonPath('data.transaction.repeat_purchase.plan_id', $plan->id)
         ->assertJsonPath('data.transaction.repeat_purchase.price', 450)
         ->assertJsonPath('data.transaction.repeat_purchase.beneficiary', '08030000000');
+
+    app('auth')->forgetGuards();
+    getJson('/api/mobile/v1/dashboard', catalogueHeaders($user))
+        ->assertOk()
+        ->assertJsonPath('data.buy_again_plans.0.plan_id', $plan->id)
+        ->assertJsonPath('data.buy_again_plans.0.price', 450)
+        ->assertJsonPath('data.buy_again_plans.0.beneficiary', '08030000000');
 });

@@ -47,6 +47,13 @@ export type Dashboard = {
     pending_transactions: number;
   };
   recent_transactions: MobileTransaction[];
+  buy_again_plans: {
+    plan_id: string;
+    plan_name: string;
+    price: number;
+    provider: string;
+    beneficiary: string | null;
+  }[];
 };
 
 export type CatalogueProduct = { id: string; slug: string; name: string };
