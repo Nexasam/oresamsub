@@ -35,7 +35,7 @@ class WhatsappWebhookController extends Controller
     use JsonResponseWrapper;
 
     public function updateConfig($phone_number_id,$token){
-           OreWhatsappConfig::updateOrCreate([
+        WhatsappConfig::updateOrCreate([
              'phone_number_id' => $phone_number_id,
            ],[
             'token' => $token,
