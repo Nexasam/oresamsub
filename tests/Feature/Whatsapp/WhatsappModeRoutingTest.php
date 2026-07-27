@@ -2,6 +2,7 @@
 
 use App\Models\OreWhatsappConfig;
 use App\Models\User;
+use App\Models\WhatsappConfig;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\Client\Request;
 use Illuminate\Support\Facades\Cache;
@@ -10,6 +11,11 @@ use Illuminate\Support\Facades\Http;
 uses(RefreshDatabase::class);
 
 beforeEach(function () {
+    WhatsappConfig::create([
+        'token' => 'main-test-meta-token',
+        'phone_number_id' => '987654321',
+    ]);
+
     OreWhatsappConfig::create([
         'token' => 'test-meta-token',
         'phone_number_id' => '123456789',
@@ -118,4 +124,20 @@ it('returns a quick-command user to the guided menu', function () {
         && collect($request['interactive']['action']['sections'][0]['rows'])
             ->contains('id', 'switch_to_quick_commands')
     );
+});
+
+it('supports normal and power as fallback switching commands', function () {
+    $user = User::factory()->create([
+        'phone_number' => '08168509044',
+    ]);
+
+    $this->postJson('/api/webhook/whatsapp', whatsappTextPayload('power'))
+        ->assertOk();
+
+    expect($user->fresh()->whatsapp_mode)->toBe('power');
+
+    $this->postJson('/api/webhook/whatsapp', whatsappTextPayload('normal'))
+        ->assertOk();
+
+    expect($user->fresh()->whatsapp_mode)->toBe('normal');
 });

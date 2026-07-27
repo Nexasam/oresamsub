@@ -324,6 +324,8 @@ class WhatsappWebhookController extends Controller
         if (in_array($text, [
             'switch_to_quick_commands',
             'switch_to_guided_menu',
+            'power',
+            'normal',
         ], true)) {
             if (! $user) {
                 return $this->handleWhatsappLinking(
@@ -845,7 +847,10 @@ class WhatsappWebhookController extends Controller
         string $phone,
         string $command
     ) {
-        $useQuickCommands = $command === 'switch_to_quick_commands';
+        $useQuickCommands = in_array($command, [
+            'switch_to_quick_commands',
+            'power',
+        ], true);
 
         $user->update([
             'whatsapp_mode' => $useQuickCommands ? 'power' : 'normal',

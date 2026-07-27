@@ -7,12 +7,20 @@ use Illuminate\Support\Facades\Log;
 
 class Whatsappsender
 {
+    private function config(): object
+    {
+        return WhatsappConfig::first()
+            ?? (object) [
+                'token' => config('services.whatsapp.token'),
+                'phone_number_id' => config('services.whatsapp.phone_number_id'),
+            ];
+    }
+
     public function send(string $phone, string $message): array
     {
-        $wconfig = WhatsappConfig::first();
-        $phone_number_id = $wconfig->phone_number_id ?? '323';
-        $token = $wconfig->token ?? '434';
-        // $token = config('services.whatsapp.token');
+        $wconfig = $this->config();
+        $phone_number_id = $wconfig->phone_number_id;
+        $token = $wconfig->token;
         $response = Http::withToken(
             $token
         )->post(
@@ -42,7 +50,7 @@ class Whatsappsender
         string $message
     )
     {
-        $wconfig = WhatsappConfig::first();
+        $wconfig = $this->config();
     
         $url = "https://graph.facebook.com/v23.0/{$wconfig->phone_number_id}/messages";
     
@@ -94,7 +102,7 @@ class Whatsappsender
         string $message
     )
     {
-        $wconfig = WhatsappConfig::first();
+        $wconfig = $this->config();
     
         $url = "https://graph.facebook.com/v23.0/{$wconfig->phone_number_id}/messages";
     
@@ -140,7 +148,7 @@ class Whatsappsender
         string $message
     )
     {
-        $wconfig = WhatsappConfig::first();
+        $wconfig = $this->config();
     
         $url = "https://graph.facebook.com/v23.0/{$wconfig->phone_number_id}/messages";
 
@@ -190,7 +198,7 @@ class Whatsappsender
         string $message
     )
     {
-        $wconfig = WhatsappConfig::first();
+        $wconfig = $this->config();
     
         $url = "https://graph.facebook.com/v23.0/{$wconfig->phone_number_id}/messages";
 
@@ -231,7 +239,7 @@ class Whatsappsender
         string $message
     )
     {
-        $wconfig = WhatsappConfig::first();
+        $wconfig = $this->config();
     
         $url = "https://graph.facebook.com/v23.0/{$wconfig->phone_number_id}/messages";
     
@@ -284,7 +292,7 @@ class Whatsappsender
         string $message
     )
     {
-        $wconfig = WhatsappConfig::first();
+        $wconfig = $this->config();
     
         $url = "https://graph.facebook.com/v23.0/{$wconfig->phone_number_id}/messages";
     
@@ -356,7 +364,7 @@ class Whatsappsender
         string $phone
     )
     {
-        $wconfig = WhatsappConfig::first();
+        $wconfig = $this->config();
     
         $url = "https://graph.facebook.com/v23.0/{$wconfig->phone_number_id}/messages";
     
@@ -432,7 +440,7 @@ class Whatsappsender
         array $sizes
     )
     {
-        $wconfig = WhatsappConfig::first();
+        $wconfig = $this->config();
     
         $url = "https://graph.facebook.com/v23.0/{$wconfig->phone_number_id}/messages";
     

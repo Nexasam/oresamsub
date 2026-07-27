@@ -3,14 +3,20 @@
 namespace App\Services\Whatsapp;
 
 use App\Models\OreWhatsappConfig;
+use App\Models\WhatsappConfig;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
 class OreWhatsappService
 {
-    protected function config(): OreWhatsappConfig
+    protected function config(): object
     {
-        return OreWhatsappConfig::firstOrFail();
+        return WhatsappConfig::first()
+            ?? OreWhatsappConfig::first()
+            ?? (object) [
+                'token' => config('services.whatsapp.token'),
+                'phone_number_id' => config('services.whatsapp.phone_number_id'),
+            ];
     }
 
     protected function endpoint(): string
