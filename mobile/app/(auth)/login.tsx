@@ -62,8 +62,13 @@ export default function LoginScreen() {
   });
 
   return (
-    <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined} style={styles.screen}>
-      <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
+    <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.screen}>
+      <ScrollView
+        automaticallyAdjustKeyboardInsets={Platform.OS === 'ios'}
+        contentContainerStyle={styles.content}
+        keyboardDismissMode={Platform.OS === 'ios' ? 'interactive' : 'on-drag'}
+        keyboardShouldPersistTaps="handled"
+      >
         <View style={styles.brandRow}>
           <View style={styles.mark}><BrandLogo /></View>
           <View>

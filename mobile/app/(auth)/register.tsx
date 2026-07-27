@@ -44,8 +44,13 @@ export default function RegisterScreen() {
   });
 
   return (
-    <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined} style={styles.screen}>
-      <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
+    <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.screen}>
+      <ScrollView
+        automaticallyAdjustKeyboardInsets={Platform.OS === 'ios'}
+        contentContainerStyle={styles.content}
+        keyboardDismissMode={Platform.OS === 'ios' ? 'interactive' : 'on-drag'}
+        keyboardShouldPersistTaps="handled"
+      >
         <View style={styles.topRow}>
           <Pressable hitSlop={10} onPress={() => router.back()} style={styles.back}>
             <MaterialIcon color={colors.text} name="arrow_back" size={21} />

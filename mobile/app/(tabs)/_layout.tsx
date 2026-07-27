@@ -11,7 +11,7 @@ const icon = (name: string) => ({ color, focused }: { color: ColorValue; focused
 
 export default function TabsLayout() {
   return (
-    <Tabs screenOptions={{ headerShown: false, tabBarActiveTintColor: colors.primaryDark, tabBarInactiveTintColor: '#8A9B95', tabBarLabelStyle: styles.label, tabBarStyle: styles.bar, tabBarItemStyle: styles.item }}>
+    <Tabs screenOptions={{ headerShown: false, tabBarActiveTintColor: colors.primaryDark, tabBarHideOnKeyboard: true, tabBarInactiveTintColor: '#8A9B95', tabBarLabelStyle: styles.label, tabBarStyle: styles.bar, tabBarItemStyle: styles.item }}>
       <Tabs.Screen name="index" options={{ title: 'Home', tabBarIcon: icon('home') }} />
       <Tabs.Screen name="services" options={{ title: 'Services', tabBarIcon: icon('grid_view') }} />
       <Tabs.Screen name="transactions" options={{ title: 'Transactions', tabBarIcon: icon('receipt_long') }} />
