@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Announcement;
 use App\Models\Transaction;
 use App\Models\User;
 
@@ -63,5 +64,19 @@ it('shows and updates only the authenticated user profile', function () {
 
 it('requires authentication for private mobile bootstrap endpoints', function () {
     getJson('/api/mobile/v1/dashboard')->assertUnauthorized();
+    getJson('/api/mobile/v1/announcements')->assertUnauthorized();
     getJson('/api/mobile/v1/profile')->assertUnauthorized();
+});
+
+it('returns active announcements as safe plain text', function () {
+    $user = User::factory()->create();
+    Announcement::create(['title' => 'Service update', 'description' => '<p>Data is <strong>available</strong>.</p>', 'position' => 'dashboard', 'status' => '1']);
+    Announcement::create(['title' => 'Hidden', 'description' => 'Do not show', 'position' => 'dashboard', 'status' => '0']);
+
+    getJson('/api/mobile/v1/announcements', mobileHeadersFor($user))
+        ->assertOk()
+        ->assertJsonCount(1, 'data')
+        ->assertJsonPath('data.0.title', 'Service update')
+        ->assertJsonPath('data.0.description', 'Data is available.')
+        ->assertJsonMissing(['title' => 'Hidden']);
 });

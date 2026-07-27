@@ -44,7 +44,6 @@ class TransactionResource extends JsonResource
                 'plan_name' => $plan->product_plan_name,
                 'price' => round((float) ($plan->{$priceField} ?: $plan->default_selling_price), 2),
                 'provider' => $category->network?->network_name ?? $category->product_plan_category_name,
-                'beneficiary' => $this->phone_number,
             ] : null,
         ];
     }

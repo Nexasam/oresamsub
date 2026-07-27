@@ -10,6 +10,7 @@ import { useAuthStore } from '../../src/auth/authStore';
 import { biometricLock } from '../../src/auth/biometricLock';
 import { tokenVault } from '../../src/auth/tokenVault';
 import { AuthField } from '../../src/components/AuthField';
+import { BrandLogo } from '../../src/components/BrandLogo';
 import { MaterialIcon } from '../../src/components/MaterialIcon';
 import { colors, fonts } from '../../src/theme/colors';
 
@@ -64,7 +65,7 @@ export default function LoginScreen() {
     <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined} style={styles.screen}>
       <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
         <View style={styles.brandRow}>
-          <View style={styles.mark}><Text style={styles.markText}>O</Text></View>
+          <View style={styles.mark}><BrandLogo /></View>
           <View>
             <Text style={styles.brand}>OresamSub</Text>
             <Text style={styles.brandNote}>Payments made simple</Text>
@@ -152,8 +153,7 @@ const styles = StyleSheet.create({
   screen: { backgroundColor: colors.background, flex: 1 },
   content: { flexGrow: 1, paddingBottom: 34, paddingHorizontal: 22, paddingTop: Platform.OS === 'android' ? 48 : 62 },
   brandRow: { alignItems: 'center', flexDirection: 'row' },
-  mark: { alignItems: 'center', backgroundColor: colors.primaryDark, borderRadius: 14, height: 44, justifyContent: 'center', marginRight: 11, width: 44 },
-  markText: { color: colors.white, fontFamily: fonts.extraBold, fontSize: 22 },
+  mark: { marginRight: 11 },
   brand: { color: colors.text, fontFamily: fonts.extraBold, fontSize: 15 },
   brandNote: { color: colors.muted, fontFamily: fonts.medium, fontSize: 8, marginTop: 2 },
   secureBadge: { alignItems: 'center', backgroundColor: colors.primarySoft, borderRadius: 15, height: 32, justifyContent: 'center', marginLeft: 'auto', width: 32 },

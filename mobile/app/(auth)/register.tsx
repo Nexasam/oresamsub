@@ -8,6 +8,7 @@ import { z } from 'zod';
 import { ApiError } from '../../src/api/client';
 import { useAuthStore } from '../../src/auth/authStore';
 import { AuthField } from '../../src/components/AuthField';
+import { BrandLogo } from '../../src/components/BrandLogo';
 import { MaterialIcon } from '../../src/components/MaterialIcon';
 import { colors, fonts } from '../../src/theme/colors';
 
@@ -49,7 +50,7 @@ export default function RegisterScreen() {
           <Pressable hitSlop={10} onPress={() => router.back()} style={styles.back}>
             <MaterialIcon color={colors.text} name="arrow_back" size={21} />
           </Pressable>
-          <View style={styles.step}><Text style={styles.stepText}>SECURE SIGN UP</Text><MaterialIcon color={colors.primary} name="verified_user" size={16} /></View>
+          <BrandLogo size={42} />
         </View>
 
         <Text style={styles.title}>Create your account</Text>

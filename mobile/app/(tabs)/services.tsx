@@ -61,12 +61,9 @@ export default function ServicesScreen() {
       <View style={styles.hero}>
         <View style={styles.heroOrbLarge} />
         <View style={styles.heroOrbSmall} />
-        <View style={styles.heroBadge}>
-          <MaterialIcon color="#BFEBDC" name="verified_user" size={15} />
-          <Text style={styles.heroBadgeText}>FAST & SECURE</Text>
-        </View>
-        <Text style={styles.heroTitle}>Everything you need,{'\n'}in one place.</Text>
-        <Text style={styles.heroText}>Top up, stay connected and settle everyday bills without the stress.</Text>
+        <View style={styles.heroTop}><View style={styles.heroBadge}><MaterialIcon color="#BFEBDC" name="verified_user" size={15} /><Text style={styles.heroBadgeText}>FAST & SECURE</Text></View><Pressable onPress={() => router.replace('/(tabs)')} style={styles.homeButton}><MaterialIcon color={colors.white} name="home" size={17} /><Text style={styles.homeButtonText}>Home</Text></Pressable></View>
+        <Text style={styles.heroTitle}>Pay bills. Stay connected.</Text>
+        <Text style={styles.heroText}>Choose a service and complete it securely in a few taps.</Text>
       </View>
 
       <View style={styles.sectionHeader}>
@@ -107,7 +104,7 @@ export default function ServicesScreen() {
                   <MaterialIcon color={visual.accent} name={visual.icon} size={27} />
                 </View>
                 <Text numberOfLines={1} style={styles.name}>{service.name}</Text>
-                <Text numberOfLines={2} style={styles.description}>{visual.description}</Text>
+                <Text numberOfLines={1} style={styles.description}>{visual.description}</Text>
                 <View style={styles.cardFooter}>
                   <Text style={[styles.openText, { color: visual.accent }]}>Get started</Text>
                   <View style={[styles.arrowBox, { backgroundColor: visual.iconBackground }]}>
@@ -120,48 +117,42 @@ export default function ServicesScreen() {
         </View>
       )}
 
-      <View style={styles.promise}>
-        <View style={styles.promiseIcon}>
-          <MaterialIcon color={colors.primaryDark} name="bolt" size={20} />
-        </View>
-        <View style={styles.promiseCopy}>
-          <Text style={styles.promiseTitle}>Quick confirmation</Text>
-          <Text style={styles.promiseText}>You’ll see the amount and recipient before every payment.</Text>
-        </View>
-      </View>
+      <View style={styles.promise}><MaterialIcon color={colors.primary} name="verified_user" size={18} /><Text style={styles.promiseText}>Review the recipient and amount before every payment.</Text></View>
     </Screen>
   );
 }
 
 const styles = StyleSheet.create({
-  hero: { backgroundColor: colors.primaryDark, borderRadius: 28, minHeight: 210, overflow: 'hidden', padding: 22 },
+  hero: { backgroundColor: colors.primaryDark, borderRadius: 22, minHeight: 130, overflow: 'hidden', padding: 17 },
   heroOrbLarge: { backgroundColor: '#159570', borderRadius: 120, height: 210, opacity: 0.32, position: 'absolute', right: -72, top: -76, width: 210 },
   heroOrbSmall: { backgroundColor: colors.accent, borderRadius: 35, bottom: -28, height: 70, opacity: 0.2, position: 'absolute', right: 76, width: 70 },
-  heroBadge: { alignItems: 'center', alignSelf: 'flex-start', backgroundColor: 'rgba(255,255,255,0.11)', borderColor: 'rgba(255,255,255,0.14)', borderRadius: 20, borderWidth: 1, flexDirection: 'row', gap: 6, paddingHorizontal: 10, paddingVertical: 7 },
+  heroTop: { alignItems: 'center', flexDirection: 'row', justifyContent: 'space-between' },
+  heroBadge: { alignItems: 'center', alignSelf: 'flex-start', backgroundColor: 'rgba(255,255,255,0.11)', borderColor: 'rgba(255,255,255,0.14)', borderRadius: 20, borderWidth: 1, flexDirection: 'row', gap: 6, paddingHorizontal: 9, paddingVertical: 6 },
   heroBadgeText: { color: '#D8F4EB', fontFamily: fonts.extraBold, fontSize: 8, letterSpacing: 1.1 },
-  heroTitle: { color: colors.white, fontFamily: fonts.extraBold, fontSize: 27, letterSpacing: -0.9, lineHeight: 34, marginTop: 18 },
-  heroText: { color: '#BFE0D5', fontFamily: fonts.medium, fontSize: 11, lineHeight: 17, marginTop: 9, maxWidth: '82%' },
-  sectionHeader: { alignItems: 'flex-end', flexDirection: 'row', justifyContent: 'space-between', marginBottom: 15, marginTop: 27 },
+  homeButton: { alignItems: 'center', backgroundColor: 'rgba(255,255,255,0.12)', borderRadius: 14, flexDirection: 'row', gap: 4, paddingHorizontal: 9, paddingVertical: 6 }, homeButtonText: { color: colors.white, fontFamily: fonts.bold, fontSize: 9 },
+  heroTitle: { color: colors.white, fontFamily: fonts.extraBold, fontSize: 21, letterSpacing: -0.7, marginTop: 13 },
+  heroText: { color: '#BFE0D5', fontFamily: fonts.medium, fontSize: 10, lineHeight: 15, marginTop: 6, maxWidth: '88%' },
+  sectionHeader: { alignItems: 'flex-end', flexDirection: 'row', justifyContent: 'space-between', marginBottom: 12, marginTop: 18 },
   sectionEyebrow: { color: colors.primary, fontFamily: fonts.extraBold, fontSize: 9, letterSpacing: 1.4 },
-  sectionTitle: { color: colors.text, fontFamily: fonts.extraBold, fontSize: 20, letterSpacing: -0.5, marginTop: 2 },
+  sectionTitle: { color: colors.text, fontFamily: fonts.extraBold, fontSize: 18, letterSpacing: -0.5, marginTop: 2 },
   secureMark: { alignItems: 'center', backgroundColor: colors.primarySoft, borderRadius: 15, flexDirection: 'row', gap: 4, paddingHorizontal: 9, paddingVertical: 6 },
   secureText: { color: colors.primaryDark, fontFamily: fonts.bold, fontSize: 8 },
   loading: { alignItems: 'center', minHeight: 260, paddingTop: 72 },
   loadingText: { color: colors.muted, fontFamily: fonts.medium, fontSize: 11, marginTop: 12 },
-  grid: { flexDirection: 'row', flexWrap: 'wrap', gap: 12 },
-  card: { borderColor: 'rgba(16,35,29,0.045)', borderRadius: 23, borderWidth: 1, minHeight: 214, padding: 16, width: '48%' },
+  grid: { flexDirection: 'row', flexWrap: 'wrap', gap: 10 },
+  card: { borderColor: 'rgba(16,35,29,0.045)', borderRadius: 19, borderWidth: 1, flexBasis: '48%', flexGrow: 1, minHeight: 150, padding: 13 },
   pressed: { opacity: 0.78, transform: [{ scale: 0.975 }] },
-  iconBox: { alignItems: 'center', borderRadius: 17, height: 52, justifyContent: 'center', width: 52 },
-  name: { color: colors.text, fontFamily: fonts.extraBold, fontSize: 15, letterSpacing: -0.25, marginTop: 17 },
-  description: { color: colors.muted, fontFamily: fonts.medium, fontSize: 9, lineHeight: 14, marginTop: 5, minHeight: 28 },
-  cardFooter: { alignItems: 'center', flexDirection: 'row', justifyContent: 'space-between', marginTop: 15 },
+  iconBox: { alignItems: 'center', borderRadius: 14, height: 42, justifyContent: 'center', width: 42 },
+  name: { color: colors.text, fontFamily: fonts.extraBold, fontSize: 13, letterSpacing: -0.2, marginTop: 11 },
+  description: { color: colors.muted, fontFamily: fonts.medium, fontSize: 8, marginTop: 4 },
+  cardFooter: { alignItems: 'center', flexDirection: 'row', justifyContent: 'space-between', marginTop: 10 },
   openText: { fontFamily: fonts.bold, fontSize: 9 },
   arrowBox: { alignItems: 'center', borderRadius: 12, height: 27, justifyContent: 'center', width: 27 },
   errorCard: { alignItems: 'center', backgroundColor: '#FFF3F3', borderRadius: 20, flexDirection: 'row', padding: 18 },
   errorCopy: { marginLeft: 12 },
   errorTitle: { color: colors.text, fontFamily: fonts.bold, fontSize: 13 },
   errorText: { color: colors.muted, fontFamily: fonts.regular, fontSize: 10, marginTop: 2 },
-  promise: { alignItems: 'center', backgroundColor: colors.surface, borderColor: colors.border, borderRadius: 20, borderWidth: 1, flexDirection: 'row', marginTop: 20, padding: 14 },
+  promise: { alignItems: 'center', backgroundColor: colors.surface, borderColor: colors.border, borderRadius: 16, borderWidth: 1, flexDirection: 'row', gap: 8, marginTop: 13, padding: 11 },
   promiseIcon: { alignItems: 'center', backgroundColor: colors.primarySoft, borderRadius: 14, height: 42, justifyContent: 'center', marginRight: 12, width: 42 },
   promiseCopy: { flex: 1 },
   promiseTitle: { color: colors.text, fontFamily: fonts.bold, fontSize: 11 },

@@ -1,9 +1,12 @@
 import { apiRequest } from './client';
-import type { CatalogueCategory, CataloguePlan, CatalogueProduct, Dashboard, FundingHistoryItem, FundingOption, MobileTransaction, MobileUser, PaginationMeta, WalletAccount } from './types';
+import type { CatalogueCategory, CataloguePlan, CatalogueProduct, Dashboard, FundingHistoryItem, FundingOption, MobileAnnouncement, MobileTransaction, MobileUser, PaginationMeta, WalletAccount } from './types';
 
 export const mobileApi = {
   async dashboard() {
     return (await apiRequest<Dashboard>('/dashboard', { authenticated: true })).data;
+  },
+  async announcements() {
+    return (await apiRequest<MobileAnnouncement[]>('/announcements', { authenticated: true })).data;
   },
   async profile() {
     return (await apiRequest<{ user: MobileUser }>('/profile', { authenticated: true })).data.user;

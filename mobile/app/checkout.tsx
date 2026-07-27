@@ -15,12 +15,12 @@ const reference = () => `MOB-${Date.now()}-${Math.random().toString(36).slice(2,
 type Validation = { name: string | null; address: string | null; extra_info: string };
 
 export default function CheckoutScreen() {
-  const params = useLocalSearchParams<{ product: string; planId: string; planName: string; price: string; provider: string; beneficiary?: string; amount?: string }>();
+  const params = useLocalSearchParams<{ product: string; planId: string; planName: string; price: string; provider: string; amount?: string }>();
   const isAirtime = params.product === 'airtime';
   const isCable = params.product === 'cable_subscription';
   const isElectricity = params.product === 'utility_bills';
   const isBiller = isCable || isElectricity;
-  const [customerNumber, setCustomerNumber] = useState(params.beneficiary ?? '');
+  const [customerNumber, setCustomerNumber] = useState('');
   const [contactName, setContactName] = useState<string | null>(null);
   const [pickingContact, setPickingContact] = useState(false);
   const [pin, setPin] = useState('');

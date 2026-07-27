@@ -33,7 +33,7 @@ class MobileDashboardController extends Controller
             ->whereNotNull('product_plan_id')
             ->latest()
             ->limit(100)
-            ->get(['product_plan_id', 'phone_number'])
+            ->get(['product_plan_id'])
             ->unique('product_plan_id')
             ->take(15);
         $plansById = ProductPlan::query()
@@ -66,7 +66,6 @@ class MobileDashboardController extends Controller
                     'plan_name' => $plan->product_plan_name,
                     'price' => round((float) ($plan->{$priceField} ?: $plan->default_selling_price), 2),
                     'provider' => $category->network?->network_name ?? $category->product_plan_category_name,
-                    'beneficiary' => $transaction->phone_number,
                 ];
             })
             ->filter()

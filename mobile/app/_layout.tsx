@@ -13,6 +13,7 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { NotificationManager } from '../src/device/NotificationManager';
 import { OfflineBanner } from '../src/components/OfflineBanner';
 import { BootstrapGate } from '../src/config/BootstrapGate';
+import { colors, fonts } from '../src/theme/colors';
 
 export default function RootLayout() {
   const [fontsLoaded] = useFonts({ Manrope_400Regular, Manrope_500Medium, Manrope_600SemiBold, Manrope_700Bold, Manrope_800ExtraBold, MaterialSymbols_400Regular });
@@ -40,7 +41,7 @@ export default function RootLayout() {
         <BootstrapGate>
           <OfflineBanner />
           <NotificationManager />
-          <Stack screenOptions={{ headerShown: false }} />
+          <Stack screenOptions={{ headerShown: false, headerBackButtonDisplayMode: 'minimal', headerShadowVisible: false, headerStyle: { backgroundColor: colors.background }, headerTintColor: colors.primaryDark, headerTitleStyle: { fontFamily: fonts.bold, fontSize: 15 } }} />
         </BootstrapGate>
       </QueryClientProvider>
     </SafeAreaProvider>

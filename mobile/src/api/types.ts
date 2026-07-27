@@ -35,7 +35,6 @@ export type MobileTransaction = {
     plan_name: string;
     price: number;
     provider: string;
-    beneficiary: string;
   } | null;
 };
 
@@ -52,8 +51,15 @@ export type Dashboard = {
     plan_name: string;
     price: number;
     provider: string;
-    beneficiary: string | null;
   }[];
+};
+
+export type MobileAnnouncement = {
+  id: string;
+  title: string;
+  description: string;
+  position: string;
+  created_at: string;
 };
 
 export type CatalogueProduct = { id: string; slug: string; name: string };

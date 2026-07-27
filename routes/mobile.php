@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\Mobile\V1\AuthController;
+use App\Http\Controllers\Api\Mobile\V1\MobileAnnouncementController;
 use App\Http\Controllers\Api\Mobile\V1\MobileBootstrapController;
 use App\Http\Controllers\Api\Mobile\V1\MobileCatalogueController;
 use App\Http\Controllers\Api\Mobile\V1\MobileDashboardController;
@@ -33,6 +34,7 @@ Route::prefix('auth')->name('auth.')->group(function () {
 });
 
 Route::middleware(['auth:sanctum', 'mobile.user.active'])->group(function () {
+    Route::get('/announcements', MobileAnnouncementController::class)->name('announcements');
     Route::get('/dashboard', MobileDashboardController::class)->name('dashboard');
     Route::get('/catalogue/products', [MobileCatalogueController::class, 'products'])->name('catalogue.products');
     Route::get('/catalogue/categories', [MobileCatalogueController::class, 'categories'])->name('catalogue.categories');

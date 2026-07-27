@@ -4,6 +4,7 @@ import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
 
 import { useAuthStore } from '../src/auth/authStore';
 import { biometricLock } from '../src/auth/biometricLock';
+import { BrandLogo } from '../src/components/BrandLogo';
 import { colors } from '../src/theme/colors';
 
 export default function FoundationScreen() {
@@ -26,9 +27,7 @@ export default function FoundationScreen() {
 
   return (
     <View style={styles.container}>
-      <View style={styles.mark}>
-        <Text style={styles.markText}>O</Text>
-      </View>
+      <BrandLogo size={92} />
       <Text style={styles.title}>OresamSub</Text>
       <Text style={styles.subtitle}>Secure telecom services, right from your phone.</Text>
       <ActivityIndicator color={colors.primary} size="small" style={styles.loader} />
@@ -45,24 +44,11 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     padding: 24,
   },
-  mark: {
-    alignItems: 'center',
-    backgroundColor: colors.primary,
-    borderRadius: 24,
-    height: 72,
-    justifyContent: 'center',
-    marginBottom: 20,
-    width: 72,
-  },
-  markText: {
-    color: colors.white,
-    fontSize: 38,
-    fontWeight: '800',
-  },
   title: {
     color: colors.text,
     fontSize: 30,
     fontWeight: '800',
+    marginTop: 18,
   },
   subtitle: {
     color: colors.muted,
