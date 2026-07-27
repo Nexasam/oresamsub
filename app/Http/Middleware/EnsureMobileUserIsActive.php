@@ -20,6 +20,16 @@ class EnsureMobileUserIsActive
             ], 403);
         }
 
+        if ($request->user() && ! $request->user()->hasVerifiedEmail()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Please verify your email address before signing in.',
+                'data' => null,
+                'meta' => null,
+                'errors' => null,
+            ], 403);
+        }
+
         return $next($request);
     }
 }

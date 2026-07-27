@@ -54,27 +54,30 @@ class InertiaLoginController extends Controller
         $field = filter_var($loginInput, FILTER_VALIDATE_EMAIL) ? 'email' : 
                 (is_numeric($loginInput) ? 'phone_number' : 'username');
 
-        // build credentials
-        $credentials = [
-            $field => $loginInput,
-            'password' => $password,
-        ];
+        $user = User::query()->where($field, $loginInput)->first();
 
-        // attempt login
-        if (Auth::attempt($credentials, $request->boolean('remember'))) {
-            $request->session()->regenerate();
-
-            
-            return redirect()->intended('/dashboard');
+        if (! $user || ! Hash::check($password, $user->password)) {
+            return back()->withErrors([
+                'email' => 'Invalid credentials.',
+            ])->onlyInput('email');
         }
 
+        if ((bool) $user->is_deactivated) {
+            return back()->withErrors([
+                'email' => 'This account has been deactivated. Please contact support.',
+            ])->onlyInput('email');
+        }
 
-        return back()->withErrors([
-            'email' => 'Invalid credentials.',
-        ])->onlyInput('email');
+        if (! $user->hasVerifiedEmail()) {
+            return back()->withErrors([
+                'email' => 'Please verify your email address before signing in.',
+            ])->onlyInput('email');
+        }
 
+        Auth::login($user, $request->boolean('remember'));
+        $request->session()->regenerate();
 
-      
+        return redirect()->intended('/dashboard');
     }
 
 

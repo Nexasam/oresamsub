@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Notification;
 
 use function Pest\Laravel\getJson;
+use function Pest\Laravel\deleteJson;
 use function Pest\Laravel\postJson;
 
 it('registers a user without silently assigning a transaction pin', function () {
@@ -41,6 +42,7 @@ it('registers a user without silently assigning a transaction pin', function () 
     $user = User::where('email', 'new-mobile@example.com')->firstOrFail();
 
     expect($user->pin)->toBeNull()
+        ->and($user->email_verified_at)->not->toBeNull()
         ->and(Hash::check('SecurePass123!', $user->password))->toBeTrue();
 });
 
@@ -93,6 +95,23 @@ it('rejects incorrect credentials without creating a session', function () {
     ])
         ->assertUnauthorized()
         ->assertJsonPath('success', false);
+
+    expect(MobileRefreshToken::count())->toBe(0);
+});
+
+it('prevents an unverified email address from signing in', function () {
+    User::factory()->unverified()->create([
+        'email' => 'unverified@example.com',
+        'password' => Hash::make('SecurePass123!'),
+    ]);
+
+    postJson('/api/mobile/v1/auth/login', [
+        'login' => 'unverified@example.com',
+        'password' => 'SecurePass123!',
+        'device_name' => 'Test Android',
+    ])
+        ->assertForbidden()
+        ->assertJsonPath('message', 'Please verify your email address before signing in.');
 
     expect(MobileRefreshToken::count())->toBe(0);
 });
@@ -187,4 +206,30 @@ it('blocks an already authenticated device after the account is deactivated', fu
     getJson('/api/mobile/v1/auth/session', ['Authorization' => 'Bearer '.$plainAccessToken])
         ->assertForbidden()
         ->assertJsonPath('success', false);
+});
+
+it('deactivates with the dedicated flag without changing email verification', function () {
+    $user = User::factory()->create([
+        'email' => 'deactivate@example.com',
+        'password' => Hash::make('SecurePass123!'),
+    ]);
+    $verifiedAt = $user->email_verified_at;
+    $login = postJson('/api/mobile/v1/auth/login', [
+        'login' => 'deactivate@example.com',
+        'password' => 'SecurePass123!',
+        'device_name' => 'Test Android',
+    ])->assertOk();
+
+    deleteJson('/api/mobile/v1/account', [
+        'password' => 'SecurePass123!',
+        'confirmation' => 'DELETE',
+    ], [
+        'Authorization' => 'Bearer '.$login->json('data.tokens.access_token'),
+    ])->assertOk();
+
+    $user->refresh();
+    expect((bool) $user->is_deactivated)->toBeTrue()
+        ->and($user->email_verified_at?->equalTo($verifiedAt))->toBeTrue()
+        ->and($user->tokens()->count())->toBe(0)
+        ->and($user->mobileRefreshTokens()->whereNull('revoked_at')->count())->toBe(0);
 });

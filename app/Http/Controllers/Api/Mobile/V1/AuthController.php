@@ -52,6 +52,7 @@ class AuthController extends Controller
                 'upline_id' => $uplineId,
                 'pin' => null,
                 'phone_verification' => false,
+                'email_verified_at' => now(),
             ]);
         });
 
@@ -79,6 +80,10 @@ class AuthController extends Controller
 
         if ((bool) $user->is_deactivated) {
             return $this->errorResponse('This account has been deactivated. Please contact support.', null, 403);
+        }
+
+        if (! $user->hasVerifiedEmail()) {
+            return $this->errorResponse('Please verify your email address before signing in.', null, 403);
         }
 
         // Temporary mobile-app bypass while phone OTP verification is disabled.
@@ -135,6 +140,13 @@ class AuthController extends Controller
 
         if ((bool) $result['user']->is_deactivated) {
             return $this->errorResponse('This account has been deactivated. Please contact support.', null, 403);
+        }
+
+        if (! $result['user']->hasVerifiedEmail()) {
+            $result['user']->tokens()->delete();
+            $result['user']->mobileRefreshTokens()->whereNull('revoked_at')->update(['revoked_at' => now()]);
+
+            return $this->errorResponse('Please verify your email address before signing in.', null, 403);
         }
 
         return $this->successResponse('Session refreshed successfully.', $this->sessionPayload($result['user'], $result['tokens']));

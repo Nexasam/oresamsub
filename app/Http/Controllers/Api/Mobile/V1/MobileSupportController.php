@@ -22,9 +22,9 @@ class MobileSupportController extends Controller
             });
 
         return $this->successResponse('Support information fetched successfully.', [
-            'email' => $support->get('email'),
-            'phone' => $support->get('phone'),
-            'whatsapp' => $support->get('whatsapp'),
+            'email' => $support->get('email') ?: config('mobile.support_email'),
+            'phone' => $support->get('phone') ?: config('mobile.support_phone'),
+            'whatsapp' => $support->get('whatsapp') ?: config('mobile.support_whatsapp'),
         ]);
     }
 }

@@ -31,6 +31,32 @@ test('users can not authenticate with invalid password', function () {
     $this->assertGuest();
 });
 
+test('users with unverified email addresses can not authenticate', function () {
+    $user = User::factory()->unverified()->create();
+
+    $this->post('/login', [
+        'email' => $user->email,
+        'password' => 'password',
+    ])->assertSessionHasErrors([
+        'email' => 'Please verify your email address before signing in.',
+    ]);
+
+    $this->assertGuest();
+});
+
+test('deactivated users can not authenticate', function () {
+    $user = User::factory()->create(['is_deactivated' => true]);
+
+    $this->post('/login', [
+        'email' => $user->email,
+        'password' => 'password',
+    ])->assertSessionHasErrors([
+        'email' => 'This account has been deactivated. Please contact support.',
+    ]);
+
+    $this->assertGuest();
+});
+
 test('users can logout', function () {
     $user = User::factory()->create();
 

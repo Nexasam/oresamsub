@@ -12,6 +12,9 @@ return [
     'privacy_url' => env('MOBILE_PRIVACY_URL', env('APP_URL').'/privacy-policy'),
     'terms_url' => env('MOBILE_TERMS_URL', env('APP_URL').'/terms'),
     'account_deletion_url' => env('MOBILE_ACCOUNT_DELETION_URL', env('APP_URL').'/account-deletion'),
+    'support_email' => env('MOBILE_SUPPORT_EMAIL', 'info@oresamsub.com'),
+    'support_phone' => env('MOBILE_SUPPORT_PHONE', '08168509044'),
+    'support_whatsapp' => env('MOBILE_SUPPORT_WHATSAPP'),
     'access_token_minutes' => (int) env('MOBILE_ACCESS_TOKEN_MINUTES', 15),
     'refresh_token_days' => (int) env('MOBILE_REFRESH_TOKEN_DAYS', 30),
     'hidden_product_slugs' => array_values(array_filter(array_map(
