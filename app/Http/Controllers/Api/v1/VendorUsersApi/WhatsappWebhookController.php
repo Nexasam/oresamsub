@@ -141,7 +141,10 @@ class WhatsappWebhookController extends Controller
             'start_mega' => 'mega',
             'ore_refresh_balance' => 'ore_refresh_balance',
             'ore_main_menu' => 'ore_main_menu',
-            'start_ore' => 'ore',
+            'start_ore' => 'start',
+            'guided_main_menu' => 'start',
+            'switch_to_quick_commands' => 'switch_to_quick_commands',
+            'switch_to_guided_menu' => 'switch_to_guided_menu',
             'confirm_transaction_purchase' => 'confirm_transaction_purchase',
             'cancel_transaction_purchase' => 'cancel_transaction_purchase',
             'more_transactions' => 'more_transactions',
@@ -264,38 +267,6 @@ class WhatsappWebhookController extends Controller
         $megaSession = Cache::has(
             "mega_session:{$phone}"
         );
-        $oreSession = Cache::has(
-            "ore_session:{$phone}"
-        );
-
-        if (
-            ! $oreSession
-            && app(OreWhatsappConversationService::class)
-                ->hasFavoriteShortcut($phone, $text)
-        ) {
-            Cache::forget("mega_session:{$phone}");
-            Cache::put(
-                "ore_session:{$phone}",
-                ['started_at' => now(), 'started_from_favorite' => true],
-                now()->addHours(12)
-            );
-
-            $megaSession = false;
-            $oreSession = true;
-        }
-
-        if ($text === 'ore') {
-            Cache::forget("mega_session:{$phone}");
-            Cache::put(
-                "ore_session:{$phone}",
-                ['started_at' => now()],
-                now()->addHours(12)
-            );
-
-            $megaSession = false;
-            $oreSession = true;
-        }
-
         /*
         |--------------------------------------------------------------------------
         | Start Mega Bot
@@ -314,30 +285,6 @@ class WhatsappWebhookController extends Controller
             );
 
             $megaSession = true;
-            $oreSession = false;
-        }
-
-        if ($oreSession) {
-            $oreUser = app(
-                OreWhatsappUserResolverService::class
-            )->resolve($phone);
-
-            if (! $oreUser) {
-                return $this->handleWhatsappLinking(
-                    $phone,
-                    $text,
-                    Cache::get("ore_wa_session:{$phone}"),
-                    'ORE',
-                    'ore_wa'
-                );
-            }
-
-            app(OreWhatsappConversationService::class)->handle([
-                'phone' => $phone,
-                'message' => $text,
-            ]);
-
-            return response()->json(['ok' => true]);
         }
 
         /*
@@ -371,6 +318,55 @@ class WhatsappWebhookController extends Controller
                 'ok' => true
             ]);
         }
+
+        $user = app(OreWhatsappUserResolverService::class)->resolve($phone);
+
+        if (in_array($text, [
+            'switch_to_quick_commands',
+            'switch_to_guided_menu',
+        ], true)) {
+            if (! $user) {
+                return $this->handleWhatsappLinking(
+                    $phone,
+                    $text,
+                    Cache::get("ore_wa_session:{$phone}"),
+                    'GUIDED',
+                    'ore_wa'
+                );
+            }
+
+            return $this->switchWhatsappMode($user, $phone, $text);
+        }
+
+        $whatsappMode = $user?->whatsapp_mode ?: 'normal';
+
+        if ($whatsappMode !== 'power') {
+            Cache::forget("wa_session:{$phone}");
+            Cache::put(
+                "ore_session:{$phone}",
+                ['started_at' => now()],
+                now()->addHours(12)
+            );
+
+            if (! $user) {
+                return $this->handleWhatsappLinking(
+                    $phone,
+                    $text,
+                    Cache::get("ore_wa_session:{$phone}"),
+                    'GUIDED',
+                    'ore_wa'
+                );
+            }
+
+            app(OreWhatsappConversationService::class)->handle([
+                'phone' => $phone,
+                'message' => $text,
+            ]);
+
+            return response()->json(['ok' => true]);
+        }
+
+        Cache::forget("ore_session:{$phone}");
         
 
         $greetings = [
@@ -470,9 +466,15 @@ class WhatsappWebhookController extends Controller
 
             // . "👇 Or use the quick buttonsc below.";
 
-        app(Whatsappsender::class)->send(
+        app(OreWhatsappService::class)->sendButtons(
             $phone,
-            $message
+            $message,
+            [
+                [
+                    'id' => 'switch_to_guided_menu',
+                    'title' => 'Guided Menu',
+                ],
+            ]
         );
                 
         
@@ -838,6 +840,53 @@ class WhatsappWebhookController extends Controller
         return $phone;
     }
 
+    private function switchWhatsappMode(
+        User $user,
+        string $phone,
+        string $command
+    ) {
+        $useQuickCommands = $command === 'switch_to_quick_commands';
+
+        $user->update([
+            'whatsapp_mode' => $useQuickCommands ? 'power' : 'normal',
+        ]);
+
+        Cache::forget("wa_session:{$phone}");
+        Cache::forget("ore_session:{$phone}");
+
+        \App\Models\OreWhatsappConversation::where('phone', $phone)->delete();
+
+        if ($useQuickCommands) {
+            app(OreWhatsappService::class)->sendButtons(
+                $phone,
+                "✅ Quick Commands is now active.\n\n"
+                . "You can send requests directly, for example:\n"
+                . "• MTN 1GB Weekly 08168509044\n"
+                . "• Airtel Airtime 1000 08168509044\n\n"
+                . "Type *hello* anytime to see the examples again.",
+                [
+                    [
+                        'id' => 'switch_to_guided_menu',
+                        'title' => 'Guided Menu',
+                    ],
+                ]
+            );
+        } else {
+            Cache::put(
+                "ore_session:{$phone}",
+                ['started_at' => now()],
+                now()->addHours(12)
+            );
+
+            app(OreWhatsappConversationService::class)->handle([
+                'phone' => $phone,
+                'message' => 'start',
+            ]);
+        }
+
+        return response()->json(['ok' => true]);
+    }
+
     private function handleWhatsappLinking(
         string $phone,
         string $text,
@@ -977,12 +1026,12 @@ class WhatsappWebhookController extends Controller
             );
         }
 
-        if ($continueCommand === 'ORE') {
+        if (in_array($continueCommand, ['ORE', 'GUIDED'], true)) {
             return app(OreWhatsappService::class)->sendButtons(
                 $phone,
                 $message,
                 [
-                    ['id' => 'start_ore', 'title' => 'Start Ore'],
+                    ['id' => 'guided_main_menu', 'title' => 'Open Menu'],
                 ]
             );
         }
@@ -1000,7 +1049,7 @@ class WhatsappWebhookController extends Controller
     ): array {
         return match ($continueCommand) {
             'MEGA' => app(MegaWhatsappService::class)->sendText($phone, $message),
-            'ORE' => app(OreWhatsappService::class)->sendText($phone, $message),
+            'ORE', 'GUIDED' => app(OreWhatsappService::class)->sendText($phone, $message),
             default => app(Whatsappsender::class)->send($phone, $message),
         };
     }

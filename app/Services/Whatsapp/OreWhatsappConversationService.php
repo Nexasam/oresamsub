@@ -67,27 +67,9 @@ class OreWhatsappConversationService
 
          /*
         |--------------------------------------------------------------------------
-        | Exit Ore Bot
+        | Open Guided Menu
         |--------------------------------------------------------------------------
         */
-        if ($message === 'start') {
-
-            Cache::forget(
-                "ore_session:{$phone}"
-            );
-
-            OreWhatsappConversation::where(
-                'phone',
-                $phone
-            )->delete();
-
-            return $this->whatsapp->sendText(
-                $phone,
-                'Ore session ended. Returning to the main menu...'
-            );
-        }
-
-    
         $user = $this->userResolver->resolve(
             $phone
         );
@@ -115,7 +97,31 @@ class OreWhatsappConversationService
             ]);
         }
     
-        if ($message === 'ore') {
+        if (in_array($message, [
+            'start',
+            'hi',
+            'hello',
+            'hey',
+            'yo',
+            'howdy',
+            'sup',
+            'whatsup',
+            "what's up",
+            'how far',
+            'how you dey',
+            'how u dey',
+            'how body',
+            'wetin dey',
+            'bawo ni',
+            'eku',
+            'eku ojo',
+            'eku aro',
+            'sanu',
+            'pele',
+            'good morning',
+            'good afternoon',
+            'good evening',
+        ], true)) {
     
             return $this->showMainMenu(
                 $conversation
@@ -142,7 +148,7 @@ class OreWhatsappConversationService
             return $this->showFavorites($conversation);
         }
 
-        if (in_array($message, ['quick', 'quick buy', 'power mode'], true)) {
+        if (in_array($message, ['quick', 'quick buy'], true)) {
             return $this->showQuickBuy($conversation);
         }
 
@@ -181,7 +187,7 @@ class OreWhatsappConversationService
     
         return $this->whatsapp->sendList(
             $conversation->phone,
-            "👋 Welcome to Ore!\n\nWhat would you like to do today?",
+            "👋 Welcome to OresamSub!\n\nWhat would you like to do today?",
             [
                 [
                     'id' => 'favorites',
@@ -210,6 +216,10 @@ class OreWhatsappConversationService
                 [
                     'id' => 'transactions',
                     'title' => 'Transactions'
+                ],
+                [
+                    'id' => 'switch_to_quick_commands',
+                    'title' => 'Quick Commands'
                 ]
             ],
             'View Menu'
