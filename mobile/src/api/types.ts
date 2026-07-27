@@ -29,6 +29,13 @@ export type MobileTransaction = {
   beneficiary: string | null;
   message: string | null;
   created_at: string;
+  plan: {
+    id: string;
+    name: string;
+    provider: string | null;
+    data_size_mb: number | null;
+    validity_days: number | null;
+  } | null;
   repeat_purchase: {
     product: 'data';
     plan_id: string;

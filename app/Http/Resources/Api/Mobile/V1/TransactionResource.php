@@ -38,6 +38,13 @@ class TransactionResource extends JsonResource
             'beneficiary' => $this->phone_number ?: ($this->smart_card_number ?: $this->metre_number),
             'message' => $this->user_screen_message,
             'created_at' => $this->created_at,
+            'plan' => $plan ? [
+                'id' => $plan->id,
+                'name' => $plan->product_plan_name,
+                'provider' => $category?->network?->network_name ?? $category?->product_plan_category_name,
+                'data_size_mb' => $plan->data_size_in_mb !== null ? (int) $plan->data_size_in_mb : null,
+                'validity_days' => $plan->validity_in_days !== null ? (int) $plan->validity_in_days : null,
+            ] : null,
             'repeat_purchase' => $canBuyAgain ? [
                 'product' => 'data',
                 'plan_id' => $plan->id,

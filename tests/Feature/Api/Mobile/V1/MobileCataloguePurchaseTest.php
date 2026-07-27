@@ -29,6 +29,7 @@ function cataloguePlan(string $slug = 'data', array $planOverrides = []): Produc
     return ProductPlan::create(array_merge([
         'product_plan_name' => '1GB Monthly', 'product_plan_category_id' => $category->id, 'automation_product_plan_id' => 'vendor-plan',
         'automation_id' => $automation->id, 'default_selling_price' => '500', 'user_level_1_selling_price' => '480',
+        'data_size_in_mb' => '1024', 'validity_in_days' => '30',
         'user_level_2_selling_price' => '450', 'visibility' => '1', 'public_visibility' => '1', 'active_status' => '1',
     ], $planOverrides));
 }
@@ -93,6 +94,9 @@ it('offers a safe buy again payload for a successful data transaction at the cur
         ->assertJsonPath('data.transaction.repeat_purchase.product', 'data')
         ->assertJsonPath('data.transaction.repeat_purchase.plan_id', $plan->id)
         ->assertJsonPath('data.transaction.repeat_purchase.price', 450)
+        ->assertJsonPath('data.transaction.plan.name', '1GB Monthly')
+        ->assertJsonPath('data.transaction.plan.data_size_mb', 1024)
+        ->assertJsonPath('data.transaction.plan.validity_days', 30)
         ->assertJsonMissingPath('data.transaction.repeat_purchase.beneficiary');
 
     app('auth')->forgetGuards();
