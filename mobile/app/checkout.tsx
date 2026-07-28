@@ -2,9 +2,10 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Contact } from 'expo-contacts';
 import { router, Stack, useLocalSearchParams } from 'expo-router';
 import { useRef, useState } from 'react';
-import { Alert, KeyboardAvoidingView, Platform, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
+import { Alert, Keyboard, KeyboardAvoidingView, Modal, Platform, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 import { ApiError } from '../src/api/client';
 import { mobileApi } from '../src/api/mobileApi';
+import { MaterialIcon } from '../src/components/MaterialIcon';
 import { PinInput } from '../src/components/PinInput';
 import { Screen } from '../src/components/Screen';
 import { colors, fonts } from '../src/theme/colors';
@@ -34,6 +35,7 @@ export default function CheckoutScreen() {
   const [pin, setPin] = useState('');
   const [amount, setAmount] = useState(isAirtime || isElectricity ? (params.amount ?? '') : params.price);
   const [validation, setValidation] = useState<Validation | null>(null);
+  const [confirmationOpen, setConfirmationOpen] = useState(false);
   const [purchaseReference] = useState(reference);
   const submissionLocked = useRef(false);
   const scrollRef = useRef<ScrollView>(null);
@@ -128,6 +130,20 @@ export default function CheckoutScreen() {
         submissionLocked.current = false;
       },
     });
+  };
+
+  const requestSubmit = () => {
+    if (isBiller && !validation) {
+      submit();
+      return;
+    }
+    Keyboard.dismiss();
+    setConfirmationOpen(true);
+  };
+
+  const confirmSubmit = () => {
+    setConfirmationOpen(false);
+    submit();
   };
 
   const chooseContact = async () => {
@@ -258,7 +274,7 @@ export default function CheckoutScreen() {
           ) : null}
           <Pressable
             disabled={mutation.isPending || !canSubmit}
-            onPress={submit}
+            onPress={requestSubmit}
             style={({ pressed }) => [styles.button, (pressed || mutation.isPending || !canSubmit) && styles.dim]}
           >
             <Text style={styles.buttonText}>{label}</Text>
@@ -266,6 +282,56 @@ export default function CheckoutScreen() {
           <Text style={styles.note}>Financial requests are never automatically retried. Each payment uses a unique reference.</Text>
         </Screen>
       </KeyboardAvoidingView>
+      <Modal
+        animationType="slide"
+        onRequestClose={() => setConfirmationOpen(false)}
+        transparent
+        visible={confirmationOpen}
+      >
+        <View style={styles.modalRoot}>
+          <Pressable accessibilityLabel="Cancel payment confirmation" onPress={() => setConfirmationOpen(false)} style={styles.backdrop} />
+          <View style={styles.confirmationSheet}>
+            <View style={styles.sheetHandle} />
+            <View style={styles.confirmationIcon}>
+              <MaterialIcon color={colors.primary} name="verified_user" size={27} />
+            </View>
+            <Text style={styles.confirmationTitle}>Confirm your payment</Text>
+            <Text style={styles.confirmationText}>Check the details carefully. Payments may be delivered immediately.</Text>
+            <View style={styles.confirmationDetails}>
+              <ConfirmationRow label="Service" value={serviceName(params.product)} />
+              <ConfirmationRow label="Provider" value={params.provider} />
+              <ConfirmationRow label="Plan" value={params.planName} />
+              <ConfirmationRow label={isBiller ? 'Customer number' : 'Beneficiary'} value={customerNumber} />
+              <ConfirmationRow
+                label="Amount"
+                value={money(needsVariableAmount ? Number(amount) : Number(params.price))}
+                last
+              />
+            </View>
+            <View style={styles.confirmationWarning}>
+              <MaterialIcon color={colors.warning} name="info" size={17} />
+              <Text style={styles.confirmationWarningText}>Please verify the beneficiary before continuing.</Text>
+            </View>
+            <Pressable
+              accessibilityRole="button"
+              disabled={mutation.isPending}
+              onPress={confirmSubmit}
+              style={({ pressed }) => [styles.confirmButton, (pressed || mutation.isPending) && styles.dim]}
+            >
+              <Text style={styles.confirmButtonText}>{mutation.isPending ? 'Processing…' : 'Confirm payment'}</Text>
+              <MaterialIcon color={colors.white} name="arrow_forward" size={19} />
+            </Pressable>
+            <Pressable
+              accessibilityRole="button"
+              disabled={mutation.isPending}
+              onPress={() => setConfirmationOpen(false)}
+              style={styles.cancelButton}
+            >
+              <Text style={styles.cancelButtonText}>Go back and edit</Text>
+            </Pressable>
+          </View>
+        </View>
+      </Modal>
     </>
   );
 }
@@ -293,6 +359,15 @@ function Row({ label, value }: { label: string; value: string }) {
     <View style={styles.row}>
       <Text style={styles.rowLabel}>{label}</Text>
       <Text numberOfLines={2} style={styles.rowValue}>{value}</Text>
+    </View>
+  );
+}
+
+function ConfirmationRow({ label, last = false, value }: { label: string; last?: boolean; value: string }) {
+  return (
+    <View style={[styles.confirmationRow, last && styles.confirmationLastRow]}>
+      <Text style={styles.confirmationLabel}>{label}</Text>
+      <Text numberOfLines={2} style={styles.confirmationValue}>{value}</Text>
     </View>
   );
 }
@@ -329,4 +404,22 @@ const styles = StyleSheet.create({
   dim: { opacity: 0.55 },
   buttonText: { color: colors.white, fontFamily: fonts.extraBold },
   note: { color: colors.muted, fontFamily: fonts.regular, fontSize: 11, marginTop: 12, textAlign: 'center' },
+  modalRoot: { flex: 1, justifyContent: 'flex-end' },
+  backdrop: { backgroundColor: 'rgba(5, 20, 15, 0.56)', bottom: 0, left: 0, position: 'absolute', right: 0, top: 0 },
+  confirmationSheet: { backgroundColor: colors.background, borderTopLeftRadius: 28, borderTopRightRadius: 28, paddingBottom: Platform.OS === 'ios' ? 32 : 24, paddingHorizontal: 20, paddingTop: 10 },
+  sheetHandle: { alignSelf: 'center', backgroundColor: colors.border, borderRadius: 3, height: 5, marginBottom: 15, width: 44 },
+  confirmationIcon: { alignItems: 'center', alignSelf: 'center', backgroundColor: colors.primarySoft, borderRadius: 23, height: 50, justifyContent: 'center', width: 50 },
+  confirmationTitle: { color: colors.text, fontFamily: fonts.extraBold, fontSize: 20, marginTop: 11, textAlign: 'center' },
+  confirmationText: { color: colors.muted, fontFamily: fonts.regular, fontSize: 11, lineHeight: 17, marginTop: 5, paddingHorizontal: 20, textAlign: 'center' },
+  confirmationDetails: { backgroundColor: colors.surface, borderColor: colors.border, borderRadius: 17, borderWidth: 1, marginTop: 16, paddingHorizontal: 14 },
+  confirmationRow: { alignItems: 'center', borderBottomColor: colors.border, borderBottomWidth: 1, flexDirection: 'row', justifyContent: 'space-between', paddingVertical: 10 },
+  confirmationLastRow: { borderBottomWidth: 0 },
+  confirmationLabel: { color: colors.muted, fontFamily: fonts.medium, fontSize: 10 },
+  confirmationValue: { color: colors.text, flex: 1, fontFamily: fonts.extraBold, fontSize: 11, marginLeft: 20, textAlign: 'right' },
+  confirmationWarning: { alignItems: 'center', backgroundColor: '#FFF7E5', borderRadius: 12, flexDirection: 'row', gap: 8, marginTop: 12, padding: 11 },
+  confirmationWarningText: { color: colors.text, flex: 1, fontFamily: fonts.medium, fontSize: 10, lineHeight: 15 },
+  confirmButton: { alignItems: 'center', backgroundColor: colors.primary, borderRadius: 14, flexDirection: 'row', gap: 8, justifyContent: 'center', marginTop: 14, minHeight: 52 },
+  confirmButtonText: { color: colors.white, fontFamily: fonts.extraBold, fontSize: 13 },
+  cancelButton: { alignItems: 'center', minHeight: 42, paddingTop: 13 },
+  cancelButtonText: { color: colors.muted, fontFamily: fonts.bold, fontSize: 12 },
 });

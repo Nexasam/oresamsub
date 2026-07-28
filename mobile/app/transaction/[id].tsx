@@ -129,8 +129,8 @@ function Row({ label, last = false, value }: { label: string; last?: boolean; va
 }
 
 function formatDataSize(sizeMb: number) {
-  if (sizeMb < 1024) return `${sizeMb} MB`;
-  const sizeGb = sizeMb / 1024;
+  if (sizeMb < 1000) return `${sizeMb} MB`;
+  const sizeGb = sizeMb / (sizeMb % 1000 === 0 ? 1000 : 1024);
   return `${Number.isInteger(sizeGb) ? sizeGb : sizeGb.toFixed(1)} GB`;
 }
 

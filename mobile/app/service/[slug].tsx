@@ -17,6 +17,11 @@ const networkLogos: Record<string, ImageSourcePropType> = {
   glo: require('../../assets/networks/glo.png'),
   '9mobile': require('../../assets/networks/9mobile.png'),
 };
+const cableLogos: Record<string, ImageSourcePropType> = {
+  dstv: { uri: 'https://oresamsub.com/assets/template2/images/dstv.png' },
+  gotv: { uri: 'https://oresamsub.com/assets/template2/images/gotv.png' },
+  startimes: { uri: 'https://oresamsub.com/assets/template2/images/startimes.png' },
+};
 
 export default function ServiceScreen() {
   const params = useLocalSearchParams<{ slug: string; name?: string }>();
@@ -31,8 +36,8 @@ export default function ServiceScreen() {
   const isElectricity = params.slug === 'utility_bills';
   const isNetworkService = isData || params.slug === 'airtime';
   const providers = useMemo(
-    () => buildProviders(categories.data ?? [], isNetworkService),
-    [categories.data, isNetworkService],
+    () => buildProviders(categories.data ?? [], isNetworkService, isCable),
+    [categories.data, isCable, isNetworkService],
   );
   const planQueries = useQueries({
     queries: (selected?.categories ?? []).map((category) => ({
@@ -190,7 +195,19 @@ function ProviderMark({ kind, logo, title }: {
   logo?: ImageSourcePropType;
   title: string;
 }) {
-  if (logo) return <View style={styles.providerMark}><Image resizeMode="contain" source={logo} style={styles.providerLogo} /></View>;
+  const [logoFailed, setLogoFailed] = useState(false);
+  if (logo && !logoFailed) {
+    return (
+      <View style={[styles.providerMark, kind === 'cable' && styles.cableProviderMark]}>
+        <Image
+          onError={() => setLogoFailed(true)}
+          resizeMode="contain"
+          source={logo}
+          style={[styles.providerLogo, kind === 'cable' && styles.cableLogo]}
+        />
+      </View>
+    );
+  }
   const accent = kind === 'electricity' ? '#D7780B' : kind === 'cable' ? '#7450C7' : colors.primary;
   const background = kind === 'electricity' ? '#FFF2D7' : kind === 'cable' ? '#F2EAFE' : colors.primarySoft;
   return (
@@ -209,11 +226,12 @@ function providerBadge(title: string) {
   return (words.length > 1 ? words.map((word) => word[0]).join('') : normalized.slice(0, 5)).toUpperCase();
 }
 
-function buildProviders(categories: CatalogueCategory[], dataOnly: boolean): ProviderOption[] {
+function buildProviders(categories: CatalogueCategory[], dataOnly: boolean, showCableLogos: boolean): ProviderOption[] {
   if (!dataOnly) {
     return categories.map((category) => ({
       categories: [category],
       key: category.id,
+      logo: showCableLogos ? cableLogo(category.network?.name ?? category.name) : undefined,
       title: category.network?.name ?? category.name,
     }));
   }
@@ -231,6 +249,14 @@ function buildProviders(categories: CatalogueCategory[], dataOnly: boolean): Pro
   }] : []);
 }
 
+function cableLogo(value: string) {
+  const normalized = value.toLowerCase().replace(/[^a-z0-9]/g, '');
+  if (normalized.includes('dstv')) return cableLogos.dstv;
+  if (normalized.includes('gotv')) return cableLogos.gotv;
+  if (normalized.includes('startimes')) return cableLogos.startimes;
+  return undefined;
+}
+
 function networkKey(value: string) {
   const name = value.toLowerCase();
   if (name.includes('mtn')) return 'mtn';
@@ -241,8 +267,8 @@ function networkKey(value: string) {
 }
 
 function formatDataSize(sizeMb: number) {
-  if (sizeMb < 1024) return `${sizeMb} MB`;
-  const sizeGb = sizeMb / 1024;
+  if (sizeMb < 1000) return `${sizeMb} MB`;
+  const sizeGb = sizeMb / (sizeMb % 1000 === 0 ? 1000 : 1024);
   return `${Number.isInteger(sizeGb) ? sizeGb : sizeGb.toFixed(1)} GB`;
 }
 
@@ -258,6 +284,8 @@ const styles = StyleSheet.create({
   providerActive: { backgroundColor: '#F2FCF8', borderColor: colors.primary },
   providerMark: { alignItems: 'center', backgroundColor: colors.surface, borderRadius: 13, height: 43, justifyContent: 'center', overflow: 'hidden', width: 43 },
   providerLogo: { height: 36, width: 36 },
+  cableProviderMark: { paddingHorizontal: 4, width: 60 },
+  cableLogo: { height: 32, width: 52 },
   providerBadge: { fontFamily: fonts.extraBold, fontSize: 7, marginTop: -1, maxWidth: 43 },
   providerName: { color: colors.text, fontFamily: fonts.semiBold, fontSize: 9, lineHeight: 12, marginTop: 6, maxWidth: 120, textAlign: 'center' },
   providerNameActive: { color: colors.primaryDark, fontFamily: fonts.bold },

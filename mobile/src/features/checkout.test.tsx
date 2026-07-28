@@ -23,6 +23,9 @@ it('prevents a double-tap from submitting a financial purchase twice', async () 
   const pay = screen.getByText('Pay securely');
   await fireEvent.press(pay);
   await fireEvent.press(pay);
+  const confirm = screen.getByText('Confirm payment');
+  await fireEvent.press(confirm);
+  await fireEvent.press(confirm);
   await waitFor(() => expect(mobileApi.purchaseData).toHaveBeenCalledTimes(1));
   await act(async () => { finish({ status: 'processed', message: null }); });
   await waitFor(() => expect(Alert.alert).toHaveBeenCalled());
