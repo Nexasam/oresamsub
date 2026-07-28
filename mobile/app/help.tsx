@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
+import * as Linking from 'expo-linking';
 import { router, Stack } from 'expo-router';
-import { ActivityIndicator, Alert, Linking, Pressable, StyleSheet, Text, View } from 'react-native';
+import { ActivityIndicator, Alert, Pressable, StyleSheet, Text, View } from 'react-native';
 import { apiRequest } from '../src/api/client';
 import { MaterialIcon } from '../src/components/MaterialIcon';
 import { Screen } from '../src/components/Screen';
@@ -134,15 +135,11 @@ function ActionRow({ icon, label, unavailable, value, url }: {
       return;
     }
     try {
-      if (!(await Linking.canOpenURL(url))) {
-        Alert.alert(`${label} unavailable`, 'No supported app is available on this phone. Please use another support option.');
-        return;
-      }
       await Linking.openURL(url);
     } catch {
       Alert.alert(
         `Unable to open ${label.toLowerCase()}`,
-        'This option or page is currently unavailable. Please try again later or contact support.',
+        'This option could not be opened. Please check your connection and try again.',
       );
     }
   };
