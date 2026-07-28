@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources\Api\Mobile\V1;
 
+use App\Support\MobileDisplayMessage;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -34,9 +35,12 @@ class TransactionResource extends JsonResource
             'category' => $this->transaction_category,
             'status' => $status,
             'amount' => round((float) $this->amount, 2),
-            'description' => $this->description,
+            'description' => MobileDisplayMessage::clean($this->description, 'Transaction'),
             'beneficiary' => $this->phone_number ?: ($this->smart_card_number ?: $this->metre_number),
-            'message' => $this->user_screen_message,
+            'message' => MobileDisplayMessage::clean(
+                $this->user_screen_message,
+                $status === 'failed' ? 'This transaction could not be completed.' : null,
+            ),
             'created_at' => $this->created_at,
             'plan' => $plan ? [
                 'id' => $plan->id,

@@ -10,6 +10,7 @@ import { colors, fonts } from '../../src/theme/colors';
 
 const money = (amount: number) => new Intl.NumberFormat('en-NG', { style: 'currency', currency: 'NGN' }).format(amount);
 type ProviderOption = { key: string; title: string; categories: CatalogueCategory[]; logo?: ImageSourcePropType };
+type SizeFilter = 'all' | number;
 const networkLogos: Record<string, ImageSourcePropType> = {
   mtn: require('../../assets/networks/mtn.png'),
   airtel: require('../../assets/networks/airtel.png'),
@@ -24,6 +25,7 @@ export default function ServiceScreen() {
     queryFn: () => mobileApi.categories(params.slug),
   });
   const [selected, setSelected] = useState<ProviderOption | null>(null);
+  const [sizeFilter, setSizeFilter] = useState<SizeFilter>('all');
   const isData = params.slug === 'data';
   const isCable = params.slug === 'cable_subscription';
   const isElectricity = params.slug === 'utility_bills';
@@ -42,13 +44,21 @@ export default function ServiceScreen() {
     .flatMap((query) => query.data ?? [])
     .filter((plan, index, all) => all.findIndex((item) => item.id === plan.id) === index);
   const plansPending = planQueries.some((query) => query.isPending);
+  const availableSizes = Array.from(new Set(
+    plans
+      .map((plan) => plan.data_size_mb)
+      .filter((size): size is number => typeof size === 'number' && size > 0),
+  )).sort((left, right) => left - right);
+  const visiblePlans = isData && sizeFilter !== 'all'
+    ? plans.filter((plan) => plan.data_size_mb === sizeFilter)
+    : plans;
   const providerLabel = isData ? 'network' : isCable ? 'TV provider' : isElectricity ? 'electricity provider' : 'provider';
   const promptIcon = isCable ? 'live_tv' : isElectricity ? 'bolt' : isNetworkService ? 'signal_cellular_alt' : 'payments';
 
   return (
     <>
       <Stack.Screen options={{ headerShown: true, title: params.name ?? 'Choose provider' }} />
-      <Screen>
+      <Screen safeTop={false}>
         <Text style={styles.eyebrow}>{isData ? 'BUY DATA' : isCable ? 'CABLE TV' : isElectricity ? 'ELECTRICITY' : 'SELECT SERVICE'}</Text>
         <Text style={styles.heading}>{isData ? 'Stay connected' : `Choose your ${providerLabel}`}</Text>
         <Text style={styles.subheading}>
@@ -68,7 +78,10 @@ export default function ServiceScreen() {
                   <Pressable
                     accessibilityLabel={provider.title}
                     key={provider.key}
-                    onPress={() => setSelected(provider)}
+                    onPress={() => {
+                      setSelected(provider);
+                      setSizeFilter('all');
+                    }}
                     style={({ pressed }) => [
                       styles.provider,
                       !isNetworkService && styles.providerWide,
@@ -98,13 +111,33 @@ export default function ServiceScreen() {
               <>
                 <View style={styles.planHeading}>
                   <Text style={styles.stepLabel}>2  Choose a plan</Text>
-                  <Text style={styles.planCount}>{plans.length} available</Text>
+                  <Text style={styles.planCount}>{visiblePlans.length} available</Text>
                 </View>
                 {plansPending ? (
                   <ActivityIndicator color={colors.primary} style={styles.loading} />
                 ) : (
-                  <View style={styles.planList}>
-                    {plans.map((plan) => (
+                  <>
+                    {isData && plans.length ? (
+                      <View style={styles.filters}>
+                        {(['all', ...availableSizes] as SizeFilter[]).map((filter) => {
+                          const active = sizeFilter === filter;
+                          return (
+                            <Pressable
+                              accessibilityRole="button"
+                              key={filter}
+                              onPress={() => setSizeFilter(filter)}
+                              style={({ pressed }) => [styles.filter, active && styles.filterActive, pressed && styles.pressed]}
+                            >
+                              <Text style={[styles.filterText, active && styles.filterTextActive]}>
+                                {filter === 'all' ? 'All sizes' : formatDataSize(filter)}
+                              </Text>
+                            </Pressable>
+                          );
+                        })}
+                      </View>
+                    ) : null}
+                    <View style={styles.planList}>
+                    {visiblePlans.map((plan) => (
                       <Pressable
                         key={plan.id}
                         onPress={() => router.push({
@@ -122,7 +155,7 @@ export default function ServiceScreen() {
                         <View style={styles.planCopy}>
                           <Text style={styles.planName}>{plan.name}</Text>
                           <Text style={styles.planMeta}>
-                            {plan.validity_days ? `Valid for ${plan.validity_days} days` : 'Instant delivery'}
+                            {[plan.data_size_mb ? formatDataSize(plan.data_size_mb) : null, plan.validity_days ? `${plan.validity_days} days` : 'Instant delivery'].filter(Boolean).join('  ·  ')}
                           </Text>
                         </View>
                         <View>
@@ -131,7 +164,9 @@ export default function ServiceScreen() {
                         </View>
                       </Pressable>
                     ))}
-                  </View>
+                    {!visiblePlans.length ? <Text style={styles.filteredEmpty}>No plan matches this data size.</Text> : null}
+                    </View>
+                  </>
                 )}
               </>
             ) : (
@@ -205,18 +240,24 @@ function networkKey(value: string) {
   return null;
 }
 
+function formatDataSize(sizeMb: number) {
+  if (sizeMb < 1024) return `${sizeMb} MB`;
+  const sizeGb = sizeMb / 1024;
+  return `${Number.isInteger(sizeGb) ? sizeGb : sizeGb.toFixed(1)} GB`;
+}
+
 const styles = StyleSheet.create({
   eyebrow: { color: colors.primary, fontFamily: fonts.extraBold, fontSize: 10, letterSpacing: 1.4 },
-  heading: { color: colors.text, fontFamily: fonts.extraBold, fontSize: 28, letterSpacing: -0.8, marginTop: 3 },
-  subheading: { color: colors.muted, fontFamily: fonts.regular, lineHeight: 20, marginTop: 6 },
-  loading: { marginTop: 38 },
-  stepLabel: { color: colors.text, fontFamily: fonts.bold, fontSize: 13, marginTop: 26, textTransform: 'capitalize' },
-  providers: { flexDirection: 'row', flexWrap: 'wrap', gap: 8, paddingTop: 13 },
-  provider: { alignItems: 'center', backgroundColor: colors.surface, borderColor: 'transparent', borderRadius: 18, borderWidth: 2, flex: 1, height: 100, justifyContent: 'center', minWidth: 0, paddingHorizontal: 5, paddingVertical: 9 },
-  providerWide: { flexBasis: '47%', flexGrow: 1, maxWidth: '49%', minHeight: 112 },
+  heading: { color: colors.text, fontFamily: fonts.extraBold, fontSize: 25, letterSpacing: -0.7, marginTop: 2 },
+  subheading: { color: colors.muted, fontFamily: fonts.regular, fontSize: 12, lineHeight: 18, marginTop: 4 },
+  loading: { marginTop: 28 },
+  stepLabel: { color: colors.text, fontFamily: fonts.bold, fontSize: 12, marginTop: 18, textTransform: 'capitalize' },
+  providers: { flexDirection: 'row', flexWrap: 'wrap', gap: 7, paddingTop: 10 },
+  provider: { alignItems: 'center', backgroundColor: colors.surface, borderColor: 'transparent', borderRadius: 16, borderWidth: 2, flex: 1, height: 88, justifyContent: 'center', minWidth: 0, paddingHorizontal: 4, paddingVertical: 7 },
+  providerWide: { flexBasis: '47%', flexGrow: 1, maxWidth: '49%', minHeight: 94 },
   providerActive: { backgroundColor: '#F2FCF8', borderColor: colors.primary },
-  providerMark: { alignItems: 'center', backgroundColor: colors.surface, borderRadius: 15, height: 50, justifyContent: 'center', overflow: 'hidden', width: 50 },
-  providerLogo: { height: 42, width: 42 },
+  providerMark: { alignItems: 'center', backgroundColor: colors.surface, borderRadius: 13, height: 43, justifyContent: 'center', overflow: 'hidden', width: 43 },
+  providerLogo: { height: 36, width: 36 },
   providerBadge: { fontFamily: fonts.extraBold, fontSize: 7, marginTop: -1, maxWidth: 43 },
   providerName: { color: colors.text, fontFamily: fonts.semiBold, fontSize: 9, lineHeight: 12, marginTop: 6, maxWidth: 120, textAlign: 'center' },
   providerNameActive: { color: colors.primaryDark, fontFamily: fonts.bold },
@@ -224,8 +265,13 @@ const styles = StyleSheet.create({
   pressed: { opacity: 0.72, transform: [{ scale: 0.985 }] },
   planHeading: { alignItems: 'baseline', flexDirection: 'row', justifyContent: 'space-between' },
   planCount: { color: colors.muted, fontFamily: fonts.regular, fontSize: 10 },
-  planList: { gap: 10, marginTop: 13 },
-  plan: { alignItems: 'center', backgroundColor: colors.surface, borderRadius: 18, elevation: 2, flexDirection: 'row', padding: 16, shadowColor: '#193E33', shadowOffset: { width: 0, height: 5 }, shadowOpacity: 0.05, shadowRadius: 10 },
+  filters: { flexDirection: 'row', flexWrap: 'wrap', gap: 7, marginTop: 11 },
+  filter: { backgroundColor: colors.surface, borderColor: colors.border, borderRadius: 18, borderWidth: 1, paddingHorizontal: 11, paddingVertical: 8 },
+  filterActive: { backgroundColor: colors.primaryDark, borderColor: colors.primaryDark },
+  filterText: { color: colors.muted, fontFamily: fonts.bold, fontSize: 9 },
+  filterTextActive: { color: colors.white },
+  planList: { gap: 8, marginTop: 11 },
+  plan: { alignItems: 'center', backgroundColor: colors.surface, borderRadius: 16, elevation: 2, flexDirection: 'row', padding: 14, shadowColor: '#193E33', shadowOffset: { width: 0, height: 5 }, shadowOpacity: 0.05, shadowRadius: 10 },
   planCopy: { flex: 1, marginRight: 10 },
   planName: { color: colors.text, fontFamily: fonts.bold, fontSize: 13 },
   planMeta: { color: colors.muted, fontFamily: fonts.regular, fontSize: 10, marginTop: 5 },
@@ -236,4 +282,5 @@ const styles = StyleSheet.create({
   promptTitle: { color: colors.text, fontFamily: fonts.bold, fontSize: 14, marginTop: 12, textTransform: 'capitalize' },
   promptText: { color: colors.muted, fontFamily: fonts.regular, fontSize: 11, marginTop: 4 },
   empty: { color: colors.muted, fontFamily: fonts.regular, padding: 30, textAlign: 'center' },
+  filteredEmpty: { color: colors.muted, fontFamily: fonts.medium, fontSize: 11, paddingVertical: 24, textAlign: 'center' },
 });

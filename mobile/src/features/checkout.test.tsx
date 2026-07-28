@@ -19,7 +19,7 @@ it('prevents a double-tap from submitting a financial purchase twice', async () 
   jest.spyOn(Alert, 'alert').mockImplementation(() => undefined);
   const screen = await render(<QueryClientProvider client={client}><CheckoutScreen /></QueryClientProvider>);
   await fireEvent.changeText(screen.getByPlaceholderText('08030000000'), '08030000000');
-  await fireEvent.changeText(screen.getByPlaceholderText('Enter 4 digits'), '1234');
+  await fireEvent.changeText(screen.getByPlaceholderText('4 digits'), '1234');
   const pay = screen.getByText('Pay securely');
   await fireEvent.press(pay);
   await fireEvent.press(pay);

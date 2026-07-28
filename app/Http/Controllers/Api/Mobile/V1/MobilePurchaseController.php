@@ -15,6 +15,7 @@ use App\Models\ProductPlan;
 use App\Models\Transaction;
 use App\Services\Automation\MegaSubPlugAutomation\MegaSubCableTV;
 use App\Services\Automation\MegaSubPlugAutomation\MegaSubElectricity;
+use App\Support\MobileDisplayMessage;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -87,7 +88,7 @@ class MobilePurchaseController extends Controller
         }
         $result = $this->runPurchase(fn () => (new MegaSubCableTV(smart_card_number: $request->string('customer_number')->toString(), plan_id: $plan->id, user_id: $request->user()->id))->validateSmartCardNumber());
         if ((int) ($result['status'] ?? -1) !== 1) {
-            return $this->errorResponse($result['message'] ?? 'Smart card validation failed.', null, 422);
+            return $this->errorResponse(MobileDisplayMessage::clean($result['message'] ?? null, 'We could not validate this smart card right now.'), null, 422);
         }
 
         return $this->successResponse('Smart card validated successfully.', $this->safeValidation($result));
@@ -119,7 +120,7 @@ class MobilePurchaseController extends Controller
         }
         $result = $this->runPurchase(fn () => (new MegaSubElectricity(metre_number: $request->string('customer_number')->toString(), plan_id: $plan->id, user_id: $request->user()->id))->validateMetreNumber());
         if ((int) ($result['status'] ?? -1) !== 1) {
-            return $this->errorResponse($result['message'] ?? 'Meter validation failed.', null, 422);
+            return $this->errorResponse(MobileDisplayMessage::clean($result['message'] ?? null, 'We could not validate this meter right now.'), null, 422);
         }
 
         return $this->successResponse('Meter validated successfully.', $this->safeValidation($result));
@@ -175,12 +176,16 @@ class MobilePurchaseController extends Controller
     private function purchaseResponse(array $result, string $label): JsonResponse
     {
         if ((int) ($result['status'] ?? -1) !== 1) {
-            return $this->errorResponse($result['message'] ?? "$label failed.", null, 422);
+            return $this->errorResponse(
+                MobileDisplayMessage::clean($result['message'] ?? null, "$label could not be completed. Please try again later."),
+                null,
+                422,
+            );
         }
 
         return $this->successResponse("$label processed successfully.", [
             'status' => 'processed',
-            'message' => $result['message'] ?? null,
+            'message' => MobileDisplayMessage::clean($result['message'] ?? null),
         ]);
     }
 

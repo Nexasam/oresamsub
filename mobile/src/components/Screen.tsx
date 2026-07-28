@@ -4,14 +4,15 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { colors } from '../theme/colors';
 
 type Props = PropsWithChildren<{
+  safeTop?: boolean;
   scroll?: boolean;
   scrollRef?: RefObject<ScrollView | null>;
 }>;
 
-export function Screen({ children, scroll = true, scrollRef }: Props) {
+export function Screen({ children, safeTop = true, scroll = true, scrollRef }: Props) {
   return (
     <KeyboardAvoidingView behavior="height" enabled={Platform.OS === 'android'} style={styles.flex}>
-      <SafeAreaView edges={['top']} style={styles.safe}>
+      <SafeAreaView edges={safeTop ? ['top'] : []} style={styles.safe}>
         {scroll ? (
           <ScrollView
             automaticallyAdjustKeyboardInsets={Platform.OS === 'ios'}

@@ -1,7 +1,8 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
-import { useState } from 'react';
+import * as SplashScreen from 'expo-splash-screen';
+import { useEffect, useState } from 'react';
 import { useFonts } from 'expo-font';
 import { Manrope_400Regular } from '@expo-google-fonts/manrope/400Regular';
 import { Manrope_500Medium } from '@expo-google-fonts/manrope/500Medium';
@@ -14,6 +15,9 @@ import { NotificationManager } from '../src/device/NotificationManager';
 import { OfflineBanner } from '../src/components/OfflineBanner';
 import { BootstrapGate } from '../src/config/BootstrapGate';
 import { colors, fonts } from '../src/theme/colors';
+
+void SplashScreen.preventAutoHideAsync().catch(() => undefined);
+SplashScreen.setOptions({ duration: 450, fade: true });
 
 export default function RootLayout() {
   const [fontsLoaded] = useFonts({ Manrope_400Regular, Manrope_500Medium, Manrope_600SemiBold, Manrope_700Bold, Manrope_800ExtraBold, MaterialSymbols_400Regular });
@@ -31,6 +35,10 @@ export default function RootLayout() {
         },
       }),
   );
+
+  useEffect(() => {
+    if (fontsLoaded) SplashScreen.hide();
+  }, [fontsLoaded]);
 
   if (!fontsLoaded) return null;
 

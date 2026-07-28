@@ -29,7 +29,7 @@ export function PinInput({ autoFocus, label, onChangeText, onFocus, style, value
           maxLength={4}
           onChangeText={(nextValue) => onChangeText(nextValue.replace(/\D/g, '').slice(0, 4))}
           onFocus={onFocus}
-          placeholder="Enter 4 digits"
+          placeholder="4 digits"
           placeholderTextColor={colors.muted}
           secureTextEntry={!visible}
           selectionColor={colors.primary}

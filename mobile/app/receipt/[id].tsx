@@ -27,7 +27,7 @@ export default function ReceiptScreen() {
   return (
     <>
       <Stack.Screen options={{ headerShown: true, title: 'Receipt' }} />
-      <Screen>
+      <Screen safeTop={false}>
         {query.isPending ? (
           <ActivityIndicator color={colors.primary} style={styles.loading} />
         ) : query.isError ? (

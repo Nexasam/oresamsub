@@ -29,7 +29,7 @@ export default function DeleteAccountScreen() {
   return (
     <>
       <Stack.Screen options={{ headerShown: true, title: 'Deactivate account' }} />
-      <Screen>
+      <Screen safeTop={false}>
         <View style={styles.icon}><MaterialIcon color={colors.danger} name="no_accounts" size={28} /></View>
         <Text style={styles.title}>Deactivate your account</Text>
         <Text style={styles.warning}>

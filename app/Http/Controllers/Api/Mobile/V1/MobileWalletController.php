@@ -29,11 +29,9 @@ class MobileWalletController extends Controller
 
     public function accounts(Request $request): JsonResponse
     {
-        $accounts = UserVirtualAccount::query()->with('funding_option:id,funding_option_name')
-            ->where('user_id', $request->user()->id)->latest()->get()
+        $accounts = UserVirtualAccount::query()->where('user_id', $request->user()->id)->latest()->get()
             ->map(fn (UserVirtualAccount $account) => [
                 'id' => $account->id,
-                'provider' => $account->funding_option?->funding_option_name,
                 'bank_name' => $account->bank_name,
                 'account_name' => $account->account_name,
                 'account_number' => $account->account_number,
@@ -92,11 +90,10 @@ class MobileWalletController extends Controller
             ->where('activation_status', '1')->get()
             ->map(fn (FundingOption $option) => [
                 'id' => $option->id,
-                'name' => $option->funding_option_name,
-                'slug' => $option->slug,
+                'name' => 'Bank transfer',
                 'banks' => $option->bank_codes->map(fn ($bank) => [
                     'code' => $bank->bank_code,
-                    'description' => $bank->short_description,
+                    'description' => $this->publicFundingDescription($bank->short_description),
                 ])->values(),
             ]);
 
@@ -125,5 +122,12 @@ class MobileWalletController extends Controller
     private function accountData(UserVirtualAccount $account): array
     {
         return ['id' => $account->id, 'bank_name' => $account->bank_name, 'account_name' => $account->account_name, 'account_number' => $account->account_number];
+    }
+
+    private function publicFundingDescription(?string $description): string
+    {
+        $description = preg_replace('/crystal\s*pay/i', 'bank transfer', (string) $description) ?? '';
+
+        return trim($description) ?: 'Instant wallet funding';
     }
 }

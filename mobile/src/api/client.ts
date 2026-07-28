@@ -19,10 +19,25 @@ async function parseResponse<T>(response: Response): Promise<ApiEnvelope<T>> {
   const payload = (await response.json().catch(() => null)) as ApiEnvelope<T> | null;
 
   if (!response.ok || !payload?.success) {
-    throw new ApiError(payload?.message ?? 'Unable to complete the request.', response.status, payload?.errors ?? null);
+    throw new ApiError(cleanApiMessage(payload?.message), response.status, payload?.errors ?? null);
   }
 
   return payload;
+}
+
+function cleanApiMessage(message: string | undefined) {
+  const fallback = 'Unable to complete the request. Please try again.';
+  if (!message) return fallback;
+  const decoded = message
+    .replace(/&lt;/gi, '<')
+    .replace(/&gt;/gi, '>')
+    .replace(/&amp;/gi, '&')
+    .replace(/&quot;/gi, '"')
+    .replace(/&#039;/gi, "'");
+  if (/<!doctype|<html\b|<head\b|<script\b|<style\b|stack\s*trace|sqlstate/i.test(decoded)) return fallback;
+  const cleaned = decoded.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
+  if (!cleaned) return fallback;
+  return cleaned.length > 220 ? `${cleaned.slice(0, 219).trimEnd()}…` : cleaned;
 }
 
 async function refreshAccessToken(): Promise<string | null> {

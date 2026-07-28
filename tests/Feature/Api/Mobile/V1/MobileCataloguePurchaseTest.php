@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Services\Api\v1\VendorUsersApi\Products\ProductsService;
 use App\Models\Automation;
 use App\Models\Network;
 use App\Models\Product;
@@ -57,6 +58,29 @@ it('rejects a purchase before provider processing when the transaction pin is wr
         'product_plan_id' => $plan->id, 'phone_number' => '08030000000', 'pin' => '9999', 'reference' => 'MOB-WRONG-PIN-1',
     ], catalogueHeaders($user))->assertUnprocessable()->assertJsonPath('message', 'Incorrect transaction PIN.');
     expect(Transaction::where('txn_reference', 'MOB-WRONG-PIN-1')->exists())->toBeFalse();
+});
+
+it('converts provider html failures into a safe mobile purchase message', function () {
+    $user = User::factory()->create(['pin' => '1234']);
+    $plan = cataloguePlan();
+    $products = Mockery::mock(ProductsService::class);
+    $products->shouldReceive('buy_data_service')->once()->andReturn([
+        'status' => -1,
+        'message' => '<!doctype html><html><head><style>body{display:none}</style></head><body>Upstream error</body></html>',
+    ]);
+    app()->instance(ProductsService::class, $products);
+
+    $response = postJson('/api/mobile/v1/purchases/data', [
+        'product_plan_id' => $plan->id,
+        'phone_number' => '08030000000',
+        'pin' => '1234',
+        'reference' => 'MOB-HTML-FAILURE-1',
+    ], catalogueHeaders($user))
+        ->assertUnprocessable()
+        ->assertJsonPath('message', 'Data purchase could not be completed. Please try again later.');
+
+    expect(strtolower($response->getContent()))->not->toContain('<html')
+        ->not->toContain('<style');
 });
 
 it('rejects duplicate idempotency references and scopes reconciliation by user', function () {

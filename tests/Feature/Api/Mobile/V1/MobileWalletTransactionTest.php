@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\FundingOption;
+use App\Models\FundingOptionBankCodes;
 use App\Models\Transaction;
 use App\Models\User;
 use App\Models\UserVirtualAccount;
@@ -72,7 +73,48 @@ it('returns wallet accounts without sensitive gateway fields and scopes them to 
     getJson('/api/mobile/v1/wallet', authenticatedMobileHeaders($user))
         ->assertOk()->assertJsonPath('data.balance', 1234.56)->assertJsonPath('data.accounts_count', 1);
 
-    getJson('/api/mobile/v1/wallet/accounts', authenticatedMobileHeaders($user))
+    $accountsResponse = getJson('/api/mobile/v1/wallet/accounts', authenticatedMobileHeaders($user))
         ->assertOk()->assertJsonCount(1, 'data')->assertJsonPath('data.0.account_number', '1234567890')
-        ->assertJsonMissingPath('data.0.bvn')->assertJsonMissing(['account_number' => '9999999999']);
+        ->assertJsonMissingPath('data.0.bvn')->assertJsonMissingPath('data.0.provider')
+        ->assertJsonMissing(['account_number' => '9999999999']);
+
+    expect(strtolower($accountsResponse->getContent()))->not->toContain('crystal');
+});
+
+it('removes payment gateway branding from mobile funding options', function () {
+    $user = User::factory()->create();
+    $option = FundingOption::create([
+        'funding_option_name' => 'Crystal Pay',
+        'slug' => 'crystal_pay',
+        'activation_status' => '1',
+    ]);
+    FundingOptionBankCodes::create([
+        'funding_option_id' => $option->id,
+        'bank_code' => 'wema',
+        'visibility_status' => '1',
+        'short_description' => 'CrystalPay Wema account',
+    ]);
+
+    $response = getJson('/api/mobile/v1/wallet/funding-options', authenticatedMobileHeaders($user))
+        ->assertOk()
+        ->assertJsonPath('data.0.name', 'Bank transfer')
+        ->assertJsonPath('data.0.banks.0.description', 'bank transfer Wema account')
+        ->assertJsonMissingPath('data.0.slug');
+
+    expect(strtolower($response->getContent()))->not->toContain('crystal');
+});
+
+it('never exposes provider html pages in mobile transaction messages', function () {
+    $user = User::factory()->create();
+    $transaction = transactionFor($user, [
+        'status' => '-1',
+        'user_screen_message' => '<!doctype html><html><head><style>body{color:red}</style></head><body>Gateway failure</body></html>',
+    ]);
+
+    $response = getJson("/api/mobile/v1/transactions/{$transaction->id}", authenticatedMobileHeaders($user))
+        ->assertOk()
+        ->assertJsonPath('data.transaction.message', 'This transaction could not be completed.');
+
+    expect(strtolower($response->getContent()))->not->toContain('<html')
+        ->not->toContain('<style');
 });

@@ -11,6 +11,7 @@ import { colors, fonts } from '../src/theme/colors';
 
 const money = (amount: number) => new Intl.NumberFormat('en-NG', { style: 'currency', currency: 'NGN' }).format(amount);
 const reference = () => `MOB-${Date.now()}-${Math.random().toString(36).slice(2, 10)}`;
+const airtimeAmounts = [50, 100, 200, 500];
 
 type Validation = { name: string | null; address: string | null; extra_info: string };
 
@@ -156,7 +157,7 @@ export default function CheckoutScreen() {
     <>
       <Stack.Screen options={{ headerShown: true, title: 'Confirm purchase' }} />
       <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined} style={styles.flex}>
-        <Screen scrollRef={scrollRef}>
+        <Screen safeTop={false} scrollRef={scrollRef}>
           <Text style={styles.heading}>Confirm purchase</Text>
           <View style={styles.summary}>
             <Row label="Service" value={serviceName(params.product)} />
@@ -204,6 +205,30 @@ export default function CheckoutScreen() {
           {needsVariableAmount ? (
             <>
               <Text style={styles.label}>Amount</Text>
+              {isAirtime ? (
+                <View style={styles.quickAmounts}>
+                  {airtimeAmounts.map((value) => {
+                    const active = Number(amount) === value;
+                    return (
+                      <Pressable
+                        accessibilityLabel={`Select ${money(value)} airtime`}
+                        accessibilityRole="button"
+                        key={value}
+                        onPress={() => setAmount(String(value))}
+                        style={({ pressed }) => [
+                          styles.quickAmount,
+                          active && styles.quickAmountActive,
+                          pressed && styles.dim,
+                        ]}
+                      >
+                        <Text style={[styles.quickAmountText, active && styles.quickAmountTextActive]}>
+                          ₦{value}
+                        </Text>
+                      </Pressable>
+                    );
+                  })}
+                </View>
+              ) : null}
               <TextInput
                 keyboardType="decimal-pad"
                 onChangeText={setAmount}
@@ -274,13 +299,13 @@ function Row({ label, value }: { label: string; value: string }) {
 
 const styles = StyleSheet.create({
   flex: { flex: 1 },
-  heading: { color: colors.text, fontFamily: fonts.extraBold, fontSize: 25 },
-  summary: { backgroundColor: colors.surface, borderColor: colors.border, borderRadius: 16, borderWidth: 1, marginBottom: 22, marginTop: 20, padding: 16 },
-  row: { flexDirection: 'row', justifyContent: 'space-between', paddingVertical: 7 },
+  heading: { color: colors.text, fontFamily: fonts.extraBold, fontSize: 23 },
+  summary: { backgroundColor: colors.surface, borderColor: colors.border, borderRadius: 16, borderWidth: 1, marginBottom: 16, marginTop: 12, paddingHorizontal: 15, paddingVertical: 10 },
+  row: { flexDirection: 'row', justifyContent: 'space-between', paddingVertical: 6 },
   rowLabel: { color: colors.muted, fontFamily: fonts.regular },
   rowValue: { color: colors.text, flex: 1, fontFamily: fonts.bold, marginLeft: 20, textAlign: 'right' },
-  labelRow: { alignItems: 'flex-end', flexDirection: 'row', justifyContent: 'space-between', marginTop: 12 },
-  label: { color: colors.text, fontFamily: fonts.bold, fontSize: 13, marginBottom: 7, marginTop: 12 },
+  labelRow: { alignItems: 'flex-end', flexDirection: 'row', justifyContent: 'space-between', marginTop: 7 },
+  label: { color: colors.text, fontFamily: fonts.bold, fontSize: 13, marginBottom: 7, marginTop: 9 },
   contactButton: { backgroundColor: colors.primarySoft, borderRadius: 10, marginBottom: 7, paddingHorizontal: 10, paddingVertical: 7 },
   contactButtonText: { color: colors.primary, fontFamily: fonts.extraBold, fontSize: 10 },
   inputShell: { alignItems: 'center', backgroundColor: colors.surface, borderColor: colors.border, borderRadius: 12, borderWidth: 1, flexDirection: 'row' },
@@ -288,6 +313,11 @@ const styles = StyleSheet.create({
   contactTick: { alignItems: 'center', backgroundColor: colors.primarySoft, borderRadius: 12, height: 28, justifyContent: 'center', marginRight: 10, width: 28 },
   contactTickText: { color: colors.primary, fontFamily: fonts.extraBold },
   selectedContact: { color: colors.primary, fontFamily: fonts.bold, fontSize: 10, marginTop: 6 },
+  quickAmounts: { flexDirection: 'row', gap: 8, marginBottom: 10 },
+  quickAmount: { alignItems: 'center', backgroundColor: colors.surface, borderColor: colors.border, borderRadius: 12, borderWidth: 1, flex: 1, paddingHorizontal: 8, paddingVertical: 11 },
+  quickAmountActive: { backgroundColor: colors.primaryDark, borderColor: colors.primaryDark },
+  quickAmountText: { color: colors.text, fontFamily: fonts.extraBold, fontSize: 12 },
+  quickAmountTextActive: { color: colors.white },
   input: { backgroundColor: colors.surface, borderColor: colors.border, borderRadius: 12, borderWidth: 1, color: colors.text, fontFamily: fonts.medium, fontSize: 16, padding: 14 },
   pinInput: { marginTop: 16 },
   validated: { backgroundColor: '#ecfdf5', borderRadius: 12, marginTop: 12, padding: 13 },

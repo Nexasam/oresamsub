@@ -30,7 +30,7 @@ export default function TransactionDetailScreen() {
   return (
     <>
       <Stack.Screen options={{ headerShown: true, title: 'Transaction details' }} />
-      <Screen>
+      <Screen safeTop={false}>
         {query.isPending ? (
           <ActivityIndicator color={colors.primary} style={styles.loading} />
         ) : query.isError ? (
@@ -42,11 +42,13 @@ export default function TransactionDetailScreen() {
                 <MaterialIcon
                   color={statusColor(query.data.status)}
                   name={query.data.status === 'successful' ? 'check_circle' : query.data.status === 'failed' ? 'cancel' : 'schedule'}
-                  size={30}
+                  size={27}
                 />
               </View>
-              <Text style={styles.amount}>{money(query.data.amount)}</Text>
-              <Text style={[styles.status, { color: statusColor(query.data.status) }]}>{query.data.status}</Text>
+              <View style={styles.heroCopy}>
+                <Text style={styles.amount}>{money(query.data.amount)}</Text>
+                <Text style={[styles.status, { color: statusColor(query.data.status) }]}>{query.data.status}</Text>
+              </View>
             </View>
 
             {query.data.plan ? (
@@ -100,7 +102,7 @@ export default function TransactionDetailScreen() {
                 </Pressable>
               </View>
             ) : null}
-            {query.data.message ? <Text style={styles.message}>{query.data.message}</Text> : null}
+            {query.data.message ? <View style={styles.messageCard}><MaterialIcon color={colors.muted} name="info" size={17} /><Text style={styles.message}>{query.data.message}</Text></View> : null}
           </>
         ) : null}
       </Screen>
@@ -158,10 +160,11 @@ function statusColor(status: string) {
 const styles = StyleSheet.create({
   loading: { marginTop: 60 },
   empty: { color: colors.muted, fontFamily: fonts.regular, marginTop: 60, textAlign: 'center' },
-  hero: { alignItems: 'center', paddingBottom: 25, paddingTop: 12 },
-  heroIcon: { alignItems: 'center', backgroundColor: colors.surface, borderRadius: 27, height: 54, justifyContent: 'center', marginBottom: 11, width: 54 },
-  amount: { color: colors.text, fontFamily: fonts.extraBold, fontSize: 32 },
-  status: { fontFamily: fonts.bold, fontSize: 12, marginTop: 7, textTransform: 'capitalize' },
+  hero: { alignItems: 'center', backgroundColor: colors.surface, borderColor: colors.border, borderRadius: 18, borderWidth: 1, flexDirection: 'row', marginBottom: 12, padding: 13 },
+  heroIcon: { alignItems: 'center', backgroundColor: colors.surfaceMuted, borderRadius: 22, height: 46, justifyContent: 'center', marginRight: 12, width: 46 },
+  heroCopy: { flex: 1 },
+  amount: { color: colors.text, fontFamily: fonts.extraBold, fontSize: 25, letterSpacing: -0.5 },
+  status: { fontFamily: fonts.bold, fontSize: 10, marginTop: 2, textTransform: 'capitalize' },
   planCard: { alignItems: 'center', backgroundColor: colors.primarySoft, borderColor: '#C7ECDD', borderRadius: 20, borderWidth: 1, flexDirection: 'row', flexWrap: 'wrap', padding: 15 },
   planIcon: { alignItems: 'center', backgroundColor: colors.surface, borderRadius: 15, height: 48, justifyContent: 'center', marginRight: 12, width: 48 },
   planCopy: { flex: 1, minWidth: 130 },
@@ -187,5 +190,6 @@ const styles = StyleSheet.create({
   repeatButton: { alignItems: 'center', alignSelf: 'flex-start', backgroundColor: colors.primary, borderRadius: 12, flexDirection: 'row', gap: 7, paddingHorizontal: 15, paddingVertical: 11 },
   repeatButtonText: { color: colors.white, fontFamily: fonts.bold, fontSize: 12 },
   pressed: { opacity: 0.75, transform: [{ scale: 0.98 }] },
-  message: { color: colors.muted, fontFamily: fonts.regular, marginTop: 18, textAlign: 'center' },
+  messageCard: { alignItems: 'flex-start', backgroundColor: colors.surfaceMuted, borderRadius: 14, flexDirection: 'row', gap: 8, marginTop: 13, padding: 12 },
+  message: { color: colors.muted, flex: 1, fontFamily: fonts.regular, fontSize: 10, lineHeight: 15 },
 });

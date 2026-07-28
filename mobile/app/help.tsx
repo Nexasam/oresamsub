@@ -23,7 +23,7 @@ export default function HelpScreen() {
   return (
     <>
       <Stack.Screen options={{ headerShown: true, title: 'Help and policies' }} />
-      <Screen>
+      <Screen safeTop={false}>
         <View style={styles.hero}>
           <View style={styles.heroIcon}><MaterialIcon color={colors.primary} name="support_agent" size={28} /></View>
           <View style={styles.heroCopy}>
@@ -42,7 +42,7 @@ export default function HelpScreen() {
               label="Email support"
               unavailable={!support.data?.email}
               value={support.data?.email ?? 'Not available yet'}
-              url={support.data?.email ? `mailto:${support.data.email}?subject=OresamSub%20mobile%20support` : null}
+              url={support.data?.email ? `mailto:${support.data.email}?subject=${encodeURIComponent('OresamSub mobile support')}` : null}
             />
             <ActionRow
               icon="call"
@@ -134,6 +134,10 @@ function ActionRow({ icon, label, unavailable, value, url }: {
       return;
     }
     try {
+      if (!(await Linking.canOpenURL(url))) {
+        Alert.alert(`${label} unavailable`, 'No supported app is available on this phone. Please use another support option.');
+        return;
+      }
       await Linking.openURL(url);
     } catch {
       Alert.alert(

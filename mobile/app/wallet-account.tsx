@@ -42,7 +42,7 @@ export default function WalletAccountScreen() {
   return (
     <>
       <Stack.Screen options={{ headerShown: true, title: 'Generate bank account' }} />
-      <Screen scrollRef={scrollRef}>
+      <Screen safeTop={false} scrollRef={scrollRef}>
         <Text style={styles.title}>Choose a bank</Text>
         <Text style={styles.subtitle}>Transfers to the generated account fund your OresamSub wallet.</Text>
         {options.isPending ? (

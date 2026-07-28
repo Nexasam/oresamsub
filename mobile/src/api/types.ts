@@ -86,9 +86,9 @@ export type CataloguePlan = {
 };
 
 export type PaginationMeta = { current_page: number; last_page: number; per_page?: number; total: number };
-export type WalletAccount = { id: string; provider: string | null; bank_name: string | null; account_name: string | null; account_number: string | null };
+export type WalletAccount = { id: string; bank_name: string | null; account_name: string | null; account_number: string | null };
 export type FundingHistoryItem = { id: string; status: string; amount: number; amount_settled: number; currency: string; bank_name: string; reference: string; created_at: string };
-export type FundingOption = { id: string; name: string; slug: string; banks: { code: string; description: string | null }[] };
+export type FundingOption = { id: string; name: string; banks: { code: string; description: string | null }[] };
 
 export type AuthTokens = {
   access_token: string;
