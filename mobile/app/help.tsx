@@ -7,18 +7,13 @@ import { Screen } from '../src/components/Screen';
 import { colors, fonts } from '../src/theme/colors';
 
 type Support = { email: string | null; phone: string | null; whatsapp: string | null };
-type Config = { legal: { privacy_url: string | null; terms_url: string | null; account_deletion_url: string | null } };
 
 export default function HelpScreen() {
   const support = useQuery({
     queryKey: ['support'],
     queryFn: async () => (await apiRequest<Support>('/support')).data,
   });
-  const config = useQuery({
-    queryKey: ['mobile-config-help'],
-    queryFn: async () => (await apiRequest<Config>('/config')).data,
-  });
-  const whatsapp = whatsappUrl(support.data?.whatsapp);
+  const whatsapp = whatsappUrls(support.data?.whatsapp);
 
   return (
     <>
@@ -54,9 +49,9 @@ export default function HelpScreen() {
             <ActionRow
               icon="chat"
               label="WhatsApp"
-              unavailable={!whatsapp}
+              unavailable={!whatsapp.length}
               value={support.data?.whatsapp ?? 'Not available yet'}
-              url={whatsapp}
+              urls={whatsapp}
             />
           </View>
         )}
@@ -69,44 +64,34 @@ export default function HelpScreen() {
 
         <Text style={styles.section}>Legal and account</Text>
         <View style={styles.policyNotice}>
-          <MaterialIcon color={colors.primary} name="open_in_browser" size={18} />
+          <MaterialIcon color={colors.primary} name="verified_user" size={18} />
           <Text style={styles.policyNoticeText}>
-            These pages open securely on oresamsub.com. If one is unavailable, the app will tell you.
+            These pages open securely inside OresamSub and remain available without another app.
           </Text>
         </View>
-        {config.isPending ? (
-          <ActivityIndicator color={colors.primary} style={styles.loading} />
-        ) : (
-          <View style={styles.list}>
-            <ActionRow
-              icon="privacy_tip"
-              label="Privacy policy"
-              unavailable={!config.data?.legal.privacy_url}
-              value={config.data?.legal.privacy_url ? 'Read on oresamsub.com' : 'Page not available yet'}
-              url={config.data?.legal.privacy_url}
-            />
-            <ActionRow
-              icon="gavel"
-              label="Terms and conditions"
-              unavailable={!config.data?.legal.terms_url}
-              value={config.data?.legal.terms_url ? 'Read on oresamsub.com' : 'Page not available yet'}
-              url={config.data?.legal.terms_url}
-            />
-            <ActionRow
-              icon="person_remove"
-              label="Account deletion instructions"
-              unavailable={!config.data?.legal.account_deletion_url}
-              value={config.data?.legal.account_deletion_url ? 'View request instructions' : 'Page not available yet'}
-              url={config.data?.legal.account_deletion_url}
-            />
-          </View>
-        )}
-        {config.isError ? (
-          <Pressable onPress={() => void config.refetch()} style={styles.notice}>
-            <MaterialIcon color={colors.warning} name="error" size={18} />
-            <Text style={styles.noticeText}>Policy pages could not be loaded. Tap to retry.</Text>
-          </Pressable>
-        ) : null}
+        <View style={styles.list}>
+          <ActionRow
+            icon="privacy_tip"
+            label="Privacy policy"
+            onPress={() => router.push({ pathname: '/legal/[document]', params: { document: 'privacy' } })}
+            unavailable={false}
+            value="Read inside OresamSub"
+          />
+          <ActionRow
+            icon="gavel"
+            label="Terms and conditions"
+            onPress={() => router.push({ pathname: '/legal/[document]', params: { document: 'terms' } })}
+            unavailable={false}
+            value="Read inside OresamSub"
+          />
+          <ActionRow
+            icon="person_remove"
+            label="Account deletion instructions"
+            onPress={() => router.push({ pathname: '/legal/[document]', params: { document: 'account-deletion' } })}
+            unavailable={false}
+            value="View instructions"
+          />
+        </View>
 
         <Pressable onPress={() => router.push('/delete-account')} style={({ pressed }) => [styles.deactivate, pressed && styles.pressed]}>
           <View style={styles.deactivateIcon}><MaterialIcon color={colors.danger} name="no_accounts" size={22} /></View>
@@ -121,26 +106,39 @@ export default function HelpScreen() {
   );
 }
 
-function ActionRow({ icon, label, unavailable, value, url }: {
+function ActionRow({ icon, label, onPress, unavailable, value, url, urls }: {
   icon: string;
   label: string;
+  onPress?: () => void;
   unavailable: boolean;
   value: string;
-  url: string | null | undefined;
+  url?: string | null;
+  urls?: string[];
 }) {
   const open = async () => {
-    if (!url) {
+    if (onPress) {
+      onPress();
+      return;
+    }
+    if (!url && !urls?.length) {
       Alert.alert(`${label} unavailable`, 'This option is not available yet. Please use another support method.');
       return;
     }
-    try {
-      await Linking.openURL(url);
-    } catch {
-      Alert.alert(
-        `Unable to open ${label.toLowerCase()}`,
-        'This option could not be opened. Please check your connection and try again.',
-      );
+    const candidates = urls?.length ? urls : url ? [url] : [];
+    for (const candidate of candidates) {
+      try {
+        await Linking.openURL(candidate);
+        return;
+      } catch {
+        // Try the next supported app/browser URL.
+      }
     }
+    Alert.alert(
+      `Unable to open ${label.toLowerCase()}`,
+      label === 'WhatsApp'
+        ? `Open WhatsApp manually and message ${value}.`
+        : 'This option could not be opened. Please check your connection and try again.',
+    );
   };
 
   return (
@@ -157,13 +155,18 @@ function ActionRow({ icon, label, unavailable, value, url }: {
   );
 }
 
-function whatsappUrl(value: string | null | undefined) {
-  if (!value) return null;
+function whatsappUrls(value: string | null | undefined) {
+  if (!value) return [];
   let digits = value.replace(/\D/g, '');
   if (digits.startsWith('0')) digits = `234${digits.slice(1)}`;
   else if (/^[789]\d{9}$/.test(digits)) digits = `234${digits}`;
-  if (!digits.startsWith('234') || digits.length !== 13) return null;
-  return `https://wa.me/${digits}?text=Hello%20OresamSub%20Support%2C%20I%20need%20help%20with%20the%20mobile%20app.`;
+  if (!digits.startsWith('234') || digits.length !== 13) return [];
+  const message = encodeURIComponent('Hello OresamSub Support, I need help with the mobile app.');
+  return [
+    `whatsapp://send?phone=${digits}&text=${message}`,
+    `https://api.whatsapp.com/send?phone=${digits}&text=${message}`,
+    `https://wa.me/${digits}?text=${message}`,
+  ];
 }
 
 const styles = StyleSheet.create({
