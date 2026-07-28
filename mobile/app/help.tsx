@@ -1,7 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
-import * as Linking from 'expo-linking';
 import { router, Stack } from 'expo-router';
-import { ActivityIndicator, Alert, Pressable, StyleSheet, Text, View } from 'react-native';
+import { ActivityIndicator, Alert, Linking, Pressable, StyleSheet, Text, View } from 'react-native';
 import { apiRequest } from '../src/api/client';
 import { MaterialIcon } from '../src/components/MaterialIcon';
 import { Screen } from '../src/components/Screen';
