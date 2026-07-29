@@ -248,6 +248,29 @@ it('uses only the highest-priority eligible funding campaign', function () {
         ->and(BonusLog::where('event_type', 'funding_reward')->count())->toBe(1);
 });
 
+it('keeps an awarded entitlement valid for its full reward period after the campaign closes', function () {
+    $bonus = bonusCampaign([
+        'enjoyment' => [Bonus::ENJOYMENT_WALLET, Bonus::ENJOYMENT_FUNDING],
+        'funding_type' => 'flat',
+        'funding_value' => 150,
+        'funding_whitelist' => ['xixapay'],
+        'reward_valid_days' => 7,
+        'ends_at' => now()->addHour(),
+    ]);
+    $user = User::factory()->create();
+    $service = app(BonusService::class);
+    $entitlement = $service->manuallyGrant($bonus, $user);
+
+    expect($entitlement)->not->toBeNull()
+        ->and($entitlement->expires_at->greaterThan(now()->addDays(6)))->toBeTrue()
+        ->and($entitlement->expires_at->greaterThan($bonus->ends_at))->toBeTrue();
+
+    $bonus->update(['ends_at' => now()->subMinute()]);
+    $reward = $service->applyFundingReward($user, 'xixapay', 5000, 'after-campaign-end', 50, 4950);
+
+    expect($reward['reward'])->toBe(150.0);
+});
+
 it('credits a Securewave funding campaign through its signed webhook exactly once', function () {
     $secret = 'securewave-test-secret';
     FundingOption::create([

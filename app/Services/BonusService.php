@@ -240,7 +240,7 @@ class BonusService
             ->where('user_id', $user->id)
             ->where('status', 'active')
             ->where('expires_at', '>', now())
-            ->whereHas('bonus', fn ($query) => $query->available())
+            ->whereHas('bonus', fn ($query) => $query->where('status', true))
             ->get()
             ->filter(function (BonusEntitlement $entitlement) use ($provider) {
                 $bonus = $entitlement->bonus;
@@ -275,8 +275,6 @@ class BonusService
 
             if (
                 ! $bonus->status
-                || $bonus->ends_at->isPast()
-                || ($bonus->starts_at && $bonus->starts_at->isFuture())
                 || $entitlement->expires_at->isPast()
                 || (int) $entitlement->funding_uses >= (int) $bonus->frequency_per_user
                 || BonusLog::query()->where('event_key', $eventKey)->exists()
@@ -471,10 +469,9 @@ class BonusService
                 return null;
             }
 
-            $expiresAt = $bonus->ends_at->copy();
-            if ($bonus->reward_valid_days) {
-                $expiresAt = now()->addDays((int) $bonus->reward_valid_days)->min($expiresAt);
-            }
+            $expiresAt = $bonus->reward_valid_days
+                ? now()->addDays((int) $bonus->reward_valid_days)
+                : $bonus->ends_at->copy();
 
             $walletAmount = $bonus->includes(Bonus::ENJOYMENT_WALLET)
                 ? round((float) $bonus->bonus_wallet_amount, 2)

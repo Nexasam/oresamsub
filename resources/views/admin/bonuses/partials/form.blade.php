@@ -81,8 +81,9 @@
             <input class="ti-form-input" type="number" min="0" step="0.01" name="bonus_wallet_amount" value="{{ old('bonus_wallet_amount', $campaign?->bonus_wallet_amount ?? 0) }}">
         </div>
         <div>
-            <label class="ti-form-label">Reward expires after days</label>
+            <label class="ti-form-label">Customer reward validity (days)</label>
             <input class="ti-form-input" type="number" min="1" name="reward_valid_days" value="{{ old('reward_valid_days', $campaign?->reward_valid_days) }}" placeholder="Uses campaign end date">
+            <p class="text-xs text-gray-500 mt-1">Starts when the customer qualifies and may continue after the campaign closes.</p>
         </div>
 
         <template x-if="has('funding_bonus')">
