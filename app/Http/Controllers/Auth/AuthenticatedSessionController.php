@@ -20,6 +20,7 @@ use Illuminate\Support\Facades\Session;
 use App\Http\Services\CouponCodeService;
 use App\Http\Services\CrystalPayService;
 use App\Http\Services\VirtualAccountService;
+use App\Services\BonusService;
 use Laravel\Fortify\Contracts\LoginResponse;
 use Laravel\Fortify\Http\Requests\LoginRequest;
 use Laravel\Fortify\Actions\AttemptToAuthenticate;
@@ -166,6 +167,11 @@ class AuthenticatedSessionController extends Controller
 
 
         return $this->loginPipeline($request)->then(function ($request) {
+            if (Auth::check()) {
+                app(BonusService::class)->captureLoginContext(Auth::user(), $request);
+                app(BonusService::class)->evaluate(Auth::user(), $request);
+            }
+
             return app(LoginResponse::class);
         });
     }

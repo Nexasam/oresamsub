@@ -1,5 +1,6 @@
 import { appEnvironment } from '../config/environment';
 import { tokenVault } from '../auth/tokenVault';
+import { getDeviceUuid } from '../device/deviceIdentity';
 import type { ApiEnvelope, AuthSession } from './types';
 
 export class ApiError extends Error {
@@ -74,12 +75,14 @@ type RequestOptions = RequestInit & { authenticated?: boolean; retryAfterRefresh
 export async function apiRequest<T>(path: string, options: RequestOptions = {}): Promise<ApiEnvelope<T>> {
   const { authenticated = false, retryAfterRefresh = true, headers, ...requestOptions } = options;
   const accessToken = authenticated ? await tokenVault.readAccessToken() : null;
+  const deviceId = await getDeviceUuid();
 
   const response = await fetch(`${appEnvironment.apiUrl}${path}`, {
     ...requestOptions,
     headers: {
       Accept: 'application/json',
       'Content-Type': 'application/json',
+      'X-Device-ID': deviceId,
       ...headers,
       ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
     },

@@ -33,6 +33,7 @@ const documents: Record<string, LegalDocument> = {
           'Account credentials and profile details.',
           'Transaction and payment information.',
           'Device, browser, usage, IP address and security-related information.',
+          'A privacy-protected device identifier and IP address may be used to prevent duplicate-account abuse, enforce promotional reward limits and investigate fraud.',
         ],
       },
       {
@@ -137,17 +138,17 @@ const documents: Record<string, LegalDocument> = {
   'account-deletion': {
     date: 'Last updated July 20, 2026',
     icon: 'person_remove',
-    introduction: 'You can deactivate access from the mobile app and contact OresamSub to complete an account-deletion request.',
+    introduction: 'You can submit a formal account-deletion request inside the mobile app or contact OresamSub from the public web instructions.',
     title: 'Account Deletion',
     sections: [
       {
-        heading: 'Deactivate from the app',
+        heading: 'Request deletion from the app',
         bullets: [
           'Open Account, then Help, support and policies.',
-          'Select Deactivate my account.',
-          'Enter your password and type DELETE to confirm.',
+          'Open Account deletion instructions and select Request account deletion.',
+          'Enter your password and type DELETE MY ACCOUNT to confirm.',
         ],
-        paragraphs: ['This immediately blocks account access and revokes active mobile sessions. It does not immediately delete records that must be retained for financial, security or legal reasons.'],
+        paragraphs: ['This records a formal deletion request, immediately blocks account access and revokes active mobile sessions. The request is reviewed within 30 days.'],
       },
       {
         heading: 'Request deletion by email',
@@ -196,9 +197,9 @@ export default function LegalDocumentScreen() {
               </View>
             ))}
             {document === 'account-deletion' ? (
-              <Pressable onPress={() => router.push('/delete-account')} style={({ pressed }) => [styles.deactivate, pressed && styles.pressed]}>
+              <Pressable onPress={() => router.push('/request-account-deletion')} style={({ pressed }) => [styles.deactivate, pressed && styles.pressed]}>
                 <MaterialIcon color={colors.white} name="no_accounts" size={19} />
-                <Text style={styles.deactivateText}>Deactivate my account</Text>
+                <Text style={styles.deactivateText}>Request account deletion</Text>
               </Pressable>
             ) : null}
             <Text style={styles.footer}>OresamSub is operated by Oresam Telecoms Global Concept.</Text>

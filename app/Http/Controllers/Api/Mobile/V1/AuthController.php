@@ -12,6 +12,7 @@ use App\Models\Role;
 use App\Models\User;
 use App\Models\UserPlan;
 use App\Notifications\MobileVerifyEmailNotification;
+use App\Services\BonusService;
 use App\Services\Mobile\MobileTokenService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -25,7 +26,10 @@ class AuthController extends Controller
 {
     use RespondsToMobileApi;
 
-    public function __construct(private readonly MobileTokenService $tokens) {}
+    public function __construct(
+        private readonly MobileTokenService $tokens,
+        private readonly BonusService $bonuses
+    ) {}
 
     public function register(RegisterRequest $request): JsonResponse
     {
@@ -56,6 +60,7 @@ class AuthController extends Controller
             ]);
         });
 
+        $this->bonuses->captureRegistrationContext($user, $request);
         $user->notify(new MobileVerifyEmailNotification);
 
         return $this->successResponse('Account created. Check your email to verify your account before signing in.', [
@@ -106,6 +111,8 @@ class AuthController extends Controller
             $user->update(['phone_verification' => true]);
         }
 
+        $this->bonuses->captureLoginContext($user, $request);
+        $this->bonuses->evaluate($user, $request);
         $tokenData = $this->tokens->issue($user, $request->string('device_name')->toString(), $request);
 
         return $this->successResponse('Login successful.', $this->sessionPayload($user, $tokenData));

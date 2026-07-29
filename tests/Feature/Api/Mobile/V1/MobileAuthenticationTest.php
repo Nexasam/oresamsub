@@ -1,5 +1,7 @@
 <?php
 
+use App\Models\MobileAccountDeletionRequest;
+use App\Models\MobileDeviceInstallation;
 use App\Models\MobileRefreshToken;
 use App\Models\Role;
 use App\Models\User;
@@ -265,4 +267,46 @@ it('deactivates with the dedicated flag without changing email verification', fu
         ->and($user->email_verified_at?->equalTo($verifiedAt))->toBeTrue()
         ->and($user->tokens()->count())->toBe(0)
         ->and($user->mobileRefreshTokens()->whereNull('revoked_at')->count())->toBe(0);
+});
+
+it('records a formal deletion request separately from ordinary deactivation', function () {
+    $user = User::factory()->create([
+        'email' => 'delete-request@example.com',
+        'password' => Hash::make('SecurePass123!'),
+    ]);
+    $login = postJson('/api/mobile/v1/auth/login', [
+        'login' => 'delete-request@example.com',
+        'password' => 'SecurePass123!',
+        'device_name' => 'Deletion Test Android',
+    ])->assertOk();
+    $device = MobileDeviceInstallation::create([
+        'user_id' => $user->id,
+        'device_uuid' => fake()->uuid(),
+        'expo_push_token' => 'ExponentPushToken[deletion_request_test]',
+        'platform' => 'android',
+        'enabled' => true,
+    ]);
+
+    postJson('/api/mobile/v1/account-deletion-requests', [
+        'password' => 'SecurePass123!',
+        'confirmation' => 'DELETE MY ACCOUNT',
+        'reason' => 'I no longer need the account.',
+    ], [
+        'Authorization' => 'Bearer '.$login->json('data.tokens.access_token'),
+    ])->assertAccepted()
+        ->assertJsonPath('success', true)
+        ->assertJsonPath('data.request.status', 'pending');
+
+    $user->refresh();
+    $device->refresh();
+    $deletionRequest = MobileAccountDeletionRequest::where('user_id', $user->id)->firstOrFail();
+
+    expect((bool) $user->is_deactivated)->toBeTrue()
+        ->and($deletionRequest->email)->toBe('delete-request@example.com')
+        ->and($deletionRequest->reason)->toBe('I no longer need the account.')
+        ->and($deletionRequest->status)->toBe('pending')
+        ->and($user->tokens()->count())->toBe(0)
+        ->and($user->mobileRefreshTokens()->whereNull('revoked_at')->count())->toBe(0)
+        ->and($device->enabled)->toBeFalse()
+        ->and($device->revoked_at)->not->toBeNull();
 });

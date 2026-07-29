@@ -33,6 +33,11 @@
     <li>IP address and security-related information</li>
 </ul>
 
+<p class="mb-4">
+    We may use a privacy-protected device identifier and IP address to prevent duplicate-account abuse,
+    enforce promotional reward limits, investigate fraud, and keep an auditable record of bonus eligibility.
+</p>
+
 <h2 class="font-semibold text-xl mt-8 mb-3">How We Use Your Information</h2>
 
 <ul class="list-disc ml-6 space-y-2 mb-4">

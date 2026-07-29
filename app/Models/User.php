@@ -46,6 +46,8 @@ class User extends Authenticatable implements MustVerifyEmail
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'main_wallet' => 'decimal:2',
+            'bonus_wallet' => 'decimal:2',
         ];
     }
 
@@ -82,6 +84,21 @@ class User extends Authenticatable implements MustVerifyEmail
     public function mobileDeviceInstallations(): HasMany
     {
         return $this->hasMany(MobileDeviceInstallation::class);
+    }
+
+    public function mobileAccountDeletionRequests(): HasMany
+    {
+        return $this->hasMany(MobileAccountDeletionRequest::class);
+    }
+
+    public function bonusEntitlements(): HasMany
+    {
+        return $this->hasMany(BonusEntitlement::class);
+    }
+
+    public function bonusLogs(): HasMany
+    {
+        return $this->hasMany(BonusLog::class);
     }
 
     public function latestTransaction()

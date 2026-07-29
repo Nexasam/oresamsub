@@ -9,6 +9,7 @@ use App\Models\FundingOption;
 use App\Models\FundingOptionBankCodes;
 use App\Models\FundingWebhookPayload;
 use App\Models\UserVirtualAccount;
+use App\Services\BonusService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
@@ -18,11 +19,16 @@ class MobileWalletController extends Controller
 {
     use RespondsToMobileApi;
 
-    public function show(Request $request): JsonResponse
+    public function show(Request $request, BonusService $bonuses): JsonResponse
     {
+        $bonus = $bonuses->summary($request->user(), $request);
+        $request->user()->refresh();
+
         return $this->successResponse('Wallet fetched successfully.', [
             'currency' => 'NGN',
             'balance' => round((float) $request->user()->main_wallet, 2),
+            'bonus_balance' => $bonus['balance'],
+            'bonus' => $bonus,
             'accounts_count' => UserVirtualAccount::where('user_id', $request->user()->id)->count(),
         ]);
     }

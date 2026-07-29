@@ -9,6 +9,7 @@ use App\Http\Controllers\AnnouncementsController;
 use App\Http\Controllers\AutomationController;
 use App\Http\Controllers\AutomationKeyController;
 use App\Http\Controllers\BulkDataPlanController;
+use App\Http\Controllers\BonusController;
 use App\Http\Controllers\CableSubscriptionController;
 use App\Http\Controllers\CommissionsController;
 use App\Http\Controllers\CouponCodesController;
@@ -594,6 +595,12 @@ Route::middleware(['set_locale'])->group(function () {
              Route::middleware(['auth','verified','admin'])->get('user_wallet_funding_promo/index', [WalletFundingPromoController::class, 'index_user'])->name('admin.user_wallet_funding_promo.index');
              Route::middleware(['auth','verified','admin'])->post('user_wallet_funding_promo/store', [WalletFundingPromoController::class, 'store_user'])->name('admin.user_wallet_funding_promo.index_store');
              Route::middleware(['auth','verified','admin'])->post('user_wallet_funding_promo/update/{id}', [WalletFundingPromoController::class, 'update_user'])->name('admin.user_wallet_funding_promo.update_user');
+             Route::middleware(['auth','verified','admin'])->get('admin/bonuses', [BonusController::class, 'index'])->name('admin.bonuses.index');
+             Route::middleware(['auth','verified','admin'])->post('admin/bonuses', [BonusController::class, 'store'])->name('admin.bonuses.store');
+             Route::middleware(['auth','verified','admin'])->put('admin/bonuses/{bonus}', [BonusController::class, 'update'])->name('admin.bonuses.update');
+             Route::middleware(['auth','verified','admin'])->patch('admin/bonuses/{bonus}/toggle', [BonusController::class, 'toggle'])->name('admin.bonuses.toggle');
+             Route::middleware(['auth','verified','admin'])->delete('admin/bonuses/{bonus}', [BonusController::class, 'destroy'])->name('admin.bonuses.destroy');
+             Route::middleware(['auth','verified','admin'])->post('admin/bonus-logs/{log}/override', [BonusController::class, 'override'])->name('admin.bonus-logs.override');
               
              //product plan custom pricing
              Route::middleware(['auth','verified','admin'])->get('product_plan_custom_pricing/index', [ProductPlanCustomPricingController::class, 'index'])->name('admin.product_plan_custom_pricing.index');

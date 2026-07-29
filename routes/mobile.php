@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\Mobile\V1\AuthController;
 use App\Http\Controllers\Api\Mobile\V1\MobileAnnouncementController;
 use App\Http\Controllers\Api\Mobile\V1\MobileBootstrapController;
+use App\Http\Controllers\Api\Mobile\V1\MobileBonusController;
 use App\Http\Controllers\Api\Mobile\V1\MobileCatalogueController;
 use App\Http\Controllers\Api\Mobile\V1\MobileDashboardController;
 use App\Http\Controllers\Api\Mobile\V1\MobileDeviceController;
@@ -52,12 +53,14 @@ Route::middleware(['auth:sanctum', 'mobile.user.active'])->group(function () {
     Route::post('/wallet/accounts', [MobileWalletController::class, 'createAccount'])->middleware('throttle:mobile-purchase')->name('wallet.accounts.create');
     Route::get('/wallet/funding-options', [MobileWalletController::class, 'fundingOptions'])->name('wallet.funding-options');
     Route::get('/wallet/funding-history', [MobileWalletController::class, 'fundingHistory'])->name('wallet.funding-history');
+    Route::post('/bonuses/convert', [MobileBonusController::class, 'convert'])->middleware('throttle:mobile-purchase')->name('bonuses.convert');
     Route::get('/transactions', [MobileTransactionController::class, 'index'])->name('transactions.index');
     Route::get('/transactions/{transaction}', [MobileTransactionController::class, 'show'])->name('transactions.show');
     Route::get('/transactions/{transaction}/receipt', [MobileTransactionController::class, 'receipt'])->name('transactions.receipt');
     Route::put('/security/password', [MobileSecurityController::class, 'password'])->middleware('throttle:mobile-password')->name('security.password');
     Route::put('/security/pin', [MobileSecurityController::class, 'pin'])->middleware('throttle:mobile-pin')->name('security.pin.update');
     Route::delete('/account', [MobileSecurityController::class, 'deactivate'])->middleware('throttle:mobile-password')->name('account.deactivate');
+    Route::post('/account-deletion-requests', [MobileSecurityController::class, 'requestDeletion'])->middleware('throttle:mobile-password')->name('account.deletion-request');
     Route::post('/devices', [MobileDeviceController::class, 'store'])->name('devices.store');
     Route::get('/devices/status', [MobileDeviceController::class, 'status'])->name('devices.status');
     Route::delete('/devices/{device}', [MobileDeviceController::class, 'destroy'])->name('devices.destroy');

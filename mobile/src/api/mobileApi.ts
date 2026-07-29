@@ -1,5 +1,5 @@
 import { apiRequest } from './client';
-import type { CatalogueCategory, CataloguePlan, CatalogueProduct, Dashboard, FundingHistoryItem, FundingOption, MobileAnnouncement, MobileReceipt, MobileTransaction, MobileUser, PaginationMeta, WalletAccount } from './types';
+import type { BonusSummary, CatalogueCategory, CataloguePlan, CatalogueProduct, Dashboard, FundingHistoryItem, FundingOption, MobileAnnouncement, MobileReceipt, MobileTransaction, MobileUser, PaginationMeta, WalletAccount } from './types';
 
 export const mobileApi = {
   async dashboard() {
@@ -52,7 +52,13 @@ export const mobileApi = {
     return (await apiRequest<{ receipt: MobileReceipt }>(`/transactions/${id}/receipt`, { authenticated: true })).data.receipt;
   },
   async wallet() {
-    return (await apiRequest<{ currency: string; balance: number; accounts_count: number }>('/wallet', { authenticated: true })).data;
+    return (await apiRequest<{ currency: string; balance: number; bonus_balance: number; bonus: BonusSummary; accounts_count: number }>('/wallet', { authenticated: true })).data;
+  },
+  async convertBonus() {
+    return (await apiRequest<{ converted_amount: number; main_wallet_balance: number; bonus_wallet_balance: number }>('/bonuses/convert', {
+      authenticated: true,
+      method: 'POST',
+    })).data;
   },
   async walletAccounts() {
     return (await apiRequest<WalletAccount[]>('/wallet/accounts', { authenticated: true })).data;
@@ -77,5 +83,10 @@ export const mobileApi = {
   },
   async deactivateAccount(input: { password: string; confirmation: 'DELETE' }) {
     return apiRequest<null>('/account', { authenticated: true, method: 'DELETE', body: JSON.stringify(input) });
+  },
+  async requestAccountDeletion(input: { password: string; confirmation: 'DELETE MY ACCOUNT'; reason?: string }) {
+    return apiRequest<{
+      request: { id: string; status: string; requested_at: string; retention_notice: string };
+    }>('/account-deletion-requests', { authenticated: true, method: 'POST', body: JSON.stringify(input) });
   },
 };

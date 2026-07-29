@@ -1,7 +1,7 @@
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { router } from 'expo-router';
 import { useEffect, useRef, useState } from 'react';
-import { ActivityIndicator, KeyboardAvoidingView, Modal, Platform, Pressable, RefreshControl, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
+import { ActivityIndicator, Alert, KeyboardAvoidingView, Modal, Platform, Pressable, RefreshControl, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { mobileApi } from '../../src/api/mobileApi';
 import { useAuthStore } from '../../src/auth/authStore';
@@ -20,6 +20,7 @@ const services = [
 
 export default function HomeScreen() {
   const user = useAuthStore((state) => state.user);
+  const queryClient = useQueryClient();
   const query = useQuery({ queryKey: ['dashboard'], queryFn: mobileApi.dashboard });
   const announcements = useQuery({ queryKey: ['announcements'], queryFn: mobileApi.announcements });
   const [notificationsOpen, setNotificationsOpen] = useState(false);
@@ -29,6 +30,25 @@ export default function HomeScreen() {
   const announcementAutoChecked = useRef(false);
   const buyAgainPlans = query.data?.buy_again_plans ?? [];
   const filteredBuyAgainPlans = buyAgainPlans.filter((plan) => `${plan.plan_name} ${plan.provider}`.toLowerCase().includes(buyAgainSearch.trim().toLowerCase()));
+  const convertBonus = useMutation({
+    mutationFn: mobileApi.convertBonus,
+    onSuccess: async (result) => {
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: ['dashboard'] }),
+        queryClient.invalidateQueries({ queryKey: ['wallet'] }),
+      ]);
+      Alert.alert('Bonus moved', `${money(result.converted_amount)} is now available in your main wallet.`);
+    },
+    onError: (error: Error) => Alert.alert('Could not move bonus', error.message),
+  });
+  const confirmBonusConversion = () => Alert.alert(
+    'Move bonus to wallet?',
+    `${money(query.data?.bonus?.balance ?? 0)} will be added to your available balance.`,
+    [
+      { text: 'Not now', style: 'cancel' },
+      { text: 'Move bonus', onPress: () => convertBonus.mutate() },
+    ],
+  );
 
   useEffect(() => {
     if (!announcements.data?.length || announcementAutoChecked.current) return;
@@ -48,6 +68,21 @@ export default function HomeScreen() {
           <View style={styles.walletTop}><View><Text style={styles.walletLabel}>AVAILABLE BALANCE</Text>{query.isPending ? <ActivityIndicator color={colors.white} style={styles.loader} /> : <Text style={styles.balance}>{money(query.data?.wallet.balance ?? 0)}</Text>}</View><View style={styles.nairaBadge}><Text style={styles.naira}>₦</Text></View></View>
           <View style={styles.walletActions}><Pressable onPress={() => router.push('/wallet')} style={({ pressed }) => [styles.fundButton, pressed && styles.pressed]}><Text style={styles.fundPlus}>＋</Text><Text style={styles.fundText}>Add money</Text></Pressable><Pressable onPress={() => router.push('/transactions')} style={styles.walletLink}><Text style={styles.walletLinkText}>History  ›</Text></Pressable></View>
         </View>
+        <View style={styles.bonusCard}>
+          <View style={styles.bonusMark}><MaterialIcon color="#A85A00" name="redeem" size={22} /></View>
+          <View style={styles.bonusCopy}>
+            <Text style={styles.bonusLabel}>BONUS WALLET</Text>
+            <Text style={styles.bonusBalance}>{money(query.data?.bonus?.balance ?? 0)}</Text>
+            {!!query.data?.bonus?.active_rewards[0] && <Text numberOfLines={1} style={styles.bonusTitle}>{query.data.bonus.active_rewards[0].title}</Text>}
+          </View>
+          <Pressable
+            disabled={!query.data?.bonus?.convertible || convertBonus.isPending}
+            onPress={confirmBonusConversion}
+            style={({ pressed }) => [styles.bonusButton, (!query.data?.bonus?.convertible || convertBonus.isPending) && styles.bonusButtonDisabled, pressed && styles.pressed]}
+          >
+            {convertBonus.isPending ? <ActivityIndicator color={colors.white} size="small" /> : <Text style={styles.bonusButtonText}>Move</Text>}
+          </Pressable>
+        </View>
         {query.isError && <Pressable onPress={() => void query.refetch()} style={styles.error}><Text style={styles.errorText}>Could not load your dashboard. Tap to retry.</Text></Pressable>}
         <View style={styles.headingRow}><Text style={styles.sectionTitle}>Quick services</Text><Pressable onPress={() => router.push('/services')}><Text style={styles.link}>See all</Text></Pressable></View>
         <View style={styles.serviceGrid}>{services.map((service) => <Pressable accessibilityLabel={service.label} key={service.slug} onPress={() => router.push({ pathname: '/service/[slug]', params: { slug: service.slug, name: service.label } })} style={({ pressed }) => [styles.service, pressed && styles.pressed]}><View style={[styles.serviceIconBox, { backgroundColor: service.tint }]}><MaterialIcon color={service.accent} name={service.icon} size={23} /></View><Text style={styles.serviceLabel}>{service.label}</Text></Pressable>)}</View>
@@ -64,6 +99,15 @@ export default function HomeScreen() {
 }
 
 const styles = StyleSheet.create({
+  bonusCard: { alignItems: 'center', backgroundColor: '#FFF7E6', borderColor: '#F4D9A6', borderRadius: 18, borderWidth: 1, flexDirection: 'row', marginTop: 12, padding: 13 },
+  bonusMark: { alignItems: 'center', backgroundColor: '#FFE8BA', borderRadius: 13, height: 42, justifyContent: 'center', marginRight: 11, width: 42 },
+  bonusCopy: { flex: 1 },
+  bonusLabel: { color: '#9B630F', fontFamily: fonts.extraBold, fontSize: 8, letterSpacing: 0.9 },
+  bonusBalance: { color: '#5D3A05', fontFamily: fonts.extraBold, fontSize: 17, marginTop: 2 },
+  bonusTitle: { color: '#9B6E2C', fontFamily: fonts.medium, fontSize: 9, marginTop: 2 },
+  bonusButton: { alignItems: 'center', backgroundColor: '#A85A00', borderRadius: 11, justifyContent: 'center', minHeight: 36, minWidth: 60, paddingHorizontal: 12 },
+  bonusButtonDisabled: { opacity: 0.38 },
+  bonusButtonText: { color: colors.white, fontFamily: fonts.bold, fontSize: 10 },
   safe: { backgroundColor: colors.background, flex: 1 }, screen: { paddingHorizontal: 20, paddingTop: 12, paddingBottom: 112 },
   greetingRow: { alignItems: 'center', flexDirection: 'row', marginBottom: 18 }, greetingCopy: { flex: 1, marginRight: 10, minWidth: 0 }, eyebrow: { color: colors.primary, fontFamily: fonts.extraBold, fontSize: 9, letterSpacing: 1.4 }, title: { color: colors.text, fontFamily: fonts.extraBold, fontSize: 21, letterSpacing: -0.55, marginTop: 3 }, wave: { fontSize: 18 }, headerActions: { alignItems: 'center', flexDirection: 'row', flexShrink: 0, gap: 7 }, bell: { alignItems: 'center', backgroundColor: colors.surface, borderRadius: 20, height: 40, justifyContent: 'center', width: 40 }, bellText: { color: colors.text, fontFamily: fonts.extraBold, fontSize: 20 }, unreadDot: { backgroundColor: colors.accent, borderColor: colors.surface, borderRadius: 5, borderWidth: 2, height: 9, position: 'absolute', right: 7, top: 6, width: 9 }, announcementDot: { backgroundColor: colors.danger, borderColor: colors.surface, borderRadius: 5, borderWidth: 2, height: 9, position: 'absolute', right: 7, top: 6, width: 9 }, avatar: { alignItems: 'center', backgroundColor: colors.primarySoft, borderColor: '#C3ECDD', borderRadius: 22, borderWidth: 1, height: 44, justifyContent: 'center', width: 44 }, avatarText: { color: colors.primaryDark, fontFamily: fonts.extraBold, fontSize: 17 },
   walletCard: { backgroundColor: colors.primaryDark, borderRadius: 24, overflow: 'hidden', paddingHorizontal: 20, paddingVertical: 18, shadowColor: colors.primaryDark, shadowOffset: { width: 0, height: 10 }, shadowOpacity: 0.2, shadowRadius: 18, elevation: 8 }, walletGlow: { backgroundColor: '#159570', borderRadius: 100, height: 150, opacity: 0.42, position: 'absolute', right: -45, top: -65, width: 150 }, walletTop: { alignItems: 'flex-start', flexDirection: 'row', justifyContent: 'space-between' }, walletLabel: { color: '#A7DCCB', fontFamily: fonts.extraBold, fontSize: 10, letterSpacing: 1.1 }, balance: { color: colors.white, fontFamily: fonts.extraBold, fontSize: 27, letterSpacing: -0.8, marginTop: 6 }, loader: { alignSelf: 'flex-start', marginVertical: 10 }, nairaBadge: { alignItems: 'center', backgroundColor: 'rgba(255,255,255,0.13)', borderRadius: 18, height: 36, justifyContent: 'center', width: 36 }, naira: { color: colors.white, fontFamily: fonts.extraBold, fontSize: 18 }, walletActions: { alignItems: 'center', flexDirection: 'row', justifyContent: 'space-between', marginTop: 16 }, fundButton: { alignItems: 'center', backgroundColor: colors.white, borderRadius: 12, flexDirection: 'row', paddingHorizontal: 13, paddingVertical: 9 }, fundPlus: { color: colors.primaryDark, fontFamily: fonts.extraBold, fontSize: 16, marginRight: 4 }, fundText: { color: colors.primaryDark, fontFamily: fonts.extraBold, fontSize: 12 }, walletLink: { padding: 8 }, walletLinkText: { color: '#CDECE2', fontFamily: fonts.bold, fontSize: 12 }, pressed: { opacity: 0.72, transform: [{ scale: 0.98 }] },

@@ -22,6 +22,7 @@ use Illuminate\Support\Facades\Session;
 use App\Models\UserMonnifyVirtualAccount;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Services\WalletFundingPromoService;
+use App\Services\BonusService;
 use App\Traits\Dashboard\UserDashboardDataTrait;
 use App\Models\MaxCrystalPaymentsPendingApproval;
 
@@ -123,7 +124,7 @@ class WalletsController extends Controller
                 
                 $email = $response_decode['customer']['email'];
 
-                $user_details = User::select('id','main_wallet')->where('email',$email)->first();
+                $user_details = User::select('id','main_wallet','email_verified_at','is_deactivated')->where('email',$email)->first();
                 
                 if($user_details){
                     $created_data['funding_status'] = 'success';
@@ -152,7 +153,8 @@ class WalletsController extends Controller
                 }else{
                     $created_data['funding_status'] = 'failed';
                     $can_fund = 'no';
-                    // logger('Cannot fund because user details not found');exit;
+                    DB::rollBack();
+
                     return response()->json(['status' => 'could not fund user wallet because user information was not found'], 200);
 
                 }
@@ -222,6 +224,23 @@ class WalletsController extends Controller
 
                 }
 
+
+                if ($can_fund === 'yes') {
+                    try {
+                        $campaignReward = app(BonusService::class)->applyFundingReward(
+                            $user_details,
+                            'securewaveng',
+                            (float) $paid_amount,
+                            (string) $response_decode['provider_reference'],
+                            (float) $charges,
+                            (float) $amount_to_fund_user
+                        );
+                        $amount_to_fund_user = round((float) $amount_to_fund_user + $campaignReward['reward'], 2);
+                    } catch (Throwable $bonusException) {
+                        report($bonusException);
+                    }
+                }
+
         
                 $created_data['funding_slug'] = 'securewaveng';
                 $created_data['user_id'] = $user_details->id;
@@ -277,9 +296,11 @@ class WalletsController extends Controller
                 
             }else{
                     // logger('This webhook did not update wallet because its likely that the payment has been processed before');
+                    DB::rollBack();
+
                     return response()->json(['status' => 'already  likely received'], 200);
             }
-            }catch(Exception $ex){
+            }catch(Throwable $ex){
                 logger(
                 $ex->getMessage() . 
                 ' on line ' . $ex->getLine() . 
@@ -327,11 +348,15 @@ class WalletsController extends Controller
   
 
     public function xixapayhook($id,Request $request){
-        header('Content-Type: application/json');
         $can_fund = '';
         $funding_option_details = FundingOption::with('webhook_string')->where('slug','xixapay')->first();
-        $response = file_get_contents('php://input');
-        $signatureHeader = $_SERVER['HTTP_XIXAPAY']; // xixapay signature header
+        $response = $request->getContent();
+        $signatureHeader = (string) $request->header('Xixapay', '');
+
+        if (! $funding_option_details?->api_secret_key || $signatureHeader === '') {
+            return response()->json(['status' => 'unauthorized'], 401);
+        }
+
         // Your Xixapay secret security key
         $secretKey = $funding_option_details->api_secret_key; // Replace with your actual secret key
         // Calculate the expected signature using HMAC-SHA256
@@ -345,9 +370,7 @@ class WalletsController extends Controller
             // Example: Process the data (e.g., update database)
         } else {
              logger('ran err');
-            // Signature is invalid, reject the request
-            header('HTTP/1.1 400 Bad Request');
-            echo "Invalid signature!";exit;
+            return response()->json(['status' => 'invalid signature'], 400);
         }
 
         $promo_id = NULL;
@@ -365,7 +388,7 @@ class WalletsController extends Controller
         if( ($response_decode['notification_status'] == 'payment_successful') && (!$check_exists) ){    
             
             $email = $response_decode['customer']['email'];
-            $user_details = User::select('id','main_wallet')->where('email',$email)->first();
+            $user_details = User::select('id','main_wallet','email_verified_at','is_deactivated')->where('email',$email)->first();
             
             if($user_details){
               $created_data['funding_status'] = 'success';
@@ -394,7 +417,9 @@ class WalletsController extends Controller
             }else{
               $created_data['funding_status'] = 'failed';
               $can_fund = 'no';
-              // logger('Cannot fund because user details not found');exit;
+              DB::rollBack();
+
+              return response()->json(['status' => 'could not fund user wallet because user information was not found'], 200);
             }
 
             $paid_amount = $response_decode['amount_paid'];
@@ -476,6 +501,23 @@ class WalletsController extends Controller
 
             }
 
+
+            if ($can_fund === 'yes') {
+                try {
+                    $campaignReward = app(BonusService::class)->applyFundingReward(
+                        $user_details,
+                        'xixapay',
+                        (float) $paid_amount,
+                        (string) $response_decode['transaction_id'],
+                        (float) $charges,
+                        (float) $amount_to_fund_user
+                    );
+                    $amount_to_fund_user = round((float) $amount_to_fund_user + $campaignReward['reward'], 2);
+                } catch (Throwable $bonusException) {
+                    report($bonusException);
+                }
+            }
+
             
             //SUSPEND GENERAL FOR NOW FOR NOW...WE WORK ON THIS LATER...
             // $daat['user'] = $user_details;
@@ -497,7 +539,7 @@ class WalletsController extends Controller
             $created_data['user_email'] = $response_decode['customer']['email'];
             $created_data['status'] = $response_decode['transaction_status'];
             $created_data['message'] = $response_decode['description'];
-            $created_data['package_id'] = $get_charges['bank_code'];
+            $created_data['package_id'] = $get_charges?->bank_code ?? $response_decode['transaction_id'];
             $created_data['bank_name'] = $bank_name;
             $created_data['account_name'] = $response_decode['receiver']['name'];
             $created_data['account_number'] = $response_decode['receiver']['account_number'];
@@ -531,17 +573,23 @@ class WalletsController extends Controller
               
               if( $created && $updated ){
                 DB::commit();
-                // logger('Great... All good.');
+
+                return response()->json(['status' => 'successfully processed'], 200);
 
               }else{
                 logger('Crediting failed for some reasons...');
                 DB::rollBack();
+
+                return response()->json(['status' => 'wallet could not be credited for some reasons'], 200);
               }
           
         }else{
           logger('This webhook did not update wallet because its likely that the payment has been processed before');
+          DB::rollBack();
+
+          return response()->json(['status' => 'already likely received'], 200);
         }
-      }catch(Exception $ex){
+      }catch(Throwable $ex){
         logger(
           $ex->getMessage() . 
           ' on line ' . $ex->getLine() . 
@@ -549,9 +597,9 @@ class WalletsController extends Controller
           ' [Thrown in class: ' . get_class($ex) . ']'
       );
         DB::rollBack();
-      }
 
-      // logger('testing webhook end');
+        return response()->json(['status' => 'error occurred: '.$ex->getMessage()], 200);
+      }
     }
    
     public function webhook($id,Request $request){

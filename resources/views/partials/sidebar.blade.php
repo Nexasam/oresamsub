@@ -334,6 +334,15 @@
                         </li>
                         <!-- End::slide -->
 
+                        <!-- Start::slide -->
+                        <li class="slide">
+                            <a href="{{ route('admin.bonuses.index') }}" class="side-menu__item">
+                                <i class="ri ri-gift-line side-menu__icon"></i>
+                                <span class="side-menu__label">Bonus Campaigns</span>
+                            </a>
+                        </li>
+                        <!-- End::slide -->
+
                           <!-- Start::slide -->
                           <li class="slide  has-sub">
                             <a href="{{ route('admin.daily_customer_followup.index')}}" class="side-menu__item">

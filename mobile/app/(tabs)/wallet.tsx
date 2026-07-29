@@ -1,5 +1,5 @@
-import { useQuery } from '@tanstack/react-query';
-import { ActivityIndicator, Pressable, StyleSheet, Text, View } from 'react-native';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { ActivityIndicator, Alert, Pressable, StyleSheet, Text, View } from 'react-native';
 import { mobileApi } from '../../src/api/mobileApi';
 import { Screen } from '../../src/components/Screen';
 import { TabPageHeader } from '../../src/components/TabPageHeader';
@@ -8,9 +8,29 @@ import { colors, fonts } from '../../src/theme/colors';
 const money = (amount: number) => new Intl.NumberFormat('en-NG', { style: 'currency', currency: 'NGN' }).format(amount);
 
 export default function WalletScreen() {
+  const queryClient = useQueryClient();
   const wallet = useQuery({ queryKey: ['wallet'], queryFn: mobileApi.wallet });
   const accounts = useQuery({ queryKey: ['wallet-accounts'], queryFn: mobileApi.walletAccounts });
   const history = useQuery({ queryKey: ['funding-history'], queryFn: mobileApi.fundingHistory });
+  const convertBonus = useMutation({
+    mutationFn: mobileApi.convertBonus,
+    onSuccess: async (result) => {
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: ['wallet'] }),
+        queryClient.invalidateQueries({ queryKey: ['dashboard'] }),
+      ]);
+      Alert.alert('Bonus moved', `${money(result.converted_amount)} is now in your main wallet.`);
+    },
+    onError: (error: Error) => Alert.alert('Could not move bonus', error.message),
+  });
+  const confirmBonusConversion = () => Alert.alert(
+    'Move bonus to main wallet?',
+    `You are about to move ${money(wallet.data?.bonus_balance ?? 0)}.`,
+    [
+      { text: 'Cancel', style: 'cancel' },
+      { text: 'Move bonus', onPress: () => convertBonus.mutate() },
+    ],
+  );
   return (
     <Screen>
       <TabPageHeader eyebrow="YOUR MONEY" title="Wallet" />
@@ -23,6 +43,20 @@ export default function WalletScreen() {
           <Text style={styles.balance}>{money(wallet.data?.balance ?? 0)}</Text>
         )}
         <Text style={styles.cardNote}>Ready for bills and airtime</Text>
+      </View>
+      <View style={styles.bonusCard}>
+        <View style={styles.bonusCopy}>
+          <Text style={styles.bonusLabel}>BONUS WALLET</Text>
+          <Text style={styles.bonusBalance}>{money(wallet.data?.bonus_balance ?? 0)}</Text>
+          <Text style={styles.bonusNote}>{wallet.data?.bonus?.active_rewards[0]?.title ?? 'Your campaign rewards appear here'}</Text>
+        </View>
+        <Pressable
+          disabled={!wallet.data?.bonus?.convertible || convertBonus.isPending}
+          onPress={confirmBonusConversion}
+          style={({ pressed }) => [styles.moveButton, (!wallet.data?.bonus?.convertible || convertBonus.isPending) && styles.moveButtonDisabled, pressed && { opacity: 0.8 }]}
+        >
+          {convertBonus.isPending ? <ActivityIndicator color={colors.white} size="small" /> : <Text style={styles.moveButtonText}>Move to wallet</Text>}
+        </Pressable>
       </View>
       <Text style={styles.section}>Bank accounts</Text>
       {accounts.isPending ? (
@@ -62,6 +96,14 @@ const styles = StyleSheet.create({
   label: { color: '#A7DCCB', fontFamily: fonts.extraBold, fontSize: 10, letterSpacing: 1.1 },
   balance: { color: colors.white, fontFamily: fonts.extraBold, fontSize: 29, letterSpacing: -0.8, marginTop: 7 },
   cardNote: { color: '#BEE5D8', fontFamily: fonts.regular, fontSize: 11, marginTop: 9 },
+  bonusCard: { alignItems: 'center', backgroundColor: '#FFF7E6', borderColor: '#F1D397', borderRadius: 18, borderWidth: 1, flexDirection: 'row', marginTop: 12, padding: 15 },
+  bonusCopy: { flex: 1, marginRight: 10 },
+  bonusLabel: { color: '#9B630F', fontFamily: fonts.extraBold, fontSize: 9, letterSpacing: 1 },
+  bonusBalance: { color: '#5D3A05', fontFamily: fonts.extraBold, fontSize: 20, marginTop: 3 },
+  bonusNote: { color: '#916D35', fontFamily: fonts.regular, fontSize: 9, marginTop: 3 },
+  moveButton: { alignItems: 'center', backgroundColor: '#A85A00', borderRadius: 12, justifyContent: 'center', minHeight: 40, minWidth: 102, paddingHorizontal: 12 },
+  moveButtonDisabled: { opacity: 0.38 },
+  moveButtonText: { color: colors.white, fontFamily: fonts.bold, fontSize: 10 },
   loading: { alignSelf: 'flex-start', marginTop: 14 },
   section: { color: colors.text, fontFamily: fonts.extraBold, fontSize: 17, letterSpacing: -0.3, marginBottom: 12, marginTop: 25 },
   account: { alignItems: 'center', backgroundColor: colors.surface, borderRadius: 18, elevation: 2, flexDirection: 'row', justifyContent: 'space-between', marginBottom: 10, padding: 16, shadowColor: '#193E33', shadowOffset: { width: 0, height: 5 }, shadowOpacity: 0.05, shadowRadius: 10 },

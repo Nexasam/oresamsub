@@ -46,7 +46,8 @@ export type MobileTransaction = {
 };
 
 export type Dashboard = {
-  wallet: { currency: 'NGN'; balance: number };
+  wallet: { currency: 'NGN'; balance: number; bonus_balance: number };
+  bonus: BonusSummary;
   summary: {
     total_transactions: number;
     successful_transactions: number;
@@ -59,6 +60,22 @@ export type Dashboard = {
     price: number;
     provider: string;
   }[];
+};
+
+export type BonusReward = {
+  id: string;
+  title: string;
+  group: string;
+  enjoyment: string[];
+  bonus_wallet_remaining: number;
+  funding_uses_remaining: number;
+  expires_at: string;
+};
+
+export type BonusSummary = {
+  balance: number;
+  convertible: boolean;
+  active_rewards: BonusReward[];
 };
 
 export type MobileAnnouncement = {

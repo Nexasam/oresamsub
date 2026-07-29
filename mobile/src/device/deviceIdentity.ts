@@ -8,7 +8,23 @@ const randomUuid = () => 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g,
   return (char === 'x' ? value : (value & 0x3) | 0x8).toString(16);
 });
 
+let deviceUuidPromise: Promise<string> | null = null;
+
 export async function getDeviceUuid() {
+  deviceUuidPromise ??= resolveDeviceUuid();
+  return deviceUuidPromise;
+}
+
+async function resolveDeviceUuid() {
+  if (Platform.OS === 'web') {
+    const webKey = `web.${key}`;
+    const saved = typeof localStorage === 'undefined' ? null : localStorage.getItem(webKey);
+    if (saved) return saved;
+    const uuid = randomUuid();
+    if (typeof localStorage !== 'undefined') localStorage.setItem(webKey, uuid);
+    return uuid;
+  }
+
   const saved = await SecureStore.getItemAsync(key);
   if (saved) return saved;
   const nativeId = Platform.OS === 'android' ? Application.getAndroidId() : await Application.getIosIdForVendorAsync();

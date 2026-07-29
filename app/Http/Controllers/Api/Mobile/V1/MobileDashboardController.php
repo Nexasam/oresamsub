@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\Api\Mobile\V1\TransactionResource;
 use App\Models\ProductPlan;
 use App\Models\Transaction;
+use App\Services\BonusService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -14,9 +15,11 @@ class MobileDashboardController extends Controller
 {
     use RespondsToMobileApi;
 
-    public function __invoke(Request $request): JsonResponse
+    public function __invoke(Request $request, BonusService $bonuses): JsonResponse
     {
         $user = $request->user();
+        $bonusSummary = $bonuses->summary($user, $request);
+        $user->refresh();
         $recentTransactions = Transaction::query()
             ->with([
                 'product_plan.product_plan_category.product',
@@ -75,7 +78,9 @@ class MobileDashboardController extends Controller
             'wallet' => [
                 'currency' => 'NGN',
                 'balance' => round((float) $user->main_wallet, 2),
+                'bonus_balance' => round((float) $user->bonus_wallet, 2),
             ],
+            'bonus' => $bonusSummary,
             'summary' => [
                 'total_transactions' => Transaction::where('user_id', $user->id)->count(),
                 'successful_transactions' => Transaction::where('user_id', $user->id)->where('status', '1')->count(),

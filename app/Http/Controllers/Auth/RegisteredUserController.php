@@ -23,6 +23,7 @@ use App\Http\Services\CrystalPayService;
 use Illuminate\Validation\Rules\Password;
 use App\Mail\UserRegistrationNotification;
 use App\Http\Services\VirtualAccountService;
+use App\Services\BonusService;
 
 class RegisteredUserController extends Controller
 {
@@ -146,6 +147,7 @@ class RegisteredUserController extends Controller
         // }
 
         $user = User::create($data);
+        app(BonusService::class)->captureRegistrationContext($user, $request);
 
         // $dataaa['user'] = $user;
         // (new VirtualAccountService())->generate_accounts($dataaa);
