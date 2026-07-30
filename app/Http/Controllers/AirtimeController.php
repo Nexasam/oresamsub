@@ -559,7 +559,7 @@ class AirtimeController extends Controller
                                     $walletLog['balance_before'] = $wallet_before;
                                     $walletLog['balance_after'] = $wallet_after;
                                     $walletLog['transaction_id'] = $transaction->id;
-                                    $walletLog['action_by'] = $request->user_id;
+                                    $walletLog['action_by'] = $user_id;
                                     $walletLog['description'] = 'Airtime Purchase from main wallet';
                                     $this->log_wallet_transactions($walletLog);  
                                     
