@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Controllers;
 
 use Exception;
@@ -560,7 +559,7 @@ class AirtimeController extends Controller
                                     $walletLog['balance_before'] = $wallet_before;
                                     $walletLog['balance_after'] = $wallet_after;
                                     $walletLog['transaction_id'] = $transaction->id;
-                                    $walletLog['action_by'] = $request->user->id;
+                                    $walletLog['action_by'] = $request->user_id;
                                     $walletLog['description'] = 'Airtime Purchase from main wallet';
                                     $this->log_wallet_transactions($walletLog);  
                                     
@@ -577,7 +576,7 @@ class AirtimeController extends Controller
                             }
                             return response()->json(['status'=>1, 'message'=>'Transaction was successfully processed', 'data' => $display_results  ]);
                     
-                        } else{
+                        }else{
                             return response()->json(['status'=> -1, 'message'=>'Wrong wallet selection', 'data'=>[]]);
                         }
 
