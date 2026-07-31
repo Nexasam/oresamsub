@@ -1,6 +1,7 @@
 <?php
 
 use App\Console\Commands\BackfillProductPlanNetworks;
+use App\Console\Commands\CheckAffiliateLowBalances;
 use App\Console\Commands\ClearErrorLogs;
 use App\Console\Commands\ComputeReferralCommission;
 use App\Console\Commands\FinalizeDailyCommission;
@@ -51,6 +52,9 @@ Schedule::command(ReprocessPendingTransaction::class)->everyMinute()->withoutOve
 Schedule::command(ClearErrorLogs::class)->everyThirtyMinutes()->withoutOverlapping();
 
 Schedule::command(RunWalletAutoFunding::class)->everyFiveMinutes()->withoutOverlapping();
-
+Schedule::command(CheckAffiliateLowBalances::class)
+    ->hourly()
+    ->timezone('Africa/Lagos')
+    ->withoutOverlapping();
 
 

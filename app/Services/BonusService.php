@@ -10,6 +10,7 @@ use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 class BonusService
 {
@@ -129,7 +130,7 @@ class BonusService
                 ->lockForUpdate()
                 ->get();
 
-            $amount = round((float) $entitlements->sum('bonus_wallet_remaining'), 2);
+            $amount = round((float) $lockedUser->bonus_wallet, 2);
             if ($amount <= 0) {
                 return [
                     'converted_amount' => 0.0,
@@ -142,15 +143,25 @@ class BonusService
             $mainAfter = round($mainBefore + $amount, 2);
             $ip = $request ? $this->ip($request) : null;
             $deviceHash = $request ? $this->deviceHash($request) : null;
+            $campaignAmount = 0.0;
+            $unallocatedAmount = $amount;
 
             foreach ($entitlements as $entitlement) {
-                $converted = round((float) $entitlement->bonus_wallet_remaining, 2);
+                $remaining = round((float) $entitlement->bonus_wallet_remaining, 2);
+                $converted = round(min($remaining, $unallocatedAmount), 2);
+                if ($converted <= 0) {
+                    break;
+                }
+
+                $campaignAmount += $converted;
+                $unallocatedAmount = round($unallocatedAmount - $converted, 2);
+                $entitlementBalance = round($remaining - $converted, 2);
                 $hasFundingLeft = $this->hasFundingBenefit($entitlement->bonus)
                     && (int) $entitlement->funding_uses < (int) $entitlement->bonus->frequency_per_user;
 
                 $entitlement->update([
-                    'bonus_wallet_remaining' => 0,
-                    'status' => $hasFundingLeft ? 'active' : 'exhausted',
+                    'bonus_wallet_remaining' => $entitlementBalance,
+                    'status' => $hasFundingLeft || $entitlementBalance > 0 ? 'active' : 'exhausted',
                 ]);
 
                 BonusLog::create([
@@ -168,13 +179,30 @@ class BonusService
                 ]);
             }
 
+            $externalBonusAmount = round(max(0, $amount - $campaignAmount), 2);
+            if ($externalBonusAmount > 0) {
+                BonusLog::create([
+                    'bonus_id' => null,
+                    'bonus_entitlement_id' => null,
+                    'user_id' => $lockedUser->id,
+                    'event_type' => 'external_bonus_converted',
+                    'amount' => $externalBonusAmount,
+                    'balance_before' => $mainBefore,
+                    'balance_after' => $mainAfter,
+                    'ip_address' => $ip,
+                    'device_hash' => $deviceHash,
+                    'event_key' => $this->eventKey(
+                        'external-wallet-converted',
+                        $lockedUser->id,
+                        (string) Str::uuid()
+                    ),
+                    'metadata' => ['destination' => 'main_wallet', 'source' => 'upline_or_external_bonus'],
+                ]);
+            }
+
             $lockedUser->update([
                 'main_wallet' => $mainAfter,
-                'bonus_wallet' => BonusEntitlement::query()
-                    ->where('user_id', $lockedUser->id)
-                    ->where('status', 'active')
-                    ->where('expires_at', '>', now())
-                    ->sum('bonus_wallet_remaining'),
+                'bonus_wallet' => 0,
             ]);
 
             return [
@@ -369,11 +397,10 @@ class BonusService
 
             if ($expired->isNotEmpty()) {
                 $lockedUser->update([
-                    'bonus_wallet' => BonusEntitlement::query()
-                        ->where('user_id', $lockedUser->id)
-                        ->where('status', 'active')
-                        ->where('expires_at', '>', now())
-                        ->sum('bonus_wallet_remaining'),
+                    'bonus_wallet' => max(
+                        0,
+                        round((float) $lockedUser->bonus_wallet - $expiredAmount, 2)
+                    ),
                 ]);
             }
 

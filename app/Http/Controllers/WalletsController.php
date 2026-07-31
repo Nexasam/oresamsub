@@ -23,6 +23,7 @@ use App\Models\UserMonnifyVirtualAccount;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Services\WalletFundingPromoService;
 use App\Services\BonusService;
+use App\Services\UplineFundingBonusService;
 use App\Traits\Dashboard\UserDashboardDataTrait;
 use App\Models\MaxCrystalPaymentsPendingApproval;
 
@@ -92,8 +93,6 @@ class WalletsController extends Controller
             // Compute HMAC of the payload
             $computedHmac = hash_hmac('sha256', $raw, $secretKey);
 
-            logger("Merchant hash: $computedHmac; Platform hash: $signature");
-        
             // Compare signatures securely
             if (!hash_equals($computedHmac, $signature)) {
                 logger('Webhook signature verification failed.');
@@ -115,7 +114,8 @@ class WalletsController extends Controller
 
             $provider_ref = $response_decode['provider_reference'];
 
-            $check_exists = FundingWebhookPayload::where('transaction_reference',$response_decode['provider_reference'])
+            $check_exists = FundingWebhookPayload::where('funding_slug', 'securewaveng')
+            ->where('transaction_reference',$response_decode['provider_reference'])
             ->first();
 
      
@@ -124,7 +124,10 @@ class WalletsController extends Controller
                 
                 $email = $response_decode['customer']['email'];
 
-                $user_details = User::select('id','main_wallet','email_verified_at','is_deactivated')->where('email',$email)->first();
+                $user_details = User::select('id','main_wallet','email_verified_at','is_deactivated','upline_id')
+                    ->where('email', $email)
+                    ->lockForUpdate()
+                    ->first();
                 
                 if($user_details){
                     $created_data['funding_status'] = 'success';
@@ -239,6 +242,17 @@ class WalletsController extends Controller
                     } catch (Throwable $bonusException) {
                         report($bonusException);
                     }
+
+                    try {
+                        app(UplineFundingBonusService::class)->apply(
+                            $user_details,
+                            'securewaveng',
+                            (float) $paid_amount,
+                            (string) $response_decode['provider_reference']
+                        );
+                    } catch (Throwable $uplineBonusException) {
+                        report($uplineBonusException);
+                    }
                 }
 
         
@@ -308,7 +322,7 @@ class WalletsController extends Controller
                 ' [Thrown in class: ' . get_class($ex) . ']'
             );
                 DB::rollBack();
-                return response()->json(['status' => 'error occurred: '.$ex->getMessage()], 200);
+                return response()->json(['status' => 'processing_failed'], 500);
 
             }
     }
@@ -380,7 +394,8 @@ class WalletsController extends Controller
         DB::beginTransaction();
         try{
 
-        $check_exists = FundingWebhookPayload::where('transaction_reference',$response_decode['transaction_id'])
+        $check_exists = FundingWebhookPayload::where('funding_slug', 'xixapay')
+        ->where('transaction_reference',$response_decode['transaction_id'])
         ->first();
 
 
@@ -388,7 +403,10 @@ class WalletsController extends Controller
         if( ($response_decode['notification_status'] == 'payment_successful') && (!$check_exists) ){    
             
             $email = $response_decode['customer']['email'];
-            $user_details = User::select('id','main_wallet','email_verified_at','is_deactivated')->where('email',$email)->first();
+            $user_details = User::select('id','main_wallet','email_verified_at','is_deactivated','upline_id')
+                ->where('email', $email)
+                ->lockForUpdate()
+                ->first();
             
             if($user_details){
               $created_data['funding_status'] = 'success';
@@ -516,6 +534,17 @@ class WalletsController extends Controller
                 } catch (Throwable $bonusException) {
                     report($bonusException);
                 }
+
+                try {
+                    app(UplineFundingBonusService::class)->apply(
+                        $user_details,
+                        'xixapay',
+                        (float) $paid_amount,
+                        (string) $response_decode['transaction_id']
+                    );
+                } catch (Throwable $uplineBonusException) {
+                    report($uplineBonusException);
+                }
             }
 
             
@@ -598,7 +627,7 @@ class WalletsController extends Controller
       );
         DB::rollBack();
 
-        return response()->json(['status' => 'error occurred: '.$ex->getMessage()], 200);
+        return response()->json(['status' => 'processing_failed'], 500);
       }
     }
    

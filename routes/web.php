@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AddonController;
+use App\Http\Controllers\AffiliateFinanceController;
 use App\Http\Controllers\Api\v1\VendorUsersApi\WhatsappWebhookController;
 use App\Http\Controllers\AutomationProductPlanController;
 use App\Http\Controllers\AdminSettingsController;
@@ -10,6 +11,7 @@ use App\Http\Controllers\AutomationController;
 use App\Http\Controllers\AutomationKeyController;
 use App\Http\Controllers\BulkDataPlanController;
 use App\Http\Controllers\BonusController;
+use App\Http\Controllers\BusinessProfitController;
 use App\Http\Controllers\CableSubscriptionController;
 use App\Http\Controllers\CommissionsController;
 use App\Http\Controllers\CouponCodesController;
@@ -51,7 +53,6 @@ use App\Http\Controllers\WalletFundingPromoController;
 use App\Http\Controllers\WalletLogsController;
 use App\Http\Controllers\WalletsController;
 use App\Http\Middleware\RoleAssess;
-use App\Http\Services\BizProfitCalculationService;
 use App\Http\Services\PlansProfitSettingsService;
 use App\Http\Services\UniqueProductPlansService;
 use App\Models\AdminColorSetting;
@@ -134,10 +135,7 @@ Route::middleware(['set_locale'])->group(function () {
 
             Route::get('set_pin', fn () => view('oresamsub.pages.set_pin'))->name('ore.set_pin');
            
-            Route::get('/profit', function (): array {
-                $updateplan = (new BizProfitCalculationService())->calculate_profit();
-                return $updateplan;
-            });
+            Route::middleware(['auth','verified','admin'])->get('/profit', BusinessProfitController::class)->name('admin.profit.index');
 
 
             // ORESAMSUB WEBPWA V1: ROUTES (wrapped in auth middleware)
@@ -601,6 +599,9 @@ Route::middleware(['set_locale'])->group(function () {
              Route::middleware(['auth','verified','admin'])->patch('admin/bonuses/{bonus}/toggle', [BonusController::class, 'toggle'])->name('admin.bonuses.toggle');
              Route::middleware(['auth','verified','admin'])->delete('admin/bonuses/{bonus}', [BonusController::class, 'destroy'])->name('admin.bonuses.destroy');
              Route::middleware(['auth','verified','admin'])->post('admin/bonus-logs/{log}/override', [BonusController::class, 'override'])->name('admin.bonus-logs.override');
+             Route::middleware(['auth','verified','admin'])->get('admin/affiliate-finance', [AffiliateFinanceController::class, 'index'])->name('admin.affiliate-finance.index');
+             Route::middleware(['auth','verified','admin'])->post('admin/affiliate-finance/wallet-setting', [AffiliateFinanceController::class, 'saveWalletSetting'])->name('admin.affiliate-finance.wallet.save');
+             Route::middleware(['auth','verified','admin'])->post('admin/affiliate-finance/upline-bonus', [AffiliateFinanceController::class, 'saveUplineBonus'])->name('admin.affiliate-finance.upline.save');
               
              //product plan custom pricing
              Route::middleware(['auth','verified','admin'])->get('product_plan_custom_pricing/index', [ProductPlanCustomPricingController::class, 'index'])->name('admin.product_plan_custom_pricing.index');

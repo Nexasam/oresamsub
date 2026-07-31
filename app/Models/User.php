@@ -7,6 +7,7 @@ use App\Models\Concerns\HasVersion4Uuids as HasUuids;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Str;
@@ -99,6 +100,21 @@ class User extends Authenticatable implements MustVerifyEmail
     public function bonusLogs(): HasMany
     {
         return $this->hasMany(BonusLog::class);
+    }
+
+    public function affiliateWalletSetting(): HasOne
+    {
+        return $this->hasOne(AffiliateWalletSetting::class);
+    }
+
+    public function uplineFundingBonusSetting(): HasOne
+    {
+        return $this->hasOne(UplineFundingBonusSetting::class);
+    }
+
+    public function uplineFundingBonusLogs(): HasMany
+    {
+        return $this->hasMany(UplineFundingBonusLog::class, 'upline_id');
     }
 
     public function latestTransaction()

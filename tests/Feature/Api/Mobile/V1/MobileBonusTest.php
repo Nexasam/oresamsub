@@ -6,6 +6,8 @@ use App\Models\BonusLog;
 use App\Models\FundingOption;
 use App\Models\Role;
 use App\Models\Transaction;
+use App\Models\UplineFundingBonusLog;
+use App\Models\UplineFundingBonusSetting;
 use App\Models\User;
 use App\Models\UserPlan;
 use App\Services\BonusService;
@@ -287,7 +289,16 @@ it('credits a Securewave funding campaign through its signed webhook exactly onc
         'bonus_wallet_amount' => 0,
         'funding_whitelist' => ['securewaveng'],
     ]);
-    $user = User::factory()->create(['main_wallet' => 1000]);
+    $upline = User::factory()->create(['bonus_wallet' => 0]);
+    $user = User::factory()->create(['main_wallet' => 1000, 'upline_id' => $upline->id]);
+    UplineFundingBonusSetting::create([
+        'user_id' => $upline->id,
+        'enabled' => true,
+        'reward_type' => 'flat',
+        'reward_value' => 75,
+        'frequency_per_downline' => 1,
+        'funding_whitelist' => ['securewaveng'],
+    ]);
     app(BonusService::class)->manuallyGrant($bonus, $user);
     $payload = json_encode([
         'provider_reference' => 'securewave-funding-001',
@@ -312,7 +323,9 @@ it('credits a Securewave funding campaign through its signed webhook exactly onc
         ->assertJsonPath('status', 'already  likely received');
 
     expect((float) $user->fresh()->main_wallet)->toBe(11100.0)
-        ->and(BonusLog::where('event_type', 'funding_reward')->where('funding_reference', 'securewave-funding-001')->count())->toBe(1);
+        ->and(BonusLog::where('event_type', 'funding_reward')->where('funding_reference', 'securewave-funding-001')->count())->toBe(1)
+        ->and((float) $upline->fresh()->bonus_wallet)->toBe(75.0)
+        ->and(UplineFundingBonusLog::where('funding_reference', 'securewave-funding-001')->count())->toBe(1);
 });
 
 it('credits a Xixapay funding campaign through its signed webhook exactly once', function () {
