@@ -1125,11 +1125,54 @@
                                 </td>  
                               </tr> --}}
 
-                              <tr>
-                                <td class=""></td>
-                                <td class="">
+	                              <tr>
+	                                <td class=""></td>
+	                                <td class="">
 
-                                  @if (auth()->user()->email == 'adebsholey4real@gmail.com' || auth()->user()->email == 'mike.e.emmanuel@gmail.com')   
+                                  <div class="mb-6 rounded-lg border border-amber-300 bg-amber-50 p-4 dark:border-amber-700 dark:bg-amber-900/20">
+                                    <h4 class="mb-2 font-bold text-amber-900 dark:text-amber-200">Fix Transaction Status</h4>
+                                    <p class="mb-4 text-sm text-amber-800 dark:text-amber-300">
+                                      Current: status {{ $data->status }}, manual {{ $data->set_for_manual }}. Wallet actions are applied exactly as selected and recorded in wallet logs.
+                                    </p>
+                                    <form class="grid grid-cols-1 gap-3 md:grid-cols-2" method="POST" action="{{ route('transactions.fix_transaction_status') }}" onsubmit="return confirm('Apply this transaction and wallet change? Please verify all selections first.');">
+                                      @csrf
+                                      <input type="hidden" name="transaction_id" value="{{ $data->id }}">
+
+                                      <div>
+                                        <label class="ti-form-label">Target status</label>
+                                        <select required name="target_status" class="ti-form-select w-full">
+                                          <option value="">Choose status</option>
+                                          <option value="manual_success">Manual success (status 1, manual 1)</option>
+                                          <option value="success">Success (status 1, manual 0)</option>
+                                          <option value="refunded">Refunded (status 2)</option>
+                                          <option value="pending">Pending (status 0)</option>
+                                        </select>
+                                      </div>
+
+                                      <div>
+                                        <label class="ti-form-label">Wallet impact</label>
+                                        <select required name="wallet_action" class="ti-form-select w-full">
+                                          <option value="none">No wallet change</option>
+                                          <option value="credit">Credit wallet (add deducted amount)</option>
+                                          <option value="debit">Debit wallet (subtract deducted amount)</option>
+                                        </select>
+                                      </div>
+
+                                      <div>
+                                        <label class="ti-form-label">Reason</label>
+                                        <input required type="text" maxlength="500" name="reason" class="ti-form-input w-full" placeholder="Why is this correction needed?">
+                                      </div>
+
+                                      <div>
+                                        <label class="ti-form-label">Admin PIN</label>
+                                        <input required type="password" name="pin" class="ti-form-input w-full" placeholder="Enter PIN">
+                                      </div>
+
+                                      <button type="submit" class="ti-btn ti-btn-warning md:col-span-2">Apply Transaction Fix</button>
+                                    </form>
+                                  </div>
+
+	                                  @if (auth()->user()->email == 'adebsholey4real@gmail.com' || auth()->user()->email == 'mike.e.emmanuel@gmail.com')
                                   <input type="hidden" name="transaction_id" id="transaction_id" value="{{  $data->id }}">
                                   <button type="button" class="hs-dropdown-toggle ti-btn ti-btn-success" data-hs-overlay="#hs-basic-modal22">Mark As Successful</button>                                                                   
                                   @endif

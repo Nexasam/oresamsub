@@ -256,6 +256,123 @@ class TransactionController extends Controller
 
   }
 
+  public function fix_transaction_status(Request $request)
+  {
+      $validator = Validator::make($request->all(), [
+          'transaction_id' => 'required|exists:transactions,id',
+          'target_status' => 'required|in:manual_success,success,refunded,pending',
+          'wallet_action' => 'required|in:none,credit,debit',
+          'reason' => 'required|string|max:500',
+          'pin' => ['required', 'string', 'regex:/^\d{4,5}$/'],
+      ]);
+
+      if ($validator->stopOnFirstFailure()->fails()) {
+          return redirect()->back()->withErrors($validator)->withInput();
+      }
+
+      if ((string) auth()->user()->pin !== (string) $request->pin) {
+          Session::flash('failure', 'Incorrect PIN entered');
+          return redirect()->back();
+      }
+
+      $states = [
+          'manual_success' => ['status' => 1, 'set_for_manual' => 1, 'label' => 'Manual success'],
+          'success' => ['status' => 1, 'set_for_manual' => 0, 'label' => 'Success'],
+          'refunded' => ['status' => 2, 'set_for_manual' => 0, 'label' => 'Refunded'],
+          'pending' => ['status' => 0, 'set_for_manual' => 0, 'label' => 'Pending'],
+      ];
+
+      try {
+          DB::transaction(function () use ($request, $states) {
+              $transaction = Transaction::with('product_plan.product_plan_category')
+                  ->lockForUpdate()
+                  ->findOrFail($request->transaction_id);
+              $state = $states[$request->target_status];
+
+              if ($request->wallet_action !== 'none') {
+                  $this->applyTransactionWalletFix($transaction, $request->wallet_action, $state['label']);
+              }
+
+              $adminMessage = $request->target_status === 'pending'
+                  && strtolower((string) $transaction->transaction_category) === 'airtime'
+                      ? 'pending_airtime_transaction'
+                      : 'ADMIN STATUS FIX: '.$state['label'].' - '.$request->reason;
+
+              $transaction->update([
+                  'status' => $state['status'],
+                  'set_for_manual' => $state['set_for_manual'],
+                  'admin_screen_message' => $adminMessage,
+                  'user_screen_message' => match ($request->target_status) {
+                      'manual_success' => 'Transaction is being processed.',
+                      'success' => 'Transaction successfully processed',
+                      'refunded' => 'Transaction refunded',
+                      'pending' => 'Transaction pending',
+                  },
+                  'refund_reason' => $request->target_status === 'refunded' ? $request->reason : $transaction->refund_reason,
+                  'manually_processed_by' => auth()->user()->username.' '.auth()->user()->email,
+                  'extra_info' => 'ADMIN STATUS FIX by '.auth()->user()->email
+                      .' | target: '.$state['label']
+                      .' | wallet: '.$request->wallet_action
+                      .' | reason: '.$request->reason,
+              ]);
+          });
+      } catch (\RuntimeException $exception) {
+          Session::flash('failure', $exception->getMessage());
+          return redirect()->back()->withInput();
+      }
+
+      Session::flash('success', 'Transaction status was updated successfully.');
+      return redirect()->back();
+  }
+
+  private function applyTransactionWalletFix(Transaction $transaction, string $walletAction, string $statusLabel): void
+  {
+      $direction = $walletAction === 'credit' ? 1 : -1;
+
+      if ($transaction->wallet_category === 'main_wallet') {
+          $user = $transaction->user()->lockForUpdate()->firstOrFail();
+          $amount = (float) ($transaction->discounted_amount ?? $transaction->amount);
+          $balanceBefore = (float) $user->main_wallet;
+          $balanceAfter = $balanceBefore + ($direction * $amount);
+
+          if ($balanceAfter < 0) {
+              throw new \RuntimeException('Wallet debit failed because the user has insufficient balance.');
+          }
+
+          $user->update(['main_wallet' => $balanceAfter]);
+      } else {
+          $categoryId = $transaction->product_plan?->product_plan_category_id;
+          $wallet = UserBulkDataWallet::where('user_id', $transaction->user_id)
+              ->where('product_plan_category_id', $categoryId)
+              ->lockForUpdate()
+              ->first();
+
+          if (! $wallet) {
+              throw new \RuntimeException('No matching bulk data wallet was found.');
+          }
+
+          $amount = abs((float) $transaction->balance_before - (float) $transaction->balance_after);
+          $balanceBefore = (float) $wallet->bulk_wallet_balance_mb;
+          $balanceAfter = $balanceBefore + ($direction * $amount);
+
+          if ($balanceAfter < 0) {
+              throw new \RuntimeException('Bulk data wallet debit failed because the user has insufficient balance.');
+          }
+
+          $wallet->update(['bulk_wallet_balance_mb' => $balanceAfter]);
+      }
+
+      $this->log_wallet_transactions([
+          'user_id' => $transaction->user_id,
+          'transaction_category' => 'ADMIN_TRANSACTION_FIX_'.strtoupper($walletAction),
+          'balance_before' => $balanceBefore,
+          'balance_after' => $balanceAfter,
+          'transaction_id' => $transaction->id,
+          'action_by' => auth()->id(),
+          'description' => ucfirst($walletAction).' during admin status fix to '.$statusLabel,
+      ]);
+  }
+
   public function user_fetch_transactions(Request $request){
 
         // $date_from = $request->date_from ?? '';

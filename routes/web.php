@@ -753,6 +753,7 @@ Route::middleware(['set_locale'])->group(function () {
 
             Route::middleware(['auth','verified','admin'])->post('transactions/lock_for_manual_processing', [TransactionController::class, 'lock_for_manual_processing'])->name('transactions.lock_for_manual_processing');
             Route::middleware(['auth','verified','admin'])->post('transactions/transaction_refund', [TransactionController::class, 'transaction_refund'])->name('transactions.transaction_refund');
+            Route::middleware(['auth','verified','admin'])->post('transactions/fix_transaction_status', [TransactionController::class, 'fix_transaction_status'])->name('transactions.fix_transaction_status');
             Route::middleware(['auth','verified','admin'])->post('transactions/manually_mark_transaction_as_successful', [TransactionController::class, 'manually_mark_transaction_as_successful'])->name('transactions.manually_mark_transaction_as_successful');
             Route::middleware(['auth','verified','admin'])->get('admin/transactions/admin_fetch_transactions', [TransactionController::class, 'admin_fetch_transactions'])->name('admin.transactions.admin_fetch_transactions');
             Route::middleware(['auth','verified','admin'])->get('admin/transactions/index', [TransactionController::class, 'admin_all_transactions'])->name('admin.transactions.index');
