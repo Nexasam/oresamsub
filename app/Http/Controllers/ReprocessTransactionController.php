@@ -20,12 +20,13 @@ class ReprocessTransactionController extends Controller
     public function reprocess_transaction(Request $request){
 
         $validator = Validator::make($request->all(), [
-            'transaction_id' => 'required',
-            'transaction_amount' => 'required',
+            'transaction_id' => 'required|exists:transactions,id',
+            'transaction_amount' => 'required|numeric|gt:0',
             'plan_id' => 'required|exists:product_plans,id', 
             'automation_id' => 'required|exists:automations,id',
             'automation_name' => 'required',
-            'network_id' => 'required'
+            'network_id' => 'required',
+            'phone_number' => 'required'
         ]);
         
 
@@ -41,19 +42,22 @@ class ReprocessTransactionController extends Controller
 
         $product_plan = ProductPlan::with('product_plan_category.product')->where('id',$request->plan_id)->first();
 
-        $product_slug = $product_plan->product_plan_category->product->slug;
-
         $transaction_details = Transaction::where('id',$request->transaction_id)->first();
 
-
-        if( ($transaction_details  && $transaction_details->status == 1 && $transaction_details->set_for_manual == 0) || $transaction_details->status == 2) {
+        if(($transaction_details->status == 1 && $transaction_details->set_for_manual == 0) || $transaction_details->status == 2) {
             return response()->json(['status'=>false,'message'=>'This transaction is already in a good state or its been refunded.' ]);
         }
 
+        $product_slug = $product_plan->product_plan_category->product->slug ?? null;
+        $transaction_product_slug = $transaction_details->transaction_category
+            ?? $transaction_details->product_plan?->product_plan_category?->product?->slug;
 
+        if(! in_array($product_slug, ['data', 'airtime'], true)){
+            return response()->json(['status'=>false,'message'=>'Applicable on DATA and AIRTIME only for now' ]);
+        }
 
-        if($product_slug  != 'data'){
-            return response()->json(['status'=>false,'message'=>'Applicable on DATA only for now' ]);
+        if($transaction_product_slug && $transaction_product_slug !== $product_slug){
+            return response()->json(['status'=>false,'message'=>'The selected plan does not match the transaction product.' ]);
         }
 
         $phone_number = $request->phone_number;
@@ -63,7 +67,11 @@ class ReprocessTransactionController extends Controller
         $dataa['network_id'] = $request->network_id;
         $dataa['plan_id'] = $request->plan_id;
         $dataa['validatephonenetwork'] = 0;
-        $sell_data = AutomationLogic::initiateDataPurchase($dataa);
+        $dataa['amount'] = $transaction_details->amount ?? $request->transaction_amount;
+
+        $sell_data = $product_slug === 'airtime'
+            ? AutomationLogic::initiateAirtimePurchase($dataa)
+            : AutomationLogic::initiateDataPurchase($dataa);
         $admin_message = $sell_data['admin_message'] ?? 'nil';
         $set_for_manual = $sell_data['set_for_manual'] ?? 0;
 
@@ -75,7 +83,7 @@ class ReprocessTransactionController extends Controller
                 'manually_processed_by' => NULL,
             ]);
 
-            return response()->json(['status'=>false,'message'=>$sell_data['admin_message'] ]);
+            return response()->json(['status'=>false,'message'=>$admin_message ]);
         }
 
         $userinfooo = auth()->user()->username.' '.auth()->user()->email;
