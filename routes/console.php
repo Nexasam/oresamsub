@@ -49,7 +49,7 @@ Schedule::command(ReprocessPendingTransaction::class)->everyMinute()->withoutOve
 
 // Schedule::command(SyncUserContactsFromTransactions::class)->everyTwoMinutes()->withoutOverlapping();
 
-Schedule::command(ClearErrorLogs::class)->everyThirtyMinutes()->withoutOverlapping();
+// Schedule::command(ClearErrorLogs::class)->everyThirtyMinutes()->withoutOverlapping();
 
 Schedule::command(RunWalletAutoFunding::class)->everyFiveMinutes()->withoutOverlapping();
 Schedule::command(CheckAffiliateLowBalances::class)

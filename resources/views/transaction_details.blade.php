@@ -1134,6 +1134,14 @@
                                     <p class="mb-4 text-sm text-amber-800 dark:text-amber-300">
                                       Current: status {{ $data->status }}, manual {{ $data->set_for_manual }}. Wallet actions are applied exactly as selected and recorded in wallet logs.
                                     </p>
+                                    <div class="mb-4 rounded-md border border-amber-200 bg-white p-3 text-sm text-gray-700 dark:border-amber-800 dark:bg-gray-800 dark:text-gray-200">
+                                      <p class="mb-2 font-semibold">Admin guide</p>
+                                      <ul class="list-disc space-y-1 pl-5">
+                                        <li><strong>Failed airtime shown as successful:</strong> choose <em>Manual success</em> with <em>No wallet change</em>. This sets status 1 and manual 1, so it appears under “Transactions with issues”.</li>
+                                        <li><strong>Retry airtime through the pending processor:</strong> choose <em>Pending</em>. Airtime automatically gets the <code>pending_airtime_transaction</code> admin message, but it will not appear in the manual issue count.</li>
+                                        <li><strong>Wallet impact:</strong> use <em>No wallet change</em> if the customer was already charged; use <em>Credit</em> only to return funds, and <em>Debit</em> only to charge funds.</li>
+                                      </ul>
+                                    </div>
                                     <form class="grid grid-cols-1 gap-3 md:grid-cols-2" method="POST" action="{{ route('transactions.fix_transaction_status') }}" onsubmit="return confirm('Apply this transaction and wallet change? Please verify all selections first.');">
                                       @csrf
                                       <input type="hidden" name="transaction_id" value="{{ $data->id }}">
