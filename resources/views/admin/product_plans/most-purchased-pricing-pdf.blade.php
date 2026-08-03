@@ -10,18 +10,58 @@
         h1 { margin: 0; font-size: 24px; }
         p { color: #6b7280; }
         button { border: 0; border-radius: 8px; padding: 11px 18px; color: white; background: #2563eb; cursor: pointer; font-weight: 600; }
+        .filters { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin: 22px 0 16px; padding: 16px; border: 1px solid #e5e7eb; border-radius: 10px; background: #f9fafb; }
+        .field { display: flex; flex-direction: column; gap: 6px; }
+        label { font-size: 12px; font-weight: 600; }
+        select, input { width: 100%; box-sizing: border-box; padding: 10px; border: 1px solid #d1d5db; border-radius: 7px; background: white; }
+        .actions { display: flex; align-items: end; gap: 8px; }
+        .apply { background: #111827; }
+        .reset { display: inline-block; padding: 10px 14px; border-radius: 8px; color: #374151; background: #e5e7eb; text-decoration: none; font-size: 13px; font-weight: 600; }
         table { width: 100%; margin-top: 20px; border-collapse: collapse; font-size: 12px; }
         th, td { padding: 9px; border: 1px solid #e5e7eb; text-align: left; }
         th { background: #111827; color: white; }
         td.number { text-align: right; white-space: nowrap; }
         .status { margin-left: 10px; font-size: 12px; color: #6b7280; }
+        @media (max-width: 800px) { .filters { grid-template-columns: 1fr; } }
     </style>
 </head>
 <body>
 <main class="card">
     <h1>Most-Purchased Product Plan Pricing</h1>
     <p>Successful purchases ranked all-time · {{ $rows->count() }} unique plans · Generated {{ $generatedAt->format('d M Y H:i') }}</p>
-    <button type="button" id="download-pdf">Download PDF</button><span id="status" class="status">Preparing download…</span>
+
+    <form class="filters" method="GET" action="{{ route('admin.product_plans.most_purchased_pricing_pdf') }}">
+        <div class="field">
+            <label for="product_id">Product</label>
+            <select id="product_id" name="product_id"><option value="">All products</option>@foreach($filterOptions['products'] as $option)<option value="{{ $option['product_id'] }}" @selected(($filters['product_id'] ?? '') === $option['product_id'])>{{ $option['product'] }}</option>@endforeach</select>
+        </div>
+        <div class="field">
+            <label for="network_id">Network</label>
+            <select id="network_id" name="network_id"><option value="">All networks</option>@foreach($filterOptions['networks'] as $option)<option value="{{ $option['network_id'] }}" @selected(($filters['network_id'] ?? '') === $option['network_id'])>{{ $option['network'] }}</option>@endforeach</select>
+        </div>
+        <div class="field">
+            <label for="pricing_model">Pricing model</label>
+            <select id="pricing_model" name="pricing_model"><option value="">All models</option>@foreach($filterOptions['models'] as $model)<option value="{{ $model }}" @selected(($filters['pricing_model'] ?? '') === $model)>{{ $model }}</option>@endforeach</select>
+        </div>
+        <div class="field">
+            <label for="size_mb">Data size</label>
+            <select id="size_mb" name="size_mb"><option value="">All sizes</option>@foreach($filterOptions['sizes'] as $size)<option value="{{ $size }}" @selected((string) ($filters['size_mb'] ?? '') === (string) $size)>{{ number_format((float) $size) }} MB</option>@endforeach</select>
+        </div>
+        <div class="field">
+            <label for="validity_days">Validity</label>
+            <select id="validity_days" name="validity_days"><option value="">All validities</option>@foreach($filterOptions['validities'] as $days)<option value="{{ $days }}" @selected((string) ($filters['validity_days'] ?? '') === (string) $days)>{{ $days }} days</option>@endforeach</select>
+        </div>
+        <div class="field">
+            <label for="limit">Popularity limit</label>
+            <select id="limit" name="limit"><option value="">All matching plans</option>@foreach([25, 50, 100, 250, 500] as $limitOption)<option value="{{ $limitOption }}" @selected((int) ($filters['limit'] ?? 0) === $limitOption)>Top {{ $limitOption }}</option>@endforeach</select>
+        </div>
+        <div class="actions">
+            <button class="apply" type="submit">Apply Filters</button>
+            <a class="reset" href="{{ route('admin.product_plans.most_purchased_pricing_pdf') }}">Reset</a>
+        </div>
+    </form>
+
+    <button type="button" id="download-pdf" @disabled($rows->isEmpty())>Download Filtered PDF</button><span id="status" class="status">Choose filters, then download when ready.</span>
 
     <table>
         <thead><tr><th>Popularity</th><th>Plan</th><th>Product / Network</th><th>Model</th><th>L1</th><th>L2</th><th>L3</th><th>L4</th></tr></thead>
@@ -82,7 +122,6 @@
     }
 
     document.getElementById('download-pdf').addEventListener('click', downloadPricingPdf);
-    window.addEventListener('load', () => setTimeout(downloadPricingPdf, 300));
 </script>
 </body>
 </html>

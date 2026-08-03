@@ -26,6 +26,11 @@ class ProductPlanController extends Controller
     {
         $validated = $request->validate([
             'limit' => ['nullable', 'integer', 'min:1', 'max:1000'],
+            'product_id' => ['nullable', 'uuid'],
+            'network_id' => ['nullable', 'uuid'],
+            'size_mb' => ['nullable', 'numeric', 'min:0'],
+            'validity_days' => ['nullable', 'numeric', 'min:0'],
+            'pricing_model' => ['nullable', Rule::in(['New automation', 'Legacy profit', 'Direct'])],
         ]);
 
         $purchaseCounts = Transaction::query()
@@ -36,7 +41,6 @@ class ProductPlanController extends Controller
             ->whereNotNull('transactions.product_plan_id')
             ->groupBy('transactions.product_plan_id')
             ->orderByDesc('purchase_count')
-            ->when($validated['limit'] ?? null, fn ($query, $limit) => $query->limit((int) $limit))
             ->get();
 
         $plans = ProductPlan::query()
@@ -46,7 +50,7 @@ class ProductPlanController extends Controller
             ->keyBy('id');
         $profitSettings = PlanProfitSetting::all();
 
-        $rows = $purchaseCounts->map(function ($count, $index) use ($plans, $profitSettings) {
+        $allRows = $purchaseCounts->map(function ($count, $index) use ($plans, $profitSettings) {
             $plan = $plans->get($count->product_plan_id);
             if (! $plan) {
                 return null;
@@ -82,13 +86,35 @@ class ProductPlanController extends Controller
                 'automation_plan_id' => $plan->automation_product_plan_id,
                 'plan_name' => $plan->product_plan_name,
                 'product' => $product?->product_name ?? $product?->slug ?? '-',
+                'product_id' => $product?->id,
                 'network' => $network?->network_name ?? $network?->name ?? '-',
+                'network_id' => $network?->id,
                 'size_mb' => $plan->data_size_in_mb,
                 'validity_days' => $plan->validity_in_days,
                 'pricing_model' => $usesNewPricing ? 'New automation' : ($profitSetting ? 'Legacy profit' : 'Direct'),
                 'purchase_count' => (int) $count->purchase_count,
             ], $prices->all());
-        })->filter()->sort(function (array $left, array $right) {
+        })->filter()->values();
+
+        $filterOptions = [
+            'products' => $allRows->filter(fn ($row) => $row['product_id'])->unique('product_id')->sortBy('product')->values(),
+            'networks' => $allRows->filter(fn ($row) => $row['network_id'])->unique('network_id')->sortBy('network')->values(),
+            'sizes' => $allRows->pluck('size_mb')->filter(fn ($value) => is_numeric($value))->unique()->sort(SORT_NUMERIC)->values(),
+            'validities' => $allRows->pluck('validity_days')->filter(fn ($value) => is_numeric($value))->unique()->sort(SORT_NUMERIC)->values(),
+            'models' => $allRows->pluck('pricing_model')->unique()->sort()->values(),
+        ];
+
+        $rows = $allRows
+            ->when($validated['product_id'] ?? null, fn ($items, $value) => $items->where('product_id', $value))
+            ->when($validated['network_id'] ?? null, fn ($items, $value) => $items->where('network_id', $value))
+            ->when(isset($validated['size_mb']), fn ($items) => $items->filter(fn ($row) => (float) $row['size_mb'] === (float) $validated['size_mb']))
+            ->when(isset($validated['validity_days']), fn ($items) => $items->filter(fn ($row) => (float) $row['validity_days'] === (float) $validated['validity_days']))
+            ->when($validated['pricing_model'] ?? null, fn ($items, $value) => $items->where('pricing_model', $value))
+            ->sortBy('rank')
+            ->when($validated['limit'] ?? null, fn ($items, $limit) => $items->take((int) $limit))
+            ->values()
+            ->map(fn ($row, $index) => array_merge($row, ['rank' => $index + 1]))
+            ->sort(function (array $left, array $right) {
             $networkOrder = strcasecmp((string) $left['network'], (string) $right['network']);
             if ($networkOrder !== 0) {
                 return $networkOrder;
@@ -113,6 +139,8 @@ class ProductPlanController extends Controller
         return view('admin.product_plans.most-purchased-pricing-pdf', [
             'rows' => $rows,
             'limit' => $validated['limit'] ?? null,
+            'filters' => $validated,
+            'filterOptions' => $filterOptions,
             'generatedAt' => now(),
         ]);
     }
