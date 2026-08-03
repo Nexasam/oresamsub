@@ -24,16 +24,15 @@
     <button type="button" id="download-pdf">Download PDF</button><span id="status" class="status">Preparing download…</span>
 
     <table>
-        <thead><tr><th>#</th><th>Plan</th><th>Product / Network</th><th>Model</th><th>Purchases</th><th>L1</th><th>L2</th><th>L3</th><th>L4</th></tr></thead>
+        <thead><tr><th>Popularity</th><th>Plan</th><th>Product / Network</th><th>L1</th><th>L2</th><th>L3</th><th>L4</th></tr></thead>
         <tbody>
         @forelse($rows as $row)
             <tr>
-                <td>{{ $row['rank'] }}</td><td>{{ $row['plan_name'] }}</td><td>{{ $row['product'] }} / {{ $row['network'] }}</td><td>{{ $row['pricing_model'] }}</td>
-                <td class="number">{{ number_format($row['purchase_count']) }}</td>
+                <td>{{ $row['rank'] }}</td><td>{{ $row['plan_name'] }}</td><td>{{ $row['product'] }} / {{ $row['network'] }}</td>
                 @for($level = 1; $level <= 4; $level++)<td class="number">NGN {{ number_format($row['level_'.$level], 2) }}</td>@endfor
             </tr>
         @empty
-            <tr><td colspan="9">No successfully purchased product plans were found.</td></tr>
+            <tr><td colspan="7">No successfully purchased product plans were found.</td></tr>
         @endforelse
         </tbody>
     </table>
@@ -55,7 +54,7 @@
         documentPdf.text(`Successful purchases ranked all-time | Generated ${generatedAt}`, 14, 21);
         documentPdf.autoTable({
             startY: 26,
-            head: [['#', 'Plan / identifiers', 'Product', 'Network', 'Size', 'Validity', 'Model', 'Purchases', 'Level 1', 'Level 2', 'Level 3', 'Level 4']],
+            head: [['Popularity', 'Plan / identifiers', 'Product', 'Network', 'Size', 'Validity', 'Level 1', 'Level 2', 'Level 3', 'Level 4']],
             body: pricingRows.map(row => [
                 row.rank,
                 `${row.plan_name}\nID: ${row.product_plan_id}\nAutomation plan: ${row.automation_plan_id || '-'}`,
@@ -63,8 +62,6 @@
                 row.network,
                 row.size_mb ? `${row.size_mb} MB` : '-',
                 row.validity_days ? `${row.validity_days} days` : '-',
-                row.pricing_model,
-                row.purchase_count,
                 `NGN ${Number(row.level_1).toFixed(2)}`,
                 `NGN ${Number(row.level_2).toFixed(2)}`,
                 `NGN ${Number(row.level_3).toFixed(2)}`,
@@ -72,7 +69,7 @@
             ]),
             styles: { fontSize: 6.5, cellPadding: 1.6, overflow: 'linebreak' },
             headStyles: { fillColor: [17, 24, 39] },
-            columnStyles: { 1: { cellWidth: 55 }, 7: { halign: 'right' }, 8: { halign: 'right' }, 9: { halign: 'right' }, 10: { halign: 'right' }, 11: { halign: 'right' } },
+            columnStyles: { 1: { cellWidth: 65 }, 6: { halign: 'right' }, 7: { halign: 'right' }, 8: { halign: 'right' }, 9: { halign: 'right' } },
             didDrawPage: data => {
                 documentPdf.setFontSize(7);
                 documentPdf.setTextColor(110);

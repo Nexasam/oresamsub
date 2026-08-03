@@ -29,10 +29,12 @@ class ProductPlanController extends Controller
         ]);
 
         $purchaseCounts = Transaction::query()
-            ->selectRaw('product_plan_id, COUNT(*) as purchase_count')
-            ->where('status', '1')
-            ->whereNotNull('product_plan_id')
-            ->groupBy('product_plan_id')
+            ->join('product_plans', 'product_plans.id', '=', 'transactions.product_plan_id')
+            ->selectRaw('transactions.product_plan_id, COUNT(*) as purchase_count')
+            ->where('transactions.status', '1')
+            ->where('product_plans.visibility', '1')
+            ->whereNotNull('transactions.product_plan_id')
+            ->groupBy('transactions.product_plan_id')
             ->orderByDesc('purchase_count')
             ->when($validated['limit'] ?? null, fn ($query, $limit) => $query->limit((int) $limit))
             ->get();
@@ -86,7 +88,27 @@ class ProductPlanController extends Controller
                 'pricing_model' => $usesNewPricing ? 'New automation' : ($profitSetting ? 'Legacy profit' : 'Direct'),
                 'purchase_count' => (int) $count->purchase_count,
             ], $prices->all());
-        })->filter()->values();
+        })->filter()->sort(function (array $left, array $right) {
+            $networkOrder = strcasecmp((string) $left['network'], (string) $right['network']);
+            if ($networkOrder !== 0) {
+                return $networkOrder;
+            }
+
+            $leftSize = is_numeric($left['size_mb']) ? (float) $left['size_mb'] : PHP_FLOAT_MAX;
+            $rightSize = is_numeric($right['size_mb']) ? (float) $right['size_mb'] : PHP_FLOAT_MAX;
+            $sizeOrder = $leftSize <=> $rightSize;
+            if ($sizeOrder !== 0) {
+                return $sizeOrder;
+            }
+
+            $leftValidity = is_numeric($left['validity_days']) ? (float) $left['validity_days'] : PHP_FLOAT_MAX;
+            $rightValidity = is_numeric($right['validity_days']) ? (float) $right['validity_days'] : PHP_FLOAT_MAX;
+            $validityOrder = $leftValidity <=> $rightValidity;
+
+            return $validityOrder !== 0
+                ? $validityOrder
+                : strcasecmp((string) $left['plan_name'], (string) $right['plan_name']);
+        })->values();
 
         return view('admin.product_plans.most-purchased-pricing-pdf', [
             'rows' => $rows,
