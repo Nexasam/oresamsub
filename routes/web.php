@@ -61,6 +61,7 @@ use App\Models\PlanProfitSetting;
 use App\Models\ProductPlan;
 use App\Models\SiteImage;
 use App\Models\SiteTemplate;
+use App\Models\Transaction;
 use App\Models\UniqueProductPlan;
 use App\Models\User;
 use Illuminate\Support\Facades\Artisan;
@@ -599,6 +600,74 @@ Route::middleware(['set_locale'])->group(function () {
              Route::middleware(['auth','verified','admin'])->patch('admin/bonuses/{bonus}/toggle', [BonusController::class, 'toggle'])->name('admin.bonuses.toggle');
              Route::middleware(['auth','verified','admin'])->delete('admin/bonuses/{bonus}', [BonusController::class, 'destroy'])->name('admin.bonuses.destroy');
              Route::middleware(['auth','verified','admin'])->post('admin/bonus-logs/{log}/override', [BonusController::class, 'override'])->name('admin.bonus-logs.override');
+             Route::middleware(['auth','verified','admin'])->get('admin/refunded-transactions-since-april', function () {
+                 $from = now()->startOfYear()->addMonths(3)->startOfDay();
+                 $to = now();
+                 $transactions = Transaction::query()
+                     ->with(['user:id,username,first_name,last_name,email,phone_number', 'product_plan:id,product_plan_name'])
+                     ->where('status', '2')
+                     ->whereBetween('updated_at', [$from, $to])
+                     ->orderByDesc('updated_at')
+                     ->get();
+                 $refundedAmount = fn (Transaction $transaction): float => round(
+                     is_numeric($transaction->discounted_amount) && (float) $transaction->discounted_amount > 0
+                         ? (float) $transaction->discounted_amount
+                         : (float) $transaction->amount,
+                     2
+                 );
+
+                 $customers = $transactions->groupBy('user_id')->map(function ($items) use ($refundedAmount) {
+                     $user = $items->first()->user;
+
+                     return [
+                         'customer_id' => $items->first()->user_id,
+                         'username' => $user?->username,
+                         'name' => trim(($user?->first_name ?? '').' '.($user?->last_name ?? '')),
+                         'email' => $user?->email,
+                         'phone_number' => $user?->phone_number,
+                         'refunded_transactions' => $items->count(),
+                         'total_refunded' => round($items->sum($refundedAmount), 2),
+                         'affected_product_plan_ids' => $items->pluck('product_plan_id')->filter()->unique()->values(),
+                     ];
+                 })->values();
+
+                 $productPlans = $transactions->groupBy('product_plan_id')->map(function ($items) use ($refundedAmount) {
+                     $plan = $items->first()->product_plan;
+
+                     return [
+                         'product_plan_id' => $items->first()->product_plan_id,
+                         'product_plan_name' => $plan?->product_plan_name,
+                         'refunded_transactions' => $items->count(),
+                         'affected_customers' => $items->pluck('user_id')->unique()->count(),
+                         'total_refunded' => round($items->sum($refundedAmount), 2),
+                     ];
+                 })->values();
+
+                 return response()->json([
+                     'period' => ['from' => $from->toIso8601String(), 'to' => $to->toIso8601String()],
+                     'summary' => [
+                         'refunded_transactions' => $transactions->count(),
+                         'affected_customers' => $customers->count(),
+                         'affected_product_plans' => $productPlans->count(),
+                         'total_refunded' => round($transactions->sum($refundedAmount), 2),
+                     ],
+                     'customers' => $customers,
+                     'product_plans' => $productPlans,
+                     'transactions' => $transactions->map(fn (Transaction $transaction) => [
+                         'transaction_id' => $transaction->id,
+                         'refunded_at' => $transaction->updated_at,
+                         'refund_reason' => $transaction->refund_reason,
+                         'category' => $transaction->transaction_category,
+                         'refunded_amount' => $refundedAmount($transaction),
+                         'customer_id' => $transaction->user_id,
+                         'username' => $transaction->user?->username,
+                         'customer_email' => $transaction->user?->email,
+                         'customer_phone' => $transaction->user?->phone_number,
+                         'product_plan_id' => $transaction->product_plan_id,
+                         'product_plan_name' => $transaction->product_plan?->product_plan_name,
+                     ])->values(),
+                 ]);
+             })->name('admin.refunded-transactions-since-april');
              Route::middleware(['auth','verified','admin'])->get('admin/affiliate-finance', [AffiliateFinanceController::class, 'index'])->name('admin.affiliate-finance.index');
              Route::middleware(['auth','verified','admin'])->post('admin/affiliate-finance/wallet-setting', [AffiliateFinanceController::class, 'saveWalletSetting'])->name('admin.affiliate-finance.wallet.save');
              Route::middleware(['auth','verified','admin'])->post('admin/affiliate-finance/upline-bonus', [AffiliateFinanceController::class, 'saveUplineBonus'])->name('admin.affiliate-finance.upline.save');
