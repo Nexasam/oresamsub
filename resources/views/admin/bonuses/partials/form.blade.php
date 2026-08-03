@@ -2,6 +2,8 @@
     $selectedEnjoyment = old('enjoyment', $campaign?->enjoyment ?? []);
     $selectedFunding = old('funding_whitelist', $campaign?->funding_whitelist ?? ['xixapay', 'securewaveng']);
     $conditionMode = old('dormant_condition', data_get($campaign?->conditions, 'last_transaction_before') ? 'date' : 'days');
+    $targeting = old('targeting', $campaign?->isTargeted() ? 'specific' : 'general');
+    $targetCustomers = old('target_customers', implode("\n", data_get($campaign?->conditions, 'targeted_customers', [])));
 @endphp
 <form
     method="POST"
@@ -10,6 +12,7 @@
         group: @js(old('group', $campaign?->group ?? 'new_registration')),
         rewards: @js($selectedEnjoyment),
         dormantMode: @js($conditionMode),
+        targeting: @js($targeting),
         has(value) { return this.rewards.includes(value) }
     }"
 >
@@ -30,6 +33,18 @@
                 <option value="new_registration">New registration</option>
                 <option value="dormant_customer">Dormant customer</option>
             </select>
+        </div>
+        <div>
+            <label class="ti-form-label">Customer targeting</label>
+            <select class="ti-form-select" name="targeting" x-model="targeting" required>
+                <option value="general">General campaign rules</option>
+                <option value="specific">Specific customer(s)</option>
+            </select>
+        </div>
+        <div class="md:col-span-2 rounded-lg bg-blue-50 p-4" x-show="targeting === 'specific'">
+            <label class="ti-form-label">Target customers</label>
+            <textarea class="ti-form-input" name="target_customers" rows="4" placeholder="Enter usernames, emails, or phone numbers—one per line or comma-separated">{{ $targetCustomers }}</textarea>
+            <p class="text-xs text-gray-500 mt-1">These customers take priority over the group, dormancy, and registration device/IP rules. Campaign dates and status still apply.</p>
         </div>
         <div>
             <label class="ti-form-label">Status</label>

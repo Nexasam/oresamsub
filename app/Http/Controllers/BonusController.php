@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\BonusCampaignRequest;
 use App\Models\Bonus;
 use App\Models\BonusLog;
+use App\Models\User;
 use App\Services\BonusService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
@@ -90,6 +91,16 @@ class BonusController extends Controller
             : array_filter([
                 'registration_max_age_days' => $validated['registration_max_age_days'] ?? null,
             ], fn ($value) => $value !== null);
+        if (($validated['targeting'] ?? 'general') === 'specific') {
+            $identifiers = $request->targetCustomerIdentifiers();
+            $targetedUsers = User::query()
+                ->whereIn('username', $identifiers)
+                ->orWhereIn('email', $identifiers)
+                ->orWhereIn('phone_number', $identifiers)
+                ->get();
+            $conditions['targeted_user_ids'] = $targetedUsers->modelKeys();
+            $conditions['targeted_customers'] = $targetedUsers->pluck('username')->values()->all();
+        }
         $hasFundingBonus = in_array(Bonus::ENJOYMENT_FUNDING, $enjoyment, true);
 
         return [

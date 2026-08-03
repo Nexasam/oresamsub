@@ -112,6 +112,53 @@ it('denies duplicate registration rewards by IP or device without blocking the a
         ->toBe('device_reward_limit_reached');
 });
 
+it('restricts a targeted campaign to its selected customers and overrides general eligibility rules', function () {
+    $target = User::factory()->create([
+        'created_at' => now()->subYear(),
+        'registration_ip' => '102.89.1.10',
+        'registration_device_hash' => hash('sha256', 'shared-phone'),
+    ]);
+    $other = User::factory()->create([
+        'registration_ip' => '102.89.1.10',
+        'registration_device_hash' => hash('sha256', 'shared-phone'),
+    ]);
+    $bonus = bonusCampaign([
+        'conditions' => ['targeted_user_ids' => [$target->id], 'targeted_customers' => [$target->username]],
+    ]);
+    $service = app(BonusService::class);
+
+    expect($service->evaluate($target))->toHaveCount(1)
+        ->and($service->evaluate($other))->toHaveCount(0)
+        ->and(BonusEntitlement::where('bonus_id', $bonus->id)->where('user_id', $target->id)->exists())->toBeTrue()
+        ->and(BonusEntitlement::where('bonus_id', $bonus->id)->where('user_id', $other->id)->exists())->toBeFalse();
+});
+
+it('evaluates a targeted campaign when funding arrives before the customer logs in again', function () {
+    $user = User::factory()->create(['created_at' => now()->subYear()]);
+    $bonus = bonusCampaign([
+        'conditions' => ['targeted_user_ids' => [$user->id], 'targeted_customers' => [$user->username]],
+        'enjoyment' => [Bonus::ENJOYMENT_FUNDING],
+        'bonus_wallet_amount' => 0,
+        'funding_type' => 'percent',
+        'funding_value' => 10,
+        'funding_cap' => 1000,
+        'funding_whitelist' => ['xixapay'],
+    ]);
+
+    $reward = app(BonusService::class)->applyFundingReward(
+        $user,
+        'xixapay',
+        5000,
+        'target-before-login',
+        50,
+        4950
+    );
+
+    expect($reward['funding_bonus'])->toBe(500.0)
+        ->and($reward['bonus_id'])->toBe($bonus->id)
+        ->and(BonusEntitlement::where('bonus_id', $bonus->id)->where('user_id', $user->id)->exists())->toBeTrue();
+});
+
 it('awards dormant customers based on their last successful transaction only', function () {
     $bonus = bonusCampaign([
         'group' => Bonus::GROUP_DORMANT_CUSTOMER,

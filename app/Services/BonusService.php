@@ -259,6 +259,10 @@ class BonusService
             return ['reward' => 0.0, 'funding_bonus' => 0.0, 'fee_waiver' => 0.0, 'duplicate' => false];
         }
 
+        // Webhooks can arrive before the customer's next login/dashboard request.
+        // Ensure any newly available targeted or general campaign is granted first.
+        $this->evaluate($user);
+
         if (BonusLog::query()->where('event_key', $eventKey)->exists()) {
             return ['reward' => 0.0, 'funding_bonus' => 0.0, 'fee_waiver' => 0.0, 'duplicate' => true];
         }
@@ -279,6 +283,7 @@ class BonusService
                     && ($whitelist === [] || in_array($provider, $whitelist, true));
             })
             ->sortByDesc(fn (BonusEntitlement $entitlement) => [
+                (int) $entitlement->bonus->targets($user),
                 (int) $entitlement->bonus->priority,
                 $entitlement->awarded_at?->getTimestamp() ?? 0,
             ])
@@ -410,6 +415,10 @@ class BonusService
 
     private function isEligible(Bonus $bonus, User $user): bool
     {
+        if ($bonus->isTargeted()) {
+            return $bonus->targets($user);
+        }
+
         if ($bonus->group === Bonus::GROUP_NEW_REGISTRATION) {
             $registrationStart = $bonus->starts_at ?? $bonus->created_at;
             $withinCampaign = $user->created_at->greaterThanOrEqualTo($registrationStart)
@@ -449,6 +458,10 @@ class BonusService
 
     private function abuseRejection(Bonus $bonus, ?string $ip, ?string $deviceHash): ?string
     {
+        if ($bonus->isTargeted()) {
+            return null;
+        }
+
         if ($bonus->group !== Bonus::GROUP_NEW_REGISTRATION) {
             return null;
         }

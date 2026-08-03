@@ -71,6 +71,9 @@
                                 <td>
                                     <div class="font-semibold">{{ $bonus->title }}</div>
                                     <div class="text-xs text-gray-500 mt-1">{{ \Illuminate\Support\Str::limit($bonus->description, 70) }}</div>
+                                    @if ($bonus->isTargeted())
+                                        <div class="text-xs text-primary mt-1">Targeted: {{ implode(', ', data_get($bonus->conditions, 'targeted_customers', [])) }}</div>
+                                    @endif
                                 </td>
                                 <td>
                                     <span class="px-2 py-1 rounded bg-primary/10 text-primary text-xs">

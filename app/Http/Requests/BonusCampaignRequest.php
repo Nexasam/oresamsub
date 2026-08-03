@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use App\Models\Bonus;
+use App\Models\User;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -22,6 +23,8 @@ class BonusCampaignRequest extends FormRequest
             'description' => ['nullable', 'string', 'max:1000'],
             'status' => ['required', 'boolean'],
             'group' => ['required', Rule::in([Bonus::GROUP_NEW_REGISTRATION, Bonus::GROUP_DORMANT_CUSTOMER])],
+            'targeting' => ['nullable', Rule::in(['general', 'specific'])],
+            'target_customers' => ['nullable', 'string', 'max:10000'],
             'enjoyment' => ['required', 'array', 'min:1'],
             'enjoyment.*' => ['required', Rule::in([
                 Bonus::ENJOYMENT_WALLET,
@@ -54,6 +57,26 @@ class BonusCampaignRequest extends FormRequest
             function ($validator) {
                 $enjoyment = $this->input('enjoyment', []);
 
+                if ($this->input('targeting') === 'specific') {
+                    $identifiers = $this->targetCustomerIdentifiers();
+                    if ($identifiers === []) {
+                        $validator->errors()->add('target_customers', 'Enter at least one customer username, email address, or phone number.');
+                    } else {
+                        $matched = User::query()
+                            ->whereIn('username', $identifiers)
+                            ->orWhereIn('email', $identifiers)
+                            ->orWhereIn('phone_number', $identifiers)
+                            ->get(['username', 'email', 'phone_number']);
+                        $found = $matched->flatMap(fn (User $user) => [$user->username, $user->email, $user->phone_number])
+                            ->filter()->map(fn ($value) => mb_strtolower((string) $value))->unique();
+                        $missing = collect($identifiers)->reject(fn ($value) => $found->contains(mb_strtolower($value)));
+
+                        if ($missing->isNotEmpty()) {
+                            $validator->errors()->add('target_customers', 'These customers were not found: '.$missing->implode(', '));
+                        }
+                    }
+                }
+
                 if (in_array(Bonus::ENJOYMENT_WALLET, $enjoyment, true) && (float) $this->input('bonus_wallet_amount', 0) <= 0) {
                     $validator->errors()->add('bonus_wallet_amount', 'Enter a bonus-wallet amount greater than zero.');
                 }
@@ -73,7 +96,7 @@ class BonusCampaignRequest extends FormRequest
                     }
                 }
 
-                if ($this->input('group') === Bonus::GROUP_DORMANT_CUSTOMER) {
+                if ($this->input('targeting', 'general') !== 'specific' && $this->input('group') === Bonus::GROUP_DORMANT_CUSTOMER) {
                     if ($this->input('dormant_condition') === 'date' && ! $this->filled('last_transaction_before')) {
                         $validator->errors()->add('last_transaction_before', 'Choose the last-transaction cut-off date.');
                     }
@@ -83,5 +106,15 @@ class BonusCampaignRequest extends FormRequest
                 }
             },
         ];
+    }
+
+    public function targetCustomerIdentifiers(): array
+    {
+        return collect(preg_split('/[\s,;]+/', (string) $this->input('target_customers'), -1, PREG_SPLIT_NO_EMPTY))
+            ->map(fn ($value) => trim((string) $value))
+            ->filter()
+            ->unique(fn ($value) => mb_strtolower($value))
+            ->values()
+            ->all();
     }
 }

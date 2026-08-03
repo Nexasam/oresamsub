@@ -70,4 +70,21 @@ class Bonus extends Model
     {
         return in_array($enjoyment, $this->enjoyment ?? [], true);
     }
+
+    public function targetedUserIds(): array
+    {
+        return array_values(array_filter($this->conditions['targeted_user_ids'] ?? []));
+    }
+
+    public function isTargeted(): bool
+    {
+        return $this->targetedUserIds() !== [];
+    }
+
+    public function targets(User|string $user): bool
+    {
+        $userId = $user instanceof User ? $user->getKey() : $user;
+
+        return in_array((string) $userId, array_map('strval', $this->targetedUserIds()), true);
+    }
 }
