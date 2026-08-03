@@ -348,7 +348,7 @@ it('credits a Securewave funding campaign through its signed webhook exactly onc
     ]);
     app(BonusService::class)->manuallyGrant($bonus, $user);
     $payload = json_encode([
-        'provider_reference' => 'securewave-funding-001',
+        'transaction_id' => 'securewave-funding-001',
         'transaction_status' => 'success',
         'customer' => ['email' => $user->email],
         'settlement_amount' => 9900,
@@ -373,6 +373,29 @@ it('credits a Securewave funding campaign through its signed webhook exactly onc
         ->and(BonusLog::where('event_type', 'funding_reward')->where('funding_reference', 'securewave-funding-001')->count())->toBe(1)
         ->and((float) $upline->fresh()->bonus_wallet)->toBe(75.0)
         ->and(UplineFundingBonusLog::where('funding_reference', 'securewave-funding-001')->count())->toBe(1);
+});
+
+it('rejects a signed Securewave webhook without a stable transaction reference', function () {
+    $secret = 'securewave-missing-reference-secret';
+    FundingOption::create([
+        'is_current_option' => 1,
+        'funding_option_name' => 'Securewave',
+        'slug' => 'securewaveng',
+        'api_secret_key' => $secret,
+        'activation_status' => 1,
+    ]);
+    $payload = json_encode([
+        'transaction_status' => 'success',
+        'customer' => ['email' => 'customer@example.com'],
+        'amount' => 10000,
+    ], JSON_THROW_ON_ERROR);
+
+    $this->call('POST', '/api/admin/wallets/securewaveng_hook/test', [], [], [], [
+        'CONTENT_TYPE' => 'application/json',
+        'HTTP_X_SIGNATURE' => hash_hmac('sha256', $payload, $secret),
+    ], $payload)
+        ->assertStatus(422)
+        ->assertJsonPath('status', 'invalid_payload');
 });
 
 it('credits a Xixapay funding campaign through its signed webhook exactly once', function () {

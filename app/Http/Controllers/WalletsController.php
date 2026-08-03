@@ -99,6 +99,38 @@ class WalletsController extends Controller
                 return response()->json(['status' => 'unauthorized'], 401);
             }
 
+            if (! is_array($response_decode)) {
+                logger('Securewave webhook payload is not valid JSON.');
+
+                return response()->json(['status' => 'invalid_payload', 'message' => 'Invalid JSON payload'], 422);
+            }
+
+            $provider_ref = collect([
+                data_get($response_decode, 'provider_reference'),
+                data_get($response_decode, 'transaction_reference'),
+                data_get($response_decode, 'transaction_id'),
+                data_get($response_decode, 'reference'),
+                data_get($response_decode, 'data.provider_reference'),
+                data_get($response_decode, 'data.transaction_reference'),
+                data_get($response_decode, 'data.transaction_id'),
+                data_get($response_decode, 'event_data.data.provider_reference'),
+                data_get($response_decode, 'event_data.data.transaction_reference'),
+                data_get($response_decode, 'event_data.data.transaction_id'),
+            ])->first(fn ($reference) => is_scalar($reference) && trim((string) $reference) !== '');
+
+            if ($provider_ref === null) {
+                logger('Securewave webhook rejected because no stable transaction reference was supplied.', [
+                    'available_keys' => array_keys($response_decode),
+                ]);
+
+                return response()->json([
+                    'status' => 'invalid_payload',
+                    'message' => 'Missing transaction reference',
+                ], 422);
+            }
+
+            $provider_ref = trim((string) $provider_ref);
+
             
             
             $can_fund = '';
@@ -112,10 +144,8 @@ class WalletsController extends Controller
             DB::beginTransaction();
             try{
 
-            $provider_ref = $response_decode['provider_reference'];
-
             $check_exists = FundingWebhookPayload::where('funding_slug', 'securewaveng')
-            ->where('transaction_reference',$response_decode['provider_reference'])
+            ->where('transaction_reference', $provider_ref)
             ->first();
 
      
@@ -145,7 +175,7 @@ class WalletsController extends Controller
                     MaxCrystalPaymentsPendingApproval::create([
                         'user_id' => $user_details->id,
                         'amount' => $amount_funded,
-                        'payment_reference' => $response_decode['provider_reference']
+                        'payment_reference' => $provider_ref
                     ]);
                     }else{
                     $new_amount = $old_amount + $amount_funded;
@@ -234,7 +264,7 @@ class WalletsController extends Controller
                             $user_details,
                             'securewaveng',
                             (float) $paid_amount,
-                            (string) $response_decode['provider_reference'],
+                            $provider_ref,
                             (float) $charges,
                             (float) $amount_to_fund_user
                         );
@@ -248,7 +278,7 @@ class WalletsController extends Controller
                             $user_details,
                             'securewaveng',
                             (float) $paid_amount,
-                            (string) $response_decode['provider_reference']
+                            $provider_ref
                         );
                     } catch (Throwable $uplineBonusException) {
                         report($uplineBonusException);
@@ -263,17 +293,17 @@ class WalletsController extends Controller
                 $created_data['user_email'] = $email;
                 $created_data['status'] = $response_decode['transaction_status'] ?? 'nil';
                 $created_data['message'] = $response_decode['description'] ?? 'nil';
-                $created_data['package_id'] = $response_decode['provider_reference'];
+                $created_data['package_id'] = $provider_ref;
                 $created_data['bank_name'] = $response_decode['receiver']['bank'] ?? 'nil';
                 $created_data['account_name'] = $response_decode['receiver']['name'] ?? 'nil';
                 $created_data['account_number'] = $response_decode['receiver']['account_number'] ?? 'nil';
-                $created_data['account_reference'] = $response_decode['provider_reference'] ?? 'nil';
+                $created_data['account_reference'] = $provider_ref;
                 $created_data['amount_paid'] = $paid_amount;
                 $created_data['amount_charged'] = $charges;
                 $created_data['amount_settled'] = $amount_to_fund_user;
                 $created_data['currency'] ='NGN';
-                $created_data['collection_reference'] = $response_decode['provider_reference'];
-                $created_data['transaction_reference'] = $response_decode['provider_reference'];
+                $created_data['collection_reference'] = $provider_ref;
+                $created_data['transaction_reference'] = $provider_ref;
                 $created_data['payload_content'] = $response;
                 $created = FundingWebhookPayload::create($created_data);
                 $new_amount = $old_amount + $amount_to_fund_user;
@@ -290,7 +320,7 @@ class WalletsController extends Controller
                     $walletLog['transaction_category'] = 'SECUREWAVENG_WALLET_FUNDING';
                     $walletLog['balance_before'] = $old_amount;
                     $walletLog['balance_after'] = $new_amount;
-                    $walletLog['transaction_id'] = $response_decode['provider_reference'];
+                    $walletLog['transaction_id'] = $provider_ref;
                     $walletLog['action_by'] = 'webhook';           
                     $walletLog['description'] = "Wallet of the user with the email: $email has been credited with $amount_to_fund_user via securewaveng";
                     $this->log_wallet_transactions($walletLog);
