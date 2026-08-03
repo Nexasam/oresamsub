@@ -188,7 +188,11 @@ class ProductPlanController extends Controller
 
       public function update_product_plan_new(Request $request, $id)
       {
-        // dd('sdfs');
+          $validated = $request->validate([
+              'automation_id' => ['required', 'uuid', 'exists:automations,id'],
+              'automation_product_plan_id' => ['required', 'string', 'max:255'],
+          ]);
+
           $plan = ProductPlan::findOrFail($id);
 
           $plan->update([
@@ -198,6 +202,8 @@ class ProductPlanController extends Controller
             'cost_price' => $request->cost_price,
             'visibility' => $request->is_visible,
             'product_plan_category_id' => $request->product_plan_category_id,
+            'automation_id' => $validated['automation_id'],
+            'automation_product_plan_id' => $validated['automation_product_plan_id'],
             // 'visibility' => $request->is_visible,
         
             'user_level_1_selling_price' => $request->user_level_1_selling_price,

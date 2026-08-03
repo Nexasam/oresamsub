@@ -110,6 +110,35 @@
 
                     </select>
                 </div>
+
+                {{-- AUTOMATION --}}
+                <div class="flex flex-col gap-1">
+                    <label class="text-[10px] text-gray-400">Automation</label>
+                    <select name="automation_id" class="ti-form-select h-10 text-xs" required>
+                        <option value="">Select Automation</option>
+                        @foreach($automations as $automation)
+                            <option value="{{ $automation->id }}" @selected(old('automation_id', $plan->automation_id) === $automation->id)>
+                                {{ $automation->automation_name }}
+                            </option>
+                        @endforeach
+                    </select>
+                    @error('automation_id')
+                        <span class="text-[10px] text-red-600">{{ $message }}</span>
+                    @enderror
+                </div>
+
+                {{-- AUTOMATION PLAN ID --}}
+                <div class="flex flex-col gap-1">
+                    <label class="text-[10px] text-gray-400">Automation Plan ID</label>
+                    <input type="text"
+                           name="automation_product_plan_id"
+                           value="{{ old('automation_product_plan_id', $plan->automation_product_plan_id) }}"
+                           class="ti-form-input h-8 text-xs"
+                           required>
+                    @error('automation_product_plan_id')
+                        <span class="text-[10px] text-red-600">{{ $message }}</span>
+                    @enderror
+                </div>
         
                 {{-- VALIDITY --}}
                 <div class="flex flex-col gap-1">
