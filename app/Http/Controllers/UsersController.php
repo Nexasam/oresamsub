@@ -199,13 +199,18 @@ class UsersController extends Controller
           return redirect()->back();
         }
 
-          $upline = User::where('id',$user->upline_id)->first();
+        $canEditSensitiveUserFields = auth()->user()?->email === 'adebsholey4real@gmail.com';
+        if ($canEditSensitiveUserFields && blank($user->api_token)) {
+          $user->generateApiToken();
+        }
+
+        $upline = User::where('id',$user->upline_id)->first();
        
         return view('admin.users.manage_users')->with([
           'user' => $user,
           'user_plans' => $user_plans,
           'upline' => $upline,
-          'canEditSensitiveUserFields' => auth()->user()?->email === 'adebsholey4real@gmail.com',
+          'canEditSensitiveUserFields' => $canEditSensitiveUserFields,
         ]);
     }
 
