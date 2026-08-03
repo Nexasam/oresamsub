@@ -868,6 +868,8 @@ Route::middleware(['set_locale'])->group(function () {
             ->name('admin.automation-product-plans.store');
             Route::middleware(['auth','verified','admin'])->get('/admin/product-plans/{id}/manage', [ProductPlanController::class, 'manage'])
             ->name('admin.product_plans.manage');
+            Route::middleware(['auth','verified','admin'])->get('/admin/product-plans/most-purchased-pricing.pdf', [ProductPlanController::class, 'mostPurchasedPricingPdf'])
+            ->name('admin.product_plans.most_purchased_pricing_pdf');
             Route::put('/admin/automation-product-plans/{id}', [AutomationProductPlanController::class, 'update'])
              ->name('admin.automation-product-plans.update');
 

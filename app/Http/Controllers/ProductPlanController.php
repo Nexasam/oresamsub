@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Automation;
 use App\Models\Network;
+use App\Models\PlanProfitSetting;
 use App\Models\Product;
 use App\Models\ProductPlan;
 use App\Models\ProductPlanCategory;
@@ -15,11 +16,85 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
+use Illuminate\View\View;
 use Inertia\Inertia;
 use Yajra\DataTables\DataTables;
 
 class ProductPlanController extends Controller
 {
+    public function mostPurchasedPricingPdf(Request $request): View
+    {
+        $validated = $request->validate([
+            'limit' => ['nullable', 'integer', 'min:1', 'max:1000'],
+        ]);
+
+        $purchaseCounts = Transaction::query()
+            ->selectRaw('product_plan_id, COUNT(*) as purchase_count')
+            ->where('status', '1')
+            ->whereNotNull('product_plan_id')
+            ->groupBy('product_plan_id')
+            ->orderByDesc('purchase_count')
+            ->when($validated['limit'] ?? null, fn ($query, $limit) => $query->limit((int) $limit))
+            ->get();
+
+        $plans = ProductPlan::query()
+            ->with(['product_plan_category.product', 'product_plan_category.network', 'automationProductPlans'])
+            ->whereIn('id', $purchaseCounts->pluck('product_plan_id'))
+            ->get()
+            ->keyBy('id');
+        $profitSettings = PlanProfitSetting::all();
+
+        $rows = $purchaseCounts->map(function ($count, $index) use ($plans, $profitSettings) {
+            $plan = $plans->get($count->product_plan_id);
+            if (! $plan) {
+                return null;
+            }
+
+            $category = $plan->product_plan_category;
+            $product = $category?->product;
+            $network = $category?->network;
+            $usesNewPricing = $plan->automationProductPlans->contains(fn ($provider) => (bool) $provider->is_active);
+            $profitSetting = ! $usesNewPricing && $product?->slug === 'data'
+                ? $profitSettings->first(fn ($setting) =>
+                    (string) $setting->network_id === (string) $network?->id
+                    && (string) $setting->product_id === (string) $product?->id
+                    && (string) $setting->data_size_in_mb === (string) $plan->data_size_in_mb
+                )
+                : null;
+
+            $prices = collect(range(1, 4))->mapWithKeys(function ($level) use ($plan, $product, $usesNewPricing, $profitSetting) {
+                $column = "user_level_{$level}_selling_price";
+                if ($product?->slug === 'data' && ! $usesNewPricing) {
+                    $profitColumn = "profit_{$level}";
+                    $price = (float) $plan->cost_price + abs((float) ($profitSetting?->{$profitColumn} ?? 50));
+                } else {
+                    $price = (float) ($plan->{$column} ?? $plan->user_level_1_selling_price ?? 0);
+                }
+
+                return ["level_{$level}" => round($price, 2)];
+            });
+
+            return array_merge([
+                'rank' => $index + 1,
+                'product_plan_id' => $plan->id,
+                'automation_plan_id' => $plan->automation_product_plan_id,
+                'plan_name' => $plan->product_plan_name,
+                'product' => $product?->product_name ?? $product?->slug ?? '-',
+                'network' => $network?->network_name ?? $network?->name ?? '-',
+                'size_mb' => $plan->data_size_in_mb,
+                'validity_days' => $plan->validity_in_days,
+                'pricing_model' => $usesNewPricing ? 'New automation' : ($profitSetting ? 'Legacy profit' : 'Direct'),
+                'purchase_count' => (int) $count->purchase_count,
+            ], $prices->all());
+        })->filter()->values();
+
+        return view('admin.product_plans.most-purchased-pricing-pdf', [
+            'rows' => $rows,
+            'limit' => $validated['limit'] ?? null,
+            'generatedAt' => now(),
+        ]);
+    }
+
     public function index(){
         // dd('na here');
         $product_plans = ProductPlan::with(['product','product_plan_category','automation'])
