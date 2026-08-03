@@ -61,12 +61,12 @@
             <div class="grid md:grid-cols-2 gap-2 text-xs">
         
                 {{-- PLAN NAME --}}
-                <div class="flex flex-col gap-1">
+                <div class="flex flex-col gap-1 md:col-span-2">
                     <label class="text-[10px] text-gray-400">Plan Name</label>
                     <input type="text"
                            name="product_plan_name"
                            value="{{ $plan->product_plan_name }}"
-                           class="ti-form-input h-8 text-xs">
+                           class="ti-form-input h-10 text-sm">
                 </div>
         
                 {{-- DATA SIZE --}}
@@ -75,7 +75,7 @@
                     <input type="number"
                            name="data_size_in_mb"
                            value="{{ $plan->data_size_in_mb }}"
-                           class="ti-form-input h-8 text-xs">
+                           class="ti-form-input h-10 text-sm">
                 </div>
 
                                 {{-- VISIBILITY --}}
