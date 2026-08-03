@@ -58,195 +58,134 @@
             <input type="hidden" name="user_level_6_selling_price" id="input_level_6" value="{{ $plan->user_level_6_selling_price }}">
             <input type="hidden" name="user_level_7_selling_price" id="input_level_7" value="{{ $plan->user_level_7_selling_price }}">
         
-            <div class="grid md:grid-cols-2 gap-2 text-xs">
-        
-                {{-- PLAN NAME --}}
-                <div class="flex flex-col gap-1 md:col-span-2">
-                    <label class="text-[10px] text-gray-400">Plan Name</label>
-                    <input type="text"
-                           name="product_plan_name"
-                           value="{{ $plan->product_plan_name }}"
-                           class="ti-form-input h-10 text-sm">
-                </div>
-        
-                {{-- DATA SIZE --}}
-                <div class="flex flex-col gap-1">
-                    <label class="text-[10px] text-gray-400">Data Size (MB)</label>
-                    <input type="number"
-                           name="data_size_in_mb"
-                           value="{{ $plan->data_size_in_mb }}"
-                           class="ti-form-input h-10 text-sm">
-                </div>
+            <div class="grid md:grid-cols-2 gap-4 text-xs">
 
-                                {{-- VISIBILITY --}}
-                <div class="flex flex-col gap-1">
-                    <label class="text-[10px] text-gray-400">Visibility</label>
+                {{-- PLAN IDENTITY --}}
+                <div class="md:col-span-2 grid grid-cols-1 md:grid-cols-3 gap-4 rounded-xl border border-gray-200 bg-gray-50 p-4 dark:border-gray-700 dark:bg-gray-800/50">
+                    <div class="flex flex-col gap-2 md:col-span-2">
+                        <label class="text-xs font-semibold text-gray-700 dark:text-gray-200">Plan Name</label>
+                        <input type="text"
+                               name="product_plan_name"
+                               value="{{ old('product_plan_name', $plan->product_plan_name) }}"
+                               class="ti-form-input min-h-11 w-full text-sm px-3"
+                               placeholder="Enter the product plan name"
+                               required>
+                    </div>
 
-                    <select name="is_visible" class="ti-form-select h-10 text-xs">
-                        <option value="1" {{ $plan->visibility ? 'selected' : '' }}>Visible</option>
-                        <option value="0" {{ !$plan->visibility ? 'selected' : '' }}>Hidden</option>
-                    </select>
+                    <div class="flex flex-col gap-2">
+                        <label class="text-xs font-semibold text-gray-700 dark:text-gray-200">Data Size <span class="font-normal text-gray-400">(MB)</span></label>
+                        <div class="relative">
+                            <input type="number"
+                                   name="data_size_in_mb"
+                                   value="{{ old('data_size_in_mb', $plan->data_size_in_mb) }}"
+                                   class="ti-form-input min-h-11 w-full text-sm px-3 pr-12"
+                                   placeholder="e.g. 1024">
+                            <span class="pointer-events-none absolute inset-y-0 right-3 flex items-center text-xs font-medium text-gray-400">MB</span>
+                        </div>
+                    </div>
                 </div>
 
-                {{-- PRODUCT PLAN CATEGORY --}}
-                <div class="flex flex-col gap-1">
-                    <label class="text-[10px] text-gray-400">
-                        Plan Category
-                    </label>
+                <div class="md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-4 rounded-xl border border-gray-200 p-4 dark:border-gray-700">
+                    <div class="md:col-span-2">
+                        <h5 class="text-sm font-semibold text-gray-800 dark:text-gray-100">Plan settings</h5>
+                        <p class="mt-1 text-xs text-gray-500">Control where the plan appears and how long it remains valid.</p>
+                    </div>
 
-                    <select
-                        name="product_plan_category_id"
-                        class="ti-form-select h-10 text-xs">
+                    <div class="flex flex-col gap-2">
+                        <label class="text-xs font-semibold text-gray-700 dark:text-gray-200">Plan Category</label>
+                        <select name="product_plan_category_id" class="ti-form-select min-h-11 w-full text-sm" required>
+                            <option value="">Select Category</option>
+                            @foreach($productPlanCategories as $category)
+                                <option value="{{ $category->id }}" @selected(old('product_plan_category_id', $plan->product_plan_category_id) === $category->id)>
+                                    {{ $category->product_plan_category_name }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
 
-                        <option value="">Select Category</option>
+                    <div class="flex flex-col gap-2">
+                        <label class="text-xs font-semibold text-gray-700 dark:text-gray-200">Visibility</label>
+                        <select name="is_visible" class="ti-form-select min-h-11 w-full text-sm">
+                            <option value="1" @selected((string) old('is_visible', $plan->visibility) === '1')>Visible</option>
+                            <option value="0" @selected((string) old('is_visible', $plan->visibility) === '0')>Hidden</option>
+                        </select>
+                    </div>
 
-                        @foreach($productPlanCategories as $category)
-                            <option
-                                value="{{ $category->id }}"
-                                {{ $plan->product_plan_category_id == $category->id ? 'selected' : '' }}>
-                                {{ $category->product_plan_category_name }}
-                            </option>
-                        @endforeach
+                    <div class="flex flex-col gap-2">
+                        <label class="text-xs font-semibold text-gray-700 dark:text-gray-200">Validity <span class="font-normal text-gray-400">(days)</span></label>
+                        <input type="number" name="validity_in_days" value="{{ old('validity_in_days', $plan->validity_in_days) }}" class="ti-form-input min-h-11 w-full text-sm px-3">
+                    </div>
 
-                    </select>
+                    <div class="flex flex-col gap-2">
+                        <label class="text-xs font-semibold text-gray-700 dark:text-gray-200">Cost Price <span class="font-normal text-gray-400">(₦)</span></label>
+                        <input type="number" step="0.01" name="cost_price" value="{{ old('cost_price', $plan->cost_price) }}" class="ti-form-input min-h-11 w-full text-sm px-3">
+                    </div>
                 </div>
 
-                {{-- AUTOMATION --}}
-                <div class="flex flex-col gap-1">
-                    <label class="text-[10px] text-gray-400">Automation</label>
-                    <select name="automation_id" class="ti-form-select h-10 text-xs" required>
-                        <option value="">Select Automation</option>
-                        @foreach($automations as $automation)
-                            <option value="{{ $automation->id }}" @selected(old('automation_id', $plan->automation_id) === $automation->id)>
-                                {{ $automation->automation_name }}
-                            </option>
-                        @endforeach
-                    </select>
-                    @error('automation_id')
-                        <span class="text-[10px] text-red-600">{{ $message }}</span>
-                    @enderror
+                <div class="md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-4 rounded-xl border border-gray-200 p-4 dark:border-gray-700">
+                    <div class="md:col-span-2">
+                        <h5 class="text-sm font-semibold text-gray-800 dark:text-gray-100">Default automation</h5>
+                        <p class="mt-1 text-xs text-gray-500">Select the provider and its corresponding plan identifier.</p>
+                    </div>
+
+                    <div class="flex flex-col gap-2">
+                        <label class="text-xs font-semibold text-gray-700 dark:text-gray-200">Automation</label>
+                        <select name="automation_id" class="ti-form-select min-h-11 w-full text-sm" required>
+                            <option value="">Select Automation</option>
+                            @foreach($automations as $automation)
+                                <option value="{{ $automation->id }}" @selected(old('automation_id', $plan->automation_id) === $automation->id)>{{ $automation->automation_name }}</option>
+                            @endforeach
+                        </select>
+                        @error('automation_id')<span class="text-xs text-red-600">{{ $message }}</span>@enderror
+                    </div>
+
+                    <div class="flex flex-col gap-2">
+                        <label class="text-xs font-semibold text-gray-700 dark:text-gray-200">Automation Plan ID</label>
+                        <input type="text" name="automation_product_plan_id" value="{{ old('automation_product_plan_id', $plan->automation_product_plan_id) }}" class="ti-form-input min-h-11 w-full text-sm px-3" required>
+                        @error('automation_product_plan_id')<span class="text-xs text-red-600">{{ $message }}</span>@enderror
+                    </div>
                 </div>
 
-                {{-- AUTOMATION PLAN ID --}}
-                <div class="flex flex-col gap-1">
-                    <label class="text-[10px] text-gray-400">Automation Plan ID</label>
-                    <input type="text"
-                           name="automation_product_plan_id"
-                           value="{{ old('automation_product_plan_id', $plan->automation_product_plan_id) }}"
-                           class="ti-form-input h-8 text-xs"
-                           required>
-                    @error('automation_product_plan_id')
-                        <span class="text-[10px] text-red-600">{{ $message }}</span>
-                    @enderror
-                </div>
-        
-                {{-- VALIDITY --}}
-                <div class="flex flex-col gap-1">
-                    <label class="text-[10px] text-gray-400">Validity (Days)</label>
-                    <input type="number"
-                           name="validity_in_days"
-                           value="{{ $plan->validity_in_days }}"
-                           class="ti-form-input h-8 text-xs">
-                </div>
-        
-                {{-- COST --}}
-                <div class="flex flex-col gap-1">
-                    <label class="text-[10px] text-gray-400">Cost Price</label>
-                    <input type="number"
-                           step="0.01"
-                           name="cost_price"
-                           value="{{ $plan->cost_price }}"
-                           class="ti-form-input h-8 text-xs">
-                </div>
-        
-             
+                <div class="md:col-span-2 rounded-xl border border-gray-200 p-4 dark:border-gray-700">
+                    <div>
+                        <h5 class="text-sm font-semibold text-gray-800 dark:text-gray-100">Selling-price tiers</h5>
+                        <p class="mt-1 text-xs text-gray-500">Set the popular Level 4 price and the difference between each customer level.</p>
+                    </div>
 
-
-                <div class="flex flex-col gap-1 md:col-span-12">
-
-                    <div class="divide-y border rounded-lg overflow-hidden mt-4">
-
+                    <div class="mt-4 grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-2">
                         @for($i = 1; $i <= 7; $i++)
                             @php
                                 $label = $labels[$i] ?? 'LEVEL '.$i;
                                 $price = $plan->{'user_level_'.$i.'_selling_price'} ?? 0;
                             @endphp
-                        
-                            <div class="flex justify-between items-center p-2 text-xs">
-                                <div>
-                                    <div class="font-medium">{{ $label }}</div>
-                                    <div class="text-[10px] text-gray-400">Level {{ $i }}</div>
-                                </div>
-                        
-                                <div class="font-bold text-green-600">
-                                    ₦{{ number_format($price, 2) }}
-                                </div>
+                            <div class="rounded-lg border bg-gray-50 p-3 text-center dark:border-gray-700 dark:bg-gray-800/50">
+                                <div class="truncate text-[11px] font-medium text-gray-500" title="{{ $label }}">{{ $label }}</div>
+                                <div id="level_{{ $i }}" class="mt-1 text-sm font-bold text-green-600">₦{{ number_format($price, 2) }}</div>
+                                <div class="mt-1 text-[10px] text-gray-400">Level {{ $i }}</div>
                             </div>
                         @endfor
-                        
+                    </div>
+
+                    <div class="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="flex flex-col gap-2">
+                            <label class="text-xs font-semibold text-gray-700 dark:text-gray-200">Base Selling Price <span class="font-normal text-gray-400">(Level 4)</span></label>
+                            <input type="number" step="0.01" id="base_price" name="base_price" value="{{ $plan->user_level_4_selling_price ?? $plan->user_level_1_selling_price }}" class="ti-form-input min-h-11 w-full text-sm px-3">
                         </div>
-                </div>
-
-
-                   {{-- SELLING --}}
-               {{-- SELLING PRICE TIER --}}
-               <div class="flex flex-col gap-1 md:col-span-2">
-
-                    <label class="text-[10px] text-gray-400">
-                        Selling Price Base (Level 4: Popular Level)
-                        {{-- {{$newplan}} --}}
-                        {{-- {{ json_decode($newplan,true)[2][1] }} --}}
-                        {{-- {{ json_decode($newplan,true)[1][1] }} --}}
-                    </label>
-
-                    <input type="number"
-                        id="base_price"
-                        {{-- name="user_level_4_selling_price" --}}
-                        name="base_price"
-                        value="{{ $plan->user_level_4_selling_price ?? $plan->user_level_1_selling_price }}"
-                        class="ti-form-input h-8 text-xs">
-                </div>
-
-                
-                {{-- DIFFERENCE --}}
-                <div class="flex flex-col gap-1 md:col-span-2">
-
-                    <label class="text-[10px] text-gray-400">
-                        Difference Step
-                    </label>
-
-                    <input type="number"
-                        id="diff_step"
-                        value="10"
-                        class="ti-form-input h-8 text-xs">
-
+                        <div class="flex flex-col gap-2">
+                            <label class="text-xs font-semibold text-gray-700 dark:text-gray-200">Difference per Level</label>
+                            <input type="number" step="0.01" id="diff_step" value="10" class="ti-form-input min-h-11 w-full text-sm px-3">
+                        </div>
+                    </div>
                 </div>
         
             </div>
         
-            <button class="ti-btn ti-btn-primary ti-btn-sm mt-3">
+            <div class="mt-5 flex justify-end">
+            <button class="ti-btn ti-btn-primary px-6 py-2.5">
                 Update Plan
             </button>
+            </div>
         </form>
-
-
-
-        <div class="mt-3 grid grid-cols-7 mt-3 gap-1 text-[13px]">
-            <div>PRICE PREVIEW</div>
-            @for($i = 1; $i <= 7; $i++)
-                <div class="border rounded p-1 text-center">
-                    <div class="text-gray-400">L{{ $i }}</div>
-                    <div id="level_{{ $i }}">
-                        ₦{{ number_format($plan->{'user_level_'.$i.'_selling_price'} ?? 0, 2) }}
-                    </div>
-                </div>
-            @endfor
-        
-        </div>
-     
-
-
-
 
         @php
             $providerCosts = $plan->automationProductPlans->pluck('cost_price')->filter();
