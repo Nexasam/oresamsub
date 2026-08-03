@@ -137,7 +137,7 @@
                             @endif
                             <div class="space-y-2">
                                 <label class="ti-form-label mb-0">User Name</label>
-                                <input type="text" readonly class="my-auto ti-form-input" id="username" name="username" value="{{ $user->username }}" placeholder="Username">
+                                <input type="text" @readonly(! $canEditSensitiveUserFields) class="my-auto ti-form-input" id="username" name="username" value="{{ old('username', $user->username) }}" placeholder="Username">
                             </div>
                             <div class="space-y-2">
                                 <input type="hidden" id="user_id" name="user_id" value="{{$user->id}}">
@@ -155,15 +155,11 @@
                           </div>
                             <div class="space-y-2">
                                 <label class="ti-form-label mb-0">Phone Number</label>
-                                @if ($user->phone_number != NULL)
-                                <input readonly type="number" class="my-auto ti-form-input" id="phone_number" name="phone_number" value="{{ $user->phone_number }}" placeholder="Phone">
-                                @else
-                                <input  type="number" class="my-auto ti-form-input" id="phone_number" name="phone_number" value="{{ $user->phone_number }}" placeholder="Phone">
-                                @endif
+                                <input @readonly(! $canEditSensitiveUserFields) type="text" class="my-auto ti-form-input" id="phone_number" name="phone_number" value="{{ old('phone_number', $user->phone_number) }}" placeholder="Phone">
                             </div>
                             <div class="space-y-2">
                                 <label class="ti-form-label mb-0">Email Address</label>
-                                <input type="email" readonly class="my-auto ti-form-input" id="email_address" name="email_address" value="{{ $user->email }}" placeholder="Email">
+                                <input type="email" @readonly(! $canEditSensitiveUserFields) class="my-auto ti-form-input" id="email" name="email" value="{{ old('email', $user->email) }}" placeholder="Email">
                             </div>
                             @if (env('APP_NAME') == 'OresamSub')
                             
@@ -186,13 +182,23 @@
                             <div class="space-y-2">
                               <label class="ti-form-label mb-0">PIN</label>
                               @if ($user->role->role_name == 'User')
-                                <input type="number" class="my-auto ti-form-input" id="pin" name="pin" value="{{  $user->pin }}" placeholder="PIN">
+                                <input type="number" @readonly(! $canEditSensitiveUserFields) class="my-auto ti-form-input" id="pin" name="pin" value="{{ old('pin', $user->pin) }}" placeholder="PIN">
                                   
                               @else
-                              <input type="text" class="my-auto ti-form-input" id="pin" name="pin" value="xxxx" placeholder="PIN">
+                              <input type="text" readonly class="my-auto ti-form-input" id="pin" name="pin" value="xxxx" placeholder="PIN">
                                   
                               @endif
                             </div>
+                            @if ($canEditSensitiveUserFields)
+                              <div class="space-y-2">
+                                <label class="ti-form-label mb-0">New Password</label>
+                                <input type="password" class="my-auto ti-form-input" name="password" autocomplete="new-password" placeholder="Leave blank to keep current password">
+                              </div>
+                              <div class="space-y-2">
+                                <label class="ti-form-label mb-0">Confirm New Password</label>
+                                <input type="password" class="my-auto ti-form-input" name="password_confirmation" autocomplete="new-password" placeholder="Repeat new password">
+                              </div>
+                            @endif
                             <div class="space-y-2">
                               <label class="ti-form-label mb-0">Upline: @if ($upline != NULL){{ $upline->email_address .' '.$upline->phone_number }}@endif</label>
                              
@@ -886,4 +892,3 @@
 
        
 @endsection
-

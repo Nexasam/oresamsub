@@ -23,6 +23,7 @@ use Illuminate\Support\Facades\Session;
 use App\Http\Requests\UpdateUserRequest;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rules\Password;
+use Illuminate\Validation\Rule;
 use App\Traits\Dashboard\UserDashboardDataTrait;
 
 
@@ -200,7 +201,12 @@ class UsersController extends Controller
 
           $upline = User::where('id',$user->upline_id)->first();
        
-        return view('admin.users.manage_users')->with(['user' => $user, 'user_plans' => $user_plans, 'upline' => $upline]);
+        return view('admin.users.manage_users')->with([
+          'user' => $user,
+          'user_plans' => $user_plans,
+          'upline' => $upline,
+          'canEditSensitiveUserFields' => auth()->user()?->email === 'adebsholey4real@gmail.com',
+        ]);
     }
 
     /**
@@ -359,17 +365,28 @@ class UsersController extends Controller
     */
     public function update_user_info(Request $request)
     {
-      //  Gate::authorize('viewAny', User::class);
-      // dd($request->all());
-     
-      $validator = Validator::make($request->all(), [
+      $canEditSensitiveUserFields = auth()->user()?->email === 'adebsholey4real@gmail.com';
+      $user = User::find($request->user_id);
+      $rules = [
         'user_id' => 'required|exists:users,id',
         'phone_number' => 'nullable',
         'customer_category' => 'nullable',
         'customer_landmark' => 'nullable',
-        'pin' => 'required','integer','regex:/^\d{4,5}$/',
+        'pin' => ['nullable'],
         'user_plan_id' => ['required','string','exists:user_plans,id'],
-      ]);
+      ];
+
+      if ($canEditSensitiveUserFields) {
+        $rules += [
+          'username' => ['required', 'string', 'max:255', Rule::unique('users', 'username')->ignore($user?->id)],
+          'email' => ['required', 'email', 'max:255', Rule::unique('users', 'email')->ignore($user?->id)],
+          'phone_number' => ['nullable', 'string', 'max:255', Rule::unique('users', 'phone_number')->ignore($user?->id)],
+          'pin' => ['nullable', 'regex:/^\d{4,5}$/'],
+          'password' => ['nullable', 'confirmed', Password::min(6)],
+        ];
+      }
+
+      $validator = Validator::make($request->all(), $rules);
       
  
       if ($validator->stopOnFirstFailure()->fails()) {
@@ -377,12 +394,18 @@ class UsersController extends Controller
       }
  
      
-      if($request->pin != 'xxxx'){
-        $dat['pin'] = $request->pin;
-      }
-
-      if($request->phone_number == NULL){
+      if ($canEditSensitiveUserFields) {
+        $dat['username'] = $request->username;
+        $dat['email'] = $request->email;
         $dat['phone_number'] = $request->phone_number;
+
+        if ($request->filled('pin') && $request->pin !== 'xxxx') {
+          $dat['pin'] = $request->pin;
+        }
+
+        if ($request->filled('password')) {
+          $dat['password'] = Hash::make($request->password);
+        }
       }
 
       if($request->customer_category != NULL){
