@@ -69,7 +69,7 @@ export default function BonusWallet({ bonus = {} }) {
           type="button"
           onClick={transferToMainWallet}
           disabled={balance <= 0 || transferring}
-          className="rounded-lg bg-white px-3 py-2 text-xs font-bold text-slate-900 shadow-sm transition hover:-translate-y-0.5 hover:bg-amber-50 hover:shadow-md disabled:cursor-not-allowed disabled:opacity-50"
+          className="rounded-lg bg-white px-3 py-2 mt-2 mb-2 text-xs font-bold text-slate-900 shadow-sm transition hover:-translate-y-0.5 hover:bg-amber-50 hover:shadow-md disabled:cursor-not-allowed disabled:opacity-50"
         >
           {transferring ? "Moving..." : "Move to main wallet"}
         </button>
