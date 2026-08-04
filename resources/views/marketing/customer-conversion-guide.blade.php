@@ -33,10 +33,11 @@
     <div class="head"><h2>Reactivating an old customer</h2><p>Recognise their history, explain what has improved, then make returning effortless.</p></div>
     <div class="script"><strong>Opening:</strong><br>“Hello [Name], this is [Agent] calling from OresamSub. You previously used our platform, and we noticed it has been a while. We have made important improvements and wanted to personally invite you back.”</div>
     <div class="script"><strong>Value:</strong><br>“OresamSub now has a cleaner mobile experience, improved transaction automation, clearer records and dedicated support. You can also complete supported purchases directly through WhatsApp, so you do not always need to open the website or app.”</div>
-    <div class="script"><strong>Incentive:</strong><br>“Eligible returning and active customers may also receive campaign bonuses and weekly transaction rewards in their bonus wallet.”</div>
+    <div class="offer"><h3>Welcome back with ₦200</h3><p>Eligible dormant customers receive a ₦200 reactivation bonus when they log in. The reward is credited to their bonus wallet, and they can tap <b>Transfer to Main Wallet</b> to use it for transactions.</p></div>
+    <div class="script"><strong>Incentive:</strong><br>“When you log back into your eligible dormant account, you receive ₦200 in your bonus wallet. You can then tap ‘Transfer to Main Wallet’ and use it for your transactions. You may also qualify for other active campaign and weekly transaction rewards.”</div>
     <div class="script"><strong>Close:</strong><br>“I can send your login and WhatsApp access links now and help you regain access. Would you prefer WhatsApp or the mobile app?”</div>
     <h3>What the marketer should do</h3>
-    <ul class="checklist"><li>Confirm the customer’s preferred name and channel.</li><li>Ask why they stopped using the service; listen before selling.</li><li>Match their concern to one concrete improvement.</li><li>Offer to guide them through login recovery or their first returning transaction.</li><li>Send the correct link immediately and agree on a follow-up time.</li></ul>
+    <ul class="checklist"><li>Confirm the customer’s preferred name and channel.</li><li>Confirm that the account is eligible for the dormant-customer campaign before promising the ₦200 reward.</li><li>Ask why they stopped using the service; listen before selling.</li><li>Match their concern to one concrete improvement.</li><li>Offer to guide them through login recovery, locating the bonus wallet and tapping <b>Transfer to Main Wallet</b>.</li><li>Send the correct link immediately and agree on a follow-up time.</li></ul>
 </section>
 
 <section class="page">
@@ -64,7 +65,7 @@
     <table class="two-col"><tr><td><h3>Before calling</h3><ul class="checklist"><li>Know whether the lead is new, dormant or active.</li><li>Review any known previous concern.</li><li>Know the current campaign terms.</li><li>Have login, registration, app and WhatsApp links ready.</li></ul></td><td><h3>Before ending</h3><ul class="checklist"><li>Confirm the customer’s main need.</li><li>Recommend the best channel.</li><li>Send the promised link while still on the call.</li><li>Ask permission to follow up.</li><li>Record the outcome accurately.</li></ul></td></tr></table>
     <div class="callout"><b>Primary objective:</b> get one safe next action—a login, registration, WhatsApp conversation, wallet funding or first transaction. Do not overwhelm the customer with every feature at once.</div>
     <h3>Suggested follow-up message</h3>
-    <div class="script">“Hello [Name], thank you for speaking with me. Here is your OresamSub [login/registration/WhatsApp] link: [LINK]. You can use OresamSub for supported data, airtime and bill services, with improved reliability, clear records, dedicated support and campaign rewards for eligible customers. Reply here if you need help getting started.”</div>
+    <div class="script">“Hello [Name], thank you for speaking with me. Here is your OresamSub login link: [LINK]. As an eligible returning customer, logging in credits a ₦200 reactivation reward to your bonus wallet. Tap ‘Transfer to Main Wallet’ to use it for transactions. You can also enjoy supported data, airtime and bill services with improved reliability, clear records and dedicated support. Reply here if you need help getting started.”</div>
 </section>
 </body>
 </html>

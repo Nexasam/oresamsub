@@ -46,4 +46,13 @@ class MarketingGuidePdfTest extends TestCase
             ->get(route('marketing.customer-conversion-guide'))
             ->assertRedirect(route('access_denied'));
     }
+
+    public function test_guide_explains_the_dormant_customer_reward_and_manual_transfer(): void
+    {
+        $guide = view('marketing.customer-conversion-guide')->render();
+
+        $this->assertStringContainsString('Welcome back with ₦200', $guide);
+        $this->assertStringContainsString('eligible dormant account', $guide);
+        $this->assertStringContainsString('Transfer to Main Wallet', $guide);
+    }
 }
