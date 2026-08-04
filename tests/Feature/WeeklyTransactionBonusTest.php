@@ -89,3 +89,37 @@ it('calculates percentage rewards from weekly volume and applies the configured 
     expect((float) $user->fresh()->bonus_wallet)->toBe(1500.0)
         ->and((float) WeeklyBonusReward::first()->reward_amount)->toBe(1500.0);
 });
+
+it('awards every weekly campaign a customer qualifies for without duplicating either campaign', function () {
+    $week = CarbonImmutable::parse('2026-07-27', 'Africa/Lagos')->startOfWeek();
+    $user = User::factory()->create(['bonus_wallet' => 0]);
+    weeklyCampaign([
+        'title' => 'High priority general campaign',
+        'priority' => 100,
+        'funding_value' => 1000,
+    ]);
+    weeklyCampaign([
+        'title' => 'Customer-specific campaign',
+        'priority' => 1,
+        'funding_value' => 300,
+        'conditions' => [
+            'weekly_minimum_volume' => 20000,
+            'weekly_category_scope' => 'all',
+            'weekly_categories' => [],
+            'targeted_user_ids' => [$user->id],
+            'targeted_customers' => [$user->username],
+        ],
+    ]);
+    completedPurchase($user, $week->addDay(), 25000);
+
+    $result = app(WeeklyTransactionBonusService::class)->processWeek($week);
+
+    $secondRun = app(WeeklyTransactionBonusService::class)->processWeek($week);
+
+    expect($result['rewarded'])->toBe(2)
+        ->and($secondRun['rewarded'])->toBe(0)
+        ->and((float) $user->fresh()->bonus_wallet)->toBe(1300.0)
+        ->and(WeeklyBonusReward::count())->toBe(2)
+        ->and(WeeklyBonusReward::with('bonus')->get()->pluck('bonus.title')->sort()->values()->all())
+        ->toBe(['Customer-specific campaign', 'High priority general campaign']);
+});

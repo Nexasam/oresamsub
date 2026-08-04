@@ -13,6 +13,8 @@ Weekly transaction-volume rewards extend the existing bonus campaign system. A c
 - Category scope is either all transaction categories or an explicit list such as `data`.
 - Percentage rewards require a monetary cap; flat rewards use the configured value directly.
 - A unique campaign/customer/week record makes processing idempotent.
+- Campaigns are cumulative: a customer who qualifies for multiple weekly campaigns receives each reward once.
+- Priority controls processing order and does not suppress another qualifying campaign.
 - Campaign end date is optional for indefinitely running weekly campaigns.
 - Rewards use existing bonus logs and bonus-wallet conversion accounting.
 - A scheduled command processes the completed previous week every Monday after midnight and can be rerun safely.
