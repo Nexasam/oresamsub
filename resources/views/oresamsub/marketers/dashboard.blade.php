@@ -19,6 +19,23 @@
 </div>
   
 
+  <div class="mx-3 rounded-2xl bg-gradient-to-br from-emerald-700 to-emerald-500 p-5 text-white shadow-lg">
+    <p class="text-xs font-semibold uppercase tracking-[0.18em] text-emerald-100">Sales resource</p>
+    <div class="mt-2 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+      <div>
+        <h2 class="text-xl font-bold">Customer Conversion Guide</h2>
+        <p class="mt-1 max-w-xl text-sm text-emerald-50">Use the feature talking points, call scripts and objection responses to reactivate old customers and welcome new ones.</p>
+      </div>
+      <a href="{{ route('marketing.customer-conversion-guide') }}"
+         class="inline-flex shrink-0 items-center justify-center rounded-xl bg-white px-4 py-3 text-sm font-bold text-emerald-700 shadow transition hover:-translate-y-0.5 hover:shadow-xl">
+        <svg class="mr-2 h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v12m0 0 4-4m-4 4-4-4M5 20h14" />
+        </svg>
+        Download PDF
+      </a>
+    </div>
+  </div>
+
   <h2 class="text-xl font-bold text-center mb-1">Marketer Dashboard</h2>
 
 

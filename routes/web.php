@@ -23,6 +23,7 @@ use App\Http\Controllers\ElectricitySubscriptionController;
 use App\Http\Controllers\InertiaDashboardController;
 use App\Http\Controllers\InertiaLoginController;
 use App\Http\Controllers\MarketersController;
+use App\Http\Controllers\MarketingGuideController;
 use App\Http\Controllers\MobileEmailVerificationController;
 use App\Http\Controllers\MultilanguageController;
 use App\Http\Controllers\NetworkController;
@@ -217,6 +218,8 @@ Route::middleware(['set_locale'])->group(function () {
                  Route::middleware(['marketer'])->group(function () {
                     Route::get('/marketer/dashboard', [MarketersController::class, 'index'])->name('marketer.dashboard');
                     Route::get('/marketer/stats', [MarketersController::class, 'stats'])->name('marketer.stats'); // AJAX
+                    Route::get('/marketing/customer-conversion-guide.pdf', [MarketingGuideController::class, 'download'])
+                        ->name('marketing.customer-conversion-guide');
                 });
 
 
