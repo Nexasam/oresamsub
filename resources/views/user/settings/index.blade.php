@@ -46,6 +46,18 @@
           </div>
 
           <div class="col-span-12">
+            <div class="box border border-emerald-200">
+              <div class="box-body flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+                <div>
+                  <h5 class="font-semibold text-gray-800">Business API Access</h5>
+                  <p class="text-sm text-gray-500">View or rotate your API key and open the OresamSub developer documentation.</p>
+                </div>
+                <a href="{{ route('user.api-access.show') }}" class="ti-btn ti-btn-primary shrink-0">Manage API access</a>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-span-12">
           
               <div class="box">
                 <div class="box-header">
@@ -473,4 +485,3 @@
 
        
 @endsection
-

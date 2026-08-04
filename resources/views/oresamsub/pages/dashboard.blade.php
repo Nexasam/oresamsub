@@ -204,13 +204,14 @@ class="border border-emerald-400 dark:border-emerald-600 rounded-xl shadow-md ov
 </div>  
 
 <!-- Action Buttons -->
-<div class="grid grid-cols-4 gap-3 text-center text-sm">
+<div class="grid grid-cols-3 sm:grid-cols-4 gap-3 text-center text-sm">
   @foreach ([
     ['label' => 'Airtime', 'icon' => '📞', 'route' => 'ore.airtime'],
     ['label' => 'Data', 'icon' => '📶', 'route' => 'ore.data'],
     ['label' => 'Power', 'icon' => '⚡', 'route' => 'ore.electricity'],
     ['label' => 'Cable', 'icon' => '📺', 'route' => 'ore.cable'],
     ['label' => 'Transactions', 'icon' => '🧾', 'route' => 'ore.transactions'], 
+    ['label' => 'API Access', 'icon' => '🔑', 'route' => 'user.api-access.show'],
   ] as $item)
   <a 
     href="{{ route($item['route']) }}"

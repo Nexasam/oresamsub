@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AddonController;
+use App\Http\Controllers\ApiAccessController;
 use App\Http\Controllers\AffiliateFinanceController;
 use App\Http\Controllers\Api\v1\VendorUsersApi\WhatsappWebhookController;
 use App\Http\Controllers\AutomationProductPlanController;
@@ -89,6 +90,7 @@ Route::post('/login', [InertiaLoginController::class, 'store'])->name('inertia.l
 Route::view('/privacy-policy', 'legal.privacy')->name('privacy.policy');
 Route::view('/terms', 'legal.terms')->name('terms');
 Route::view('/account-deletion', 'legal.account-deletion')->name('account.deletion');
+Route::view('/developers', 'developers.index')->name('developers.index');
 Route::get('/mobile/verify-email/{id}/{hash}', MobileEmailVerificationController::class)
     ->middleware(['signed', 'throttle:6,1'])
     ->name('mobile.email.verify');
@@ -953,6 +955,12 @@ Route::middleware(['set_locale'])->group(function () {
 
 
             Route::middleware(['auth','verified'])->get('user/settings/api_docs', [UsersController::class, 'api_docs'])->name('user.api.docs');
+            Route::middleware(['auth','verified'])->group(function () {
+                Route::get('user/api-access', [ApiAccessController::class, 'show'])->name('user.api-access.show');
+                Route::post('user/api-access/rotate', [ApiAccessController::class, 'rotate'])
+                    ->middleware('throttle:5,1')
+                    ->name('user.api-access.rotate');
+            });
             Route::middleware(['auth','verified','user'])->get('user/profile/index', [UsersController::class, 'manage_profile'])->name('user.manage_profile.index');
             Route::middleware(['auth','verified','user'])->get('user/generate_user_bulk_data_wallets', [UsersController::class, 'generate_user_bulk_data_wallets'])->name('user.generate_user_bulk_data_wallets');
             Route::middleware(['auth','verified','user'])->get('user/settings', [UserSettingsController::class, 'index'])->name('user.settings.index');

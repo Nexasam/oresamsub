@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Middleware\AuthenticateExternalIntegration;
+use App\Http\Middleware\AuthenticateBusinessApi;
 use App\Http\Middleware\EnsureMobileUserIsActive;
 use App\Http\Middleware\HandleInertiaRequests;
 use App\Http\Middleware\MarketerMiddleware;
@@ -33,6 +34,11 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
         then: function () {
             Route::middleware('api')
+                ->prefix('api/v2')
+                ->name('api.v2.')
+                ->group(base_path('routes/api_v2.php'));
+
+            Route::middleware('api')
                 ->prefix('api/mobile/v1')
                 ->name('mobile.v1.')
                 ->group(base_path('routes/mobile.php'));
@@ -47,6 +53,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'marketer' => MarketerMiddleware::class,
             'validate_user' => ValidateSanctumUser::class,
             'api_token' => ValidateApiToken::class,
+            'business.api_token' => AuthenticateBusinessApi::class,
             // 'whatsapp.token' => ValidateWhatsappApiToken::class,
             'set_transaction_pin' => SetTransactionPin::class,
             'set_locale' => SetLocale::class,
@@ -98,6 +105,11 @@ return Application::configure(basePath: dirname(__DIR__))
         RateLimiter::for('mobile-purchase', fn (Request $request) => [
             Limit::perMinute(10)->by($request->user()?->id ?: $request->ip()),
             Limit::perDay(200)->by($request->user()?->id ?: $request->ip()),
+        ]);
+
+        RateLimiter::for('business-api', fn (Request $request) => [
+            Limit::perMinute(60)->by((string) ($request->attributes->get('api_user')?->id ?? $request->ip())),
+            Limit::perDay(5000)->by((string) ($request->attributes->get('api_user')?->id ?? $request->ip())),
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {

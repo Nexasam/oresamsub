@@ -1,0 +1,71 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "OresamSub Business API",
+    "version": "2.0.0",
+    "description": "A single integration for data and airtime reseller websites. All amounts are expressed in Nigerian naira."
+  },
+  "servers": [{"url": "https://oresamsub.com/api/v2", "description": "Production"}],
+  "security": [{"bearerAuth": []}],
+  "paths": {
+    "/catalogue": {
+      "get": {
+        "summary": "List available plans",
+        "operationId": "listCatalogue",
+        "responses": {"200": {"description": "Plans priced for the authenticated business"}, "401": {"$ref": "#/components/responses/Unauthenticated"}}
+      }
+    },
+    "/wallet": {
+      "get": {
+        "summary": "Get wallet balance",
+        "operationId": "getWallet",
+        "responses": {"200": {"description": "Available main-wallet balance"}, "401": {"$ref": "#/components/responses/Unauthenticated"}}
+      }
+    },
+    "/buy-service": {
+      "post": {
+        "summary": "Purchase data or airtime",
+        "operationId": "buyService",
+        "requestBody": {
+          "required": true,
+          "content": {"application/json": {"schema": {"$ref": "#/components/schemas/PurchaseRequest"}, "examples": {
+            "data": {"value": {"service": "data", "plan_id": 1201, "customer": "08030000000", "reference": "ORDER-10001"}},
+            "airtime": {"value": {"service": "airtime", "plan_id": 1401, "customer": "08030000000", "amount": 1000, "reference": "ORDER-10002"}}
+          }}}
+        },
+        "responses": {
+          "200": {"description": "Purchase processed or safely replayed"},
+          "202": {"description": "Purchase is pending or processing"},
+          "409": {"description": "Reference was previously used for different purchase details"},
+          "422": {"description": "Invalid request or failed purchase"}
+        }
+      }
+    },
+    "/transactions/{reference}": {
+      "get": {
+        "summary": "Reconcile a transaction",
+        "operationId": "getTransaction",
+        "parameters": [{"name": "reference", "in": "path", "required": true, "schema": {"type": "string"}}],
+        "responses": {"200": {"description": "Transaction owned by the authenticated business"}, "404": {"description": "Transaction not found"}}
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {"bearerAuth": {"type": "http", "scheme": "bearer", "description": "API token generated from the OresamSub account"}},
+    "responses": {"Unauthenticated": {"description": "Missing or invalid API token"}},
+    "schemas": {
+      "PurchaseRequest": {
+        "type": "object",
+        "required": ["service", "plan_id", "customer", "reference"],
+        "properties": {
+          "service": {"type": "string", "enum": ["data", "airtime"]},
+          "plan_id": {"description": "Plan ID returned by the catalogue endpoint"},
+          "customer": {"type": "string", "pattern": "^0[789][01][0-9]{8}$"},
+          "reference": {"type": "string", "maxLength": 100},
+          "amount": {"type": "number", "minimum": 50, "description": "Required for airtime"},
+          "validate_phone_network": {"type": "boolean", "default": true}
+        }
+      }
+    }
+  }
+}

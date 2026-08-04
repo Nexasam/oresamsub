@@ -49,6 +49,7 @@ class User extends Authenticatable implements MustVerifyEmail
             'password' => 'hashed',
             'main_wallet' => 'decimal:2',
             'bonus_wallet' => 'decimal:2',
+            'api_token_rotated_at' => 'datetime',
         ];
     }
 
