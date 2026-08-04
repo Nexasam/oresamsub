@@ -7,6 +7,13 @@
 /public/assets/img
 /public/assets/js
 /public/assets/landing_page_assets
+!/public/assets/landing_page_assets/
+/public/assets/landing_page_assets/*
+!/public/assets/landing_page_assets/img/
+/public/assets/landing_page_assets/img/*
+!/public/assets/landing_page_assets/img/generated/
+/public/assets/landing_page_assets/img/generated/*
+!/public/assets/landing_page_assets/img/generated/oresamsub-about-v1.webp
 /public/assets/libs
 /public/assets/scss
 /public/storage
