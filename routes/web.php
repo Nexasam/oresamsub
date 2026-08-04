@@ -134,6 +134,10 @@ Route::middleware(['set_locale'])->group(function () {
             ->middleware('auth')
             ->name('dashboard');  #checked
 
+            Route::post('/bonuses/transfer-to-main-wallet', [BonusController::class, 'convertWallet'])
+                ->middleware(['auth', 'verified'])
+                ->name('bonuses.convert');
+
             Route::get('set_pin', fn () => view('oresamsub.pages.set_pin'))->name('ore.set_pin');
            
             Route::middleware(['auth','verified','admin'])->get('/profit', BusinessProfitController::class)->name('admin.profit.index');

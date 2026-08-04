@@ -7,7 +7,9 @@ use App\Models\Bonus;
 use App\Models\BonusLog;
 use App\Models\User;
 use App\Services\BonusService;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 class BonusController extends Controller
@@ -78,6 +80,21 @@ class BonusController extends Controller
             $entitlement ? 'success' : 'failure',
             $entitlement ? 'Bonus granted manually.' : 'The customer already has this bonus.'
         );
+    }
+
+    public function convertWallet(Request $request, BonusService $bonuses): JsonResponse
+    {
+        $result = $bonuses->convertToMainWallet($request->user(), $request);
+
+        if ($result['converted_amount'] <= 0) {
+            return response()->json([
+                'message' => 'There is no available bonus balance to move.',
+            ], 422);
+        }
+
+        return response()->json($result + [
+            'message' => 'Bonus moved to your main wallet successfully.',
+        ]);
     }
 
     private function payload(BonusCampaignRequest $request): array

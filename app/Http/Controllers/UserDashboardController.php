@@ -24,6 +24,7 @@ use App\Models\UserProductPlan;
 use App\Models\UserVirtualAccount;
 use App\Models\UserWalletFundingLog;
 use App\Models\WalletLog;
+use App\Services\BonusService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -33,7 +34,7 @@ use Inertia\Inertia;
 class UserDashboardController extends Controller
 {
  
-  public function index(Request $request){
+  public function index(Request $request, BonusService $bonuses){
 
    
     $template = SiteTemplate::first();
@@ -113,6 +114,8 @@ class UserDashboardController extends Controller
    
 
     if((! $template || $template->template_name == 'template_1') && env('APP_NAME') == 'OresamSub' && $user->role?->role_name == 'User'){
+        $data['bonus'] = $bonuses->summary($user, $request);
+        $user->refresh();
         // $data['transactions'] = Transaction::with('product_plan')->where('user_id',auth()->id())->limit(10)->latest()->get();
         // $data['wallet_logs'] = WalletLog::with('user')
         // ->where('user_id',auth()->id())

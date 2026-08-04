@@ -257,6 +257,24 @@ it('moves available bonus to the main wallet once and expires stale credit', fun
         ->and(BonusLog::where('event_type', 'expired')->where('bonus_id', $expiredBonus->id)->count())->toBe(1);
 });
 
+it('lets an authenticated PWA customer move bonus credit to the main wallet', function () {
+    $user = User::factory()->create(['main_wallet' => 1000]);
+    app(BonusService::class)->manuallyGrant(
+        bonusCampaign(['bonus_wallet_amount' => 250]),
+        $user
+    );
+
+    $this->actingAs($user)
+        ->postJson(route('bonuses.convert'))
+        ->assertOk()
+        ->assertJsonPath('converted_amount', 250)
+        ->assertJsonPath('main_wallet_balance', 1250)
+        ->assertJsonPath('bonus_wallet_balance', 0);
+
+    expect((float) $user->fresh()->main_wallet)->toBe(1250.0)
+        ->and((float) $user->fresh()->bonus_wallet)->toBe(0.0);
+});
+
 it('does not grant paused campaigns or unverified accounts', function () {
     bonusCampaign(['status' => false]);
     $unverified = User::factory()->unverified()->create();

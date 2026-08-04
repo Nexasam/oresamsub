@@ -6,6 +6,7 @@ import ProductButtons from "@/Components/ProductButtons";
 import InviteEarn from "@/Components/InviteEarn";
 import CommunityCard from "@/Components/CommunityCard";
 import WalletBalance from "@/Components/WalletBalance";
+import BonusWallet from "@/Components/BonusWallet";
 import Announcements from "@/Components/Announcements";
 import PWAInstallButton from "@/Components/PWAInstallButton";
 import axios from "axios";
@@ -14,7 +15,7 @@ import Swal from "sweetalert2";
 export default function Dashboard({ transactions: initialTransactions }) {
 
   const { props } = usePage();
-  const { auth, announcements, contacts, commissionData = {} } = props;
+  const { auth, announcements, contacts, commissionData = {}, bonus = {} } = props;
 
   const { available = 0, pending = 0, total_earned = 0 } = commissionData;
   const user = auth.user;
@@ -130,6 +131,9 @@ export default function Dashboard({ transactions: initialTransactions }) {
 
       {/* Wallet */}
       <WalletBalance user={user} />
+
+      {/* Campaign bonus wallet */}
+      <BonusWallet bonus={bonus} />
 
       {/* Install App */}
       {/* <PWAInstallButton /> */}
