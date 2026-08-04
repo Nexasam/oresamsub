@@ -213,7 +213,7 @@ export default function BuyData() {
           showCancelButton: true,
           confirmButtonText: "Proceed with Purchase",
           cancelButtonText: "Cancel",
-          confirmButtonColor: "#0A8F68",
+          confirmButtonColor: "#059669",
         });
       
         if (!result.isConfirmed) return;

@@ -83,7 +83,7 @@ export default function Dashboard({ transactions: initialTransactions }) {
       showCancelButton: true,
       confirmButtonText: "Yes, Withdraw",
       cancelButtonText: "Cancel",
-      confirmButtonColor: "#0A8F68",
+      confirmButtonColor: "#059669",
       cancelButtonColor: "#d33",
     });
 
@@ -308,7 +308,7 @@ export default function Dashboard({ transactions: initialTransactions }) {
                   showCancelButton: true,
                   confirmButtonText: "Yes, Continue",
                   cancelButtonText: "Cancel",
-                  confirmButtonColor: "#0A8F68",
+                  confirmButtonColor: "#059669",
                 });
               
                 if (!result.isConfirmed) return;
@@ -552,7 +552,7 @@ export default function Dashboard({ transactions: initialTransactions }) {
                   showCancelButton: true,
                   confirmButtonText: "Proceed",
                   cancelButtonText: "Cancel",
-                  confirmButtonColor: "#0A8F68",
+                  confirmButtonColor: "#059669",
                 });
               
                 if (!confirm.isConfirmed) return;
