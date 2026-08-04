@@ -67,7 +67,7 @@ class BusinessApiController extends Controller
         $validator = Validator::make($request->all(), [
             'service' => ['required', 'string', 'in:cable,electricity'],
             'plan_id' => ['required'],
-            'customer' => ['required', 'string', 'max:50'],
+            'customer_number' => ['required', 'string', 'max:50'],
         ]);
 
         if ($validator->fails()) {
@@ -84,7 +84,7 @@ class BusinessApiController extends Controller
                 $this->user($request),
                 $request->string('service')->toString(),
                 $plan,
-                $request->string('customer')->toString(),
+                $request->string('customer_number')->toString(),
             );
         } catch (Throwable $exception) {
             report($exception);
@@ -100,7 +100,7 @@ class BusinessApiController extends Controller
         $validator = Validator::make($request->all(), [
             'service' => ['required', 'string', 'in:data,airtime,cable,electricity'],
             'plan_id' => ['required'],
-            'customer' => ['required', 'string', 'max:50'],
+            'customer_number' => ['required', 'string', 'max:50'],
             'reference' => ['required', 'string', 'max:100'],
             'amount' => ['required_if:service,airtime,electricity', 'nullable', 'numeric', 'min:50'],
             'validation_reference' => ['required_if:service,cable,electricity', 'nullable', 'string', 'max:100'],
@@ -109,8 +109,8 @@ class BusinessApiController extends Controller
 
         $validator->after(function ($validator) use ($request): void {
             if (in_array($request->input('service'), ['data', 'airtime'], true)
-                && ! preg_match('/^0[789][01][0-9]{8}$/', (string) $request->input('customer'))) {
-                $validator->errors()->add('customer', 'Provide a valid Nigerian mobile number.');
+                && ! preg_match('/^0[789][01][0-9]{8}$/', (string) $request->input('customer_number'))) {
+                $validator->errors()->add('customer_number', 'Provide a valid Nigerian mobile number.');
             }
         });
 
@@ -129,7 +129,7 @@ class BusinessApiController extends Controller
         if ($existing = Transaction::where('user_id', $user->id)->where('txn_reference', $request->string('reference'))->first()) {
             $existingCustomer = $existing->phone_number ?: $existing->smart_card_number ?: $existing->metre_number;
             $samePurchase = $existing->product_plan_id === $plan->id
-                && $existingCustomer === $request->string('customer')->toString();
+                && $existingCustomer === $request->string('customer_number')->toString();
 
             return $samePurchase
                 ? $this->success('This transaction was already submitted.', $this->transactionData($existing), 200, ['idempotent_replay' => true])
@@ -140,7 +140,7 @@ class BusinessApiController extends Controller
         if (in_array($service, ['cable', 'electricity'], true)) {
             $validation = $billerValidation->resolve(
                 $request->string('validation_reference')->toString(), $user, $service, $plan,
-                $request->string('customer')->toString(),
+                $request->string('customer_number')->toString(),
             );
             if (! $validation) {
                 return $this->error('The validation reference is invalid, expired or does not match this purchase.', [
@@ -153,7 +153,7 @@ class BusinessApiController extends Controller
             'network_id' => $plan->product_plan_category->network?->id,
             'product_id' => $plan->product_plan_category->product->id,
             'reference' => $request->string('reference')->toString(),
-            'phone_number' => $request->string('customer')->toString(),
+            'phone_number' => $request->string('customer_number')->toString(),
             'product_plan_category_id' => $plan->product_plan_category_id,
             'product_plan_id' => $plan->id,
             'pin' => $user->pin,
@@ -170,7 +170,7 @@ class BusinessApiController extends Controller
 
         if ($service === 'cable') {
             $payload += [
-                'smart_card_number' => $request->string('customer')->toString(),
+                'smart_card_number' => $request->string('customer_number')->toString(),
                 'validation_customer_name' => (string) ($validation['customer_name'] ?? ''),
                 'cable_product_plan_category_id' => $plan->product_plan_category_id,
                 'cable_product_plan_id' => $plan->id,
@@ -180,7 +180,7 @@ class BusinessApiController extends Controller
 
         if ($service === 'electricity') {
             $payload += [
-                'metre_number' => $request->string('customer')->toString(),
+                'metre_number' => $request->string('customer_number')->toString(),
                 'validation_extra_info' => (string) ($validation['extra_info'] ?? ''),
                 'validated_address' => $validation['address'] ?? null,
                 'electricity_product_plan_category_id' => $plan->product_plan_category_id,
@@ -209,7 +209,7 @@ class BusinessApiController extends Controller
             'reference' => $request->string('reference')->toString(),
             'status' => $status,
             'service' => $service,
-            'customer' => $request->string('customer')->toString(),
+            'customer_number' => $request->string('customer_number')->toString(),
             'amount' => isset($result['plan_amount']) ? round((float) $result['plan_amount'], 2) : ($payload['amount'] ?? null),
             'balance_before' => isset($result['balance_before']) ? round((float) $result['balance_before'], 2) : null,
             'balance_after' => isset($result['balance_after']) ? round((float) $result['balance_after'], 2) : null,
@@ -227,7 +227,11 @@ class BusinessApiController extends Controller
     public function transaction(Request $request, string $reference): JsonResponse
     {
         $transaction = Transaction::where('user_id', $this->user($request)->id)
-            ->where('txn_reference', $reference)->firstOrFail();
+            ->where('txn_reference', $reference)->first();
+
+        if (! $transaction) {
+            return $this->error('Transaction not found.', ['reference' => ['No transaction matches this reference.']], 404);
+        }
 
         return $this->success('Transaction fetched successfully.', $this->transactionData($transaction));
     }
@@ -238,7 +242,7 @@ class BusinessApiController extends Controller
             'reference' => $transaction->txn_reference,
             'status' => $this->publicStatus($transaction->status),
             'service' => $this->publicService($transaction->transaction_category),
-            'customer' => $transaction->phone_number ?: $transaction->smart_card_number ?: $transaction->metre_number,
+            'customer_number' => $transaction->phone_number ?: $transaction->smart_card_number ?: $transaction->metre_number,
             'amount' => round((float) $transaction->amount, 2),
             'balance_before' => round((float) $transaction->balance_before, 2),
             'balance_after' => round((float) $transaction->balance_after, 2),

@@ -30,7 +30,7 @@ class BillerValidationService
             'user_id' => $user->id,
             'service' => $service,
             'plan_id' => $plan->id,
-            'customer' => $customer,
+            'customer_number' => $customer,
             'customer_name' => $result['name'] ?? null,
             'address' => $result['address'] ?? null,
             'extra_info' => (string) ($result['extra_info'] ?? $result['name'] ?? ''),
@@ -56,7 +56,7 @@ class BillerValidationService
         return $payload['user_id'] === $user->id
             && $payload['service'] === $service
             && $payload['plan_id'] === $plan->id
-            && $payload['customer'] === $customer
+            && $payload['customer_number'] === $customer
                 ? $payload
                 : null;
     }

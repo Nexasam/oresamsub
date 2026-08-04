@@ -77,7 +77,7 @@ it('validates cable customers and returns a short lived validation reference', f
     app()->instance(BillerValidationService::class, $validator);
 
     postJson('/api/v2/validate-customer', [
-        'service' => 'cable', 'plan_id' => $plan->api_id, 'customer' => '1234567890',
+        'service' => 'cable', 'plan_id' => $plan->api_id, 'customer_number' => '1234567890',
     ], businessHeaders($user))->assertOk()->assertJsonPath('data.validation_reference', 'VAL-CABLE-001');
 });
 
@@ -101,7 +101,7 @@ it('processes a data purchase without accepting a transaction pin', function () 
     app()->instance(ProductsService::class, $products);
 
     postJson('/api/v2/buy-service', [
-        'service' => 'data', 'plan_id' => $plan->api_id, 'customer' => '08030000000', 'reference' => 'BIZ-DATA-001',
+        'service' => 'data', 'plan_id' => $plan->api_id, 'customer_number' => '08030000000', 'reference' => 'BIZ-DATA-001',
     ], businessHeaders($user))->assertOk()->assertJsonPath('data.status', 'successful')->assertJsonMissingPath('data.admin_message');
 });
 
@@ -117,7 +117,7 @@ it('processes airtime through the same purchase endpoint', function () {
     app()->instance(ProductsService::class, $products);
 
     postJson('/api/v2/buy-service', [
-        'service' => 'airtime', 'plan_id' => $plan->api_id, 'customer' => '08030000000',
+        'service' => 'airtime', 'plan_id' => $plan->api_id, 'customer_number' => '08030000000',
         'amount' => 1000, 'reference' => 'BIZ-AIRTIME-001',
     ], businessHeaders($user))->assertOk()->assertJsonPath('data.service', 'airtime')->assertJsonPath('data.amount', 1000);
 });
@@ -139,7 +139,7 @@ it('processes a validated cable purchase through the one fit all endpoint', func
     app()->instance(ProductsService::class, $products);
 
     postJson('/api/v2/buy-service', [
-        'service' => 'cable', 'plan_id' => $plan->api_id, 'customer' => '1234567890',
+        'service' => 'cable', 'plan_id' => $plan->api_id, 'customer_number' => '1234567890',
         'validation_reference' => 'VAL-CABLE-001', 'reference' => 'BIZ-CABLE-001',
     ], businessHeaders($user))->assertOk()->assertJsonPath('data.service', 'cable');
 });
@@ -161,7 +161,7 @@ it('processes validated electricity and returns the meter token', function () {
     app()->instance(ProductsService::class, $products);
 
     postJson('/api/v2/buy-service', [
-        'service' => 'electricity', 'plan_id' => $plan->api_id, 'customer' => '01234567890',
+        'service' => 'electricity', 'plan_id' => $plan->api_id, 'customer_number' => '01234567890',
         'amount' => 5000, 'validation_reference' => 'VAL-POWER-001', 'reference' => 'BIZ-POWER-001',
     ], businessHeaders($user))->assertOk()->assertJsonPath('data.token', '1234-5678-9012');
 });
@@ -196,7 +196,7 @@ it('returns an existing matching purchase instead of charging twice', function (
     app()->instance(ProductsService::class, $products);
 
     postJson('/api/v2/buy-service', [
-        'service' => 'data', 'plan_id' => $plan->api_id, 'customer' => '08030000000', 'reference' => 'BIZ-REPLAY-001',
+        'service' => 'data', 'plan_id' => $plan->api_id, 'customer_number' => '08030000000', 'reference' => 'BIZ-REPLAY-001',
     ], businessHeaders($user))->assertOk()->assertJsonPath('meta.idempotent_replay', true);
 });
 
@@ -211,13 +211,15 @@ it('rejects reuse of a reference for different purchase details', function () {
     ]);
 
     postJson('/api/v2/buy-service', [
-        'service' => 'data', 'plan_id' => $plan->api_id, 'customer' => '08140000000', 'reference' => 'BIZ-CONFLICT-001',
+        'service' => 'data', 'plan_id' => $plan->api_id, 'customer_number' => '08140000000', 'reference' => 'BIZ-CONFLICT-001',
     ], businessHeaders($user))->assertConflict()->assertJsonPath('success', false);
 });
 
 it('publishes branded documentation and an OpenAPI contract', function () {
     get('/developers')->assertOk()->assertSee('OresamSub API')->assertSee('/api/v2/buy-service')
-        ->assertSee('/api/v2/validate-customer')->assertSee('cable')->assertSee('electricity');
+        ->assertSee('/api/v2/validate-customer')->assertSee('cable')->assertSee('electricity')
+        ->assertSee('Validate cable customer')->assertSee('Buy electricity')->assertSee('Transaction lookup')
+        ->assertSee('Success response examples')->assertSee('Failure response examples')->assertSee('customer_number');
     getJson('/api/v2/openapi.json')->assertOk()->assertJsonPath('openapi', '3.1.0')
         ->assertJsonPath('paths./validate-customer.post.operationId', 'validateCustomer');
 });
