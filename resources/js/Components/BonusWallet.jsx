@@ -21,7 +21,7 @@ export default function BonusWallet({ bonus = {} }) {
       showCancelButton: true,
       confirmButtonText: "Yes, move bonus",
       cancelButtonText: "Cancel",
-      confirmButtonColor: "#7c3aed",
+      confirmButtonColor: "#0f172a",
     });
 
     if (!confirmation.isConfirmed) return;
@@ -44,12 +44,12 @@ export default function BonusWallet({ bonus = {} }) {
   };
 
   return (
-    <div className="relative overflow-hidden rounded-xl bg-gradient-to-br from-violet-600 via-purple-600 to-fuchsia-600 p-4 text-white shadow-lg">
-      <div className="absolute -right-8 -top-10 h-28 w-28 rounded-full border-[20px] border-white/10" />
+    <div className="relative overflow-hidden rounded-xl border border-amber-300/30 bg-slate-900 p-4 text-white shadow-lg shadow-slate-900/15">
+      <div className="absolute -right-8 -top-10 h-28 w-28 rounded-full border-[20px] border-amber-300/10" />
       <div className="relative flex items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-2 text-xs font-semibold text-white/75">
-            <span>🎁</span>
+            <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-amber-300 text-sm text-slate-900">🎁</span>
             <span>Campaign Bonus Wallet</span>
           </div>
           <div className="mt-1 text-2xl font-bold">
@@ -69,7 +69,7 @@ export default function BonusWallet({ bonus = {} }) {
           type="button"
           onClick={transferToMainWallet}
           disabled={balance <= 0 || transferring}
-          className="rounded-lg bg-white px-3 py-2 text-xs font-bold text-purple-700 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md disabled:cursor-not-allowed disabled:opacity-50"
+          className="rounded-lg bg-white px-3 py-2 text-xs font-bold text-slate-900 shadow-sm transition hover:-translate-y-0.5 hover:bg-amber-50 hover:shadow-md disabled:cursor-not-allowed disabled:opacity-50"
         >
           {transferring ? "Moving..." : "Move to main wallet"}
         </button>
