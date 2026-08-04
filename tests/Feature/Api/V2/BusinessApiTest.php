@@ -219,7 +219,9 @@ it('publishes branded documentation and an OpenAPI contract', function () {
     get('/developers')->assertOk()->assertSee('OresamSub API')->assertSee('/api/v2/buy-service')
         ->assertSee('/api/v2/validate-customer')->assertSee('cable')->assertSee('electricity')
         ->assertSee('Validate cable customer')->assertSee('Buy electricity')->assertSee('Transaction lookup')
-        ->assertSee('Success response examples')->assertSee('Failure response examples')->assertSee('customer_number');
+        ->assertSee('Cable TV')->assertSee('Step 1 · Validate customer')->assertSee('Step 2 · Buy electricity')
+        ->assertSee('Response examples')->assertSee('Success responses')->assertSee('Failure responses')->assertSee('customer_number')
+        ->assertSee('curlPreview')->assertSee('updateCurlPreview');
     getJson('/api/v2/openapi.json')->assertOk()->assertJsonPath('openapi', '3.1.0')
         ->assertJsonPath('paths./validate-customer.post.operationId', 'validateCustomer');
 });
