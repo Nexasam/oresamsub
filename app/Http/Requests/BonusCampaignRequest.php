@@ -22,7 +22,7 @@ class BonusCampaignRequest extends FormRequest
             'title' => ['required', 'string', 'max:150', Rule::unique('bonuses', 'title')->ignore($bonus?->id)],
             'description' => ['nullable', 'string', 'max:1000'],
             'status' => ['required', 'boolean'],
-            'group' => ['required', Rule::in([Bonus::GROUP_NEW_REGISTRATION, Bonus::GROUP_DORMANT_CUSTOMER])],
+            'group' => ['required', Rule::in([Bonus::GROUP_NEW_REGISTRATION, Bonus::GROUP_DORMANT_CUSTOMER, Bonus::GROUP_WEEKLY_TRANSACTION_VOLUME])],
             'targeting' => ['nullable', Rule::in(['general', 'specific'])],
             'target_customers' => ['nullable', 'string', 'max:10000'],
             'enjoyment' => ['required', 'array', 'min:1'],
@@ -38,6 +38,10 @@ class BonusCampaignRequest extends FormRequest
             'funding_type' => ['nullable', Rule::in(['flat', 'percent'])],
             'funding_value' => ['nullable', 'numeric', 'min:0', 'max:1000000'],
             'funding_cap' => ['nullable', 'numeric', 'min:0', 'max:1000000'],
+            'weekly_minimum_volume' => ['nullable', 'numeric', 'min:1', 'max:1000000000'],
+            'weekly_category_scope' => ['nullable', Rule::in(['all', 'selected'])],
+            'weekly_categories' => ['nullable', 'array'],
+            'weekly_categories.*' => [Rule::in(['data', 'airtime', 'utility_bills', 'cable_subscription', 'bulk_data'])],
             'bonus_wallet_amount' => ['nullable', 'numeric', 'min:0', 'max:1000000'],
             'funding_whitelist' => ['nullable', 'array'],
             'funding_whitelist.*' => [Rule::in(['xixapay', 'securewaveng'])],
@@ -47,7 +51,7 @@ class BonusCampaignRequest extends FormRequest
             'reward_valid_days' => ['nullable', 'integer', 'min:1', 'max:3650'],
             'priority' => ['nullable', 'integer', 'min:-1000', 'max:1000'],
             'starts_at' => ['nullable', 'date'],
-            'ends_at' => ['required', 'date', 'after:starts_at'],
+            'ends_at' => ['nullable', 'date', 'after:starts_at'],
         ];
     }
 
@@ -77,7 +81,9 @@ class BonusCampaignRequest extends FormRequest
                     }
                 }
 
-                if (in_array(Bonus::ENJOYMENT_WALLET, $enjoyment, true) && (float) $this->input('bonus_wallet_amount', 0) <= 0) {
+                $isWeeklyVolume = $this->input('group') === Bonus::GROUP_WEEKLY_TRANSACTION_VOLUME;
+
+                if (! $isWeeklyVolume && in_array(Bonus::ENJOYMENT_WALLET, $enjoyment, true) && (float) $this->input('bonus_wallet_amount', 0) <= 0) {
                     $validator->errors()->add('bonus_wallet_amount', 'Enter a bonus-wallet amount greater than zero.');
                 }
 
@@ -93,6 +99,27 @@ class BonusCampaignRequest extends FormRequest
                     }
                     if ($this->input('funding_type') === 'percent' && ! $this->filled('funding_cap')) {
                         $validator->errors()->add('funding_cap', 'A safety cap is required for percentage rewards.');
+                    }
+                }
+
+                if ($isWeeklyVolume) {
+                    if ((float) $this->input('weekly_minimum_volume', 0) <= 0) {
+                        $validator->errors()->add('weekly_minimum_volume', 'Enter the minimum successful weekly transaction volume.');
+                    }
+                    if ($this->input('weekly_category_scope') === 'selected' && count($this->input('weekly_categories', [])) === 0) {
+                        $validator->errors()->add('weekly_categories', 'Choose at least one eligible transaction category.');
+                    }
+                    if (! in_array($this->input('funding_type'), ['flat', 'percent'], true)) {
+                        $validator->errors()->add('funding_type', 'Choose a flat or percentage weekly reward.');
+                    }
+                    if ((float) $this->input('funding_value', 0) <= 0) {
+                        $validator->errors()->add('funding_value', 'Enter a weekly reward greater than zero.');
+                    }
+                    if ($this->input('funding_type') === 'percent' && (float) $this->input('funding_value') > 100) {
+                        $validator->errors()->add('funding_value', 'Percentage rewards cannot exceed 100%.');
+                    }
+                    if ($this->input('funding_type') === 'percent' && ! $this->filled('funding_cap')) {
+                        $validator->errors()->add('funding_cap', 'A safety cap is required for percentage weekly rewards.');
                     }
                 }
 

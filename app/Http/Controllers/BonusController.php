@@ -105,9 +105,17 @@ class BonusController extends Controller
             ? ($validated['dormant_condition'] ?? 'days') === 'date'
                 ? ['last_transaction_before' => $validated['last_transaction_before']]
                 : ['dormant_days' => (int) $validated['dormant_days']]
-            : array_filter([
+            : ($validated['group'] === Bonus::GROUP_WEEKLY_TRANSACTION_VOLUME
+                ? [
+                    'weekly_minimum_volume' => round((float) $validated['weekly_minimum_volume'], 2),
+                    'weekly_category_scope' => $validated['weekly_category_scope'] ?? 'all',
+                    'weekly_categories' => ($validated['weekly_category_scope'] ?? 'all') === 'selected'
+                        ? array_values(array_unique($validated['weekly_categories'] ?? []))
+                        : [],
+                ]
+                : array_filter([
                 'registration_max_age_days' => $validated['registration_max_age_days'] ?? null,
-            ], fn ($value) => $value !== null);
+            ], fn ($value) => $value !== null));
         if (($validated['targeting'] ?? 'general') === 'specific') {
             $identifiers = $request->targetCustomerIdentifiers();
             $targetedUsers = User::query()
@@ -118,7 +126,8 @@ class BonusController extends Controller
             $conditions['targeted_user_ids'] = $targetedUsers->modelKeys();
             $conditions['targeted_customers'] = $targetedUsers->pluck('username')->values()->all();
         }
-        $hasFundingBonus = in_array(Bonus::ENJOYMENT_FUNDING, $enjoyment, true);
+        $isWeeklyVolume = $validated['group'] === Bonus::GROUP_WEEKLY_TRANSACTION_VOLUME;
+        $hasFundingBonus = $isWeeklyVolume || in_array(Bonus::ENJOYMENT_FUNDING, $enjoyment, true);
 
         return [
             'title' => $validated['title'],
@@ -132,7 +141,7 @@ class BonusController extends Controller
             'funding_cap' => $hasFundingBonus && $validated['funding_type'] === 'percent'
                 ? $validated['funding_cap']
                 : null,
-            'bonus_wallet_amount' => in_array(Bonus::ENJOYMENT_WALLET, $enjoyment, true)
+            'bonus_wallet_amount' => ! $isWeeklyVolume && in_array(Bonus::ENJOYMENT_WALLET, $enjoyment, true)
                 ? $validated['bonus_wallet_amount']
                 : 0,
             'funding_whitelist' => array_values(array_unique($validated['funding_whitelist'] ?? [])) ?: null,
@@ -146,7 +155,7 @@ class BonusController extends Controller
             'reward_valid_days' => $validated['reward_valid_days'] ?? null,
             'priority' => $validated['priority'] ?? 0,
             'starts_at' => $validated['starts_at'] ?? null,
-            'ends_at' => $validated['ends_at'],
+            'ends_at' => $validated['ends_at'] ?? null,
         ];
     }
 }

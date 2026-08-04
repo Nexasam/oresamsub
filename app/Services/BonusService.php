@@ -46,6 +46,7 @@ class BonusService
 
         Bonus::query()
             ->available()
+            ->whereIn('group', [Bonus::GROUP_NEW_REGISTRATION, Bonus::GROUP_DORMANT_CUSTOMER])
             ->orderByDesc('priority')
             ->orderByDesc('created_at')
             ->get()

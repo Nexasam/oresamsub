@@ -18,6 +18,8 @@ class Bonus extends Model
 
     public const GROUP_DORMANT_CUSTOMER = 'dormant_customer';
 
+    public const GROUP_WEEKLY_TRANSACTION_VOLUME = 'weekly_transaction_volume';
+
     public const ENJOYMENT_WALLET = 'bonus_wallet';
 
     public const ENJOYMENT_FUNDING = 'funding_bonus';
@@ -48,7 +50,9 @@ class Bonus extends Model
             ->where(fn (Builder $builder) => $builder
                 ->whereNull('starts_at')
                 ->orWhere('starts_at', '<=', now()))
-            ->where('ends_at', '>', now());
+            ->where(fn (Builder $builder) => $builder
+                ->whereNull('ends_at')
+                ->orWhere('ends_at', '>', now()));
     }
 
     public function entitlements(): HasMany

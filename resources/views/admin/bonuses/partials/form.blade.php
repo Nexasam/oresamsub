@@ -32,6 +32,7 @@
             <select class="ti-form-select" name="group" x-model="group" required>
                 <option value="new_registration">New registration</option>
                 <option value="dormant_customer">Dormant customer</option>
+                <option value="weekly_transaction_volume">Weekly transaction volume</option>
             </select>
         </div>
         <div>
@@ -75,7 +76,49 @@
             <input class="ti-form-input" type="number" min="1" max="100" name="max_rewards_per_device" value="{{ old('max_rewards_per_device', $campaign?->max_rewards_per_device ?? 1) }}">
         </div>
 
-        <div class="md:col-span-2">
+        <div class="md:col-span-2 rounded-lg bg-emerald-50 p-4" x-show="group === 'weekly_transaction_volume'">
+            <input type="hidden" name="enjoyment[]" value="bonus_wallet">
+            <h4 class="font-semibold text-emerald-900">Weekly qualification rule</h4>
+            <p class="text-xs text-gray-600 mt-1 mb-3">Calculated Monday–Sunday in Africa/Lagos using successful transactions only.</p>
+            <div class="grid md:grid-cols-2 gap-3">
+                <div>
+                    <label class="ti-form-label">Minimum weekly volume (₦)</label>
+                    <input class="ti-form-input" type="number" min="1" step="0.01" name="weekly_minimum_volume" value="{{ old('weekly_minimum_volume', data_get($campaign?->conditions, 'weekly_minimum_volume', 20000)) }}">
+                </div>
+                <div>
+                    <label class="ti-form-label">Eligible transaction categories</label>
+                    <select class="ti-form-select" name="weekly_category_scope">
+                        <option value="all" @selected(old('weekly_category_scope', data_get($campaign?->conditions, 'weekly_category_scope', 'all')) === 'all')>All successful purchases</option>
+                        <option value="selected" @selected(old('weekly_category_scope', data_get($campaign?->conditions, 'weekly_category_scope')) === 'selected')>Selected categories only</option>
+                    </select>
+                </div>
+                <div class="md:col-span-2 grid sm:grid-cols-3 gap-2">
+                    @foreach (['data' => 'Data', 'airtime' => 'Airtime', 'utility_bills' => 'Electricity', 'cable_subscription' => 'Cable TV', 'bulk_data' => 'Bulk data'] as $value => $label)
+                        <label class="flex items-center gap-2 rounded border bg-white p-2 text-sm">
+                            <input class="ti-form-checkbox" type="checkbox" name="weekly_categories[]" value="{{ $value }}" @checked(in_array($value, old('weekly_categories', data_get($campaign?->conditions, 'weekly_categories', [])), true))>
+                            {{ $label }}
+                        </label>
+                    @endforeach
+                </div>
+                <div>
+                    <label class="ti-form-label">Weekly reward calculation</label>
+                    <select class="ti-form-select" name="funding_type">
+                        <option value="flat" @selected(old('funding_type', $campaign?->funding_type) === 'flat')>Flat amount</option>
+                        <option value="percent" @selected(old('funding_type', $campaign?->funding_type) === 'percent')>Percentage of qualifying volume</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="ti-form-label">Reward value</label>
+                    <input class="ti-form-input" type="number" min="0" step="0.0001" name="funding_value" value="{{ old('funding_value', $campaign?->funding_value ?? 0) }}">
+                </div>
+                <div>
+                    <label class="ti-form-label">Percentage cap (₦)</label>
+                    <input class="ti-form-input" type="number" min="0" step="0.01" name="funding_cap" value="{{ old('funding_cap', $campaign?->funding_cap) }}">
+                </div>
+            </div>
+        </div>
+
+        <div class="md:col-span-2" x-show="group !== 'weekly_transaction_volume'">
             <label class="ti-form-label">Customer enjoyment</label>
             <div class="grid sm:grid-cols-3 gap-2">
                 @foreach ([
@@ -91,7 +134,7 @@
             </div>
         </div>
 
-        <div x-show="has('bonus_wallet')">
+        <div x-show="group !== 'weekly_transaction_volume' && has('bonus_wallet')">
             <label class="ti-form-label">Bonus-wallet amount (₦)</label>
             <input class="ti-form-input" type="number" min="0" step="0.01" name="bonus_wallet_amount" value="{{ old('bonus_wallet_amount', $campaign?->bonus_wallet_amount ?? 0) }}">
         </div>
@@ -101,7 +144,7 @@
             <p class="text-xs text-gray-500 mt-1">Starts when the customer qualifies and may continue after the campaign closes.</p>
         </div>
 
-        <template x-if="has('funding_bonus')">
+        <template x-if="group !== 'weekly_transaction_volume' && has('funding_bonus')">
             <div class="contents">
                 <div>
                     <label class="ti-form-label">Funding reward calculation</label>
@@ -146,7 +189,8 @@
         </div>
         <div>
             <label class="ti-form-label">Ends at</label>
-            <input class="ti-form-input" required type="datetime-local" name="ends_at" value="{{ old('ends_at', $campaign?->ends_at?->format('Y-m-d\TH:i')) }}">
+            <input class="ti-form-input" type="datetime-local" name="ends_at" value="{{ old('ends_at', $campaign?->ends_at?->format('Y-m-d\TH:i')) }}">
+            <p class="text-xs text-gray-500 mt-1">Leave empty to run indefinitely.</p>
         </div>
         <div>
             <label class="ti-form-label">Priority</label>

@@ -14,6 +14,7 @@ use App\Console\Commands\SendNewRegistrationEmail;
 use App\Console\Commands\SendPendingTransactionEmail;
 use App\Console\Commands\SyncAddons;
 use App\Console\Commands\SyncUserContactsFromTransactions;
+use App\Console\Commands\ProcessWeeklyTransactionBonuses;
 use App\Console\Commands\ZerorizeNegativeBalances;
 use Illuminate\Foundation\Inspiring;
 use Illuminate\Support\Facades\Artisan;
@@ -57,4 +58,9 @@ Schedule::command(CheckAffiliateLowBalances::class)
     ->timezone('Africa/Lagos')
     ->withoutOverlapping();
 
+Schedule::command(ProcessWeeklyTransactionBonuses::class)
+    ->weeklyOn(1, '00:15')
+    ->timezone('Africa/Lagos')
+    ->withoutOverlapping()
+    ->runInBackground();
 
