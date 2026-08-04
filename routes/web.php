@@ -463,6 +463,45 @@ Route::middleware(['set_locale'])->group(function () {
                 return view('auth.delete_account');
             })->name('account.deactivate');
 
+            Route::get('/new-landing', function () {
+                $data = [];
+
+                SiteImage::query()->get()->each(function (SiteImage $image) use (&$data) {
+                    $data[$image->image_category] = $image->image_name;
+                });
+
+                LandingPagesSetting::query()->get()->each(function (LandingPagesSetting $setting) use (&$data) {
+                    $data[$setting->field_name] = $setting->field_details;
+                });
+
+                AdminColorSetting::query()->get()->each(function (AdminColorSetting $color) use (&$data) {
+                    $data[$color->color_name] = $color->color_value;
+                });
+
+                $purchaseCounts = Transaction::query()
+                    ->selectRaw('product_plan_id, COUNT(*) as purchase_count')
+                    ->where('status', 1)
+                    ->whereNotNull('product_plan_id')
+                    ->groupBy('product_plan_id');
+
+                $data['featured_plans'] = ProductPlan::query()
+                    ->joinSub($purchaseCounts, 'purchase_counts', function ($join) {
+                        $join->on('product_plans.id', '=', 'purchase_counts.product_plan_id');
+                    })
+                    ->with(['product_plan_category.product', 'product_plan_category.network'])
+                    ->select('product_plans.*')
+                    ->addSelect('purchase_counts.purchase_count')
+                    ->where('visibility', '1')
+                    ->whereHas('product_plan_category.product', function ($query) {
+                        $query->where('slug', 'data');
+                    })
+                    ->orderByDesc('purchase_counts.purchase_count')
+                    ->limit(10)
+                    ->get();
+
+                return view('landing.new', $data);
+            })->name('landing.new');
+
             Route::get('/', function () {
           
                 //get template name:
