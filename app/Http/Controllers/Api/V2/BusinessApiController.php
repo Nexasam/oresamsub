@@ -7,6 +7,7 @@ use App\Http\Services\Api\v1\VendorUsersApi\Products\ProductsService;
 use App\Models\ProductPlan;
 use App\Models\Transaction;
 use App\Models\User;
+use App\Services\BusinessApi\BillerValidationService;
 use App\Support\MobileDisplayMessage;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -29,7 +30,7 @@ class BusinessApiController extends Controller
             ->whereHas('product_plan_category', fn ($query) => $query
                 ->where('visibility', '1')
                 ->whereHas('product', fn ($product) => $product
-                    ->whereIn('slug', ['data', 'airtime'])
+                    ->whereIn('slug', ['data', 'airtime', 'cable_subscription', 'utility_bills'])
                     ->where('visibility', '1')
                     ->where('active_status', '1')))
             ->orderBy('product_plan_category_id')
@@ -40,7 +41,7 @@ class BusinessApiController extends Controller
 
                 return [
                     'id' => $plan->api_id,
-                    'service' => $category->product->slug,
+                    'service' => $this->publicService($category->product->slug),
                     'name' => $plan->product_plan_name,
                     'network' => $category->network?->network_name,
                     'category' => $category->product_plan_category_name,
@@ -61,42 +62,91 @@ class BusinessApiController extends Controller
         ]);
     }
 
-    public function buyService(Request $request, ProductsService $productsService): JsonResponse
+    public function validateCustomer(Request $request, BillerValidationService $billerValidation): JsonResponse
     {
         $validator = Validator::make($request->all(), [
-            'service' => ['required', 'string', 'in:data,airtime'],
+            'service' => ['required', 'string', 'in:cable,electricity'],
             'plan_id' => ['required'],
-            'customer' => ['required', 'regex:/^0[789][01][0-9]{8}$/'],
-            'reference' => ['required', 'string', 'max:100'],
-            'amount' => ['required_if:service,airtime', 'nullable', 'numeric', 'min:50'],
-            'validate_phone_network' => ['sometimes', 'boolean'],
+            'customer' => ['required', 'string', 'max:50'],
         ]);
 
         if ($validator->fails()) {
             return $this->error('Please check the provided information.', $validator->errors(), 422);
         }
 
+        $plan = $this->availablePlan($request->input('plan_id'), $request->string('service')->toString());
+        if (! $plan) {
+            return $this->error('The selected plan is unavailable for this service.', ['plan_id' => ['Select a valid active plan.']], 422);
+        }
+
+        try {
+            $data = $billerValidation->validate(
+                $this->user($request),
+                $request->string('service')->toString(),
+                $plan,
+                $request->string('customer')->toString(),
+            );
+        } catch (Throwable $exception) {
+            report($exception);
+
+            return $this->error(MobileDisplayMessage::clean($exception->getMessage(), 'We could not validate this customer right now.'), null, 422);
+        }
+
+        return $this->success('Customer validated successfully.', $data);
+    }
+
+    public function buyService(Request $request, ProductsService $productsService, BillerValidationService $billerValidation): JsonResponse
+    {
+        $validator = Validator::make($request->all(), [
+            'service' => ['required', 'string', 'in:data,airtime,cable,electricity'],
+            'plan_id' => ['required'],
+            'customer' => ['required', 'string', 'max:50'],
+            'reference' => ['required', 'string', 'max:100'],
+            'amount' => ['required_if:service,airtime,electricity', 'nullable', 'numeric', 'min:50'],
+            'validation_reference' => ['required_if:service,cable,electricity', 'nullable', 'string', 'max:100'],
+            'validate_phone_network' => ['sometimes', 'boolean'],
+        ]);
+
+        $validator->after(function ($validator) use ($request): void {
+            if (in_array($request->input('service'), ['data', 'airtime'], true)
+                && ! preg_match('/^0[789][01][0-9]{8}$/', (string) $request->input('customer'))) {
+                $validator->errors()->add('customer', 'Provide a valid Nigerian mobile number.');
+            }
+        });
+
+        if ($validator->fails()) {
+            return $this->error('Please check the provided information.', $validator->errors(), 422);
+        }
+
         $user = $this->user($request);
-        $plan = ProductPlan::query()
-            ->with(['product_plan_category.product', 'product_plan_category.network'])
-            ->where('api_id', $request->input('plan_id'))
-            ->where('visibility', '1')->where('public_visibility', '1')->where('active_status', '1')
-            ->whereHas('product_plan_category', fn ($query) => $query->where('visibility', '1')->whereHas(
-                'product', fn ($product) => $product->where('slug', $request->string('service'))->where('visibility', '1')->where('active_status', '1')
-            ))->first();
+        $service = $request->string('service')->toString();
+        $plan = $this->availablePlan($request->input('plan_id'), $service);
 
         if (! $plan) {
             return $this->error('The selected plan is unavailable for this service.', ['plan_id' => ['Select a valid active plan.']], 422);
         }
 
         if ($existing = Transaction::where('user_id', $user->id)->where('txn_reference', $request->string('reference'))->first()) {
-            $samePurchase = $existing->transaction_category === $request->string('service')->toString()
-                && $existing->product_plan_id === $plan->id
-                && $existing->phone_number === $request->string('customer')->toString();
+            $existingCustomer = $existing->phone_number ?: $existing->smart_card_number ?: $existing->metre_number;
+            $samePurchase = $existing->product_plan_id === $plan->id
+                && $existingCustomer === $request->string('customer')->toString();
 
             return $samePurchase
                 ? $this->success('This transaction was already submitted.', $this->transactionData($existing), 200, ['idempotent_replay' => true])
                 : $this->error('This reference has already been used for a different transaction.', ['reference' => ['Use a new unique reference.']], 409);
+        }
+
+        $validation = null;
+        if (in_array($service, ['cable', 'electricity'], true)) {
+            $validation = $billerValidation->resolve(
+                $request->string('validation_reference')->toString(), $user, $service, $plan,
+                $request->string('customer')->toString(),
+            );
+            if (! $validation) {
+                return $this->error('The validation reference is invalid, expired or does not match this purchase.', [
+                    'validation_reference' => ['Validate the customer again before purchasing.'],
+                ], 422);
+            }
         }
 
         $payload = [
@@ -113,15 +163,39 @@ class BusinessApiController extends Controller
             'user' => $user,
         ];
 
-        if ($request->string('service')->toString() === 'airtime') {
+        if (in_array($service, ['airtime', 'electricity'], true)) {
             $payload['amount'] = round((float) $request->input('amount'), 2);
             $payload['actual_amount'] = $payload['amount'];
         }
 
+        if ($service === 'cable') {
+            $payload += [
+                'smart_card_number' => $request->string('customer')->toString(),
+                'validation_customer_name' => (string) ($validation['customer_name'] ?? ''),
+                'cable_product_plan_category_id' => $plan->product_plan_category_id,
+                'cable_product_plan_id' => $plan->id,
+                'no_of_slots' => '1',
+            ];
+        }
+
+        if ($service === 'electricity') {
+            $payload += [
+                'metre_number' => $request->string('customer')->toString(),
+                'validation_extra_info' => (string) ($validation['extra_info'] ?? ''),
+                'validated_address' => $validation['address'] ?? null,
+                'electricity_product_plan_category_id' => $plan->product_plan_category_id,
+                'electricity_product_plan_id' => $plan->id,
+                'no_of_slots' => '1',
+            ];
+        }
+
         try {
-            $result = $request->string('service')->toString() === 'data'
-                ? $productsService->buy_data_service_one_api($payload)
-                : $productsService->buy_airtime_service($payload);
+            $result = match ($service) {
+                'data' => $productsService->buy_data_service_one_api($payload),
+                'airtime' => $productsService->buy_airtime_service($payload),
+                'cable' => $productsService->buy_cable_service($payload),
+                'electricity' => $productsService->buy_electricity_service($payload),
+            };
         } catch (Throwable $exception) {
             report($exception);
 
@@ -134,11 +208,12 @@ class BusinessApiController extends Controller
         $data = [
             'reference' => $request->string('reference')->toString(),
             'status' => $status,
-            'service' => $request->string('service')->toString(),
+            'service' => $service,
             'customer' => $request->string('customer')->toString(),
             'amount' => isset($result['plan_amount']) ? round((float) $result['plan_amount'], 2) : ($payload['amount'] ?? null),
             'balance_before' => isset($result['balance_before']) ? round((float) $result['balance_before'], 2) : null,
             'balance_after' => isset($result['balance_after']) ? round((float) $result['balance_after'], 2) : null,
+            'token' => $service === 'electricity' ? ($result['token'] ?? null) : null,
         ];
 
         $message = MobileDisplayMessage::clean($result['user_message'] ?? $result['message'] ?? null,
@@ -162,13 +237,39 @@ class BusinessApiController extends Controller
         return [
             'reference' => $transaction->txn_reference,
             'status' => $this->publicStatus($transaction->status),
-            'service' => $transaction->transaction_category,
+            'service' => $this->publicService($transaction->transaction_category),
             'customer' => $transaction->phone_number ?: $transaction->smart_card_number ?: $transaction->metre_number,
             'amount' => round((float) $transaction->amount, 2),
             'balance_before' => round((float) $transaction->balance_before, 2),
             'balance_after' => round((float) $transaction->balance_after, 2),
             'created_at' => $transaction->created_at,
         ];
+    }
+
+    private function availablePlan(mixed $apiId, string $service): ?ProductPlan
+    {
+        $slug = match ($service) {
+            'cable' => 'cable_subscription',
+            'electricity' => 'utility_bills',
+            default => $service,
+        };
+
+        return ProductPlan::query()
+            ->with(['product_plan_category.product', 'product_plan_category.network'])
+            ->where('api_id', $apiId)
+            ->where('visibility', '1')->where('public_visibility', '1')->where('active_status', '1')
+            ->whereHas('product_plan_category', fn ($query) => $query->where('visibility', '1')->whereHas(
+                'product', fn ($product) => $product->where('slug', $slug)->where('visibility', '1')->where('active_status', '1')
+            ))->first();
+    }
+
+    private function publicService(?string $service): ?string
+    {
+        return match ($service) {
+            'cable_subscription' => 'cable',
+            'utility_bills' => 'electricity',
+            default => $service,
+        };
     }
 
     private function publicStatus(mixed $status): string

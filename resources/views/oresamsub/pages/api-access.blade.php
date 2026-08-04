@@ -9,7 +9,7 @@
             <div>
                 <p class="text-xs font-bold uppercase tracking-[0.2em] text-emerald-200">Business tools</p>
                 <h1 class="mt-2 text-2xl font-extrabold">API Access</h1>
-                <p class="mt-2 max-w-lg text-sm leading-6 text-emerald-50">Connect your own website to OresamSub for data and airtime purchases through one secure API.</p>
+                <p class="mt-2 max-w-lg text-sm leading-6 text-emerald-50">Connect your own website to OresamSub for data, airtime, cable TV and electricity purchases through one secure API.</p>
             </div>
             <div class="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-white/15 text-2xl">⌘</div>
         </div>

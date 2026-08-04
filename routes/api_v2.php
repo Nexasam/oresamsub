@@ -10,6 +10,7 @@ Route::get('/openapi.json', fn () => response()->json(
 Route::middleware(['business.api_token', 'throttle:business-api'])->group(function () {
     Route::get('/catalogue', [BusinessApiController::class, 'catalogue'])->name('catalogue');
     Route::get('/wallet', [BusinessApiController::class, 'wallet'])->name('wallet');
+    Route::post('/validate-customer', [BusinessApiController::class, 'validateCustomer'])->name('validate-customer');
     Route::post('/buy-service', [BusinessApiController::class, 'buyService'])->name('buy-service');
     Route::get('/transactions/{reference}', [BusinessApiController::class, 'transaction'])->name('transactions.show');
 });

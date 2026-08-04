@@ -3,7 +3,7 @@
   "info": {
     "title": "OresamSub Business API",
     "version": "2.0.0",
-    "description": "A single integration for data and airtime reseller websites. All amounts are expressed in Nigerian naira."
+    "description": "A single integration for data, airtime, cable TV and electricity reseller websites. All amounts are expressed in Nigerian naira."
   },
   "servers": [{"url": "https://oresamsub.com/api/v2", "description": "Production"}],
   "security": [{"bearerAuth": []}],
@@ -22,6 +22,20 @@
         "responses": {"200": {"description": "Available main-wallet balance"}, "401": {"$ref": "#/components/responses/Unauthenticated"}}
       }
     },
+    "/validate-customer": {
+      "post": {
+        "summary": "Validate a cable or electricity customer",
+        "operationId": "validateCustomer",
+        "requestBody": {
+          "required": true,
+          "content": {"application/json": {"schema": {"$ref": "#/components/schemas/ValidationRequest"}, "examples": {
+            "cable": {"value": {"service": "cable", "plan_id": 2101, "customer": "1234567890"}},
+            "electricity": {"value": {"service": "electricity", "plan_id": 3101, "customer": "01234567890"}}
+          }}}
+        },
+        "responses": {"200": {"description": "Customer details and a validation reference valid for 10 minutes"}, "422": {"description": "Customer could not be validated"}}
+      }
+    },
     "/buy-service": {
       "post": {
         "summary": "Purchase data or airtime",
@@ -30,7 +44,9 @@
           "required": true,
           "content": {"application/json": {"schema": {"$ref": "#/components/schemas/PurchaseRequest"}, "examples": {
             "data": {"value": {"service": "data", "plan_id": 1201, "customer": "08030000000", "reference": "ORDER-10001"}},
-            "airtime": {"value": {"service": "airtime", "plan_id": 1401, "customer": "08030000000", "amount": 1000, "reference": "ORDER-10002"}}
+            "airtime": {"value": {"service": "airtime", "plan_id": 1401, "customer": "08030000000", "amount": 1000, "reference": "ORDER-10002"}},
+            "cable": {"value": {"service": "cable", "plan_id": 2101, "customer": "1234567890", "validation_reference": "VAL-EXAMPLE", "reference": "ORDER-10003"}},
+            "electricity": {"value": {"service": "electricity", "plan_id": 3101, "customer": "01234567890", "amount": 5000, "validation_reference": "VAL-EXAMPLE", "reference": "ORDER-10004"}}
           }}}
         },
         "responses": {
@@ -58,12 +74,22 @@
         "type": "object",
         "required": ["service", "plan_id", "customer", "reference"],
         "properties": {
-          "service": {"type": "string", "enum": ["data", "airtime"]},
+          "service": {"type": "string", "enum": ["data", "airtime", "cable", "electricity"]},
           "plan_id": {"description": "Plan ID returned by the catalogue endpoint"},
           "customer": {"type": "string", "pattern": "^0[789][01][0-9]{8}$"},
           "reference": {"type": "string", "maxLength": 100},
-          "amount": {"type": "number", "minimum": 50, "description": "Required for airtime"},
+          "amount": {"type": "number", "minimum": 50, "description": "Required for airtime and electricity"},
+          "validation_reference": {"type": "string", "description": "Required for cable and electricity; obtained from /validate-customer"},
           "validate_phone_network": {"type": "boolean", "default": true}
+        }
+      },
+      "ValidationRequest": {
+        "type": "object",
+        "required": ["service", "plan_id", "customer"],
+        "properties": {
+          "service": {"type": "string", "enum": ["cable", "electricity"]},
+          "plan_id": {"description": "Plan ID returned by the catalogue endpoint"},
+          "customer": {"type": "string", "description": "Smartcard/IUC number for cable or meter number for electricity"}
         }
       }
     }

@@ -8,6 +8,7 @@ use App\Models\ProductPlan;
 use App\Models\ProductPlanCategory;
 use App\Models\Transaction;
 use App\Models\User;
+use App\Services\BusinessApi\BillerValidationService;
 
 use function Pest\Laravel\get;
 use function Pest\Laravel\getJson;
@@ -54,6 +55,32 @@ it('returns a safe catalogue at the authenticated business price', function () {
         ->assertJsonMissingPath('data.0.cost_price');
 });
 
+it('includes cable and electricity plans in the business catalogue', function () {
+    $user = User::factory()->create(['api_token' => 'bills-catalogue-token']);
+    businessPlan('cable_subscription', ['product_plan_name' => 'DStv Compact']);
+    businessPlan('utility_bills', ['product_plan_name' => 'IBEDC Prepaid']);
+
+    getJson('/api/v2/catalogue', businessHeaders($user))
+        ->assertOk()
+        ->assertJsonFragment(['service' => 'cable', 'name' => 'DStv Compact'])
+        ->assertJsonFragment(['service' => 'electricity', 'name' => 'IBEDC Prepaid']);
+});
+
+it('validates cable customers and returns a short lived validation reference', function () {
+    $user = User::factory()->create(['api_token' => 'validate-cable-token']);
+    $plan = businessPlan('cable_subscription', ['product_plan_name' => 'DStv Compact']);
+    $validator = Mockery::mock(BillerValidationService::class);
+    $validator->shouldReceive('validate')->once()->andReturn([
+        'validation_reference' => 'VAL-CABLE-001', 'customer_name' => 'Test Customer',
+        'address' => null, 'expires_at' => now()->addMinutes(10)->toIso8601String(),
+    ]);
+    app()->instance(BillerValidationService::class, $validator);
+
+    postJson('/api/v2/validate-customer', [
+        'service' => 'cable', 'plan_id' => $plan->api_id, 'customer' => '1234567890',
+    ], businessHeaders($user))->assertOk()->assertJsonPath('data.validation_reference', 'VAL-CABLE-001');
+});
+
 it('returns the authenticated business wallet only', function () {
     $user = User::factory()->create(['api_token' => 'wallet-token', 'main_wallet' => '1234.56']);
 
@@ -93,6 +120,50 @@ it('processes airtime through the same purchase endpoint', function () {
         'service' => 'airtime', 'plan_id' => $plan->api_id, 'customer' => '08030000000',
         'amount' => 1000, 'reference' => 'BIZ-AIRTIME-001',
     ], businessHeaders($user))->assertOk()->assertJsonPath('data.service', 'airtime')->assertJsonPath('data.amount', 1000);
+});
+
+it('processes a validated cable purchase through the one fit all endpoint', function () {
+    $user = User::factory()->create(['api_token' => 'cable-purchase-token', 'pin' => '1234']);
+    $plan = businessPlan('cable_subscription', ['product_plan_name' => 'DStv Compact']);
+    $validator = Mockery::mock(BillerValidationService::class);
+    $validator->shouldReceive('resolve')->once()->andReturn([
+        'customer_name' => 'Test Customer', 'address' => null, 'extra_info' => '',
+    ]);
+    app()->instance(BillerValidationService::class, $validator);
+    $products = Mockery::mock(ProductsService::class);
+    $products->shouldReceive('buy_cable_service')->once()->with(Mockery::on(
+        fn (array $payload) => $payload['smart_card_number'] === '1234567890'
+            && $payload['validation_customer_name'] === 'Test Customer'
+            && $payload['cable_product_plan_id'] === $plan->id
+    ))->andReturn(['status' => 1, 'Status' => 'successful', 'message' => 'Cable delivered']);
+    app()->instance(ProductsService::class, $products);
+
+    postJson('/api/v2/buy-service', [
+        'service' => 'cable', 'plan_id' => $plan->api_id, 'customer' => '1234567890',
+        'validation_reference' => 'VAL-CABLE-001', 'reference' => 'BIZ-CABLE-001',
+    ], businessHeaders($user))->assertOk()->assertJsonPath('data.service', 'cable');
+});
+
+it('processes validated electricity and returns the meter token', function () {
+    $user = User::factory()->create(['api_token' => 'power-purchase-token', 'pin' => '1234']);
+    $plan = businessPlan('utility_bills', ['product_plan_name' => 'IBEDC Prepaid']);
+    $validator = Mockery::mock(BillerValidationService::class);
+    $validator->shouldReceive('resolve')->once()->andReturn([
+        'customer_name' => 'Power Customer', 'address' => 'Ibadan', 'extra_info' => 'Power Customer',
+    ]);
+    app()->instance(BillerValidationService::class, $validator);
+    $products = Mockery::mock(ProductsService::class);
+    $products->shouldReceive('buy_electricity_service')->once()->with(Mockery::on(
+        fn (array $payload) => $payload['metre_number'] === '01234567890'
+            && $payload['amount'] === 5000.0
+            && $payload['electricity_product_plan_id'] === $plan->id
+    ))->andReturn(['status' => 1, 'Status' => 'successful', 'message' => 'Power delivered', 'token' => '1234-5678-9012']);
+    app()->instance(ProductsService::class, $products);
+
+    postJson('/api/v2/buy-service', [
+        'service' => 'electricity', 'plan_id' => $plan->api_id, 'customer' => '01234567890',
+        'amount' => 5000, 'validation_reference' => 'VAL-POWER-001', 'reference' => 'BIZ-POWER-001',
+    ], businessHeaders($user))->assertOk()->assertJsonPath('data.token', '1234-5678-9012');
 });
 
 it('scopes transaction reconciliation to the authenticated business', function () {
@@ -145,6 +216,8 @@ it('rejects reuse of a reference for different purchase details', function () {
 });
 
 it('publishes branded documentation and an OpenAPI contract', function () {
-    get('/developers')->assertOk()->assertSee('OresamSub API')->assertSee('/api/v2/buy-service');
-    getJson('/api/v2/openapi.json')->assertOk()->assertJsonPath('openapi', '3.1.0');
+    get('/developers')->assertOk()->assertSee('OresamSub API')->assertSee('/api/v2/buy-service')
+        ->assertSee('/api/v2/validate-customer')->assertSee('cable')->assertSee('electricity');
+    getJson('/api/v2/openapi.json')->assertOk()->assertJsonPath('openapi', '3.1.0')
+        ->assertJsonPath('paths./validate-customer.post.operationId', 'validateCustomer');
 });
