@@ -467,7 +467,8 @@ Route::middleware(['set_locale'])->group(function () {
                 return view('auth.delete_account');
             })->name('account.deactivate');
 
-            Route::get('/new-landing', function () {
+            //NEW LANDING
+            Route::get('/', function () {
                 $data = [];
 
                 SiteImage::query()->get()->each(function (SiteImage $image) use (&$data) {
@@ -506,7 +507,7 @@ Route::middleware(['set_locale'])->group(function () {
                 return view('landing.new', $data);
             })->name('landing.new');
 
-            Route::get('/', function () {
+            Route::get('/landing-old', function () {
           
                 //get template name:
                 $data = [];

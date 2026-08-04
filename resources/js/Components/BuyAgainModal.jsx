@@ -114,7 +114,7 @@ export default function BuyAgainModal({ isOpen, onClose, contacts }) {
       showCancelButton: true,
       confirmButtonText: "Yes, Buy Now ✅",
       cancelButtonText: "Cancel ❌",
-      confirmButtonColor: "#059669",
+      confirmButtonColor: "#0A8F68",
       cancelButtonColor: "#d33",
     });
 

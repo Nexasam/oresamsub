@@ -115,7 +115,7 @@ export default function BuyAirtime() {
       showCancelButton: true,
       confirmButtonText: "Confirm",
       cancelButtonText: "Cancel",
-      confirmButtonColor: "#059669",
+      confirmButtonColor: "#0A8F68",
       cancelButtonColor: "#d33",
     });
 
