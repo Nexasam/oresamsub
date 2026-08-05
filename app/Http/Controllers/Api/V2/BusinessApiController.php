@@ -8,6 +8,7 @@ use App\Models\ProductPlan;
 use App\Models\Transaction;
 use App\Models\User;
 use App\Services\BusinessApi\BillerValidationService;
+use App\Services\Pricing\CustomerProductPricingService;
 use App\Support\MobileDisplayMessage;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -16,11 +17,9 @@ use Throwable;
 
 class BusinessApiController extends Controller
 {
-    public function catalogue(Request $request): JsonResponse
+    public function catalogue(Request $request, CustomerProductPricingService $pricingService): JsonResponse
     {
         $user = $this->user($request);
-        $level = min(7, max(1, (int) ($user->user_plan?->plan_level ?? 1)));
-        $priceField = "user_level_{$level}_selling_price";
 
         $plans = ProductPlan::query()
             ->with(['product_plan_category.product:id,slug,product_name', 'product_plan_category.network:id,network_name'])
@@ -36,8 +35,9 @@ class BusinessApiController extends Controller
             ->orderBy('product_plan_category_id')
             ->orderByRaw('CAST(default_selling_price AS DECIMAL(12,2))')
             ->get()
-            ->map(function (ProductPlan $plan) use ($priceField): array {
+            ->map(function (ProductPlan $plan) use ($pricingService, $user): array {
                 $category = $plan->product_plan_category;
+                $pricing = $pricingService->resolve($user, $plan);
 
                 return [
                     'id' => $plan->api_id,
@@ -45,7 +45,8 @@ class BusinessApiController extends Controller
                     'name' => $plan->product_plan_name,
                     'network' => $category->network?->network_name,
                     'category' => $category->product_plan_category_name,
-                    'price' => round((float) ($plan->{$priceField} ?: $plan->default_selling_price), 2),
+                    'price' => $pricing['price'],
+                    'pricing_type' => $pricing['pricing_type'],
                     'data_size_mb' => $plan->data_size_in_mb ? (int) $plan->data_size_in_mb : null,
                     'validity_days' => $plan->validity_in_days ? (int) $plan->validity_in_days : null,
                 ];

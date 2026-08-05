@@ -2,10 +2,12 @@
 
 use App\Http\Services\Api\v1\VendorUsersApi\Products\ProductsService;
 use App\Models\Automation;
+use App\Models\AutomationProductPlan;
 use App\Models\Network;
 use App\Models\Product;
 use App\Models\ProductPlan;
 use App\Models\ProductPlanCategory;
+use App\Models\ProductPlanCustomPricing;
 use App\Models\Transaction;
 use App\Models\User;
 use App\Services\BusinessApi\BillerValidationService;
@@ -13,6 +15,7 @@ use App\Services\BusinessApi\BillerValidationService;
 use function Pest\Laravel\get;
 use function Pest\Laravel\getJson;
 use function Pest\Laravel\postJson;
+use function Pest\Laravel\actingAs;
 
 function businessHeaders(User $user): array
 {
@@ -46,7 +49,13 @@ it('requires a valid users api token', function () {
 it('returns a safe catalogue at the authenticated business price', function () {
     $user = User::factory()->create(['api_token' => 'valid-business-token']);
     $user->user_plan->update(['plan_level' => 2]);
-    businessPlan();
+    $plan = businessPlan();
+    AutomationProductPlan::create([
+        'product_plan_id' => $plan->id,
+        'automation_id' => $plan->automation_id,
+        'provider_plan_id' => 'provider-plan',
+        'is_active' => true,
+    ]);
     businessPlan('data', ['visibility' => '0', 'product_plan_name' => 'Hidden plan']);
 
     getJson('/api/v2/catalogue', businessHeaders($user))
@@ -54,6 +63,70 @@ it('returns a safe catalogue at the authenticated business price', function () {
         ->assertJsonMissing(['name' => 'Hidden plan'])->assertJsonMissingPath('data.0.automation_id')
         ->assertJsonMissingPath('data.0.cost_price');
 });
+
+it('returns the exact customer price shown by the PWA in the business catalogue', function () {
+    $user = User::factory()->create(['api_token' => 'pwa-parity-token']);
+    $user->user_plan->update(['plan_level' => 2]);
+    $plan = businessPlan('data', [
+        'cost_price' => '390',
+        'user_level_2_selling_price' => '450',
+    ]);
+    ProductPlanCustomPricing::create([
+        'product_plan_id' => $plan->id,
+        'user_id' => $user->id,
+        'price' => '417.50',
+        'added_by' => $user->id,
+    ]);
+
+    actingAs($user);
+
+    $pwaPrice = getJson('/user/data/fetch_product_plans?network_id='.
+        $plan->product_plan_category->network_id.'&product_slug=data')
+        ->assertOk()
+        ->json('data.0.selling_price');
+
+    getJson('/api/v2/catalogue', businessHeaders($user))
+        ->assertOk()
+        ->assertJsonPath('data.0.id', (string) $plan->api_id)
+        ->assertJsonPath('data.0.price', (float) $pwaPrice)
+        ->assertJsonPath('data.0.pricing_type', 'fixed');
+});
+
+it('uses the PWA pricing flow for every non data catalogue product', function (string $slug, string $publicService, string $pricingType) {
+    $user = User::factory()->create(['api_token' => $slug.'-parity-token']);
+    $user->user_plan->update(['plan_level' => 2]);
+    $plan = businessPlan($slug, [
+        'user_level_2_selling_price' => $pricingType === 'percentage_discount' ? '3.5' : '725',
+    ]);
+    ProductPlanCustomPricing::create([
+        'product_plan_id' => $plan->id,
+        'user_id' => $user->id,
+        'price' => $pricingType === 'percentage_discount' ? '4.25' : '699',
+        'added_by' => $user->id,
+    ]);
+
+    actingAs($user);
+
+    $pwaResponse = getJson('/user/data/fetch_product_plans?network_id='.
+        $plan->product_plan_category->network_id.'&plan_category_id='.
+        $plan->product_plan_category_id.'&product_slug='.$slug)
+        ->assertOk();
+    $pwaPlan = collect($pwaResponse->json('data'))->firstWhere('product_plan_id', $plan->id);
+
+    $cataloguePlan = collect(getJson('/api/v2/catalogue', businessHeaders($user))
+        ->assertOk()
+        ->json('data'))->firstWhere('id', (string) $plan->api_id);
+
+    expect($cataloguePlan)
+        ->not->toBeNull()
+        ->and($cataloguePlan['service'])->toBe($publicService)
+        ->and($cataloguePlan['price'])->toEqual((float) $pwaPlan['selling_price'])
+        ->and($cataloguePlan['pricing_type'])->toBe($pricingType);
+})->with([
+    'airtime' => ['airtime', 'airtime', 'percentage_discount'],
+    'cable' => ['cable_subscription', 'cable', 'fixed'],
+    'electricity' => ['utility_bills', 'electricity', 'percentage_discount'],
+]);
 
 it('includes cable and electricity plans in the business catalogue', function () {
     $user = User::factory()->create(['api_token' => 'bills-catalogue-token']);

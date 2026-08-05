@@ -13,7 +13,7 @@
         "summary": "List active plans at the authenticated business price",
         "operationId": "listCatalogue",
         "responses": {
-          "200": {"description": "Catalogue fetched", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/SuccessEnvelope"}, "example": {"success": true, "message": "Catalogue fetched successfully.", "data": [{"id": 1201, "service": "data", "name": "1GB Monthly", "network": "MTN", "category": "SME", "price": 450, "data_size_mb": 1024, "validity_days": 30}], "meta": null, "errors": null}}}},
+          "200": {"description": "Catalogue fetched. pricing_type is fixed for naira plan prices and percentage_discount for airtime/electricity discount rates.", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/SuccessEnvelope"}, "example": {"success": true, "message": "Catalogue fetched successfully.", "data": [{"id": 1201, "service": "data", "name": "1GB Monthly", "network": "MTN", "category": "SME", "price": 450, "pricing_type": "fixed", "data_size_mb": 1024, "validity_days": 30}], "meta": null, "errors": null}}}},
           "401": {"$ref": "#/components/responses/Unauthenticated"}
         }
       }

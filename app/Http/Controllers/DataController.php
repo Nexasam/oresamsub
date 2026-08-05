@@ -38,6 +38,7 @@ use App\Services\Automation\OgdamsAutomation\OgdamsVendData;
 use App\Services\Automation\MegaSubPlugAutomation\MegaSubVendData;
 use App\Http\Services\Api\v1\VendorUsersApi\Products\ProductsService;
 use App\Services\Automation\MsOrgGroupAutomation\MsOrgGroupAutomation;
+use App\Services\Pricing\CustomerProductPricingService;
 
 class DataController extends Controller
 {
@@ -1458,6 +1459,7 @@ class DataController extends Controller
         $user_level = UserPlan::select('plan_level')->where('id',$user_plan_id)->first();
         $plan_level = $user_level->plan_level;
         $sellingp = 'user_level_'.$plan_level.'_selling_price';
+        $pricingService = app(CustomerProductPricingService::class);
 
 
         ///NEW VERSION 2 test starts here
@@ -1531,26 +1533,19 @@ class DataController extends Controller
 
 
                          //HERE SELLING PRICE CHANGES IF THEHRE IS A CUSTOM SETTING: put in a service later
-                         $check_custom_setting = ProductPlanCustomPricing::where('product_plan_id','=', $product_plan->id)->where('user_id',auth()->id())->first();
-                         $amount = $check_custom_setting == NULL ? $amount : $check_custom_setting->price;  
+                         $pricing = $pricingService->resolve($user_details, $product_plan);
     
-                        $user_level_selling = "user_level_".$plan_level."_selling_price";
                         $user_level_commission = "user_level_".$plan_level."_commission";
 
-                        $selling_price = $product_plan->$user_level_selling;
                         $upline_commission = $product_plan->$user_level_commission;
- 
-                        $selling_price = $check_custom_setting == NULL ? $selling_price : $check_custom_setting->price;  
 
 
                         
-                        if( ( $product_slug == 'airtime' || $product_slug == 'utility_bills' ) && $amount != ''){
-                              $purchase_discount = $product_plan->$user_level_selling;
-                              $actual_discount_value = ceil(($purchase_discount/100) * $amount);  
+                        if($pricing['pricing_type'] === 'percentage_discount' && $amount != ''){
+                              $actual_discount_value = ceil(($pricing['price']/100) * $amount);
                               $discounted_selling_price = $amount - abs($actual_discount_value);
-                              $selling_price = 0; //this is from the system, not applicable for airtime
                         }else{
-                            $discounted_selling_price = $selling_price;
+                            $discounted_selling_price = $pricing['price'];
                         }
 
                        
@@ -1582,25 +1577,16 @@ class DataController extends Controller
             if(count($product_plans) > 0){
                 foreach($product_plans as $product_plan){
               
-                    $user_level_selling = "user_level_".$plan_level."_selling_price";
                     $user_level_commission = "user_level_".$plan_level."_commission";
-                    // $user_level_selling = "{user_level_$user_level_selling_price}";
-                    $selling_price = $product_plan->$user_level_selling;
                     $upline_commission = $product_plan->$user_level_commission;
 
-                     //HERE SELLING PRICE CHANGES IF THEHRE IS A CUSTOM SETTING: put in a service later
-                     $check_custom_setting = ProductPlanCustomPricing::where('product_plan_id','=', $product_plan->id)->where('user_id',auth()->id())->first();
-                     $selling_price = $check_custom_setting == NULL ? $selling_price : $check_custom_setting->price;  
+                     $pricing = $pricingService->resolve($user_details, $product_plan);
                     
-                    if( ( $product_slug == 'airtime' || $product_slug == 'utility_bills' ) && $amount != ''){
-                          $purchase_discount = $product_plan->$user_level_selling;
-                        //   logger('purchase discount:'.$purchase_discount);
-                        //   logger('purchase amount:'.$amount);
-                          $actual_discount_value = ceil(($purchase_discount/100) * $amount);  
+                    if($pricing['pricing_type'] === 'percentage_discount' && $amount != ''){
+                          $actual_discount_value = ceil(($pricing['price']/100) * $amount);
                           $discounted_selling_price = $amount - abs($actual_discount_value);
-                          $selling_price = 0; //this is from the system, not applicable for airtime
                     }else{
-                        $discounted_selling_price = $selling_price;
+                        $discounted_selling_price = $pricing['price'];
                     }
 
                
