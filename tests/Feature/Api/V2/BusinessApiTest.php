@@ -161,6 +161,22 @@ it('returns the authenticated business wallet only', function () {
         ->assertOk()->assertJsonPath('data.currency', 'NGN')->assertJsonPath('data.available_balance', 1234.56);
 });
 
+it('uses the first validation error as the API response message', function () {
+    $user = User::factory()->create(['api_token' => 'validation-message-token']);
+    $plan = businessPlan('airtime', ['product_plan_name' => 'Airtime']);
+
+    postJson('/api/v2/buy-service', [
+        'service' => 'airtime',
+        'plan_id' => $plan->api_id,
+        'customer_number' => '08030000000',
+        'amount' => 25,
+        'reference' => 'BIZ-INVALID-AMOUNT-001',
+    ], businessHeaders($user))
+        ->assertUnprocessable()
+        ->assertJsonPath('message', 'The amount must be at least 50.')
+        ->assertJsonPath('errors.amount.0', 'The amount must be at least 50.');
+});
+
 it('processes a data purchase without accepting a transaction pin', function () {
     $user = User::factory()->create(['api_token' => 'purchase-token', 'pin' => '1234']);
     $plan = businessPlan();

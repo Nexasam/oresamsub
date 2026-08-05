@@ -72,7 +72,7 @@ class BusinessApiController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return $this->error('Please check the provided information.', $validator->errors(), 422);
+            return $this->error($validator->errors()->first(), $validator->errors(), 422);
         }
 
         $plan = $this->availablePlan($request->input('plan_id'), $request->string('service')->toString());
@@ -106,6 +106,8 @@ class BusinessApiController extends Controller
             'amount' => ['required_if:service,airtime,electricity', 'nullable', 'numeric', 'min:50'],
             'validation_reference' => ['required_if:service,cable,electricity', 'nullable', 'string', 'max:100'],
             'validate_phone_network' => ['sometimes', 'boolean'],
+        ], [
+            'amount.min' => 'The amount must be at least :min.',
         ]);
 
         $validator->after(function ($validator) use ($request): void {
@@ -116,7 +118,7 @@ class BusinessApiController extends Controller
         });
 
         if ($validator->fails()) {
-            return $this->error('Please check the provided information.', $validator->errors(), 422);
+            return $this->error($validator->errors()->first(), $validator->errors(), 422);
         }
 
         $user = $this->user($request);
