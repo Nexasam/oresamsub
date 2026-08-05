@@ -3,83 +3,94 @@
   "info": {
     "title": "OresamSub Business API",
     "version": "2.0.0",
-    "description": "A single integration for data, airtime, cable TV and electricity reseller websites. All amounts are expressed in Nigerian naira."
+    "description": "A single integration for data, airtime, cable TV and electricity reseller websites. All monetary amounts are expressed in Nigerian naira."
   },
   "servers": [{"url": "https://oresamsub.com/api/v2", "description": "Production"}],
   "security": [{"bearerAuth": []}],
   "paths": {
     "/catalogue": {
       "get": {
-        "summary": "List available plans",
+        "summary": "List active plans at the authenticated business price",
         "operationId": "listCatalogue",
-        "responses": {"200": {"description": "Plans priced for the authenticated business"}, "401": {"$ref": "#/components/responses/Unauthenticated"}}
+        "responses": {
+          "200": {"description": "Catalogue fetched", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/SuccessEnvelope"}, "example": {"success": true, "message": "Catalogue fetched successfully.", "data": [{"id": 1201, "service": "data", "name": "1GB Monthly", "network": "MTN", "category": "SME", "price": 450, "data_size_mb": 1024, "validity_days": 30}], "meta": null, "errors": null}}}},
+          "401": {"$ref": "#/components/responses/Unauthenticated"}
+        }
       }
     },
     "/wallet": {
       "get": {
-        "summary": "Get wallet balance",
+        "summary": "Get the authenticated business wallet",
         "operationId": "getWallet",
-        "responses": {"200": {"description": "Available main-wallet balance"}, "401": {"$ref": "#/components/responses/Unauthenticated"}}
+        "responses": {
+          "200": {"description": "Wallet fetched", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/SuccessEnvelope"}, "example": {"success": true, "message": "Wallet fetched successfully.", "data": {"currency": "NGN", "available_balance": 12500.5}, "meta": null, "errors": null}}}},
+          "401": {"$ref": "#/components/responses/Unauthenticated"}
+        }
       }
     },
     "/validate-customer": {
       "post": {
         "summary": "Validate a cable or electricity customer",
         "operationId": "validateCustomer",
-        "requestBody": {
-          "required": true,
-          "content": {"application/json": {"schema": {"$ref": "#/components/schemas/ValidationRequest"}, "examples": {
-            "cable": {"value": {"service": "cable", "plan_id": 2101, "customer_number": "1234567890"}},
-            "electricity": {"value": {"service": "electricity", "plan_id": 3101, "customer_number": "01234567890"}}
-          }}}
-        },
-        "responses": {"200": {"description": "Customer details and a validation reference valid for 10 minutes"}, "422": {"description": "Customer could not be validated"}}
+        "requestBody": {"required": true, "content": {"application/json": {"schema": {"$ref": "#/components/schemas/ValidationRequest"}, "examples": {"cable": {"summary": "Cable validation", "value": {"service": "cable", "plan_id": 2101, "customer_number": "1234567890"}}, "electricity": {"summary": "Electricity validation", "value": {"service": "electricity", "plan_id": 3101, "customer_number": "01234567890"}}}}}},
+        "responses": {
+          "200": {"description": "Customer validated; reference expires after 10 minutes", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/SuccessEnvelope"}, "example": {"success": true, "message": "Customer validated successfully.", "data": {"validation_reference": "VAL-EXAMPLE", "customer_name": "Test Customer", "address": "Ibadan", "expires_at": "2026-08-05T14:10:00+01:00"}, "meta": null, "errors": null}}}},
+          "401": {"$ref": "#/components/responses/Unauthenticated"},
+          "422": {"description": "Validation failed", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/ErrorEnvelope"}, "examples": {"invalid_request": {"value": {"success": false, "message": "Please check the provided information.", "data": null, "meta": null, "errors": {"customer_number": ["The customer number field is required."]}}}, "provider_validation_failed": {"value": {"success": false, "message": "We could not validate this customer right now.", "data": null, "meta": null, "errors": null}}}}}}
+        }
       }
     },
     "/buy-service": {
       "post": {
-        "summary": "Purchase data or airtime",
+        "summary": "Purchase data, airtime, cable or electricity",
         "operationId": "buyService",
-        "requestBody": {
-          "required": true,
-          "content": {"application/json": {"schema": {"$ref": "#/components/schemas/PurchaseRequest"}, "examples": {
-            "data": {"value": {"service": "data", "plan_id": 1201, "customer_number": "08030000000", "reference": "ORDER-10001"}},
-            "airtime": {"value": {"service": "airtime", "plan_id": 1401, "customer_number": "08030000000", "amount": 1000, "reference": "ORDER-10002"}},
-            "cable": {"value": {"service": "cable", "plan_id": 2101, "customer_number": "1234567890", "validation_reference": "VAL-EXAMPLE", "reference": "ORDER-10003"}},
-            "electricity": {"value": {"service": "electricity", "plan_id": 3101, "customer_number": "01234567890", "amount": 5000, "validation_reference": "VAL-EXAMPLE", "reference": "ORDER-10004"}}
-          }}}
-        },
+        "requestBody": {"required": true, "content": {"application/json": {"schema": {"$ref": "#/components/schemas/PurchaseRequest"}, "examples": {
+          "data": {"summary": "Buy data", "value": {"service": "data", "plan_id": 1201, "customer_number": "08030000000", "reference": "ORDER-10001"}},
+          "airtime": {"summary": "Buy airtime", "value": {"service": "airtime", "plan_id": 1401, "customer_number": "08030000000", "amount": 1000, "reference": "ORDER-10002"}},
+          "cable": {"summary": "Buy cable", "value": {"service": "cable", "plan_id": 2101, "customer_number": "1234567890", "validation_reference": "VAL-EXAMPLE", "reference": "ORDER-10003"}},
+          "electricity": {"summary": "Buy electricity", "value": {"service": "electricity", "plan_id": 3101, "customer_number": "01234567890", "amount": 5000, "validation_reference": "VAL-EXAMPLE", "reference": "ORDER-10004"}}
+        }}}}},
         "responses": {
-          "200": {"description": "Purchase processed or safely replayed"},
-          "202": {"description": "Purchase is pending or processing"},
-          "409": {"description": "Reference was previously used for different purchase details"},
-          "422": {"description": "Invalid request or failed purchase"}
+          "200": {"description": "Purchase processed or idempotently replayed", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/SuccessEnvelope"}, "examples": {"successful": {"value": {"success": true, "message": "Transaction processed successfully.", "data": {"reference": "ORDER-10004", "status": "successful", "service": "electricity", "customer_number": "01234567890", "amount": 5000, "balance_before": 20000, "balance_after": 15000, "token": "1234-5678-9012"}, "meta": null, "errors": null}}, "idempotent_replay": {"value": {"success": true, "message": "This transaction was already submitted.", "data": {"reference": "ORDER-10001", "status": "successful", "service": "data", "customer_number": "08030000000", "amount": 450}, "meta": {"idempotent_replay": true}, "errors": null}}}}}},
+          "202": {"description": "Purchase pending or processing", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/ErrorEnvelope"}, "example": {"success": false, "message": "Transaction is processing.", "data": {"reference": "ORDER-10001", "status": "processing", "service": "data", "customer_number": "08030000000"}, "meta": null, "errors": null}}}},
+          "401": {"$ref": "#/components/responses/Unauthenticated"},
+          "409": {"description": "Reference already used for different purchase details", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/ErrorEnvelope"}, "example": {"success": false, "message": "This reference has already been used for a different transaction.", "data": null, "meta": null, "errors": {"reference": ["Use a new unique reference."]}}}}},
+          "422": {"description": "Invalid request, expired validation reference or failed purchase", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/ErrorEnvelope"}, "examples": {"invalid_customer_number": {"value": {"success": false, "message": "Please check the provided information.", "data": null, "meta": null, "errors": {"customer_number": ["Provide a valid Nigerian mobile number."]}}}, "expired_validation": {"value": {"success": false, "message": "The validation reference is invalid, expired or does not match this purchase.", "data": null, "meta": null, "errors": {"validation_reference": ["Validate the customer again before purchasing."]}}}}}},
+          "503": {"description": "Provider temporarily unavailable", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/ErrorEnvelope"}, "example": {"success": false, "message": "The service provider could not process this transaction. No duplicate retry was made.", "data": null, "meta": null, "errors": null}}}}
         }
       }
     },
     "/transactions/{reference}": {
       "get": {
-        "summary": "Reconcile a transaction",
+        "summary": "Reconcile a transaction owned by the authenticated business",
         "operationId": "getTransaction",
-        "parameters": [{"name": "reference", "in": "path", "required": true, "schema": {"type": "string"}}],
-        "responses": {"200": {"description": "Transaction owned by the authenticated business"}, "404": {"description": "Transaction not found"}}
+        "parameters": [{"name": "reference", "in": "path", "required": true, "schema": {"type": "string", "maxLength": 100}}],
+        "responses": {
+          "200": {"description": "Transaction fetched", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/SuccessEnvelope"}, "example": {"success": true, "message": "Transaction fetched successfully.", "data": {"reference": "ORDER-10001", "status": "successful", "service": "data", "customer_number": "08030000000", "amount": 450, "balance_before": 1000, "balance_after": 550, "created_at": "2026-08-05T14:00:00+01:00"}, "meta": null, "errors": null}}}},
+          "401": {"$ref": "#/components/responses/Unauthenticated"},
+          "404": {"description": "Transaction not found or not owned by this business", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/ErrorEnvelope"}, "example": {"success": false, "message": "Transaction not found.", "data": null, "meta": null, "errors": {"reference": ["No transaction matches this reference."]}}}}}
+        }
       }
     }
   },
   "components": {
-    "securitySchemes": {"bearerAuth": {"type": "http", "scheme": "bearer", "description": "API token generated from the OresamSub account"}},
-    "responses": {"Unauthenticated": {"description": "Missing or invalid API token"}},
+    "securitySchemes": {"bearerAuth": {"type": "http", "scheme": "bearer", "description": "API token generated from the OresamSub API Access page"}},
+    "responses": {
+      "Unauthenticated": {"description": "Missing or invalid API token", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/ErrorEnvelope"}, "example": {"success": false, "message": "Authentication failed. Provide a valid Bearer API token.", "data": null, "meta": null, "errors": {"authentication": ["The supplied API token is invalid."]}}}}}
+    },
     "schemas": {
+      "SuccessEnvelope": {"type": "object", "required": ["success", "message", "data", "meta", "errors"], "properties": {"success": {"type": "boolean", "const": true}, "message": {"type": "string"}, "data": {}, "meta": {}, "errors": {"type": "null"}}},
+      "ErrorEnvelope": {"type": "object", "required": ["success", "message", "data", "meta", "errors"], "properties": {"success": {"type": "boolean", "const": false}, "message": {"type": "string"}, "data": {}, "meta": {}, "errors": {}}},
       "PurchaseRequest": {
         "type": "object",
         "required": ["service", "plan_id", "customer_number", "reference"],
         "properties": {
           "service": {"type": "string", "enum": ["data", "airtime", "cable", "electricity"]},
-          "plan_id": {"description": "Plan ID returned by the catalogue endpoint"},
+          "plan_id": {"description": "Plan ID returned by GET /catalogue"},
           "customer_number": {"type": "string", "description": "Phone number, smartcard/IUC number or meter number according to service"},
-          "reference": {"type": "string", "maxLength": 100},
+          "reference": {"type": "string", "maxLength": 100, "description": "Unique reference generated by the integrating business"},
           "amount": {"type": "number", "minimum": 50, "description": "Required for airtime and electricity"},
-          "validation_reference": {"type": "string", "description": "Required for cable and electricity; obtained from /validate-customer"},
+          "validation_reference": {"type": "string", "description": "Required for cable and electricity; obtained from POST /validate-customer"},
           "validate_phone_network": {"type": "boolean", "default": true}
         }
       },
@@ -88,7 +99,7 @@
         "required": ["service", "plan_id", "customer_number"],
         "properties": {
           "service": {"type": "string", "enum": ["cable", "electricity"]},
-          "plan_id": {"description": "Plan ID returned by the catalogue endpoint"},
+          "plan_id": {"description": "Plan ID returned by GET /catalogue"},
           "customer_number": {"type": "string", "description": "Smartcard/IUC number for cable or meter number for electricity"}
         }
       }

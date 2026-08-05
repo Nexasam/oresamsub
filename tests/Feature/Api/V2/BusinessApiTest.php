@@ -224,5 +224,9 @@ it('publishes branded documentation and an OpenAPI contract', function () {
         ->assertSee('curlPreview')->assertSee('updateCurlPreview')
         ->assertSee('responseModal')->assertSee('showResponseModal')->assertSee('Copy response');
     getJson('/api/v2/openapi.json')->assertOk()->assertJsonPath('openapi', '3.1.0')
-        ->assertJsonPath('paths./validate-customer.post.operationId', 'validateCustomer');
+        ->assertJsonPath('paths./validate-customer.post.operationId', 'validateCustomer')
+        ->assertJsonPath('paths./catalogue.get.responses.200.content.application/json.example.success', true)
+        ->assertJsonPath('paths./transactions/{reference}.get.responses.404.content.application/json.example.message', 'Transaction not found.')
+        ->assertJsonPath('components.schemas.PurchaseRequest.required.2', 'customer_number')
+        ->assertJsonFragment(['message' => 'This reference has already been used for a different transaction.']);
 });
