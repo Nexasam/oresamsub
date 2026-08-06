@@ -1418,8 +1418,13 @@
 <script>
   if ("serviceWorker" in navigator) {
       window.addEventListener("load", function () {
-          navigator.serviceWorker.register("/service-worker.js")
-              .then(reg => console.log("Service Worker registered:", reg))
+          navigator.serviceWorker.register("/service-worker.js?v=20260806-1", {
+              updateViaCache: "none",
+          })
+              .then(registration => {
+                  registration.update();
+                  console.log("Service Worker registered:", registration);
+              })
               .catch(err => console.log("Service Worker registration failed:", err));
       });
   }

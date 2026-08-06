@@ -15,7 +15,7 @@ export default function BuyAgainModal({ isOpen, onClose, contacts }) {
   useEffect(() => {
     if (isOpen) {
       axios.get(route("user.favorite_data")).then((res) => {
-        setFavorites(res.data || []);
+        setFavorites(Array.isArray(res.data?.data) ? res.data.data : []);
       });
     }
   }, [isOpen]);

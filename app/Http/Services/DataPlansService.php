@@ -7,9 +7,95 @@ use App\Models\PlanProfitSetting;
 use App\Models\ProductPlan;
 use App\Models\ProductPlanCategory;
 use App\Models\ProductPlanCustomPricing;
+use App\Models\Transaction;
+use App\Models\User;
 use App\Models\UserPlan;
+use Illuminate\Support\Collection;
 
 class DataPlansService{
+
+    public function favoriteDataPlans(User $user, int $limit = 10): Collection
+    {
+        $usage = Transaction::query()
+            ->select('product_plan_id')
+            ->selectRaw('COUNT(*) as usage_count')
+            ->selectRaw('MAX(created_at) as last_used_at')
+            ->where('user_id', $user->id)
+            ->where('transaction_category', 'data')
+            ->where('status', '1')
+            ->whereNotNull('product_plan_id')
+            ->groupBy('product_plan_id')
+            ->orderByDesc('usage_count')
+            ->orderByDesc('last_used_at')
+            ->limit(max($limit * 5, 50))
+            ->get();
+
+        if ($usage->isEmpty()) {
+            return collect();
+        }
+
+        $planIds = $usage->pluck('product_plan_id');
+        $plans = ProductPlan::query()
+            ->with(['product_plan_category.network', 'product_plan_category.product'])
+            ->whereIn('id', $planIds)
+            ->where('visibility', 1)
+            ->get()
+            ->keyBy('id');
+
+        $lastPhones = Transaction::query()
+            ->where('user_id', $user->id)
+            ->where('transaction_category', 'data')
+            ->where('status', '1')
+            ->whereIn('product_plan_id', $plans->keys())
+            ->latest()
+            ->get(['product_plan_id', 'phone_number', 'created_at'])
+            ->unique('product_plan_id')
+            ->keyBy('product_plan_id');
+
+        return $usage
+            ->map(function ($planUsage) use ($plans, $lastPhones, $user) {
+                $plan = $plans->get($planUsage->product_plan_id);
+                $category = $plan?->product_plan_category;
+                $product = $category?->product;
+                $network = $category?->network;
+
+                if (! $plan || ! $product || ! $network) {
+                    return null;
+                }
+
+                try {
+                    $price = $this->get_customer_price_per_plan([
+                        'product_id' => $product->id,
+                        'network_id' => $network->id,
+                        'user' => $user,
+                        'plan_details' => $plan,
+                    ])['message'] ?? null;
+                } catch (\Throwable $exception) {
+                    report($exception);
+
+                    return null;
+                }
+
+                if (! is_numeric($price)) {
+                    return null;
+                }
+
+                return [
+                    'product_plan_id' => $plan->id,
+                    'product_plan_name' => $plan->product_plan_name,
+                    'network_id' => $network->id,
+                    'network_name' => $network->network_name,
+                    'selling_price' => $price,
+                    'current_price' => $price,
+                    'phone_number' => $lastPhones->get($plan->id)?->phone_number,
+                    'usage_count' => (int) $planUsage->usage_count,
+                    'last_used_at' => $planUsage->last_used_at,
+                ];
+            })
+            ->filter()
+            ->take($limit)
+            ->values();
+    }
 
     public function fetch_user_data_plans($data){
         $user_details = $data['user'];

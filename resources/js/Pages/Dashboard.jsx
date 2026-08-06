@@ -653,6 +653,10 @@ export default function Dashboard({ transactions: initialTransactions }) {
                   <div className="text-[10px] text-gray-500 dark:text-gray-400 mt-1">
                     ₦{Number(plan.current_price).toLocaleString()}
                   </div>
+
+                  <div className="text-[10px] text-gray-500 dark:text-gray-400 mt-1">
+                    {plan.network_name} • Used {plan.usage_count} {plan.usage_count === 1 ? "time" : "times"}
+                  </div>
                 </button>
               ))}
 

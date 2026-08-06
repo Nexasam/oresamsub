@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Services\DataPlansService;
 use App\Models\Automation;
 use App\Models\Network;
 use App\Models\PlanProfitSetting;
@@ -450,7 +451,7 @@ class ProductPlanController extends Controller
     }
 
 
-    public function topFavoriteData(Request $request){
+    public function topFavoriteData(Request $request, DataPlansService $dataPlansService){
       $user = auth()->user();
       if (! $user) {
           return response()->json([
@@ -459,30 +460,7 @@ class ProductPlanController extends Controller
           ], 401);
       }
   
-      // Get unique product_plan_ids from the user's data transactions
-      $uniquePlanIds = Transaction::where('user_id', $user->id)
-          ->where('transaction_category', 'data')
-          ->distinct()
-          ->pluck('product_plan_id')
-          ->take(15); // take top 15 unique plans
-
-
-      $plans = ProductPlan::with(['product_plan_category.network', 'product_plan_category.product'])
-      ->whereIn('id', $uniquePlanIds)
-      ->get()
-      ->map(function($plan) {
-          return [
-              'product_plan_id' => $plan->id,
-              'product_plan_name' => $plan->product_plan_name,
-              'network_name' => $plan->product_plan_category->network->name ?? '',
-              'selling_price' => $plan->user_level_1_selling_price ?? 0, // adjust as needed
-          ];
-      });
-  
-      // Load ProductPlan details
-      // $plans = ProductPlan::with(['product_plan_category.network', 'product_plan_category.product'])
-      //     ->whereIn('id', $uniquePlanIds)
-      //     ->get();
+      $plans = $dataPlansService->favoriteDataPlans($user, 15);
   
       return response()->json([
           'status' => 1,

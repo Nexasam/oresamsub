@@ -34,7 +34,11 @@ use Inertia\Inertia;
 class UserDashboardController extends Controller
 {
  
-  public function index(Request $request, BonusService $bonuses){
+  public function index(
+    Request $request,
+    BonusService $bonuses,
+    DataPlansService $dataPlansService,
+  ){
 
    
     $template = SiteTemplate::first();
@@ -175,61 +179,7 @@ class UserDashboardController extends Controller
             $data['contacts'] = $contacts;
 
 
-              $recentPlans = Transaction::query()
-              ->where('user_id', auth()->id())
-              ->whereNotNull('product_plan_id')
-              ->with([
-                  'product_plan.product_plan_category.product',
-                  'product_plan.product_plan_category.network'
-              ])
-              ->latest()
-              ->get()
-              ->unique('product_plan_id')
-              ->values();
-
-              $dataplanservice = new DataPlansService();
-
-              $popularPlans = $recentPlans->map(function ($tx) use ($dataplanservice) {
-
-                  $plan = $tx->product_plan;
-
-                  if (!$plan) {
-                      return null;
-                  }
-
-                  try {
-
-                      $dat = [
-                          'product_id' => $plan->product_plan_category->product->id,
-                          'network_id' => $plan->product_plan_category->network->id,
-                          'user' => auth()->user(),
-                          'plan_details' => $plan,
-                      ];
-
-                      $priceData = $dataplanservice->get_customer_price_per_plan($dat);
-
-                      return [
-                          'product_plan_id' => $plan->id,
-                          'product_plan_name' => $plan->product_plan_name,
-                          'current_price' => $priceData['message'],
-                          'phone_number' => $tx->phone_number,
-                      ];
-
-                  } catch (\Throwable $e) {
-
-                      return [
-                          'product_plan_id' => $plan->id,
-                          'product_plan_name' => $plan->product_plan_name,
-                          'current_price' => null,
-                          'phone_number' => $tx->phone_number,
-                      ];
-                  }
-              })
-              ->filter()
-              ->take(10)
-              ->values();
-
-              $data['popular_plans'] = $popularPlans;
+              $data['popular_plans'] = $dataPlansService->favoriteDataPlans($user, 10);
 
 
 
