@@ -1418,7 +1418,7 @@
 <script>
   if ("serviceWorker" in navigator) {
       window.addEventListener("load", function () {
-          navigator.serviceWorker.register("/service-worker.js?v=20260806-1", {
+          navigator.serviceWorker.register("/service-worker.js?v=20260808-1", {
               updateViaCache: "none",
           })
               .then(registration => {

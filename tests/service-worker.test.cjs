@@ -32,46 +32,17 @@ function loadServiceWorker(fetchImplementation) {
     return listeners;
 }
 
-test('navigation retries once when the first network request fails transiently', async () => {
-    let attempts = 0;
-    const onlineResponse = new Response('<html>Dashboard</html>', { status: 200 });
-    const listeners = loadServiceWorker(async () => {
-        attempts += 1;
+test('requests including page navigations are never intercepted by the service worker', () => {
+    const listeners = loadServiceWorker(async () => new Response('asset'));
 
-        if (attempts === 1) {
-            throw new TypeError('temporary network failure');
-        }
-
-        return onlineResponse;
-    });
-
-    let responsePromise;
-    listeners.fetch({
-        request: { method: 'GET', mode: 'navigate', url: 'https://oresamsub.com/dashboard' },
-        respondWith(promise) {
-            responsePromise = promise;
-        },
-    });
-
-    const response = await responsePromise;
-
-    assert.equal(attempts, 2);
-    assert.equal(response.status, 200);
-    assert.equal(await response.text(), '<html>Dashboard</html>');
+    assert.equal(listeners.fetch, undefined);
 });
 
-test('non-navigation requests are not intercepted by the service worker', () => {
-    const listeners = loadServiceWorker(async () => new Response('asset'));
-    let intercepted = false;
+test('service worker does not contain a synthetic connection error response', () => {
+    const source = fs.readFileSync('public/service-worker.js', 'utf8');
 
-    listeners.fetch({
-        request: { method: 'GET', mode: 'cors', url: 'https://oresamsub.com/api/wallet' },
-        respondWith() {
-            intercepted = true;
-        },
-    });
-
-    assert.equal(intercepted, false);
+    assert.doesNotMatch(source, /We could not reach OresamSub right now/);
+    assert.doesNotMatch(source, /respondWith/);
 });
 
 test('every registration requests the current service worker version without HTTP cache', () => {
@@ -81,7 +52,7 @@ test('every registration requests the current service worker version without HTT
     ];
 
     for (const source of registrationSources) {
-        assert.match(source, /register\("\/service-worker\.js\?v=20260806-1", \{/);
+        assert.match(source, /register\("\/service-worker\.js\?v=20260808-1", \{/);
         assert.match(source, /updateViaCache: "none"/);
         assert.match(source, /registration\.update\(\)/);
     }

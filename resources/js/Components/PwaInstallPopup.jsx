@@ -11,7 +11,7 @@ const PwaInstallPopup = forwardRef((props, ref) => {
     if ("serviceWorker" in navigator) {
       window.addEventListener("load", () => {
         navigator.serviceWorker
-          .register("/service-worker.js?v=20260806-1", {
+          .register("/service-worker.js?v=20260808-1", {
             updateViaCache: "none",
           })
           .then((registration) => {
