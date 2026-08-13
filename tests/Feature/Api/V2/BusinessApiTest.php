@@ -194,6 +194,25 @@ it('processes a data purchase without accepting a transaction pin', function () 
     ], businessHeaders($user))->assertOk()->assertJsonPath('data.status', 'successful')->assertJsonMissingPath('data.admin_message');
 });
 
+it('returns a provider configuration error when a data plan has no user automation', function () {
+    $user = User::factory()->create([
+        'api_token' => 'missing-data-automation-token',
+        'pin' => '1234',
+        'main_wallet' => 1000,
+    ]);
+    $plan = businessPlan();
+
+    postJson('/api/v2/buy-service', [
+        'service' => 'data',
+        'plan_id' => $plan->api_id,
+        'customer_number' => '08030000000',
+        'reference' => 'BIZ-DATA-NO-AUTOMATION-001',
+    ], businessHeaders($user))
+        ->assertUnprocessable()
+        ->assertJsonPath('message', 'No provider configured for this plan. Please try another plan.')
+        ->assertJsonPath('data.status', 'failed');
+});
+
 it('processes airtime through the same purchase endpoint', function () {
     $user = User::factory()->create(['api_token' => 'airtime-token', 'pin' => '1234']);
     $plan = businessPlan('airtime', ['product_plan_name' => 'Airtime']);

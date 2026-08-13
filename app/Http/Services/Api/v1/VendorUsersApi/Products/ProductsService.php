@@ -946,7 +946,7 @@ class ProductsService{
             'amount'                 => 0,
             'service_charge'         => $service_charge ?? 10,
             'coupon_code_id'         => null,
-            'user_product_plan_automation_id'   => $user_unique_plan_automation->id,
+            'user_product_plan_automation_id'   => $user_unique_plan_automation?->id,
             'discounted_amount'      => 0,
             'status'                 => 0, // 🔥 PENDING
             'balance_before'         => 0,
