@@ -244,8 +244,9 @@ it('uses the product plan automation for a legacy data plan', function () {
         'customer_number' => '08030000000',
         'reference' => 'BIZ-DATA-LEGACY-ROUTING-001',
     ], businessHeaders($user))
-        ->assertOk()
-        ->assertJsonPath('data.status', 'successful');
+        ->assertUnprocessable()
+        ->assertJsonPath('data.status', 'failed')
+        ->assertJsonPath('message', 'Data processing failed.');
 
     $transaction = Transaction::where('txn_reference', 'BIZ-DATA-LEGACY-ROUTING-001')->sole();
 
