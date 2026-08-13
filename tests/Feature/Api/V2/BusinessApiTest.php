@@ -203,6 +203,12 @@ it('returns a provider configuration error when a data plan has no user automati
         'main_wallet' => 1000,
     ]);
     $plan = businessPlan();
+    AutomationProductPlan::create([
+        'product_plan_id' => $plan->id,
+        'automation_id' => $plan->automation_id,
+        'provider_plan_id' => 'new-flow-provider-plan',
+        'is_active' => true,
+    ]);
 
     postJson('/api/v2/buy-service', [
         'service' => 'data',
@@ -213,6 +219,38 @@ it('returns a provider configuration error when a data plan has no user automati
         ->assertUnprocessable()
         ->assertJsonPath('message', 'No provider configured for this plan. Please try another plan.')
         ->assertJsonPath('data.status', 'failed');
+});
+
+it('uses the product plan automation for a legacy data plan', function () {
+    $user = User::factory()->create([
+        'api_token' => 'legacy-data-routing-token',
+        'pin' => '1234',
+        'main_wallet' => 1000,
+    ]);
+    $plan = businessPlan('data', [
+        'automation_product_plan_id' => 'legacy-provider-plan-292',
+        'cost_price' => 400,
+    ]);
+    $plan->automation->update([
+        'api_public_key' => 'legacy-public-key',
+        'api_secret_key' => 'legacy-secret-key',
+        'data_url' => 'https://provider.test/data',
+        'automation_group' => 'legacy',
+    ]);
+
+    postJson('/api/v2/buy-service', [
+        'service' => 'data',
+        'plan_id' => $plan->api_id,
+        'customer_number' => '08030000000',
+        'reference' => 'BIZ-DATA-LEGACY-ROUTING-001',
+    ], businessHeaders($user))
+        ->assertOk()
+        ->assertJsonPath('data.status', 'successful');
+
+    $transaction = Transaction::where('txn_reference', 'BIZ-DATA-LEGACY-ROUTING-001')->sole();
+
+    expect($transaction->user_product_plan_automation_id)->toBeNull()
+        ->and((float) $transaction->amount)->toBeGreaterThan(0);
 });
 
 it('uses the catalogue price for a data purchase amount and wallet check', function () {

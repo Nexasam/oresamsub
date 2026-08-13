@@ -10,6 +10,7 @@ use App\Models\Product;
 use App\Models\Setting;
 use App\Models\UserPlan;
 use App\Models\Automation;
+use App\Models\AutomationProductPlan;
 use App\Models\CouponCode;
 use App\Models\ProductPlan;
 use App\Models\Transaction;
@@ -1090,8 +1091,24 @@ class ProductsService{
 
 
         
-        //
-        if(! $user_unique_plan_automation || ! $user_unique_plan_automation->userAutomation || $user_unique_plan_automation->status != 1){
+        $uses_new_automation_flow = AutomationProductPlan::query()
+            ->where('product_plan_id', $product_plan_id)
+            ->where('is_active', 1)
+            ->exists();
+
+        $automation_details = $uses_new_automation_flow
+            ? $user_unique_plan_automation
+            : $plan_details->automation;
+
+        $provider_plan_id = $uses_new_automation_flow
+            ? $user_unique_plan_automation?->automation_product_plan_id
+            : $plan_details->automation_product_plan_id;
+
+        $provider_is_missing = $uses_new_automation_flow
+            ? (! $user_unique_plan_automation || ! $user_unique_plan_automation->userAutomation || $user_unique_plan_automation->status != 1)
+            : (! $automation_details || ! $provider_plan_id);
+
+        if($provider_is_missing){
             // return ['status'=>-1, 'message'=>'No automation configured for this plan. Please try another plan.'];  //'data' => $data
            //    add to db: very important
            $transaction->update([
@@ -1230,7 +1247,8 @@ class ProductsService{
                                 
                                 $dataa['coupon'] = $coupon ?? 0;
                                 $dataa['phone_number'] = $phone_number;
-                                $dataa['automation_details'] = $user_unique_plan_automation;//this is now from the user plan automation relation
+                                $dataa['automation_details'] = $automation_details;
+                                $dataa['provider_plan_id'] = $provider_plan_id;
                                 $dataa['network_id'] = $network_id;
                                 $dataa['plan_id'] = $product_plan_id;
                                 $dataa['validatephonenetwork'] = $validatephonenetwork;
