@@ -22,6 +22,7 @@ use App\Traits\WalletTransactionLogs;
 use App\Http\Services\CouponCodeService;
 use App\Models\ProductPlanCustomPricing;
 use App\Services\Automation\AutomationLogic;
+use App\Services\Pricing\CustomerProductPricingService;
 use App\Services\Automation\MegaSubPlugAutomation\MegaSubVendData;
 use App\Services\Automation\MsOrgGroupAutomation\MsOrgGroupAutomation;
 
@@ -917,7 +918,10 @@ class ProductsService{
         ->where('product_plan_id', $product_plan_id)
         ->where('status', 1) // ✅ THIS is the correct place
         ->first();
-        $service_charge = $user_unique_plan_automation->userAutomation->pricing_amount ?? 10; //this is the price set by the merchant for this plan. it can be null if they want to use the default price
+        $pricing_plan = ProductPlan::find($product_plan_id);
+        $purchase_amount = $user && $pricing_plan
+            ? app(CustomerProductPricingService::class)->resolve($user, $pricing_plan)['price']
+            : 0;
         
 
 
@@ -943,11 +947,11 @@ class ProductsService{
             'wallet_category'        => $wallet_category,
             'product_plan_id'        => $product_plan_id,
             'phone_number'           => $phone_number,
-            'amount'                 => 0,
-            'service_charge'         => $service_charge ?? 10,
+            'amount'                 => $purchase_amount,
+            'service_charge'         => $purchase_amount,
             'coupon_code_id'         => null,
             'user_product_plan_automation_id'   => $user_unique_plan_automation?->id,
-            'discounted_amount'      => 0,
+            'discounted_amount'      => $purchase_amount,
             'status'                 => 0, // 🔥 PENDING
             'balance_before'         => 0,
             'balance_after'          => 0,
@@ -1150,8 +1154,8 @@ class ProductsService{
                     ////validate wallet
                         if($wallet_category == 'main_wallet'){
                             $wallet_before = $user_details->main_wallet;
-                            $amount = 0;
-                            $service_charge = $service_charge ?? 9; //this is the amount set by the merchant for this plan. it can be null if they want to use the default price
+                            $amount = $purchase_amount;
+                            $service_charge = $purchase_amount;
                             $total_amount = $phone_numbers_count * $service_charge; //service charge
                             if($total_amount > $wallet_before || $wallet_before < 0){
                                 // return ['status'=>'-1', 'message'=>'Insufficient wallet balance...' ];

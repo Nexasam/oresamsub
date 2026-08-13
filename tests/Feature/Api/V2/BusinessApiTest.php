@@ -10,6 +10,8 @@ use App\Models\ProductPlanCategory;
 use App\Models\ProductPlanCustomPricing;
 use App\Models\Transaction;
 use App\Models\User;
+use App\Models\UserAutomation;
+use App\Models\UserProductPlanAutomation;
 use App\Services\BusinessApi\BillerValidationService;
 
 use function Pest\Laravel\get;
@@ -211,6 +213,51 @@ it('returns a provider configuration error when a data plan has no user automati
         ->assertUnprocessable()
         ->assertJsonPath('message', 'No provider configured for this plan. Please try another plan.')
         ->assertJsonPath('data.status', 'failed');
+});
+
+it('uses the catalogue price for a data purchase amount and wallet check', function () {
+    $user = User::factory()->create([
+        'api_token' => 'data-catalogue-price-token',
+        'pin' => '1234',
+        'main_wallet' => 100,
+    ]);
+    $plan = businessPlan();
+    AutomationProductPlan::create([
+        'product_plan_id' => $plan->id,
+        'automation_id' => $plan->automation_id,
+        'provider_plan_id' => 'provider-plan',
+        'is_active' => true,
+    ]);
+    $userAutomation = UserAutomation::create([
+        'user_id' => $user->id,
+        'automation_id' => $plan->automation_id,
+        'product' => 'data',
+        'pricing_amount' => 0,
+    ]);
+    UserProductPlanAutomation::create([
+        'user_id' => $user->id,
+        'product_plan_id' => $plan->id,
+        'user_automation_id' => $userAutomation->id,
+        'automation_product_plan_id' => 'provider-plan',
+        'priority' => 1,
+        'status' => 1,
+    ]);
+
+    postJson('/api/v2/buy-service', [
+        'service' => 'data',
+        'plan_id' => $plan->api_id,
+        'customer_number' => '08030000000',
+        'reference' => 'BIZ-DATA-CATALOGUE-PRICE-001',
+    ], businessHeaders($user))
+        ->assertUnprocessable()
+        ->assertJsonPath('message', 'Insufficient wallet balance');
+
+    $transaction = Transaction::where('txn_reference', 'BIZ-DATA-CATALOGUE-PRICE-001')->sole();
+
+    expect((float) $transaction->amount)->toBe(480.0)
+        ->and((float) $transaction->discounted_amount)->toBe(480.0)
+        ->and((float) $transaction->balance_before)->toBe(100.0)
+        ->and((float) $transaction->balance_after)->toBe(100.0);
 });
 
 it('processes airtime through the same purchase endpoint', function () {
