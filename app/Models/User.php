@@ -123,6 +123,21 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasOne(Transaction::class)->orderBy('created_at', 'desc');
     }
 
+    public function followupCalls(): HasMany
+    {
+        return $this->hasMany(CustomerFollowupCall::class, 'customer_id');
+    }
+
+    public function customerCallsMade(): HasMany
+    {
+        return $this->hasMany(CustomerFollowupCall::class, 'called_by');
+    }
+
+    public function latestFollowupCall(): HasOne
+    {
+        return $this->hasOne(CustomerFollowupCall::class, 'customer_id')->latestOfMany();
+    }
+
     public function referrals(): HasMany
     {
         return $this->hasMany(User::class, 'upline_id');

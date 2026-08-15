@@ -2,188 +2,174 @@
 
 namespace App\Http\Controllers;
 
-use Carbon\Carbon;
+use App\Models\CustomerFollowupCall;
 use App\Models\User;
-use App\Models\Network;
-use App\Models\CouponCode;
-use App\Models\Transaction;
+use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
-use App\Models\FundingOption;
 use Illuminate\Validation\Rule;
-use App\Models\WalletFundingPromo;
-use Illuminate\Support\Facades\DB;
-use App\Models\ProductPlanCategory;
-use App\Models\UserWalletFundingPromo;
-use Illuminate\Support\Facades\Session;
-use Illuminate\Support\Facades\Validator;
 
 class DailyCustomerFollowupController extends Controller
 {
-    public function index(Request $request){   
+    private const DEFAULT_INACTIVE_DAYS = 30;
+    private const DEFAULT_PURCHASE_COUNT = 3;
+    private const DEFAULT_ACTIVITY_DAYS = 30;
 
-        return view('admin.daily_customer_followup.index');
+    public function index(Request $request)
+    {
+        $validated = $request->validate([
+            'customer_type' => ['nullable', Rule::in(['all', 'generic', 'pos'])],
+            'segment' => ['nullable', Rule::in(['all', 'stale', 'suddenly_inactive', 'never_purchased'])],
+            'inactivity_mode' => ['nullable', Rule::in(['days', 'period'])],
+            'inactive_days' => ['nullable', 'integer', 'min:1', 'max:3650'],
+            'last_purchase_from' => ['nullable', 'date'],
+            'last_purchase_to' => ['nullable', 'date', 'after_or_equal:last_purchase_from'],
+            'purchase_count' => ['nullable', 'integer', 'min:1', 'max:1000'],
+            'activity_days' => ['nullable', 'integer', 'min:1', 'max:3650'],
+            'search' => ['nullable', 'string', 'max:100'],
+            'per_page' => ['nullable', Rule::in([15, 30, 50, 100])],
+        ]);
+
+        $filters = array_merge([
+            'customer_type' => 'all',
+            'segment' => 'all',
+            'inactivity_mode' => 'days',
+            'inactive_days' => self::DEFAULT_INACTIVE_DAYS,
+            'last_purchase_from' => null,
+            'last_purchase_to' => null,
+            'purchase_count' => self::DEFAULT_PURCHASE_COUNT,
+            'activity_days' => self::DEFAULT_ACTIVITY_DAYS,
+            'search' => null,
+            'per_page' => 30,
+        ], $validated);
+
+        $customers = $this->retentionQuery($filters)
+            ->paginate((int) $filters['per_page'])
+            ->withQueryString();
+
+        return view('admin.daily_customer_followup.index', compact('customers', 'filters'));
     }
 
+    public function storeCall(Request $request, User $customer)
+    {
+        $validated = $request->validate([
+            'outcome' => ['required', Rule::in(['answered', 'no_answer', 'busy', 'unreachable', 'wrong_number'])],
+            'feedback' => ['required', 'string', 'max:5000'],
+            'followup_status' => ['required', Rule::in(['follow_up_again', 'resolved_reactivated', 'not_interested'])],
+            'next_followup_at' => [
+                'nullable',
+                'required_if:followup_status,follow_up_again',
+                'date',
+                'after_or_equal:now',
+            ],
+        ]);
 
-public function filterooo(Request $request)
-{
-    $data = $request->validate([
-        'type' => 'required|in:generic,pos,both',
-        'transaction_status' => 'required|in:atleast_one_transaction,no_transaction',
-        'transaction_metric' => 'nullable|in:atleast_x_days,x_days',
-        'days' => 'nullable|integer|min:1',
-    ]);
+        CustomerFollowupCall::query()->create($validated + [
+            'customer_id' => $customer->id,
+            'called_by' => $request->user()->id,
+        ]);
 
-    // Base user query filtering customer_category
-    $query = User::query();
-
-    if ($data['type'] === 'both') {
-        $query->whereIn('customer_category', ['generic', 'pos']);
-    } else {
-        $query->where('customer_category', $data['type']);
+        return back()->with('success', 'Customer call logged successfully.');
     }
 
-    // For no transaction filter, simple doesntHave works
-    if ($data['transaction_status'] === 'no_transaction') {
-        $query->doesntHave('transactions');
-    } elseif ($data['transaction_status'] === 'atleast_one_transaction') {
-        // Users with at least one transaction
+    private function retentionQuery(array $filters): Builder
+    {
+        $successful = static fn (Builder $query) => $query->where('status', 1);
 
-        // If no days or metric, just filter those with transactions
-        if (empty($data['days']) || empty($data['transaction_metric'])) {
-            $query->has('transactions');
-        } else {
-            $daysAgo = Carbon::now()->subDays($data['days'])->startOfDay();
+        $query = User::query()
+            ->with([
+                'latestFollowupCall.caller',
+                'followupCalls' => fn ($calls) => $calls->with('caller')->latest(),
+            ])
+            ->withMax(['transactions as last_successful_purchase_at' => $successful], 'created_at')
+            ->withCount(['transactions as successful_purchase_count' => $successful])
+            ->withCount(['transactions as activity_window_purchase_count' => function (Builder $builder) use ($filters) {
+                $inactiveSince = now()->subDays((int) $filters['inactive_days']);
+                $builder->where('status', 1)
+                    ->whereBetween('created_at', [
+                        $inactiveSince->copy()->subDays((int) $filters['activity_days']),
+                        $inactiveSince,
+                    ]);
+            }])
+            ->addSelect([
+                'latest_followup_at' => CustomerFollowupCall::query()
+                    ->select('next_followup_at')
+                    ->whereColumn('customer_id', 'users.id')
+                    ->latest('created_at')
+                    ->limit(1),
+                'latest_followup_status' => CustomerFollowupCall::query()
+                    ->select('followup_status')
+                    ->whereColumn('customer_id', 'users.id')
+                    ->latest('created_at')
+                    ->limit(1),
+            ]);
 
-            // Join to subquery that gets last transaction date per user
-            $lastTxSub = DB::table('transactions')
-            ->select('user_id', DB::raw('MAX(created_at) as last_transaction_date'))
-            ->groupBy('user_id');
+        if ($filters['customer_type'] !== 'all') {
+            $query->where('customer_category', $filters['customer_type']);
+        }
 
-            $query->joinSub($lastTxSub, 'last_tx', function ($join) {
-            $join->on('users.id', '=', 'last_tx.user_id');
+        if ($filters['search']) {
+            $search = '%'.trim($filters['search']).'%';
+            $query->where(function (Builder $builder) use ($search) {
+                $builder->where('first_name', 'like', $search)
+                    ->orWhere('last_name', 'like', $search)
+                    ->orWhere('username', 'like', $search)
+                    ->orWhere('email', 'like', $search)
+                    ->orWhere('phone_number', 'like', $search);
             });
-
-            // Filter based on metric
-            if ($data['transaction_metric'] === 'atleast_x_days') {
-            $query->where('last_tx.last_transaction_date', '<=', $daysAgo);
-            } else if ($data['transaction_metric'] === 'x_days') {
-            $targetDate = $daysAgo->toDateString();
-            $query->whereDate('last_tx.last_transaction_date', '=', $targetDate);
-            }
-
-            $query->select('users.*')->distinct();
         }
-    }
 
-    $results = $query->get() ?? collect([]);
-
-    // $results = User::all(); // simple all users, no joins
-
-    // dd($results->toArray()); // inspect output
-
-   
-
-    return view('admin.daily_customer_followup.index',compact('results'))->withInput();
-
-}
-
-
-public function filteroolll(Request $request)
-{
-    $data = $request->validate([
-        'type' => 'required|in:generic,pos,both',
-        // 'transaction_status' => 'required|in:atleast_one_transaction,no_transaction',
-        // 'transaction_metric' => 'nullable|in:atleast_x_days,x_days',
-        'days' => 'nullable|integer|min:1',
-    ]);
-
-    
-
-    // Base query on Transaction, eager loading user
-    $query = Transaction::with('user');
-
-    // Filter transactions by user.customer_category according to 'type'
-    $query->whereHas('user', function ($q) use ($data) {
-        if ($data['type'] === 'both') {
-            $q->whereIn('customer_category', ['generic', 'pos']);
-        } else {
-            $q->where('customer_category', $data['type']);
+        if ($filters['segment'] === 'never_purchased') {
+            $query->whereDoesntHave('transactions', $successful);
+        } elseif ($filters['segment'] === 'suddenly_inactive') {
+            $this->applySuddenlyInactive($query, $filters);
+        } elseif ($filters['inactivity_mode'] === 'period') {
+            $this->applyLastPurchasePeriod($query, $filters);
+        } elseif ($filters['segment'] === 'stale') {
+            $cutoff = now()->subDays((int) $filters['inactive_days']);
+            $query->whereDoesntHave('transactions', function (Builder $builder) use ($cutoff) {
+                $builder->where('status', 1)->where('created_at', '>', $cutoff);
+            });
         }
-    });
 
-    // Handle transaction_status filter
-    if ($data['transaction_status'] === 'no_transaction') {
-        // No transactions means no transactions at all
-        // But starting from Transaction model, no records means no results
-        // So here, you must fetch users with no transactions separately
-        // Or return empty collection because transactions exist in query.
-
-        // You can handle 'no_transaction' outside this Transaction-based query,
-        // like fetching users with no transactions directly.
-
-        return view('your.view.name', ['results' => collect()]); // empty collection
+        return $query
+            ->orderByRaw("CASE WHEN latest_followup_status = 'follow_up_again' AND latest_followup_at <= ? THEN 0 ELSE 1 END", [now()])
+            ->orderByRaw('last_successful_purchase_at IS NOT NULL')
+            ->orderBy('last_successful_purchase_at')
+            ->orderBy('users.created_at');
     }
 
-    // For atleast_one_transaction, filter transactions by metric if specified
-    if ($data['transaction_status'] === 'atleast_one_transaction') {
-        if (!empty($data['days']) && !empty($data['transaction_metric'])) {
-            $daysAgo = Carbon::now()->subDays($data['days'])->startOfDay();
+    private function applySuddenlyInactive(Builder $query, array $filters): void
+    {
+        $inactiveSince = now()->subDays((int) $filters['inactive_days']);
+        $activityStarted = $inactiveSince->copy()->subDays((int) $filters['activity_days']);
 
-            if ($data['transaction_metric'] === 'atleast_x_days') {
-                // Transactions on or before $daysAgo
-                $query->where('created_at', '<=', $daysAgo);
-            } elseif ($data['transaction_metric'] === 'x_days') {
-                $targetDate = $daysAgo->toDateString();
-                $query->whereDate('created_at', '=', $targetDate);
-            }
+        $query
+            ->whereDoesntHave('transactions', function (Builder $builder) use ($inactiveSince) {
+                $builder->where('status', 1)->where('created_at', '>', $inactiveSince);
+            })
+            ->whereHas('transactions', function (Builder $builder) use ($activityStarted, $inactiveSince) {
+                $builder->where('status', 1)
+                    ->where('created_at', '>=', $activityStarted)
+                    ->where('created_at', '<=', $inactiveSince);
+            }, '>=', (int) $filters['purchase_count']);
+    }
+
+    private function applyLastPurchasePeriod(Builder $query, array $filters): void
+    {
+        if (! $filters['last_purchase_from'] || ! $filters['last_purchase_to']) {
+            return;
         }
+
+        $from = Carbon::parse($filters['last_purchase_from'])->startOfDay();
+        $to = Carbon::parse($filters['last_purchase_to'])->endOfDay();
+
+        $query
+            ->whereHas('transactions', function (Builder $builder) use ($from, $to) {
+                $builder->where('status', 1)->whereBetween('created_at', [$from, $to]);
+            })
+            ->whereDoesntHave('transactions', function (Builder $builder) use ($to) {
+                $builder->where('status', 1)->where('created_at', '>', $to);
+            });
     }
-
-    // Get transactions with user eager loaded
-    $results = $query->latest()->get();
-
-    // dd($results);
-    return $results;
-
-    return view('admin.daily_customer_followup.index',compact('results'))->withInput();
-
-}
-
-public function filter(Request $request){
-    $validator = Validator::make($request->all(), [
-        'type' => 'required|in:generic,pos,both',
-        // 'transaction_status' => 'required|in:atleast_one_transaction,no_transaction',
-        // 'transaction_metric' => 'nullable|in:atleast_x_days,x_days',
-        'days_since_last_txn' => 'nullable|integer|min:1',
-    ]);
-    
-         
-    if ($validator->stopOnFirstFailure()->fails()) {
-        return response()->json(['status'=>'-1', 'message'=>$validator->errors()->first(),'data' => $request->all() ]);
-    }
-
-    $data = $request->all();
-
-    // $days =
-
-    $check_category = $data['type'] == 'both' ? '' : $data['type'];
-    $users = User::with('latestTransaction')->when($check_category !== '',function($q) use ($check_category){
-        $q->where('customer_category', $check_category);
-    })
-    ->get();
-    $dataa['users'] = $users;
-    $dataa['days'] = $data['days_since_last_txn'] ?? 0;
-
-    // return $users;
-
-    return view('admin.daily_customer_followup.index',compact('users'))->with($dataa);
-
-}
-
-
-
-
-
-
 }

@@ -634,7 +634,7 @@ Route::middleware(['set_locale'])->group(function () {
 
              //customer follow up feature
              Route::middleware(['auth','verified','admin'])->get('admin/daily_customer_followup/index', [DailyCustomerFollowupController::class, 'index'])->name('admin.daily_customer_followup.index');
-             Route::middleware(['auth','verified','admin'])->post('admin/daily_customer_followup/search', [DailyCustomerFollowupController::class, 'filter'])->name('admin.daily_customer_followup.filter');
+             Route::middleware(['auth','verified','admin'])->post('admin/daily_customer_followup/{customer}/calls', [DailyCustomerFollowupController::class, 'storeCall'])->name('admin.daily_customer_followup.calls.store');
 
 
              // funding promo
