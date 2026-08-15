@@ -26,6 +26,12 @@
         </div>
     @endif
 
+    <div class="mb-5 grid grid-cols-2 gap-3 lg:grid-cols-6">
+        @foreach(['Portfolio' => $performance['portfolio'], 'Contacted' => $performance['contacted'], 'Contact rate' => $performance['contact_rate'].'%', 'Overdue' => $performance['overdue'], 'Stale' => $performance['stale'], 'Reactivated' => $performance['reactivated']] as $label => $value)
+            <div class="box mb-0 p-4"><div class="text-xs uppercase text-gray-500">{{ $label }}</div><div class="mt-1 text-2xl font-semibold">{{ $value }}</div></div>
+        @endforeach
+    </div>
+
     <div class="box mb-5">
         <div class="box-header border-b dark:border-white/10">
             <div>
@@ -35,6 +41,9 @@
         </div>
         <div class="box-body">
             <form method="GET" action="{{ route('admin.daily_customer_followup.index') }}" class="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4">
+                @if(auth()->user()->hasPermission('followups.view_all'))
+                <div><label for="officer_id" class="ti-form-label">Account officer</label><select id="officer_id" name="officer_id" class="ti-form-input"><option value="">All officers</option>@foreach($officers as $officer)<option value="{{ $officer->user_id }}" @selected($filters['officer_id'] === $officer->user_id)>{{ $officer->user->first_name }} {{ $officer->user->last_name }}</option>@endforeach</select></div>
+                @endif
                 <div>
                     <label for="search" class="ti-form-label">Search customer</label>
                     <input id="search" name="search" value="{{ $filters['search'] }}" class="ti-form-input" placeholder="Name, username, phone or email">

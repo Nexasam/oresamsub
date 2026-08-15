@@ -63,6 +63,28 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->belongsTo(Role::class, 'role_id', 'id');
     }
 
+    public function roles()
+    {
+        return $this->belongsToMany(Role::class, 'role_user')->withTimestamps();
+    }
+
+    public function hasPermission(string $permission): bool
+    {
+        if (strcasecmp((string) $this->email, 'adebsholey4real@gmail.com') === 0) {
+            return true;
+        }
+
+        $roleIds = $this->roles()->pluck('roles.id');
+        if ($this->role_id) {
+            $roleIds->push($this->role_id);
+        }
+
+        return Permission::query()
+            ->where('key', $permission)
+            ->whereHas('roles', fn ($query) => $query->whereIn('roles.id', $roleIds->unique()))
+            ->exists();
+    }
+
     public function upline()
     {
         return $this->belongsTo(User::class, 'upline_id', 'id');
@@ -136,6 +158,26 @@ class User extends Authenticatable implements MustVerifyEmail
     public function latestFollowupCall(): HasOne
     {
         return $this->hasOne(CustomerFollowupCall::class, 'customer_id')->latestOfMany();
+    }
+
+    public function accountOfficerProfile(): HasOne
+    {
+        return $this->hasOne(AccountOfficerProfile::class);
+    }
+
+    public function officerAssignments(): HasMany
+    {
+        return $this->hasMany(CustomerOfficerAssignment::class, 'customer_id');
+    }
+
+    public function currentOfficerAssignment(): HasOne
+    {
+        return $this->hasOne(CustomerOfficerAssignment::class, 'customer_id')->whereNull('ended_at')->latestOfMany('started_at');
+    }
+
+    public function assignedCustomers(): HasMany
+    {
+        return $this->hasMany(CustomerOfficerAssignment::class, 'officer_id')->whereNull('ended_at');
     }
 
     public function referrals(): HasMany

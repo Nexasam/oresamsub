@@ -11,4 +11,14 @@ class Role extends Model
     use HasFactory, HasUuids;
 
     protected $guarded = [];
+
+    public function accessPermissions()
+    {
+        return $this->belongsToMany(Permission::class, 'permission_role');
+    }
+
+    public function users()
+    {
+        return $this->belongsToMany(User::class, 'role_user')->withTimestamps();
+    }
 }

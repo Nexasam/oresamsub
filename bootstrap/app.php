@@ -5,6 +5,9 @@ use App\Http\Middleware\AuthenticateBusinessApi;
 use App\Http\Middleware\EnsureMobileUserIsActive;
 use App\Http\Middleware\HandleInertiaRequests;
 use App\Http\Middleware\MarketerMiddleware;
+use App\Http\Middleware\RequirePermission;
+use App\Http\Middleware\RequireAnyPermission;
+use App\Http\Middleware\ProtectedSuperAdmin;
 use App\Http\Middleware\RoleAdminAccess;
 use App\Http\Middleware\RoleAssess;
 use App\Http\Middleware\RoleUserAccess;
@@ -51,6 +54,9 @@ return Application::configure(basePath: dirname(__DIR__))
             'admin' => RoleAdminAccess::class,
             'user' => RoleUserAccess::class,
             'marketer' => MarketerMiddleware::class,
+            'permission' => RequirePermission::class,
+            'permission.any' => RequireAnyPermission::class,
+            'super_admin' => ProtectedSuperAdmin::class,
             'validate_user' => ValidateSanctumUser::class,
             'api_token' => ValidateApiToken::class,
             'business.api_token' => AuthenticateBusinessApi::class,

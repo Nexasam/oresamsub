@@ -10,5 +10,12 @@ class Permission extends Model
 {
     use HasFactory, HasUuids;
 
+    protected $table = 'access_permissions';
+
     protected $guarded = [];
+
+    public function roles()
+    {
+        return $this->belongsToMany(Role::class, 'permission_role');
+    }
 }

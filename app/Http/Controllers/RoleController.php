@@ -2,70 +2,58 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Role;
 use App\Models\Permission;
+use App\Models\Role;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Session;
+use Illuminate\Validation\Rule;
 
 class RoleController extends Controller
 {
-    public function index(){
-        $roles = Role::all();
-        $data['roles'] = $roles;
-        return view('admin.roles.index')->with($data);
+    public function index()
+    {
+        return view('admin.roles.index', ['roles' => Role::withCount(['users', 'accessPermissions'])->get()]);
     }
 
-    public function permissions($role_id){
-        // dd($role_id);
-        $role = Role::where('id',$role_id)->first();
-        $permissions  = config('permissions');
-        // dd($permissions);
-        $db_permission_creates = Permission::where('role_id',$role_id)->whereNotNull('permission_create')->pluck('permission_create')->toArray();
-        $db_permission_reads = Permission::where('role_id',$role_id)->whereNotNull('permission_read')->pluck('permission_read')->toArray();
-        $db_permission_updates = Permission::where('role_id',$role_id)->whereNotNull('permission_update')->pluck('permission_update')->toArray();
-        $db_permission_deletes = Permission::where('role_id',$role_id)->whereNotNull('permission_delete')->pluck('permission_delete')->toArray();
-        $data['permissions'] = $permissions;
-        
-        $data['db_permission_creates'] = $db_permission_creates;
-        $data['db_permission_reads'] = $db_permission_reads;
-        $data['db_permission_updates'] = $db_permission_updates;
-        $data['db_permission_deletes'] = $db_permission_deletes;
-        $data['role'] = $role;
-        // dd($data);
-        return view('admin.roles.permissions')->with($data);
+    public function permissions(string $role_id)
+    {
+        $role = Role::findOrFail($role_id);
+
+        return view('admin.roles.permissions', [
+            'role' => $role,
+            'permissionGroups' => config('access_permissions'),
+            'selectedPermissions' => $role->accessPermissions()->pluck('key')->all(),
+            'staffUsers' => \App\Models\User::query()->where(function ($query) {
+                $query->whereHas('role', fn ($role) => $role->where('role_name', '!=', 'User'))
+                    ->orWhereHas('accountOfficerProfile');
+            })->orderBy('first_name')->get(),
+            'selectedUsers' => $role->users()->pluck('users.id')->all(),
+        ]);
     }
 
-    public function update_permissions(Request $request){
-        $permissions_to_update =$request->all();
-        // dd($permissions_to_update);
-        $role_id = $request->role_id;
-        $permissions = $request->permissions;
-        $role_details = Role::where('id',$role_id)->first();
-        $role_name = strtolower($role_details->role_name);
+    public function update_permissions(Request $request, string $role_id)
+    {
+        $catalogue = collect(config('access_permissions'))->flatten()->all();
+        $validated = $request->validate([
+            'permissions' => ['nullable', 'array'],
+            'permissions.*' => ['string', Rule::in($catalogue)],
+        ]);
 
-        //do role cleaning first
-        Permission::where('role_id',$role_id)->delete();
-        //then reinsert
-        foreach($permissions as $each_permission){
-            $permission_name_to_remove = explode('_',$each_permission)[0];
-            $permission_name_modified = explode('_',$each_permission);
-            array_shift($permission_name_modified);
-            $permission_key = implode('_',$permission_name_modified);
-            $permission_name = config('permissions.'.$permission_key.'.name');
-            $permission_slug = config('permissions.'.$permission_key.'.slug');
-            // $permission_slug = config('permissions.'.$permission_key.'.slug');
-            Permission::where('role_id',$role_id)->updateOrCreate([
-                'role_id' => $role_id,
-                'permission_slug' => $permission_slug,
-                'permission_name' => $permission_name,
-            ],[
-                'permission_'.$permission_name_to_remove => $each_permission,
-            ]);
+        $role = Role::findOrFail($role_id);
+        $ids = collect($validated['permissions'] ?? [])->map(function (string $key) {
+            return Permission::firstOrCreate(['key' => $key], [
+                'name' => str($key)->after('.')->replace('_', ' ')->title(),
+                'group' => str($key)->before('.')->toString(),
+            ])->id;
+        });
+        $role->accessPermissions()->sync($ids);
 
-        }
-       
-        Session::flash('success','Permissions was successfully updated for the role: '.$role_name);
-        return redirect()->back();
+        return back()->with('success', "Permissions updated for {$role->role_name}.");
     }
 
+    public function updateUsers(Request $request, string $role_id)
+    {
+        $data = $request->validate(['users' => ['nullable', 'array'], 'users.*' => ['uuid', 'exists:users,id']]);
+        Role::findOrFail($role_id)->users()->sync($data['users'] ?? []);
+        return back()->with('success', 'Staff role assignments updated.');
+    }
 }

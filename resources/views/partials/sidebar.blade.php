@@ -488,6 +488,16 @@
 
                 @endif
 
+                @if(auth()->user()->hasPermission('followups.view_all') || auth()->user()->hasPermission('followups.view_assigned'))
+                <li class="slide"><a href="{{ route('admin.daily_customer_followup.index') }}" class="side-menu__item"><i class="ti ti-phone side-menu__icon"></i><span class="side-menu__label">Customer Follow-ups</span></a></li>
+                @endif
+                @if(strcasecmp((string) auth()->user()->email, 'adebsholey4real@gmail.com') === 0)
+                <li class="slide"><a href="{{ route('admin.account_officers.index') }}" class="side-menu__item"><i class="ri ri-user-star-line side-menu__icon"></i><span class="side-menu__label">Account Officers</span></a></li>
+                @endif
+                @if(strcasecmp((string) auth()->user()->email, 'adebsholey4real@gmail.com') === 0)
+                <li class="slide"><a href="{{ route('admin.roles.index') }}" class="side-menu__item"><i class="ri ri-shield-user-line side-menu__icon"></i><span class="side-menu__label">Roles & Permissions</span></a></li>
+                @endif
+
 
                 <li class="slide__category"><span class="category-name">{{ strtolower(auth()->user()->role->role_name) == 'admin' ? 'User' : '' }}  Modules</span></li>
                 {{-- ///USER PAGES HERE --}}

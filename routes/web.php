@@ -41,6 +41,7 @@ use App\Http\Controllers\QuickToolController;
 use App\Http\Controllers\ReprocessTransactionController;
 use App\Http\Controllers\ResellerPlanController;
 use App\Http\Controllers\RoleController;
+use App\Http\Controllers\AccountOfficerController;
 use App\Http\Controllers\Template2Controller;
 use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\UniqueProductPlansController;
@@ -633,8 +634,15 @@ Route::middleware(['set_locale'])->group(function () {
 
 
              //customer follow up feature
-             Route::middleware(['auth','verified','admin'])->get('admin/daily_customer_followup/index', [DailyCustomerFollowupController::class, 'index'])->name('admin.daily_customer_followup.index');
-             Route::middleware(['auth','verified','admin'])->post('admin/daily_customer_followup/{customer}/calls', [DailyCustomerFollowupController::class, 'storeCall'])->name('admin.daily_customer_followup.calls.store');
+             Route::middleware(['auth','verified','permission.any:followups.view_all,followups.view_assigned'])->get('admin/daily_customer_followup/index', [DailyCustomerFollowupController::class, 'index'])->name('admin.daily_customer_followup.index');
+             Route::middleware(['auth','verified','permission:followups.log_call'])->post('admin/daily_customer_followup/{customer}/calls', [DailyCustomerFollowupController::class, 'storeCall'])->name('admin.daily_customer_followup.calls.store');
+             Route::middleware(['auth','verified','super_admin'])->prefix('admin/account-officers')->group(function () {
+                 Route::get('/', [AccountOfficerController::class, 'index'])->name('admin.account_officers.index');
+                 Route::post('/', [AccountOfficerController::class, 'store'])->name('admin.account_officers.store');
+                 Route::put('/', [AccountOfficerController::class, 'update'])->name('admin.account_officers.update');
+                 Route::post('/allocate', [AccountOfficerController::class, 'allocate'])->name('admin.account_officers.allocate');
+                 Route::post('/{profile}/redistribute', [AccountOfficerController::class, 'redistribute'])->name('admin.account_officers.redistribute');
+             });
 
 
              // funding promo
@@ -818,9 +826,10 @@ Route::middleware(['set_locale'])->group(function () {
             Route::middleware(['auth','verified','admin'])->get('admin/reseller_plans', [ResellerPlanController::class, 'index'])->name('admin.reseller_plans.index');
             Route::middleware(['auth','verified','admin'])->post('admin/reseller_plans/update_name', [ResellerPlanController::class, 'update_name'])->name('admin.reseller_plans.update_name');
 
-            Route::middleware(['auth','verified','admin'])->get('admin/roles', [RoleController::class, 'index'])->name('admin.roles.index');
-            Route::middleware(['auth','verified','admin'])->get('admin/roles/{role_id}/permission', [RoleController::class, 'permissions'])->name('admin.roles.permissions');
-            Route::middleware(['auth','verified','admin'])->post('admin/roles/{role_id}/permission/update', [RoleController::class, 'update_permissions'])->name('admin.roles.permissions.update');
+            Route::middleware(['auth','verified','super_admin'])->get('admin/roles', [RoleController::class, 'index'])->name('admin.roles.index');
+            Route::middleware(['auth','verified','super_admin'])->get('admin/roles/{role_id}/permission', [RoleController::class, 'permissions'])->name('admin.roles.permissions');
+            Route::middleware(['auth','verified','super_admin'])->post('admin/roles/{role_id}/permission/update', [RoleController::class, 'update_permissions'])->name('admin.roles.permissions.update');
+            Route::middleware(['auth','verified','super_admin'])->post('admin/roles/{role_id}/users', [RoleController::class, 'updateUsers'])->name('admin.roles.users.update');
 
 
             Route::middleware(['auth','verified','admin'])->get('admin/addons', [AddonController::class, 'index'])->name('admin.addons.index');

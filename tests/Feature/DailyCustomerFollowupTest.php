@@ -10,6 +10,11 @@ function followupAdmin(): User
 {
     $role = Role::firstOrCreate(['role_name' => 'Admin']);
 
+    foreach (['followups.view_all', 'followups.log_call'] as $key) {
+        $permission = \App\Models\Permission::firstOrCreate(['key' => $key], ['name' => $key, 'group' => 'followups']);
+        $role->accessPermissions()->syncWithoutDetaching([$permission->id]);
+    }
+
     return User::factory()->create(['role_id' => $role->id]);
 }
 
@@ -184,7 +189,7 @@ it('blocks ordinary customers from creating followup call logs', function () {
             'followup_status' => 'follow_up_again',
             'next_followup_at' => '2026-08-18 09:00:00',
         ])
-        ->assertRedirect();
+        ->assertForbidden();
 
     $this->assertDatabaseCount('customer_followup_calls', 0);
 });
