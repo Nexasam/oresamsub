@@ -13,6 +13,11 @@
 
 
                 <h3 class="text-gray-700 hover:text-gray-900 dark:text-gray-900 dark:hover:text-white text-2xl font-medium"> Transaction details</strong></h3>
+
+                <div class="bg-blue-50 border border-blue-200 text-blue-800 alert" role="alert">
+                  <span class="font-bold">Transaction Reference:</span>
+                  <span class="font-mono">{{ $data->txn_reference ?: $data->id }}</span>
+                </div>
                 
 
                 <div class="bg-gray-100 border border-gray-300 text-gray-600 alert" role="alert">

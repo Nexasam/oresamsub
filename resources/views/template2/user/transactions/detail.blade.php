@@ -43,6 +43,11 @@
             </tr> --}}
            {{-- </thead> --}}
            <tbody class="border-collapse border border-gray-300">
+
+              <tr>
+                <td class="border border-gray-300 p-4">Transaction Reference:</td>
+                <td class="border border-gray-300 p-4 font-mono">{{ $data->txn_reference ?: $data->id }}</td>
+              </tr>
           
               @if (strtolower(auth()->user()->role->role_name) == 'admin')
               <tr>
