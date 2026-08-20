@@ -316,6 +316,30 @@ it('processes airtime through the same purchase endpoint', function () {
     ], businessHeaders($user))->assertOk()->assertJsonPath('data.service', 'airtime')->assertJsonPath('data.amount', 1000);
 });
 
+it('uses processing language instead of legacy pending wording for airtime', function () {
+    $user = User::factory()->create(['api_token' => 'airtime-processing-message-token', 'pin' => '1234']);
+    $plan = businessPlan('airtime', ['product_plan_name' => 'Airtime']);
+    $products = Mockery::mock(ProductsService::class);
+    $products->shouldReceive('buy_airtime_service')->once()->andReturn([
+        'status' => 1,
+        'status_code' => 200,
+        'Status' => 'successful',
+        'user_message' => 'Airtime transaction pending.',
+    ]);
+    app()->instance(ProductsService::class, $products);
+
+    postJson('/api/v2/buy-service', [
+        'service' => 'airtime',
+        'plan_id' => $plan->api_id,
+        'customer_number' => '08030000000',
+        'amount' => 1000,
+        'reference' => 'BIZ-AIRTIME-PROCESSING-001',
+    ], businessHeaders($user))
+        ->assertOk()
+        ->assertJsonPath('message', 'Transaction is being processed.')
+        ->assertJsonPath('data.status', 'successful');
+});
+
 it('processes a validated cable purchase through the one fit all endpoint', function () {
     $user = User::factory()->create(['api_token' => 'cable-purchase-token', 'pin' => '1234']);
     $plan = businessPlan('cable_subscription', ['product_plan_name' => 'DStv Compact']);

@@ -222,6 +222,10 @@ class BusinessApiController extends Controller
         $message = MobileDisplayMessage::clean($result['user_message'] ?? $result['message'] ?? null,
             $successful ? 'Transaction processed successfully.' : 'Transaction could not be completed.');
 
+        if ($service === 'airtime' && preg_match('/\bpending\b/i', $message)) {
+            $message = 'Transaction is being processed.';
+        }
+
         return $successful
             ? $this->success($message, $data)
             : $this->error($message, null, $status === 'processing' || $status === 'pending' ? 202 : 422, $data);
