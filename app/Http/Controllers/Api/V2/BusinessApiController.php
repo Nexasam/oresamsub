@@ -268,10 +268,11 @@ class BusinessApiController extends Controller
         return ProductPlan::query()
             ->with(['product_plan_category.product', 'product_plan_category.network'])
             ->where('api_id', $apiId)
-            ->where('visibility', '1')->where('public_visibility', '1')->where('active_status', '1')
-            ->whereHas('product_plan_category', fn ($query) => $query->where('visibility', '1')->whereHas(
-                'product', fn ($product) => $product->where('slug', $slug)->where('visibility', '1')->where('active_status', '1')
-            ))->first();
+            ->where('visibility', '1')->where('active_status', '1')
+            // ->whereHas('product_plan_category', fn ($query) => $query->where('visibility', '1')->whereHas(
+            //     'product', fn ($product) => $product->where('slug', $slug)->where('visibility', '1')->where('active_status', '1')
+            // ))
+            ->first();
     }
 
     private function publicService(?string $service): ?string
