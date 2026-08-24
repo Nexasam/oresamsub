@@ -196,7 +196,7 @@ it('processes a data purchase without accepting a transaction pin', function () 
     ], businessHeaders($user))->assertOk()->assertJsonPath('data.status', 'successful')->assertJsonMissingPath('data.admin_message');
 });
 
-it('returns a provider configuration error when a data plan has no user automation', function () {
+it('falls back to the active plan provider when a customer has no provider override', function () {
     $user = User::factory()->create([
         'api_token' => 'missing-data-automation-token',
         'pin' => '1234',
@@ -217,8 +217,14 @@ it('returns a provider configuration error when a data plan has no user automati
         'reference' => 'BIZ-DATA-NO-AUTOMATION-001',
     ], businessHeaders($user))
         ->assertUnprocessable()
-        ->assertJsonPath('message', 'No provider configured for this plan. Please try another plan.')
+        ->assertJsonPath('message', 'Data processing failed.')
         ->assertJsonPath('data.status', 'failed');
+
+    $transaction = Transaction::where('txn_reference', 'BIZ-DATA-NO-AUTOMATION-001')->sole();
+
+    expect($transaction->user_product_plan_automation_id)->toBeNull()
+        ->and((float) $transaction->balance_before)->toBe(1000.0)
+        ->and((float) $transaction->balance_after)->toBe(1000.0);
 });
 
 it('uses the product plan automation for a legacy data plan', function () {

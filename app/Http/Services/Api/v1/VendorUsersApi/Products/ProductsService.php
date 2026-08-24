@@ -1091,22 +1091,30 @@ class ProductsService{
 
 
         
-        $uses_new_automation_flow = AutomationProductPlan::query()
+        $plan_provider = AutomationProductPlan::with('automation')
             ->where('product_plan_id', $product_plan_id)
             ->where('is_active', 1)
-            ->exists();
+            ->orderBy('priority')
+            ->first();
 
-        $automation_details = $uses_new_automation_flow
-            ? $user_unique_plan_automation
-            : $plan_details->automation;
+        $has_customer_provider = $user_unique_plan_automation
+            && $user_unique_plan_automation->status == 1
+            && $user_unique_plan_automation->userAutomation
+            && $user_unique_plan_automation->userAutomation->automation
+            && $user_unique_plan_automation->automation_product_plan_id;
 
-        $provider_plan_id = $uses_new_automation_flow
-            ? $user_unique_plan_automation?->automation_product_plan_id
-            : $plan_details->automation_product_plan_id;
+        if ($has_customer_provider) {
+            $automation_details = $user_unique_plan_automation;
+            $provider_plan_id = $user_unique_plan_automation->automation_product_plan_id;
+        } elseif ($plan_provider && $plan_provider->automation && $plan_provider->provider_plan_id) {
+            $automation_details = $plan_provider->automation;
+            $provider_plan_id = $plan_provider->provider_plan_id;
+        } else {
+            $automation_details = $plan_details->automation;
+            $provider_plan_id = $plan_details->automation_product_plan_id;
+        }
 
-        $provider_is_missing = $uses_new_automation_flow
-            ? (! $user_unique_plan_automation || ! $user_unique_plan_automation->userAutomation || $user_unique_plan_automation->status != 1)
-            : (! $automation_details || ! $provider_plan_id);
+        $provider_is_missing = ! $automation_details || ! $provider_plan_id;
 
         if($provider_is_missing){
             // return ['status'=>-1, 'message'=>'No automation configured for this plan. Please try another plan.'];  //'data' => $data

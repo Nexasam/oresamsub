@@ -3,6 +3,7 @@
 namespace App\Services\Automation;
 
 use App\Models\ProductPlan;
+use App\Models\UserProductPlanAutomation;
 use App\Models\VendorAutomationSetting;
 use App\Services\Automation\AirtimeAutomation;
 use App\Services\Automation\DataAutomation;
@@ -163,14 +164,18 @@ class AutomationLogic{
         $product_plan_id = $data['plan_id'];
         $network_id = $data['network_id'];
         $automation_details = $data['automation_details'];
-        $apikey = $automation_details->api_public_key ?? $automation_details->userAutomation->api_key;
-        $secret = $automation_details->api_secret_key ?? $automation_details->userAutomation->api_secret;
+        $customer_provider = $automation_details instanceof UserProductPlanAutomation
+            ? $automation_details->userAutomation
+            : null;
+        $provider_automation = $customer_provider?->automation ?? $automation_details;
+        $apikey = $customer_provider?->api_key ?? $provider_automation->api_public_key;
+        $secret = $customer_provider?->api_secret ?? $provider_automation->api_secret_key;
         $secret = $secret == null ? 'nil':$secret;
-        $url = $automation_details->data_url ?? $automation_details->userAutomation->automation->data_url;
-        $automation_plan_id = $automation_details->automation_product_plan_id ?? 'nil';
-        $automation_id = $automation_details->id ?? $automation_details->userAutomation_id;
-        $slug = $automation_details->slug ?? $automation_details->userAutomation->automation->slug;
-        $automation_group = $automation_details->automation_group ?? $automation_details->userAutomation->automation->automation_group;
+        $url = $provider_automation->data_url;
+        $automation_plan_id = $data['provider_plan_id'] ?? $automation_details->automation_product_plan_id ?? 'nil';
+        $automation_id = $provider_automation->id;
+        $slug = $provider_automation->slug;
+        $automation_group = $provider_automation->automation_group;
         $validatephonenetwork = $data['validatephonenetwork'] ?? '';
 
         $data['phone_number'] = $validated_phone_number;
@@ -235,7 +240,7 @@ class AutomationLogic{
             //logic stays here...
             $buy_data = (new Twins10Automation($data))->buyData();    
         }
-        else if($automation_details->slug == 'foxdatahub'){
+        else if($slug == 'foxdatahub'){
             $buy_data = (new FoxdataHubAutomation($data))->buyData();
             logger('foxdatahub ran for data subscription: '.json_encode($buy_data));
         }
