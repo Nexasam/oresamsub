@@ -299,6 +299,52 @@ it('uses the catalogue price for a data purchase amount and wallet check', funct
         ->and((float) $transaction->balance_after)->toBe(100.0);
 });
 
+it('keeps failed provider purchase balances unchanged in the transaction and response', function () {
+    $user = User::factory()->create([
+        'api_token' => 'failed-provider-balance-token',
+        'pin' => '1234',
+        'main_wallet' => 2560.99,
+    ]);
+    $plan = businessPlan('data', ['user_level_1_selling_price' => 1700]);
+    AutomationProductPlan::create([
+        'product_plan_id' => $plan->id,
+        'automation_id' => $plan->automation_id,
+        'provider_plan_id' => 'provider-plan',
+        'is_active' => true,
+    ]);
+    $userAutomation = UserAutomation::create([
+        'user_id' => $user->id,
+        'automation_id' => $plan->automation_id,
+        'product' => 'data',
+        'pricing_amount' => 0,
+    ]);
+    UserProductPlanAutomation::create([
+        'user_id' => $user->id,
+        'product_plan_id' => $plan->id,
+        'user_automation_id' => $userAutomation->id,
+        'automation_product_plan_id' => 'provider-plan',
+        'priority' => 1,
+        'status' => 1,
+    ]);
+
+    postJson('/api/v2/buy-service', [
+        'service' => 'data',
+        'plan_id' => $plan->api_id,
+        'customer_number' => '08168509044',
+        'reference' => 'BIZ-DATA-PROVIDER-FAILED-001',
+    ], businessHeaders($user))
+        ->assertUnprocessable()
+        ->assertJsonPath('data.status', 'failed')
+        ->assertJsonPath('data.balance_before', 2560.99)
+        ->assertJsonPath('data.balance_after', 2560.99);
+
+    $transaction = Transaction::where('txn_reference', 'BIZ-DATA-PROVIDER-FAILED-001')->sole();
+
+    expect((float) $transaction->balance_before)->toBe(2560.99)
+        ->and((float) $transaction->balance_after)->toBe(2560.99)
+        ->and((float) $user->fresh()->main_wallet)->toBe(2560.99);
+});
+
 it('processes airtime through the same purchase endpoint', function () {
     $user = User::factory()->create(['api_token' => 'airtime-token', 'pin' => '1234']);
     $plan = businessPlan('airtime', ['product_plan_name' => 'Airtime']);

@@ -1338,8 +1338,8 @@ class ProductsService{
 
                                 $transaction->update([
                                     'status'               => $status,
-                                    'balance_before'        => $user_details->main_wallet,
-                                    'balance_after'        => $user_details->main_wallet - $service_charge,
+                                    'balance_before'        => $wallet_before,
+                                    'balance_after'         => $wallet_after,
                                     'user_screen_message'  =>$user_message,
                                     'admin_screen_message' => $admin_message,
                                     'phone_number' => $phone_numbers_array[$i]
@@ -1413,8 +1413,8 @@ class ProductsService{
                                 'user_message'   => $user_message,
                                 'admin_message'  => $admin_message,
                             
-                                'balance_before' => $user_details->main_wallet ?? null,
-                                'balance_after'  => $user_details->wallet_after ?? null,
+                                'balance_before' => $wallet_before ?? null,
+                                'balance_after'  => $wallet_after ?? null,
                             
                                 'plan'           => $plan_details->api_id ?? null,
                                 'plan_network'   => Network::where('id',$network_id)->value('network_name'),
