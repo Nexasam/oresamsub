@@ -12,6 +12,7 @@ use App\Services\Pricing\CustomerProductPricingService;
 use App\Support\MobileDisplayMessage;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Throwable;
 
@@ -192,6 +193,13 @@ class BusinessApiController extends Controller
             ];
         }
 
+        $startedAt = hrtime(true);
+
+        Log::info('oresamsub.purchase.started', [
+            'reference' => $payload['reference'],
+            'service' => $service,
+        ]);
+
         try {
             $result = match ($service) {
                 'data' => $productsService->buy_data_service_one_api($payload),
@@ -202,7 +210,20 @@ class BusinessApiController extends Controller
         } catch (Throwable $exception) {
             report($exception);
 
+            Log::warning('oresamsub.purchase.failed', [
+                'reference' => $payload['reference'],
+                'service' => $service,
+                'exception' => $exception::class,
+                'message' => $exception->getMessage(),
+            ]);
+
             return $this->error('The service provider could not process this transaction. No duplicate retry was made.', null, 503);
+        } finally {
+            Log::info('oresamsub.purchase.finished', [
+                'reference' => $payload['reference'],
+                'service' => $service,
+                'duration_seconds' => round((hrtime(true) - $startedAt) / 1_000_000_000, 3),
+            ]);
         }
 
         $successful = (int) ($result['status'] ?? -1) === 1

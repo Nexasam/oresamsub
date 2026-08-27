@@ -13,11 +13,12 @@ use App\Models\User;
 use App\Models\UserAutomation;
 use App\Models\UserProductPlanAutomation;
 use App\Services\BusinessApi\BillerValidationService;
+use Illuminate\Support\Facades\Log;
 
+use function Pest\Laravel\actingAs;
 use function Pest\Laravel\get;
 use function Pest\Laravel\getJson;
 use function Pest\Laravel\postJson;
-use function Pest\Laravel\actingAs;
 
 function businessHeaders(User $user): array
 {
@@ -194,6 +195,39 @@ it('processes a data purchase without accepting a transaction pin', function () 
     postJson('/api/v2/buy-service', [
         'service' => 'data', 'plan_id' => $plan->api_id, 'customer_number' => '08030000000', 'reference' => 'BIZ-DATA-001',
     ], businessHeaders($user))->assertOk()->assertJsonPath('data.status', 'successful')->assertJsonMissingPath('data.admin_message');
+});
+
+it('logs the duration of a business api purchase', function () {
+    Log::spy();
+
+    $user = User::factory()->create(['api_token' => 'timed-purchase-token', 'pin' => '1234']);
+    $plan = businessPlan();
+    $products = Mockery::mock(ProductsService::class);
+    $products->shouldReceive('buy_data_service_one_api')->once()->andReturn([
+        'status' => 1,
+        'Status' => 'successful',
+        'message' => 'Delivered',
+    ]);
+    app()->instance(ProductsService::class, $products);
+
+    postJson('/api/v2/buy-service', [
+        'service' => 'data',
+        'plan_id' => $plan->api_id,
+        'customer_number' => '08030000000',
+        'reference' => 'BIZ-TIMING-001',
+    ], businessHeaders($user))->assertOk();
+
+    Log::shouldHaveReceived('info')->with('oresamsub.purchase.started', [
+        'reference' => 'BIZ-TIMING-001',
+        'service' => 'data',
+    ])->once();
+    Log::shouldHaveReceived('info')->with(
+        'oresamsub.purchase.finished',
+        Mockery::on(fn (array $context): bool => $context['reference'] === 'BIZ-TIMING-001'
+            && $context['service'] === 'data'
+            && is_float($context['duration_seconds'])
+            && $context['duration_seconds'] >= 0)
+    )->once();
 });
 
 it('falls back to the active plan provider when a customer has no provider override', function () {
