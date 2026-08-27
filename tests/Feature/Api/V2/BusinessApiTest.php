@@ -230,6 +230,38 @@ it('logs the duration of a business api purchase', function () {
     )->once();
 });
 
+it('logs unexpected errors from the complete business purchase flow', function () {
+    Log::spy();
+
+    $user = User::factory()->create(['api_token' => 'failed-purchase-token', 'pin' => '1234']);
+    $plan = businessPlan('cable_subscription');
+    $validator = Mockery::mock(BillerValidationService::class);
+    $validator->shouldReceive('resolve')->once()->andThrow(new RuntimeException('Validation storage unavailable'));
+    app()->instance(BillerValidationService::class, $validator);
+
+    postJson('/api/v2/buy-service', [
+        'service' => 'cable',
+        'plan_id' => $plan->api_id,
+        'customer_number' => '1234567890',
+        'reference' => 'BIZ-FAILED-001',
+        'validation_reference' => 'VAL-FAILED-001',
+    ], businessHeaders($user))
+        ->assertStatus(500)
+        ->assertJsonPath('success', false)
+        ->assertJsonPath('message', 'The transaction could not be processed. Please contact support with your reference.');
+
+    Log::shouldHaveReceived('error')->with(
+        'oresamsub.purchase.unhandled_error',
+        Mockery::on(fn (array $context): bool => $context['reference'] === 'BIZ-FAILED-001'
+            && $context['service'] === 'cable'
+            && $context['exception'] === RuntimeException::class
+            && $context['message'] === 'Validation storage unavailable'
+            && is_string($context['file'])
+            && is_int($context['line'])
+            && is_string($context['trace']))
+    )->once();
+});
+
 it('falls back to the active plan provider when a customer has no provider override', function () {
     $user = User::factory()->create([
         'api_token' => 'missing-data-automation-token',

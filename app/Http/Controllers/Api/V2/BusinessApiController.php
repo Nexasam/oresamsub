@@ -99,6 +99,31 @@ class BusinessApiController extends Controller
 
     public function buyService(Request $request, ProductsService $productsService, BillerValidationService $billerValidation): JsonResponse
     {
+        try {
+            return $this->processBuyService($request, $productsService, $billerValidation);
+        } catch (Throwable $exception) {
+            report($exception);
+
+            Log::error('oresamsub.purchase.unhandled_error', [
+                'reference' => $request->input('reference'),
+                'service' => $request->input('service'),
+                'exception' => $exception::class,
+                'message' => $exception->getMessage(),
+                'file' => $exception->getFile(),
+                'line' => $exception->getLine(),
+                'trace' => $exception->getTraceAsString(),
+            ]);
+
+            return $this->error(
+                'The transaction could not be processed. Please contact support with your reference.',
+                null,
+                500
+            );
+        }
+    }
+
+    private function processBuyService(Request $request, ProductsService $productsService, BillerValidationService $billerValidation): JsonResponse
+    {
         $validator = Validator::make($request->all(), [
             'service' => ['required', 'string', 'in:data,airtime,cable,electricity'],
             'plan_id' => ['required'],
