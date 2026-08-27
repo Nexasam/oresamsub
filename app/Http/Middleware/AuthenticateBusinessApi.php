@@ -17,6 +17,12 @@ class AuthenticateBusinessApi
             : null;
 
         if (! $user) {
+            logger()->warning('Authentication failed for Business API request.', [
+                'ip' => $request->ip(),
+                'url' => $request->fullUrl(),
+                'method' => $request->method(),
+                'user_agent' => $request->userAgent(),
+            ]);
             return response()->json([
                 'success' => false,
                 'message' => 'Authentication failed. Provide a valid Bearer API token.',
