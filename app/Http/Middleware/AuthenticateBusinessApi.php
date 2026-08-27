@@ -16,6 +16,15 @@ class AuthenticateBusinessApi
             ? User::with('user_plan')->where('api_token', $token)->first()
             : null;
 
+        logger()->info('Business API request received.', [
+            'ip' => $request->ip(),
+            'url' => $request->fullUrl(),
+            'method' => $request->method(),
+            'user_agent' => $request->userAgent(),
+            'token_present' => filled($token),
+            'user_found' => (bool) $user,
+        ]);
+
         if (! $user) {
             logger()->warning('Authentication failed for Business API request.', [
                 'ip' => $request->ip(),
