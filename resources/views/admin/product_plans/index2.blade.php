@@ -100,15 +100,15 @@
                             class="ti-form-input py-1 text-xs">
 
                             <select name="per_page" class="ti-form-select py-1 text-xs">
-                                <option value="50" {{ request('per_page', 100) == 50 ? 'selected' : '' }}>50</option>
-                                <option value="100" {{ request('per_page', 100) == 100 ? 'selected' : '' }}>100</option>
+                                <option value="50" {{ request('per_page', 500) == 50 ? 'selected' : '' }}>50</option>
+                                <option value="100" {{ request('per_page', 500) == 100 ? 'selected' : '' }}>100</option>
                                 <option value="200" {{ request('per_page') == 200 ? 'selected' : '' }}>200</option>
-                                <option value="500" {{ request('per_page') == 500 ? 'selected' : '' }}>500</option>
+                                <option value="500" {{ ! in_array((int) request('per_page', 500), [50, 100, 200, 500], true) || (int) request('per_page', 500) === 500 ? 'selected' : '' }}>500</option>
                             </select>
 
                             <div class="flex gap-2 items-center">
                                 <button class="ti-btn ti-btn-primary ti-btn-sm">Filter</button>
-                                <a href="{{ route('admin.product_plans.index') }}"
+                                <a href="{{ route('admin.product_plans.index2') }}"
                                    class="ti-btn ti-btn-light ti-btn-sm">Reset</a>
                             </div>
 
@@ -124,10 +124,13 @@
                                 <tr>
                                     <th>#</th>
                                     <th>Plan</th>
+                                    <th>API ID</th>
                                     <th>Network</th>
                                     <th>Validity</th>
                                     <th>Cost</th>
                                     <th>Selling</th>
+                                    <th>Providers</th>
+                                    <th>Best provider · 30 days</th>
                                     <th></th>
                                 </tr>
                             </thead>
@@ -143,7 +146,7 @@
                                         <td>
                                             <div class="font-semibold">
                                                 {{ $plan->product_plan_name }} <br>
-                                                {{ count($plan->automationProductPlans) .' providers'}} <br>
+                                                {{ $plan->provider_mappings->count() .' providers'}} <br>
                                                 {{ 'Type: '.$plan->product_plan_category->product_plan_category_name }}
                                             </div>
                                             <div class="text-xs text-gray-500">
@@ -155,6 +158,12 @@
                                                     {{ $plan->visibility == 1 ? 'ON' : 'OFF' }}
                                                 </span>
                                             </div>
+                                        </td>
+
+                                        <td>
+                                            <code class="rounded bg-gray-100 px-2 py-1 text-[11px] font-semibold text-gray-700 dark:bg-gray-800 dark:text-gray-200">
+                                                {{ $plan->api_id ?? '-' }}
+                                            </code>
                                         </td>
                         
                                         <td>
@@ -172,9 +181,49 @@
                                         <td>
                                             ₦{{ number_format($plan->user_level_1_selling_price, 2) }}
                                         </td>
+
+                                        <td class="min-w-[260px]">
+                                            <div class="space-y-2">
+                                                @forelse($plan->provider_mappings as $provider)
+                                                    <div class="rounded border border-gray-200 p-2 dark:border-gray-700">
+                                                        <div class="flex items-center justify-between gap-2">
+                                                            <span class="font-semibold text-gray-800 dark:text-gray-100">{{ $provider['automation_name'] }}</span>
+                                                            <span class="rounded px-1.5 py-0.5 text-[9px] font-semibold {{ $provider['source'] === 'Default' ? 'bg-blue-100 text-blue-700' : 'bg-purple-100 text-purple-700' }}">
+                                                                {{ $provider['source'] }}
+                                                            </span>
+                                                        </div>
+                                                        <div class="mt-1 break-all font-mono text-[10px] text-gray-500">{{ $provider['provider_plan_id'] ?: 'No provider plan ID' }}</div>
+                                                        <div class="mt-1 flex gap-2 text-[9px] text-gray-400">
+                                                            @if($provider['priority'] !== null)<span>Priority {{ $provider['priority'] }}</span>@endif
+                                                            <span>{{ $provider['is_active'] ? 'Active' : 'Inactive' }}</span>
+                                                        </div>
+                                                    </div>
+                                                @empty
+                                                    <span class="text-gray-400">No providers configured</span>
+                                                @endforelse
+                                            </div>
+                                        </td>
+
+                                        <td class="min-w-[180px]">
+                                            @if($plan->best_provider_performance)
+                                                <div class="font-semibold text-gray-800 dark:text-gray-100">
+                                                    {{ $plan->best_provider_performance['automation_name'] }}
+                                                </div>
+                                                <div class="mt-1 text-lg font-bold text-green-600">
+                                                    {{ number_format($plan->best_provider_performance['success_rate'], 1) }}%
+                                                </div>
+                                                <div class="text-[10px] text-gray-500">
+                                                    {{ $plan->best_provider_performance['successful_count'] }} / {{ $plan->best_provider_performance['total_count'] }} successful
+                                                </div>
+                                            @else
+                                                <span class="text-gray-400">No tracked transactions</span>
+                                            @endif
+                                        </td>
                         
                                         <td>
                                             <a href="{{ route('admin.product_plans.manage', $plan->id) }}"
+                                               data-manage-plan
+                                               data-manage-url="{{ route('admin.product_plans.manage', ['id' => $plan->id, 'modal' => 1]) }}"
                                                class="ti-btn ti-btn-primary ti-btn-sm">
                                                 Manage
                                             </a>
@@ -443,12 +492,109 @@
 
 </div>
 
+<div id="manage-plan-modal"
+     class="fixed inset-0 z-[100] hidden items-center justify-center bg-black/60 p-3 sm:p-6"
+     role="dialog"
+     aria-modal="true"
+     aria-hidden="true"
+     aria-labelledby="manage-plan-modal-title">
+    <div class="flex max-h-[94vh] w-full max-w-7xl flex-col overflow-hidden rounded-xl bg-white shadow-2xl dark:bg-bodybg">
+        <div class="flex items-center justify-between border-b border-gray-200 px-4 py-3 dark:border-gray-700">
+            <div>
+                <h2 id="manage-plan-modal-title" class="text-base font-semibold text-gray-900 dark:text-gray-100">Manage product plan</h2>
+                <p class="text-xs text-gray-500">Edit plan details, pricing, and provider routing.</p>
+            </div>
+            <button type="button"
+                    data-close-manage-plan
+                    class="inline-flex h-9 w-9 items-center justify-center rounded-lg text-gray-500 hover:bg-gray-100 hover:text-gray-900 dark:hover:bg-gray-800 dark:hover:text-gray-100"
+                    aria-label="Close management modal">
+                <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                    <path d="M6 6l12 12M18 6L6 18" stroke-linecap="round" />
+                </svg>
+            </button>
+        </div>
+
+        <div id="manage-plan-modal-content" class="min-h-48 flex-1 overflow-y-auto p-3 sm:p-5">
+            <div class="flex min-h-40 items-center justify-center text-sm text-gray-500">Select a plan to manage.</div>
+        </div>
+
+        <div class="flex items-center justify-between border-t border-gray-200 px-4 py-3 dark:border-gray-700">
+            <a id="manage-plan-standalone-link" href="#" class="text-xs font-medium text-primary hover:underline">Open full management page</a>
+            <button type="button" data-close-manage-plan class="ti-btn ti-btn-light ti-btn-sm">Close</button>
+        </div>
+    </div>
+</div>
+
 
 
 
 
 
 <script>
+
+    const managePlanModal = document.getElementById('manage-plan-modal');
+    const managePlanModalContent = document.getElementById('manage-plan-modal-content');
+    const managePlanStandaloneLink = document.getElementById('manage-plan-standalone-link');
+
+    function closeManagePlanModal() {
+        managePlanModal.classList.add('hidden');
+        managePlanModal.classList.remove('flex');
+        managePlanModal.setAttribute('aria-hidden', 'true');
+        document.body.classList.remove('overflow-hidden');
+    }
+
+    async function openManagePlanModal(link) {
+        managePlanModal.classList.remove('hidden');
+        managePlanModal.classList.add('flex');
+        managePlanModal.setAttribute('aria-hidden', 'false');
+        document.body.classList.add('overflow-hidden');
+        managePlanStandaloneLink.href = link.href;
+        managePlanModalContent.innerHTML = '<div class="flex min-h-40 items-center justify-center text-sm text-gray-500">Loading plan management…</div>';
+
+        try {
+            const response = await fetch(link.dataset.manageUrl, {
+                credentials: 'same-origin',
+                headers: { 'Accept': 'text/html' },
+            });
+
+            if (!response.ok) {
+                throw new Error(`Management request failed with status ${response.status}`);
+            }
+
+            managePlanModalContent.innerHTML = await response.text();
+            managePlanModalContent.querySelectorAll('script').forEach((oldScript) => {
+                const script = document.createElement('script');
+                script.textContent = oldScript.textContent;
+                oldScript.replaceWith(script);
+            });
+        } catch (error) {
+            managePlanModalContent.innerHTML = `
+                <div class="rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-700">
+                    <div class="font-semibold">Plan management could not be loaded.</div>
+                    <div class="mt-1">Use the full management page to continue.</div>
+                </div>`;
+            console.error('Product plan management modal failed', error);
+        }
+    }
+
+    document.addEventListener('click', (event) => {
+        const manageLink = event.target.closest('[data-manage-plan]');
+        if (manageLink) {
+            event.preventDefault();
+            openManagePlanModal(manageLink);
+            return;
+        }
+
+        if (event.target.closest('[data-close-manage-plan]') || event.target === managePlanModal) {
+            closeManagePlanModal();
+        }
+    });
+
+    document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape' && managePlanModal.getAttribute('aria-hidden') === 'false') {
+            closeManagePlanModal();
+        }
+    });
 
     // =========================
     // EDIT MODAL (UNCHANGED FIXED)

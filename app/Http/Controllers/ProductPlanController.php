@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Services\DataPlansService;
 use App\Models\Automation;
+use App\Models\AutomationProductPlan;
 use App\Models\Network;
 use App\Models\PlanProfitSetting;
 use App\Models\Product;
@@ -213,6 +214,7 @@ class ProductPlanController extends Controller
 
         $userplans = UserPlan::get();
         $levels = [1,2,3,4,5,6,7];
+        $newplan = [];
 
      
 
@@ -227,6 +229,11 @@ class ProductPlanController extends Controller
       $newplan = json_encode($newplan);
 
         $automations = Automation::all();
+        $modal = request()->boolean('modal');
+
+        if ($modal) {
+            return view('admin.product_plans.partials.manage-form', compact('plan', 'automations', 'userplans', 'newplan', 'productPlanCategories', 'modal'));
+        }
 
         return view('admin.product_plans.manage', compact('plan', 'automations','userplans','newplan','productPlanCategories'));
     }
@@ -245,7 +252,7 @@ class ProductPlanController extends Controller
             'product_plan_category',
             'product_plan_category.network',
             'product_plan_category.product',
-            'automationProductPlans'
+            'automationProductPlans.automation'
         ])
         // ->where('visibi')
         ->orderBy('updated_at', 'desc');
@@ -294,7 +301,10 @@ class ProductPlanController extends Controller
             $query->whereDate('created_at', '<=', $request->to_date);
         }
 
-        $perPage = request('per_page', 10);
+        $requestedPerPage = $request->integer('per_page', 500);
+        $perPage = in_array($requestedPerPage, [50, 100, 200, 500], true)
+            ? $requestedPerPage
+            : 500;
 
         $data = $query->paginate($perPage)->withQueryString();
 
@@ -302,6 +312,67 @@ class ProductPlanController extends Controller
         $automations = Automation::all();
         $products = Product::all();
         $networks = Network::all();
+
+        $performanceByPlan = Transaction::query()
+            ->selectRaw("product_plan_id, automation_id, COUNT(*) as total_count, SUM(CASE WHEN status = '1' THEN 1 ELSE 0 END) as successful_count")
+            ->whereIn('product_plan_id', $data->getCollection()->pluck('id'))
+            ->whereNotNull('automation_id')
+            ->where('created_at', '>=', now()->subDays(30))
+            ->groupBy('product_plan_id', 'automation_id')
+            ->get()
+            ->groupBy('product_plan_id');
+        $automationNames = $automations->pluck('automation_name', 'id');
+
+        $data->getCollection()->each(function (ProductPlan $plan) use ($performanceByPlan, $automationNames): void {
+            $providerMappings = collect();
+
+            if ($plan->automation) {
+                $providerMappings->push([
+                    'automation_id' => $plan->automation->id,
+                    'automation_name' => $plan->automation->automation_name,
+                    'provider_plan_id' => $plan->automation_product_plan_id,
+                    'source' => 'Default',
+                    'priority' => null,
+                    'cost_price' => $plan->cost_price,
+                    'is_active' => (bool) $plan->visibility,
+                ]);
+            }
+
+            $plan->automationProductPlans->each(function (AutomationProductPlan $provider) use ($providerMappings): void {
+                $providerMappings->push([
+                    'automation_id' => $provider->automation_id,
+                    'automation_name' => $provider->automation?->automation_name ?? 'Unknown provider',
+                    'provider_plan_id' => $provider->provider_plan_id,
+                    'source' => 'Configured',
+                    'priority' => $provider->priority,
+                    'cost_price' => $provider->cost_price,
+                    'is_active' => (bool) $provider->is_active,
+                ]);
+            });
+
+            $performance = collect($performanceByPlan->get($plan->id, []))
+                ->map(function ($row) use ($automationNames): array {
+                    $total = (int) $row->total_count;
+                    $successful = (int) $row->successful_count;
+
+                    return [
+                        'automation_id' => $row->automation_id,
+                        'automation_name' => $automationNames->get($row->automation_id, 'Unknown provider'),
+                        'total_count' => $total,
+                        'successful_count' => $successful,
+                        'success_rate' => $total > 0 ? round(($successful / $total) * 100, 1) : 0.0,
+                    ];
+                })
+                ->sort(function (array $left, array $right): int {
+                    return ($right['success_rate'] <=> $left['success_rate'])
+                        ?: ($right['total_count'] <=> $left['total_count'])
+                        ?: strcasecmp($left['automation_name'], $right['automation_name']);
+                })
+                ->first();
+
+            $plan->setAttribute('provider_mappings', $providerMappings);
+            $plan->setAttribute('best_provider_performance', $performance);
+        });
 
         return view('admin.product_plans.index2', compact(
             'data',
