@@ -247,24 +247,26 @@ class ProductPlanController extends Controller
       // $data['product_plans'] = $product_plans;
       // $data['product_plan_categories'] = $product_plan_categories;
       // dd($data);
-      $query = ProductPlan::with([
+      $query = ProductPlan::query()
+        ->select('product_plans.*')
+        ->leftJoin('product_plan_categories as ordering_categories', 'ordering_categories.id', '=', 'product_plans.product_plan_category_id')
+        ->leftJoin('networks as ordering_networks', 'ordering_networks.id', '=', 'ordering_categories.network_id')
+        ->with([
             'automation',
             'product_plan_category',
             'product_plan_category.network',
             'product_plan_category.product',
             'automationProductPlans.automation'
-        ])
-        // ->where('visibi')
-        ->orderBy('updated_at', 'desc');
+        ]);
 
         // 🔍 FILTER: product_plan_name
         if ($request->filled('product_plan_name')) {
-            $query->where('product_plan_name', 'like', '%' . $request->product_plan_name . '%');
+            $query->where('product_plans.product_plan_name', 'like', '%' . $request->product_plan_name . '%');
         }
 
         // 🔍 FILTER: automation
         if ($request->filled('automation_id')) {
-            $query->where('automation_id', $request->automation_id);
+            $query->where('product_plans.automation_id', $request->automation_id);
         }
 
         // 🔍 FILTER: product
@@ -283,23 +285,44 @@ class ProductPlanController extends Controller
 
         // 📅 DATE FILTER
         if ($request->filled('from_date')) {
-            $query->whereDate('created_at', '>=', $request->from_date);
+            $query->whereDate('product_plans.created_at', '>=', $request->from_date);
         }
 
         if ($request->filled('validity_in_days')) {
-          $query->where('validity_in_days', '=', $request->validity_in_days);
+          $query->where('product_plans.validity_in_days', '=', $request->validity_in_days);
         }
 
           if ($request->filled('data_size_in_mb')) {
-            $query->where('data_size_in_mb', '=', $request->data_size_in_mb);
+            $query->where('product_plans.data_size_in_mb', '=', $request->data_size_in_mb);
         }
 
         
         
 
         if ($request->filled('to_date')) {
-            $query->whereDate('created_at', '<=', $request->to_date);
+            $query->whereDate('product_plans.created_at', '<=', $request->to_date);
         }
+
+        if (in_array($request->visibility, ['0', '1'], true)) {
+            $query->where('product_plans.visibility', $request->visibility);
+        }
+
+        if (in_array($request->tracking, ['tracked', 'untracked'], true)) {
+            $method = $request->tracking === 'tracked' ? 'whereExists' : 'whereNotExists';
+
+            $query->{$method}(function ($transactions): void {
+                $transactions->selectRaw('1')
+                    ->from('transactions')
+                    ->whereColumn('transactions.product_plan_id', 'product_plans.id')
+                    ->whereNotNull('transactions.automation_id')
+                    ->where('transactions.created_at', '>=', now()->subDays(30));
+            });
+        }
+
+        $query->orderBy('ordering_networks.network_name')
+            ->orderByRaw('CAST(product_plans.data_size_in_mb AS DECIMAL(12, 2))')
+            ->orderByRaw('CAST(product_plans.validity_in_days AS DECIMAL(12, 2))')
+            ->orderBy('product_plans.product_plan_name');
 
         $requestedPerPage = $request->integer('per_page', 500);
         $perPage = in_array($requestedPerPage, [50, 100, 200, 500], true)

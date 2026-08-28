@@ -99,6 +99,18 @@
                             value="{{ request('data_size_in_mb') }}"  placeholder="data size"
                             class="ti-form-input py-1 text-xs">
 
+                            <select name="visibility" class="ti-form-select py-1 text-xs">
+                                <option value="">All statuses</option>
+                                <option value="1" {{ request('visibility') === '1' ? 'selected' : '' }}>ON</option>
+                                <option value="0" {{ request('visibility') === '0' ? 'selected' : '' }}>OFF</option>
+                            </select>
+
+                            <select name="tracking" class="ti-form-select py-1 text-xs">
+                                <option value="">All tracking</option>
+                                <option value="tracked" {{ request('tracking') === 'tracked' ? 'selected' : '' }}>Tracked (30 days)</option>
+                                <option value="untracked" {{ request('tracking') === 'untracked' ? 'selected' : '' }}>Not tracked (30 days)</option>
+                            </select>
+
                             <select name="per_page" class="ti-form-select py-1 text-xs">
                                 <option value="50" {{ request('per_page', 500) == 50 ? 'selected' : '' }}>50</option>
                                 <option value="100" {{ request('per_page', 500) == 100 ? 'selected' : '' }}>100</option>
@@ -125,12 +137,12 @@
                                     <th>#</th>
                                     <th>Plan</th>
                                     <th>API ID</th>
+                                    <th>Providers</th>
+                                    <th>Best provider · 30 days</th>
                                     <th>Network</th>
                                     <th>Validity</th>
                                     <th>Cost</th>
                                     <th>Selling</th>
-                                    <th>Providers</th>
-                                    <th>Best provider · 30 days</th>
                                     <th></th>
                                 </tr>
                             </thead>
@@ -165,15 +177,49 @@
                                                 {{ $plan->api_id ?? '-' }}
                                             </code>
                                         </td>
-                        
+
+                                        <td class="min-w-[170px] max-w-[220px]">
+                                            <div class="space-y-1">
+                                                @forelse($plan->provider_mappings as $provider)
+                                                    <div class="border-b border-gray-100 pb-1 last:border-0 last:pb-0 dark:border-gray-700">
+                                                        <div class="flex items-center gap-1 text-[10px]">
+                                                            <span class="min-w-0 flex-1 truncate font-semibold text-gray-800 dark:text-gray-100" title="{{ $provider['automation_name'] }}">{{ $provider['automation_name'] }}</span>
+                                                            <span class="rounded px-1 py-px text-[8px] font-semibold {{ $provider['source'] === 'Default' ? 'bg-blue-100 text-blue-700' : 'bg-purple-100 text-purple-700' }}">
+                                                                {{ $provider['source'] === 'Default' ? 'D' : 'C' }}
+                                                            </span>
+                                                            <span class="h-1.5 w-1.5 rounded-full {{ $provider['is_active'] ? 'bg-green-500' : 'bg-red-500' }}" title="{{ $provider['is_active'] ? 'Active' : 'Inactive' }}"></span>
+                                                        </div>
+                                                        <div class="truncate font-mono text-[9px] text-gray-500" title="{{ $provider['provider_plan_id'] ?: 'No provider plan ID' }}">
+                                                            {{ $provider['provider_plan_id'] ?: 'No provider plan ID' }}
+                                                        </div>
+                                                    </div>
+                                                @empty
+                                                    <span class="text-[10px] text-gray-400">No providers configured</span>
+                                                @endforelse
+                                            </div>
+                                        </td>
+
+                                        <td class="min-w-[125px] max-w-[155px]">
+                                            @if($plan->best_provider_performance)
+                                                <div class="truncate text-[10px] font-semibold text-gray-800 dark:text-gray-100" title="{{ $plan->best_provider_performance['automation_name'] }}">
+                                                    {{ $plan->best_provider_performance['automation_name'] }}
+                                                </div>
+                                                <div class="whitespace-nowrap text-[11px] font-bold text-green-600">
+                                                    {{ number_format($plan->best_provider_performance['success_rate'], 1) }}% · {{ $plan->best_provider_performance['successful_count'] }}/{{ $plan->best_provider_performance['total_count'] }}
+                                                </div>
+                                            @else
+                                                <span class="text-[10px] text-gray-400">No tracked transactions</span>
+                                            @endif
+                                        </td>
+
                                         <td>
                                             {{ $plan->product_plan_category->network->network_name ?? '-' }}
                                         </td>
-                        
+
                                         <td>
                                             {{ $plan->validity_in_days }} days
                                         </td>
-                        
+
                                         <td>
                                             ₦{{ number_format($plan->cost_price, 2) }}
                                         </td>
@@ -182,44 +228,6 @@
                                             ₦{{ number_format($plan->user_level_1_selling_price, 2) }}
                                         </td>
 
-                                        <td class="min-w-[260px]">
-                                            <div class="space-y-2">
-                                                @forelse($plan->provider_mappings as $provider)
-                                                    <div class="rounded border border-gray-200 p-2 dark:border-gray-700">
-                                                        <div class="flex items-center justify-between gap-2">
-                                                            <span class="font-semibold text-gray-800 dark:text-gray-100">{{ $provider['automation_name'] }}</span>
-                                                            <span class="rounded px-1.5 py-0.5 text-[9px] font-semibold {{ $provider['source'] === 'Default' ? 'bg-blue-100 text-blue-700' : 'bg-purple-100 text-purple-700' }}">
-                                                                {{ $provider['source'] }}
-                                                            </span>
-                                                        </div>
-                                                        <div class="mt-1 break-all font-mono text-[10px] text-gray-500">{{ $provider['provider_plan_id'] ?: 'No provider plan ID' }}</div>
-                                                        <div class="mt-1 flex gap-2 text-[9px] text-gray-400">
-                                                            @if($provider['priority'] !== null)<span>Priority {{ $provider['priority'] }}</span>@endif
-                                                            <span>{{ $provider['is_active'] ? 'Active' : 'Inactive' }}</span>
-                                                        </div>
-                                                    </div>
-                                                @empty
-                                                    <span class="text-gray-400">No providers configured</span>
-                                                @endforelse
-                                            </div>
-                                        </td>
-
-                                        <td class="min-w-[180px]">
-                                            @if($plan->best_provider_performance)
-                                                <div class="font-semibold text-gray-800 dark:text-gray-100">
-                                                    {{ $plan->best_provider_performance['automation_name'] }}
-                                                </div>
-                                                <div class="mt-1 text-lg font-bold text-green-600">
-                                                    {{ number_format($plan->best_provider_performance['success_rate'], 1) }}%
-                                                </div>
-                                                <div class="text-[10px] text-gray-500">
-                                                    {{ $plan->best_provider_performance['successful_count'] }} / {{ $plan->best_provider_performance['total_count'] }} successful
-                                                </div>
-                                            @else
-                                                <span class="text-gray-400">No tracked transactions</span>
-                                            @endif
-                                        </td>
-                        
                                         <td>
                                             <a href="{{ route('admin.product_plans.manage', $plan->id) }}"
                                                data-manage-plan

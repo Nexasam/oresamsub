@@ -26,7 +26,7 @@ function weeklyCampaign(array $attributes = []): Bonus
         'bonus_wallet_amount' => 0,
         'frequency_per_user' => 1,
         'reward_valid_days' => null,
-        'starts_at' => now()->subMonth(),
+        'starts_at' => null,
         'ends_at' => null,
     ], $attributes));
 }
