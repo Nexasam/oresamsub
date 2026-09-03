@@ -104,6 +104,9 @@ class DataAutomation{
             elseif($value == 'ported_number'){
                 $new_request_params[$key] = true; //true
             } 
+            elseif($value == 'Ported_number'){
+                $new_request_params[$key] = true; //true
+            } 
             elseif($value == "action"){  // ported number
 
                 //unique only to bilink
