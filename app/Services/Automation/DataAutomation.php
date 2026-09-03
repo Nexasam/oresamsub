@@ -40,9 +40,52 @@ class DataAutomation{
         return is_array($value) ? $value : json_decode($value, true);
     }
 
+    public function buildRequestParameters(
+        $vendor_record,
+        string $input_phone_number,
+        $network,
+        $plan,
+        bool $ported_number,
+        string $reference
+    ): array {
+        $requestParameters = [];
+        $isRossy = in_array(strtolower((string) $vendor_record->slug), [
+            'rosytelecoms',
+            'rossytelecoms',
+            'rossytechs',
+        ], true);
+
+        foreach ($vendor_record->request_params as $param) {
+            $key = $param['key'];
+            $value = $param['value'];
+
+            if ($value === 'phone_number') {
+                $requestParameters[$key] = $input_phone_number;
+            } elseif ($value === 'network') {
+                $requestParameters[$key] = $network;
+            } elseif ($value === 'reference') {
+                $requestParameters[$key] = $reference;
+            } elseif (strtolower((string) $value) === 'ported_number') {
+                $requestParameters[$isRossy ? 'Ported_number' : $key] = $ported_number;
+            } elseif ($value === 'action') {
+                $requestParameters[$key] = $vendor_record->slug === 'bilink' ? 'vend' : true;
+            } elseif ($value === 'plan') {
+                $requestParameters[$key] = $plan;
+            } else {
+                $requestParameters[$key] = $value;
+            }
+        }
+
+        if ($isRossy) {
+            $requestParameters['Ported_number'] = $ported_number;
+        }
+
+        return $requestParameters;
+    }
 
 
-    public function buyData($vendor_record = null,$input_phone_number = '',$vendor_plan_id,$ported_number = true,$input_network = '', $reference){
+
+    public function buyData($vendor_record = null, $input_phone_number = '', $vendor_plan_id = null, $ported_number = true, $input_network = '', $reference = ''){
         
         $this->input_phone_number = $input_phone_number;
         $this->vendor_record = $vendor_record;
@@ -66,9 +109,6 @@ class DataAutomation{
         // $network = $networkdecode[$this->input_network] ?? '1'; //should not run default
         // $success_conditions_decode = $this->safeDecode($vendor_record->success_conditions);
 
-        $request_params_decode = $vendor_record->request_params;
-        // $request_params_decode = json_decode($request_params,true);
-
         $headers_params_decode = $vendor_record->request_headers;
         // $headers_params_decode = json_decode($headers_params,true);
 
@@ -81,48 +121,14 @@ class DataAutomation{
         
         $plan = $this->vendor_plan_id;
         $request_url = $vendor_record->data_url;
-        $new_request_params = [];
-
-
-        //now lets loop request params
-        $new_request_params = [];
-
-
-
-        foreach($request_params_decode as $param){
-            $key = $param['key'];
-            $value = $param['value'];
-        
-            if($value == 'phone_number'){
-                $new_request_params[$key] = $input_phone_number;
-            } elseif($value == 'network'){
-                $new_request_params[$key] = $network;
-            }
-            elseif($value == 'reference'){
-                $new_request_params[$key] = $this->reference;
-            } 
-            elseif($value == 'ported_number'){
-                $new_request_params[$key] = true; //true
-            } 
-            elseif($value == 'Ported_number'){
-                $new_request_params[$key] = true; //true
-            } 
-            elseif($value == "action"){  // ported number
-
-                //unique only to bilink
-                if($vendor_record->slug == 'bilink'){
-                    $new_request_params[$key] = "vend";
-                }else{
-                    $new_request_params[$key] = true;
-                }
-            } 
-            
-            elseif($value == 'plan'){
-                $new_request_params[$key] = $plan;
-            } else {
-                $new_request_params[$key] = $value;
-            }
-        }
+        $new_request_params = $this->buildRequestParameters(
+            $vendor_record,
+            $input_phone_number,
+            $network,
+            $plan,
+            (bool) $ported_number,
+            $this->reference,
+        );
         $encoded_array = json_encode($new_request_params);
 
         
