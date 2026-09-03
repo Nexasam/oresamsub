@@ -237,16 +237,16 @@
                                     {{-- <button class="hs-dropdown-toggle ti-btn ti-btn-warning">Manage Plans</button> &nbsp; --}}
                                     <div>
 
-                                        {{-- <button type="button" class="hs-dropdown-toggle ti-btn ti-btn-primary" data-hs-overlay="#hs-vertically-centered-modal{{$automation->id}}">
-                                            Update
-                                          </button>  --}}
+                                          <button type="button" class="hs-dropdown-toggle ti-btn ti-btn-primary" data-hs-overlay="#hs-vertically-centered-modal{{$automation->id}}">
+                                            Edit
+                                          </button>
                                            
                                           <div id="hs-vertically-centered-modal{{$automation->id}}" class="hs-overlay ti-modal hidden">
                                             <div class="ti-modal-box">
                                               <div class="ti-modal-content">
                                                 <div class="ti-modal-header">
                                                   <h3 class="ti-modal-title">
-                                                    Update Automation:  {{ $automation->automation_name }}
+                                                    Edit Automation: {{ $automation->automation_name }}
                                                   </h3>
                                                   <button type="button" class="hs-dropdown-toggle ti-modal-clode-btn"
                                                     data-hs-overlay="#hs-basic-modal">
@@ -262,75 +262,9 @@
                                                 <div class="ti-modal-body">
                                                   <div class="overflow-auto">
         
-                                                    <form method="POST" action="{{ route('admin.automation.update')  }}">
-                                                      @csrf
-                                                       <div class="grid w-full lg:w-full lg:grid-cols-1 gap-6 space-y-4 lg:space-y-0">
-                                                           <div class="grid grid-cols-1 gap-2">
-                                                                <input type="hidden" value="{{ $automation->id }}" name="id">
-                                                                <div class="">
-                                                                  <label class="ti-form-label mb-0">Automation Name</label>
-                                                                  <input value="{{ $automation->automation_name }}" name="automation_name" type="text" class="my-auto ti-form-input" min="0" placeholder="">
-                                                                 </div>
-                                                                <div class="">
-                                                                    <label class="ti-form-label mb-0">Public/Api Key</label>
-                                                                    <input value="{{ $automation->api_public_key }}" name="api_public_key" type="text" class="my-auto ti-form-input" min="0" placeholder="">
-                                                                </div>
-                                                                <div class="">
-                                                                   <label class="ti-form-label mb-0">Secret Key: (Optional)</label>
-                                                                   <input value="{{ $automation->api_secret_key }}" name="api_secret_key" type="text" class="my-auto ti-form-input" min="0" placeholder="">
-                                                                </div>
-
-                                                               <div class="">
-                                                                <label class="ti-form-label mb-0">Password: (Optional)</label>
-                                                                <input value="{{ $automation->api_password }}" name="api_password" type="text" class="my-auto ti-form-input" min="0" placeholder="">
-                                                                </div>
-                                                           </div>
-                       
-                                            
-                       
-                                                           <div class="grid grid-cols-1 gap-2">
-                                                               <div class="">
-                                                                   <label class="ti-form-label mb-0">Automation Whatsapp Support Url</label>
-                                                                   <input value="{{ $automation->whatsapp_support_link }}" name="whatsapp_support_link" type="text" class="my-auto ti-form-input" min="0" placeholder="whatsapp support url">
-                                                               </div>
-                       
-                                                               <div class="">
-                                                                 <label class="ti-form-label mb-0">Domain</label>
-                                                                 <input value="{{ $automation->domain_url }}" name="domain_url" type="text" class="my-auto ti-form-input" min="0" placeholder="domain url">
-                                                               </div>
-                                                           </div>
-                       
-                                                     {{-- 
-                                                           <div class="grid grid-cols-1 gap-2">
-                                                             <div class="">
-                                                                 <label class="ti-form-label mb-0">Cable Url</label>
-                                                                 <input value="{{ $automation->cable_url }}" name="cable_url" type="text" class="my-auto ti-form-input" min="0" placeholder="cable url">
-                                                             </div>
-                       
-                                                             <div class="">
-                                                               <label class="ti-form-label mb-0">Electricity Url</label>
-                                                               <input value="{{ $automation->electricity_url }}" name="electricity_url" type="text" class="my-auto ti-form-input" min="0" placeholder="electricity url">
-                                                             </div>
-                                                         </div> --}}
-                       
-                                                           <div class="grid grid-cols-1 gap-2">
-                                                               <div class="">
-                                                                   <label class="ti-form-label mb-0">Group</label>
-                                                                   <select id="automation_group" name="automation_group" required class="my-auto ti-form-select">
-                                                                       <option>Select</option>
-                                                                       <option {{ $automation->automation_group == 'msorg' ? 'selected' : '' }} value="msorg">MSORG</option>
-                                                                       <option {{ $automation->automation_group == 'nil' ? 'selected' : '' }}  value="nil">Nil</option>
-                                                                     </select>
-                                                               </div>
-                                                           </div>
-                                                         
-                                                           <div class="space-y-2">
-                                                               <button type="submit" class="ti-btn ti-btn-primary w-full">Update Automation</button>
-                                                           </div>
-                                                         
-                                                           <br>
-                                                       </div>
-                                                   </form>
+                                                    @include('admin.automations.partials.edit-form', ['automation' => $automation, 'fields' => [
+                                                        'phone_number', 'network', 'plan', 'amount', 'email', 'user', 'ported_number', 'reference', 'action'
+                                                    ]])
                                                 
                                               </div>   
                                               </div>
@@ -484,3 +418,14 @@
        
 @endsection
 
+@push('scripts')
+<script>
+    function automationEditForm(state) {
+        return {
+            requestParams: state.requestParams || [],
+            requestHeaders: state.requestHeaders || [],
+            successConditions: state.successConditions || [],
+        };
+    }
+</script>
+@endpush

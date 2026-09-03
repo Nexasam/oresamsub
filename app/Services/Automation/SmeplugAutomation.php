@@ -35,9 +35,7 @@ class SmeplugAutomation{
     private $automation_details;
 
 
-    // private $ported_number;
-
-
+    // private $ported_number
     public function __construct($data){
         $this->automation_details = $data['automation_details'] ?? '';
         $this->automation_id = $data['automation_id'] ?? '';

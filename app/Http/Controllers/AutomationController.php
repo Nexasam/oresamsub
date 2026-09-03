@@ -279,7 +279,10 @@ class AutomationController extends Controller
     }
 
     public function update(Request $request){
-        $validator = Validator::make($request->all(), [
+        $automation = Automation::findOrFail($request->id);
+        $isV2 = $automation->automation_group === 'v2';
+
+        $rules = [
             'automation_name' => 'required',
             'api_public_key' => 'required',
             'api_secret_key' => 'nullable',
@@ -287,34 +290,78 @@ class AutomationController extends Controller
             'automation_group' => 'required',
             'domain_url' => 'nullable',
             'whatsapp_support_link' => 'nullable',
-        ]);
+        ];
 
-        $automation_slug = $this->slugifyWithUnderscore($request->automation_name);     
+        if ($isV2) {
+            $rules = array_merge($rules, [
+                'http_verb' => 'required|in:POST,GET',
+                'network_plans' => 'required|array|min:1',
+                'request_params' => 'required|array|min:1',
+                'request_params.*.key' => 'required|string',
+                'request_params.*.value' => 'required|string',
+                'request_headers' => 'required|array|min:1',
+                'request_headers.*.key' => 'required|string',
+                'request_headers.*.value' => 'required|string',
+                'success_condition' => 'required|array|min:1',
+                'success_condition.*.key' => 'required|string',
+                'success_condition.*.value' => 'required|string',
+                'success_response' => 'required|string',
+                'failed_response' => 'required|string',
+                'success_code' => 'nullable|string',
+                'failure_code' => 'nullable|string',
+                'data_url' => 'nullable|string',
+                'airtime_url' => 'nullable|string',
+                'cable_url' => 'nullable|string',
+                'electricity_url' => 'nullable|string',
+                'bank_name' => 'nullable|string',
+                'bank_accounts' => 'nullable|string',
+            ]);
+        }
 
-        if ($validator->stopOnFirstFailure()->fails()) {
+        $validator = Validator::make($request->all(), $rules);
+
+        if ($validator->fails()) {
             Session::flash('failure',$validator->errors()->first());
             return redirect()->back()->withErrors($validator)->withInput();
         }
 
         try{
 
-            Automation::where('id',$request->id)->update([
+            $updates = [
                 'automation_name' => $request->automation_name,
                 'api_public_key' => $request->api_public_key,
                 'api_secret_key' => $request->api_secret_key,
                 'api_password' => $request->api_password,
-                'automation_group' => $request->automation_group,
-                'domain_url' => $request->domain_url,
+                'domain_url' => $request->endpoint_url ?? $request->domain_url,
                 'whatsapp_support_link' => $request->whatsapp_support_link,
-                'slug' => $automation_slug,
-            ]);
-            DB::commit();        
+            ];
+
+            if ($isV2) {
+                $updates = array_merge($updates, $request->only([
+                    'data_url',
+                    'airtime_url',
+                    'cable_url',
+                    'electricity_url',
+                    'http_verb',
+                    'network_plans',
+                    'request_params',
+                    'request_headers',
+                    'success_condition',
+                    'success_response',
+                    'failed_response',
+                    'success_code',
+                    'failure_code',
+                    'bank_name',
+                    'bank_accounts',
+                ]));
+            }
+
+            $automation->update($updates);
             Session::flash('success','Automation was successfully updated');
             return redirect()->back();
 
         }catch(Exception $ex){
             logger($ex->getMessage().' on line '.$ex->getLine());
-            DB::rollback();
             Session::flash('failure',$ex->getMessage());
             return redirect()->back();
         }
