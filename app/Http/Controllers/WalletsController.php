@@ -26,6 +26,8 @@ use App\Services\BonusService;
 use App\Services\UplineFundingBonusService;
 use App\Traits\Dashboard\UserDashboardDataTrait;
 use App\Models\MaxCrystalPaymentsPendingApproval;
+use App\Services\Standalone\ProcessStandaloneFunding;
+use App\Services\Standalone\StandaloneSecurewavePaymentMatcher;
 
 class WalletsController extends Controller
 {
@@ -130,6 +132,17 @@ class WalletsController extends Controller
             }
 
             $provider_ref = trim((string) $provider_ref);
+
+            $standalone = app(StandaloneSecurewavePaymentMatcher::class)->match($response_decode);
+            if ($standalone) {
+                if (strtolower((string) ($response_decode['transaction_status'] ?? '')) !== 'success') {
+                    return response()->json(['status' => 'ignored'], 200);
+                }
+
+                app(ProcessStandaloneFunding::class)->handle($standalone, $response_decode, $provider_ref);
+
+                return response()->json(['status' => 'success'], 200);
+            }
 
             
             

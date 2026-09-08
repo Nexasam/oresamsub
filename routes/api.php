@@ -13,10 +13,19 @@ use App\Http\Controllers\SecurewaveWebhookController;
 use App\Http\Controllers\UserDashboardController;
 use App\Http\Controllers\UsersController;
 use App\Http\Controllers\WalletsController;
+use App\Http\Controllers\Api\V1\Standalone\CallbackController as StandaloneCallbackController;
+use App\Http\Controllers\Api\V1\Standalone\VirtualAccountController as StandaloneVirtualAccountController;
 use App\Models\ProductPlan;
 use App\Models\ProductPlanCategory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+
+Route::prefix('v1/standalone')->middleware(['standalone.auth', 'throttle:30,1'])->group(function () {
+    Route::get('callback', [StandaloneCallbackController::class, 'show']);
+    Route::put('callback', [StandaloneCallbackController::class, 'update']);
+    Route::get('virtual-account', [StandaloneVirtualAccountController::class, 'show']);
+    Route::post('virtual-account', [StandaloneVirtualAccountController::class, 'store']);
+});
 // use App\Http\Controllers\ExternalIntegration\ApiIntegrationController;
 // use App\Http\Controllers\ExternalIntegration\Products\ProductsController;
 // use App\Http\ExternalIntegration\Controllers\ApiIntegrationPasswordResetController;

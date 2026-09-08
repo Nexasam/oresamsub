@@ -3,7 +3,7 @@
 use App\Services\Standalone\StandaloneCredentialService;
 
 it('issues independent API and webhook credentials with safe metadata', function () {
-    $service = new StandaloneCredentialService();
+    $service = new StandaloneCredentialService;
 
     $api = $service->issueApiToken();
     $secret = $service->issueSigningSecret();

@@ -42,6 +42,8 @@ use App\Http\Controllers\ReprocessTransactionController;
 use App\Http\Controllers\ResellerPlanController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\AccountOfficerController;
+use App\Http\Controllers\Admin\StandaloneWebsiteController;
+use App\Http\Controllers\Admin\StandaloneFundingEventController;
 use App\Http\Controllers\Template2Controller;
 use App\Http\Controllers\TelecomAbodePlansController;
 use App\Http\Controllers\TransactionController;
@@ -73,6 +75,18 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Session;
 use Rap2hpoutre\LaravelLogViewer\LogViewerController;
 use App\Http\Controllers\Api\v1\VendorUsersApi\MegaWhatsappWebhookController;
+
+Route::middleware(['auth', 'verified', 'super_admin'])->prefix('admin/standalones')->name('admin.standalones.')->group(function () {
+    Route::get('/', [StandaloneWebsiteController::class, 'index'])->name('index');
+    Route::get('/create', [StandaloneWebsiteController::class, 'create'])->name('create');
+    Route::post('/', [StandaloneWebsiteController::class, 'store'])->name('store');
+    Route::get('/{standaloneWebsite}/credentials', [StandaloneWebsiteController::class, 'credentials'])->name('credentials');
+    Route::get('/{standaloneWebsite}', [StandaloneWebsiteController::class, 'show'])->name('show');
+    Route::put('/{standaloneWebsite}/status', [StandaloneWebsiteController::class, 'status'])->name('status');
+    Route::post('/{standaloneWebsite}/rotate-api-token', [StandaloneWebsiteController::class, 'rotateApiToken'])->name('rotate-api-token');
+    Route::post('/{standaloneWebsite}/rotate-signing-secret', [StandaloneWebsiteController::class, 'rotateSigningSecret'])->name('rotate-signing-secret');
+    Route::post('/{standaloneWebsite}/funding-events/{standaloneFundingEvent}/resend', [StandaloneFundingEventController::class, 'resend'])->name('funding-events.resend');
+});
 
 
    
