@@ -4,7 +4,8 @@ use App\Services\Automation\DataAutomation;
 
 it('always sends Rossy ported number with the exact required key', function () {
     $provider = (object) [
-        'slug' => 'rosytelecoms',
+        'slug' => 'custom-provider-name',
+        'data_url' => 'https://rossytechs.com/api/data/',
         'request_params' => [
             ['key' => 'network', 'value' => 'network'],
             ['key' => 'mobile_number', 'value' => 'phone_number'],

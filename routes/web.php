@@ -43,6 +43,7 @@ use App\Http\Controllers\ResellerPlanController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\AccountOfficerController;
 use App\Http\Controllers\Template2Controller;
+use App\Http\Controllers\TelecomAbodePlansController;
 use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\UniqueProductPlansController;
 use App\Http\Controllers\UserApiAccessController;
@@ -837,6 +838,7 @@ Route::middleware(['set_locale'])->group(function () {
             Route::middleware(['auth','verified','admin'])->get('admin/automations/{slug}/view', [AutomationController::class, 'dashboard'])->name('admin.automation.dashboard_view');
             Route::middleware(['auth','verified','admin'])->get('admin/automations/create', [AutomationController::class, 'create'])->name('admin.automation.create');
             Route::middleware(['auth','verified','admin'])->get('admin/automations/index', [AutomationController::class, 'index'])->name('admin.automation.index');
+            Route::middleware(['auth','verified','admin'])->get('admin/telecom-abode/plans', TelecomAbodePlansController::class)->name('admin.telecom-abode.plans');
             Route::middleware(['auth','verified','admin'])->post('admin/automations/store', [AutomationController::class, 'store'])->name('admin.automation.store');
             Route::middleware(['auth','verified','admin'])->post('admin/automations/storev2', [AutomationController::class, 'storev2'])->name('admin.automation.storev2');
             Route::middleware(['auth','verified','admin'])->post('admin/automations/update', [AutomationController::class, 'update'])->name('admin.automation.update');

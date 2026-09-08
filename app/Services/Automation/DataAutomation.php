@@ -49,7 +49,9 @@ class DataAutomation{
         string $reference
     ): array {
         $requestParameters = [];
-        $isRossy = in_array(strtolower((string) $vendor_record->slug), [
+        $providerSlug = strtolower(trim((string) ($vendor_record->slug ?? '')));
+        $providerHost = strtolower((string) parse_url((string) ($vendor_record->data_url ?? ''), PHP_URL_HOST));
+        $isRossy = $providerHost === 'rossytechs.com' || in_array($providerSlug, [
             'rosytelecoms',
             'rossytelecoms',
             'rossytechs',
@@ -130,6 +132,13 @@ class DataAutomation{
             $this->reference,
         );
         $encoded_array = json_encode($new_request_params);
+
+        logger('data automation request fields', [
+            'provider_slug' => $vendor_record->slug ?? null,
+            'provider_host' => parse_url((string) $request_url, PHP_URL_HOST),
+            'fields' => array_keys($new_request_params),
+            'ported_number' => $new_request_params['Ported_number'] ?? null,
+        ]);
 
         
 
