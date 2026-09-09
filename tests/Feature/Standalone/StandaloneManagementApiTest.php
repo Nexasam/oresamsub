@@ -6,6 +6,7 @@ use App\Models\StandaloneWebsite;
 use App\Models\User;
 use Illuminate\Http\Client\Request;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 
 function standaloneAdminUser(string $email): User
 {
@@ -80,4 +81,42 @@ it('provisions only one Kolomoni account using an operational token', function (
     Http::assertSent(fn (Request $request) => $request['bank_code'] === [1]
         && $request->hasHeader('x-api-key', 'public-key') && $request->hasHeader('Authorization', 'Bearer secret-key'));
     expect($site->fresh()->virtualAccount->account_number)->toBe('1234567890');
+});
+
+it('logs missing SecureWave configuration without exposing credentials', function () {
+    [$site, $token] = createStandaloneForApi();
+    FundingOption::create([
+        'funding_option_name' => 'SecureWave', 'slug' => 'securewaveng', 'activation_status' => 1,
+        'api_public_key' => 'public-key', 'api_secret_key' => null, 'contract_code' => null,
+    ]);
+    Log::shouldReceive('warning')->once()->with('Standalone Kolomoni provisioning configuration is incomplete.', Mockery::on(
+        fn (array $context): bool => $context['standalone_id'] === $site->id
+            && $context['missing_configuration'] === ['api_secret_key', 'contract_code']
+            && ! array_key_exists('api_public_key', $context)
+            && ! array_key_exists('api_secret_key', $context)
+    ));
+
+    $this->withToken($token)->postJson('/api/v1/standalone/virtual-account')
+        ->assertStatus(503)->assertJsonPath('message', 'SecureWave account generation is not configured.');
+});
+
+it('logs a safe provider response when Kolomoni generation is rejected', function () {
+    [$site, $token] = createStandaloneForApi();
+    FundingOption::create([
+        'funding_option_name' => 'SecureWave', 'slug' => 'securewaveng', 'activation_status' => 1,
+        'api_public_key' => 'public-key', 'api_secret_key' => 'secret-key', 'contract_code' => 'business-1',
+    ]);
+    Http::fake(['securewaveng.com/api/virtual_accounts/generate' => Http::response([
+        'status' => false, 'message' => 'BVN validation failed', 'errors' => ['id_number' => ['Invalid BVN']],
+    ], 422)]);
+    Log::shouldReceive('warning')->once()->with('SecureWave rejected standalone Kolomoni provisioning.', Mockery::on(
+        fn (array $context): bool => $context['standalone_id'] === $site->id
+            && $context['http_status'] === 422
+            && $context['provider_message'] === 'BVN validation failed'
+            && $context['provider_errors'] === ['id_number' => ['Invalid BVN']]
+            && ! array_key_exists('response', $context)
+    ));
+
+    $this->withToken($token)->postJson('/api/v1/standalone/virtual-account')
+        ->assertStatus(503)->assertJsonPath('message', 'SecureWave could not generate the Kolomoni account.');
 });
