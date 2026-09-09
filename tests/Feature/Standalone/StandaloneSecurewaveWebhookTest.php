@@ -37,3 +37,29 @@ it('routes a matched SecureWave payment to a standalone exactly once', function 
         ->and(StandaloneWalletEntry::sole()->balance_after)->toBe('990.00');
     Http::assertNothingSent();
 });
+
+it('routes an enveloped SecureWave payment to the standalone instead of customer funding', function () {
+    $site = StandaloneWebsite::create([
+        'slug' => 'nested-sub', 'business_name' => 'Nested Sub', 'contact_first_name' => 'Nested', 'contact_last_name' => 'Owner',
+        'email' => 'owner@nested.test', 'phone' => '2348012345678', 'website_url' => 'https://nested.test',
+        'callback_url' => null, 'bvn' => '22222222222', 'api_token_digest' => hash('sha256', 'nested-token'),
+        'api_token_prefix' => 'nested-token', 'webhook_signing_secret' => '', 'webhook_secret_hint' => '', 'status' => 'active',
+    ]);
+    $option = FundingOption::create(['funding_option_name' => 'SecureWave', 'slug' => 'securewaveng', 'activation_status' => 1, 'api_secret_key' => 'provider-secret']);
+    StandaloneVirtualAccount::create(['standalone_website_id' => $site->id, 'funding_option_id' => $option->id, 'account_reference' => 'VA-NESTED', 'account_number' => '1098765432', 'bank_code' => '1', 'bank_name' => 'Kolomoni']);
+    $payload = ['event' => 'payment.successful', 'event_data' => ['data' => [
+        'transaction_status' => 'success', 'transaction_reference' => 'SW-NESTED-1', 'amount' => 2500,
+        'fees' => 25, 'settlement_amount' => 2475, 'currency' => 'NGN', 'paid_at' => '2026-09-09T10:00:00+01:00',
+        'receiver' => ['bank' => 'Kolomoni', 'account_number' => '1098765432', 'account_reference' => 'VA-NESTED', 'name' => 'Nested Sub'],
+        'customer' => ['email' => 'owner@nested.test'],
+    ]]];
+    $raw = json_encode($payload);
+    $headers = ['X-Signature' => hash_hmac('sha256', $raw, 'provider-secret'), 'Content-Type' => 'application/json'];
+
+    $this->call('POST', '/api/admin/wallets/securewaveng_hook/test', [], [], [], $this->transformHeadersToServerVars($headers), $raw)
+        ->assertOk()->assertJsonPath('status', 'success');
+
+    expect($site->fresh()->master_wallet)->toBe('2475.00')
+        ->and(StandaloneFundingEvent::sole()->provider_reference)->toBe('SW-NESTED-1')
+        ->and(StandaloneWalletEntry::sole()->amount)->toBe('2475.00');
+});

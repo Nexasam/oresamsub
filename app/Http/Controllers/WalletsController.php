@@ -27,6 +27,7 @@ use App\Services\UplineFundingBonusService;
 use App\Traits\Dashboard\UserDashboardDataTrait;
 use App\Models\MaxCrystalPaymentsPendingApproval;
 use App\Services\Standalone\ProcessStandaloneFunding;
+use App\Services\Standalone\SecurewaveWebhookPayloadNormalizer;
 use App\Services\Standalone\StandaloneSecurewavePaymentMatcher;
 
 class WalletsController extends Controller
@@ -107,6 +108,8 @@ class WalletsController extends Controller
                 return response()->json(['status' => 'invalid_payload', 'message' => 'Invalid JSON payload'], 422);
             }
 
+            $response_decode = app(SecurewaveWebhookPayloadNormalizer::class)->normalize($response_decode);
+
             $provider_ref = collect([
                 data_get($response_decode, 'provider_reference'),
                 data_get($response_decode, 'transaction_reference'),
@@ -136,13 +139,31 @@ class WalletsController extends Controller
             $standalone = app(StandaloneSecurewavePaymentMatcher::class)->match($response_decode);
             if ($standalone) {
                 if (strtolower((string) ($response_decode['transaction_status'] ?? '')) !== 'success') {
+                    logger('Matched standalone SecureWave payment was ignored because it is not successful.', [
+                        'standalone_id' => $standalone->id,
+                        'provider_reference' => $provider_ref,
+                        'transaction_status' => $response_decode['transaction_status'] ?? null,
+                    ]);
+
                     return response()->json(['status' => 'ignored'], 200);
                 }
 
                 app(ProcessStandaloneFunding::class)->handle($standalone, $response_decode, $provider_ref);
+                logger('SecureWave payment routed to standalone master wallet.', [
+                    'standalone_id' => $standalone->id,
+                    'standalone_slug' => $standalone->slug,
+                    'provider_reference' => $provider_ref,
+                    'receiver_account_number' => data_get($response_decode, 'receiver.account_number'),
+                ]);
 
                 return response()->json(['status' => 'success'], 200);
             }
+
+            logger('SecureWave payment did not match a standalone account; continuing to customer funding.', [
+                'provider_reference' => $provider_ref,
+                'receiver_account_number' => data_get($response_decode, 'receiver.account_number'),
+                'receiver_account_reference' => data_get($response_decode, 'receiver.account_reference'),
+            ]);
 
             
             
