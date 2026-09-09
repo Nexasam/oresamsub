@@ -71,12 +71,13 @@ class RenewStandaloneFeatures
             $entry = $site->walletEntries()->create([
                 'transaction_id' => 'swl_'.Str::lower(Str::random(24)), 'type' => 'debit', 'category' => 'feature',
                 'amount' => (string) $price, 'balance_before' => (string) $before, 'balance_after' => (string) $after,
-                'client_reference' => $reference, 'purpose' => "Feature renewal: {$feature->name}",
+                'client_reference' => $reference, 'purpose' => "Feature renewal: {$feature->name}".($locked->slot_name ? " ({$locked->slot_name})" : ''),
             ]);
             $periodStarts = now();
             $periodEnds = $periodStarts->copy()->addMonthNoOverflow();
             StandaloneFeaturePurchase::create([
                 'standalone_website_id' => $site->id, 'standalone_feature_id' => $feature->id,
+                'slot_name' => $locked->slot_name, 'slot_key' => $locked->slot_key,
                 'standalone_wallet_entry_id' => $entry->id, 'transaction_id' => 'sfp_'.Str::lower(Str::random(24)),
                 'client_reference' => $reference, 'billing_event' => 'renewal', 'amount' => (string) $price,
                 'applied_price_level' => $site->price_level ? "level_{$site->price_level}" : 'default',

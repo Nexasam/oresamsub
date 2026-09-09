@@ -34,7 +34,7 @@ it('lists active features using the authenticated standalone global price level'
 
 it('purchases a one-time feature atomically and replays the same reference without charging twice', function (): void {
     [$site, $token] = standaloneFeatureApiSite();
-    $payload = ['reference' => 'feature-order-1001'];
+    $payload = ['reference' => 'feature-order-1001', 'slot_name' => 'FoxDataHub'];
 
     $this->withToken($token)->postJson('/api/v1/standalone/features/data-provider-integration/purchase', $payload)
         ->assertCreated()->assertJsonPath('data.amount', '38000.00')->assertJsonPath('data.status', 'active')
@@ -48,13 +48,40 @@ it('purchases a one-time feature atomically and replays the same reference witho
         ->and(StandaloneWalletEntry::count())->toBe(1)
         ->and(StandaloneWalletEntry::sole()->amount)->toBe('38000.00');
     $this->withToken($token)->getJson('/api/v1/standalone/features/purchases')->assertOk()
-        ->assertJsonPath('data.0.reference', 'feature-order-1001')->assertJsonPath('data.0.feature', 'data-provider-integration');
+        ->assertJsonPath('data.0.reference', 'feature-order-1001')->assertJsonPath('data.0.feature', 'data-provider-integration')
+        ->assertJsonPath('data.0.slot_name', 'FoxDataHub');
+});
+
+it('allows unlimited differently named slots but prevents duplicate normalized slot ownership', function (): void {
+    [$site, $token] = standaloneFeatureApiSite(['master_wallet' => '120000.00', 'price_level' => null]);
+
+    $this->withToken($token)->postJson('/api/v1/standalone/features/data-provider-integration/purchase', [
+        'reference' => 'fox-slot', 'slot_name' => 'FoxDataHub',
+    ])->assertCreated();
+    $this->withToken($token)->postJson('/api/v1/standalone/features/data-provider-integration/purchase', [
+        'reference' => 'affatech-slot', 'slot_name' => 'Affatech',
+    ])->assertCreated();
+    $this->withToken($token)->postJson('/api/v1/standalone/features/data-provider-integration/purchase', [
+        'reference' => 'fox-duplicate', 'slot_name' => 'fox data hub',
+    ])->assertStatus(409)->assertJsonPath('message', 'This named feature slot is already active.');
+
+    $this->withToken($token)->getJson('/api/v1/standalone/features/data-provider-integration')->assertOk()
+        ->assertJsonCount(2, 'data.purchased_slots')->assertJsonFragment(['slot_name' => 'FoxDataHub'])
+        ->assertJsonFragment(['slot_name' => 'Affatech']);
+    expect($site->fresh()->master_wallet)->toBe('40000.00')->and(StandaloneFeatureSubscription::count())->toBe(2);
+});
+
+it('requires a slot name only for slot-based features', function (): void {
+    [, $token] = standaloneFeatureApiSite();
+
+    $this->withToken($token)->postJson('/api/v1/standalone/features/data-provider-integration/purchase', ['reference' => 'missing-slot'])
+        ->assertUnprocessable()->assertJsonValidationErrors('slot_name');
 });
 
 it('rejects a feature purchase when the master wallet is insufficient', function (): void {
     [$site, $token] = standaloneFeatureApiSite(['master_wallet' => '1000.00']);
 
-    $this->withToken($token)->postJson('/api/v1/standalone/features/data-provider-integration/purchase', ['reference' => 'feature-order-low'])
+    $this->withToken($token)->postJson('/api/v1/standalone/features/data-provider-integration/purchase', ['reference' => 'feature-order-low', 'slot_name' => 'FoxDataHub'])
         ->assertStatus(422)->assertJsonPath('message', 'Insufficient master wallet balance.');
 
     expect($site->fresh()->master_wallet)->toBe('1000.00')->and(StandaloneFeaturePurchase::count())->toBe(0);

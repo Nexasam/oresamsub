@@ -212,7 +212,8 @@ Purchase or activate a feature:
 POST /api/v1/standalone/features/{feature-slug}/purchase
 
 {
-  "reference": "MYSHOP-FEATURE-ORDER-1001"
+  "reference": "MYSHOP-FEATURE-ORDER-1001",
+  "slot_name": "FoxDataHub"
 }
 
 The reference must be unique per standalone. Reuse the same reference after a
@@ -224,6 +225,15 @@ setup price first and a separately configured monthly price thereafter. Free
 features create no debit. All renewals use the price level assigned at renewal
 time.
 
+Features have a purchase_mode of single or named_slots. For single features,
+omit slot_name and the feature can be owned only once. For named_slots features
+such as data-provider-integration, slot_name is required and may be any provider
+or automation name; it does not need to exist in OresamSub beforehand. Each
+case-insensitively normalized slot is purchased and owned independently, so
+buying FoxDataHub does not prevent a later Affatech purchase. There is no fixed
+slot limit. Every slot inherits the parent feature's billing type and applicable
+default/Level 1-4 pricing.
+
 List historical feature purchases and renewals:
 
 GET /api/v1/standalone/features/purchases
@@ -231,6 +241,12 @@ GET /api/v1/standalone/features/purchases
 Cancel a monthly feature at the end of its paid period:
 
 POST /api/v1/standalone/features/{feature-slug}/cancel
+
+For a named-slot recurring feature, include the slot being cancelled:
+
+{
+  "slot_name": "FoxDataHub"
+}
 
 Failed monthly renewals remain usable in past_due state for seven days. They are
 suspended after the grace period and automatically restored when a later retry

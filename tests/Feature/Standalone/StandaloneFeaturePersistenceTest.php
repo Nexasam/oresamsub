@@ -11,16 +11,16 @@ it('provides the standalone feature catalogue and subscription schema', function
         'price_level',
     ]))->toBeTrue()
         ->and(Schema::hasColumns('standalone_features', [
-            'slug', 'name', 'billing_type', 'default_price', 'level_1_price', 'level_2_price',
+            'slug', 'name', 'billing_type', 'purchase_mode', 'default_price', 'level_1_price', 'level_2_price',
             'level_3_price', 'level_4_price', 'default_monthly_price', 'level_1_monthly_price',
             'level_2_monthly_price', 'level_3_monthly_price', 'level_4_monthly_price', 'is_active', 'sort_order',
         ]))->toBeTrue()
         ->and(Schema::hasColumns('standalone_feature_subscriptions', [
-            'standalone_website_id', 'standalone_feature_id', 'status', 'current_period_starts_at',
+            'standalone_website_id', 'standalone_feature_id', 'slot_name', 'slot_key', 'status', 'current_period_starts_at',
             'current_period_ends_at', 'grace_ends_at', 'cancel_at_period_end', 'cancelled_at',
         ]))->toBeTrue()
         ->and(Schema::hasColumns('standalone_feature_purchases', [
-            'standalone_website_id', 'standalone_feature_id', 'standalone_wallet_entry_id',
+            'standalone_website_id', 'standalone_feature_id', 'slot_name', 'slot_key', 'standalone_wallet_entry_id',
             'transaction_id', 'client_reference', 'billing_event', 'amount', 'applied_price_level',
             'period_starts_at', 'period_ends_at',
         ]))->toBeTrue();

@@ -31,7 +31,7 @@ class StandaloneWebsiteController extends Controller
             'events' => $standaloneWebsite->fundingEvents()->latest()->paginate(15, ['*'], 'funding_page'),
             'walletEntries' => $standaloneWebsite->walletEntries()->latest()->paginate(15, ['*'], 'wallet_page'),
             'features' => StandaloneFeature::orderBy('sort_order')->orderBy('name')->get(),
-            'subscriptions' => $standaloneWebsite->featureSubscriptions()->get()->keyBy('standalone_feature_id'),
+            'subscriptions' => $standaloneWebsite->featureSubscriptions()->get()->groupBy('standalone_feature_id'),
             'featurePurchases' => $standaloneWebsite->featurePurchases()->with('feature')->latest()->paginate(15, ['*'], 'feature_page'),
         ]);
     }
