@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Api\V1\Standalone;
+namespace App\Http\Controllers\Api\v1\Standalone;
 
 use App\Exceptions\StandaloneAccountProvisioningException;
 use App\Http\Controllers\Controller;

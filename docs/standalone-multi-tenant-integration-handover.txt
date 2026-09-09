@@ -1,0 +1,401 @@
+ORESAMSUB STANDALONE MASTER-WALLET API HANDOVER
+===============================================
+
+PURPOSE
+-------
+
+Use this document inside a standalone-platform repository. One standalone
+platform may host multiple tenant websites. Each tenant must be connected to a
+different OresamSub StandaloneWebsite and must store/use only that tenant's API
+token, virtual account, wallet data and transaction history.
+
+OresamSub owns and funds the authoritative master wallet. The standalone calls a
+simple deduction API before performing its own data, airtime, cable, electricity
+or other provider integration. OresamSub does not perform that downstream
+purchase and sends no funding webhook to the standalone.
+
+
+PRODUCTION BASE URL
+-------------------
+
+https://oresamsub.com
+
+All calls must be made by the standalone backend. Never call OresamSub directly
+from frontend JavaScript and never expose tokens in HTML, browser storage, URLs,
+logs, error pages or source control.
+
+
+RESPONSIBILITY SPLIT
+--------------------
+
+OresamSub:
+
+- Creates and approves the StandaloneWebsite.
+- Generates a short-lived bootstrap token.
+- Creates/retrieves the tenant's Kolomoni virtual account.
+- Receives and verifies the central SecureWave webhook.
+- Credits the correct standalone master wallet using the settled amount.
+- Stores the authoritative balance, funding events and immutable wallet ledger.
+- Authenticates and processes idempotent wallet deductions.
+
+Standalone platform:
+
+- Resolves its local tenant on every request/job.
+- Securely stores one operational API token per tenant.
+- Shows that tenant's virtual account and OresamSub wallet balance.
+- Creates one stable purchase reference.
+- Calls the OresamSub deduction API.
+- Performs its own provider purchase only after a successful deduction.
+- Stores its own customer orders and downstream provider results.
+- Never assumes its cached balance is authoritative.
+
+
+MULTI-TENANT STORAGE
+--------------------
+
+Do not use one shared ORESAMSUB_API_TOKEN environment variable when one codebase
+hosts several standalone tenants. Store an integration row per local tenant:
+
+- tenant_id: unique foreign key
+- oresamsub_standalone_id or slug
+- api_token_ciphertext: encrypted using the platform application key
+- api_token_hint: safe masked prefix
+- virtual_account_number
+- virtual_account_name
+- virtual_account_bank
+- integration_status
+- token_rotated_at
+- last_balance_sync_at
+- last_safe_error
+- timestamps
+
+The encryption key must not be stored in the same table. Exclude decrypted
+tokens from model serialization, debug output and audit metadata. Never cache a
+decrypted token under a non-tenant-specific key.
+
+Every local order/integration query must be scoped by trusted tenant context.
+Never trust a tenant ID supplied by a browser to select credentials or a wallet.
+
+
+ONBOARDING AND 20-MINUTE BOOTSTRAP TOKEN
+----------------------------------------
+
+The OresamSub administrator creates the standalone and securely gives the
+developer a bootstrap API token. It begins with:
+
+ors_bootstrap_
+
+The bootstrap token:
+
+- Is displayed once by OresamSub.
+- Expires 20 minutes after generation.
+- Can call only the token-rotation endpoint.
+- Cannot read/deduct the wallet or access the virtual account.
+- Becomes invalid immediately after successful rotation.
+- Becomes invalid when replaced or the standalone is suspended.
+
+If it expires or is lost, ask the OresamSub administrator to generate a
+replacement. Replacement does not change the wallet or virtual account.
+
+
+MANDATORY FIRST ROTATION
+------------------------
+
+Before doing anything else, exchange the bootstrap token:
+
+POST /api/v1/standalone/credentials/api-token/rotate
+Authorization: Bearer {BOOTSTRAP_TOKEN}
+Accept: application/json
+Content-Type: application/json
+
+No request body is required.
+
+Success:
+
+{
+  "success": true,
+  "message": "API token rotated successfully.",
+  "data": {
+    "api_token": "ors_live_example"
+  }
+}
+
+Save data.api_token encrypted for the selected local tenant. It is the
+operational token and is shown only once. Remove the bootstrap token immediately.
+
+If the bootstrap token is expired:
+
+HTTP 401
+
+{
+  "success": false,
+  "message": "This bootstrap API token has expired. Request a new one."
+}
+
+If a bootstrap token calls another endpoint:
+
+HTTP 403
+
+{
+  "success": false,
+  "message": "API token rotation is required before using this endpoint."
+}
+
+The operational token remains valid until rotated, replaced, suspended or
+revoked. It may later call this same endpoint to rotate itself. Update encrypted
+storage atomically because the previous token stops working immediately.
+
+
+AUTHENTICATION
+--------------
+
+Use these headers on all operational requests:
+
+Authorization: Bearer {TENANT_OPERATIONAL_TOKEN}
+Accept: application/json
+Content-Type: application/json
+
+HTTP 401 means the token is missing, invalid, expired or already rotated. HTTP
+403 means the standalone is suspended or a bootstrap token needs rotation.
+
+
+VIRTUAL ACCOUNT
+---------------
+
+Generate or return the authenticated tenant's Kolomoni account:
+
+POST /api/v1/standalone/virtual-account
+
+Fetch an existing account:
+
+GET /api/v1/standalone/virtual-account
+
+POST is idempotent. Repeating it returns the existing account and must not create
+a second account. Kolomoni bank code is 1.
+
+Store/display only the response fields returned by the live API, including bank
+name, account name and account number. Scope them to the selected local tenant.
+
+
+AUTHORITATIVE WALLET BALANCE
+----------------------------
+
+GET /api/v1/standalone/wallet
+
+Example success:
+
+{
+  "success": true,
+  "message": "Master wallet fetched successfully.",
+  "data": {
+    "currency": "NGN",
+    "available_balance": "10000.00"
+  }
+}
+
+Treat available_balance as a decimal string. OresamSub is authoritative. A local
+cached copy is display-only and must not authorize a purchase.
+
+
+DEDUCT THE MASTER WALLET
+------------------------
+
+POST /api/v1/standalone/wallet/deduct
+
+{
+  "amount": "500.00",
+  "reference": "MYSHOP-DATA-20260909-ABC123",
+  "purpose": "Purchase of MTN 1GB data for 08012345678"
+}
+
+Rules:
+
+- amount is a positive NGN decimal string with at most two decimal places.
+- reference is required, maximum 100 characters, and unique per standalone.
+- purpose is required plain text with a maximum of 255 characters.
+- Do not send standalone_id or wallet_id. The bearer token chooses the wallet.
+- Do not use binary floating-point arithmetic for money.
+
+Success:
+
+{
+  "success": true,
+  "message": "Master wallet deducted successfully.",
+  "data": {
+    "transaction_id": "swl_example",
+    "reference": "MYSHOP-DATA-20260909-ABC123",
+    "type": "debit",
+    "category": "deduction",
+    "amount": "500.00",
+    "purpose": "Purchase of MTN 1GB data for 08012345678",
+    "balance_before": "10000.00",
+    "balance_after": "9500.00",
+    "currency": "NGN",
+    "status": "successful",
+    "created_at": "2026-09-09T09:00:00+01:00"
+  },
+  "meta": {
+    "idempotent_replay": false
+  }
+}
+
+Insufficient funds returns HTTP 422:
+
+{
+  "success": false,
+  "message": "Insufficient master wallet balance."
+}
+
+No debit is created for insufficient funds.
+
+
+IDEMPOTENCY
+-----------
+
+Create and persist the reference before calling OresamSub. Use the same reference
+when retrying an uncertain request.
+
+Repeating the same reference, amount and purpose returns the original transaction
+without another deduction:
+
+{
+  "success": true,
+  "message": "This deduction was already processed.",
+  "data": { "...": "original transaction" },
+  "meta": {
+    "idempotent_replay": true
+  }
+}
+
+Reusing a reference with a different amount or purpose returns HTTP 409:
+
+{
+  "success": false,
+  "message": "This reference has already been used for a different deduction."
+}
+
+Never generate a new reference merely because an HTTP response timed out. First
+reconcile the original reference.
+
+
+TRANSACTION HISTORY
+-------------------
+
+GET /api/v1/standalone/wallet/transactions
+
+The response contains paginated credit and debit entries for only the
+authenticated standalone. `per_page` may be supplied from 1 through 100.
+
+Funding credits have:
+
+- type: credit
+- category: funding
+- purpose: Kolomoni virtual account funding
+
+API deductions have:
+
+- type: debit
+- category: deduction
+- the client-supplied reference and purpose
+
+
+RECONCILE ONE DEDUCTION
+-----------------------
+
+GET /api/v1/standalone/wallet/transactions/{reference}
+
+Use the exact URL-encoded reference originally supplied. A reference owned by
+another standalone returns HTTP 404, as does an unknown reference.
+
+
+SAFE PURCHASE SEQUENCE
+----------------------
+
+The standalone owns the downstream provider integration. Use this sequence:
+
+1. Resolve the trusted local tenant.
+2. Authenticate and validate the local customer/request.
+3. Determine the exact amount using server-side rules.
+4. Generate a globally unique stable reference.
+5. Save a local order in initiated state before the API call.
+6. Call OresamSub wallet/deduct using that tenant's token.
+7. If deduction succeeds, save its transaction_id and balance_after.
+8. Perform the standalone's provider integration.
+9. Save the provider result locally.
+
+If the OresamSub call times out:
+
+1. Do not send a new reference.
+2. Call the reconciliation endpoint with the original reference.
+3. If found, treat the deduction as successful and continue safely.
+4. If not found, retry the same deduction with the same reference.
+
+Important: OresamSub does not automatically refund a successful deduction if the
+standalone's provider later fails. Do not invent a public refund API. Escalate
+such cases through the agreed administrative/support process.
+
+
+TENANT ISOLATION REQUIREMENTS
+-----------------------------
+
+- Resolve tenant context from the authenticated domain/session/job, not an
+  arbitrary browser field.
+- Load only that tenant's encrypted OresamSub integration record.
+- Include tenant_id on local integration, order and audit records.
+- Use compound uniqueness for local references if they are not globally unique.
+- Never store a decrypted token in shared static/singleton state.
+- Queue jobs carry an immutable internal tenant ID and restore tenant context.
+- Never let one tenant query another tenant's account, balance or reference.
+
+
+HTTP CLIENT REQUIREMENTS
+------------------------
+
+- Use one reusable server-side client configured from the resolved tenant.
+- Set a connection timeout around 10 seconds and request timeout around 30.
+- Do not automatically retry POST deductions with a new reference.
+- Redact Authorization and tokens from logs/exceptions.
+- Log only safe tenant IDs, references, endpoint, HTTP status and timing.
+- Validate the OresamSub JSON envelope before using it.
+
+
+REQUIRED TESTS IN THE STANDALONE PLATFORM
+-----------------------------------------
+
+- Tenant A never uses Tenant B's token.
+- Tenant A cannot view Tenant B's account/order data.
+- Bootstrap token is rotated before any other API call.
+- Expired/used bootstrap tokens are handled safely.
+- Rotated token is encrypted and the bootstrap token is removed.
+- Virtual-account generation is idempotent.
+- Wallet amounts remain decimal strings.
+- The browser cannot select a wallet or trusted deduction amount.
+- Local order/reference exists before deduction.
+- Same reference is reused after timeout.
+- Idempotent replay never creates a second local charge/order.
+- HTTP 409 marks a serious reference conflict.
+- HTTP 422 insufficient funds prevents the provider purchase.
+- Reconciliation occurs before retrying uncertain deductions.
+- Secrets never appear in logs, HTML or JSON sent to the browser.
+
+Fake outbound OresamSub requests in automated tests. Never call production from
+the test suite.
+
+
+PRODUCTION ONBOARDING CHECKLIST PER TENANT
+------------------------------------------
+
+1. OresamSub administrator creates the StandaloneWebsite.
+2. Developer receives its bootstrap token through a secure channel.
+3. Developer rotates it within 20 minutes.
+4. Developer stores the operational token encrypted under the correct tenant.
+5. Developer generates/fetches the Kolomoni account.
+6. Make a controlled small transfer to the account.
+7. Fetch wallet balance and confirm only settled money was credited.
+8. Make a small controlled deduction with a unique reference.
+9. Replay the same request and confirm idempotent_replay is true and the balance
+   does not decrease again.
+10. Reconcile the reference and confirm it belongs to the intended tenant.
+11. Confirm another tenant cannot see that reference.
+12. Only then enable that tenant's live downstream purchase flow.
+

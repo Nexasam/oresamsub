@@ -25,6 +25,9 @@ class StandaloneWebsite extends Model
         return [
             'bvn' => 'encrypted',
             'webhook_signing_secret' => 'encrypted',
+            'master_wallet' => 'decimal:2',
+            'api_token_must_rotate' => 'boolean',
+            'api_token_expires_at' => 'datetime',
             'api_token_rotated_at' => 'datetime',
             'webhook_secret_rotated_at' => 'datetime',
         ];
@@ -54,5 +57,10 @@ class StandaloneWebsite extends Model
     public function fundingEvents(): HasMany
     {
         return $this->hasMany(StandaloneFundingEvent::class);
+    }
+
+    public function walletEntries(): HasMany
+    {
+        return $this->hasMany(StandaloneWalletEntry::class);
     }
 }

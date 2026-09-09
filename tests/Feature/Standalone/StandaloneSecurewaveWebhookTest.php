@@ -3,6 +3,7 @@
 use App\Models\FundingOption;
 use App\Models\StandaloneFundingEvent;
 use App\Models\StandaloneVirtualAccount;
+use App\Models\StandaloneWalletEntry;
 use App\Models\StandaloneWebsite;
 use Illuminate\Support\Facades\Http;
 
@@ -15,7 +16,7 @@ it('routes a matched SecureWave payment to a standalone exactly once', function 
     ]);
     $option = FundingOption::create(['funding_option_name' => 'SecureWave', 'slug' => 'securewaveng', 'activation_status' => 1, 'api_secret_key' => 'provider-secret']);
     StandaloneVirtualAccount::create(['standalone_website_id' => $site->id, 'funding_option_id' => $option->id, 'account_reference' => 'VA-1', 'account_number' => '1234567890', 'bank_code' => '1', 'bank_name' => 'Kolomoni']);
-    Http::fake(['https://8.8.8.8/hook' => Http::response(['ok' => true])]);
+    Http::fake();
     $payload = [
         'transaction_status' => 'success', 'provider_reference' => 'SW-UNIQUE-1', 'amount' => 1000, 'fees' => 10, 'settlement_amount' => 990,
         'currency' => 'NGN', 'paid_at' => '2026-09-08T15:30:00+01:00', 'receiver' => ['bank' => 'Kolomoni', 'account_number' => '1234567890', 'name' => 'Mega Sub'],
@@ -29,6 +30,10 @@ it('routes a matched SecureWave payment to a standalone exactly once', function 
 
     expect(StandaloneFundingEvent::count())->toBe(1);
     $event = StandaloneFundingEvent::sole();
-    expect($event->amount_gross)->toBe('1000.00')->and($event->fees)->toBe('10.00')->and($event->amount_settled)->toBe('990.00')->and($event->delivery_status)->toBe('delivered');
-    Http::assertSentCount(1);
+    expect($event->amount_gross)->toBe('1000.00')->and($event->fees)->toBe('10.00')->and($event->amount_settled)->toBe('990.00')
+        ->and($site->fresh()->master_wallet)->toBe('990.00')
+        ->and(StandaloneWalletEntry::count())->toBe(1)
+        ->and(StandaloneWalletEntry::sole()->balance_before)->toBe('0.00')
+        ->and(StandaloneWalletEntry::sole()->balance_after)->toBe('990.00');
+    Http::assertNothingSent();
 });

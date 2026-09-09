@@ -2,17 +2,19 @@
 
 use App\Services\Standalone\StandaloneCredentialService;
 
-it('issues independent API and webhook credentials with safe metadata', function () {
+it('issues expiring bootstrap and non-expiring operational credentials', function () {
     $service = new StandaloneCredentialService;
 
-    $api = $service->issueApiToken();
-    $secret = $service->issueSigningSecret();
+    $bootstrap = $service->issueBootstrapToken();
+    $operational = $service->issueOperationalToken();
 
-    expect($api['plain_text'])->toStartWith('ors_live_')
-        ->and($api['digest'])->toBe(hash('sha256', $api['plain_text']))
-        ->and($api['prefix'])->toBe(substr($api['plain_text'], 0, 16))
-        ->and($secret['plain_text'])->toStartWith('ors_whsec_')
-        ->and($secret['encrypted'])->toBe($secret['plain_text'])
-        ->and($secret['hint'])->toContain('••••')
-        ->and($secret['plain_text'])->not->toBe($api['plain_text']);
+    expect($bootstrap['plain_text'])->toStartWith('ors_bootstrap_')
+        ->and($bootstrap['digest'])->toBe(hash('sha256', $bootstrap['plain_text']))
+        ->and($bootstrap['type'])->toBe('bootstrap')
+        ->and($bootstrap['must_rotate'])->toBeTrue()
+        ->and($bootstrap['expires_at']->isBetween(now()->addMinutes(19), now()->addMinutes(21)))->toBeTrue()
+        ->and($operational['plain_text'])->toStartWith('ors_live_')
+        ->and($operational['type'])->toBe('operational')
+        ->and($operational['must_rotate'])->toBeFalse()
+        ->and($operational['expires_at'])->toBeNull();
 });
