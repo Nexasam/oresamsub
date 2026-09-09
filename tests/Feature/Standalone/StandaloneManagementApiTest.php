@@ -43,7 +43,8 @@ it('allows only the protected owner to create and manage a standalone in the sha
     $site = StandaloneWebsite::sole();
     $response->assertRedirect(route('admin.standalones.credentials', $site));
     $this->actingAs($owner)->get(route('admin.standalones.credentials', $site))->assertOk()
-        ->assertSee('main-content')->assertSee('ors_bootstrap_', false)->assertSee('20 minutes')->assertDontSee('ors_whsec_', false);
+        ->assertSee('main-content')->assertSee('ors_bootstrap_', false)->assertSee('20 minutes')->assertDontSee('ors_whsec_', false)
+        ->assertSee('type="password"', false)->assertSee('Show token');
     $this->actingAs($owner)->get(route('admin.standalones.show', $site))->assertOk()
         ->assertSee('Master wallet')->assertSee('Wallet ledger')->assertDontSee('Webhook secret');
 

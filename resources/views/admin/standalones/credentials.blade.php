@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="main-content" x-data="{ copied: false }">
+<div class="main-content" x-data="{ copied: false, tokenVisible: false }">
     <div class="page-header"><h3 class="text-gray-700 text-2xl font-semibold">{{ $site->business_name }} API access</h3></div>
     <div class="bg-warning/10 border border-warning/20 alert text-warning">
         <strong>Copy this bootstrap token now.</strong> It is shown once, expires in 20 minutes, and must be rotated by the developer before any wallet or virtual-account API can be used.
@@ -11,7 +11,8 @@
         <div class="box-body">
             <label class="ti-form-label" for="standalone-token">Bootstrap token</label>
             <div class="flex flex-col md:flex-row gap-2">
-                <textarea id="standalone-token" readonly rows="3" class="ti-form-input font-mono flex-1">{{ $credentials['api_token'] }}</textarea>
+                <input id="standalone-token" type="password" :type="tokenVisible ? 'text' : 'password'" readonly value="{{ $credentials['api_token'] }}" class="ti-form-input font-mono flex-1">
+                <button type="button" class="ti-btn ti-btn-secondary" @click="tokenVisible = ! tokenVisible" x-text="tokenVisible ? 'Hide token' : 'Show token'" :aria-pressed="tokenVisible.toString()">Show token</button>
                 <button type="button" class="ti-btn ti-btn-primary" @click="navigator.clipboard.writeText(document.getElementById('standalone-token').value); copied=true" x-text="copied ? 'Copied' : 'Copy token'">Copy token</button>
             </div>
             <p class="mt-3 text-sm text-gray-500">Expires: {{ $credentials['expires_at']?->format('d M Y, h:i A') }}. The developer must call <code>POST /api/v1/standalone/credentials/api-token/rotate</code>.</p>
