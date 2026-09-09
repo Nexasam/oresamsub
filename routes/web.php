@@ -43,6 +43,7 @@ use App\Http\Controllers\ResellerPlanController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\AccountOfficerController;
 use App\Http\Controllers\Admin\StandaloneWebsiteController;
+use App\Http\Controllers\Admin\StandaloneFeatureController;
 use App\Http\Controllers\Template2Controller;
 use App\Http\Controllers\TelecomAbodePlansController;
 use App\Http\Controllers\TransactionController;
@@ -79,9 +80,13 @@ Route::middleware(['auth', 'verified', 'super_admin'])->prefix('admin/standalone
     Route::get('/', [StandaloneWebsiteController::class, 'index'])->name('index');
     Route::get('/create', [StandaloneWebsiteController::class, 'create'])->name('create');
     Route::post('/', [StandaloneWebsiteController::class, 'store'])->name('store');
+    Route::get('/features', [StandaloneFeatureController::class, 'index'])->name('features.index');
+    Route::post('/features', [StandaloneFeatureController::class, 'store'])->name('features.store');
+    Route::put('/features/{feature}', [StandaloneFeatureController::class, 'update'])->name('features.update');
     Route::get('/{standaloneWebsite}/credentials', [StandaloneWebsiteController::class, 'credentials'])->name('credentials');
     Route::get('/{standaloneWebsite}', [StandaloneWebsiteController::class, 'show'])->name('show');
     Route::put('/{standaloneWebsite}/status', [StandaloneWebsiteController::class, 'status'])->name('status');
+    Route::put('/{standaloneWebsite}/price-level', [StandaloneWebsiteController::class, 'priceLevel'])->name('price-level');
     Route::post('/{standaloneWebsite}/rotate-api-token', [StandaloneWebsiteController::class, 'rotateApiToken'])->name('rotate-api-token');
 });
 

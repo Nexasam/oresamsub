@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\StandaloneFeature;
 use App\Models\StandaloneWebsite;
 use App\Services\Standalone\StandaloneCredentialService;
 use Illuminate\Http\RedirectResponse;
@@ -29,6 +30,9 @@ class StandaloneWebsiteController extends Controller
             'site' => $standaloneWebsite->load('virtualAccount'),
             'events' => $standaloneWebsite->fundingEvents()->latest()->paginate(15, ['*'], 'funding_page'),
             'walletEntries' => $standaloneWebsite->walletEntries()->latest()->paginate(15, ['*'], 'wallet_page'),
+            'features' => StandaloneFeature::orderBy('sort_order')->orderBy('name')->get(),
+            'subscriptions' => $standaloneWebsite->featureSubscriptions()->get()->keyBy('standalone_feature_id'),
+            'featurePurchases' => $standaloneWebsite->featurePurchases()->with('feature')->latest()->paginate(15, ['*'], 'feature_page'),
         ]);
     }
 
@@ -74,6 +78,14 @@ class StandaloneWebsiteController extends Controller
         $standaloneWebsite->update($data);
 
         return back()->with('success', 'Status updated.');
+    }
+
+    public function priceLevel(Request $request, StandaloneWebsite $standaloneWebsite): RedirectResponse
+    {
+        $data = $request->validate(['price_level' => ['nullable', 'integer', 'between:1,4']]);
+        $standaloneWebsite->update(['price_level' => $data['price_level'] ?? null]);
+
+        return back()->with('success', 'Standalone price level updated.');
     }
 
     public function rotateApiToken(StandaloneWebsite $standaloneWebsite, StandaloneCredentialService $service): RedirectResponse

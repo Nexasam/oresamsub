@@ -2,6 +2,7 @@
 
 use App\Models\FundingOption;
 use App\Models\Role;
+use App\Models\StandaloneFeature;
 use App\Models\StandaloneWebsite;
 use App\Models\User;
 use Illuminate\Http\Client\Request;
@@ -119,4 +120,24 @@ it('logs a safe provider response when Kolomoni generation is rejected', functio
 
     $this->withToken($token)->postJson('/api/v1/standalone/virtual-account')
         ->assertStatus(503)->assertJsonPath('message', 'SecureWave could not generate the Kolomoni account.');
+});
+
+it('lets only the protected owner manage features and a standalone global price level', function (): void {
+    $owner = standaloneAdminUser('adebsholey4real@gmail.com');
+    $other = standaloneAdminUser('other-feature-admin@example.com');
+    [$site] = createStandaloneForApi();
+
+    $this->actingAs($other)->get('/admin/standalones/features')->assertForbidden();
+    $this->actingAs($owner)->get('/admin/standalones/features')->assertOk()->assertSee('Data provider integration');
+    $this->actingAs($owner)->put(route('admin.standalones.price-level', $site), ['price_level' => 3])
+        ->assertRedirect();
+    expect($site->fresh()->price_level)->toBe(3);
+
+    $this->actingAs($owner)->post(route('admin.standalones.features.store'), [
+        'name' => 'WhatsApp bot', 'slug' => 'whatsapp-bot', 'description' => 'Monthly WhatsApp automation.',
+        'default_price' => 5000, 'level_1_price' => 4500, 'level_2_price' => 4250,
+        'level_3_price' => 4000, 'level_4_price' => 3750, 'is_active' => 1,
+    ])->assertRedirect();
+    $feature = StandaloneFeature::where('slug', 'whatsapp-bot')->sole();
+    expect($feature->billing_type)->toBe('one_time')->and($feature->level_3_price)->toBe('4000.00');
 });

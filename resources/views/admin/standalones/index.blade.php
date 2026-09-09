@@ -7,7 +7,7 @@
             <h3 class="text-gray-700 text-2xl font-semibold">Standalone websites</h3>
             <p class="mt-1 text-sm text-gray-500">Manage API access, Kolomoni accounts and master wallets.</p>
         </div>
-        <a class="ti-btn ti-btn-primary mt-3 md:mt-0" href="{{ route('admin.standalones.create') }}">Add standalone website</a>
+        <div class="flex gap-2"><a class="ti-btn ti-btn-light" href="{{ route('admin.standalones.features.index') }}">Manage features</a><a class="ti-btn ti-btn-primary" href="{{ route('admin.standalones.create') }}">Add standalone website</a></div>
     </div>
 
     @if (session('success'))

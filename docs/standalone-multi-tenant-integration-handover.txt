@@ -197,6 +197,47 @@ Treat available_balance as a decimal string. OresamSub is authoritative. A local
 cached copy is display-only and must not authorize a purchase.
 
 
+FEATURE CATALOGUE AND PURCHASES
+-------------------------------
+
+GET /api/v1/standalone/features
+
+Returns active features with the authenticated standalone's centrally assigned
+price, applied_price_level, billing_type, subscription status, renewal date,
+grace date and cancellation state. The standalone must never calculate or
+override a feature price.
+
+Purchase or activate a feature:
+
+POST /api/v1/standalone/features/{feature-slug}/purchase
+
+{
+  "reference": "MYSHOP-FEATURE-ORDER-1001"
+}
+
+The reference must be unique per standalone. Reuse the same reference after a
+timeout. OresamSub atomically deducts the authoritative master wallet and
+activates the feature. The response includes meta.idempotent_replay. One-time is
+the default billing type. Monthly features charge the current monthly price on
+activation and renewal. One-time-plus-monthly features charge the applicable
+setup price first and a separately configured monthly price thereafter. Free
+features create no debit. All renewals use the price level assigned at renewal
+time.
+
+List historical feature purchases and renewals:
+
+GET /api/v1/standalone/features/purchases
+
+Cancel a monthly feature at the end of its paid period:
+
+POST /api/v1/standalone/features/{feature-slug}/cancel
+
+Failed monthly renewals remain usable in past_due state for seven days. They are
+suspended after the grace period and automatically restored when a later retry
+can deduct the wallet. Price-level changes affect only future purchases and
+renewals; historical charges never change.
+
+
 DEDUCT THE MASTER WALLET
 ------------------------
 
@@ -398,4 +439,3 @@ PRODUCTION ONBOARDING CHECKLIST PER TENANT
 10. Reconcile the reference and confirm it belongs to the intended tenant.
 11. Confirm another tenant cannot see that reference.
 12. Only then enable that tenant's live downstream purchase flow.
-
