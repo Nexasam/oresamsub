@@ -1,0 +1,351 @@
+ORESAMSUB STANDALONE FEATURE PRICING AND PURCHASE API HANDOFF
+=============================================================
+
+Production base URL:
+https://oresamsub.com
+
+API prefix:
+/api/v1/standalone
+
+This document supplements the main standalone integration handoff. All requests
+must use the operational token belonging to the local standalone tenant.
+
+
+TENANT ISOLATION
+----------------
+
+Feature pricing, purchases, named slots, subscriptions, renewals and wallet
+transactions are scoped to the standalone identified by the bearer token.
+
+Standalone 1 and Standalone 2 are completely independent. For example, both may
+purchase a slot called FoxDataHub under Data Provider Integration. Ownership by
+one standalone never blocks, activates or charges another standalone.
+
+Never send standalone_id in an API request. OresamSub derives it from:
+
+Authorization: Bearer {TENANT_OPERATIONAL_TOKEN}
+
+
+PRICE LEVELS
+------------
+
+The protected OresamSub administrator assigns one global price level to each
+standalone. The possible assignments are:
+
+- Default
+- Level 1
+- Level 2
+- Level 3
+- Level 4
+
+If no level is assigned, the feature's default price applies. The standalone
+cannot select or change its own level and must never calculate the charge.
+OresamSub returns and charges the authoritative applicable price.
+
+Initial Data Provider Integration pricing:
+
+- Default: NGN 40,000
+- Level 1: NGN 38,000
+- Level 2: NGN 37,000
+- Level 3: NGN 36,000
+- Level 4: NGN 35,000
+
+An administrator may change these prices. A price-level or catalogue change
+affects only future purchases and renewals. Historical charges never change.
+
+
+BILLING TYPES
+-------------
+
+one_time
+Charged once. The purchased feature or named slot remains active and cannot be
+purchased twice for the same standalone.
+
+monthly
+The applicable monthly price is charged on activation and on every renewal.
+
+one_time_plus_monthly
+The applicable setup price is charged on activation. A separately configured
+monthly price is charged on each renewal.
+
+free
+The feature is activated without a wallet debit.
+
+
+PURCHASE MODES
+--------------
+
+single
+The feature is purchased once per standalone. Do not send slot_name.
+
+named_slots
+The feature accepts unlimited dynamically named purchases. The name does not
+need to be configured in OresamSub beforehand. Data Provider Integration uses
+this mode.
+
+Examples of independent named slots are FoxDataHub, Gongoz and Affatech. Each
+slot inherits the parent feature's billing type and Default/Level 1-4 prices.
+
+Slot ownership comparison is normalized and case-insensitive. Therefore,
+FoxDataHub, foxdatahub and fox data hub identify the same owned slot for one
+standalone. Affatech remains a separate purchasable slot.
+
+
+AUTHENTICATION HEADERS
+----------------------
+
+Authorization: Bearer {TENANT_OPERATIONAL_TOKEN}
+Accept: application/json
+Content-Type: application/json
+
+A 20-minute bootstrap token cannot use these endpoints. Rotate it first through
+the credential rotation endpoint described in the main handoff.
+
+
+LIST FEATURES
+-------------
+
+GET /api/v1/standalone/features
+
+The response contains only active catalogue features and includes:
+
+- slug
+- name
+- description
+- billing_type
+- purchase_mode
+- price: amount charged for a new purchase
+- setup_price: setup/one-time price when applicable
+- monthly_price: renewal price when applicable
+- applied_price_level
+- status for a single-purchase feature
+- purchased_slots for a dynamic named-slot feature
+- renewal, grace and cancellation information
+
+Use these returned prices only for display. Always accept the amount returned by
+the purchase response as the final charged amount.
+
+
+FETCH ONE FEATURE
+-----------------
+
+GET /api/v1/standalone/features/{feature-slug}
+
+Example:
+
+GET /api/v1/standalone/features/data-provider-integration
+
+For a named-slot feature, purchased_slots contains only slots owned by the
+authenticated standalone.
+
+
+PURCHASE A SINGLE FEATURE
+-------------------------
+
+POST /api/v1/standalone/features/{feature-slug}/purchase
+
+Body:
+
+{
+  "reference": "LOCAL-FEATURE-ORDER-1001"
+}
+
+
+PURCHASE A DYNAMIC NAMED SLOT
+-----------------------------
+
+POST /api/v1/standalone/features/data-provider-integration/purchase
+
+Body:
+
+{
+  "reference": "LOCAL-INTEGRATION-FOXDATA-1001",
+  "slot_name": "FoxDataHub"
+}
+
+To purchase another provider later:
+
+{
+  "reference": "LOCAL-INTEGRATION-AFFATECH-1002",
+  "slot_name": "Affatech"
+}
+
+Purchasing FoxDataHub does not mark the entire Data Provider Integration parent
+as owned. Only the FoxDataHub slot becomes owned.
+
+
+PURCHASE RULES
+--------------
+
+- Create the local order before calling OresamSub.
+- reference is required, maximum 100 characters, and unique per standalone.
+- Allowed reference characters are letters, numbers, period, underscore, colon
+  and hyphen.
+- slot_name is required for named_slots and omitted for single features.
+- slot_name has a maximum length of 150 characters and must contain at least one
+  letter or number.
+- Never send amount, price_level, standalone_id or wallet_id.
+- OresamSub calculates the applicable amount and locks the master wallet.
+- Wallet deduction, purchase history and activation occur atomically.
+- Reuse the exact same reference and body after a timeout.
+- Never generate a new reference merely because the first response was lost.
+
+New purchase success returns HTTP 201 and includes:
+
+{
+  "success": true,
+  "data": {
+    "transaction_id": "sfp_example",
+    "reference": "LOCAL-INTEGRATION-FOXDATA-1001",
+    "feature": "data-provider-integration",
+    "slot_name": "FoxDataHub",
+    "billing_event": "purchase",
+    "amount": "40000.00",
+    "applied_price_level": "default",
+    "status": "active",
+    "period_ends_at": null
+  },
+  "meta": {
+    "idempotent_replay": false
+  }
+}
+
+An identical reference replay returns HTTP 200 with:
+
+"idempotent_replay": true
+
+It does not deduct the wallet again.
+
+
+PURCHASE HISTORY
+----------------
+
+GET /api/v1/standalone/features/purchases
+
+This paginated endpoint returns only the authenticated standalone's purchases
+and renewals. Records include feature, slot_name, billing_event, charged amount,
+applied price level, billing period and timestamps.
+
+Optional pagination parameter:
+
+?per_page=30
+
+Maximum per_page is 100.
+
+
+MONTHLY RENEWALS AND GRACE
+--------------------------
+
+OresamSub automatically attempts recurring renewal from the authoritative
+master wallet.
+
+- Successful renewal records a wallet debit and renewal purchase.
+- The current price level is used for each future renewal.
+- Insufficient funds changes the subscription to past_due.
+- Access remains available for a seven-day grace period.
+- Continued insufficient funds after grace changes status to suspended.
+- OresamSub keeps retrying and restores active status after a successful debit.
+- Every named slot has its own subscription, renewal date and grace state.
+
+The standalone should enforce feature access using the status returned by the
+feature API. active and past_due are usable. suspended and cancelled are not.
+
+
+CANCELLATION
+------------
+
+Single recurring feature:
+
+POST /api/v1/standalone/features/{feature-slug}/cancel
+
+Named recurring slot:
+
+POST /api/v1/standalone/features/{feature-slug}/cancel
+
+{
+  "slot_name": "FoxDataHub"
+}
+
+Cancellation is effective at the end of the already-paid period. The feature or
+slot remains active until period_ends_at and is not renewed afterward.
+
+
+IMPORTANT ERROR RESPONSES
+-------------------------
+
+HTTP 401
+Missing, invalid, expired or already-rotated API token.
+
+HTTP 403
+Standalone suspended or bootstrap token still requires rotation.
+
+HTTP 404
+Feature, purchase target or subscription not found for this standalone.
+
+HTTP 409
+Feature/slot already owned, inactive feature, reference conflict, or an invalid
+cancellation for the selected billing type.
+
+HTTP 422
+Validation failure or insufficient master wallet balance. No purchase or debit
+is created.
+
+
+REQUIRED LOCAL IMPLEMENTATION FLOW
+----------------------------------
+
+1. Select the correct local tenant and encrypted operational token.
+2. Fetch the current feature from OresamSub.
+3. For named_slots, collect a meaningful provider/integration name.
+4. Create a pending local feature order with a stable unique reference.
+5. Submit the purchase request without an amount.
+6. Save transaction_id, charged amount, applied price level and slot name.
+7. Mark the local feature/slot active only after OresamSub confirms success.
+8. After an uncertain response, check purchase history and retry with the same
+   reference; never issue a second reference automatically.
+9. Periodically refresh recurring status so grace, suspension, restoration and
+   cancellation are enforced locally.
+
+
+REQUIRED TESTS
+--------------
+
+- Standalone 1 cannot read Standalone 2's features, slots or purchases.
+- Both standalones can independently own a slot named FoxDataHub.
+- FoxDataHub and fox data hub are duplicates within one standalone.
+- FoxDataHub and Affatech can both be purchased by one standalone.
+- A single feature cannot be purchased twice.
+- The client cannot override amount or price level.
+- Insufficient balance produces no debit or activation.
+- Same-reference replay produces no second charge.
+- Reusing a reference with different purchase data returns a conflict.
+- Monthly and hybrid slots renew independently.
+- Seven-day grace, suspension and restoration states are enforced.
+- Cancellation targets only the specified named slot.
+- Tokens, BVNs and credentials never appear in browser code or application logs.
+
+
+ADMINISTRATION
+--------------
+
+Protected OresamSub administration pages:
+
+https://oresamsub.com/admin/standalones
+https://oresamsub.com/admin/standalones/features
+
+Only the protected OresamSub administrator can assign a standalone price level,
+change catalogue pricing, select billing type, choose single/named-slot purchase
+mode, or enable/disable a feature.
+
+
+DEPLOYMENT
+----------
+
+Required OresamSub deployment commands:
+
+php artisan migrate --force
+php artisan optimize:clear
+
+Named-slot support commit:
+26bd70ae
+
