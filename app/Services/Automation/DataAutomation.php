@@ -10,6 +10,11 @@ use App\Models\RecurringFailedMessagePattern;
 
 class DataAutomation{
 
+    public static function redirectPostMode(): int
+    {
+        return CURL_REDIR_POST_ALL;
+    }
+
 
     private $input_phone_number;
 
@@ -176,6 +181,7 @@ class DataAutomation{
             CURLOPT_MAXREDIRS => 10,
             CURLOPT_TIMEOUT => 0,
             CURLOPT_FOLLOWLOCATION => true,
+            CURLOPT_POSTREDIR => self::redirectPostMode(),
             CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
             CURLOPT_CUSTOMREQUEST => 'POST',
             CURLOPT_POSTFIELDS => $encoded_array,

@@ -46,3 +46,8 @@ it('always sends JSON content headers to data providers', function () {
             'Accept: application/json',
         )->not->toContain('Content-Type: text/plain', 'Accept: */*');
 });
+
+it('preserves the JSON body when a v2 provider URL redirects', function () {
+    expect(method_exists(DataAutomation::class, 'redirectPostMode'))->toBeTrue()
+        ->and(DataAutomation::redirectPostMode())->toBe(CURL_REDIR_POST_ALL);
+});
