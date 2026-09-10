@@ -8,6 +8,7 @@ use App\Models\Network;
 use App\Models\ProductPlan;
 use App\Models\RecurringFailedMessagePattern;
 use App\Models\User;
+use Illuminate\Support\Facades\Log;
 
 class MsOrgGroupAutomation{
 
@@ -197,7 +198,7 @@ class MsOrgGroupAutomation{
         logger('res::::'.$response);
 
         if ($httpcode >= 400 || ! is_array($response_dec) || (($response_dec['Status'] ?? null) !== 'successful')) {
-            logger()->warning('oresamsub.msorg_provider.http_failure', [
+            Log::channel('single')->warning('oresamsub.msorg_provider.http_failure', [
                 'http_status' => $httpcode,
                 'configured_url' => $this->url,
                 'effective_url' => $effectiveUrl,

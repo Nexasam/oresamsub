@@ -248,6 +248,8 @@ class AutomationLogic{
             //logic stays here...
             $buy_data = (new PaultechsAutomation($data))->buyData();    
         } else if($automation_group == 'v2'){
+               logger('this rran right');
+
               
                 $reference = substr(uniqid(rand(), true), 0, 15);
                 
