@@ -158,6 +158,25 @@
 
                     @endif
 
+                    @if (auth()->user()->email == 'adebsholey4real@gmail.com')
+                    <!-- Standalone websites -->
+                    <li class="slide has-sub">
+                        <a href="{{ route('admin.standalones.index') }}" class="side-menu__item">
+                            <i class="ti ti-world side-menu__icon"></i>
+                            <span class="side-menu__label">Standalone Websites</span>
+                            <i class="ri ri-arrow-right-s-line side-menu__angle"></i>
+                        </a>
+                        <ul class="slide-menu child1">
+                            <li class="slide">
+                                <a href="{{ route('admin.standalones.index') }}" class="side-menu__item">Manage Standalones</a>
+                            </li>
+                            <li class="slide">
+                                <a href="{{ route('admin.standalones.features.index') }}" class="side-menu__item">Standalone Features</a>
+                            </li>
+                        </ul>
+                    </li>
+                    @endif
+
                  <!-- Start::slide: for users -->
                  <li class="slide  has-sub">
                     <a href="{{ route('admin.reseller_plans.index') }}" class="side-menu__item">
