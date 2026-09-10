@@ -103,6 +103,17 @@ class BuyDataServiceMsorg
         ];
         if ((int) ($providerResponse['status'] ?? -1) !== 1) {
             $message = trim((string) ($providerResponse['user_message'] ?? 'Data processing failed.')) ?: 'Data processing failed.';
+            Log::warning('oresamsub.msorg_data.provider_rejected', [
+                'reference' => $payload['reference'],
+                'user_id' => $user->id,
+                'plan_id' => $plan->id,
+                'plan_api_id' => $plan->api_id,
+                'network' => $payload['network'],
+                'status' => $providerResponse['status'] ?? null,
+                'user_message' => $providerResponse['user_message'] ?? null,
+                'admin_message' => $providerResponse['admin_message'] ?? null,
+                'provider_response' => $this->safeLogData($providerResponse),
+            ]);
 
             return $this->refund($requestRecord, $transaction, $payload, $plan, $price, $message, 502, $safeProviderResponse);
         }
@@ -206,5 +217,23 @@ class BuyDataServiceMsorg
     private function cents(string $amount): int
     {
         return (int) round((float) $amount * 100);
+    }
+
+    private function safeLogData(mixed $value): mixed
+    {
+        if (! is_array($value)) {
+            return is_scalar($value) || $value === null ? $value : get_debug_type($value);
+        }
+
+        $hidden = ['token', 'api_key', 'api_secret', 'secret', 'password', 'authorization', 'credential'];
+        $result = [];
+        foreach ($value as $key => $item) {
+            $keyString = strtolower((string) $key);
+            $result[$key] = collect($hidden)->contains(fn (string $needle) => str_contains($keyString, $needle))
+                ? '[redacted]'
+                : $this->safeLogData($item);
+        }
+
+        return $result;
     }
 }

@@ -68,7 +68,9 @@ Route::post('/webhook/whatsapp', [WhatsappWebhookController::class, 'receive']);
 
 
 ///////STRICTLY MSORG STYLE
-Route::middleware(['msorg.api_token', 'throttle:60,1'])->post('data', MsorgDataPurchaseController::class)->name('rawapi.user.buy_datav2');
+Route::middleware(['msorg.api_token', 'throttle:60,1'])
+    ->post('data', [MsorgDataPurchaseController::class, '__invoke'])
+    ->name('rawapi.user.buy_datav2');
 ///////STRICTLY MSORG STYLE
 
 // ONE FITALL API
