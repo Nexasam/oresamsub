@@ -11,6 +11,11 @@ use App\Models\User;
 
 class MsOrgGroupAutomation{
 
+    public static function redirectPostMode(): int
+    {
+        return CURL_REDIR_POST_ALL;
+    }
+
     private $network_id;
 
     private $automation_id;
@@ -159,7 +164,8 @@ class MsOrgGroupAutomation{
         $encoded_array = json_encode($array);
         $header_array = array(
             'Authorization: Token '.$this->api_key,
-            'Content-Type: application/json'
+            'Content-Type: application/json',
+            'Accept: application/json'
         );
         $header_json = json_encode($header_array);
 
@@ -173,6 +179,7 @@ class MsOrgGroupAutomation{
             CURLOPT_MAXREDIRS => 10,
             CURLOPT_TIMEOUT => 0,
             CURLOPT_FOLLOWLOCATION => true,
+            CURLOPT_POSTREDIR => self::redirectPostMode(),
             CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
             CURLOPT_CUSTOMREQUEST => 'POST',
             CURLOPT_POSTFIELDS => $encoded_array,
@@ -182,8 +189,26 @@ class MsOrgGroupAutomation{
         $response = curl_exec($curl);
         $response_dec = json_decode($response,true);
         $httpcode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+        $redirectCount = curl_getinfo($curl, CURLINFO_REDIRECT_COUNT);
+        $effectiveUrl = curl_getinfo($curl, CURLINFO_EFFECTIVE_URL);
+        $curlError = curl_error($curl);
+        curl_close($curl);
         logger('req::::'.$encoded_array);
         logger('res::::'.$response);
+
+        if ($httpcode >= 400 || ! is_array($response_dec) || (($response_dec['Status'] ?? null) !== 'successful')) {
+            logger()->warning('oresamsub.msorg_provider.http_failure', [
+                'http_status' => $httpcode,
+                'configured_url' => $this->url,
+                'effective_url' => $effectiveUrl,
+                'redirect_count' => $redirectCount,
+                'curl_error' => $curlError !== '' ? $curlError : null,
+                'request_fields' => array_keys($array),
+                'ported_number' => $array['Ported_number'],
+                'request_json' => $encoded_array,
+                'response' => $response,
+            ]);
+        }
 
         if(isset($response_dec['balance_after'])){
             //we got here:
