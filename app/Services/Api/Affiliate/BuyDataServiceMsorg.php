@@ -107,7 +107,7 @@ class BuyDataServiceMsorg
         ];
         $transaction->update(array_filter([
             'automation_id' => $providerResponse['provider_id'] ?? null,
-            'admin_screen_message' => $this->providerAdminMessage($providerResponse),
+            'admin_screen_message' => $providerResponse['admin_message'] ?? null,
         ], fn ($value) => $value !== null && $value !== ''));
 
         if ((int) ($providerResponse['status'] ?? -1) !== 1) {
@@ -232,16 +232,6 @@ class BuyDataServiceMsorg
             'create_date' => $transaction->created_at, 'Ported_number' => $payload['Ported_number'],
             'idempotent_replay' => false, 'provider_called' => $providerCalled,
         ];
-    }
-
-    private function providerAdminMessage(array $providerResponse): string
-    {
-        $name = trim((string) ($providerResponse['provider_name'] ?? 'Unknown provider')) ?: 'Unknown provider';
-        $plan = trim((string) ($providerResponse['provider_plan_id'] ?? 'N/A')) ?: 'N/A';
-        $status = (int) ($providerResponse['status'] ?? -1) === 1 ? 'successful' : 'failed';
-        $response = trim((string) ($providerResponse['user_message'] ?? 'No provider message')) ?: 'No provider message';
-
-        return "Provider: {$name} | Provider plan: {$plan} | Status: {$status} | Response: {$response}";
     }
 
     private function failure(string $message, int $status): array

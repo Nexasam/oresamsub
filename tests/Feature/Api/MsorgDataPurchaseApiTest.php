@@ -124,9 +124,7 @@ it('reserves the wallet, delivers data, and replays the saved response without c
         ->and(Transaction::where('user_id', $user->id)->count())->toBe(1)
         ->and(AffiliateDataPurchaseRequest::where('user_id', $user->id)->count())->toBe(1)
         ->and($transaction->automation_id)->toBe($actualProvider->id)
-        ->and($transaction->admin_screen_message)->toBe(
-            'Provider: Rossytechs | Provider plan: rossy-plan-289 | Status: successful | Response: Data delivered.'
-        );
+        ->and($transaction->admin_screen_message)->toBe('sensitive provider detail');
 });
 
 it('returns 409 when the same reference is reused with different purchase details', function () {
