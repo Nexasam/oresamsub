@@ -103,7 +103,7 @@ class BuyDataServiceMsorg
         ];
         if ((int) ($providerResponse['status'] ?? -1) !== 1) {
             $message = trim((string) ($providerResponse['user_message'] ?? 'Data processing failed.')) ?: 'Data processing failed.';
-            Log::warning('oresamsub.msorg_data.provider_rejected', [
+            Log::channel('single')->warning('oresamsub.msorg_data.provider_rejected', [
                 'reference' => $payload['reference'],
                 'user_id' => $user->id,
                 'plan_id' => $plan->id,
@@ -114,6 +114,11 @@ class BuyDataServiceMsorg
                 'admin_message' => $providerResponse['admin_message'] ?? null,
                 'provider_response' => $this->safeLogData($providerResponse),
             ]);
+
+            $safeAdminMessage = trim((string) ($providerResponse['admin_message'] ?? ''));
+            if ($safeAdminMessage !== '') {
+                $transaction->update(['admin_screen_message' => $safeAdminMessage]);
+            }
 
             return $this->refund($requestRecord, $transaction, $payload, $plan, $price, $message, 502, $safeProviderResponse);
         }
@@ -173,7 +178,12 @@ class BuyDataServiceMsorg
             $afterRefund = number_format((float) $beforeRefund + (float) $price, 2, '.', '');
             $lockedUser->update(['main_wallet' => $afterRefund]);
             $body = $this->body($payload, $plan, $transaction, 'failed', $message, $transaction->balance_before, $transaction->balance_before, $price);
-            $transaction->update(['status' => -1, 'balance_after' => $transaction->balance_before, 'user_screen_message' => $message, 'admin_screen_message' => 'Provider did not confirm delivery']);
+            $transaction->update([
+                'status' => -1,
+                'balance_after' => $transaction->balance_before,
+                'user_screen_message' => $message,
+                'admin_screen_message' => $transaction->admin_screen_message ?: 'Provider did not confirm delivery',
+            ]);
             WalletLog::create([
                 'user_id' => $lockedUser->id, 'transaction_category' => 'DATA_REFUND_TO_MAIN_WALLET',
                 'balance_before' => $beforeRefund, 'balance_after' => $afterRefund,
