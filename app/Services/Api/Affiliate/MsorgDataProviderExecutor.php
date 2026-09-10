@@ -46,7 +46,7 @@ class MsorgDataProviderExecutor
             throw new RuntimeException('No active provider is configured for this plan.');
         }
 
-        return AutomationLogic::initiateDataPurchase([
+        $result = AutomationLogic::initiateDataPurchase([
             'phone_number' => $payload['mobile_number'],
             'automation_details' => $automation,
             'provider_plan_id' => $providerPlanId,
@@ -54,6 +54,13 @@ class MsorgDataProviderExecutor
             'plan_id' => $plan->id,
             'Ported_number' => $payload['Ported_number'],
             'validatephonenetwork' => $payload['validatephonenetwork'] ? 1 : 0,
+        ]);
+
+        return array_merge($result, [
+            'provider_id' => $provider->id,
+            'provider_name' => $provider->automation_name,
+            'provider_slug' => $provider->slug,
+            'provider_plan_id' => (string) $providerPlanId,
         ]);
     }
 }

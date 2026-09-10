@@ -31,6 +31,7 @@
 
                 @php
                       $automationss = App\Models\Automation::select('id','domain_url','automation_name')->get();
+                      $executedAutomation = $data->automation ?? $data->product_plan->automation;
                     
                 @endphp
 
@@ -236,10 +237,10 @@
                       </a>
 
                           <a 
-                              href="{{ route('admin.product_plan_categories.view_details_by_automation', ['id' => $data->product_plan->product_plan_category->id, 'automation_id' => $data->product_plan->automation->id]) }}" 
+                              href="{{ route('admin.product_plan_categories.view_details_by_automation', ['id' => $data->product_plan->product_plan_category->id, 'automation_id' => $executedAutomation->id]) }}"
                               class="block px-4 py-3 bg-blue-50 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300 font-semibold rounded-lg shadow hover:bg-blue-100 dark:hover:bg-blue-800 transition"
                           >
-                              🤖 Automation: {{ $data->product_plan->automation->automation_name }}
+                              🤖 Actual Provider: {{ $executedAutomation->automation_name }}
                           </a>
                   
                           <a 

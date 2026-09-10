@@ -100,7 +100,16 @@ class BuyDataServiceMsorg
         $safeProviderResponse = [
             'status' => (int) ($providerResponse['status'] ?? -1),
             'user_message' => (string) ($providerResponse['user_message'] ?? ''),
+            'provider_id' => $providerResponse['provider_id'] ?? null,
+            'provider_name' => $providerResponse['provider_name'] ?? null,
+            'provider_slug' => $providerResponse['provider_slug'] ?? null,
+            'provider_plan_id' => $providerResponse['provider_plan_id'] ?? null,
         ];
+        $transaction->update(array_filter([
+            'automation_id' => $providerResponse['provider_id'] ?? null,
+            'admin_screen_message' => $this->providerAdminMessage($providerResponse),
+        ], fn ($value) => $value !== null && $value !== ''));
+
         if ((int) ($providerResponse['status'] ?? -1) !== 1) {
             $message = trim((string) ($providerResponse['user_message'] ?? 'Data processing failed.')) ?: 'Data processing failed.';
             Log::channel('single')->warning('oresamsub.msorg_data.provider_rejected', [
@@ -115,18 +124,13 @@ class BuyDataServiceMsorg
                 'provider_response' => $this->safeLogData($providerResponse),
             ]);
 
-            $safeAdminMessage = trim((string) ($providerResponse['admin_message'] ?? ''));
-            if ($safeAdminMessage !== '') {
-                $transaction->update(['admin_screen_message' => $safeAdminMessage]);
-            }
-
             return $this->refund($requestRecord, $transaction, $payload, $plan, $price, $message, 502, $safeProviderResponse);
         }
 
         $message = trim((string) ($providerResponse['user_message'] ?? 'Transaction processed successfully.')) ?: 'Transaction processed successfully.';
-        $body = $this->body($payload, $plan, $transaction, 'successful', $message, $transaction->balance_before, $transaction->balance_after, $price);
+        $body = $this->body($payload, $plan, $transaction, 'successful', $message, $transaction->balance_before, $transaction->balance_after, $price, true);
         DB::transaction(function () use ($requestRecord, $transaction, $body, $safeProviderResponse): void {
-            $transaction->update(['status' => 1, 'user_screen_message' => $body['apiresponse'], 'admin_screen_message' => 'Provider confirmed delivery']);
+            $transaction->update(['status' => 1, 'user_screen_message' => $body['apiresponse']]);
             $requestRecord->update(['status' => 'successful', 'response_status' => 200, 'response_body' => $body, 'provider_response' => $safeProviderResponse]);
         });
 
@@ -167,7 +171,17 @@ class BuyDataServiceMsorg
             return $this->failure('This transaction is still processing.', 409);
         }
 
-        return ['status' => $record->response_status, 'body' => $record->response_body];
+        $body = $record->response_body;
+        $status = strtolower((string) ($body['Status'] ?? $record->status));
+        $message = $status === 'successful'
+            ? 'Existing successful transaction returned. No new purchase was made.'
+            : 'Existing failed transaction returned. No new purchase was attempted.';
+        $body['idempotent_replay'] = true;
+        $body['provider_called'] = false;
+        $body['apiresponse'] = $message;
+        $body['api_response'] = $message;
+
+        return ['status' => $record->response_status, 'body' => $body];
     }
 
     private function refund(AffiliateDataPurchaseRequest $record, Transaction $transaction, array $payload, ProductPlan $plan, string $price, string $message, int $httpStatus, array $providerResponse = []): array
@@ -177,7 +191,7 @@ class BuyDataServiceMsorg
             $beforeRefund = number_format((float) $lockedUser->main_wallet, 2, '.', '');
             $afterRefund = number_format((float) $beforeRefund + (float) $price, 2, '.', '');
             $lockedUser->update(['main_wallet' => $afterRefund]);
-            $body = $this->body($payload, $plan, $transaction, 'failed', $message, $transaction->balance_before, $transaction->balance_before, $price);
+            $body = $this->body($payload, $plan, $transaction, 'failed', $message, $transaction->balance_before, $transaction->balance_before, $price, true);
             $transaction->update([
                 'status' => -1,
                 'balance_after' => $transaction->balance_before,
@@ -205,7 +219,7 @@ class BuyDataServiceMsorg
             : $reference;
     }
 
-    private function body(array $payload, ProductPlan $plan, Transaction $transaction, string $status, string $message, mixed $before, mixed $after, string $price): array
+    private function body(array $payload, ProductPlan $plan, Transaction $transaction, string $status, string $message, mixed $before, mixed $after, string $price, bool $providerCalled = false): array
     {
         return [
             'id' => $transaction->id, 'ident' => $payload['reference'], 'payment_medium' => 'MAIN WALLET',
@@ -216,7 +230,18 @@ class BuyDataServiceMsorg
             'Status' => $status, 'plan_network' => $plan->product_plan_category->network->network_name,
             'plan_name' => $plan->product_plan_name, 'plan_amount' => $price,
             'create_date' => $transaction->created_at, 'Ported_number' => $payload['Ported_number'],
+            'idempotent_replay' => false, 'provider_called' => $providerCalled,
         ];
+    }
+
+    private function providerAdminMessage(array $providerResponse): string
+    {
+        $name = trim((string) ($providerResponse['provider_name'] ?? 'Unknown provider')) ?: 'Unknown provider';
+        $plan = trim((string) ($providerResponse['provider_plan_id'] ?? 'N/A')) ?: 'N/A';
+        $status = (int) ($providerResponse['status'] ?? -1) === 1 ? 'successful' : 'failed';
+        $response = trim((string) ($providerResponse['user_message'] ?? 'No provider message')) ?: 'No provider message';
+
+        return "Provider: {$name} | Provider plan: {$plan} | Status: {$status} | Response: {$response}";
     }
 
     private function failure(string $message, int $status): array

@@ -84,9 +84,19 @@ it('rejects a plan that does not belong to the supplied network', function () {
 it('reserves the wallet, delivers data, and replays the saved response without calling the provider twice', function () {
     $user = User::factory()->create(['api_token' => 'msorg-success-token', 'main_wallet' => '1000']);
     $plan = msorgDataPlan();
+    $actualProvider = Automation::create([
+        'automation_name' => 'Rossytechs',
+        'slug' => 'rossytechs',
+        'automation_group' => 'v2',
+        'domain_url' => 'https://rossytechs.test',
+        'data_url' => 'https://rossytechs.test/api/data/',
+        'api_public_key' => 'provider-key',
+    ]);
     $provider = Mockery::mock(MsorgDataProviderExecutor::class);
     $provider->shouldReceive('execute')->once()->andReturn([
         'status' => 1, 'user_message' => 'Data delivered.', 'admin_message' => 'sensitive provider detail',
+        'provider_id' => $actualProvider->id, 'provider_name' => 'Rossytechs',
+        'provider_slug' => 'rossytechs', 'provider_plan_id' => 'rossy-plan-289',
     ]);
     app()->instance(MsorgDataProviderExecutor::class, $provider);
     $payload = [
@@ -98,14 +108,25 @@ it('reserves the wallet, delivers data, and replays the saved response without c
     $first = postJson('/api/data', $payload, $headers)->assertOk()
         ->assertJsonPath('Status', 'successful')->assertJsonPath('ident', 'MSORG-SUCCESS-1')
         ->assertJsonPath('balance_before', '1000.00')
+        ->assertJsonPath('idempotent_replay', false)
+        ->assertJsonPath('provider_called', true)
         ->assertJsonMissing(['api_response' => 'sensitive provider detail']);
-    postJson('/api/data/', $payload, $headers)->assertOk()->assertExactJson($first->json());
+    postJson('/api/data/', $payload, $headers)->assertOk()
+        ->assertJsonPath('Status', 'successful')
+        ->assertJsonPath('idempotent_replay', true)
+        ->assertJsonPath('provider_called', false)
+        ->assertJsonPath('apiresponse', 'Existing successful transaction returned. No new purchase was made.');
 
     $expectedBalance = 1000 - (float) $first->json('plan_amount');
+    $transaction = Transaction::where('user_id', $user->id)->sole();
     expect((float) $first->json('balance_after'))->toBe($expectedBalance)
         ->and((float) $user->fresh()->main_wallet)->toBe($expectedBalance)
         ->and(Transaction::where('user_id', $user->id)->count())->toBe(1)
-        ->and(AffiliateDataPurchaseRequest::where('user_id', $user->id)->count())->toBe(1);
+        ->and(AffiliateDataPurchaseRequest::where('user_id', $user->id)->count())->toBe(1)
+        ->and($transaction->automation_id)->toBe($actualProvider->id)
+        ->and($transaction->admin_screen_message)->toBe(
+            'Provider: Rossytechs | Provider plan: rossy-plan-289 | Status: successful | Response: Data delivered.'
+        );
 });
 
 it('returns 409 when the same reference is reused with different purchase details', function () {
