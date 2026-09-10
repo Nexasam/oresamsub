@@ -2,6 +2,7 @@
 
 use App\Http\Middleware\AuthenticateExternalIntegration;
 use App\Http\Middleware\AuthenticateBusinessApi;
+use App\Http\Middleware\AuthenticateMsorgApiToken;
 use App\Http\Middleware\AuthenticateStandalone;
 use App\Http\Middleware\RequireOperationalStandaloneToken;
 use App\Http\Middleware\EnsureMobileUserIsActive;
@@ -61,6 +62,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'super_admin' => ProtectedSuperAdmin::class,
             'validate_user' => ValidateSanctumUser::class,
             'api_token' => ValidateApiToken::class,
+            'msorg.api_token' => AuthenticateMsorgApiToken::class,
             'business.api_token' => AuthenticateBusinessApi::class,
             'standalone.auth' => AuthenticateStandalone::class,
             'standalone.operational' => RequireOperationalStandaloneToken::class,
