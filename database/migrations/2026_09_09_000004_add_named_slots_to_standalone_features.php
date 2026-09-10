@@ -15,6 +15,12 @@ return new class extends Migration
         Schema::whenTableDoesntHaveColumn('standalone_feature_purchases', 'slot_name', fn (Blueprint $table) => $table->string('slot_name', 150)->nullable()->after('standalone_feature_id'));
         Schema::whenTableDoesntHaveColumn('standalone_feature_purchases', 'slot_key', fn (Blueprint $table) => $table->string('slot_key', 160)->default('__single__')->after('slot_name'));
 
+        // The old composite unique index is also the supporting index for the
+        // standalone_website_id foreign key. Create a replacement first so
+        // MySQL allows the old index to be removed.
+        if (! Schema::hasIndex('standalone_feature_subscriptions', 'sfs_site_index')) {
+            Schema::table('standalone_feature_subscriptions', fn (Blueprint $table) => $table->index('standalone_website_id', 'sfs_site_index'));
+        }
         if (Schema::hasIndex('standalone_feature_subscriptions', 'sfs_site_feature_unique')) {
             Schema::table('standalone_feature_subscriptions', fn (Blueprint $table) => $table->dropUnique('sfs_site_feature_unique'));
         }
@@ -31,9 +37,11 @@ return new class extends Migration
     {
         Schema::table('standalone_feature_purchases', fn (Blueprint $table) => $table->dropColumn(['slot_name', 'slot_key']));
         Schema::table('standalone_feature_subscriptions', function (Blueprint $table): void {
+            $table->index('standalone_website_id', 'sfs_site_index');
             $table->dropUnique('sfs_site_feature_slot_unique');
             $table->dropColumn(['slot_name', 'slot_key']);
             $table->unique(['standalone_website_id', 'standalone_feature_id'], 'sfs_site_feature_unique');
+            $table->dropIndex('sfs_site_index');
         });
         Schema::table('standalone_features', fn (Blueprint $table) => $table->dropColumn('purchase_mode'));
     }
