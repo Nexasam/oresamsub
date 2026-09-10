@@ -1,7 +1,7 @@
 <?php
 
 use App\Http\Controllers\AddonController;
-use App\Http\Controllers\Api\V1\Affiliate\MsorgDataPurchaseController;
+use App\Http\Controllers\Api\v1\Affiliate\MsorgDataPurchaseController;
 use App\Http\Controllers\Api\v1\VendorUsersApi\ProductsVendorController;
 use App\Http\Controllers\Api\v1\VendorUsersApi\WhatsappWebhookController;
 use App\Http\Controllers\ExternalIntegration\ApiIntegrationController;

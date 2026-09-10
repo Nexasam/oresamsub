@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Api\V1\Affiliate;
+namespace App\Http\Controllers\Api\v1\Affiliate;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\V1\Affiliate\PurchaseMsorgDataRequest;
