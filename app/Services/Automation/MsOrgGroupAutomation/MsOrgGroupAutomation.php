@@ -31,6 +31,8 @@ class MsOrgGroupAutomation{
 
     private $validatephonenetwork;
 
+    private $ported_number;
+
 
 
     // private $ported_number;
@@ -60,6 +62,7 @@ class MsOrgGroupAutomation{
         $this->plan_id = $data['plan_id'] ?? null;
     
         $this->validatephonenetwork = 0;
+        $this->ported_number = (bool) ($data['Ported_number'] ?? $data['ported_number'] ?? true);
     
         // ✅ credentials
         $this->token = $data['token'] ?? null;
@@ -151,7 +154,7 @@ class MsOrgGroupAutomation{
             "network"=>$api_network_id,
             "mobile_number"=>$this->mobile_number,
             "plan"=> $automation_plan_id ?? $this->automation_plan_id,
-            "Ported_number"=>true
+            "Ported_number"=>$this->ported_number
         ];
         $encoded_array = json_encode($array);
         $header_array = array(

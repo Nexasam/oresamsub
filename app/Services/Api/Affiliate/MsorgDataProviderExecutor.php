@@ -52,6 +52,7 @@ class MsorgDataProviderExecutor
             'provider_plan_id' => $providerPlanId,
             'network_id' => $plan->product_plan_category->network_id,
             'plan_id' => $plan->id,
+            'Ported_number' => $payload['Ported_number'],
             'validatephonenetwork' => $payload['validatephonenetwork'] ? 1 : 0,
         ]);
     }
