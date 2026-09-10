@@ -85,6 +85,29 @@ class DataAutomation{
         return $requestParameters;
     }
 
+    public function buildRequestHeaders($vendor_record): array
+    {
+        $headers = [];
+
+        foreach (($vendor_record->request_headers ?? []) as $item) {
+            $name = trim((string) ($item['key'] ?? ''));
+            if ($name === '') {
+                continue;
+            }
+
+            if (in_array(strtolower($name), ['content-type', 'accept'], true)) {
+                continue;
+            }
+
+            $headers[] = $name.': '.trim((string) ($item['value'] ?? ''));
+        }
+
+        $headers[] = 'Content-Type: application/json';
+        $headers[] = 'Accept: application/json';
+
+        return $headers;
+    }
+
 
 
     public function buyData($vendor_record = null, $input_phone_number = '', $vendor_plan_id = null, $ported_number = true, $input_network = '', $reference = ''){
@@ -110,9 +133,6 @@ class DataAutomation{
         // $networkdecode = $this->safeDecode($vendor_record->network_plans);
         // $network = $networkdecode[$this->input_network] ?? '1'; //should not run default
         // $success_conditions_decode = $this->safeDecode($vendor_record->success_conditions);
-
-        $headers_params_decode = $vendor_record->request_headers;
-        // $headers_params_decode = json_decode($headers_params,true);
 
         $networkdecode = $vendor_record->network_plans;
         $network = $networkdecode[$this->input_network] ?? '1'; //should not run default
@@ -142,13 +162,7 @@ class DataAutomation{
 
         
 
-        //now lets loop header params
-        $new_headers_arr = [];
-        foreach($headers_params_decode as $item){
-            $keyy = $item['key'];
-            $valuee = $item['value'];
-            $new_headers_arr[] =  "$keyy:$valuee";
-        }
+        $new_headers_arr = $this->buildRequestHeaders($vendor_record);
       
 
 

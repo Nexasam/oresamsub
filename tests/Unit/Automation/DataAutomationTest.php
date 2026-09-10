@@ -29,3 +29,20 @@ it('always sends Rossy ported number with the exact required key', function () {
         'Ported_number' => true,
     ]);
 });
+
+it('always sends JSON content headers to data providers', function () {
+    $provider = (object) [
+        'request_headers' => [
+            ['key' => 'Authorization', 'value' => 'Token provider-key'],
+            ['key' => 'Content-Type', 'value' => 'text/plain'],
+            ['key' => 'Accept', 'value' => '*/*'],
+        ],
+    ];
+
+    expect(method_exists(DataAutomation::class, 'buildRequestHeaders'))->toBeTrue()
+        ->and((new DataAutomation())->buildRequestHeaders($provider))->toContain(
+            'Authorization: Token provider-key',
+            'Content-Type: application/json',
+            'Accept: application/json',
+        )->not->toContain('Content-Type: text/plain', 'Accept: */*');
+});
