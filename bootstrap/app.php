@@ -31,6 +31,7 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Validation\ValidationException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\TooManyRequestsHttpException;
+use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -190,6 +191,10 @@ return Application::configure(basePath: dirname(__DIR__))
         // Cloudflare still need to be resolved at the origin server.
         $exceptions->render(function (Throwable $exception, Request $request) {
             if (! $request->is('api/data') && ! $request->is('api/data/*')) {
+                return null;
+            }
+
+            if ($exception instanceof HttpExceptionInterface && $exception->getStatusCode() < 500) {
                 return null;
             }
 
