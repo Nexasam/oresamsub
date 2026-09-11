@@ -163,6 +163,7 @@ class DataAutomation{
             'provider_host' => parse_url((string) $request_url, PHP_URL_HOST),
             'fields' => array_keys($new_request_params),
             'ported_number' => $new_request_params['Ported_number'] ?? null,
+            'encoded'=>$encoded_array
         ]);
 
         
