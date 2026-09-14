@@ -734,11 +734,14 @@ class OreWhatsappConversationService
         if (! $showList) {
             $topPlans = $plans->take(2);
             $buttons = $topPlans
-                ->map(fn ($plan) => [
+                ->values()
+                ->map(fn ($plan, $index) => [
                     'id' => $plan->id,
+                    // Meta may reject a reply-button message when two plans
+                    // produce the same visible title. The numbered summary
+                    // above the buttons contains each plan's full details.
                     'title' => Str::limit(
-                        ($plan->product_plan_category?->product_plan_category_name ?? 'Data')
-                        . " {$plan->validity_in_days}d",
+                        'Plan ' . ($index + 1) . " · {$plan->validity_in_days} Days",
                         20,
                         ''
                     ),

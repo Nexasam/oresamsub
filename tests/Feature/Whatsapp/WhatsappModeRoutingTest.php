@@ -119,6 +119,18 @@ it('continues the guided data flow after a plan size is selected', function () {
         'default_selling_price' => '300',
         'user_level_1_selling_price' => '300',
     ]);
+    ProductPlan::create([
+        'id' => 'B0B1C2D3-E4F5-4678-9123-ABCDEF123456',
+        'product_plan_name' => 'MTN SME 1GB Alternative',
+        'product_plan_category_id' => $category->id,
+        'automation_product_plan_id' => 'mtn-sme-1gb-alt',
+        'automation_id' => $automation->id,
+        'cost_price' => '295',
+        'data_size_in_mb' => '1000.00',
+        'validity_in_days' => '30',
+        'default_selling_price' => '305',
+        'user_level_1_selling_price' => '305',
+    ]);
 
     OreWhatsappConversation::create([
         'phone' => '2348168509044',
@@ -145,6 +157,8 @@ it('continues the guided data flow after a plan size is selected', function () {
         data_get($request->data(), 'interactive.type') === 'button'
         && collect(data_get($request->data(), 'interactive.action.buttons', []))
             ->contains(fn (array $button) => $button['reply']['id'] === $plan->id)
+        && collect(data_get($request->data(), 'interactive.action.buttons', []))
+            ->pluck('reply.title')->duplicates()->isEmpty()
     );
 
     $conversation->update([
