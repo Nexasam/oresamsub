@@ -54,14 +54,8 @@ class OreWhatsappConversationService
             'phone'
         );
     
-        $message = strtolower(
-            trim(
-                data_get(
-                    $payload,
-                    'message'
-                )
-            )
-        );
+        $rawMessage = trim((string) data_get($payload, 'message'));
+        $message = strtolower($rawMessage);
 
 
 
@@ -165,7 +159,9 @@ class OreWhatsappConversationService
     
         return $this->handleState(
             $conversation,
-            $message
+            $conversation->current_state === WhatsappState::DATA_PLAN
+                ? $rawMessage
+                : $message
         );
     }
 
@@ -916,7 +912,9 @@ class OreWhatsappConversationService
     {
         $payload = $conversation->payload ?? [];
 
-        if ($message === 'more_data_plans') {
+        $command = strtolower($message);
+
+        if ($command === 'more_data_plans') {
             return $this->showMatchingDataPlans(
                 $conversation,
                 ((int) ($payload['data_plan_page'] ?? 0)) + 1,
@@ -924,14 +922,12 @@ class OreWhatsappConversationService
             );
         }
 
-        if ($message === 'view_all_data_plans') {
+        if ($command === 'view_all_data_plans') {
             return $this->showMatchingDataPlans($conversation, 0, true);
         }
 
         $plan = $this->matchingDataPlansQuery($payload)
-            // Incoming WhatsApp messages are normalized to lowercase, while
-            // legacy plan UUIDs may contain uppercase characters.
-            ->whereRaw('LOWER(id) = ?', [strtolower($message)])
+            ->where('id', $message)
             ->first();
     
         if (! $plan) {
