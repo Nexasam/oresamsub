@@ -823,10 +823,18 @@ class OreWhatsappConversationService
 
     private function matchingDataPlansQuery(array $payload)
     {
+        $size = $payload['data_size_in_mb'] ?? null;
+
         return ProductPlan::query()
             ->with('product_plan_category')
             ->where('visibility', 1)
-            ->where('data_size_in_mb', $payload['data_size_in_mb'] ?? null)
+            // data_size_in_mb is a string column and existing values may be
+            // formatted differently (for example, "1000.00"). WhatsApp size
+            // IDs are normalized to "1000", so compare their numeric values.
+            ->whereRaw(
+                'CAST(data_size_in_mb AS DECIMAL(15, 4)) = CAST(? AS DECIMAL(15, 4))',
+                [$size]
+            )
             ->whereHas('product_plan_category', fn ($query) => $query
                 ->where('network_id', $payload['network_id'] ?? null)
                 ->where('product_id', $payload['product_id'] ?? null)
