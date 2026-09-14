@@ -136,14 +136,32 @@ it('continues the guided data flow after a plan size is selected', function () {
         whatsappInteractivePayload('button_reply', 'data_size_1000')
     )->assertOk()->assertJson(['ok' => true]);
 
-    expect(OreWhatsappConversation::where('phone', '2348168509044')->first())
-        ->current_state->toBe('data_plan');
+    $conversation = OreWhatsappConversation::where('phone', '2348168509044')->first();
+
+    expect($conversation->current_state)->toBe('data_plan');
 
     Http::assertSent(fn (Request $request) =>
         data_get($request->data(), 'interactive.type') === 'button'
         && collect(data_get($request->data(), 'interactive.action.buttons', []))
             ->contains(fn (array $button) => $button['reply']['id'] === $plan->id)
     );
+
+    $conversation->update([
+        'current_state' => 'data_type',
+        'payload' => [
+            'network_id' => $network->id,
+            'network_name' => 'MTN',
+            'product_id' => $product->id,
+            'data_size_page' => 0,
+        ],
+    ]);
+
+    $this->postJson(
+        '/api/webhook/whatsapp',
+        whatsappInteractivePayload('list_reply', 'data_size_1000')
+    )->assertOk()->assertJson(['ok' => true]);
+
+    expect($conversation->fresh()->current_state)->toBe('data_plan');
 });
 
 it('persists quick commands mode and clears guided state', function () {
