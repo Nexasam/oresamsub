@@ -929,7 +929,9 @@ class OreWhatsappConversationService
         }
 
         $plan = $this->matchingDataPlansQuery($payload)
-            ->where('id', $message)
+            // Incoming WhatsApp messages are normalized to lowercase, while
+            // legacy plan UUIDs may contain uppercase characters.
+            ->whereRaw('LOWER(id) = ?', [strtolower($message)])
             ->first();
     
         if (! $plan) {

@@ -108,6 +108,7 @@ it('continues the guided data flow after a plan size is selected', function () {
         'network_id' => $network->id,
     ]);
     $plan = ProductPlan::create([
+        'id' => 'A0B1C2D3-E4F5-4678-9123-ABCDEF123456',
         'product_plan_name' => 'MTN SME 1GB',
         'product_plan_category_id' => $category->id,
         'automation_product_plan_id' => 'mtn-sme-1gb',
@@ -162,6 +163,13 @@ it('continues the guided data flow after a plan size is selected', function () {
     )->assertOk()->assertJson(['ok' => true]);
 
     expect($conversation->fresh()->current_state)->toBe('data_plan');
+
+    $this->postJson(
+        '/api/webhook/whatsapp',
+        whatsappInteractivePayload('button_reply', $plan->id)
+    )->assertOk()->assertJson(['ok' => true]);
+
+    expect($conversation->fresh()->current_state)->toBe('data_phone');
 });
 
 it('persists quick commands mode and clears guided state', function () {
