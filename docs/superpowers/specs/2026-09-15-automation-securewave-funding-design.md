@@ -26,7 +26,7 @@ There is at most one funding configuration per automation. Existing `threshold`,
 
 ## Securewave integration
 
-A focused HTTP client reads the existing `FundingOption` credentials for `securewaveng`. It provides master-balance lookup, customer creation, and customer funding. Requests have bounded connection and response timeouts and return normalized results. The customer-creation URL is configurable because Securewave's public material does not publish its request schema.
+A focused HTTP client reads the existing `FundingOption` credentials for `securewaveng`. It provides master-balance lookup, customer creation, and customer funding. Requests have bounded connection and response timeouts and return normalized results. Securewave endpoint URLs live in application configuration and are not environment variables.
 
 Customer creation is an explicit admin action. It sends the automation name and admin-entered unique email and persists the returned customer reference when present. Duplicate provisioning is rejected locally.
 

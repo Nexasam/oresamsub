@@ -21,9 +21,9 @@ return [
     'securewave' => [
         'webhook_secret1' => env('SECUREWAVESECRET1'),
         'webhook_secret2' =>  env('SECUREWAVESECRET2'),
-        'balance_url' => env('SECUREWAVE_BALANCE_URL', 'https://securewaveng.com/api/balance'),
-        'customer_create_url' => env('SECUREWAVE_CUSTOMER_CREATE_URL', 'https://securewaveng.com/api/customers/create'),
-        'customer_fund_url' => env('SECUREWAVE_CUSTOMER_FUND_URL', 'https://securewaveng.com/api/customer_withdrawals/withdraw'),
+        'balance_url' => 'https://securewaveng.com/api/balance',
+        'customer_create_url' => 'https://securewaveng.com/api/customers/create',
+        'customer_fund_url' => 'https://securewaveng.com/api/customer_withdrawals/withdraw',
     ],
 
     'whatsapp' => [
