@@ -20,6 +20,13 @@ class AutomationWalletFundingController extends Controller
         ]);
     }
 
+    public function manage(Automation $automation): View
+    {
+        return view('admin.automations.partials.funding-manage', [
+            'automation' => $automation->load('walletFunding'),
+        ]);
+    }
+
     public function configure(Request $request, Automation $automation): RedirectResponse
     {
         $data = $request->validate([

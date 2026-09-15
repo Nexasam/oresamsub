@@ -38,7 +38,11 @@ The five-minute command refreshes configured balances from successful transactio
 
 ## Admin interface
 
-An admin-only funding page lists every automation, including unconfigured ones. Each row displays customer status, current/default balance, threshold, default funding amount, response path, balance source, last update, low-stock state, auto-funding state, and the last error.
+An admin-only funding page lists every automation, including unconfigured ones, in a compact table matching the density and styling of `admin/product_plans2`. Columns show the automation, current balance, threshold, default funding amount, Securewave customer state, automatic-funding state, stock status, last update, and a Manage action.
+
+Manage opens one reusable right-side drawer rather than rendering a large form or modal for every row. Drawer content is loaded on demand for the selected automation, keeping initial page markup small. The table remains visible behind the drawer on desktop. On narrow screens, the drawer occupies the available viewport width and its body scrolls independently while the header and close control remain visible.
+
+The drawer contains the selected automation summary, funding configuration form, customer provisioning action, response-history refresh, manual balance correction, automatic-funding toggle, manual funding form, and latest error details. Existing POST endpoints remain authoritative; successful form submissions reload the table so balances and statuses cannot become stale. Escape, backdrop click, and the close button dismiss the drawer, and focus returns to the Manage button that opened it.
 
 Administrators can:
 

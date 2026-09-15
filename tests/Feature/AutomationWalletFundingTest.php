@@ -313,6 +313,42 @@ it('shows every automation on the admin funding page', function () {
         ->assertSee('Paultechs');
 });
 
+it('renders the funding page as a compact table with one lazy management drawer', function () {
+    $admin = walletFundingAdmin();
+    fundingConfig(fundingAutomation(['automation_name' => 'Affatech']));
+    fundingConfig(fundingAutomation(['automation_name' => 'Paultechs']));
+
+    $response = $this->actingAs($admin)->get(route('admin.automation-funding.index'));
+    $html = $response->getContent();
+
+    $response->assertOk()
+        ->assertSee('Current Balance')
+        ->assertSee('Default Funding')
+        ->assertSee('Securewave Customer')
+        ->assertSee('data-manage-funding', false)
+        ->assertSee('automation-funding-drawer', false);
+
+    expect(substr_count($html, 'id="automation-funding-drawer"'))->toBe(1)
+        ->and($html)->not->toContain('name="balance_response_path"');
+});
+
+it('loads all controls for the selected automation in the management drawer', function () {
+    $admin = walletFundingAdmin();
+    $automation = fundingAutomation(['automation_name' => 'Affatech']);
+    fundingConfig($automation, ['linked_customer_email' => 'affatech@example.com']);
+
+    $this->actingAs($admin)
+        ->get(route('admin.automation-funding.manage', $automation))
+        ->assertOk()
+        ->assertSee('Manage Affatech')
+        ->assertSee('name="balance_response_path"', false)
+        ->assertSee('Create Securewave Customer')
+        ->assertSee('Refresh from Transactions')
+        ->assertSee('Correct Balance')
+        ->assertSee('Turn Auto')
+        ->assertSee('Fund Automation');
+});
+
 it('configures an automation with default balance threshold and response path', function () {
     $admin = walletFundingAdmin();
     $automation = fundingAutomation();
