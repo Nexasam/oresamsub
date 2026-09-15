@@ -1,220 +1,127 @@
 <?php
+
 namespace App\Services\Automation;
 
 use App\Models\AutomationWalletFunding;
-use App\Models\FundingOption;
+use App\Services\Securewave\SecurewaveClient;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class WalletAutoFundingService
 {
-    public function run()
+    public function __construct(
+        private readonly SecurewaveClient $securewave,
+        private readonly AutomationBalanceResolver $balanceResolver,
+    ) {}
+
+    public function run(): void
     {
-        // AutomationWalletFunding::with('automation')
-        // ->where('automatic_funding', true)
-        // ->where('active', 'yes')
-        // ->chunk(5, function ($automations) {
-
-        //     foreach ($automations as $automation) {
-        //         $this->process($automation);
-        //     }
-        // });
-        exit;
-
-        $automations = AutomationWalletFunding::with('automation')
-        ->where('automatic_funding', true)
-        ->where('active', 'yes')
-        ->get();
-
-
-        foreach ($automations as $automation) {
-            $this->process($automation);
-        }
+        AutomationWalletFunding::query()
+            ->with('automation')
+            ->where('automatic_funding', true)
+            ->where('active', 'yes')
+            ->chunkById(50, function ($fundings): void {
+                foreach ($fundings as $funding) {
+                    $this->process($funding);
+                }
+            });
     }
 
-    public function getSecurewaveMerchantBalance(){
-
-        // 'Authorization: Bearer '.$api_secret_key,
-        // 'x-api-key: '.$api_public_key
-
-        $funding_option = FundingOption::where('slug','securewaveng')->first();
-
-
-        $api_public_key = $funding_option->api_public_key;
-        $api_secret_key = $funding_option->api_secret_key;
-
-        $curl = curl_init();
-
-
-        curl_setopt_array($curl, array(
-        CURLOPT_URL => 'https://securewaveng.com/api/balance',
-        CURLOPT_RETURNTRANSFER => true,
-        CURLOPT_ENCODING => '',
-        CURLOPT_MAXREDIRS => 10,
-        CURLOPT_TIMEOUT => 0,
-        CURLOPT_FOLLOWLOCATION => true,
-        CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-        CURLOPT_CUSTOMREQUEST => 'GET',
-        CURLOPT_HTTPHEADER => array(
-            'Accept: application/json',
-            'Content-Type: application/json',
-            'Authorization: Bearer '.$api_secret_key,
-            'x-api-key: '.$api_public_key
-        ),
-        ));
-
-        $response = curl_exec($curl);
-
-        $response_dec = json_decode($response,true);
-
-        curl_close($curl);
-
-        if($response_dec['status']){
-            $balance = $response_dec['data']['balance'] ?? 0;
-            return [
-                'status' => 1,
-                'messsage' => "success",
-                'balance' => $balance,
-                'data' => $response_dec
-            ];
-        }
+    public function getSecurewaveMerchantBalance(): array
+    {
+        $result = $this->securewave->merchantBalance();
 
         return [
-            'status' => -1,
-            'messsage' => $response_dec['message'],
-            'balance' => 0,
-            'data' => $response_dec
-
+            'status' => $result['ok'] ? 1 : -1,
+            'message' => $result['message'],
+            'balance' => $result['balance'] ?? 0,
+            'data' => $result['data'],
         ];
-        
-        
     }
 
-    public function process($automation)
+    public function process(AutomationWalletFunding $funding): array
     {
-        // $user = $automation->automation->user;
-        // $wallet = $user->wallet;
-
-        // if (!$wallet) return;
-
-        // Check threshold
-        if ($automation->last_balance > $automation->threshold) {
-            logger('Threshold not reached yet.');
-            return;
+        if (! $funding->automatic_funding || $funding->active !== 'yes') {
+            return $this->skipped('Automatic funding is disabled.');
         }
 
-        $merchantbalance = $this->getSecurewaveMerchantBalance();
-        // logger('Merchant bal.'.json_encode($merchantbalance));
-        
-        if(($automation->amount_to_fund > $merchantbalance['balance']) || $merchantbalance['balance'] == 0){
-            //no funds to fund from or amount is great that merchant amount
-            logger('insufificent merchant balance:'.json_encode($merchantbalance));
-            return;
+        $this->balanceResolver->sync($funding);
+        $funding->refresh();
+
+        if ((float) $funding->last_balance > (float) $funding->threshold) {
+            return $this->skipped('The automation balance is above its threshold.');
         }
 
-        try {
-            // 🔥 FUNDING LOGIC HERE
-           $fundw = $this->fundWallet($automation);
-
-            // Optional logging
-            Log::info('Auto funding result', [
-                'amount' => $automation->amount_to_fund,
-                'result' => json_encode($fundw)
-            ]);
-
-        } catch (\Throwable $e) {
-
-            Log::error('Auto funding failed', [
-                // 'user_id' => $user->id,
-                'error' => $e->getMessage()
-            ]);
-
-            // if ($automation->send_failed_notification) {
-            //     $this->notifyFailure($user, $e->getMessage());
-            // }
-        }
+        return $this->fund($funding, (float) $funding->amount_to_fund, 'automatic');
     }
 
-    protected function fundWallet($automation)
+    public function fund(AutomationWalletFunding $funding, float $amount, string $source = 'manual'): array
     {
-        $amount_to_fund = $automation->amount_to_fund;
-        // OPTION 1: Internal wallet top-up
-        // $user->wallet->increment('balance', $amount);
+        if ($amount <= 0) {
+            return $this->fail($funding, 'Funding amount must be greater than zero.');
+        }
 
-        // OPTION 2 (later): call payment gateway / virtual account funding
-        // e.g Monnify / Paystack API
+        if (blank($funding->linked_customer_email) || ! $funding->securewave_customer_created_at) {
+            return $this->fail($funding, 'Create the Securewave customer before funding this automation.');
+        }
 
-        // You can also create a transaction record
-        // $user->transactions()->create([
-        //     'type' => 'credit',
-        //     'amount' => $amount,
-        //     'description' => 'Auto wallet funding',
-        //     'status' => 'success',
-        // ]);
+        return DB::transaction(function () use ($funding, $amount, $source): array {
+            $locked = AutomationWalletFunding::query()->lockForUpdate()->findOrFail($funding->id);
+            $merchant = $this->securewave->merchantBalance();
 
-        $funding_option = FundingOption::where('slug','securewaveng')->first();
-
-
-        $api_public_key = $funding_option->api_public_key;
-        $api_secret_key = $funding_option->api_secret_key;
-
-
-           $arr = [
-                "customer_email"=>$automation->linked_customer_email,
-                "amount"=>$amount_to_fund,
-                "narration"=>"Customer withdrawal"
-           ];
-           $json_req = json_encode($arr);
-
-            $curl = curl_init();
-
-            curl_setopt_array($curl, array(
-            CURLOPT_URL => 'https://securewaveng.com/api/customer_withdrawals/withdraw',
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_ENCODING => '',
-            CURLOPT_MAXREDIRS => 10,
-            CURLOPT_TIMEOUT => 0,
-            CURLOPT_FOLLOWLOCATION => true,
-            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-            CURLOPT_CUSTOMREQUEST => 'POST',
-            CURLOPT_POSTFIELDS =>$json_req,
-            CURLOPT_HTTPHEADER => array(
-                'Accept: application/json',
-                'Content-Type: application/json',
-                'Authorization: Bearer '.$api_secret_key,
-                'x-api-key: '.$api_public_key
-            ),
-            ));
-
-            $response = curl_exec($curl);
-
-            $response_dec = json_decode($response,true);
-    
-            curl_close($curl);
-    
-            if($response_dec['status']){
-                // $balance = $response_dec['data']['balance'] ?? 0;
-                logger('success funding');
-                $automwa = AutomationWalletFunding::where('automation_id',$automation->automation->id)->update([
-                    'last_balance' => $amount_to_fund + $automation->last_balance
-                ]);
-                return [
-                    'status' => 1,
-                    'messsage' => "successful withdrawal"
-                ];
+            if (! $merchant['ok']) {
+                return $this->fail($locked, $merchant['message']);
             }
-    
-            logger('failed funding'.json_encode($arr));
+
+            if ($merchant['balance'] === null || $amount > $merchant['balance']) {
+                return $this->fail($locked, 'Insufficient Securewave merchant balance for this funding amount.');
+            }
+
+            $result = $this->securewave->fundCustomer($locked->linked_customer_email, $amount);
+
+            if (! $result['ok']) {
+                return $this->fail($locked, $result['message']);
+            }
+
+            $newBalance = $result['customer_balance'] ?? ((float) $locked->last_balance + $amount);
+            $locked->forceFill([
+                'last_balance' => $newBalance,
+                'balance_source' => 'securewave_funding',
+                'balance_source_transaction_id' => null,
+                'last_balance_synced_at' => now(),
+                'last_funded_at' => now(),
+                'last_error' => null,
+            ])->save();
+
+            Log::info('Automation wallet funded through Securewave.', [
+                'automation_id' => $locked->automation_id,
+                'amount' => $amount,
+                'source' => $source,
+            ]);
+
             return [
-                'status' => -1,
-                'messsage' => $response_dec['message']
+                'ok' => true,
+                'skipped' => false,
+                'message' => $result['message'],
+                'balance' => $newBalance,
             ];
+        }, 3);
     }
 
-    protected function notifyFailure($user, $message)
+    private function fail(AutomationWalletFunding $funding, string $message): array
     {
-        // Simple version
-        Log::warning("Notify user {$user->id}: {$message}");
+        $funding->forceFill(['last_error' => $message])->save();
 
-        // Later: Mail / SMS / WhatsApp
+        Log::warning('Automation wallet funding was not completed.', [
+            'automation_id' => $funding->automation_id,
+            'message' => $message,
+        ]);
+
+        return ['ok' => false, 'skipped' => false, 'message' => $message];
+    }
+
+    private function skipped(string $message): array
+    {
+        return ['ok' => false, 'skipped' => true, 'message' => $message];
     }
 }

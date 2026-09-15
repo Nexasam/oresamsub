@@ -28,6 +28,11 @@ class Automation extends Model
         'success_condition' => 'array',
     ];
 
+    public function walletFunding()
+    {
+        return $this->hasOne(AutomationWalletFunding::class);
+    }
+
      
 
 }

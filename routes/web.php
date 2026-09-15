@@ -9,6 +9,7 @@ use App\Http\Controllers\AdminSettingsController;
 use App\Http\Controllers\AirtimeController;
 use App\Http\Controllers\AnnouncementsController;
 use App\Http\Controllers\AutomationController;
+use App\Http\Controllers\AutomationWalletFundingController;
 use App\Http\Controllers\AutomationKeyController;
 use App\Http\Controllers\BulkDataPlanController;
 use App\Http\Controllers\BonusController;
@@ -858,6 +859,15 @@ Route::middleware(['set_locale'])->group(function () {
             Route::middleware(['auth','verified','admin'])->post('admin/automations/store', [AutomationController::class, 'store'])->name('admin.automation.store');
             Route::middleware(['auth','verified','admin'])->post('admin/automations/storev2', [AutomationController::class, 'storev2'])->name('admin.automation.storev2');
             Route::middleware(['auth','verified','admin'])->post('admin/automations/update', [AutomationController::class, 'update'])->name('admin.automation.update');
+            Route::middleware(['auth','verified','admin'])->prefix('admin/automation-funding')->name('admin.automation-funding.')->group(function () {
+                Route::get('/', [AutomationWalletFundingController::class, 'index'])->name('index');
+                Route::post('/automations/{automation}/configure', [AutomationWalletFundingController::class, 'configure'])->name('configure');
+                Route::post('/{funding}/create-customer', [AutomationWalletFundingController::class, 'createCustomer'])->name('create-customer');
+                Route::post('/{funding}/refresh-balance', [AutomationWalletFundingController::class, 'refreshBalance'])->name('refresh-balance');
+                Route::post('/{funding}/correct-balance', [AutomationWalletFundingController::class, 'correctBalance'])->name('correct-balance');
+                Route::post('/{funding}/toggle', [AutomationWalletFundingController::class, 'toggle'])->name('toggle');
+                Route::post('/{funding}/fund', [AutomationWalletFundingController::class, 'fund'])->name('fund');
+            });
             // Route::middleware(['auth','verified','admin'])->get('admin/automations/ogdams/view', [AutomationController::class, 'dashboard'])->name('admin.automation.ogdams.dashboard_view');
 
 

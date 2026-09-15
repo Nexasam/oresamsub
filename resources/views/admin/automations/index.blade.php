@@ -44,6 +44,7 @@
               <div class="box">
                 <div class="box-header flex items-center space-x-4 justify-between">
                   <h5 class="box-title">Automations</h5>
+                  <a href="{{ route('admin.automation-funding.index') }}" class="ti-btn ti-btn-info">Wallet Funding</a>
                   
 
                   {{-- //only for superadmin:  sellingpoint1 --}}
