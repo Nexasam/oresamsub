@@ -402,10 +402,24 @@ it('loads all controls for the selected automation in the management drawer', fu
         ->assertSee('name="customer_first_name"', false)
         ->assertSee('name="provider_account_number"', false)
         ->assertSee('Create Securewave Customer')
-        ->assertSee('Refresh from Transactions')
+        ->assertSee('Sync Balance')
         ->assertSee('Correct Balance')
         ->assertSee('Turn Auto')
         ->assertSee('Fund Automation');
+});
+
+it('orders funding actions before configuration and balance correction', function () {
+    $admin = walletFundingAdmin();
+    $automation = fundingAutomation(['automation_name' => 'Affatech']);
+    fundingConfig($automation, ['linked_customer_email' => 'affatech@example.com']);
+
+    $html = $this->actingAs($admin)
+        ->get(route('admin.automation-funding.manage', $automation))
+        ->assertOk()
+        ->getContent();
+
+    expect(strpos($html, 'Funding readiness'))->toBeLessThan(strpos($html, 'Automation settings'))
+        ->and(strpos($html, 'Fund Automation'))->toBeLessThan(strpos($html, 'Correct Balance'));
 });
 
 it('configures an automation with default balance threshold and response path', function () {
