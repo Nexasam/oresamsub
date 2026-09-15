@@ -12,6 +12,12 @@ class FundingOption extends Model
     use HasFactory, HasUuids;
 
     protected $guarded = [];
+
+    protected $hidden = ['virtual_account_id_number'];
+
+    protected $casts = [
+        'virtual_account_id_number' => 'encrypted',
+    ];
     public function bank_codes(){
         return $this->hasMany(FundingOptionBankCodes::class,'funding_option_id','id');
     }

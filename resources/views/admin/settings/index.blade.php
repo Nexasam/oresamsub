@@ -1053,6 +1053,17 @@
                                                           <label class="ti-form-label mb-0">Secret key: </label>
                                                           <input type="text" required class="my-auto ti-form-input" name="api_secret_key" value="{{ $funding_option->api_secret_key != NULL  ? substr($funding_option->api_secret_key,0,2).str_repeat('X',5).substr($funding_option->api_secret_key,-3)  : '' }}"  placeholder="">
                                                         </div>
+                                                        @if($funding_option->slug === 'securewaveng')
+                                                          <div class="space-y-2 mt-5">
+                                                            <label class="ti-form-label mb-0">Securewave business ID</label>
+                                                            <input type="text" required class="my-auto ti-form-input" name="contract_code" value="{{ $funding_option->contract_code }}" placeholder="Merchant business unique ID">
+                                                          </div>
+                                                          <div class="space-y-2 mt-5">
+                                                            <label class="ti-form-label mb-0">Shared BVN for virtual accounts</label>
+                                                            <input type="password" inputmode="numeric" pattern="[0-9]{11}" maxlength="11" class="my-auto ti-form-input" name="virtual_account_id_number" value="" placeholder="{{ $funding_option->virtual_account_id_number ? 'Configured — leave blank to keep it' : 'Enter 11-digit BVN' }}" autocomplete="new-password">
+                                                            <small>This value is encrypted. It is used for all automation virtual accounts and is never shown again.</small>
+                                                          </div>
+                                                        @endif
                                                         <hr>
                                                         <div class="space-y-2">
                                                         <button type="submit" class="ti-btn ti-btn-primary w-full">Update Funding Option</button>
@@ -1358,4 +1369,3 @@
 
        
 @endsection
-

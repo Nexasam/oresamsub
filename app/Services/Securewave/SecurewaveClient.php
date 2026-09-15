@@ -16,14 +16,62 @@ class SecurewaveClient
         return $this->request('get', config('services.securewave.balance_url'));
     }
 
-    public function createCustomer(string $name, string $email): array
+    public function createCustomer(
+        string $firstName,
+        string $lastName,
+        string $email,
+        string $phoneNumber,
+        string $bankCode,
+        string $externalCustomerId
+    ): array
     {
-        return $this->request('post', config('services.securewave.customer_create_url'), [
-            'name' => $name,
+        $option = $this->option();
+
+        if (! $option) {
+            return $this->failure('Securewave credentials are not configured.');
+        }
+
+        if (blank($option->contract_code) || blank($option->virtual_account_id_number)) {
+            return $this->failure('Securewave business ID and shared BVN must be configured in Funding Options.');
+        }
+
+        $result = $this->request('post', config('services.securewave.customer_create_url'), [
             'email' => $email,
-            'customer_name' => $name,
-            'customer_email' => $email,
+            'first_name' => $firstName,
+            'last_name' => $lastName,
+            'phone_number' => $phoneNumber,
+            'bank_code' => [(int) $bankCode],
+            'business_id' => $option->contract_code,
+            'account_type' => 'static',
+            'id_type' => 'bvn',
+            'id_number' => $option->virtual_account_id_number,
+            'metadata' => [
+                'external_customer_id' => $externalCustomerId,
+                'source' => 'automation-funding',
+            ],
         ]);
+
+        if (! $result['ok']) {
+            return $result;
+        }
+
+        $accounts = data_get($result, 'data.data', []);
+        $account = collect(is_array($accounts) ? $accounts : [])
+            ->first(fn ($item) => is_array($item)
+                && (string) ($item['bank_code'] ?? '') === (string) $bankCode
+                && (string) ($item['status'] ?? '1') === '1');
+
+        if (! is_array($account)) {
+            return $this->failure('Securewave did not return the requested virtual account.', $result['data']);
+        }
+
+        $result['account'] = $account;
+        $result['customer_reference'] = $account['account_reference']
+            ?? $account['customer_reference']
+            ?? $account['reference']
+            ?? null;
+
+        return $result;
     }
 
     public function fundCustomer(string $email, float $amount): array
@@ -35,9 +83,25 @@ class SecurewaveClient
         ]);
     }
 
+    public function saveCustomerBankInfo(
+        string $email,
+        string $bankName,
+        string $accountName,
+        string $bankCode,
+        string $accountNumber
+    ): array {
+        return $this->request('post', config('services.securewave.customer_bank_info_url'), [
+            'customer_email' => $email,
+            'bank_name' => $bankName,
+            'account_name' => $accountName,
+            'bank_code' => $bankCode,
+            'account_number' => $accountNumber,
+        ]);
+    }
+
     private function request(string $method, ?string $url, array $payload = []): array
     {
-        $option = FundingOption::query()->where('slug', 'securewaveng')->first();
+        $option = $this->option();
 
         if (! $option || blank($option->api_public_key) || blank($option->api_secret_key)) {
             return $this->failure('Securewave credentials are not configured.');
@@ -61,6 +125,11 @@ class SecurewaveClient
 
             return $this->failure('Securewave request failed.');
         }
+    }
+
+    private function option(): ?FundingOption
+    {
+        return FundingOption::query()->where('slug', 'securewaveng')->first();
     }
 
     private function http(FundingOption $option): PendingRequest

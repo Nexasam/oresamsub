@@ -22,7 +22,8 @@ return [
         'webhook_secret1' => env('SECUREWAVESECRET1'),
         'webhook_secret2' =>  env('SECUREWAVESECRET2'),
         'balance_url' => 'https://securewaveng.com/api/balance',
-        'customer_create_url' => 'https://securewaveng.com/api/customers/create',
+        'customer_create_url' => 'https://securewaveng.com/api/virtual_accounts/generate',
+        'customer_bank_info_url' => 'https://securewaveng.com/api/customer_withdrawals/bank-info',
         'customer_fund_url' => 'https://securewaveng.com/api/customer_withdrawals/withdraw',
     ],
 

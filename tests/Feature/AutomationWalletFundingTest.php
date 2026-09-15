@@ -35,6 +35,14 @@ function fundingConfig(Automation $automation, array $overrides = []): Automatio
         'default_balance' => 5000,
         'last_balance' => 5000,
         'balance_response_path' => 'data.balance_after',
+        'customer_first_name' => 'Affa',
+        'customer_last_name' => 'Tech',
+        'customer_phone_number' => '08012345678',
+        'bank_code' => '1',
+        'provider_bank_name' => 'Provider Bank',
+        'provider_bank_code' => '058',
+        'provider_account_name' => 'Affatech Limited',
+        'provider_account_number' => '0123456789',
         'automatic_funding' => true,
         'active' => 'yes',
     ], $overrides));
@@ -47,6 +55,8 @@ function securewaveOption(): FundingOption
         'slug' => 'securewaveng',
         'api_public_key' => 'public-key',
         'api_secret_key' => 'secret-key',
+        'contract_code' => 'BUSINESS-123',
+        'virtual_account_id_number' => '12345678901',
         'activation_status' => '1',
     ]);
 }
@@ -160,11 +170,17 @@ it('normalizes Securewave merchant balance and sends stored credentials', functi
 
 it('creates and funds a Securewave customer with normalized balances', function () {
     securewaveOption();
-    config()->set('services.securewave.customer_create_url', 'https://securewaveng.com/api/customers/create');
     Http::fake([
-        'securewaveng.com/api/customers/create' => Http::response([
+        'securewaveng.com/api/virtual_accounts/generate' => Http::response([
             'status' => true,
-            'data' => ['customer_reference' => 'CUS-123'],
+            'data' => [[
+                'account_reference' => 'CUS-123',
+                'account_number' => '0123456789',
+                'account_name' => 'Affa Tech',
+                'bank_name' => 'Test Bank',
+                'bank_code' => 1,
+                'status' => 1,
+            ]],
         ]),
         'securewaveng.com/api/customer_withdrawals/withdraw' => Http::response([
             'status' => true,
@@ -173,17 +189,40 @@ it('creates and funds a Securewave customer with normalized balances', function 
         ]),
     ]);
 
-    $customer = app(SecurewaveClient::class)->createCustomer('Affatech', 'affatech@example.com');
+    $customer = app(SecurewaveClient::class)->createCustomer(
+        'Affa', 'Tech', 'affatech@example.com', '08012345678', '1', 'AUTOMATION-123'
+    );
     $funding = app(SecurewaveClient::class)->fundCustomer('affatech@example.com', 3000);
 
     expect($customer['ok'])->toBeTrue()
         ->and($customer['customer_reference'])->toBe('CUS-123')
+        ->and($customer['account']['account_number'])->toBe('0123456789')
         ->and($funding['ok'])->toBeTrue()
         ->and($funding['customer_balance'])->toBe(4200.0);
 
     Http::assertSent(fn ($request) => $request->url() === 'https://securewaveng.com/api/customer_withdrawals/withdraw'
         && $request['customer_email'] === 'affatech@example.com'
         && (float) $request['amount'] === 3000.0);
+
+    Http::assertSent(fn ($request) => $request->url() === 'https://securewaveng.com/api/virtual_accounts/generate'
+        && $request['email'] === 'affatech@example.com'
+        && $request['first_name'] === 'Affa'
+        && $request['last_name'] === 'Tech'
+        && $request['phone_number'] === '08012345678'
+        && $request['bank_code'] === [1]
+        && $request['business_id'] === 'BUSINESS-123'
+        && $request['account_type'] === 'static'
+        && $request['id_type'] === 'bvn'
+        && $request['id_number'] === '12345678901'
+        && $request['metadata']['external_customer_id'] === 'AUTOMATION-123');
+});
+
+it('encrypts the shared Securewave BVN at rest', function () {
+    $option = securewaveOption();
+
+    expect($option->virtual_account_id_number)->toBe('12345678901')
+        ->and(DB::table('funding_options')->where('id', $option->id)->value('virtual_account_id_number'))
+        ->not->toBe('12345678901');
 });
 
 it('does not normalize malformed or failed Securewave responses as success', function () {
@@ -205,6 +244,7 @@ it('does not fund when the Securewave merchant balance is insufficient', functio
     $funding = fundingConfig(fundingAutomation(), [
         'linked_customer_email' => 'affatech@example.com',
         'securewave_customer_created_at' => now(),
+        'securewave_bank_info_saved_at' => now(),
         'last_balance' => 500,
     ]);
     Http::fake([
@@ -240,6 +280,7 @@ it('prefers the confirmed Securewave customer balance after funding', function (
     $funding = fundingConfig(fundingAutomation(), [
         'linked_customer_email' => 'affatech@example.com',
         'securewave_customer_created_at' => now(),
+        'securewave_bank_info_saved_at' => now(),
         'last_balance' => 500,
     ]);
     Http::fake([
@@ -263,6 +304,7 @@ it('adds a confirmed funded amount when Securewave omits customer balance', func
     $funding = fundingConfig(fundingAutomation(), [
         'linked_customer_email' => 'affatech@example.com',
         'securewave_customer_created_at' => now(),
+        'securewave_bank_info_saved_at' => now(),
         'last_balance' => 500,
     ]);
     Http::fake([
@@ -342,6 +384,8 @@ it('loads all controls for the selected automation in the management drawer', fu
         ->assertOk()
         ->assertSee('Manage Affatech')
         ->assertSee('name="balance_response_path"', false)
+        ->assertSee('name="customer_first_name"', false)
+        ->assertSee('name="provider_account_number"', false)
         ->assertSee('Create Securewave Customer')
         ->assertSee('Refresh from Transactions')
         ->assertSee('Correct Balance')
@@ -356,6 +400,14 @@ it('configures an automation with default balance threshold and response path', 
     $this->actingAs($admin)
         ->post(route('admin.automation-funding.configure', $automation), [
             'linked_customer_email' => 'affatech@example.com',
+            'customer_first_name' => 'Affa',
+            'customer_last_name' => 'Tech',
+            'customer_phone_number' => '08012345678',
+            'bank_code' => '1',
+            'provider_bank_name' => 'Provider Bank',
+            'provider_bank_code' => '058',
+            'provider_account_name' => 'Affatech Limited',
+            'provider_account_number' => '0123456789',
             'balance_response_path' => 'data.balance_after',
             'default_balance' => 8000,
             'threshold' => 1500,
@@ -367,6 +419,11 @@ it('configures an automation with default balance threshold and response path', 
 
     $funding = $automation->fresh()->walletFunding;
     expect($funding->last_balance)->toBe('8000.00')
+        ->and($funding->customer_first_name)->toBe('Affa')
+        ->and($funding->provider_bank_name)->toBe('Provider Bank')
+        ->and($funding->provider_account_number)->toBe('0123456789')
+        ->and(DB::table('automation_wallet_fundings')->where('id', $funding->id)->value('provider_account_number'))
+        ->not->toBe('0123456789')
         ->and($funding->threshold)->toBe('1500.00')
         ->and($funding->amount_to_fund)->toBe('5000.00')
         ->and($funding->automatic_funding)->toBeTrue();
@@ -379,9 +436,21 @@ it('explicitly creates the configured automation customer on Securewave', functi
         'linked_customer_email' => 'affatech@example.com',
     ]);
     Http::fake([
-        'securewaveng.com/api/customers/create' => Http::response([
+        'securewaveng.com/api/virtual_accounts/generate' => Http::response([
             'status' => true,
-            'data' => ['customer_reference' => 'CUS-AFFATECH'],
+            'data' => [[
+                'account_reference' => 'CUS-AFFATECH',
+                'account_number' => '0123456789',
+                'account_name' => 'Affa Tech',
+                'bank_name' => 'Test Bank',
+                'bank_code' => 1,
+                'status' => 1,
+            ]],
+        ]),
+        'securewaveng.com/api/customer_withdrawals/bank-info' => Http::response([
+            'status' => true,
+            'message' => 'Customer bank info saved successfully',
+            'data' => ['id' => 77],
         ]),
     ]);
 
@@ -391,7 +460,35 @@ it('explicitly creates the configured automation customer on Securewave', functi
         ->assertSessionHas('success');
 
     expect($funding->fresh()->securewave_customer_reference)->toBe('CUS-AFFATECH')
+        ->and($funding->fresh()->securewave_account_number)->toBe('0123456789')
+        ->and($funding->fresh()->securewave_bank_name)->toBe('Test Bank')
+        ->and($funding->fresh()->securewave_bank_info_id)->toBe('77')
+        ->and($funding->fresh()->securewave_bank_info_saved_at)->not->toBeNull()
         ->and($funding->fresh()->securewave_customer_created_at)->not->toBeNull();
+
+    Http::assertSent(fn ($request) => $request->url() === 'https://securewaveng.com/api/customer_withdrawals/bank-info'
+        && $request->hasHeader('Content-Type', 'application/json')
+        && $request['customer_email'] === 'affatech@example.com'
+        && $request['bank_name'] === 'Provider Bank'
+        && $request['account_name'] === 'Affatech Limited'
+        && $request['bank_code'] === '058'
+        && $request['account_number'] === '0123456789');
+});
+
+it('blocks funding until the provider bank information is registered', function () {
+    securewaveOption();
+    $funding = fundingConfig(fundingAutomation(), [
+        'linked_customer_email' => 'affatech@example.com',
+        'securewave_customer_created_at' => now(),
+        'securewave_bank_info_saved_at' => null,
+    ]);
+    Http::fake();
+
+    $result = app(WalletAutoFundingService::class)->fund($funding, 3000, 'manual');
+
+    expect($result['ok'])->toBeFalse()
+        ->and($result['message'])->toContain('bank information');
+    Http::assertNothingSent();
 });
 
 it('lets an admin correct balance and toggle automatic funding', function () {

@@ -31,6 +31,14 @@ class AutomationWalletFundingController extends Controller
     {
         $data = $request->validate([
             'linked_customer_email' => ['nullable', 'email', 'max:255', 'unique:automation_wallet_fundings,linked_customer_email,'.$automation->walletFunding?->id],
+            'customer_first_name' => ['required', 'string', 'max:100'],
+            'customer_last_name' => ['required', 'string', 'max:100'],
+            'customer_phone_number' => ['required', 'string', 'regex:/^[0-9+]{7,20}$/'],
+            'bank_code' => ['required', 'in:1,3'],
+            'provider_bank_name' => ['required', 'string', 'max:150'],
+            'provider_bank_code' => ['required', 'string', 'regex:/^[A-Za-z0-9_-]{2,20}$/'],
+            'provider_account_name' => ['required', 'string', 'max:200'],
+            'provider_account_number' => ['nullable', 'digits_between:8,20'],
             'balance_response_path' => ['required', 'string', 'max:255', 'regex:/^[A-Za-z0-9_.-]+$/'],
             'default_balance' => ['required', 'numeric', 'min:0'],
             'threshold' => ['required', 'numeric', 'min:0'],
@@ -39,6 +47,24 @@ class AutomationWalletFundingController extends Controller
         ]);
 
         $existing = $automation->walletFunding;
+        if (blank($data['provider_account_number'] ?? null)) {
+            unset($data['provider_account_number']);
+        }
+        $customerIdentityChanged = $existing && collect([
+            'linked_customer_email',
+            'customer_first_name',
+            'customer_last_name',
+            'customer_phone_number',
+            'bank_code',
+        ])->contains(fn ($field) => (string) $existing->{$field} !== (string) $data[$field]);
+        $bankDetailsChanged = $existing && collect([
+            'provider_bank_name',
+            'provider_bank_code',
+            'provider_account_name',
+        ])->contains(fn ($field) => (string) $existing->{$field} !== (string) $data[$field]);
+        $bankDetailsChanged = $bankDetailsChanged
+            || ($existing && isset($data['provider_account_number'])
+                && $existing->provider_account_number !== $data['provider_account_number']);
         $funding = $automation->walletFunding()->updateOrCreate([], [
             ...$data,
             'automatic_funding' => $request->boolean('automatic_funding'),
@@ -47,10 +73,20 @@ class AutomationWalletFundingController extends Controller
             'balance_source' => $existing?->balance_source ?? 'default',
         ]);
 
-        if ($existing && $existing->linked_customer_email !== $funding->linked_customer_email) {
+        if ($customerIdentityChanged) {
             $funding->forceFill([
                 'securewave_customer_reference' => null,
                 'securewave_customer_created_at' => null,
+                'securewave_account_number' => null,
+                'securewave_account_name' => null,
+                'securewave_bank_name' => null,
+                'securewave_bank_info_id' => null,
+                'securewave_bank_info_saved_at' => null,
+            ])->save();
+        } elseif ($bankDetailsChanged) {
+            $funding->forceFill([
+                'securewave_bank_info_id' => null,
+                'securewave_bank_info_saved_at' => null,
             ])->save();
         }
 
@@ -59,15 +95,28 @@ class AutomationWalletFundingController extends Controller
 
     public function createCustomer(AutomationWalletFunding $funding, SecurewaveClient $securewave): RedirectResponse
     {
-        if (blank($funding->linked_customer_email)) {
-            return back()->with('failure', 'Add a Securewave customer email first.');
+        if (collect([
+            $funding->linked_customer_email,
+            $funding->customer_first_name,
+            $funding->customer_last_name,
+            $funding->customer_phone_number,
+            $funding->bank_code,
+        ])->contains(fn ($value) => blank($value))) {
+            return back()->with('failure', 'Complete the Securewave customer name, email, phone number, and bank first.');
         }
 
         if ($funding->securewave_customer_created_at) {
             return back()->with('failure', 'This automation already has a Securewave customer.');
         }
 
-        $result = $securewave->createCustomer($funding->automation->automation_name, $funding->linked_customer_email);
+        $result = $securewave->createCustomer(
+            $funding->customer_first_name,
+            $funding->customer_last_name,
+            $funding->linked_customer_email,
+            $funding->customer_phone_number,
+            $funding->bank_code,
+            (string) $funding->automation_id,
+        );
 
         if (! $result['ok']) {
             $funding->update(['last_error' => $result['message']]);
@@ -78,10 +127,52 @@ class AutomationWalletFundingController extends Controller
         $funding->update([
             'securewave_customer_reference' => $result['customer_reference'],
             'securewave_customer_created_at' => now(),
+            'securewave_account_number' => data_get($result, 'account.account_number'),
+            'securewave_account_name' => data_get($result, 'account.account_name'),
+            'securewave_bank_name' => data_get($result, 'account.bank_name'),
             'last_error' => null,
         ]);
 
-        return back()->with('success', 'Securewave customer created successfully.');
+        return $this->saveBankInfo($funding->fresh(), $securewave);
+    }
+
+    public function saveBankInfo(AutomationWalletFunding $funding, SecurewaveClient $securewave): RedirectResponse
+    {
+        if (! $funding->securewave_customer_created_at) {
+            return back()->with('failure', 'Create the Securewave customer before saving bank information.');
+        }
+
+        if (collect([
+            $funding->linked_customer_email,
+            $funding->provider_bank_name,
+            $funding->provider_bank_code,
+            $funding->provider_account_name,
+            $funding->provider_account_number,
+        ])->contains(fn ($value) => blank($value))) {
+            return back()->with('failure', 'Complete all provider destination bank details first.');
+        }
+
+        $result = $securewave->saveCustomerBankInfo(
+            $funding->linked_customer_email,
+            $funding->provider_bank_name,
+            $funding->provider_account_name,
+            $funding->provider_bank_code,
+            $funding->provider_account_number,
+        );
+
+        if (! $result['ok']) {
+            $funding->update(['last_error' => $result['message']]);
+
+            return back()->with('failure', 'Customer created, but bank information was not saved: '.$result['message']);
+        }
+
+        $funding->update([
+            'securewave_bank_info_id' => data_get($result, 'data.data.id'),
+            'securewave_bank_info_saved_at' => now(),
+            'last_error' => null,
+        ]);
+
+        return back()->with('success', 'Securewave customer and bank information saved successfully.');
     }
 
     public function refreshBalance(AutomationWalletFunding $funding, AutomationBalanceResolver $resolver): RedirectResponse

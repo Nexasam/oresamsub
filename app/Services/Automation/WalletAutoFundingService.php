@@ -65,6 +65,10 @@ class WalletAutoFundingService
             return $this->fail($funding, 'Create the Securewave customer before funding this automation.');
         }
 
+        if (! $funding->securewave_bank_info_saved_at) {
+            return $this->fail($funding, 'Save the customer bank information on Securewave before funding this automation.');
+        }
+
         return DB::transaction(function () use ($funding, $amount, $source): array {
             $locked = AutomationWalletFunding::query()->lockForUpdate()->findOrFail($funding->id);
             $merchant = $this->securewave->merchantBalance();

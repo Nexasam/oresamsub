@@ -8,6 +8,8 @@ class AutomationWalletFunding extends Model
 {
     protected $guarded = [];
 
+    protected $hidden = ['provider_account_number'];
+
     protected $casts = [
         'threshold' => 'decimal:2',
         'amount_to_fund' => 'decimal:2',
@@ -18,6 +20,8 @@ class AutomationWalletFunding extends Model
         'securewave_customer_created_at' => 'datetime',
         'last_balance_synced_at' => 'datetime',
         'last_funded_at' => 'datetime',
+        'provider_account_number' => 'encrypted',
+        'securewave_bank_info_saved_at' => 'datetime',
     ];
 
     public function automation()

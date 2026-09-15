@@ -725,10 +725,17 @@ class AdminSettingsController extends Controller
    
     }
     public function update_funding_options(Request $request){
+      $fundingOption = FundingOption::findOrFail($request->id);
       $validator = Validator::make($request->all(), [
         'id' => 'required',
         'api_public_key' => 'required',
-        'api_secret_key' => 'required',      
+        'api_secret_key' => 'required',
+        'contract_code' => $fundingOption->slug === 'securewaveng'
+          ? 'required|string|max:255'
+          : 'nullable|string|max:255',
+        'virtual_account_id_number' => $fundingOption->slug === 'securewaveng'
+          ? 'nullable|digits:11'
+          : 'nullable',
       ]);
 
       if ($validator->stopOnFirstFailure()->fails()) {
@@ -736,10 +743,19 @@ class AdminSettingsController extends Controller
       }
 
       
-      FundingOption::where('id',$request->id)->update([
+      $updates = [
         'api_public_key' => $request->api_public_key,
         'api_secret_key' => $request->api_secret_key,
-      ]);
+      ];
+
+      if ($fundingOption->slug === 'securewaveng' && $request->filled('virtual_account_id_number')) {
+        $updates['virtual_account_id_number'] = $request->virtual_account_id_number;
+      }
+      if ($fundingOption->slug === 'securewaveng') {
+        $updates['contract_code'] = $request->contract_code;
+      }
+
+      $fundingOption->update($updates);
 
       Session::flash('success','Funding option  was successfully updated');
       return redirect()->back();

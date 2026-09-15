@@ -864,6 +864,7 @@ Route::middleware(['set_locale'])->group(function () {
                 Route::get('/automations/{automation}/manage', [AutomationWalletFundingController::class, 'manage'])->name('manage');
                 Route::post('/automations/{automation}/configure', [AutomationWalletFundingController::class, 'configure'])->name('configure');
                 Route::post('/{funding}/create-customer', [AutomationWalletFundingController::class, 'createCustomer'])->name('create-customer');
+                Route::post('/{funding}/save-bank-info', [AutomationWalletFundingController::class, 'saveBankInfo'])->name('save-bank-info');
                 Route::post('/{funding}/refresh-balance', [AutomationWalletFundingController::class, 'refreshBalance'])->name('refresh-balance');
                 Route::post('/{funding}/correct-balance', [AutomationWalletFundingController::class, 'correctBalance'])->name('correct-balance');
                 Route::post('/{funding}/toggle', [AutomationWalletFundingController::class, 'toggle'])->name('toggle');
