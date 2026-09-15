@@ -16,7 +16,16 @@ class AutomationWalletFundingController extends Controller
     public function index(): View
     {
         return view('admin.automations.funding', [
-            'automations' => Automation::query()->with('walletFunding')->orderBy('automation_name')->get(),
+            'automations' => Automation::query()
+                ->with('walletFunding')
+                ->orderByDesc(
+                    AutomationWalletFunding::query()
+                        ->select('updated_at')
+                        ->whereColumn('automation_wallet_fundings.automation_id', 'automations.id')
+                        ->limit(1)
+                )
+                ->orderBy('automation_name')
+                ->get(),
         ]);
     }
 

@@ -355,6 +355,21 @@ it('shows every automation on the admin funding page', function () {
         ->assertSee('Paultechs');
 });
 
+it('lists the most recently updated automation funding first', function () {
+    $admin = walletFundingAdmin();
+    $older = fundingConfig(fundingAutomation(['automation_name' => 'Older Automation']));
+    $newer = fundingConfig(fundingAutomation(['automation_name' => 'Newer Automation']));
+    $older->forceFill(['updated_at' => '2026-09-14 10:00:00'])->saveQuietly();
+    $newer->forceFill(['updated_at' => '2026-09-15 10:00:00'])->saveQuietly();
+
+    $html = $this->actingAs($admin)
+        ->get(route('admin.automation-funding.index'))
+        ->assertOk()
+        ->getContent();
+
+    expect(strpos($html, 'Newer Automation'))->toBeLessThan(strpos($html, 'Older Automation'));
+});
+
 it('renders the funding page as a compact table with one lazy management drawer', function () {
     $admin = walletFundingAdmin();
     fundingConfig(fundingAutomation(['automation_name' => 'Affatech']));
