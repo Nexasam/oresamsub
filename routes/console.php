@@ -28,7 +28,6 @@ use Illuminate\Support\Facades\Schedule;
 // })->purpose('Display an inspiring quote')->hourly();
 
 
-Schedule::command('migrate --force')->everyMinute();
 Schedule::command(ProcessPendingAirtimeTransactions::class)->everyThirtySeconds();
 Schedule::command(ZerorizeNegativeBalances::class)->everyTwoMinutes()->withoutOverlapping();
 // Schedule::command(BackfillProductPlanNetworks::class)->everyFiveMinutes(); //temp use

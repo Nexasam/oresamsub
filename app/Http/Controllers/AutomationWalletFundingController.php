@@ -58,8 +58,18 @@ class AutomationWalletFundingController extends Controller
 
     public function manage(Automation $automation): View
     {
+        $catalog = json_decode(file_get_contents(resource_path('data/securewave-banks.json')), true);
+
         return view('admin.automations.partials.funding-manage', [
             'automation' => $automation->load('walletFunding'),
+            'providerBanks' => collect($catalog['data'] ?? [])
+                ->filter(fn ($bank) => filled($bank['name'] ?? null) && filled($bank['bank_code'] ?? null))
+                ->map(fn ($bank) => [
+                    'name' => trim((string) $bank['name']),
+                    'code' => (string) $bank['bank_code'],
+                ])
+                ->sortBy('name', SORT_NATURAL | SORT_FLAG_CASE)
+                ->values(),
         ]);
     }
 

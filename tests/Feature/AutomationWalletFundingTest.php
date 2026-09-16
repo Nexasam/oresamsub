@@ -474,8 +474,9 @@ it('renders the funding page as a compact table with one lazy management drawer'
 
     $response->assertOk()
         ->assertSee('Current Balance')
-        ->assertSee('Default Funding')
-        ->assertSee('Securewave Customer')
+        ->assertDontSee('Default Funding')
+        ->assertDontSee('Securewave Customer')
+        ->assertSee('data-funding-table', false)
         ->assertSee('data-manage-funding', false)
         ->assertSee('automation-funding-drawer', false);
 
@@ -494,6 +495,11 @@ it('loads all controls for the selected automation in the management drawer', fu
         ->assertSee('Manage Affatech')
         ->assertSee('name="balance_response_path"', false)
         ->assertSee('name="customer_first_name"', false)
+        ->assertSee('data-provider-bank-lookup', false)
+        ->assertSee('KUDA MICROFINANCE BANK')
+        ->assertSee('090267')
+        ->assertSee('PALMPAY')
+        ->assertSee('100033')
         ->assertSee('name="provider_account_number"', false)
         ->assertSee('Create Securewave Customer')
         ->assertSee('Sync Balance')

@@ -47,70 +47,42 @@
                 </div>
 
                 <div class="box-body p-2">
-                    <div class="overflow-x-auto rounded-sm border border-gray-200 dark:border-gray-700">
-                        <table class="ti-custom-table ti-striped-table ti-custom-table-hover w-full text-xs">
+                    <div class="w-full overflow-hidden rounded-sm border border-gray-200 dark:border-gray-700">
+                        <table data-funding-table class="ti-custom-table ti-striped-table ti-custom-table-hover w-full table-fixed text-xs">
                             <thead>
                                 <tr>
-                                    <th>#</th>
+                                    <th class="hidden w-10 sm:table-cell">#</th>
                                     <th>Automation</th>
                                     <th>Current Balance</th>
-                                    <th>Threshold</th>
-                                    <th>Default Funding</th>
-                                    <th>Securewave Customer</th>
+                                    <th class="hidden lg:table-cell">Threshold</th>
                                     <th>Status</th>
-                                    <th>Auto Funding</th>
-                                    <th>Stock</th>
-                                    <th>Last Updated</th>
-                                    <th></th>
+                                    <th class="hidden xl:table-cell">Last Updated</th>
+                                    <th class="w-20"></th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @forelse($automations as $automation)
                                     @php($funding = $automation->walletFunding)
                                     <tr>
-                                        <td>{{ $loop->iteration }}</td>
+                                        <td class="hidden sm:table-cell">{{ $loop->iteration }}</td>
                                         <td>
-                                            <div class="font-semibold text-gray-900 dark:text-gray-100">{{ $automation->automation_name }}</div>
-                                            <div class="mt-0.5 text-[10px] text-gray-400">{{ $automation->slug }}</div>
+                                            <div class="truncate font-semibold text-gray-900 dark:text-gray-100" title="{{ $automation->automation_name }}">{{ $automation->automation_name }}</div>
+                                            <div class="mt-0.5 hidden truncate text-[10px] text-gray-400 sm:block">{{ $automation->slug }}</div>
                                         </td>
-                                        <td class="whitespace-nowrap font-semibold">{{ $funding ? '₦'.number_format((float) $funding->last_balance, 2) : '—' }}</td>
-                                        <td class="whitespace-nowrap">{{ $funding ? '₦'.number_format((float) $funding->threshold, 2) : '—' }}</td>
-                                        <td class="whitespace-nowrap">{{ $funding ? '₦'.number_format((float) $funding->amount_to_fund, 2) : '—' }}</td>
-                                        <td class="min-w-[150px]">
-                                            @if($funding?->securewave_customer_created_at)
-                                                <div class="font-medium text-success">Created</div>
-                                                <div class="max-w-[180px] truncate text-[10px] text-gray-500" title="{{ $funding->linked_customer_email }}">{{ $funding->linked_customer_email }}</div>
-                                            @elseif($funding?->linked_customer_email)
-                                                <div class="font-medium text-warning">Pending creation</div>
-                                                <div class="max-w-[180px] truncate text-[10px] text-gray-500" title="{{ $funding->linked_customer_email }}">{{ $funding->linked_customer_email }}</div>
-                                            @else
-                                                <span class="text-gray-400">Not configured</span>
-                                            @endif
-                                        </td>
+                                        <td class="truncate font-semibold">{{ $funding ? '₦'.number_format((float) $funding->last_balance, 2) : '—' }}</td>
+                                        <td class="hidden truncate lg:table-cell">{{ $funding ? '₦'.number_format((float) $funding->threshold, 2) : '—' }}</td>
                                         <td>
                                             @if($funding)
-                                                <span class="rounded px-2 py-1 text-[10px] font-semibold {{ $funding->active === 'yes' ? 'bg-success/10 text-success' : 'bg-danger/10 text-danger' }}">{{ $funding->active === 'yes' ? 'ACTIVE' : 'DEACTIVATED' }}</span>
+                                                <div class="flex flex-wrap gap-1">
+                                                    <span class="rounded px-1.5 py-0.5 text-[9px] font-semibold {{ $funding->active === 'yes' ? 'bg-success/10 text-success' : 'bg-danger/10 text-danger' }}">{{ $funding->active === 'yes' ? 'ACTIVE' : 'OFF' }}</span>
+                                                    <span class="rounded px-1.5 py-0.5 text-[9px] font-semibold {{ (float) $funding->last_balance <= (float) $funding->threshold ? 'bg-danger/10 text-danger' : 'bg-success/10 text-success' }}">{{ (float) $funding->last_balance <= (float) $funding->threshold ? 'LOW' : 'OK' }}</span>
+                                                    @if($funding->automatic_funding)<span class="hidden rounded bg-info/10 px-1.5 py-0.5 text-[9px] font-semibold text-info sm:inline">AUTO</span>@endif
+                                                </div>
                                             @else
-                                                <span class="text-gray-400">—</span>
+                                                <span class="text-[9px] text-warning">SET UP</span>
                                             @endif
                                         </td>
-                                        <td>
-                                            @if($funding)
-                                                <span class="rounded px-2 py-1 text-[10px] font-semibold {{ $funding->automatic_funding ? 'bg-success/10 text-success' : 'bg-gray-100 text-gray-500 dark:bg-gray-800' }}">{{ $funding->automatic_funding ? 'ON' : 'OFF' }}</span>
-                                            @else
-                                                <span class="text-gray-400">—</span>
-                                            @endif
-                                        </td>
-                                        <td>
-                                            @if(!$funding)
-                                                <span class="rounded bg-warning/10 px-2 py-1 text-[10px] font-semibold text-warning">UNCONFIGURED</span>
-                                            @elseif((float) $funding->last_balance <= (float) $funding->threshold)
-                                                <span class="rounded bg-danger/10 px-2 py-1 text-[10px] font-semibold text-danger">LOW</span>
-                                            @else
-                                                <span class="rounded bg-success/10 px-2 py-1 text-[10px] font-semibold text-success">HEALTHY</span>
-                                            @endif
-                                        </td>
-                                        <td class="whitespace-nowrap text-[10px] text-gray-500">{{ $funding?->last_balance_synced_at?->format('d M Y H:i') ?: 'Never' }}</td>
+                                        <td class="hidden text-[10px] text-gray-500 xl:table-cell">{{ $funding?->last_balance_synced_at?->format('d M y H:i') ?: 'Never' }}</td>
                                         <td>
                                             <button type="button"
                                                 data-manage-funding
@@ -122,7 +94,7 @@
                                         </td>
                                     </tr>
                                 @empty
-                                    <tr><td colspan="11" class="py-8 text-center text-gray-500">No automations found.</td></tr>
+                                    <tr><td colspan="7" class="py-8 text-center text-gray-500">No automations found.</td></tr>
                                 @endforelse
                             </tbody>
                         </table>
@@ -134,7 +106,7 @@
 </div>
 
 <div id="automation-funding-drawer" class="fixed inset-0 z-[100] hidden justify-end bg-black/50" role="dialog" aria-modal="true" aria-hidden="true" aria-labelledby="automation-funding-drawer-title">
-    <div class="flex h-full w-full max-w-2xl flex-col bg-white shadow-2xl dark:bg-bodybg">
+    <div class="flex h-full w-full max-w-3xl flex-col overflow-hidden bg-white shadow-2xl dark:bg-bodybg">
         <div class="flex shrink-0 items-center justify-between border-b border-gray-200 px-4 py-3 dark:border-gray-700">
             <div>
                 <h2 id="automation-funding-drawer-title" class="text-base font-semibold text-gray-900 dark:text-gray-100">Manage automation funding</h2>
@@ -144,7 +116,7 @@
                 <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" stroke-linecap="round" /></svg>
             </button>
         </div>
-        <div id="automation-funding-drawer-content" class="min-h-0 flex-1 overflow-y-auto p-4 sm:p-5">
+        <div id="automation-funding-drawer-content" class="min-h-0 flex-1 overflow-x-hidden overflow-y-auto p-3 sm:p-4">
             <div class="flex min-h-40 items-center justify-center text-sm text-gray-500">Select an automation to manage.</div>
         </div>
         <div class="flex shrink-0 justify-end border-t border-gray-200 px-4 py-3 dark:border-gray-700">
@@ -161,6 +133,62 @@
         const content = document.getElementById('automation-funding-drawer-content');
         const subtitle = document.getElementById('automation-funding-drawer-subtitle');
         let opener = null;
+
+        function initializeBankLookup(scope) {
+            const lookup = scope.querySelector('[data-provider-bank-lookup]');
+            if (!lookup) return;
+
+            const search = lookup.querySelector('[data-provider-bank-search]');
+            const name = lookup.querySelector('[data-provider-bank-name]');
+            const code = scope.querySelector('[data-provider-bank-code]');
+            const results = lookup.querySelector('[data-provider-bank-results]');
+            const banks = JSON.parse(lookup.querySelector('[data-provider-bank-data]').textContent || '[]');
+
+            function hideResults() {
+                results.classList.add('hidden');
+                results.replaceChildren();
+            }
+
+            function chooseBank(bank) {
+                search.value = bank.name;
+                name.value = bank.name;
+                code.value = bank.code;
+                hideResults();
+                code.focus();
+            }
+
+            function showResults() {
+                const term = search.value.trim().toLowerCase();
+                name.value = search.value.trim();
+                const matches = banks
+                    .filter((bank) => !term || `${bank.name} ${bank.code}`.toLowerCase().includes(term))
+                    .slice(0, 10);
+
+                results.replaceChildren();
+                matches.forEach((bank) => {
+                    const button = document.createElement('button');
+                    button.type = 'button';
+                    button.className = 'flex w-full items-center justify-between gap-3 rounded-md px-3 py-2 text-left text-xs hover:bg-gray-100 focus:bg-gray-100 focus:outline-none dark:hover:bg-gray-800 dark:focus:bg-gray-800';
+                    const bankName = document.createElement('span');
+                    bankName.className = 'min-w-0 truncate font-medium text-gray-800 dark:text-gray-100';
+                    bankName.textContent = bank.name;
+                    const bankCode = document.createElement('span');
+                    bankCode.className = 'shrink-0 font-mono text-[11px] text-gray-500';
+                    bankCode.textContent = bank.code;
+                    button.append(bankName, bankCode);
+                    button.addEventListener('mousedown', (event) => {
+                        event.preventDefault();
+                        chooseBank(bank);
+                    });
+                    results.append(button);
+                });
+                results.classList.toggle('hidden', matches.length === 0);
+            }
+
+            search.addEventListener('input', showResults);
+            search.addEventListener('focus', showResults);
+            search.addEventListener('blur', () => window.setTimeout(hideResults, 120));
+        }
 
         function closeDrawer() {
             drawer.classList.add('hidden');
@@ -186,6 +214,7 @@
                 });
                 if (!response.ok) throw new Error(`Funding management request failed with status ${response.status}`);
                 content.innerHTML = await response.text();
+                initializeBankLookup(content);
                 drawer.querySelector('[data-close-funding-drawer]')?.focus();
             } catch (error) {
                 content.innerHTML = '<div class="rounded-lg border border-danger/20 bg-danger/10 p-4 text-sm text-danger"><div class="font-semibold">Funding controls could not be loaded.</div><div class="mt-1">Close the drawer and try again.</div></div>';

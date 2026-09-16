@@ -1,6 +1,6 @@
 @php($funding = $automation->walletFunding)
 
-<div class="space-y-5">
+<div class="space-y-3">
     <div>
         <h3 class="text-base font-semibold text-gray-900 dark:text-gray-100">Manage {{ $automation->automation_name }}</h3>
         <p class="mt-1 text-xs text-gray-500">{{ $automation->slug }} · Configure balance tracking and Securewave funding.</p>
@@ -8,21 +8,21 @@
 
     @if($funding)
         <div class="grid grid-cols-2 gap-2 sm:grid-cols-4">
-            <div class="rounded-lg border border-gray-200 p-3 dark:border-gray-700">
+            <div class="rounded-lg border border-gray-200 p-2.5 dark:border-gray-700">
                 <div class="text-[10px] uppercase tracking-wide text-gray-400">Balance</div>
                 <div class="mt-1 text-sm font-bold text-gray-900 dark:text-gray-100">₦{{ number_format((float) $funding->last_balance, 2) }}</div>
             </div>
-            <div class="rounded-lg border border-gray-200 p-3 dark:border-gray-700">
+            <div class="rounded-lg border border-gray-200 p-2.5 dark:border-gray-700">
                 <div class="text-[10px] uppercase tracking-wide text-gray-400">Threshold</div>
                 <div class="mt-1 text-sm font-bold text-gray-900 dark:text-gray-100">₦{{ number_format((float) $funding->threshold, 2) }}</div>
             </div>
-            <div class="rounded-lg border border-gray-200 p-3 dark:border-gray-700">
+            <div class="rounded-lg border border-gray-200 p-2.5 dark:border-gray-700">
                 <div class="text-[10px] uppercase tracking-wide text-gray-400">Stock</div>
                 <div class="mt-1 text-sm font-bold {{ (float) $funding->last_balance <= (float) $funding->threshold ? 'text-danger' : 'text-success' }}">
                     {{ (float) $funding->last_balance <= (float) $funding->threshold ? 'Low' : 'Healthy' }}
                 </div>
             </div>
-            <div class="rounded-lg border border-gray-200 p-3 dark:border-gray-700">
+            <div class="rounded-lg border border-gray-200 p-2.5 dark:border-gray-700">
                 <div class="text-[10px] uppercase tracking-wide text-gray-400">Auto funding</div>
                 <div class="mt-1 text-sm font-bold {{ $funding->automatic_funding ? 'text-success' : 'text-gray-500' }}">{{ $funding->automatic_funding ? 'On' : 'Off' }}</div>
             </div>
@@ -42,7 +42,7 @@
     @endif
 
     @if($funding)
-        <section class="rounded-xl border border-gray-200 p-4 dark:border-gray-700">
+        <section class="rounded-xl border border-gray-200 p-3 dark:border-gray-700">
             <div class="flex items-start justify-between gap-3">
                 <div>
                     <h4 class="text-sm font-semibold text-gray-900 dark:text-gray-100">Funding readiness</h4>
@@ -55,14 +55,14 @@
                     {{ $funding->securewave_bank_info_saved_at ? 'Ready to fund' : 'Setup required' }}
                 </span>
             </div>
-            <div class="mt-4 flex flex-wrap gap-2">
+            <div class="mt-3 flex flex-wrap gap-2">
                 <form method="POST" action="{{ route('admin.automation-funding.create-customer', $funding) }}">@csrf<button class="ti-btn ti-btn-info ti-btn-sm" @disabled($funding->securewave_customer_created_at)>Create Securewave Customer</button></form>
                 <form method="POST" action="{{ route('admin.automation-funding.save-bank-info', $funding) }}">@csrf<button class="ti-btn ti-btn-primary ti-btn-sm" @disabled(!$funding->securewave_customer_created_at)>{{ $funding->securewave_bank_info_saved_at ? 'Update Bank Info' : 'Register Bank Info' }}</button></form>
                 <form method="POST" action="{{ route('admin.automation-funding.refresh-balance', $funding) }}">@csrf<button class="ti-btn ti-btn-light ti-btn-sm" @disabled($funding->active !== 'yes')>Sync Balance</button></form>
                 <form method="POST" action="{{ route('admin.automation-funding.toggle', $funding) }}">@csrf<button class="ti-btn {{ $funding->automatic_funding ? 'ti-btn-danger' : 'ti-btn-success' }} ti-btn-sm" @disabled($funding->active !== 'yes')>Turn Auto {{ $funding->automatic_funding ? 'Off' : 'On' }}</button></form>
                 <form method="POST" action="{{ route('admin.automation-funding.toggle-active', $funding) }}">@csrf<button class="ti-btn {{ $funding->active === 'yes' ? 'ti-btn-danger' : 'ti-btn-success' }} ti-btn-sm">{{ $funding->active === 'yes' ? 'Deactivate Automation' : 'Activate Automation' }}</button></form>
             </div>
-            <div class="mt-4 rounded-lg bg-gray-50 p-3 dark:bg-gray-800">
+            <div class="mt-3 rounded-lg bg-gray-50 p-2.5 dark:bg-gray-800">
                 <div class="flex items-end gap-3">
                     <form method="POST" action="{{ route('admin.automation-funding.fund', $funding) }}" class="flex flex-1 items-end gap-2">
                         @csrf
@@ -77,11 +77,11 @@
         </section>
     @endif
 
-    <section class="rounded-xl border border-gray-200 p-4 dark:border-gray-700">
+    <section class="rounded-xl border border-gray-200 p-3 dark:border-gray-700">
         <h4 class="text-sm font-semibold text-gray-900 dark:text-gray-100">Automation settings</h4>
         <p class="mt-1 text-xs text-gray-500">Balance monitoring, Securewave customer identity, and destination account.</p>
 
-        <form method="POST" action="{{ route('admin.automation-funding.configure', $automation) }}" class="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
+        <form method="POST" action="{{ route('admin.automation-funding.configure', $automation) }}" class="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-2">
             @csrf
             <div class="sm:col-span-2"><h5 class="text-xs font-semibold uppercase tracking-wide text-gray-500">Balance and funding rules</h5></div>
             <label class="text-xs font-semibold text-gray-700 dark:text-gray-200">Current/default balance
@@ -120,15 +120,21 @@
                     <option value="3" @selected(old('bank_code', $funding?->bank_code) == '3')>Bank code 3</option>
                 </select>
             </label>
-            <div class="sm:col-span-2 mt-1 border-t border-gray-200 pt-4 dark:border-gray-700">
+            <div class="sm:col-span-2 mt-1 border-t border-gray-200 pt-3 dark:border-gray-700">
                 <h5 class="text-xs font-semibold uppercase tracking-wide text-gray-500">Provider destination bank</h5>
                 <p class="mt-1 text-xs text-gray-500">These are the provider's bank details that will be registered with Securewave before funding.</p>
             </div>
-            <label class="text-xs font-semibold text-gray-700 dark:text-gray-200">Provider bank name
-                <input type="text" name="provider_bank_name" required class="ti-form-input mt-1 min-h-10 w-full text-sm" value="{{ old('provider_bank_name', $funding?->provider_bank_name) }}">
-            </label>
+            <div data-provider-bank-lookup class="relative sm:col-span-2">
+                <script type="application/json" data-provider-bank-data>@json($providerBanks)</script>
+                <label class="text-xs font-semibold text-gray-700 dark:text-gray-200">Find provider bank
+                    <input type="search" autocomplete="off" data-provider-bank-search class="ti-form-input mt-1 min-h-10 w-full text-sm" value="{{ old('provider_bank_name', $funding?->provider_bank_name) }}" placeholder="Search by bank name or code…">
+                </label>
+                <input type="hidden" name="provider_bank_name" data-provider-bank-name value="{{ old('provider_bank_name', $funding?->provider_bank_name) }}">
+                <div data-provider-bank-results class="absolute z-20 mt-1 hidden max-h-56 w-full overflow-y-auto rounded-lg border border-gray-200 bg-white p-1 shadow-xl dark:border-gray-700 dark:bg-bodybg"></div>
+                <p class="mt-1 text-[11px] text-gray-500">Choose a result to fill its code automatically. You can still type a bank name manually.</p>
+            </div>
             <label class="text-xs font-semibold text-gray-700 dark:text-gray-200">Provider bank code
-                <input type="text" name="provider_bank_code" required class="ti-form-input mt-1 min-h-10 w-full text-sm" value="{{ old('provider_bank_code', $funding?->provider_bank_code) }}" placeholder="e.g. 058">
+                <input type="text" name="provider_bank_code" data-provider-bank-code required class="ti-form-input mt-1 min-h-10 w-full text-sm" value="{{ old('provider_bank_code', $funding?->provider_bank_code) }}" placeholder="Filled from bank selection">
             </label>
             <label class="text-xs font-semibold text-gray-700 dark:text-gray-200">Provider account name
                 <input type="text" name="provider_account_name" required class="ti-form-input mt-1 min-h-10 w-full text-sm" value="{{ old('provider_account_name', $funding?->provider_account_name) }}">
