@@ -869,6 +869,7 @@ Route::middleware(['set_locale'])->group(function () {
                 Route::post('/{funding}/refresh-balance', [AutomationWalletFundingController::class, 'refreshBalance'])->name('refresh-balance');
                 Route::post('/{funding}/correct-balance', [AutomationWalletFundingController::class, 'correctBalance'])->name('correct-balance');
                 Route::post('/{funding}/toggle', [AutomationWalletFundingController::class, 'toggle'])->name('toggle');
+                Route::post('/{funding}/toggle-active', [AutomationWalletFundingController::class, 'toggleActive'])->name('toggle-active');
                 Route::post('/{funding}/fund', [AutomationWalletFundingController::class, 'fund'])->name('fund');
             });
             // Route::middleware(['auth','verified','admin'])->get('admin/automations/ogdams/view', [AutomationController::class, 'dashboard'])->name('admin.automation.ogdams.dashboard_view');

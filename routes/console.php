@@ -10,6 +10,7 @@ use App\Console\Commands\ProcessPendingAirtimeTransactions;
 use App\Console\Commands\ReprocessPendingTransaction;
 use App\Console\Commands\RenewStandaloneFeatures;
 use App\Console\Commands\RunWalletAutoFunding;
+use App\Console\Commands\NotifyAutomationLowBalances;
 use App\Console\Commands\SendFailedTransactionEmail;
 use App\Console\Commands\SendNewRegistrationEmail;
 use App\Console\Commands\SendPendingTransactionEmail;
@@ -54,6 +55,9 @@ Schedule::command(ReprocessPendingTransaction::class)->everyMinute()->withoutOve
 // Schedule::command(ClearErrorLogs::class)->everyThirtyMinutes()->withoutOverlapping();
 
 Schedule::command(RunWalletAutoFunding::class)->everyFiveMinutes()->withoutOverlapping();
+Schedule::command(NotifyAutomationLowBalances::class, [1])->cron('0 */3 * * *')->timezone('Africa/Lagos')->withoutOverlapping();
+Schedule::command(NotifyAutomationLowBalances::class, [2])->cron('2 */3 * * *')->timezone('Africa/Lagos')->withoutOverlapping();
+Schedule::command(NotifyAutomationLowBalances::class, [3])->cron('4 */3 * * *')->timezone('Africa/Lagos')->withoutOverlapping();
 Schedule::command(RenewStandaloneFeatures::class)->hourly()->withoutOverlapping();
 Schedule::command(CheckAffiliateLowBalances::class)
     ->hourly()

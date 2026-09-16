@@ -34,6 +34,10 @@ class AutomationBalanceResolver
 
     public function sync(AutomationWalletFunding $funding): bool
     {
+        if ($funding->active !== 'yes') {
+            return false;
+        }
+
         $resolved = $this->resolve($funding);
 
         if (! $resolved) {

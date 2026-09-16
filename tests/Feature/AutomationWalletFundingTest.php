@@ -12,8 +12,11 @@ use App\Models\User;
 use App\Services\Automation\AutomationBalanceResolver;
 use App\Services\Automation\WalletAutoFundingService;
 use App\Services\Securewave\SecurewaveClient;
+use App\Mail\AutomationLowBalanceMail;
+use App\Services\Automation\AutomationLowBalanceNotificationService;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 
 function fundingAutomation(array $overrides = []): Automation
@@ -340,6 +343,61 @@ it('skips automatic funding when disabled or above threshold', function () {
         ->and($healthyResult['ok'])->toBeFalse()
         ->and($healthyResult['skipped'])->toBeTrue();
     Http::assertNothingSent();
+});
+
+it('deactivates an automation funding configuration as a master switch', function () {
+    $admin = walletFundingAdmin();
+    $funding = fundingConfig(fundingAutomation(), [
+        'linked_customer_email' => 'inactive@example.com',
+        'securewave_customer_created_at' => now(),
+        'securewave_bank_info_saved_at' => now(),
+    ]);
+    Http::fake();
+
+    $this->actingAs($admin)
+        ->post(route('admin.automation-funding.toggle-active', $funding))
+        ->assertSessionHas('success');
+
+    expect($funding->fresh()->active)->toBe('no')
+        ->and(app(WalletAutoFundingService::class)->fund($funding->fresh(), 3000)['message'])
+        ->toContain('deactivated');
+    Http::assertNothingSent();
+});
+
+it('emails admins in deduplicated three-message bursts and ignores deactivated automations', function () {
+    Mail::fake();
+    $firstCycle = \Carbon\CarbonImmutable::parse('2026-09-16 00:00:00', 'Africa/Lagos');
+    \Carbon\CarbonImmutable::setTestNow($firstCycle);
+    $admin = walletFundingAdmin();
+    $low = fundingConfig(fundingAutomation(['automation_name' => 'Low Provider']), [
+        'last_balance' => 1000,
+        'threshold' => 1000,
+        'active' => 'yes',
+    ]);
+    fundingConfig(fundingAutomation(['automation_name' => 'Inactive Provider']), [
+        'last_balance' => 100,
+        'threshold' => 1000,
+        'active' => 'no',
+    ]);
+    $service = app(AutomationLowBalanceNotificationService::class);
+
+    try {
+        $service->run(1);
+        $service->run(1);
+        $service->run(2);
+        $service->run(3);
+
+        \Carbon\CarbonImmutable::setTestNow($firstCycle->addHours(3));
+        $service->run(1);
+        $service->run(2);
+        $service->run(3);
+
+        Mail::assertSent(AutomationLowBalanceMail::class, 6);
+        Mail::assertSent(AutomationLowBalanceMail::class, fn ($mail) => $mail->hasTo($admin->email)
+            && $mail->funding->is($low));
+    } finally {
+        \Carbon\CarbonImmutable::setTestNow();
+    }
 });
 
 it('shows every automation on the admin funding page', function () {

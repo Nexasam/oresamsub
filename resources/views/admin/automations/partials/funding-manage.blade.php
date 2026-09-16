@@ -34,6 +34,11 @@
                 <div class="mt-1">{{ $funding->last_error }}</div>
             </div>
         @endif
+        @if($funding->active !== 'yes')
+            <div class="rounded-lg border border-warning/20 bg-warning/10 p-3 text-xs text-warning">
+                This automation funding configuration is deactivated. Balance syncing, alerts, and all funding transfers are paused.
+            </div>
+        @endif
     @endif
 
     @if($funding)
@@ -53,8 +58,9 @@
             <div class="mt-4 flex flex-wrap gap-2">
                 <form method="POST" action="{{ route('admin.automation-funding.create-customer', $funding) }}">@csrf<button class="ti-btn ti-btn-info ti-btn-sm" @disabled($funding->securewave_customer_created_at)>Create Securewave Customer</button></form>
                 <form method="POST" action="{{ route('admin.automation-funding.save-bank-info', $funding) }}">@csrf<button class="ti-btn ti-btn-primary ti-btn-sm" @disabled(!$funding->securewave_customer_created_at)>{{ $funding->securewave_bank_info_saved_at ? 'Update Bank Info' : 'Register Bank Info' }}</button></form>
-                <form method="POST" action="{{ route('admin.automation-funding.refresh-balance', $funding) }}">@csrf<button class="ti-btn ti-btn-light ti-btn-sm">Sync Balance</button></form>
-                <form method="POST" action="{{ route('admin.automation-funding.toggle', $funding) }}">@csrf<button class="ti-btn {{ $funding->automatic_funding ? 'ti-btn-danger' : 'ti-btn-success' }} ti-btn-sm">Turn Auto {{ $funding->automatic_funding ? 'Off' : 'On' }}</button></form>
+                <form method="POST" action="{{ route('admin.automation-funding.refresh-balance', $funding) }}">@csrf<button class="ti-btn ti-btn-light ti-btn-sm" @disabled($funding->active !== 'yes')>Sync Balance</button></form>
+                <form method="POST" action="{{ route('admin.automation-funding.toggle', $funding) }}">@csrf<button class="ti-btn {{ $funding->automatic_funding ? 'ti-btn-danger' : 'ti-btn-success' }} ti-btn-sm" @disabled($funding->active !== 'yes')>Turn Auto {{ $funding->automatic_funding ? 'Off' : 'On' }}</button></form>
+                <form method="POST" action="{{ route('admin.automation-funding.toggle-active', $funding) }}">@csrf<button class="ti-btn {{ $funding->active === 'yes' ? 'ti-btn-danger' : 'ti-btn-success' }} ti-btn-sm">{{ $funding->active === 'yes' ? 'Deactivate Automation' : 'Activate Automation' }}</button></form>
             </div>
             <div class="mt-4 rounded-lg bg-gray-50 p-3 dark:bg-gray-800">
                 <div class="flex items-end gap-3">
@@ -63,7 +69,7 @@
                         <label class="flex-1 text-xs font-semibold text-gray-700 dark:text-gray-200">Funding amount
                             <input type="number" min="0.01" step="0.01" name="amount" required class="ti-form-input mt-1 min-h-10 w-full text-sm" value="{{ $funding->amount_to_fund }}">
                         </label>
-                        <button class="ti-btn ti-btn-success ti-btn-sm" @disabled(!$funding->securewave_bank_info_saved_at)>Fund Automation</button>
+                        <button class="ti-btn ti-btn-success ti-btn-sm" @disabled(!$funding->securewave_bank_info_saved_at || $funding->active !== 'yes')>Fund Automation</button>
                     </form>
                 </div>
                 <p class="mt-2 text-[11px] {{ $funding->securewave_bank_info_saved_at ? 'text-success' : 'text-warning' }}">Bank registration: {{ $funding->securewave_bank_info_saved_at ? 'Saved on Securewave' : 'Required before funding' }}</p>

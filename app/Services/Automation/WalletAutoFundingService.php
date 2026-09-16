@@ -57,6 +57,10 @@ class WalletAutoFundingService
 
     public function fund(AutomationWalletFunding $funding, float $amount, string $source = 'manual'): array
     {
+        if ($funding->active !== 'yes') {
+            return $this->fail($funding, 'This automation funding configuration is deactivated.');
+        }
+
         if ($amount <= 0) {
             return $this->fail($funding, 'Funding amount must be greater than zero.');
         }

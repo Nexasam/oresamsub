@@ -57,6 +57,7 @@
                                     <th>Threshold</th>
                                     <th>Default Funding</th>
                                     <th>Securewave Customer</th>
+                                    <th>Status</th>
                                     <th>Auto Funding</th>
                                     <th>Stock</th>
                                     <th>Last Updated</th>
@@ -88,6 +89,13 @@
                                         </td>
                                         <td>
                                             @if($funding)
+                                                <span class="rounded px-2 py-1 text-[10px] font-semibold {{ $funding->active === 'yes' ? 'bg-success/10 text-success' : 'bg-danger/10 text-danger' }}">{{ $funding->active === 'yes' ? 'ACTIVE' : 'DEACTIVATED' }}</span>
+                                            @else
+                                                <span class="text-gray-400">—</span>
+                                            @endif
+                                        </td>
+                                        <td>
+                                            @if($funding)
                                                 <span class="rounded px-2 py-1 text-[10px] font-semibold {{ $funding->automatic_funding ? 'bg-success/10 text-success' : 'bg-gray-100 text-gray-500 dark:bg-gray-800' }}">{{ $funding->automatic_funding ? 'ON' : 'OFF' }}</span>
                                             @else
                                                 <span class="text-gray-400">—</span>
@@ -114,7 +122,7 @@
                                         </td>
                                     </tr>
                                 @empty
-                                    <tr><td colspan="10" class="py-8 text-center text-gray-500">No automations found.</td></tr>
+                                    <tr><td colspan="11" class="py-8 text-center text-gray-500">No automations found.</td></tr>
                                 @endforelse
                             </tbody>
                         </table>

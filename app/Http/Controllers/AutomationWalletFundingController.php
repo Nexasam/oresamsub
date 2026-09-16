@@ -104,7 +104,7 @@ class AutomationWalletFundingController extends Controller
         $funding = $automation->walletFunding()->updateOrCreate([], [
             ...$data,
             'automatic_funding' => $request->boolean('automatic_funding'),
-            'active' => 'yes',
+            'active' => $existing?->active ?? 'yes',
             'last_balance' => $existing?->last_balance ?? $data['default_balance'],
             'balance_source' => $existing?->balance_source ?? 'default',
         ]);
@@ -237,6 +237,13 @@ class AutomationWalletFundingController extends Controller
         $funding->update(['automatic_funding' => ! $funding->automatic_funding]);
 
         return back()->with('success', 'Automatic funding '.($funding->automatic_funding ? 'enabled.' : 'disabled.'));
+    }
+
+    public function toggleActive(AutomationWalletFunding $funding): RedirectResponse
+    {
+        $funding->update(['active' => $funding->active === 'yes' ? 'no' : 'yes']);
+
+        return back()->with('success', 'Automation funding '.($funding->active === 'yes' ? 'activated.' : 'deactivated.'));
     }
 
     public function fund(Request $request, AutomationWalletFunding $funding, WalletAutoFundingService $service): RedirectResponse
