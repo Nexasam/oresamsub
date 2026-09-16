@@ -3,6 +3,8 @@ import { create } from 'zustand';
 import type { AuthSession, MobileUser, OnboardingState, RegistrationResult } from '../api/types';
 import { authApi } from './authApi';
 import { tokenVault } from './tokenVault';
+import { appLock } from './appLock';
+import { biometricLock } from './biometricLock';
 
 type AuthStatus = 'loading' | 'authenticated' | 'guest';
 
@@ -13,6 +15,7 @@ type AuthState = {
   restore: () => Promise<void>;
   signIn: (login: string, password: string) => Promise<AuthSession>;
   register: (input: Parameters<typeof authApi.register>[0]) => Promise<RegistrationResult>;
+  verifyEmailOtp: (email: string, otp: string) => Promise<AuthSession>;
   refreshSession: () => Promise<AuthSession>;
   signOut: () => Promise<void>;
   declineRestore: () => void;
@@ -35,6 +38,8 @@ export const useAuthStore = create<AuthState>((set) => ({
       set({ status: 'authenticated', user: response.data.user, onboarding: response.data.onboarding });
     } catch {
       await tokenVault.clear();
+      await appLock.clear();
+      await biometricLock.setEnabled(false);
       set({ status: 'guest', user: null, onboarding: null });
     }
   },
@@ -50,7 +55,17 @@ export const useAuthStore = create<AuthState>((set) => ({
   register: async (input) => {
     const response = await authApi.register(input);
     await tokenVault.clear();
+    await appLock.clear();
+    await biometricLock.setEnabled(false);
     set({ status: 'guest', user: null, onboarding: null });
+    return response.data;
+  },
+
+  verifyEmailOtp: async (email, otp) => {
+    const response = await authApi.verifyEmailOtp(email, otp);
+    if (!response.data.tokens) throw new Error('The server did not return session tokens.');
+    await tokenVault.save(response.data.tokens);
+    set({ status: 'authenticated', user: response.data.user, onboarding: response.data.onboarding });
     return response.data;
   },
 
@@ -68,6 +83,8 @@ export const useAuthStore = create<AuthState>((set) => ({
       // never prevent the user from clearing local credentials.
     } finally {
       await tokenVault.clear();
+      await appLock.clear();
+      await biometricLock.setEnabled(false);
       set({ status: 'guest', user: null, onboarding: null });
     }
   },

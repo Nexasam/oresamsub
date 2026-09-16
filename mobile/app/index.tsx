@@ -1,27 +1,28 @@
 import { Redirect } from 'expo-router';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
 
 import { useAuthStore } from '../src/auth/authStore';
-import { biometricLock } from '../src/auth/biometricLock';
+import { appLock } from '../src/auth/appLock';
+import { tokenVault } from '../src/auth/tokenVault';
 import { BrandLogo } from '../src/components/BrandLogo';
 import { colors } from '../src/theme/colors';
 
 export default function FoundationScreen() {
   const status = useAuthStore((state) => state.status);
   const restore = useAuthStore((state) => state.restore);
-  const declineRestore = useAuthStore((state) => state.declineRestore);
+  const [destination, setDestination] = useState<'unlock' | 'setup' | null>(null);
 
   useEffect(() => {
     void (async () => {
-      if (await biometricLock.isEnabled()) {
-        const unlocked = await biometricLock.unlock();
-        if (!unlocked) { declineRestore(); return; }
-      }
-      await restore();
+      const refreshToken = await tokenVault.readRefreshToken();
+      if (!refreshToken) { await restore(); return; }
+      setDestination(await appLock.isConfigured() ? 'unlock' : 'setup');
     })();
-  }, [declineRestore, restore]);
+  }, [restore]);
 
+  if (destination === 'unlock') return <Redirect href="/(auth)/unlock" />;
+  if (destination === 'setup') return <Redirect href="/(onboarding)/app-passcode" />;
   if (status === 'guest') return <Redirect href="/(auth)/login" />;
   if (status === 'authenticated') return <Redirect href="/(tabs)" />;
 

@@ -93,6 +93,13 @@ export default function AccountScreen() {
         <Text style={styles.settingLabel}>Password and transaction PIN</Text>
         <Text style={styles.arrow}>›</Text>
       </Pressable>
+      <Pressable onPress={() => router.push('/(onboarding)/app-passcode')} style={styles.navigation}>
+        <View style={styles.settingCopy}>
+          <Text style={styles.settingLabel}>Change app passcode</Text>
+          <Text style={styles.settingDescription}>Used only to unlock this device.</Text>
+        </View>
+        <Text style={styles.arrow}>›</Text>
+      </Pressable>
       <Setting
         description="Unlocks your saved session when reopening the app. Signing out still requires your password."
         label="Fingerprint / Face unlock"

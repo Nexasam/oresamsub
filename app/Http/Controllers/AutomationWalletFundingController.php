@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Automation;
 use App\Models\AutomationWalletFunding;
+use App\Models\FundingOption;
 use App\Services\Automation\AutomationBalanceResolver;
 use App\Services\Automation\WalletAutoFundingService;
 use App\Services\Securewave\SecurewaveClient;
@@ -16,6 +17,7 @@ class AutomationWalletFundingController extends Controller
     public function index(): View
     {
         return view('admin.automations.funding', [
+            'securewaveOption' => FundingOption::query()->where('slug', 'securewaveng')->first(),
             'automations' => Automation::query()
                 ->with('walletFunding')
                 ->orderByDesc(
@@ -27,6 +29,31 @@ class AutomationWalletFundingController extends Controller
                 ->orderBy('automation_name')
                 ->get(),
         ]);
+    }
+
+    public function refreshMerchantBalance(SecurewaveClient $securewave): RedirectResponse
+    {
+        $option = FundingOption::query()->where('slug', 'securewaveng')->first();
+
+        if (! $option) {
+            return back()->with('failure', 'Securewave funding option is not configured.');
+        }
+
+        $result = $securewave->merchantBalance();
+
+        if (! $result['ok'] || $result['balance'] === null) {
+            $option->update(['merchant_balance_error' => $result['message']]);
+
+            return back()->with('failure', $result['message']);
+        }
+
+        $option->update([
+            'merchant_wallet_balance' => $result['balance'],
+            'merchant_balance_synced_at' => now(),
+            'merchant_balance_error' => null,
+        ]);
+
+        return back()->with('success', 'Securewave master wallet balance refreshed.');
     }
 
     public function manage(Automation $automation): View

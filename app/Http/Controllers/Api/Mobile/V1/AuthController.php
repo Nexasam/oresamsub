@@ -11,14 +11,14 @@ use App\Http\Resources\Api\Mobile\V1\UserResource;
 use App\Models\Role;
 use App\Models\User;
 use App\Models\UserPlan;
-use App\Notifications\MobileVerifyEmailNotification;
 use App\Services\BonusService;
+use App\Services\Mobile\MobileEmailOtpService;
+use App\Services\Mobile\MobilePasswordResetOtpService;
 use App\Services\Mobile\MobileTokenService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Password;
 use Illuminate\Validation\Rules\Password as PasswordRule;
 use RuntimeException;
 
@@ -28,7 +28,9 @@ class AuthController extends Controller
 
     public function __construct(
         private readonly MobileTokenService $tokens,
-        private readonly BonusService $bonuses
+        private readonly BonusService $bonuses,
+        private readonly MobileEmailOtpService $emailOtp,
+        private readonly MobilePasswordResetOtpService $passwordResetOtp,
     ) {}
 
     public function register(RegisterRequest $request): JsonResponse
@@ -61,9 +63,9 @@ class AuthController extends Controller
         });
 
         $this->bonuses->captureRegistrationContext($user, $request);
-        $user->notify(new MobileVerifyEmailNotification);
+        $this->emailOtp->issue($user);
 
-        return $this->successResponse('Account created. Check your email to verify your account before signing in.', [
+        return $this->successResponse('Account created. Enter the six-digit code sent to your email.', [
             'email' => $user->email,
             'verification_required' => true,
         ], 201);
@@ -76,10 +78,29 @@ class AuthController extends Controller
         $user = User::query()->where('email', $email)->first();
 
         if ($user && ! $user->hasVerifiedEmail() && ! (bool) $user->is_deactivated) {
-            $user->notify(new MobileVerifyEmailNotification);
+            $this->emailOtp->issue($user);
         }
 
-        return $this->successResponse('If that email belongs to an unverified account, a new verification link has been sent.');
+        return $this->successResponse('If that email belongs to an unverified account, a new verification code has been sent.');
+    }
+
+    public function verifyEmailOtp(Request $request): JsonResponse
+    {
+        $validated = $request->validate([
+            'email' => ['required', 'email:rfc'],
+            'otp' => ['required', 'digits:6'],
+            'device_name' => ['required', 'string', 'max:120'],
+        ]);
+        $user = User::query()->where('email', mb_strtolower(trim($validated['email'])))->first();
+
+        if (! $user || (bool) $user->is_deactivated || ! $this->emailOtp->verify($user, $validated['otp'])) {
+            return $this->errorResponse('The verification code is invalid or expired.', null, 422);
+        }
+
+        $this->bonuses->evaluate($user, $request);
+        $tokenData = $this->tokens->issue($user, $validated['device_name'], $request);
+
+        return $this->successResponse('Email verified successfully.', $this->sessionPayload($user->fresh(), $tokenData));
     }
 
     public function login(LoginRequest $request): JsonResponse
@@ -123,30 +144,30 @@ class AuthController extends Controller
         $request->validate(['email' => ['required', 'email:rfc']]);
         $email = mb_strtolower(trim($request->string('email')->toString()));
 
-        if (User::query()->where('email', $email)->exists()) {
-            Password::sendResetLink(['email' => $email]);
+        $user = User::query()->where('email', $email)->first();
+        if ($user && ! (bool) $user->is_deactivated) {
+            $this->passwordResetOtp->issue($user);
         }
 
-        return $this->successResponse('If an account matches that email, password reset instructions have been sent.');
+        return $this->successResponse('If an account matches that email, a password reset code has been sent.');
     }
 
     public function resetPassword(Request $request): JsonResponse
     {
         $validated = $request->validate([
-            'token' => ['required', 'string'],
+            'otp' => ['required', 'digits:6'],
             'email' => ['required', 'email:rfc'],
             'password' => ['required', 'confirmed', PasswordRule::min(8)->mixedCase()->numbers()->symbols()],
         ]);
 
-        $status = Password::reset($validated, function (User $user, string $password) {
-            $user->forceFill(['password' => $password])->save();
-            $user->tokens()->delete();
-            $user->mobileRefreshTokens()->whereNull('revoked_at')->update(['revoked_at' => now()]);
-        });
-
-        if ($status !== Password::PASSWORD_RESET) {
-            return $this->errorResponse('The password reset token is invalid or expired.', null, 422);
+        $user = User::query()->where('email', mb_strtolower(trim($validated['email'])))->first();
+        if (! $user || (bool) $user->is_deactivated || ! $this->passwordResetOtp->consume($user, $validated['otp'])) {
+            return $this->errorResponse('The password reset code is invalid or expired.', null, 422);
         }
+
+        $user->forceFill(['password' => Hash::make($validated['password'])])->save();
+        $user->tokens()->delete();
+        $user->mobileRefreshTokens()->whereNull('revoked_at')->update(['revoked_at' => now()]);
 
         return $this->successResponse('Password reset successfully. Sign in with your new password.');
     }

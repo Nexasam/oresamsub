@@ -16,6 +16,27 @@
         </div>
 
         <div class="col-span-12">
+            <div class="box mb-3">
+                <div class="box-body flex flex-col gap-4 p-4 sm:flex-row sm:items-center sm:justify-between">
+                    <div>
+                        <div class="text-[10px] font-semibold uppercase tracking-wide text-gray-500">Securewave Master Wallet</div>
+                        <div class="mt-1 text-2xl font-bold text-gray-900 dark:text-gray-100">
+                            {{ $securewaveOption?->merchant_wallet_balance !== null ? '₦'.number_format((float) $securewaveOption->merchant_wallet_balance, 2) : 'Not synced' }}
+                        </div>
+                        <div class="mt-1 text-xs text-gray-500">
+                            Last refreshed: {{ $securewaveOption?->merchant_balance_synced_at?->format('d M Y H:i') ?: 'Never' }}
+                        </div>
+                        @if($securewaveOption?->merchant_balance_error)
+                            <div class="mt-2 text-xs text-danger">Latest refresh error: {{ $securewaveOption->merchant_balance_error }}</div>
+                        @endif
+                    </div>
+                    <form method="POST" action="{{ route('admin.automation-funding.refresh-merchant-balance') }}">
+                        @csrf
+                        <button class="ti-btn ti-btn-primary ti-btn-sm">Refresh Wallet Balance</button>
+                    </form>
+                </div>
+            </div>
+
             <div class="box">
                 <div class="box-header flex items-center justify-between py-2">
                     <div>

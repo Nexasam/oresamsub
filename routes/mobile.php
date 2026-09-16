@@ -23,6 +23,7 @@ Route::get('/support', MobileSupportController::class)->name('support');
 Route::prefix('auth')->name('auth.')->group(function () {
     Route::post('/register', [AuthController::class, 'register'])->middleware('throttle:mobile-register')->name('register');
     Route::post('/email/resend', [AuthController::class, 'resendEmailVerification'])->middleware('throttle:mobile-password')->name('email.resend');
+    Route::post('/email/verify-otp', [AuthController::class, 'verifyEmailOtp'])->middleware('throttle:mobile-otp-verify')->name('email.verify-otp');
     Route::post('/login', [AuthController::class, 'login'])->middleware('throttle:mobile-login')->name('login');
     Route::post('/refresh', [AuthController::class, 'refresh'])->middleware('throttle:mobile-refresh')->name('refresh');
     Route::post('/forgot-password', [AuthController::class, 'forgotPassword'])->middleware('throttle:mobile-password')->name('forgot-password');

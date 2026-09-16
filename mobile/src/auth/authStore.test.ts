@@ -1,5 +1,5 @@
 jest.mock('./tokenVault', () => ({ tokenVault: { readRefreshToken: jest.fn(), save: jest.fn(), clear: jest.fn() } }));
-jest.mock('./authApi', () => ({ authApi: { session: jest.fn(), login: jest.fn(), register: jest.fn(), logout: jest.fn() } }));
+jest.mock('./authApi', () => ({ authApi: { session: jest.fn(), login: jest.fn(), register: jest.fn(), verifyEmailOtp: jest.fn(), logout: jest.fn() } }));
 
 import { authApi } from './authApi';
 import { useAuthStore } from './authStore';

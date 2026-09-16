@@ -8,13 +8,15 @@ import { MaterialIcon } from './MaterialIcon';
 type PinInputProps = {
   autoFocus?: boolean;
   label: string;
+  length?: number;
   onChangeText: (value: string) => void;
   onFocus?: () => void;
   style?: StyleProp<ViewStyle>;
   value: string;
+  secure?: boolean;
 };
 
-export function PinInput({ autoFocus, label, onChangeText, onFocus, style, value }: PinInputProps) {
+export function PinInput({ autoFocus, label, length = 4, onChangeText, onFocus, secure = true, style, value }: PinInputProps) {
   const [visible, setVisible] = useState(false);
 
   return (
@@ -26,17 +28,17 @@ export function PinInput({ autoFocus, label, onChangeText, onFocus, style, value
           autoFocus={autoFocus}
           cursorColor={colors.primary}
           keyboardType="number-pad"
-          maxLength={4}
-          onChangeText={(nextValue) => onChangeText(nextValue.replace(/\D/g, '').slice(0, 4))}
+          maxLength={length}
+          onChangeText={(nextValue) => onChangeText(nextValue.replace(/\D/g, '').slice(0, length))}
           onFocus={onFocus}
-          placeholder="4 digits"
+          placeholder={`${length} digits`}
           placeholderTextColor={colors.muted}
-          secureTextEntry={!visible}
+          secureTextEntry={secure && !visible}
           selectionColor={colors.primary}
           style={styles.input}
           value={value}
         />
-        <Pressable
+        {secure ? <Pressable
           accessibilityLabel={visible ? `Hide ${label}` : `Show ${label}`}
           accessibilityRole="button"
           hitSlop={10}
@@ -44,7 +46,7 @@ export function PinInput({ autoFocus, label, onChangeText, onFocus, style, value
           style={styles.visibility}
         >
           <MaterialIcon color={colors.primary} name={visible ? 'visibility_off' : 'visibility'} size={21} />
-        </Pressable>
+        </Pressable> : null}
       </View>
     </View>
   );

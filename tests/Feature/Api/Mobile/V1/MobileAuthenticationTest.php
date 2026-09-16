@@ -7,7 +7,7 @@ use App\Models\Role;
 use App\Models\User;
 use App\Models\UserPlan;
 use App\Notifications\MobileVerifyEmailNotification;
-use Illuminate\Auth\Notifications\ResetPassword;
+use App\Notifications\MobilePasswordResetOtpNotification;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\URL;
@@ -49,7 +49,40 @@ it('registers a user without silently assigning a transaction pin', function () 
     expect($user->pin)->toBeNull()
         ->and($user->email_verified_at)->toBeNull()
         ->and(Hash::check('SecurePass123!', $user->password))->toBeTrue();
-    Notification::assertSentTo($user, MobileVerifyEmailNotification::class);
+    Notification::assertSentTo($user, MobileVerifyEmailNotification::class, fn ($notification) => preg_match('/^\d{6}$/', $notification->code) === 1);
+});
+
+it('verifies a mobile email with an otp and starts the device session', function () {
+    Notification::fake();
+    Role::firstOrCreate(['role_name' => 'User']);
+    UserPlan::firstOrCreate(['plan_level' => 1], [
+        'user_plan_name' => 'Default', 'is_default' => 1, 'visibility' => 1,
+    ]);
+
+    postJson('/api/mobile/v1/auth/register', [
+        'first_name' => 'Otp', 'last_name' => 'Customer', 'username' => 'otpcustomer',
+        'email' => 'otp-mobile@example.com', 'password' => 'SecurePass123!',
+        'password_confirmation' => 'SecurePass123!', 'device_name' => 'Test iPhone',
+        'terms_accepted' => true,
+    ])->assertCreated();
+
+    $user = User::where('email', 'otp-mobile@example.com')->firstOrFail();
+    $otp = null;
+    Notification::assertSentTo($user, MobileVerifyEmailNotification::class, function ($notification) use (&$otp) {
+        $otp = $notification->code;
+        return true;
+    });
+
+    postJson('/api/mobile/v1/auth/email/verify-otp', [
+        'email' => $user->email,
+        'otp' => $otp,
+        'device_name' => 'Test iPhone',
+    ])->assertOk()
+        ->assertJsonPath('data.user.email', $user->email)
+        ->assertJsonStructure(['data' => ['tokens' => ['access_token', 'refresh_token']]]);
+
+    expect($user->fresh()->hasVerifiedEmail())->toBeTrue()
+        ->and(MobileRefreshToken::where('user_id', $user->id)->count())->toBe(1);
 });
 
 it('verifies a mobile email through its temporary signed browser link', function () {
@@ -78,7 +111,7 @@ it('resends mobile email verification without exposing unknown accounts', functi
 
     postJson('/api/mobile/v1/auth/email/resend', ['email' => 'unknown@example.com'])
         ->assertOk()
-        ->assertJsonPath('message', 'If that email belongs to an unverified account, a new verification link has been sent.');
+        ->assertJsonPath('message', 'If that email belongs to an unverified account, a new verification code has been sent.');
 });
 
 it('logs in with an exact identifier and returns a device session', function () {
@@ -169,7 +202,7 @@ it('uses the standard mobile error envelope for validation and authentication fa
         ]);
 });
 
-it('sends password reset instructions without exposing whether an account exists', function () {
+it('resets a password with an emailed otp without exposing whether an account exists', function () {
     Notification::fake();
     $user = User::factory()->create(['email' => 'reset@example.com']);
 
@@ -177,11 +210,24 @@ it('sends password reset instructions without exposing whether an account exists
         ->assertOk()
         ->assertJsonPath('success', true);
 
-    Notification::assertSentTo($user, ResetPassword::class);
+    $otp = null;
+    Notification::assertSentTo($user, MobilePasswordResetOtpNotification::class, function ($notification) use (&$otp) {
+        $otp = $notification->code;
+        return preg_match('/^\d{6}$/', $otp) === 1;
+    });
+
+    postJson('/api/mobile/v1/auth/reset-password', [
+        'email' => $user->email,
+        'otp' => $otp,
+        'password' => 'NewSecurePass123!',
+        'password_confirmation' => 'NewSecurePass123!',
+    ])->assertOk()->assertJsonPath('success', true);
+
+    expect(Hash::check('NewSecurePass123!', $user->fresh()->password))->toBeTrue();
 
     postJson('/api/mobile/v1/auth/forgot-password', ['email' => 'missing@example.com'])
         ->assertOk()
-        ->assertJsonPath('message', 'If an account matches that email, password reset instructions have been sent.');
+        ->assertJsonPath('message', 'If an account matches that email, a password reset code has been sent.');
 });
 
 it('rotates refresh tokens and rejects replay of the old token', function () {

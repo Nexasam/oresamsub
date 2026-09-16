@@ -355,6 +355,42 @@ it('shows every automation on the admin funding page', function () {
         ->assertSee('Paultechs');
 });
 
+it('shows the last confirmed Securewave master wallet balance', function () {
+    $admin = walletFundingAdmin();
+    securewaveOption()->update([
+        'merchant_wallet_balance' => 125000.75,
+        'merchant_balance_synced_at' => '2026-09-16 10:30:00',
+    ]);
+
+    $this->actingAs($admin)
+        ->get(route('admin.automation-funding.index'))
+        ->assertOk()
+        ->assertSee('Securewave Master Wallet')
+        ->assertSee('₦125,000.75')
+        ->assertSee('Refresh Wallet Balance');
+});
+
+it('refreshes and stores the Securewave master wallet balance', function () {
+    $admin = walletFundingAdmin();
+    $option = securewaveOption();
+    Http::fake([
+        'securewaveng.com/api/balance' => Http::response([
+            'status' => true,
+            'message' => 'Successful',
+            'data' => ['balance' => '98000.50'],
+        ]),
+    ]);
+
+    $this->actingAs($admin)
+        ->post(route('admin.automation-funding.refresh-merchant-balance'))
+        ->assertRedirect()
+        ->assertSessionHas('success');
+
+    expect($option->fresh()->merchant_wallet_balance)->toBe('98000.50')
+        ->and($option->fresh()->merchant_balance_synced_at)->not->toBeNull()
+        ->and($option->fresh()->merchant_balance_error)->toBeNull();
+});
+
 it('lists the most recently updated automation funding first', function () {
     $admin = walletFundingAdmin();
     $older = fundingConfig(fundingAutomation(['automation_name' => 'Older Automation']));

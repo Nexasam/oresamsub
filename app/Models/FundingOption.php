@@ -17,6 +17,8 @@ class FundingOption extends Model
 
     protected $casts = [
         'virtual_account_id_number' => 'encrypted',
+        'merchant_wallet_balance' => 'decimal:2',
+        'merchant_balance_synced_at' => 'datetime',
     ];
     public function bank_codes(){
         return $this->hasMany(FundingOptionBankCodes::class,'funding_option_id','id');

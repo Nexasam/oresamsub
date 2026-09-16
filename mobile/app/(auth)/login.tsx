@@ -7,6 +7,7 @@ import { z } from 'zod';
 
 import { ApiError } from '../../src/api/client';
 import { useAuthStore } from '../../src/auth/authStore';
+import { appLock } from '../../src/auth/appLock';
 import { biometricLock } from '../../src/auth/biometricLock';
 import { tokenVault } from '../../src/auth/tokenVault';
 import { AuthField } from '../../src/components/AuthField';
@@ -55,7 +56,8 @@ export default function LoginScreen() {
     try {
       setUnverifiedEmail(null);
       const session = await signIn(values.login, values.password);
-      if (!session.onboarding.phone_verified) router.replace('/(onboarding)/phone');
+      if (!(await appLock.isConfigured())) router.replace('/(onboarding)/app-passcode');
+      else if (!session.onboarding.phone_verified) router.replace('/(onboarding)/phone');
       else if (!session.onboarding.transaction_pin_set) router.replace('/(onboarding)/pin');
       else router.replace('/(tabs)');
     } catch (error) {
@@ -123,6 +125,8 @@ export default function LoginScreen() {
             />
           )} />
 
+          <Pressable onPress={() => router.push('/(auth)/forgot-password')} style={styles.forgot}><Text style={styles.forgotText}>Forgot password?</Text></Pressable>
+
           {errors.root && (
             <View style={styles.rootError}>
               <MaterialIcon color={colors.danger} name="error" size={18} />
@@ -182,6 +186,8 @@ const styles = StyleSheet.create({
   rootErrorText: { color: colors.danger, flex: 1, fontFamily: fonts.medium, fontSize: 10, lineHeight: 15 },
   verifyLink: { alignItems: 'center', backgroundColor: colors.primarySoft, borderRadius: 12, flexDirection: 'row', gap: 7, marginBottom: 13, padding: 11 },
   verifyLinkText: { color: colors.primaryDark, fontFamily: fonts.bold, fontSize: 10 },
+  forgot: { alignSelf: 'flex-end', marginBottom: 14, marginTop: -5 },
+  forgotText: { color: colors.primary, fontFamily: fonts.bold, fontSize: 10 },
   button: { alignItems: 'center', backgroundColor: colors.primary, borderRadius: 15, flexDirection: 'row', gap: 8, justifyContent: 'center', minHeight: 55, shadowColor: colors.primary, shadowOffset: { width: 0, height: 7 }, shadowOpacity: 0.2, shadowRadius: 12 },
   buttonPressed: { backgroundColor: colors.primaryDark, transform: [{ scale: 0.99 }] },
   buttonDisabled: { opacity: 0.65 },

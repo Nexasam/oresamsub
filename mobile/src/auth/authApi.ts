@@ -35,6 +35,27 @@ export const authApi = {
     });
   },
 
+  verifyEmailOtp(email: string, otp: string) {
+    return apiRequest<AuthSession>('/auth/email/verify-otp', {
+      method: 'POST',
+      body: JSON.stringify({ email, otp, device_name: deviceName }),
+    });
+  },
+
+  forgotPassword(email: string) {
+    return apiRequest<null>('/auth/forgot-password', {
+      method: 'POST',
+      body: JSON.stringify({ email }),
+    });
+  },
+
+  resetPassword(email: string, otp: string, password: string) {
+    return apiRequest<null>('/auth/reset-password', {
+      method: 'POST',
+      body: JSON.stringify({ email, otp, password, password_confirmation: password }),
+    });
+  },
+
   session() {
     return apiRequest<AuthSession>('/auth/session', { authenticated: true });
   },
