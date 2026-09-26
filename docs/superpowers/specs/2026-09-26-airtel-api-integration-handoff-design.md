@@ -78,6 +78,111 @@ subscriber_id             msisdn/siNumber/subscriberId from Verify OTP
 
 Never log OTPs, tokens, subscriber identifiers, `device_id`, encrypted bodies, `x-bsy-rp`, or `x-bsy-utkn`. If state is persisted, encrypt sensitive columns at rest.
 
+## Complete variable contract
+
+The names below are logical integration names. The receiving agent may use different PHP property names, but must preserve the indicated scope and must not share per-account state between Airtel numbers.
+
+### Constant server configuration
+
+These values are shared by all Airtel accounts. They are never accepted from a browser or API consumer.
+
+| Variable | Value/source | Required | Sensitive | Notes |
+|---|---|---:|---:|---|
+| `base_url` | `https://airtelcareapp.airtel.com.ng` | Yes | No | Allow an environment override for tests, not arbitrary runtime hosts. |
+| `rsa_public_key` | Exact Base64 SPKI from verified artifact | Yes | No | Public encryption key; integrity still matters. |
+| `device_id` | Authorized app `x-bsy-did` | Yes | Yes | Exactly 16 hexadecimal characters; constant for this deployment. |
+| `app_version` | `1.4.23` | Yes | No | Header `x-bsy-vn` and body `appversion`. |
+| `app_build` | `249` | Yes | No | Header `x-bsy-bn` and body `buildNumber`. |
+| `client` | `map` | Yes | No | Header `x-client`. |
+| `service_class` | `DEFAULT` | Yes | No | Header `x-service-class`. |
+| `locale` | `en` | Yes | No | Header `x-bsy-locale`. |
+| `device_model` | `TECNO KG5j` | Yes | No | Body `devicetype`. |
+| `device_manufacturer` | `TECNO MOBILE LIMITED` | Yes | No | Header/body device context. |
+| `device_brand` | `TECNO` | Yes | No | Header/body device context. |
+| `device_product` | `KG5j-OP` | Yes | No | Header/body device context. |
+| `device_os` | `Android` | Yes | No | Body value; header uses lowercase `android`. |
+| `device_os_version` | `11` | Yes | No | Body `osversion`. |
+| `device_resolution` | `720x1444` | Yes | No | Body `resolution`. |
+| `device_carrier` | `MTN NG` | Yes | No | Header/body carrier from captured profile. |
+| `network_type` | `4` | Yes | No | Header `x-bsy-network`. |
+| `network_transport` | `2` | Yes | No | Header `x-bsy-net`. |
+| `vpn_active` | `0` | Yes | No | Header `x-bsy-vpn`. |
+| `secondary_network` | `0` | Yes | No | Header `x-bsy-snet`. |
+| `available_carriers` | `Airtel NG,Airtel NG` | Yes for checkout | No | Body `availableCarriers`. |
+| `device_imei` | Empty unless explicitly captured | No | Yes | Do not fabricate it. |
+| `device_mac_address` | Empty unless explicitly captured | No | Yes | Do not fabricate it. |
+
+### Per-account identity and authenticated session
+
+Each connected Airtel number has its own copy of these values. Never use a session from account A with the subscriber ID or OTP context from account B.
+
+| Variable | Source | Required for signed calls | Sensitive | Lifetime/format |
+|---|---|---:|---:|---|
+| `phone_number` | User enters during connection | Auth only | Yes | Normalize to ten digits after `+234`. |
+| `subscriber_id` | Verify OTP response | Yes | Yes | Airtel payer identity; often returned as `msisdn`, `siNumber`, or `subscriberId`. |
+| `session_token` | Verify OTP `token` or `sessionToken` | Yes | Yes | HMAC key for request signing. |
+| `uid_key` | Verify OTP `uid` | Yes | Yes | Prefix in `x-bsy-utkn`. |
+| `dynamic_token` | Verify OTP `dynamicToken` | Yes | Yes | Sent as `x-bsy-dt`. |
+| `user_type` | Send OTP response | Verify OTP | Yes | Common observed value is `PREPAID`; use returned value. |
+| `is_airtel_user` | Check user type response | Send OTP | No | Boolean; use returned value. |
+| `is_pure_ott_user` | Send OTP response | Verify OTP | No | Boolean; use returned value, normally false for this flow. |
+| `client_device_id` | Send OTP response | Verify OTP | Yes | Separate from constant `device_id`. |
+
+Treat a session as unusable when any of `session_token`, `uid_key`, `dynamic_token`, or `subscriber_id` is absent. Airtel did not expose a reliable expiry field in the confirmed flow; discover expiry by a safe signed probe such as account balance, and require re-authentication on session failure.
+
+### Short-lived authentication challenge
+
+These values exist only while connecting or refreshing one Airtel account.
+
+| Variable | Source | Required at | Lifetime/format |
+|---|---|---|---|
+| `login_context_id` | Check user type response | Flow correlation/reference | Treat as short-lived even though it is not included in the later captured plaintext body. |
+| `login_context_created_at` | Local clock | Send OTP guard | Reject locally after 60 seconds in the confirmed workflow. |
+| `otp_id` | Send OTP response, or current flow context | Verify OTP | Clear before a new attempt and after completion. |
+| `otp` | SMS received by account owner | Verify OTP | Ephemeral; clear after every verification attempt. |
+| `fe_session_id` | Locally generated | Verify OTP | `AN` plus 11 digits; first generated digit non-zero. |
+| `request_timestamp` | Local clock | Send OTP | Epoch milliseconds. |
+
+### Fresh values generated per outbound request
+
+| Variable | Generation | Use |
+|---|---|---|
+| `x_consumer_txn_id` | Fresh UUID for each request body | Plaintext key is exactly `x-consumer-txn-id`. |
+| `pot` | Fresh UUID inside each encryption operation | PBKDF2 password and RSA-envelope field. Never persist or reuse. |
+| `salt` | 16 random bytes per encryption | PBKDF2 salt and envelope `pen` after Base64 encoding. |
+| `iv` | 12 random bytes per encryption | AES-GCM IV and encrypted-body prefix. |
+| `envelope_timestamp` | Local clock | RSA envelope `ts`, epoch milliseconds. |
+| `client_txn_id` | Fresh UUID for each purchase attempt | Purchase body `clientTxnId`; distinct from `x_consumer_txn_id`. |
+| `encrypted_body` | Encryption result | Exact HTTP body and part of signed text. |
+| `encrypted_envelope` | RSA encryption result | Header `x-bsy-rp`. |
+| `request_signature` | HMAC result | Suffix of `x-bsy-utkn`. |
+
+Never reuse `client_txn_id` to perform a second charge. If a purchase result is uncertain, retain the original ID for reconciliation but do not resubmit it automatically.
+
+### Bundle and checkout variables
+
+These come from a selected catalogue offer except for the fixed captured transaction constants. Validate the offer tuple server-side before payment discovery and again before charging.
+
+| Variable | Example/fixed value | Source and rule |
+|---|---|---|
+| `purchase_beneficiary` | Sanitized Airtel number | Own line defaults to `subscriber_id`; other line is the intended recipient. Body field `siNumber`. |
+| `purchase_amount` | `75` | Selected catalogue price; numeric in purchase and normalized string in payment options. |
+| `purchase_currency` | `NGN` | Fixed for confirmed flow. |
+| `purchase_product_code` | `Daily_Plan_75` | Catalogue `packId`/product-code mapping; never accept independently from price. |
+| `purchase_bundle_name` | `Daily Plan 75` | Selected catalogue metadata. |
+| `purchase_validity` | `1 Day` | Selected catalogue metadata. |
+| `purchase_units` | `75` in payment options | String derived from the selected price in the confirmed app flow; purchase body instead uses numeric `0`. |
+| `purchase_flow_type` | `PREPAID_BUY_BUNDLES` | Fixed confirmed value. |
+| `purchase_sub_flow_type` | `UNKNOWN` | Fixed confirmed value. |
+| `purchase_subcat` | `PREPAID_MOBILE` | Payment-options fixed value. |
+| `purchase_lob` | `prepaid` | Payment-options fixed value. |
+| `purchase_payment_type` | `AIRTIME` | Must be returned as available by payment options. |
+| `purchase_pg_id` | `0` | Must correspond to returned AIRTIME option. |
+| `purchase_display_type` | `1` | String in payment options, numeric in purchase. |
+| `purchase_recipient_name` | Empty unless known | Purchase body `recipientName`; do not infer sensitive identity. |
+
+The former Postman-only `enable_purchase` value is not an Airtel API field. It is merely a local safety switch. A Laravel implementation should replace it with its own explicit, one-shot confirmation/idempotency mechanism rather than transmitting it upstream.
+
 ## Wire encryption
 
 Every JSON POST body, including unsigned authentication bodies, uses this envelope:
@@ -508,4 +613,3 @@ The receiving implementation is incomplete until tests prove:
 - [ ] Never retry a charging request.
 - [ ] Treat uncertain transaction outcomes as unknown and reconcile them.
 - [ ] Keep all examples and logs free of real credentials and subscriber data.
-
