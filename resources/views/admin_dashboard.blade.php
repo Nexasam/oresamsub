@@ -431,6 +431,12 @@
                                     <tr class="border-t">
                                         <td class="p-2">
                                             {{ $key + 1 }}
+                                            @if ($data->txn_reference)
+                                                <div class="mt-1 max-w-[120px] truncate text-[10px] leading-tight text-gray-400 dark:text-gray-500"
+                                                     title="{{ $data->txn_reference }}">
+                                                    Ref: {{ $data->txn_reference }}
+                                                </div>
+                                            @endif
                                         </td>
                                         {{-- USER --}}
                                         <td class="p-2">
