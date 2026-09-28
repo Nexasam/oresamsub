@@ -4,6 +4,19 @@ import DashboardLayout from "@/Layouts/DashboardLayout";
 import WalletBalance from "@/Components/WalletBalance";
 import Swal from "sweetalert2";
 
+function DetailRow({ label, value, valueClassName = "" }) {
+  if (!value) return null;
+
+  return (
+    <div className="flex items-start justify-between gap-4 py-2">
+      <span className="text-[11px] uppercase tracking-wide text-gray-400 dark:text-gray-500">{label}</span>
+      <span className={`text-right text-sm font-semibold text-gray-800 dark:text-gray-100 ${valueClassName}`}>
+        {value}
+      </span>
+    </div>
+  );
+}
+
 export default function AirtimeToCash() {
   const { props } = usePage();
   const { auth, networks = [], requests = [], settings = {}, flash = {} } = props;
@@ -301,38 +314,71 @@ export default function AirtimeToCash() {
       </div>
 
       {selectedRequest && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg max-w-sm w-full p-6 font-inter">
-            <h2 className="text-lg font-bold mb-4">Request Details</h2>
-            <div className="space-y-2 text-sm">
-              <div className="flex justify-between"><span>Reference</span><b>{selectedRequest.reference}</b></div>
-              <div className="flex justify-between"><span>Status</span><b>{selectedRequest.status.toUpperCase()}</b></div>
-              <div className="flex justify-between"><span>Network</span><b>{selectedRequest.network_name}</b></div>
-              <div className="flex justify-between"><span>Airtime</span><b>₦{Number(selectedRequest.airtime_amount).toLocaleString("en-NG")}</b></div>
-              <div className="flex justify-between"><span>Cash payout</span><b>₦{Number(selectedRequest.cash_amount).toLocaleString("en-NG")}</b></div>
-              {selectedRequest.fraud_disclaimer_accepted_at && (
-                <div className="flex justify-between gap-3">
-                  <span>Disclaimer</span>
-                  <b>{new Date(selectedRequest.fraud_disclaimer_accepted_at).toLocaleString("en-NG")}</b>
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4">
+          <div className="w-full max-w-md overflow-hidden rounded-3xl bg-white shadow-2xl dark:bg-gray-900 font-inter">
+            <div className="bg-gradient-to-br from-emerald-600 to-green-700 p-5 text-white">
+              <div className="flex items-start justify-between gap-3">
+                <div>
+                  <p className="text-xs uppercase tracking-[0.2em] text-white/70">Airtime-to-Cash</p>
+                  <h2 className="mt-1 text-lg font-bold">Request Details</h2>
+                  <p className="mt-1 max-w-[240px] truncate text-xs text-white/80">{selectedRequest.reference}</p>
                 </div>
-              )}
-              <div className="flex justify-between"><span>Bank</span><b>{selectedRequest.payout_bank_name}</b></div>
-              <div className="flex justify-between"><span>Account</span><b>{selectedRequest.payout_account_number_masked}</b></div>
-              {selectedRequest.payout_reference && <div className="flex justify-between"><span>Payout ref</span><b>{selectedRequest.payout_reference}</b></div>}
-              {selectedRequest.admin_note && <div><span>Admin note</span><p className="font-semibold">{selectedRequest.admin_note}</p></div>}
+                <span className={`rounded-full px-3 py-1 text-[10px] font-bold ${statusStyles[selectedRequest.status] || "bg-white/20 text-white"}`}>
+                  {selectedRequest.status.toUpperCase()}
+                </span>
+              </div>
+
+              <div className="mt-5 grid grid-cols-2 gap-3">
+                <div className="rounded-2xl bg-white/15 p-3">
+                  <p className="text-[10px] uppercase tracking-wide text-white/65">Airtime</p>
+                  <p className="mt-1 text-lg font-bold">₦{Number(selectedRequest.airtime_amount).toLocaleString("en-NG")}</p>
+                </div>
+                <div className="rounded-2xl bg-white/15 p-3">
+                  <p className="text-[10px] uppercase tracking-wide text-white/65">Cash payout</p>
+                  <p className="mt-1 text-lg font-bold">₦{Number(selectedRequest.cash_amount).toLocaleString("en-NG")}</p>
+                </div>
+              </div>
             </div>
 
-            <div className="grid grid-cols-2 gap-2 mt-6">
+            <div className="max-h-[65vh] overflow-y-auto p-5">
+              <div className="rounded-2xl border border-gray-100 bg-gray-50 px-4 py-2 dark:border-gray-800 dark:bg-gray-950">
+                <DetailRow label="Network" value={selectedRequest.network_name} />
+                <DetailRow label="Bank" value={selectedRequest.payout_bank_name} />
+                <DetailRow label="Account" value={selectedRequest.payout_account_number_masked} />
+                <DetailRow
+                  label="Submitted"
+                  value={selectedRequest.created_at ? new Date(selectedRequest.created_at).toLocaleString("en-NG") : null}
+                />
+                <DetailRow
+                  label="Disclaimer"
+                  value={selectedRequest.fraud_disclaimer_accepted_at ? new Date(selectedRequest.fraud_disclaimer_accepted_at).toLocaleString("en-NG") : null}
+                />
+                <DetailRow label="Payout ref" value={selectedRequest.payout_reference} />
+              </div>
+
+              {selectedRequest.admin_note && (
+                <div className="mt-3 rounded-2xl border border-blue-100 bg-blue-50 p-4 text-sm text-blue-900 dark:border-blue-900 dark:bg-blue-950 dark:text-blue-100">
+                  <p className="text-[11px] uppercase tracking-wide opacity-70">Admin note</p>
+                  <p className="mt-1 font-medium">{selectedRequest.admin_note}</p>
+                </div>
+              )}
+
+              <p className="mt-3 text-center text-[11px] text-gray-400 dark:text-gray-500">
+                Need help? Share this reference with support.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-2 gap-2 border-t border-gray-100 p-4 dark:border-gray-800">
               <a
                 href={supportLink(selectedRequest)}
                 target="_blank"
-                className="px-4 py-2 bg-green-600 text-white rounded-md text-sm text-center"
+                className="rounded-xl bg-green-600 px-4 py-3 text-center text-sm font-semibold text-white shadow-sm hover:bg-green-700"
               >
-                Support
+                💬 Support
               </a>
               <button
                 onClick={() => setSelectedRequest(null)}
-                className="px-4 py-2 bg-gray-200 dark:bg-gray-700 rounded-md text-sm"
+                className="rounded-xl bg-gray-100 px-4 py-3 text-sm font-semibold text-gray-700 hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-100 dark:hover:bg-gray-700"
               >
                 Close
               </button>
