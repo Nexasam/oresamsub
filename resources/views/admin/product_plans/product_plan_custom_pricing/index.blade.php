@@ -110,6 +110,7 @@
                                         <div>
                                             <label class="ti-form-label mb-0">Custom Price</label>
                                             <input name="price" required type="number" class="my-auto ti-form-input" placeholder="value">
+                                            <small>For data plans, the system will reject prices below cost + ₦{{ \App\Http\Services\DataPlansService::DEFAULT_MINIMUM_DATA_PROFIT }}.</small>
                                         </div>
 
                                         <div>
@@ -327,6 +328,7 @@
                                                                   value="{{ $cc->price }}"
                                                                   class="my-auto ti-form-input"
                                                                   placeholder="value">
+                                                              <small>For data plans, minimum is cost + ₦{{ \App\Http\Services\DataPlansService::DEFAULT_MINIMUM_DATA_PROFIT }}.</small>
                                                           </div>
                                               
                                                           {{-- Status --}}
@@ -456,4 +458,3 @@
 
        
 @endsection
-

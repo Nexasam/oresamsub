@@ -157,9 +157,12 @@ class ProductPlanService{
                                     ->where('user_id', $user_id)
                                     ->first();
 
+                                $base_selling_price = $selling_price;
                                 $selling_price = $customPricing
                                     ? $customPricing->price
                                     : $selling_price;
+
+                                $selling_price = (new DataPlansService())->applyMinimumDataSellingPrice($selling_price, $product_plan, $base_selling_price);
 
                             } else {
 
@@ -173,6 +176,7 @@ class ProductPlanService{
                                 $profit_value = $get_planprofit?->$profitlevel_for_user ?? 50;
 
                                 $selling_price = $cost_price + abs($profit_value);
+                                $selling_price = (new DataPlansService())->applyMinimumDataSellingPrice($selling_price, $product_plan, $selling_price);
                             }
 
 

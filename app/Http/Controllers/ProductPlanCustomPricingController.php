@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Services\DataPlansService;
 use App\Models\User;
 use App\Models\Network;
 use App\Models\CouponCode;
@@ -89,6 +90,11 @@ class ProductPlanCustomPricingController extends Controller
           return redirect()->back();
         }
 
+        if ($failure = $this->validateMinimumCustomPrice($request->product_plan_id, $request->price, $request->username)) {
+          Session::flash('failure', $failure);
+          return redirect()->back();
+        }
+
        $user = User::where('username',$request->username)->first();
 
          // Prevent duplicate custom pricing
@@ -132,6 +138,11 @@ class ProductPlanCustomPricingController extends Controller
         return redirect()->back();
     }
 
+    if ($failure = $this->validateMinimumCustomPrice($request->product_plan_id, $request->price, $request->username)) {
+        Session::flash('failure', $failure);
+        return redirect()->back();
+    }
+
     $pricing = ProductPlanCustomPricing::find($id);
 
     if (!$pricing) {
@@ -171,6 +182,11 @@ class ProductPlanCustomPricingController extends Controller
             Session::flash('failure', $validator->errors()->first());
             return redirect()->back();
           }
+
+          if ($failure = $this->validateMinimumCustomPrice($request->product_plan_id, $request->price, User::find($request->user_id)?->username)) {
+            Session::flash('failure', $failure);
+            return redirect()->back();
+          }
   
           $data['product_plan_id'] = $request->product_plan_id;
           $data['user_id'] = $request->promo_metric;
@@ -181,6 +197,37 @@ class ProductPlanCustomPricingController extends Controller
   
           Session::flash('success','User Wallet Funding Promo was successfully updated');
           return redirect()->back();  
+      }
+
+      private function validateMinimumCustomPrice(string $productPlanId, $price, ?string $username = null): ?string
+      {
+          $productPlan = ProductPlan::with('product_plan_category.product')->find($productPlanId);
+
+          if (! $productPlan) {
+              return 'Product plan not found.';
+          }
+
+          if (($productPlan->product_plan_category?->product?->slug ?? null) !== 'data') {
+              return null;
+          }
+
+          $user = $username ? User::where('username', $username)->first() : null;
+          $planLevel = max(1, min(12, (int) ($user?->user_plan?->plan_level ?? 1)));
+          $normalPriceColumn = 'user_level_'.$planLevel.'_selling_price';
+          $normalSellingPrice = (float) ($productPlan->{$normalPriceColumn} ?? $productPlan->user_level_1_selling_price ?? $productPlan->default_selling_price ?? 0);
+          $costPrice = (float) $productPlan->cost_price;
+
+          $minimumSellingPrice = DataPlansService::minimumDataSellingPriceForNormalPrice($productPlan, $normalSellingPrice);
+
+          if ((float) $price < $minimumSellingPrice) {
+              $rule = $normalSellingPrice > $costPrice
+                  ? 'cost plus ₦'.DataPlansService::DEFAULT_MINIMUM_DATA_PROFIT.' minimum margin'
+                  : 'cost price';
+
+              return 'Custom data price cannot be below ₦'.number_format($minimumSellingPrice, 2).' for this plan. Current cost is ₦'.number_format($costPrice, 2).' and the active minimum rule is '.$rule.'.';
+          }
+
+          return null;
       }
 
 }

@@ -13,6 +13,8 @@ use App\Models\UserPlan;
 use Illuminate\Support\Collection;
 
 class DataPlansService{
+    public const DEFAULT_MINIMUM_DATA_PROFIT = 3;
+
 
     public function favoriteDataPlans(User $user, int $limit = 10): Collection
     {
@@ -260,13 +262,15 @@ class DataPlansService{
           
             $spp = 'user_level_'.$plan_level.'_selling_price'; 
             $sppdefault = 'user_level_1_selling_price'; 
-            $selling_price = $product_plan->$spp ?? $product_plan->$sppdefault; 
+            $base_selling_price = $product_plan->$spp ?? $product_plan->$sppdefault; 
+            $selling_price = $base_selling_price;
 
                //HERE SELLING PRICE CHANGES IF THEHRE IS A CUSTOM SETTING: put in a service later::::WATCH THIS IN PROD.
                $check_custom_setting = ProductPlanCustomPricing::where('product_plan_id', $product_plan->id)
                ->where('user_id',$user_details->id)
                ->first();
                $selling_price = $check_custom_setting == NULL ? $selling_price : $check_custom_setting->price;  
+               $selling_price = $this->applyMinimumDataSellingPrice($selling_price, $product_plan, $base_selling_price);
 
             
            
@@ -291,7 +295,7 @@ class DataPlansService{
         ->first();
 
         $profitlevel_for_user = "profit_$plan_level" ?? 'profit_1'; 
-        $profit = $get_planprofit->$profitlevel_for_user ?? 50; //business profit
+        $profit = $get_planprofit?->$profitlevel_for_user ?? 50; //business profit
 
         if($commission_feature == 1 && $upline_commission_option == 'flat' ){
             $upline_commission = 5; //flat 5 naira for now
@@ -316,7 +320,9 @@ class DataPlansService{
            $check_custom_setting = ProductPlanCustomPricing::where('product_plan_id', $product_plan->id)
            ->where('user_id',$user_details->id)
            ->first();
+           $base_selling_price = $selling_price;
            $selling_price = $check_custom_setting == NULL ? $selling_price : $check_custom_setting->price;  
+           $selling_price = $this->applyMinimumDataSellingPrice($selling_price, $product_plan, $base_selling_price);
 
         $augmentsp = $cost_price + 50;
 
@@ -325,6 +331,46 @@ class DataPlansService{
             'message' => $selling_price ?? $augmentsp,
             'upline_commission' => $upline_commission
         ];
+    }
+
+    public static function minimumDataSellingPrice(ProductPlan $productPlan): float
+    {
+        return round(((float) $productPlan->cost_price) + self::DEFAULT_MINIMUM_DATA_PROFIT, 2);
+    }
+
+    public static function minimumDataSellingPriceForNormalPrice(ProductPlan $productPlan, $normalSellingPrice = null): float
+    {
+        $costPrice = round((float) $productPlan->cost_price, 2);
+        $normalSellingPrice = round((float) ($normalSellingPrice ?? 0), 2);
+
+        if ($normalSellingPrice > $costPrice) {
+            return self::minimumDataSellingPrice($productPlan);
+        }
+
+        return $costPrice;
+    }
+
+    public function applyMinimumDataSellingPrice($sellingPrice, ProductPlan $productPlan, $normalSellingPrice = null): float
+    {
+        $sellingPrice = round((float) $sellingPrice, 2);
+        $normalSellingPrice = round((float) ($normalSellingPrice ?? $sellingPrice), 2);
+        $costPrice = round((float) $productPlan->cost_price, 2);
+        $minimumSellingPrice = self::minimumDataSellingPriceForNormalPrice($productPlan, $normalSellingPrice);
+
+        if ($sellingPrice < $minimumSellingPrice) {
+            logger('Data plan selling price raised to safe minimum floor.', [
+                'product_plan_id' => $productPlan->id,
+                'configured_price' => $sellingPrice,
+                'cost_price' => $costPrice,
+                'normal_selling_price' => $normalSellingPrice,
+                'minimum_selling_price' => $minimumSellingPrice,
+                'minimum_rule' => $normalSellingPrice > $costPrice ? 'cost_plus_minimum_profit' : 'cost_price',
+            ]);
+
+            return $minimumSellingPrice;
+        }
+
+        return $sellingPrice;
     }
 
 
