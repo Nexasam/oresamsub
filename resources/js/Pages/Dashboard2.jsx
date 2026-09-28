@@ -270,6 +270,7 @@ export default function Dashboard() {
             {transactions.map((tx) => {
               const status = getStatus(tx.status);
               const time = new Date(tx.created_at).toLocaleString();
+              const reference = tx.txn_reference || tx.reference;
 
               return (
                 <div key={tx.id} className="relative">
@@ -281,6 +282,11 @@ export default function Dashboard() {
                       <div className="font-semibold text-xs text-gray-800 dark:text-gray-100">
                         {tx.transaction_category.toUpperCase()}
                       </div>
+                      {reference && (
+                        <div className="mt-0.5 text-[9px] leading-tight text-gray-400 dark:text-gray-500 max-w-[170px] truncate">
+                          Ref: {reference}
+                        </div>
+                      )}
                       <div className="text-xs text-gray-500 dark:text-gray-400">{time}</div>
                     </div>
                     <div className="text-right">
