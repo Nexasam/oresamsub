@@ -48,6 +48,13 @@ class AdminMaintenanceController extends Controller
             'parameters' => [],
             'warning' => null,
         ],
+        'clean_laravel_logs' => [
+            'label' => 'Clean Laravel logs',
+            'description' => 'Deletes only .log files inside storage/logs. Useful when logs become too large.',
+            'command' => null,
+            'parameters' => [],
+            'warning' => 'This removes local Laravel log file contents/history. Download any logs you need before running.',
+        ],
         'schedule_run' => [
             'label' => 'Run scheduler once',
             'description' => 'Manually runs due scheduled tasks once. Use this only when you understand the scheduled jobs.',
@@ -80,8 +87,12 @@ class AdminMaintenanceController extends Controller
         }
 
         try {
-            $exitCode = Artisan::call($action['command'], $action['parameters'] + ['--no-interaction' => true]);
-            $output = trim(Artisan::output());
+            if ($actionKey === 'clean_laravel_logs') {
+                [$exitCode, $output] = $this->cleanLaravelLogs();
+            } else {
+                $exitCode = Artisan::call($action['command'], $action['parameters'] + ['--no-interaction' => true]);
+                $output = trim(Artisan::output());
+            }
 
             Log::notice('Admin maintenance command executed.', [
                 'admin_id' => auth()->id(),
@@ -116,5 +127,36 @@ class AdminMaintenanceController extends Controller
         } catch (\Throwable $exception) {
             return 'Unable to read status: '.$exception->getMessage();
         }
+    }
+
+    private function cleanLaravelLogs(): array
+    {
+        $logDirectory = storage_path('logs');
+        $deleted = 0;
+        $freedBytes = 0;
+        $failures = [];
+
+        foreach (glob($logDirectory.DIRECTORY_SEPARATOR.'*.log') ?: [] as $path) {
+            if (! is_file($path) || pathinfo($path, PATHINFO_EXTENSION) !== 'log') {
+                continue;
+            }
+
+            $freedBytes += filesize($path) ?: 0;
+
+            if (@unlink($path)) {
+                $deleted++;
+            } else {
+                $failures[] = basename($path);
+            }
+        }
+
+        $freedMegabytes = number_format($freedBytes / 1024 / 1024, 2);
+        $output = "Deleted {$deleted} Laravel log file(s). Freed approximately {$freedMegabytes} MB.";
+
+        if ($failures !== []) {
+            $output .= "\nFailed to delete: ".implode(', ', $failures);
+        }
+
+        return [$failures === [] ? 0 : 1, $output];
     }
 }

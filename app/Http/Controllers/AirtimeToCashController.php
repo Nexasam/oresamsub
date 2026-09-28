@@ -30,7 +30,11 @@ class AirtimeToCashController extends Controller
             ->map(fn (AirtimeToCashRequest $request): array => $this->customerResource($request));
 
         return Inertia::render('AirtimeToCash', [
-            'networks' => Network::query()->select('id', 'network_name')->get(),
+            'networks' => Network::query()
+                ->where('airtime_to_cash_enabled', true)
+                ->select('id', 'network_name')
+                ->orderBy('network_name')
+                ->get(),
             'requests' => $requests,
             'settings' => [
                 'enabled' => $settings['enabled'],
@@ -61,7 +65,9 @@ class AirtimeToCashController extends Controller
             'fraud_disclaimer_accepted' => ['accepted'],
         ]);
 
-        $network = Network::query()->findOrFail($validated['network_id']);
+        $network = Network::query()
+            ->where('airtime_to_cash_enabled', true)
+            ->findOrFail($validated['network_id']);
         $airtimeAmount = round((float) $validated['airtime_amount'], 2);
         $rate = (float) $settings['rate_per_100'];
         $cashAmount = round(($airtimeAmount * $rate) / 100, 2);
@@ -109,6 +115,7 @@ class AirtimeToCashController extends Controller
             'statuses' => AirtimeToCashRequest::statuses(),
             'selectedStatus' => $status,
             'settings' => $this->settings(),
+            'networks' => Network::query()->orderBy('network_name')->get(),
         ]);
     }
 
@@ -140,12 +147,22 @@ class AirtimeToCashController extends Controller
             'support_whatsapp' => ['required', 'string', 'max:30'],
             'rate_per_100' => ['required', 'numeric', 'min:1', 'max:100'],
             'enabled' => ['required', Rule::in(['0', '1'])],
+            'enabled_network_ids' => ['nullable', 'array'],
+            'enabled_network_ids.*' => ['string', 'exists:networks,id'],
         ]);
 
         $this->setSetting('airtime_to_cash_enabled', (string) $validated['enabled'], 'Controls whether customers can submit airtime-to-cash requests.');
         $this->setSetting('airtime_to_cash_support_email', $validated['support_email'], 'Admin/support email notified when customers submit airtime-to-cash requests.');
         $this->setSetting('airtime_to_cash_support_whatsapp', preg_replace('/\D+/', '', $validated['support_whatsapp']) ?: $validated['support_whatsapp'], 'WhatsApp support number shown to customers for airtime-to-cash help.');
         $this->setSetting('airtime_to_cash_rate_per_100', (string) $validated['rate_per_100'], 'Cash payout in NGN for every NGN 100 airtime submitted.');
+
+        $enabledNetworkIds = collect($validated['enabled_network_ids'] ?? [])->map(fn ($id): string => (string) $id)->all();
+
+        Network::query()->update(['airtime_to_cash_enabled' => false]);
+
+        if ($enabledNetworkIds !== []) {
+            Network::query()->whereIn('id', $enabledNetworkIds)->update(['airtime_to_cash_enabled' => true]);
+        }
 
         Session::flash('success', 'Airtime-to-cash settings updated.');
 

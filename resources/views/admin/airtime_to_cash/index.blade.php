@@ -57,6 +57,26 @@
                             <small>Default is ₦90 cash for every ₦100 airtime.</small>
                         </div>
 
+                        <div>
+                            <label class="ti-form-label">Allowed Networks</label>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 rounded-lg border dark:border-gray-700 p-3">
+                                @forelse ($networks as $network)
+                                    <label class="flex items-center gap-2 text-sm">
+                                        <input
+                                            type="checkbox"
+                                            name="enabled_network_ids[]"
+                                            value="{{ $network->id }}"
+                                            @checked($network->airtime_to_cash_enabled)
+                                        >
+                                        <span>{{ $network->network_name }}</span>
+                                    </label>
+                                @empty
+                                    <p class="text-sm text-gray-500">No networks found yet.</p>
+                                @endforelse
+                            </div>
+                            <small>Customers can only submit airtime-to-cash requests for checked networks.</small>
+                        </div>
+
                         <button type="submit" class="ti-btn ti-btn-primary w-full">Save Settings</button>
                     </form>
                 </div>

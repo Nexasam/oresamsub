@@ -432,9 +432,16 @@
                                         <td class="p-2">
                                             {{ $key + 1 }}
                                             @if ($data->txn_reference)
-                                                <div class="mt-1 max-w-[120px] truncate text-[10px] leading-tight text-gray-400 dark:text-gray-500"
-                                                     title="{{ $data->txn_reference }}">
-                                                    Ref: {{ $data->txn_reference }}
+                                                <div class="mt-1 flex max-w-[150px] items-center gap-1 text-[10px] leading-tight text-gray-400 dark:text-gray-500">
+                                                    <span class="truncate" title="{{ $data->txn_reference }}">
+                                                        Ref: {{ $data->txn_reference }}
+                                                    </span>
+                                                    <button type="button"
+                                                            class="shrink-0 rounded border border-gray-200 px-1 text-[9px] text-gray-500 hover:bg-gray-100 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-800"
+                                                            title="Copy reference"
+                                                            data-copy-reference="{{ $data->txn_reference }}">
+                                                        Copy
+                                                    </button>
                                                 </div>
                                             @endif
                                         </td>
@@ -1082,6 +1089,43 @@
 setInterval(function () {
     location.reload();
 }, 1800000); // 30 minutes (30 * 60 * 1000)
+
+document.addEventListener('click', async function (event) {
+    const button = event.target.closest('[data-copy-reference]');
+
+    if (!button) {
+        return;
+    }
+
+    const reference = button.getAttribute('data-copy-reference') || '';
+    const originalText = button.textContent;
+
+    try {
+        if (navigator.clipboard && window.isSecureContext) {
+            await navigator.clipboard.writeText(reference);
+        } else {
+            const input = document.createElement('textarea');
+            input.value = reference;
+            input.setAttribute('readonly', '');
+            input.style.position = 'fixed';
+            input.style.opacity = '0';
+            document.body.appendChild(input);
+            input.select();
+            document.execCommand('copy');
+            document.body.removeChild(input);
+        }
+
+        button.textContent = 'Copied';
+        setTimeout(function () {
+            button.textContent = originalText;
+        }, 1200);
+    } catch (error) {
+        button.textContent = 'Failed';
+        setTimeout(function () {
+            button.textContent = originalText;
+        }, 1200);
+    }
+});
 
 
 function walletBalance() {

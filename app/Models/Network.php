@@ -12,4 +12,7 @@ class Network extends Model
 
     protected $guarded = ['id'];
 
+    protected $casts = [
+        'airtime_to_cash_enabled' => 'boolean',
+    ];
 }
