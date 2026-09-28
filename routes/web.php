@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AddonController;
+use App\Http\Controllers\AdminMaintenanceController;
 use App\Http\Controllers\ApiAccessController;
 use App\Http\Controllers\AffiliateFinanceController;
 use App\Http\Controllers\Api\v1\VendorUsersApi\WhatsappWebhookController;
@@ -988,6 +989,8 @@ Route::middleware(['set_locale'])->group(function () {
 
             Route::middleware(['auth','verified','admin'])->post('admin/settings/emails_to_notify_failed_transactions', [AdminSettingsController::class, 'emails_to_notify_failed_transactions'])->name('admin.settings.emails_to_notify_failed_transactions');
             Route::middleware(['auth','verified','admin'])->get('admin/settings/remove_logo', [AdminSettingsController::class, 'remove_logo'])->name('admin.settings.remove_logo');
+            Route::middleware(['auth','verified','admin'])->get('admin/maintenance', [AdminMaintenanceController::class, 'index'])->name('admin.maintenance.index');
+            Route::middleware(['auth','verified','admin'])->post('admin/maintenance/run', [AdminMaintenanceController::class, 'run'])->name('admin.maintenance.run');
             Route::middleware(['auth','verified','admin'])->get('admin/settings', [AdminSettingsController::class, 'index'])->name('admin.settings.index');
             Route::middleware(['auth','verified','admin'])->post('admin/update_webhook_suffix_string', [AdminSettingsController::class, 'update_webhook_suffix_string'])->name('admin.settings.update_webhook_suffix_string');
             Route::middleware(['auth','verified','admin'])->post('admin/manage_automations_keys', [AdminSettingsController::class, 'manage_automations_keys'])->name('admin.settings.manage_automations_keys');

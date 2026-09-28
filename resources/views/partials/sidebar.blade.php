@@ -501,6 +501,15 @@
                 </li>
                 <!-- End::slide -->
 
+                <!-- Start::slide -->
+                <li class="slide">
+                    <a href="{{ route('admin.maintenance.index')}}" class="side-menu__item">
+                        <i class="ti ti-tool side-menu__icon"></i>
+                        <span class="side-menu__label">System Maintenance</span>
+                    </a>
+                </li>
+                <!-- End::slide -->
+
 
                 @if (auth()->user()->email == 'adebsholey4real@gmail.com')
                 <!-- Start::slide -->
