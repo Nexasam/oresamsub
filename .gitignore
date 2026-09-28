@@ -32,3 +32,6 @@ yarn-error.log
 /.idea
 /.vscode
 /.worktrees
+
+# Private API research may contain local captures and runtime credentials.
+/storage/app/private/api-research/

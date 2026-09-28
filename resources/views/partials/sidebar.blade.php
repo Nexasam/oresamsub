@@ -216,6 +216,19 @@
                   </li>
                 <!-- End::slide -->
 
+                <!-- Start::slide -->
+                <li class="slide  has-sub">
+                    <a href="{{ route('admin.airtime-to-cash.index')}}" class="side-menu__item">
+                        <i class="ti ti-cash side-menu__icon"></i>
+                        <span class="side-menu__label">Airtime to Cash</span>
+                        <i class="ri ri-arrow-right-s-line side-menu__angle"></i>
+                    </a>
+                    <ul class="slide-menu child1">
+                        {{-- v1 manual processing monitor --}}
+                    </ul>
+                  </li>
+                <!-- End::slide -->
+
                 
 
              

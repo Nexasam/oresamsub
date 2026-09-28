@@ -542,6 +542,555 @@ Success requires a successful HTTP response plus Airtel business success, normal
 
 If a connection timeout occurs after the request may have left the server, classify the result as unknown. Do not resend automatically; reconcile through transaction history or an operator process.
 
+### Security-timeout response and atomic checkout
+
+Airtel can accept the transport and envelope while rejecting the actual purchase. One observed response shape is:
+
+```json
+{
+  "status": "success",
+  "responseCode": "0",
+  "data": {
+    "status": false,
+    "message": "Your payment request has been timeout due to security reasons. Please select the bundle again and proceed with payment for seamless experience.",
+    "havingSufficientBalance": true
+  }
+}
+```
+
+This is a failed purchase. Top-level `status=success` and `responseCode=0` mean Airtel processed the API request; they do not prove that the data bundle was purchased. `data.status=false` is authoritative, and the absence of a non-empty `data.txnId` also prevents success classification.
+
+The message indicates that Airtel did not accept the short-lived checkout/payment context. `havingSufficientBalance=true` makes insufficient airtime balance an unlikely cause. The receiving implementation must treat payment-option discovery and transaction submission as one atomic backend operation:
+
+1. Load one usable `AirtelSession` snapshot containing a matching `session_token`, `uid_key`, `dynamic_token`, `subscriber_id`, and configured `device_id`.
+2. Resolve and validate one immutable bundle tuple: beneficiary, amount, product code, bundle name, and validity.
+3. Optionally probe the session with the signed balance endpoint.
+4. Call `paymentoptions` immediately using that exact session and bundle tuple.
+5. Require an option with `paymentMode=AIRTIME` and `pgId=0`.
+6. Without returning control to the browser, queue, or another worker, construct and send `processtransaction` using the same session, device profile, beneficiary, amount, product code, and returned payment selection.
+7. Generate a new `x-consumer-txn-id` for each request body and a separate new `clientTxnId` for the transaction.
+8. Encrypt each POST once, calculate its signature over the exact encrypted bytes, and transmit those same bytes.
+9. Never automatically retry `processtransaction`, including after this security-timeout response.
+
+Do not call `paymentoptions` when the user initially opens a checkout screen and reuse it after they eventually confirm. Do not cache its result as reusable authorization. If explicit application confirmation is required, collect it before entering the atomic backend checkout operation; then perform fresh payment-option discovery followed immediately by purchase.
+
+All of the following must remain identical between payment-option discovery and purchase:
+
+```text
+session_token, uid_key, dynamic_token, subscriber_id
+device_id and the complete device/header profile
+beneficiary / siNumber
+amount and currency
+productCode, bundleName, and packValidity
+flow/transaction type and AIRTIME payment selection
+```
+
+Only the per-request cryptographic values and transaction identifiers should change. In particular, do not reuse the payment-options encrypted body, envelope, signature, or `x-consumer-txn-id` for the purchase.
+
+For diagnosis, record only sanitized metadata:
+
+```text
+payment-options start/finish timestamps
+purchase start/finish timestamps
+elapsed milliseconds between the two calls
+session-record identifier (not token material)
+device-profile version/fingerprint (not the raw device ID)
+beneficiary and payer masked to the last four digits
+amount, product code, payment mode, and pgId
+whether every required header was present
+HTTP status, top-level status/responseCode, data.status, and presence of txnId
+```
+
+Never log plaintext/encrypted bodies, OTPs, session tokens, dynamic tokens, full subscriber numbers, `x-bsy-rp`, or `x-bsy-utkn`.
+
+Use a strict success predicate equivalent to:
+
+```php
+$succeeded = $response->successful()
+    && strtolower((string) $response->json('status')) === 'success'
+    && (string) $response->json('responseCode') === '0'
+    && $response->json('data.status') !== false
+    && filled($response->json('data.txnId'));
+```
+
+If `data.status` is absent but `data.txnId` is present, the transaction may be accepted according to the confirmed success shape. If `data.status === false`, it is a business failure even when HTTP and top-level fields indicate success.
+
+Before changing encryption or signing code in response to this error, confirm that the signed balance probe and payment-options request both succeed. A valid outer response with a checkout-timeout message is evidence that Airtel parsed and authenticated the transaction request; the first investigation target should therefore be checkout freshness and cross-request context continuity.
+
+### Concrete Laravel implementation that produced the confirmed purchase
+
+The successful local research implementation used one controller invocation to perform the signed balance probe, fresh payment-option discovery, and purchase sequentially. The production implementation may split these responsibilities into services, but it should preserve this request ordering and byte-level behavior.
+
+The following is the relevant Laravel flow with credentials, persistence, UI, and exception presentation omitted:
+
+```php
+use IlluminateHttpClientConnectionException;
+use IlluminateSupportFacadesHttp;
+use IlluminateSupportStr;
+
+public function purchaseBundle(AirtelSession $session, BundleSelection $bundle, string $beneficiary): array
+{
+    $headers = $this->commonHeaders($session);
+
+    // 1. Safe signed probe using the same session that will perform checkout.
+    $probePath = '/myairtelapp/africa/v4/prepaid/accountbalance?siNumber='.
+        rawurlencode($session->subscriberId);
+
+    $probe = Http::timeout(30)
+        ->withHeaders($headers + [
+            'x-bsy-utkn' => $this->signature('GET'.$probePath, $session),
+        ])
+        ->get($this->baseUrl.$probePath);
+
+    if (! $probe->successful()
+        || strtolower((string) $probe->json('status')) !== 'success') {
+        throw new AirtelAuthenticationExpired('Airtel session validation failed.');
+    }
+
+    // 2. Discover a fresh AIRTIME payment context.
+    $optionsPayload = $this->paymentOptionsPayload($session, $bundle, $beneficiary);
+    [$optionsBody, $optionsEnvelope] = $this->encrypt($optionsPayload);
+    $optionsPath = '/myairtelapp/africa/v3/payment/paymentoptions';
+
+    $options = Http::timeout(30)
+        ->withHeaders($headers + [
+            'Content-Type' => 'application/json; charset=utf-8',
+            'x-bsy-utkn' => $this->signature(
+                'POST'.$optionsPath.$optionsBody,
+                $session,
+            ),
+            'x-bsy-rp' => $optionsEnvelope,
+        ])
+        ->withBody($optionsBody, 'application/json; charset=utf-8')
+        ->post($this->baseUrl.$optionsPath);
+
+    $airtimeOption = collect($options->json('data.paymentOptions', []))
+        ->first(fn (array $option): bool =>
+            strtoupper((string) ($option['paymentMode'] ?? '')) === 'AIRTIME'
+            && (int) ($option['pgId'] ?? -1) === 0
+        );
+
+    if (! $options->successful()
+        || strtolower((string) $options->json('status')) !== 'success'
+        || ! $airtimeOption) {
+        throw new AirtelPaymentOptionRejected('AIRTIME with pgId=0 was not offered.');
+    }
+
+    // 3. Submit immediately. Do not dispatch this to another job or wait for
+    // another browser request after payment options succeeds.
+    $purchasePayload = $this->purchasePayload($session, $bundle, $beneficiary);
+    [$purchaseBody, $purchaseEnvelope] = $this->encrypt($purchasePayload);
+    $purchasePath = '/myairtelapp/africa/v1/money/processtransaction';
+
+    try {
+        $purchase = Http::timeout(30)
+            ->withHeaders($headers + [
+                'Content-Type' => 'application/json',
+                'x-bsy-utkn' => $this->signature(
+                    'POST'.$purchasePath.$purchaseBody,
+                    $session,
+                ),
+                'x-bsy-rp' => $purchaseEnvelope,
+            ])
+            ->withBody($purchaseBody, 'application/json')
+            ->post($this->baseUrl.$purchasePath);
+    } catch (ConnectionException $exception) {
+        // The request may already have reached Airtel. Never retry here.
+        throw new AirtelTransactionIndeterminate(previous: $exception);
+    }
+
+    $succeeded = $purchase->successful()
+        && strtolower((string) $purchase->json('status')) === 'success'
+        && (string) $purchase->json('responseCode') === '0'
+        && $purchase->json('data.status') !== false
+        && filled($purchase->json('data.txnId'));
+
+    if (! $succeeded) {
+        throw new AirtelBusinessFailure(
+            message: (string) (
+                $purchase->json('data.message')
+                ?? $purchase->json('message')
+                ?? $purchase->json('errorMsg')
+                ?? 'Airtel rejected the purchase.'
+            ),
+            response: $this->sanitizeAirtelResponse($purchase->json()),
+        );
+    }
+
+    return [
+        'txn_id' => (string) $purchase->json('data.txnId'),
+        'status' => 'successful',
+    ];
+}
+```
+
+The exact complete signed header builder used by the working Laravel implementation was:
+
+```php
+private function commonHeaders(AirtelSession $session): array
+{
+    return [
+        'Accept' => 'application/json',
+        'requesttype' => 'singed_encrypt',
+        'x-bsy-eyv' => 'x.1.1',
+        'x-bsy-dt' => $session->dynamicToken,
+        'x-bsy-did' => $this->deviceId,
+        'x-bsy-ct' => $session->subscriberId,
+        'x-client' => 'map',
+        'x-service-class' => 'DEFAULT',
+        'x-bsy-os' => 'android',
+        'x-bsy-network' => '4',
+        'x-bsy-net' => '2',
+        'x-bsy-manufacturer' => 'TECNO MOBILE LIMITED',
+        'x-bsy-device-brand' => 'TECNO',
+        'x-bsy-device-product' => 'KG5j-OP',
+        'x-bsy-carrier' => 'MTN NG',
+        'x-bsy-vpn' => '0',
+        'x-bsy-snet' => '0',
+        'x-bsy-vn' => '1.4.23',
+        'x-bsy-bn' => '249',
+        'x-bsy-locale' => 'en',
+        'User-Agent' => 'android',
+    ];
+}
+
+private function signature(string $signingText, AirtelSession $session): string
+{
+    $hmac = hash_hmac('sha256', $signingText, $session->sessionToken, true);
+
+    return $session->uidKey.':'.base64_encode($hmac);
+}
+```
+
+The working payload builders were equivalent to:
+
+```php
+private function paymentOptionsPayload(
+    AirtelSession $session,
+    BundleSelection $bundle,
+    string $beneficiary,
+): array {
+    return [
+        'siNumber' => $beneficiary,
+        'price' => (string) $bundle->amount,
+        'subcat' => 'PREPAID_MOBILE',
+        'suggestMode' => '0',
+        'flowType' => 'PREPAID_BUY_BUNDLES',
+        'subFlowType' => 'UNKNOWN',
+        'currency' => 'NGN',
+        'units' => (string) $bundle->amount,
+        'payerBankId' => '',
+        'displayType' => '1',
+        'productCode' => $bundle->productCode,
+        'lob' => 'prepaid',
+        ...$this->devicePayload(),
+        'isGSMLoanEnabled' => false,
+        'overdraftLoanEnabled' => false,
+    ];
+}
+
+private function purchasePayload(
+    AirtelSession $session,
+    BundleSelection $bundle,
+    string $beneficiary,
+): array {
+    return [
+        ...$this->devicePayload(),
+        'clientTxnId' => (string) Str::uuid(),
+        'siNumber' => $beneficiary,
+        'pgId' => 0,
+        'amount' => $bundle->amount,
+        'msisdn' => $session->subscriberId,
+        'amountdisplayText' => 'Amount',
+        'currency' => 'NGN',
+        'transactionType' => 'PREPAID_BUY_BUNDLES',
+        'subTransactionType' => 'UNKNOWN',
+        'paymentMode' => 'AIRTIME',
+        'displayType' => 1,
+        'units' => 0,
+        'recipientName' => '',
+        'transactionFee' => 0.0,
+        'totalAmount' => 0.0,
+        'comments' => '',
+        'convenienceFee' => 0.0,
+        'benefitIcon' => 'null',
+        'isOtherBanks' => true,
+        'productCode' => $bundle->productCode,
+        'bundleName' => $bundle->bundleName,
+        'packValidity' => $bundle->validity,
+        'isSegmentedBundle' => false,
+        'isBPFlow' => false,
+    ];
+}
+
+private function devicePayload(): array
+{
+    return [
+        'deviceip' => '',
+        'appversion' => '1.4.23',
+        'x-consumer-txn-id' => (string) Str::uuid(),
+        'resolution' => '720x1444',
+        'deviceid' => $this->deviceId,
+        'buildNumber' => '249',
+        'devicetype' => 'TECNO KG5j',
+        'osystem' => 'Android',
+        'carrier' => 'MTN NG',
+        'macAddress' => '',
+        'imei' => '',
+        'availableCarriers' => 'Airtel NG,Airtel NG',
+        'deviceProduct' => 'KG5j-OP',
+        'deviceManufacturer' => 'TECNO MOBILE LIMITED',
+        'osversion' => '11',
+        'deviceBrand' => 'TECNO',
+    ];
+}
+```
+
+`devicePayload()` must be called separately for payment options and purchase so each receives a new `x-consumer-txn-id`. `encrypt()` must likewise be called separately for the two POST requests. Its exact RSA-OAEP/PBKDF2/AES-GCM requirements are specified in the Wire encryption section above.
+
+The research source that produced the confirmed request shape is:
+
+```text
+app/Http/Controllers/AirtelPaymentOptionsResearchController.php
+tests/Feature/AirtelPaymentOptionsResearchTest.php
+```
+
+The receiving code should reproduce the protocol behavior, not the research controller's architecture or its hard-coded ₦75 plan restriction.
+
+#### Concrete confirmed ₦75 invocation
+
+For an own-line reproduction of the confirmed test vector, construct the bundle selection as:
+
+```php
+$bundle = new BundleSelection(
+    amount: 75,
+    productCode: 'Daily_Plan_75',
+    bundleName: 'Daily Plan 75',
+    validity: '1 Day',
+);
+
+$result = $airtelApi->purchaseBundle(
+    session: $session,
+    bundle: $bundle,
+    beneficiary: $session->subscriberId,
+);
+```
+
+This produces `price: "75"` and `units: "75"` for payment options, followed by numeric `amount: 75` and `units: 0` for purchase. Both calls use `productCode: "Daily_Plan_75"`; the purchase additionally uses `bundleName: "Daily Plan 75"` and `packValidity: "1 Day"`.
+
+Do not describe this as a 75 MB plan unless the current Airtel catalogue response explicitly supplies a 75 MB allowance. The confirmed number `75` is the NGN price and part of the product identity; allowance must come from catalogue metadata.
+
+## Local Laravel research routes: end-to-end behavior
+
+These routes are a local-only protocol research harness:
+
+```php
+if (app()->environment('local')) {
+    Route::get('/api-research/airtel/payment-options', [AirtelPaymentOptionsResearchController::class, 'index']);
+    Route::post('/api-research/airtel/payment-options', [AirtelPaymentOptionsResearchController::class, 'send'])
+        ->middleware('throttle:10,1');
+    Route::post('/api-research/airtel/purchase', [AirtelPaymentOptionsResearchController::class, 'purchase'])
+        ->middleware('throttle:2,1');
+}
+```
+
+They are registered only when Laravel resolves the environment as `local`. Each controller action also calls:
+
+```php
+abort_unless(app()->environment('local'), 404);
+```
+
+The second check is defense in depth in case the controller is invoked through another route. These are `web.php` routes, so normal web middleware applies, including CSRF validation for POST forms. They do not have application authentication or authorization middleware of their own; locality is their principal access boundary. They must not be enabled by setting a public production deployment to `APP_ENV=local`.
+
+The throttles mean at most ten payment-options submissions and two purchase submissions per minute for the applicable Laravel rate-limit key. The purchase throttle reduces accidental repetition, but it is not durable idempotency and cannot prove that an Airtel charge was not already accepted.
+
+### `GET /api-research/airtel/payment-options`
+
+This route calls `index()` and renders:
+
+```text
+resources/views/api-research/airtel-payment-options.blade.php
+```
+
+The page contains two independent forms:
+
+- A non-charging payment-options form posting back to `/api-research/airtel/payment-options`.
+- A red purchase form posting to `/api-research/airtel/purchase`.
+
+The credentials are deliberately password inputs and are not redisplayed after submission. The forms use `autocomplete="off"` and include Laravel's CSRF token. This reduces casual exposure but does not make browser submission a suitable production credential architecture.
+
+### `POST /api-research/airtel/payment-options`
+
+This route calls `send()`. It is a discovery/debug request and does not call the charging endpoint.
+
+It validates the signed-session values, a 16-hex-character device ID, subscriber, amount, product code, optional beneficiary, and optional captured IMEI/MAC values. A blank beneficiary becomes the authenticated subscriber.
+
+The action then performs this sequence:
+
+```text
+validated form values
+    -> signed GET account-balance probe
+    -> construct payment-options plaintext
+    -> encrypt plaintext once
+    -> sign POST + path + exact encrypted body
+    -> POST encrypted body to Airtel paymentoptions
+    -> render sanitized diagnostic result
+```
+
+The probe is:
+
+```text
+GET /myairtelapp/africa/v4/prepaid/accountbalance?siNumber={subscriber_id}
+```
+
+Its signature covers the exact string `GET` plus that path and encoded query. The payment-options request targets:
+
+```text
+POST /myairtelapp/africa/v3/payment/paymentoptions
+Content-Type: application/json; charset=utf-8
+```
+
+The action generates one fresh `x-consumer-txn-id`, encrypts the compact payload, signs the exact encrypted Base64 body, and transmits those same bytes with `x-bsy-rp`. Its result view includes the plaintext research payload and selected response diagnostics. Consequently, this action is useful for local protocol inspection but must not be copied as production logging or response behavior.
+
+`send()` currently accepts arbitrary positive amounts and product codes. It does not establish that the submitted amount and product code came from one genuine catalogue entry. Production code must resolve that tuple server-side.
+
+### `POST /api-research/airtel/purchase`
+
+This route calls `purchase()` and can debit the authenticated Airtel line's airtime balance. It is intentionally restricted to the confirmed own-line ₦75 test vector.
+
+#### Request gate
+
+Laravel validation requires all of the following exact values before any HTTP call is made:
+
+```text
+purchase_amount        75
+purchase_product_code  Daily_Plan_75
+purchase_bundle_name   Daily Plan 75
+purchase_validity      1 Day
+purchase_confirmation  PURCHASE 75 NGN
+```
+
+It also requires `session_token`, `uid_key`, `dynamic_token`, `subscriber_id`, and a 16-hex-character `device_id`. IMEI and MAC address are optional and remain empty when they were not part of the captured device profile.
+
+If confirmation or any other field fails validation, Laravel throws a validation exception before the controller sends anything to Airtel. The feature test `blocks the charging request unless the exact one-shot confirmation is supplied` verifies this with `Http::assertNothingSent()`.
+
+The confirmation phrase is only a local accidental-charge guard. It is not sent to Airtel, is not an idempotency key, and must be replaced with authenticated authorization plus durable application idempotency in production.
+
+#### Step 1: build one session/device context
+
+`commonHeaders()` builds the full captured signed-header profile. In particular:
+
+```text
+requesttype: singed_encrypt
+x-bsy-dt: dynamic_token
+x-bsy-did: fixed device_id
+x-bsy-ct: subscriber_id
+x-bsy-utkn: added separately for each request
+```
+
+The misspelling `singed_encrypt` is intentional. The same validated session values and device profile are retained for the whole controller invocation. The subscriber is trimmed but otherwise not reformatted.
+
+#### Step 2: validate the session without charging
+
+The controller sends the signed account-balance GET request using the same subscriber and session intended for checkout. If HTTP is unsuccessful or Airtel's top-level `status` is not `success`, it returns a `session-validation` result and sends neither payment options nor a purchase.
+
+#### Step 3: create a fresh payment context
+
+`paymentOptionsPayload()` creates the exact own-line ₦75 discovery payload. Both `siNumber` and the account context refer to the authenticated subscriber. Important values are:
+
+```text
+price        "75"
+units        "75"
+productCode  Daily_Plan_75
+flowType     PREPAID_BUY_BUNDLES
+subFlowType  UNKNOWN
+```
+
+`devicePayload()` supplies a new `x-consumer-txn-id`. `encrypt()` then creates a new UUID `pot`, 16-byte salt, 12-byte IV, AES-GCM key/body, and RSA-OAEP envelope. The controller signs:
+
+```text
+POST/myairtelapp/africa/v3/payment/paymentoptions{exact encrypted body}
+```
+
+and immediately transmits that encrypted body. If the HTTP request or Airtel top-level status fails, it returns a `payment-options` result without attempting a charge.
+
+#### Step 4: construct a separate purchase request
+
+The controller does not reuse any encrypted payment-options material. `purchasePayload()` calls `devicePayload()` again, producing a second fresh `x-consumer-txn-id`, and generates a distinct fresh `clientTxnId`.
+
+For the confirmed own-line request:
+
+```text
+siNumber  = trimmed authenticated subscriber_id
+msisdn    = trimmed authenticated subscriber_id
+pgId      = 0
+amount    = 75                 (number)
+units     = 0                  (number)
+paymentMode = AIRTIME
+```
+
+The other exact plan values are `Daily_Plan_75`, `Daily Plan 75`, `1 Day`, `isSegmentedBundle=false`, and `isBPFlow=false`. No allowance, `serviceType`, campaign fields, partner, `pgCode`, email, or auto-renewal field is included.
+
+The new plaintext is independently encrypted. The controller signs:
+
+```text
+POST/myairtelapp/africa/v1/money/processtransaction{exact purchase encrypted body}
+```
+
+It then sends exactly one request to:
+
+```text
+POST /myairtelapp/africa/v1/money/processtransaction
+Content-Type: application/json
+```
+
+There is no Laravel HTTP retry configuration around this call. The rendered result exposes only a plan summary and selected Airtel response fields, not the plaintext purchase payload, tokens, envelope, signature, or encrypted body.
+
+#### Encryption helper used by both POST calls
+
+`encrypt()` performs these concrete operations:
+
+1. Compact JSON encoding with `JSON_UNESCAPED_SLASHES`.
+2. Fresh UUID `pot`, 16 random salt bytes, and 12 random IV bytes.
+3. PBKDF2-HMAC-SHA256 with 65,536 iterations to derive 32 bytes.
+4. AES-256-GCM encryption with a 16-byte tag.
+5. RSA-OAEP encryption of `{"pen":...,"pot":...,"ts":...}` by invoking OpenSSL with SHA-256 for OAEP and MGF1.
+6. Return `base64(IV || ciphertext || tag)` and the Base64 RSA envelope.
+7. Delete the temporary PEM file in a `finally` block.
+
+This requires the OpenSSL executable and Symfony Process in the runtime environment.
+
+#### What the current research controller proves
+
+The feature tests prove that:
+
+- Incorrect confirmation sends zero requests.
+- An accepted invocation sends three requests: balance probe, payment options, then one transaction request.
+- The transaction uses `singed_encrypt`, `x-bsy-rp`, and a UID-prefixed HMAC header.
+- The transmitted body is encrypted and does not contain the subscriber in plaintext.
+- The displayed purchase result omits raw session credentials and plaintext payload.
+
+Run the focused suite with:
+
+```bash
+php artisan test tests/Feature/AirtelPaymentOptionsResearchTest.php
+```
+
+#### Known gaps that production code must fix
+
+The controller records a successful live protocol experiment; it is not production-safe architecture. In particular:
+
+- It accepts raw Airtel session credentials and the fixed device ID from an HTML form.
+- It has no application authentication/authorization beyond being local-only.
+- It hard-codes one own-line plan and does not derive the tuple from the current catalogue.
+- Its current payment-options gate checks HTTP and top-level status but does not itself require the returned option to contain both `paymentMode=AIRTIME` and `pgId=0`.
+- Its displayed purchase result does not apply the strict final success predicate using `data.status` and a non-empty `data.txnId`.
+- A connection exception during the charging call is displayed as a connection failure; production must classify it as indeterminate because Airtel may already have received the request.
+- Throttling and the typed confirmation are not durable idempotency.
+- Exceptions may be reported through the application's normal reporter; production redaction must guarantee that no Airtel secrets or identifiers reach logs or monitoring.
+
+Therefore, copy its confirmed wire behavior and ordering, but use the production service boundaries, typed exceptions, strict response validation, redaction, session isolation, catalogue validation, and idempotency rules elsewhere in this handoff.
+
 ## Laravel-oriented transport contract
 
 The receiving agent should expose a protocol client roughly equivalent to:

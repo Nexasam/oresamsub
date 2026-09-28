@@ -188,8 +188,8 @@ export default function DashboardLayout({ children , title}) {
             { label: "Dashboard", icon: "🏠", route: "dashboard", inertia: true },
             { label: "Data", icon: "📶", route: "inertia.data.index", inertia: true },
             { label: "Airtime", icon: "📞", route: "inertia.airtime.index", inertia: true },
+            { label: "Cash", icon: "💸", route: "airtime-to-cash.index", inertia: true },
             { label: "Cable", icon: "📺", route: "ore.cable", inertia: false },
-            { label: "Electricity", icon: "⚡", route: "ore.electricity", inertia: false },
           ].map((item) =>
             item.inertia ? (
               <Link

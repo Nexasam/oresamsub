@@ -11,6 +11,7 @@ use App\Http\Controllers\AnnouncementsController;
 use App\Http\Controllers\AutomationController;
 use App\Http\Controllers\AutomationWalletFundingController;
 use App\Http\Controllers\AutomationKeyController;
+use App\Http\Controllers\AirtimeToCashController;
 use App\Http\Controllers\BulkDataPlanController;
 use App\Http\Controllers\BonusController;
 use App\Http\Controllers\BusinessProfitController;
@@ -76,6 +77,7 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Session;
 use Rap2hpoutre\LaravelLogViewer\LogViewerController;
 use App\Http\Controllers\Api\v1\VendorUsersApi\MegaWhatsappWebhookController;
+use App\Http\Controllers\AirtelPaymentOptionsResearchController;
 
 Route::middleware(['auth', 'verified', 'super_admin'])->prefix('admin/standalones')->name('admin.standalones.')->group(function () {
     Route::get('/', [StandaloneWebsiteController::class, 'index'])->name('index');
@@ -97,6 +99,14 @@ Route::middleware(['auth', 'verified', 'super_admin'])->prefix('admin/standalone
 Route::get('/testui', function () {
     return view('welcome2');
 })->name('testui');
+
+if (app()->environment('local')) {
+    Route::get('/api-research/airtel/payment-options', [AirtelPaymentOptionsResearchController::class, 'index']);
+    Route::post('/api-research/airtel/payment-options', [AirtelPaymentOptionsResearchController::class, 'send'])
+        ->middleware('throttle:10,1');
+    Route::post('/api-research/airtel/purchase', [AirtelPaymentOptionsResearchController::class, 'purchase'])
+        ->middleware('throttle:2,1');
+}
 
 
 /////////////////LATER: FILAMENT IS THE NEW ADMIN UI 
@@ -177,6 +187,8 @@ Route::middleware(['set_locale'])->group(function () {
                 //   INERTIAJS
                 Route::get('/data', [InertiaDashboardController::class, 'data'])->name('inertia.data.index');   
                 Route::get('/airtime', [InertiaDashboardController::class, 'airtime'])->name('inertia.airtime.index');   
+                Route::get('/airtime-to-cash', [AirtimeToCashController::class, 'index'])->name('airtime-to-cash.index');
+                Route::post('/airtime-to-cash', [AirtimeToCashController::class, 'store'])->name('airtime-to-cash.store');
                 Route::get('/cable', [InertiaDashboardController::class, 'cable'])->name('inertia.cable.index');   
                 Route::get('/electricity', [InertiaDashboardController::class, 'electricity'])->name('inertia.electricity.index');   
                 Route::get('/virtual-accounts', [InertiaDashboardController::class, 'virtual_accounts'])->name('inertia.virtual_accounts.index');   
@@ -916,6 +928,9 @@ Route::middleware(['set_locale'])->group(function () {
             Route::middleware(['auth','verified','admin'])->post('transactions/manually_mark_transaction_as_successful', [TransactionController::class, 'manually_mark_transaction_as_successful'])->name('transactions.manually_mark_transaction_as_successful');
             Route::middleware(['auth','verified','admin'])->get('admin/transactions/admin_fetch_transactions', [TransactionController::class, 'admin_fetch_transactions'])->name('admin.transactions.admin_fetch_transactions');
             Route::middleware(['auth','verified','admin'])->get('admin/transactions/index', [TransactionController::class, 'admin_all_transactions'])->name('admin.transactions.index');
+            Route::middleware(['auth','verified','admin'])->get('admin/airtime-to-cash', [AirtimeToCashController::class, 'adminIndex'])->name('admin.airtime-to-cash.index');
+            Route::middleware(['auth','verified','admin'])->put('admin/airtime-to-cash/{airtimeToCashRequest}', [AirtimeToCashController::class, 'adminUpdate'])->name('admin.airtime-to-cash.update');
+            Route::middleware(['auth','verified','admin'])->post('admin/airtime-to-cash/settings', [AirtimeToCashController::class, 'adminSettings'])->name('admin.airtime-to-cash.settings');
             Route::middleware(['auth','verified','user'])->get('user/transactions/user_fetch_transactions', [TransactionController::class, 'user_fetch_transactions'])->name('user.transactions.user_fetch_transactions');
             Route::middleware(['auth','verified','user'])->get('user/transactions/index', [TransactionController::class, 'user_all_transactions'])->name('user.transactions.index');
 
