@@ -5,12 +5,16 @@ namespace App\Services\Automation;
 use App\Mail\AutomationLowBalanceMail;
 use App\Models\AutomationLowBalanceAlert;
 use App\Models\AutomationWalletFunding;
-use App\Models\User;
+use App\Services\AdminEmailNotificationRecipients;
 use Illuminate\Support\Facades\Mail;
 use Throwable;
 
 class AutomationLowBalanceNotificationService
 {
+    public function __construct(private readonly AdminEmailNotificationRecipients $recipients)
+    {
+    }
+
     public function run(int $burstPosition): array
     {
         if (! in_array($burstPosition, [1, 2, 3], true)) {
@@ -21,15 +25,11 @@ class AutomationLowBalanceNotificationService
         $cycle = intdiv((int) $lagosNow->format('G'), 3);
         $slot = ($cycle * 3) + $burstPosition;
 
-        $recipients = User::query()
-            ->whereNotNull('email')
-            ->where(fn ($query) => $query->whereNull('is_deactivated')->orWhere('is_deactivated', false))
-            ->where(fn ($query) => $query
-                ->whereHas('role', fn ($role) => $role->where('role_name', 'Admin'))
-                ->orWhereHas('roles', fn ($role) => $role->where('role_name', 'Admin')))
-            ->pluck('email')
-            ->unique()
-            ->values();
+        $recipients = $this->recipients->emails('automation_low_balance');
+
+        if ($recipients->isEmpty()) {
+            return ['notified' => 0, 'failed' => 0];
+        }
 
         $notified = 0;
         $failed = 0;

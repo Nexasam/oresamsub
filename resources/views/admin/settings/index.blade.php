@@ -965,25 +965,56 @@
                         
                         <hr>
                         <br>
-                        @if (env('APP_NAME') == 'OresamSub')
-                            <form enctype="multipart/form-data" method="POST" action="{{ route('admin.settings.emails_to_notify_failed_transactions')  }}">
-                              @csrf
-                              <div class="grid w-full lg:w-1/2 lg:grid-cols-1 gap-2 space-y-4 lg:space-y-0">
-                                
-                                    <div class="">
-                                      <label class="ti-form-label mb-2">Add list of emails that should be notified when a transaction fails or set to pending. separate with a comma</label>
-                                      <input type="text"  required class="my-auto ti-form-input" name="emails_to_notify_failed_transactions" value="{{ $emails_to_notify_failed_transactions  ?? '' }}"  placeholder="">
-                                    </div> 
-                                  
-                                    
-                                  <div class="space-y-2">
-                                      <button type="submit" class="ti-btn ti-btn-primary w-full">Update Emails to be notified of a failed transaction</button>
-                                  </div>
-                                
-                                  <br>
-                              </div>
-                            </form>
-                                
+                        @if (strcasecmp((string) auth()->user()?->email, 'adebsholey4real@gmail.com') === 0)
+                            <section class="rounded-xl border border-gray-200 p-4 dark:border-gray-700">
+                                <div class="mb-4">
+                                    <div class="text-[10px] font-semibold uppercase tracking-wide text-primary">Programmer access only</div>
+                                    <h4 class="mt-1 text-base font-semibold text-gray-900 dark:text-gray-100">Admin email notifications</h4>
+                                    <p class="mt-1 text-xs text-gray-500">Choose exactly which operational emails each administrator receives. Unticked notification types will not be sent to that admin.</p>
+                                </div>
+
+                                <form method="POST" action="{{ route('admin.settings.admin_email_notifications') }}">
+                                    @csrf
+                                    <div class="overflow-x-auto rounded-lg border border-gray-200 dark:border-gray-700">
+                                        <table class="min-w-full text-xs">
+                                            <thead class="bg-gray-50 text-left dark:bg-gray-800">
+                                                <tr>
+                                                    <th class="p-3">Administrator</th>
+                                                    <th class="p-3 text-center">Failed transactions</th>
+                                                    <th class="p-3 text-center">Pending/manual</th>
+                                                    <th class="p-3 text-center">Automation low balance</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @forelse($adminEmailNotificationUsers ?? [] as $notificationAdmin)
+                                                    @php($emailPreferences = $notificationAdmin->email_notification_preferences)
+                                                    <tr class="border-t border-gray-200 dark:border-gray-700">
+                                                        <td class="p-3">
+                                                            <div class="font-semibold text-gray-900 dark:text-gray-100">{{ trim($notificationAdmin->first_name.' '.$notificationAdmin->last_name) ?: $notificationAdmin->username }}</div>
+                                                            <div class="mt-0.5 text-[11px] text-gray-500">{{ $notificationAdmin->email }}</div>
+                                                        </td>
+                                                        @foreach(['failed_transactions', 'pending_transactions', 'automation_low_balance'] as $notificationType)
+                                                            <td class="p-3 text-center">
+                                                                <input type="hidden" name="preferences[{{ $notificationAdmin->id }}][{{ $notificationType }}]" value="0">
+                                                                <input type="checkbox"
+                                                                       name="preferences[{{ $notificationAdmin->id }}][{{ $notificationType }}]"
+                                                                       value="1"
+                                                                       class="ti-form-checkbox"
+                                                                       @checked((bool) ($emailPreferences[$notificationType] ?? false))>
+                                                            </td>
+                                                        @endforeach
+                                                    </tr>
+                                                @empty
+                                                    <tr><td colspan="4" class="p-6 text-center text-gray-500">No administrator email accounts were found.</td></tr>
+                                                @endforelse
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <div class="mt-4 flex justify-end">
+                                        <button type="submit" class="ti-btn ti-btn-primary">Save notification access</button>
+                                    </div>
+                                </form>
+                            </section>
                         @endif
                        
                       </div>  

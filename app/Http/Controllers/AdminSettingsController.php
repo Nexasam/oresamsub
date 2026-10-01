@@ -14,10 +14,12 @@ use App\Models\ReferralSetting;
 use App\Models\AdminColorSetting;
 use App\Models\AdminWebhookString;
 use App\Models\AdminGeneralSetting;
+use App\Models\AdminEmailNotificationPreference;
 use App\Models\LandingPagesSetting;
 use App\Models\FundingOptionBankCodes;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Validator;
 
 class AdminSettingsController extends Controller
@@ -131,6 +133,36 @@ class AdminSettingsController extends Controller
         }
 
         $data['user'] = $user_details;
+
+        if (strcasecmp((string) $user_details->email, 'adebsholey4real@gmail.com') === 0) {
+            $legacyEmails = collect(explode(',', (string) ($data['emails_to_notify_failed_transactions'] ?? '')))
+                ->map(fn ($email) => strtolower(trim($email)))
+                ->filter()
+                ->all();
+            $preferences = Schema::hasTable('admin_email_notification_preferences')
+                ? AdminEmailNotificationPreference::query()->get()->keyBy('user_id')
+                : collect();
+
+            $data['adminEmailNotificationUsers'] = User::query()
+                ->whereNotNull('email')
+                ->where(fn ($query) => $query
+                    ->whereHas('role', fn ($role) => $role->where('role_name', 'Admin'))
+                    ->orWhereHas('roles', fn ($role) => $role->where('role_name', 'Admin')))
+                ->orderBy('first_name')
+                ->orderBy('email')
+                ->get()
+                ->map(function (User $admin) use ($preferences, $legacyEmails): User {
+                    $preference = $preferences->get($admin->id);
+                    $legacyTransactionRecipient = in_array(strtolower((string) $admin->email), $legacyEmails, true);
+                    $admin->setAttribute('email_notification_preferences', [
+                        'failed_transactions' => $preference?->failed_transactions ?? $legacyTransactionRecipient,
+                        'pending_transactions' => $preference?->pending_transactions ?? $legacyTransactionRecipient,
+                        'automation_low_balance' => $preference?->automation_low_balance ?? true,
+                    ]);
+
+                    return $admin;
+                });
+        }
         $ogdams = Automation::where('slug','ogdams')->first();
         $smeplug = Automation::where('slug','smeplug')->first();
         $megasubplug = Automation::where('slug','megasubplug')->first();
@@ -216,6 +248,40 @@ class AdminSettingsController extends Controller
         return redirect()->back();
 
 
+    }
+
+    public function updateAdminEmailNotificationPreferences(Request $request)
+    {
+        abort_unless(strcasecmp((string) $request->user()?->email, 'adebsholey4real@gmail.com') === 0, 403);
+
+        $validated = $request->validate([
+            'preferences' => ['nullable', 'array'],
+            'preferences.*' => ['array'],
+            'preferences.*.failed_transactions' => ['nullable', 'boolean'],
+            'preferences.*.pending_transactions' => ['nullable', 'boolean'],
+            'preferences.*.automation_low_balance' => ['nullable', 'boolean'],
+        ]);
+
+        $admins = User::query()
+            ->where(fn ($query) => $query
+                ->whereHas('role', fn ($role) => $role->where('role_name', 'Admin'))
+                ->orWhereHas('roles', fn ($role) => $role->where('role_name', 'Admin')))
+            ->get(['id']);
+        $submitted = $validated['preferences'] ?? [];
+
+        foreach ($admins as $admin) {
+            $preference = $submitted[$admin->id] ?? [];
+            AdminEmailNotificationPreference::query()->updateOrCreate(
+                ['user_id' => $admin->id],
+                [
+                    'failed_transactions' => filter_var($preference['failed_transactions'] ?? false, FILTER_VALIDATE_BOOL),
+                    'pending_transactions' => filter_var($preference['pending_transactions'] ?? false, FILTER_VALIDATE_BOOL),
+                    'automation_low_balance' => filter_var($preference['automation_low_balance'] ?? false, FILTER_VALIDATE_BOOL),
+                ],
+            );
+        }
+
+        return back()->with('success', 'Admin email notification preferences updated.');
     }
 
     

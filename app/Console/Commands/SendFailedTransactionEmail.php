@@ -2,9 +2,8 @@
 
 namespace App\Console\Commands;
 
-use App\Models\User;
-use App\Models\Setting;
 use App\Models\Transaction;
+use App\Services\AdminEmailNotificationRecipients;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\FailedTransactionNotification;
@@ -28,7 +27,7 @@ class SendFailedTransactionEmail extends Command
     /**
      * Execute the console command.
      */
-    public function handle()
+    public function handle(AdminEmailNotificationRecipients $recipients)
     {
 
   
@@ -47,16 +46,10 @@ class SendFailedTransactionEmail extends Command
 
 
          
-            $get_emails_to_notify_failed_transactions = Setting::where('field_name','emails_to_notify_failed_transactions')->first();
-            if(! $get_emails_to_notify_failed_transactions){
-                // logger('no email to notify yet for failed/pending transaction');
-                exit;
+            $recipient_emails = $recipients->emails('failed_transactions');
+            if ($recipient_emails->isEmpty()) {
+                return self::SUCCESS;
             }
-          
-
-
-            $emails = $get_emails_to_notify_failed_transactions->field_value;
-            $recipient_emails = explode(',',$emails);
             // logger($recipient_emails);
 
             if( $transaction ){  
@@ -90,7 +83,7 @@ class SendFailedTransactionEmail extends Command
                     
                   
                     // TODO:: this should be dynamic later for all standalones
-                    Mail::to(env('MAIL_FROM_ADDRESS'))->cc($recipient_emails)->send(new FailedTransactionNotification($dataaa));
+                    Mail::to($recipient_emails->all())->send(new FailedTransactionNotification($dataaa));
         
                     Transaction::where('id',$transaction->id)->update([
                         'failure_notification' => 1
@@ -101,6 +94,6 @@ class SendFailedTransactionEmail extends Command
             }else{
                 // logger('No pending failed transaction notification...');
             }
-        
+        return self::SUCCESS;
     }
 }

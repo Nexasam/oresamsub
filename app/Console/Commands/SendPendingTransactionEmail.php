@@ -2,10 +2,9 @@
 
 namespace App\Console\Commands;
 
-use App\Models\User;
-use App\Models\Setting;
 use App\Models\Transaction;
 use App\Models\ConfigSetting;
+use App\Services\AdminEmailNotificationRecipients;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\PendingTransactionNotification;
@@ -29,15 +28,14 @@ class SendPendingTransactionEmail extends Command
     /**
      * Execute the console command.
      */
-    public function handle()
+    public function handle(AdminEmailNotificationRecipients $recipients)
     {
 
      
             //chhange this later
-            $get_emails_to_notify_failed_transactions = Setting::where('field_name','emails_to_notify_failed_transactions')->first();
-            if(! $get_emails_to_notify_failed_transactions){
-                // logger('no email to notify yet for failed/pending transaction');
-                exit;
+            $recipient_emails = $recipients->emails('pending_transactions');
+            if ($recipient_emails->isEmpty()) {
+                return self::SUCCESS;
             }
 
             //expected key:  email_sending_count_for_pending_transactions
@@ -67,14 +65,9 @@ class SendPendingTransactionEmail extends Command
 
            
 
-            $get_emails_to_notify_failed_transactions = Setting::where('field_name','emails_to_notify_failed_transactions')->first();  
             $date_param = '2025-04-04';
             $transactioncount = Transaction::where('set_for_manual',1)
             ->count();
-
-            $emails = $get_emails_to_notify_failed_transactions->field_value;
-            $recipient_emails = explode(',',$emails);
-          
 
             if( $transactioncount >= 1 ){  
                     ConfigSetting::where('key',$config_setting_key)->update([
@@ -85,13 +78,13 @@ class SendPendingTransactionEmail extends Command
                     $dataaa['transactions_count'] = $transactioncount;
                   
                     // TODO:: this should be dynamic later for all standalones
-                    Mail::to(env('MAIL_FROM_ADDRESS'))->cc($recipient_emails)->send(new PendingTransactionNotification($dataaa));
+                    Mail::to($recipient_emails->all())->send(new PendingTransactionNotification($dataaa));
                     // logger('Email sent to notify of pending transactions');
 
                 // }
             }else{
                 // logger('No pending pending transaction notification...');
             }
-       
+        return self::SUCCESS;
     }
 }

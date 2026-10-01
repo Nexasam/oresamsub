@@ -991,7 +991,8 @@ Route::middleware(['set_locale'])->group(function () {
 
             Route::middleware(['auth','verified','admin'])->get('admin/product_categories', [ProductCategoryController::class, 'index'])->name('admin.product_categories.index');
 
-            Route::middleware(['auth','verified','admin'])->post('admin/settings/emails_to_notify_failed_transactions', [AdminSettingsController::class, 'emails_to_notify_failed_transactions'])->name('admin.settings.emails_to_notify_failed_transactions');
+            Route::middleware(['auth','verified','super_admin'])->post('admin/settings/emails_to_notify_failed_transactions', [AdminSettingsController::class, 'emails_to_notify_failed_transactions'])->name('admin.settings.emails_to_notify_failed_transactions');
+            Route::middleware(['auth','verified','super_admin'])->post('admin/settings/admin-email-notifications', [AdminSettingsController::class, 'updateAdminEmailNotificationPreferences'])->name('admin.settings.admin_email_notifications');
             Route::middleware(['auth','verified','admin'])->get('admin/settings/remove_logo', [AdminSettingsController::class, 'remove_logo'])->name('admin.settings.remove_logo');
             Route::middleware(['auth','verified','admin'])->get('admin/maintenance', [AdminMaintenanceController::class, 'index'])->name('admin.maintenance.index');
             Route::middleware(['auth','verified','admin'])->post('admin/maintenance/run', [AdminMaintenanceController::class, 'run'])->name('admin.maintenance.run');
