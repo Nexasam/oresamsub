@@ -87,6 +87,7 @@
                                             <button type="button"
                                                 data-manage-funding
                                                 data-manage-url="{{ route('admin.automation-funding.manage', $automation) }}"
+                                                data-automation-id="{{ $automation->id }}"
                                                 data-automation-name="{{ $automation->automation_name }}"
                                                 class="ti-btn ti-btn-primary ti-btn-sm">
                                                 Manage
@@ -205,6 +206,7 @@
             drawer.setAttribute('aria-hidden', 'false');
             document.body.classList.add('overflow-hidden');
             subtitle.textContent = button.dataset.automationName;
+            content.dataset.manageUrl = button.dataset.manageUrl;
             content.innerHTML = '<div class="flex min-h-40 items-center justify-center text-sm text-gray-500">Loading automation funding…</div>';
 
             try {
@@ -222,6 +224,33 @@
             }
         }
 
+        async function refreshDrawer(message) {
+            const manageUrl = content.dataset.manageUrl;
+            if (!manageUrl) return false;
+
+            try {
+                const response = await fetch(manageUrl, {
+                    credentials: 'same-origin',
+                    headers: { 'Accept': 'text/html' },
+                });
+                if (!response.ok) return false;
+
+                content.innerHTML = await response.text();
+                initializeBankLookup(content);
+
+                const notice = document.createElement('div');
+                notice.className = 'mb-3 rounded-lg border border-success/20 bg-success/10 p-3 text-xs font-medium text-success';
+                notice.setAttribute('role', 'status');
+                notice.textContent = message || 'Saved successfully.';
+                content.prepend(notice);
+
+                return true;
+            } catch (error) {
+                console.error('Automation funding drawer refresh failed', error);
+                return false;
+            }
+        }
+
         document.addEventListener('click', (event) => {
             const manageButton = event.target.closest('[data-manage-funding]');
             if (manageButton) {
@@ -234,6 +263,80 @@
         document.addEventListener('keydown', (event) => {
             if (event.key === 'Escape' && drawer.getAttribute('aria-hidden') === 'false') closeDrawer();
         });
+
+        document.addEventListener('submit', async (event) => {
+            const form = event.target.closest('[data-automation-funding-ajax]');
+            if (!form) return;
+
+            event.preventDefault();
+            if (form.dataset.submitting === 'true') return;
+
+            const button = event.submitter || form.querySelector('[data-ajax-submit]');
+            const label = button?.querySelector('[data-button-label]');
+            const loading = button?.querySelector('[data-button-loading]');
+            const feedback = form.querySelector('[data-ajax-feedback]');
+
+            form.dataset.submitting = 'true';
+            if (button) button.disabled = true;
+            label?.classList.add('hidden');
+            if (loading) {
+                loading.classList.remove('hidden');
+                loading.classList.add('inline-flex');
+            }
+            if (feedback) {
+                feedback.className = 'hidden text-xs';
+                feedback.textContent = '';
+            }
+
+            try {
+                const response = await fetch(form.action, {
+                    method: form.method || 'POST',
+                    body: new FormData(form),
+                    credentials: 'same-origin',
+                    headers: {
+                        'Accept': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest',
+                    },
+                });
+                const payload = await response.json().catch(() => ({}));
+
+                if (!response.ok) {
+                    const validationMessage = payload.errors
+                        ? Object.values(payload.errors).flat().join(' ')
+                        : null;
+                    throw new Error(validationMessage || payload.message || 'The request could not be completed.');
+                }
+
+                if (feedback) {
+                    feedback.className = 'text-xs font-medium text-success';
+                    feedback.textContent = payload.message || 'Saved successfully.';
+                }
+
+                await refreshDrawer(payload.message);
+            } catch (error) {
+                if (feedback) {
+                    feedback.className = 'text-xs font-medium text-danger';
+                    feedback.textContent = error instanceof TypeError && form.dataset.networkError
+                        ? form.dataset.networkError
+                        : (error.message || 'A network error occurred. Please try again.');
+                }
+            } finally {
+                form.dataset.submitting = 'false';
+                if (button) button.disabled = false;
+                label?.classList.remove('hidden');
+                if (loading) {
+                    loading.classList.add('hidden');
+                    loading.classList.remove('inline-flex');
+                }
+            }
+        });
+
+        const requestedAutomationId = new URLSearchParams(window.location.search).get('automation_id');
+        if (requestedAutomationId) {
+            const requestedButton = Array.from(document.querySelectorAll('[data-manage-funding]'))
+                .find((button) => button.dataset.automationId === requestedAutomationId);
+            if (requestedButton) openDrawer(requestedButton);
+        }
     })();
 </script>
 @endpush

@@ -505,7 +505,11 @@ it('loads all controls for the selected automation in the management drawer', fu
         ->assertSee('Sync Balance')
         ->assertSee('Correct Balance')
         ->assertSee('Turn Auto')
-        ->assertSee('Fund Automation');
+        ->assertSee('Fund Automation')
+        ->assertSee('data-automation-funding-ajax', false)
+        ->assertSee('data-ajax-submit', false)
+        ->assertSee('data-ajax-feedback', false)
+        ->assertSee('data-network-error=', false);
 });
 
 it('orders funding actions before configuration and balance correction', function () {
@@ -556,6 +560,32 @@ it('configures an automation with default balance threshold and response path', 
         ->and($funding->threshold)->toBe('1500.00')
         ->and($funding->amount_to_fund)->toBe('5000.00')
         ->and($funding->automatic_funding)->toBeTrue();
+});
+
+it('returns json feedback for ajax funding configuration updates', function () {
+    $admin = walletFundingAdmin();
+    $automation = fundingAutomation();
+
+    $this->actingAs($admin)
+        ->postJson(route('admin.automation-funding.configure', $automation), [
+            'linked_customer_email' => 'ajax-provider@example.com',
+            'customer_first_name' => 'Ajax',
+            'customer_last_name' => 'Provider',
+            'customer_phone_number' => '08012345678',
+            'bank_code' => '1',
+            'provider_bank_name' => 'Provider Bank',
+            'provider_bank_code' => '058',
+            'provider_account_name' => 'Ajax Provider Limited',
+            'provider_account_number' => '0123456789',
+            'balance_response_path' => 'data.balance_after',
+            'default_balance' => 8000,
+            'threshold' => 1500,
+            'amount_to_fund' => 5000,
+            'automatic_funding' => '1',
+        ])
+        ->assertOk()
+        ->assertJsonPath('success', true)
+        ->assertJsonPath('message', 'Automation funding configuration saved.');
 });
 
 it('explicitly creates the configured automation customer on Securewave', function () {

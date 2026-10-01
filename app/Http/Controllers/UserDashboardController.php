@@ -103,7 +103,7 @@ class UserDashboardController extends Controller
 
         ->where('wallet_category', '!=', 'data_wallet')
 
-        ->with(['user', 'product_plan'])
+        ->with(['user', 'automation', 'product_plan.automation'])
 
         ->latest()
         ->paginate($perPage)

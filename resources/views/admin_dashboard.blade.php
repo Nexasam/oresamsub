@@ -426,6 +426,7 @@
                                         $impersonateRoute = route('admin.impersonate', $user->id);
                                         $detailsRoute = route('admin.users.manage_user', $user->id);
                                         $transactionsRoute = route('transactions.transaction_details', $data->id);
+                                        $transactionAutomation = $data->automation ?? $data->product_plan?->automation;
                                     @endphp
                                 
                                     <tr class="border-t">
@@ -502,11 +503,16 @@
                                             {{ $data->phone_number }}
                                             <small>
                                                 Provider:
-                                                <b>{{ optional($data->automation)->automation_name
-                                                    ?? optional(optional($data->product_plan)->automation)->automation_name
-                                                    ?? 'N/A' }}
+                                                <b>{{ $transactionAutomation?->automation_name ?? 'N/A' }}
                                                 </b>
                                             </small>
+                                            @if($transactionAutomation)
+                                                <a href="{{ route('admin.automation-funding.index', ['automation_id' => $transactionAutomation->id]) }}"
+                                                   class="mt-1 inline-flex items-center rounded border border-primary/20 bg-primary/10 px-1.5 py-0.5 text-[10px] font-semibold text-primary hover:bg-primary/20"
+                                                   title="Open {{ $transactionAutomation->automation_name }} funding controls">
+                                                    Fund automation
+                                                </a>
+                                            @endif
                                             <details>
                                                
                                                 <summary>View</summary>

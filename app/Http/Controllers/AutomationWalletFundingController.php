@@ -8,6 +8,7 @@ use App\Models\FundingOption;
 use App\Services\Automation\AutomationBalanceResolver;
 use App\Services\Automation\WalletAutoFundingService;
 use App\Services\Securewave\SecurewaveClient;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -73,7 +74,7 @@ class AutomationWalletFundingController extends Controller
         ]);
     }
 
-    public function configure(Request $request, Automation $automation): RedirectResponse
+    public function configure(Request $request, Automation $automation): RedirectResponse|JsonResponse
     {
         $data = $request->validate([
             'linked_customer_email' => ['nullable', 'email', 'max:255', 'unique:automation_wallet_fundings,linked_customer_email,'.$automation->walletFunding?->id],
@@ -136,10 +137,10 @@ class AutomationWalletFundingController extends Controller
             ])->save();
         }
 
-        return back()->with('success', 'Automation funding configuration saved.');
+        return $this->successResponse('Automation funding configuration saved.');
     }
 
-    public function createCustomer(AutomationWalletFunding $funding, SecurewaveClient $securewave): RedirectResponse
+    public function createCustomer(AutomationWalletFunding $funding, SecurewaveClient $securewave): RedirectResponse|JsonResponse
     {
         if (collect([
             $funding->linked_customer_email,
@@ -148,11 +149,11 @@ class AutomationWalletFundingController extends Controller
             $funding->customer_phone_number,
             $funding->bank_code,
         ])->contains(fn ($value) => blank($value))) {
-            return back()->with('failure', 'Complete the Securewave customer name, email, phone number, and bank first.');
+            return $this->failureResponse('Complete the Securewave customer name, email, phone number, and bank first.');
         }
 
         if ($funding->securewave_customer_created_at) {
-            return back()->with('failure', 'This automation already has a Securewave customer.');
+            return $this->failureResponse('This automation already has a Securewave customer.');
         }
 
         $result = $securewave->createCustomer(
@@ -167,7 +168,7 @@ class AutomationWalletFundingController extends Controller
         if (! $result['ok']) {
             $funding->update(['last_error' => $result['message']]);
 
-            return back()->with('failure', $result['message']);
+            return $this->failureResponse($result['message']);
         }
 
         $funding->update([
@@ -182,10 +183,10 @@ class AutomationWalletFundingController extends Controller
         return $this->saveBankInfo($funding->fresh(), $securewave);
     }
 
-    public function saveBankInfo(AutomationWalletFunding $funding, SecurewaveClient $securewave): RedirectResponse
+    public function saveBankInfo(AutomationWalletFunding $funding, SecurewaveClient $securewave): RedirectResponse|JsonResponse
     {
         if (! $funding->securewave_customer_created_at) {
-            return back()->with('failure', 'Create the Securewave customer before saving bank information.');
+            return $this->failureResponse('Create the Securewave customer before saving bank information.');
         }
 
         if (collect([
@@ -195,7 +196,7 @@ class AutomationWalletFundingController extends Controller
             $funding->provider_account_name,
             $funding->provider_account_number,
         ])->contains(fn ($value) => blank($value))) {
-            return back()->with('failure', 'Complete all provider destination bank details first.');
+            return $this->failureResponse('Complete all provider destination bank details first.');
         }
 
         $result = $securewave->saveCustomerBankInfo(
@@ -209,7 +210,7 @@ class AutomationWalletFundingController extends Controller
         if (! $result['ok']) {
             $funding->update(['last_error' => $result['message']]);
 
-            return back()->with('failure', 'Customer created, but bank information was not saved: '.$result['message']);
+            return $this->failureResponse('Customer created, but bank information was not saved: '.$result['message']);
         }
 
         $funding->update([
@@ -218,17 +219,17 @@ class AutomationWalletFundingController extends Controller
             'last_error' => null,
         ]);
 
-        return back()->with('success', 'Securewave customer and bank information saved successfully.');
+        return $this->successResponse('Securewave customer and bank information saved successfully.');
     }
 
-    public function refreshBalance(AutomationWalletFunding $funding, AutomationBalanceResolver $resolver): RedirectResponse
+    public function refreshBalance(AutomationWalletFunding $funding, AutomationBalanceResolver $resolver): RedirectResponse|JsonResponse
     {
         return $resolver->sync($funding)
-            ? back()->with('success', 'Balance refreshed from the latest matching successful transaction.')
-            : back()->with('failure', $funding->fresh()->last_error);
+            ? $this->successResponse('Balance refreshed from the latest matching successful transaction.')
+            : $this->failureResponse((string) ($funding->fresh()->last_error ?: 'The balance could not be refreshed.'));
     }
 
-    public function correctBalance(Request $request, AutomationWalletFunding $funding): RedirectResponse
+    public function correctBalance(Request $request, AutomationWalletFunding $funding): RedirectResponse|JsonResponse
     {
         $data = $request->validate(['last_balance' => ['required', 'numeric', 'min:0']]);
         $funding->update([
@@ -239,30 +240,48 @@ class AutomationWalletFundingController extends Controller
             'last_error' => null,
         ]);
 
-        return back()->with('success', 'Automation balance corrected.');
+        return $this->successResponse('Automation balance corrected.');
     }
 
-    public function toggle(AutomationWalletFunding $funding): RedirectResponse
+    public function toggle(AutomationWalletFunding $funding): RedirectResponse|JsonResponse
     {
         $funding->update(['automatic_funding' => ! $funding->automatic_funding]);
 
-        return back()->with('success', 'Automatic funding '.($funding->automatic_funding ? 'enabled.' : 'disabled.'));
+        return $this->successResponse('Automatic funding '.($funding->automatic_funding ? 'enabled.' : 'disabled.'));
     }
 
-    public function toggleActive(AutomationWalletFunding $funding): RedirectResponse
+    public function toggleActive(AutomationWalletFunding $funding): RedirectResponse|JsonResponse
     {
         $funding->update(['active' => $funding->active === 'yes' ? 'no' : 'yes']);
 
-        return back()->with('success', 'Automation funding '.($funding->active === 'yes' ? 'activated.' : 'deactivated.'));
+        return $this->successResponse('Automation funding '.($funding->active === 'yes' ? 'activated.' : 'deactivated.'));
     }
 
-    public function fund(Request $request, AutomationWalletFunding $funding, WalletAutoFundingService $service): RedirectResponse
+    public function fund(Request $request, AutomationWalletFunding $funding, WalletAutoFundingService $service): RedirectResponse|JsonResponse
     {
         $data = $request->validate(['amount' => ['required', 'numeric', 'gt:0']]);
         $result = $service->fund($funding, (float) $data['amount'], 'manual');
 
         return $result['ok']
-            ? back()->with('success', 'Automation funded successfully.')
-            : back()->with('failure', $result['message']);
+            ? $this->successResponse('Automation funded successfully.')
+            : $this->failureResponse($result['message']);
+    }
+
+    private function successResponse(string $message): RedirectResponse|JsonResponse
+    {
+        if (request()->expectsJson()) {
+            return response()->json(['success' => true, 'message' => $message]);
+        }
+
+        return back()->with('success', $message);
+    }
+
+    private function failureResponse(string $message): RedirectResponse|JsonResponse
+    {
+        if (request()->expectsJson()) {
+            return response()->json(['success' => false, 'message' => $message], 422);
+        }
+
+        return back()->with('failure', $message);
     }
 }

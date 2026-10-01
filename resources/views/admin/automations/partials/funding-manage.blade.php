@@ -1,4 +1,6 @@
-@php($funding = $automation->walletFunding)
+@php
+    $funding = $automation->walletFunding;
+@endphp
 
 <div class="space-y-3">
     <div>
@@ -56,20 +58,42 @@
                 </span>
             </div>
             <div class="mt-3 flex flex-wrap gap-2">
-                <form method="POST" action="{{ route('admin.automation-funding.create-customer', $funding) }}">@csrf<button class="ti-btn ti-btn-info ti-btn-sm" @disabled($funding->securewave_customer_created_at)>Create Securewave Customer</button></form>
-                <form method="POST" action="{{ route('admin.automation-funding.save-bank-info', $funding) }}">@csrf<button class="ti-btn ti-btn-primary ti-btn-sm" @disabled(!$funding->securewave_customer_created_at)>{{ $funding->securewave_bank_info_saved_at ? 'Update Bank Info' : 'Register Bank Info' }}</button></form>
-                <form method="POST" action="{{ route('admin.automation-funding.refresh-balance', $funding) }}">@csrf<button class="ti-btn ti-btn-light ti-btn-sm" @disabled($funding->active !== 'yes')>Sync Balance</button></form>
-                <form method="POST" action="{{ route('admin.automation-funding.toggle', $funding) }}">@csrf<button class="ti-btn {{ $funding->automatic_funding ? 'ti-btn-danger' : 'ti-btn-success' }} ti-btn-sm" @disabled($funding->active !== 'yes')>Turn Auto {{ $funding->automatic_funding ? 'Off' : 'On' }}</button></form>
-                <form method="POST" action="{{ route('admin.automation-funding.toggle-active', $funding) }}">@csrf<button class="ti-btn {{ $funding->active === 'yes' ? 'ti-btn-danger' : 'ti-btn-success' }} ti-btn-sm">{{ $funding->active === 'yes' ? 'Deactivate Automation' : 'Activate Automation' }}</button></form>
+                @php
+                    $fundingActions = [
+                        ['route' => route('admin.automation-funding.create-customer', $funding), 'label' => 'Create Securewave Customer', 'class' => 'ti-btn-info', 'disabled' => (bool) $funding->securewave_customer_created_at],
+                        ['route' => route('admin.automation-funding.save-bank-info', $funding), 'label' => $funding->securewave_bank_info_saved_at ? 'Update Bank Info' : 'Register Bank Info', 'class' => 'ti-btn-primary', 'disabled' => ! $funding->securewave_customer_created_at],
+                        ['route' => route('admin.automation-funding.refresh-balance', $funding), 'label' => 'Sync Balance', 'class' => 'ti-btn-light', 'disabled' => $funding->active !== 'yes'],
+                        ['route' => route('admin.automation-funding.toggle', $funding), 'label' => 'Turn Auto '.($funding->automatic_funding ? 'Off' : 'On'), 'class' => $funding->automatic_funding ? 'ti-btn-danger' : 'ti-btn-success', 'disabled' => $funding->active !== 'yes'],
+                        ['route' => route('admin.automation-funding.toggle-active', $funding), 'label' => $funding->active === 'yes' ? 'Deactivate Automation' : 'Activate Automation', 'class' => $funding->active === 'yes' ? 'ti-btn-danger' : 'ti-btn-success', 'disabled' => false],
+                    ];
+                @endphp
+                @foreach($fundingActions as $action)
+                    <form method="POST" action="{{ $action['route'] }}" data-automation-funding-ajax class="flex flex-col gap-1">
+                        @csrf
+                        <button type="submit" class="ti-btn {{ $action['class'] }} ti-btn-sm" data-ajax-submit @disabled($action['disabled'])>
+                            <span data-button-label>{{ $action['label'] }}</span>
+                            <span data-button-loading class="hidden items-center gap-1"><span class="inline-block h-3 w-3 animate-spin rounded-full border-2 border-current/30 border-t-current"></span>Working…</span>
+                        </button>
+                        <span data-ajax-feedback class="hidden text-xs" role="status" aria-live="polite"></span>
+                    </form>
+                @endforeach
             </div>
             <div class="mt-3 rounded-lg bg-gray-50 p-2.5 dark:bg-gray-800">
                 <div class="flex items-end gap-3">
-                    <form method="POST" action="{{ route('admin.automation-funding.fund', $funding) }}" class="flex flex-1 items-end gap-2">
+                    <form method="POST"
+                          action="{{ route('admin.automation-funding.fund', $funding) }}"
+                          class="flex flex-1 flex-wrap items-end gap-2"
+                          data-automation-funding-ajax
+                          data-network-error="The funding result is unknown because the connection was interrupted. Check the provider balance and funding records before trying again.">
                         @csrf
                         <label class="flex-1 text-xs font-semibold text-gray-700 dark:text-gray-200">Funding amount
                             <input type="number" min="0.01" step="0.01" name="amount" required class="ti-form-input mt-1 min-h-10 w-full text-sm" value="{{ $funding->amount_to_fund }}">
                         </label>
-                        <button class="ti-btn ti-btn-success ti-btn-sm" @disabled(!$funding->securewave_bank_info_saved_at || $funding->active !== 'yes')>Fund Automation</button>
+                        <button type="submit" class="ti-btn ti-btn-success ti-btn-sm" data-ajax-submit @disabled(!$funding->securewave_bank_info_saved_at || $funding->active !== 'yes')>
+                            <span data-button-label>Fund Automation</span>
+                            <span data-button-loading class="hidden items-center gap-1"><span class="inline-block h-3 w-3 animate-spin rounded-full border-2 border-white/30 border-t-white"></span>Funding…</span>
+                        </button>
+                        <span data-ajax-feedback class="hidden basis-full text-xs" role="status" aria-live="polite"></span>
                     </form>
                 </div>
                 <p class="mt-2 text-[11px] {{ $funding->securewave_bank_info_saved_at ? 'text-success' : 'text-warning' }}">Bank registration: {{ $funding->securewave_bank_info_saved_at ? 'Saved on Securewave' : 'Required before funding' }}</p>
@@ -81,7 +105,7 @@
         <h4 class="text-sm font-semibold text-gray-900 dark:text-gray-100">Automation settings</h4>
         <p class="mt-1 text-xs text-gray-500">Balance monitoring, Securewave customer identity, and destination account.</p>
 
-        <form method="POST" action="{{ route('admin.automation-funding.configure', $automation) }}" class="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-2">
+        <form method="POST" action="{{ route('admin.automation-funding.configure', $automation) }}" class="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-2" data-automation-funding-ajax>
             @csrf
             <div class="sm:col-span-2"><h5 class="text-xs font-semibold uppercase tracking-wide text-gray-500">Balance and funding rules</h5></div>
             <label class="text-xs font-semibold text-gray-700 dark:text-gray-200">Current/default balance
@@ -142,8 +166,12 @@
             <label class="text-xs font-semibold text-gray-700 dark:text-gray-200">Provider account number
                 <input type="text" inputmode="numeric" name="provider_account_number" class="ti-form-input mt-1 min-h-10 w-full text-sm" value="" placeholder="{{ $funding?->provider_account_number ? 'Configured ••••'.substr($funding->provider_account_number, -4).' — leave blank to retain' : 'Enter account number' }}" @required(blank($funding?->provider_account_number))>
             </label>
-            <div class="sm:col-span-2 flex justify-end">
-                <button class="ti-btn ti-btn-primary ti-btn-sm">Save configuration</button>
+            <div class="sm:col-span-2 flex items-center justify-end gap-3">
+                <span data-ajax-feedback class="hidden text-xs" role="status" aria-live="polite"></span>
+                <button type="submit" class="ti-btn ti-btn-primary ti-btn-sm" data-ajax-submit>
+                    <span data-button-label>Save configuration</span>
+                    <span data-button-loading class="hidden items-center gap-1"><span class="inline-block h-3 w-3 animate-spin rounded-full border-2 border-white/30 border-t-white"></span>Saving…</span>
+                </button>
             </div>
         </form>
     </section>
@@ -152,12 +180,16 @@
         <section class="rounded-xl border border-gray-200 p-4 dark:border-gray-700">
             <h4 class="text-sm font-semibold text-gray-900 dark:text-gray-100">Correct Balance</h4>
             <p class="mt-1 text-xs text-gray-500">Use only when the tracked balance is wrong. The next valid provider response will replace it.</p>
-            <form method="POST" action="{{ route('admin.automation-funding.correct-balance', $funding) }}" class="mt-3 flex items-end gap-2">
+            <form method="POST" action="{{ route('admin.automation-funding.correct-balance', $funding) }}" class="mt-3 flex flex-wrap items-end gap-2" data-automation-funding-ajax>
                 @csrf
                 <label class="flex-1 text-xs font-semibold text-gray-700 dark:text-gray-200">Correct balance
                     <input type="number" min="0" step="0.01" name="last_balance" required class="ti-form-input mt-1 min-h-10 w-full text-sm" value="{{ $funding->last_balance }}">
                 </label>
-                <button class="ti-btn ti-btn-warning ti-btn-sm">Apply Correction</button>
+                <button type="submit" class="ti-btn ti-btn-warning ti-btn-sm" data-ajax-submit>
+                    <span data-button-label>Apply Correction</span>
+                    <span data-button-loading class="hidden items-center gap-1"><span class="inline-block h-3 w-3 animate-spin rounded-full border-2 border-current/30 border-t-current"></span>Saving…</span>
+                </button>
+                <span data-ajax-feedback class="hidden basis-full text-xs" role="status" aria-live="polite"></span>
             </form>
         </section>
     @else
