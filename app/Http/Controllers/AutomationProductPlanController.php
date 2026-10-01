@@ -29,6 +29,13 @@ class AutomationProductPlanController extends Controller
             ->exists();
 
         if ($exists) {
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'This provider already exists for this product plan.',
+                ], 422);
+            }
+
             return back()->with('failure', 'This provider already exists for this product plan.');
         }
 
@@ -43,6 +50,14 @@ class AutomationProductPlanController extends Controller
             'selling_price'   => $request->selling_price,
             // 'is_active'       => true,
         ]);
+
+        if ($request->expectsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Provider added successfully.',
+                'provider_id' => $provider->id,
+            ], 201);
+        }
 
         return back()->with('success', 'Provider added successfully.');
     }
@@ -97,7 +112,14 @@ class AutomationProductPlanController extends Controller
             'selling_price' => $request->selling_price,
             'is_active' => $request->is_active,
         ]);
-    
+
+        if ($request->expectsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Provider updated successfully.',
+            ]);
+        }
+
         return back()->with('success', 'Provider updated successfully');
     }
 

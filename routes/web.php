@@ -79,6 +79,7 @@ use Illuminate\Support\Facades\Session;
 use Rap2hpoutre\LaravelLogViewer\LogViewerController;
 use App\Http\Controllers\Api\v1\VendorUsersApi\MegaWhatsappWebhookController;
 use App\Http\Controllers\AirtelPaymentOptionsResearchController;
+use App\Http\Controllers\GloAuthResearchController;
 
 Route::middleware(['auth', 'verified', 'super_admin'])->prefix('admin/standalones')->name('admin.standalones.')->group(function () {
     Route::get('/', [StandaloneWebsiteController::class, 'index'])->name('index');
@@ -107,6 +108,9 @@ if (app()->environment('local')) {
         ->middleware('throttle:10,1');
     Route::post('/api-research/airtel/purchase', [AirtelPaymentOptionsResearchController::class, 'purchase'])
         ->middleware('throttle:2,1');
+    Route::get('/api-research/glo/auth-refresh', [GloAuthResearchController::class, 'index']);
+    Route::post('/api-research/glo/auth-refresh', [GloAuthResearchController::class, 'probe'])
+        ->middleware('throttle:3,1');
 }
 
 

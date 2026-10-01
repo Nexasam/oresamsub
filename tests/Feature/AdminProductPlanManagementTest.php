@@ -12,6 +12,8 @@ use App\Models\User;
 
 use function Pest\Laravel\actingAs;
 use function Pest\Laravel\get;
+use function Pest\Laravel\postJson;
+use function Pest\Laravel\putJson;
 
 function productPlanAdmin(): User
 {
@@ -287,4 +289,70 @@ it('renders one lazy management modal shell for the product plan list', function
     expect(substr_count($content, 'id="manage-plan-modal"'))->toBe(1)
         ->and($content)->toContain('data-manage-plan')
         ->and($content)->toContain(route('admin.product_plans.manage', ['id' => $plan->id, 'modal' => 1]));
+});
+
+it('supports ajax updates for every product plan management action', function () {
+    $admin = productPlanAdmin();
+    $automation = Automation::create([
+        'automation_name' => 'AJAX Default Provider',
+        'slug' => 'ajax-default-provider',
+        'domain_url' => 'https://ajax-default.test',
+    ]);
+    $secondAutomation = Automation::create([
+        'automation_name' => 'AJAX Secondary Provider',
+        'slug' => 'ajax-secondary-provider',
+        'domain_url' => 'https://ajax-secondary.test',
+    ]);
+    $plan = adminProductPlanFixture($automation);
+    actingAs($admin);
+
+    get(route('admin.product_plans.manage', ['id' => $plan->id, 'modal' => 1]))
+        ->assertOk()
+        ->assertSee('data-ajax-plan-form', false)
+        ->assertSee('data-ajax-submit', false)
+        ->assertSee('data-ajax-feedback', false);
+
+    putJson(route('admin.product_plans.update_product_plan_new', $plan->id), [
+        'automation_id' => $automation->id,
+        'automation_product_plan_id' => 'AJAX-PLAN-101',
+        'product_plan_name' => 'AJAX Updated Plan',
+        'data_size_in_mb' => 1000,
+        'validity_in_days' => 7,
+        'cost_price' => 350,
+        'is_visible' => 1,
+        'product_plan_category_id' => $plan->product_plan_category_id,
+        ...collect(range(1, 7))->mapWithKeys(fn (int $level) => [
+            "user_level_{$level}_selling_price" => 440 - ($level * 10),
+        ])->all(),
+    ])->assertOk()
+        ->assertJsonPath('success', true)
+        ->assertJsonPath('message', 'Product plan updated successfully.');
+
+    putJson(route('admin.product_plans.update_selling_prices', $plan->id),
+        collect(range(1, 7))->mapWithKeys(fn (int $level) => [
+            "user_level_{$level}_selling_price" => 450 - ($level * 10),
+        ])->all()
+    )->assertOk()
+        ->assertJsonPath('success', true)
+        ->assertJsonPath('message', 'Selling prices updated successfully.');
+
+    $createResponse = postJson(route('admin.automation-product-plans.store'), [
+        'product_plan_id' => $plan->id,
+        'automation_id' => $secondAutomation->id,
+        'priority' => 2,
+        'cost_price' => 340,
+        'provider_plan_id' => 'AJAX-PROVIDER-202',
+        'is_active' => true,
+    ])->assertCreated()
+        ->assertJsonPath('success', true)
+        ->assertJsonPath('message', 'Provider added successfully.');
+
+    putJson(route('admin.automation-product-plans.update', $createResponse->json('provider_id')), [
+        'priority' => 1,
+        'cost_price' => 345,
+        'provider_plan_id' => 'AJAX-PROVIDER-UPDATED',
+        'is_active' => false,
+    ])->assertOk()
+        ->assertJsonPath('success', true)
+        ->assertJsonPath('message', 'Provider updated successfully.');
 });

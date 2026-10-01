@@ -195,6 +195,13 @@ class ProductPlanController extends Controller
 
         $plan->update($validated);
 
+        if ($request->expectsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Selling prices updated successfully.',
+            ]);
+        }
+
         return back()->with(
             'success',
             'Selling prices updated successfully.'
@@ -434,6 +441,13 @@ class ProductPlanController extends Controller
             'user_level_6_selling_price' => $request->user_level_6_selling_price,
             'user_level_7_selling_price' => $request->user_level_7_selling_price,
         ]);
+
+          if ($request->expectsJson()) {
+              return response()->json([
+                  'success' => true,
+                  'message' => 'Product plan updated successfully.',
+              ]);
+          }
 
           return back()->with('success', 'Product plan updated successfully');
       }

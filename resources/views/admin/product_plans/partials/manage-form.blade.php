@@ -40,7 +40,9 @@
         {{-- EDIT PRODUCT PLAN --}}
         <h4 class="font-semibold text-sm mb-2">Edit Product Plan</h4>
 
-        <form method="POST" action="{{ route('admin.product_plans.update_product_plan_new', $plan->id) }}">
+        <form method="POST"
+              action="{{ route('admin.product_plans.update_product_plan_new', $plan->id) }}"
+              data-ajax-plan-form>
             @csrf
             @method('PUT')
 
@@ -175,9 +177,14 @@
         
             </div>
         
-            <div class="mt-5 flex justify-end">
-            <button class="ti-btn ti-btn-primary px-6 py-2.5">
-                Update Plan
+            <div class="mt-5 flex items-center justify-end gap-3">
+            <div data-ajax-feedback class="hidden text-xs" role="status" aria-live="polite"></div>
+            <button type="submit" class="ti-btn ti-btn-primary px-6 py-2.5" data-ajax-submit>
+                <span data-button-label>Update Plan</span>
+                <span data-button-loading class="hidden items-center gap-2">
+                    <span class="inline-block h-3.5 w-3.5 animate-spin rounded-full border-2 border-white/40 border-t-white"></span>
+                    Saving…
+                </span>
             </button>
             </div>
         </form>
@@ -212,13 +219,10 @@
 
         </div>
 
-        </form>
-
-
-
         <form method="POST"
       action="{{ route('admin.product_plans.update_selling_prices', $plan->id) }}"
-      class="mt-4">
+      class="mt-4"
+      data-ajax-plan-form>
 
     @csrf
     @method('PUT')
@@ -251,10 +255,18 @@
 
         </div>
 
-        <button type="submit"
-                class="ti-btn ti-btn-success mt-4">
-            Update Selling Prices
-        </button>
+        <div class="mt-4 flex items-center gap-3">
+            <button type="submit"
+                    class="ti-btn ti-btn-success"
+                    data-ajax-submit>
+                <span data-button-label>Update Selling Prices</span>
+                <span data-button-loading class="hidden items-center gap-2">
+                    <span class="inline-block h-3.5 w-3.5 animate-spin rounded-full border-2 border-white/40 border-t-white"></span>
+                    Saving…
+                </span>
+            </button>
+            <div data-ajax-feedback class="hidden text-xs" role="status" aria-live="polite"></div>
+        </div>
 
     </div>
 
@@ -282,7 +294,8 @@
 
         <form method="POST"
         action="{{ route('admin.automation-product-plans.update', $provider->id) }}"
-        class="grid grid-cols-12 gap-1 items-end text-xs bg-gray-50 dark:bg-gray-800 p-1 rounded">
+        class="grid grid-cols-12 gap-1 items-end text-xs bg-gray-50 dark:bg-gray-800 p-1 rounded"
+        data-ajax-plan-form>
   
       @csrf
       @method('PUT')
@@ -339,9 +352,17 @@
       {{-- SAVE --}}
       <div class="col-span-2 flex flex-col justify-end">
           <span class="text-[9px] text-transparent">Save</span>
-          <button class="ti-btn ti-btn-primary ti-btn-sm text-[11px] h-7 px-2">
-              Save
+          <button type="submit" class="ti-btn ti-btn-primary ti-btn-sm text-[11px] h-7 px-2" data-ajax-submit>
+              <span data-button-label>Save</span>
+              <span data-button-loading class="hidden items-center gap-1">
+                  <span class="inline-block h-3 w-3 animate-spin rounded-full border-2 border-white/40 border-t-white"></span>
+                  Saving…
+              </span>
           </button>
+      </div>
+
+      <div class="col-span-12 px-1">
+          <div data-ajax-feedback class="hidden text-[10px]" role="status" aria-live="polite"></div>
       </div>
   
   </form>
@@ -357,7 +378,10 @@
         {{-- ADD PROVIDER --}}
         <h4 class="font-semibold mb-2">Add Provider</h4>
 
-        <form method="POST" action="{{ route('admin.automation-product-plans.store') }}">
+        <form method="POST"
+              action="{{ route('admin.automation-product-plans.store') }}"
+              data-ajax-plan-form
+              data-reset-on-success="true">
             @csrf
 
             <input type="hidden" name="product_plan_id" value="{{ $plan->id }}">
@@ -402,9 +426,16 @@
 
             </div>
 
-            <button class="ti-btn ti-btn-primary ti-btn-sm mt-4">
-                Add Provider
-            </button>
+            <div class="mt-4 flex items-center gap-3">
+                <button type="submit" class="ti-btn ti-btn-primary ti-btn-sm" data-ajax-submit>
+                    <span data-button-label>Add Provider</span>
+                    <span data-button-loading class="hidden items-center gap-2">
+                        <span class="inline-block h-3.5 w-3.5 animate-spin rounded-full border-2 border-white/40 border-t-white"></span>
+                        Adding…
+                    </span>
+                </button>
+                <div data-ajax-feedback class="hidden text-xs" role="status" aria-live="polite"></div>
+            </div>
 
         </form>
 
@@ -445,4 +476,83 @@
     document.getElementById('base_price').addEventListener('input', calculateLevels);
     document.getElementById('diff_step').addEventListener('input', calculateLevels);
     calculateLevels();
+
+    if (!window.productPlanAjaxFormsInitialized) {
+        window.productPlanAjaxFormsInitialized = true;
+
+        document.addEventListener('submit', async (event) => {
+            const form = event.target.closest('[data-ajax-plan-form]');
+
+            if (!form) {
+                return;
+            }
+
+            event.preventDefault();
+
+            if (form.dataset.submitting === 'true') {
+                return;
+            }
+
+            const button = event.submitter || form.querySelector('[data-ajax-submit]');
+            const label = button?.querySelector('[data-button-label]');
+            const loading = button?.querySelector('[data-button-loading]');
+            const feedback = form.querySelector('[data-ajax-feedback]');
+
+            form.dataset.submitting = 'true';
+            if (button) button.disabled = true;
+            if (label) label.classList.add('hidden');
+            if (loading) {
+                loading.classList.remove('hidden');
+                loading.classList.add('inline-flex');
+            }
+            if (feedback) {
+                feedback.className = 'hidden text-xs';
+                feedback.textContent = '';
+            }
+
+            try {
+                const response = await fetch(form.action, {
+                    method: form.method || 'POST',
+                    body: new FormData(form),
+                    credentials: 'same-origin',
+                    headers: {
+                        'Accept': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest',
+                    },
+                });
+
+                const payload = await response.json().catch(() => ({}));
+
+                if (!response.ok) {
+                    const validationMessage = payload.errors
+                        ? Object.values(payload.errors).flat().join(' ')
+                        : null;
+
+                    throw new Error(validationMessage || payload.message || 'The update could not be saved.');
+                }
+
+                if (form.dataset.resetOnSuccess === 'true') {
+                    form.reset();
+                }
+
+                if (feedback) {
+                    feedback.className = 'text-xs font-medium text-green-600';
+                    feedback.textContent = payload.message || 'Saved successfully.';
+                }
+            } catch (error) {
+                if (feedback) {
+                    feedback.className = 'text-xs font-medium text-red-600';
+                    feedback.textContent = error.message || 'A network error occurred. Please try again.';
+                }
+            } finally {
+                form.dataset.submitting = 'false';
+                if (button) button.disabled = false;
+                if (label) label.classList.remove('hidden');
+                if (loading) {
+                    loading.classList.add('hidden');
+                    loading.classList.remove('inline-flex');
+                }
+            }
+        });
+    }
     </script>
