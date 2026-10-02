@@ -25,8 +25,24 @@ class UserSettingsController extends Controller
       // dd($request->all());
 
         $validator = Validator::make($request->all(), [
-          'pin' => ['required','string','regex:/^\d{4,5}$/'],
-          'confirm_pin' => ['required','string','regex:/^\d{4,5}$/'],
+          'pin' => ['required', 'string', 'digits:4', Rule::notIn([
+            '0000',
+            '1111',
+            '1234',
+            '2222',
+            '3333',
+            '4444',
+            '5555',
+            '6666',
+            '7777',
+            '8888',
+            '9999',
+          ])],
+          'confirm_pin' => ['required', 'string', 'digits:4'],
+        ], [
+          'pin.digits' => 'Your transaction PIN must be exactly 4 digits.',
+          'confirm_pin.digits' => 'Please re-enter the same 4-digit PIN.',
+          'pin.not_in' => 'Please choose a stronger PIN.',
         ]);
         
 
@@ -36,12 +52,6 @@ class UserSettingsController extends Controller
         
         if($request->pin != $request->confirm_pin){
           Session::flash('failure','PIN mismatch found.');
-          return redirect()->back();
-        }
-
-
-        if($request->pin == '1234'){
-          Session::flash('failure','Please use another PIN. The PIN: 1234 is not a strong PIN.');
           return redirect()->back();
         }
 

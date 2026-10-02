@@ -76,6 +76,7 @@ use App\Models\User;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Session;
+use Inertia\Inertia;
 use Rap2hpoutre\LaravelLogViewer\LogViewerController;
 use App\Http\Controllers\Api\v1\VendorUsersApi\MegaWhatsappWebhookController;
 use App\Http\Controllers\AirtelPaymentOptionsResearchController;
@@ -175,7 +176,9 @@ Route::middleware(['set_locale'])->group(function () {
                 ->middleware(['auth', 'verified'])
                 ->name('bonuses.convert');
 
-            Route::get('set_pin', fn () => view('oresamsub.pages.set_pin'))->name('ore.set_pin');
+            Route::get('set_pin', fn () => Inertia::render('SetPin'))
+                ->middleware(['auth', 'verified'])
+                ->name('ore.set_pin');
            
             Route::middleware(['auth','verified','admin'])->get('/profit', BusinessProfitController::class)->name('admin.profit.index');
 
