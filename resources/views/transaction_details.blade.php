@@ -1144,6 +1144,7 @@
                                       <p class="mb-2 font-semibold">Admin guide</p>
                                       <ul class="list-disc space-y-1 pl-5">
                                         <li><strong>Failed airtime shown as successful:</strong> choose <em>Manual success</em> with <em>No wallet change</em>. This sets status 1 and manual 1, so it appears under “Transactions with issues”.</li>
+                                        <li><strong>Keep failed but remove urgent:</strong> choose <em>Failed</em> with <em>No wallet change</em>. This keeps status -1 and clears the manual urgent flag.</li>
                                         <li><strong>Retry airtime through the pending processor:</strong> choose <em>Pending</em>. Airtime automatically gets the <code>pending_airtime_transaction</code> admin message, but it will not appear in the manual issue count.</li>
                                         <li><strong>Wallet impact:</strong> use <em>No wallet change</em> if the customer was already charged; use <em>Credit</em> only to return funds, and <em>Debit</em> only to charge funds.</li>
                                       </ul>
@@ -1158,6 +1159,7 @@
                                           <option value="">Choose status</option>
                                           <option value="manual_success">Manual success (status 1, manual 1)</option>
                                           <option value="success">Success (status 1, manual 0)</option>
+                                          <option value="failed">Failed (status -1, manual 0)</option>
                                           <option value="refunded">Refunded (status 2)</option>
                                           <option value="pending">Pending (status 0)</option>
                                         </select>

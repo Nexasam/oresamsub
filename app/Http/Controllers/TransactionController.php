@@ -260,7 +260,7 @@ class TransactionController extends Controller
   {
       $validator = Validator::make($request->all(), [
           'transaction_id' => 'required|exists:transactions,id',
-          'target_status' => 'required|in:manual_success,success,refunded,pending',
+          'target_status' => 'required|in:manual_success,success,failed,refunded,pending',
           'wallet_action' => 'required|in:none,credit,debit',
           'reason' => 'required|string|max:500',
           'pin' => ['required', 'string', 'regex:/^\d{4,5}$/'],
@@ -278,6 +278,7 @@ class TransactionController extends Controller
       $states = [
           'manual_success' => ['status' => 1, 'set_for_manual' => 1, 'label' => 'Manual success'],
           'success' => ['status' => 1, 'set_for_manual' => 0, 'label' => 'Success'],
+          'failed' => ['status' => -1, 'set_for_manual' => 0, 'label' => 'Failed'],
           'refunded' => ['status' => 2, 'set_for_manual' => 0, 'label' => 'Refunded'],
           'pending' => ['status' => 0, 'set_for_manual' => 0, 'label' => 'Pending'],
       ];
@@ -305,6 +306,7 @@ class TransactionController extends Controller
                   'user_screen_message' => match ($request->target_status) {
                       'manual_success' => 'Transaction is being processed.',
                       'success' => 'Transaction successfully processed',
+                      'failed' => 'Transaction failed',
                       'refunded' => 'Transaction refunded',
                       'pending' => 'Transaction pending',
                   },
