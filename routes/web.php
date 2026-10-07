@@ -47,6 +47,7 @@ use App\Http\Controllers\RoleController;
 use App\Http\Controllers\AccountOfficerController;
 use App\Http\Controllers\Admin\StandaloneWebsiteController;
 use App\Http\Controllers\Admin\StandaloneFeatureController;
+use App\Http\Controllers\Admin\AirtelGiftingPlanImportController;
 use App\Http\Controllers\Template2Controller;
 use App\Http\Controllers\TelecomAbodePlansController;
 use App\Http\Controllers\TransactionController;
@@ -972,6 +973,9 @@ Route::middleware(['set_locale'])->group(function () {
 
             Route::middleware(['auth','verified','admin'])->get('admin/product_plans', [ProductPlanController::class, 'index'])->name('admin.product_plans.index');
             Route::middleware(['auth','verified','admin'])->get('admin/product_plans2', [ProductPlanController::class, 'index2'])->name('admin.product_plans.index2');
+            Route::middleware(['auth','verified','admin'])->get('admin/product-plans/airtel-gifting-import', [AirtelGiftingPlanImportController::class, 'index'])->name('admin.product_plans.airtel_gifting_import');
+            Route::middleware(['auth','verified','admin'])->post('admin/product-plans/airtel-gifting-import/preview', [AirtelGiftingPlanImportController::class, 'preview'])->name('admin.product_plans.airtel_gifting_import.preview');
+            Route::middleware(['auth','verified','admin'])->post('admin/product-plans/airtel-gifting-import/apply', [AirtelGiftingPlanImportController::class, 'apply'])->name('admin.product_plans.airtel_gifting_import.apply');
             Route::middleware(['auth','verified','admin'])->get('admin/product_plans/product_plan_details/{id}', [ProductPlanController::class, 'product_plan_details'])->name('admin.product_plans.product_plan_details');
             Route::middleware(['auth','verified','admin'])->post('admin/product_plans/store', [ProductPlanController::class, 'store'])->name('admin.product_plans.store');
             Route::middleware(['auth','verified','admin'])->post('admin/product_plans/update', [ProductPlanController::class, 'update'])->name('admin.product_plans.update');

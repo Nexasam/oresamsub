@@ -130,6 +130,16 @@ Each connected Airtel number has its own copy of these values. Never use a sessi
 
 Treat a session as unusable when any of `session_token`, `uid_key`, `dynamic_token`, or `subscriber_id` is absent. Airtel did not expose a reliable expiry field in the confirmed flow; discover expiry by a safe signed probe such as account balance, and require re-authentication on session failure.
 
+There is no confirmed Airtel refresh-token endpoint in this protocol. "Refresh" in production must therefore mean:
+
+1. Before any paid action, probe the current session with a safe signed request such as account balance.
+2. If the probe succeeds, continue with the same session snapshot for the immediate checkout flow.
+3. If the probe fails because the token/session is expired or rejected, mark that Airtel session as expired/unusable and start the OTP authentication flow again.
+4. Do not silently invent or replay OTP values. Re-authentication requires a fresh OTP from the Airtel account owner.
+5. Serialize per-account session updates so a stale worker cannot overwrite a newly authenticated session.
+
+The receiving implementation may schedule a non-charging health check before operators need the account, but it must not call any charging endpoint just to test validity.
+
 ### Short-lived authentication challenge
 
 These values exist only while connecting or refreshing one Airtel account.
@@ -398,6 +408,33 @@ These all use the complete signed-header profile. The signature includes the pat
 | Recharge favourites | `GET /myairtelapp/africa/v1/favourites?filterKey=PREPAID_RECHARGE&appSection=` |
 
 The recharge endpoints above are discovery/history only. No executable airtime-recharge transaction body has been confirmed.
+
+## Airtime gift/recharge status
+
+Gift airtime is **not ready** from the confirmed Airtel evidence in this repository.
+
+What is confirmed:
+
+- Airtel session authentication through OTP.
+- Signed/encrypted account and catalogue reads.
+- Recharge discovery/history endpoints, including recharge limits/config and recharge favourites.
+- Airtime-funded data-bundle purchase using `PREPAID_BUY_BUNDLES`.
+
+What is not confirmed:
+
+- The exact payment-options payload for Airtel airtime recharge/gift.
+- The exact `processtransaction` payload for `PREPAID_RECHARGE`.
+- Whether recharge uses the same `paymentMode=AIRTIME`, `pgId=0`, `subcat`, `units`, `productCode`, and success predicate as bundle purchase.
+
+Do not adapt the `PREPAID_BUY_BUNDLES` body for airtime gifting by guesswork. The receiving agent must first capture or otherwise verify the official app's airtime recharge/gift flow, then add a separate implementation path and tests for:
+
+- own-line airtime recharge;
+- other-line/gift airtime recharge;
+- payment-option discovery for the recharge flow;
+- exactly-one transaction submission;
+- transaction-history reconciliation using `PREPAID_RECHARGE`.
+
+Until that evidence exists, expose Airtel airtime gifting as unavailable or operator-only/manual.
 
 ## Bundle selection
 
