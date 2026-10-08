@@ -39,10 +39,19 @@
 
                 <div class="box-header py-2 flex justify-between items-center">
                     <h5 class="box-title text-sm font-semibold">Product Plans</h5>
-                    <a href="{{ route('admin.product_plans.airtel_gifting_import') }}"
-                       class="ti-btn ti-btn-primary ti-btn-sm">
-                        Airtel gifting import
-                    </a>
+                    <div class="flex flex-wrap items-center justify-end gap-2">
+                        <form method="POST" action="{{ route('admin.product_plans.populate_missing_api_ids') }}"
+                              onsubmit="return confirm('Populate API IDs for product plans missing an API ID?');">
+                            @csrf
+                            <button type="submit" class="ti-btn ti-btn-light ti-btn-sm">
+                                Populate missing API IDs
+                            </button>
+                        </form>
+                        <a href="{{ route('admin.product_plans.airtel_gifting_import') }}"
+                           class="ti-btn ti-btn-primary ti-btn-sm">
+                            Airtel gifting import
+                        </a>
+                    </div>
                 </div>
 
                 <div class="box-body p-2">

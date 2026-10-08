@@ -15,6 +15,7 @@ use App\Models\UserPlan;
 use App\Models\UserProductPlanAutomation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
@@ -168,17 +169,66 @@ class ProductPlanController extends Controller
             'product_plan_category_id' => 'required|exists:product_plan_categories,id',
         ]);
 
-        $plan = ProductPlan::findOrFail($id);
+        DB::transaction(function () use ($request, $id): void {
+            $plan = ProductPlan::query()->lockForUpdate()->findOrFail($id);
 
-        $newPlan = $plan->replicate();
+            $newPlan = $plan->replicate();
 
-        $newPlan->product_plan_name = $request->product_plan_name;
-        $newPlan->product_plan_category_id = $request->product_plan_category_id;
+            $newPlan->product_plan_name = $request->product_plan_name;
+            $newPlan->product_plan_category_id = $request->product_plan_category_id;
+            $newPlan->api_id = $this->nextAvailableProductPlanApiId();
 
-        $newPlan->save();
+            $newPlan->save();
+        });
 
         return redirect()->back()
             ->with('success', 'Plan duplicated successfully.');
+    }
+
+    public function populateMissingApiIds()
+    {
+        $updatedCount = DB::transaction(function (): int {
+            $updatedCount = 0;
+
+            ProductPlan::query()
+                ->where(fn ($query) => $query->whereNull('api_id')->orWhere('api_id', ''))
+                ->lockForUpdate()
+                ->orderBy('created_at')
+                ->orderBy('id')
+                ->get()
+                ->each(function (ProductPlan $plan) use (&$updatedCount): void {
+                    $plan->update(['api_id' => $this->nextAvailableProductPlanApiId()]);
+                    $updatedCount++;
+                });
+
+            return $updatedCount;
+        });
+
+        $message = $updatedCount === 0
+            ? 'All product plans already have API IDs.'
+            : "API IDs populated for {$updatedCount} product plan(s).";
+
+        return redirect()->route('admin.product_plans.index2')->with('success', $message);
+    }
+
+    private function nextAvailableProductPlanApiId(): string
+    {
+        $lastApiId = ProductPlan::query()
+            ->whereNotNull('api_id')
+            ->where('api_id', '!=', '')
+            ->lockForUpdate()
+            ->pluck('api_id')
+            ->filter(fn ($apiId): bool => ctype_digit((string) $apiId))
+            ->map(fn ($apiId): int => (int) $apiId)
+            ->max();
+
+        $nextApiId = ((int) $lastApiId) + 1;
+
+        while (ProductPlan::query()->where('api_id', (string) $nextApiId)->exists()) {
+            $nextApiId++;
+        }
+
+        return (string) $nextApiId;
     }
 
     public function updateSellingPrices(Request $request, ProductPlan $plan)

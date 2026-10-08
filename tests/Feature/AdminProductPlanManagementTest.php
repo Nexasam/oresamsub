@@ -12,6 +12,7 @@ use App\Models\User;
 
 use function Pest\Laravel\actingAs;
 use function Pest\Laravel\get;
+use function Pest\Laravel\post;
 use function Pest\Laravel\postJson;
 use function Pest\Laravel\putJson;
 
@@ -355,4 +356,65 @@ it('supports ajax updates for every product plan management action', function ()
     ])->assertOk()
         ->assertJsonPath('success', true)
         ->assertJsonPath('message', 'Provider updated successfully.');
+});
+
+it('assigns a fresh API ID when duplicating a product plan', function () {
+    $admin = productPlanAdmin();
+    $automation = Automation::create([
+        'automation_name' => 'Duplicate Provider',
+        'slug' => 'duplicate-provider',
+        'domain_url' => 'https://duplicate.test',
+    ]);
+    $plan = adminProductPlanFixture($automation, [
+        'product_plan_name' => 'Original Duplicate Source',
+        'api_id' => '295',
+    ]);
+    actingAs($admin);
+
+    post(route('admin.product_plans.duplicate', $plan->id), [
+        'product_plan_name' => 'Duplicated Fresh API ID Plan',
+        'product_plan_category_id' => $plan->product_plan_category_id,
+    ])->assertRedirect();
+
+    $duplicate = ProductPlan::query()
+        ->where('product_plan_name', 'Duplicated Fresh API ID Plan')
+        ->firstOrFail();
+
+    expect($duplicate->api_id)->toBe('296')
+        ->and($duplicate->api_id)->not->toBe($plan->api_id);
+});
+
+it('populates missing and empty product plan API IDs from the product plans page action', function () {
+    $admin = productPlanAdmin();
+    $automation = Automation::create([
+        'automation_name' => 'Populate API ID Provider',
+        'slug' => 'populate-api-id-provider',
+        'domain_url' => 'https://populate.test',
+    ]);
+    adminProductPlanFixture($automation, [
+        'product_plan_name' => 'Max API ID Plan',
+        'api_id' => '295',
+    ]);
+    $missing = adminProductPlanFixture($automation, [
+        'product_plan_name' => 'Missing API ID Plan',
+        'api_id' => null,
+    ]);
+    $empty = adminProductPlanFixture($automation, [
+        'product_plan_name' => 'Empty API ID Plan',
+        'api_id' => '',
+    ]);
+    actingAs($admin);
+
+    post(route('admin.product_plans.populate_missing_api_ids'))
+        ->assertRedirect(route('admin.product_plans.index2'))
+        ->assertSessionHas('success', 'API IDs populated for 2 product plan(s).');
+
+    $missingApiId = $missing->fresh()->api_id;
+    $emptyApiId = $empty->fresh()->api_id;
+
+    expect(ctype_digit((string) $missingApiId))->toBeTrue()
+        ->and(ctype_digit((string) $emptyApiId))->toBeTrue()
+        ->and((int) $missingApiId)->toBeGreaterThan(295)
+        ->and((int) $emptyApiId)->toBeGreaterThan(295)
+        ->and($missingApiId)->not->toBe($emptyApiId);
 });

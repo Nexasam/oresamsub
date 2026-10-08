@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Models\Concerns\HasVersion4Uuids as HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Validation\ValidationException;
 
 class ProductPlan extends Model
 {
@@ -13,6 +14,29 @@ class ProductPlan extends Model
     //TODO: revamp productplan with global scope for visibility in all its instance in the code
 
     protected $guarded = [];
+
+    protected static function booted(): void
+    {
+        static::saving(function (ProductPlan $productPlan): void {
+            if ($productPlan->api_id === null || $productPlan->api_id === '') {
+                return;
+            }
+
+            $duplicateExists = static::query()
+                ->where('api_id', (string) $productPlan->api_id)
+                ->when(
+                    $productPlan->exists,
+                    fn ($query) => $query->whereKeyNot($productPlan->getKey())
+                )
+                ->exists();
+
+            if ($duplicateExists) {
+                throw ValidationException::withMessages([
+                    'api_id' => "Product plan API ID '{$productPlan->api_id}' is already in use.",
+                ]);
+            }
+        });
+    }
 
     
      /**

@@ -75,6 +75,7 @@ use App\Models\Transaction;
 use App\Models\UniqueProductPlan;
 use App\Models\User;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Session;
 use Inertia\Inertia;
@@ -468,24 +469,45 @@ Route::middleware(['set_locale'])->group(function () {
             });
 
             Route::get('/populate-plans-api-id', function (): array {
-                $productplan = ProductPlan::all();
-                $lastplan = ProductPlan::select('api_id')->latest()->first();
-                $lastapiid = $lastplan && $lastplan->api_id != NULL ?  $lastplan->api_id : 0;
-                $nextapiid = $lastapiid + 1;
+                return DB::transaction(function (): array {
+                    $lastApiId = ProductPlan::query()
+                        ->whereNotNull('api_id')
+                        ->where('api_id', '!=', '')
+                        ->lockForUpdate()
+                        ->pluck('api_id')
+                        ->filter(fn ($apiId): bool => ctype_digit((string) $apiId))
+                        ->map(fn ($apiId): int => (int) $apiId)
+                        ->max();
 
-                foreach($productplan as $plan){
-                 
-                    if($plan->api_id == NULL){
+                    $nextapiid = ((int) $lastApiId) + 1;
+
+                    $updated = 0;
+
+                    ProductPlan::query()
+                        ->where(fn ($query) => $query->whereNull('api_id')->orWhere('api_id', ''))
+                        ->lockForUpdate()
+                        ->orderBy('created_at')
+                        ->orderBy('id')
+                        ->get()
+                        ->each(function (ProductPlan $plan) use (&$nextapiid, &$updated): void {
+                        while (ProductPlan::query()->where('api_id', (string) $nextapiid)->exists()) {
+                            $nextapiid++;
+                        }
+
                         $plan->update([
-                            'api_id' => $nextapiid
+                            'api_id' => (string) $nextapiid,
                         ]);
+
+                        $updated++;
                         $nextapiid++;
-                    }
-                    
-                }
-                return [
-                    'completed' => 1
-                ];
+                    });
+
+                    return [
+                        'completed' => 1,
+                        'updated' => $updated,
+                        'next_api_id' => $nextapiid,
+                    ];
+                });
             });
 
             
@@ -780,6 +802,10 @@ Route::middleware(['set_locale'])->group(function () {
                 '/product-plans/{id}/duplicate',
                 [ProductPlanController::class, 'duplicate']
             )->name('admin.product_plans.duplicate');
+            Route::middleware(['auth','verified','admin'])->post(
+                '/product-plans/populate-missing-api-ids',
+                [ProductPlanController::class, 'populateMissingApiIds']
+            )->name('admin.product_plans.populate_missing_api_ids');
 
             //ANNOUNCEMENT
             Route::middleware(['auth','verified','admin'])->get('announcements/index', [AnnouncementsController::class, 'index'])->name('admin.announcements.index');
