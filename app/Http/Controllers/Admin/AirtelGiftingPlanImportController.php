@@ -51,6 +51,43 @@ class AirtelGiftingPlanImportController extends Controller
         ] + $this->selectionData());
     }
 
+    public function stalePreview(Request $request, AirtelGiftingPlanImportService $importer): View
+    {
+        $payload = $this->validatedPayload($request);
+        $staleResult = $importer->staleAirtelPlans($payload);
+
+        return view('admin.product_plans.airtel-gifting-import', [
+            'plansText' => (string) $request->input('plans_text', $importer->defaultText()),
+            'options' => $payload,
+            'result' => null,
+            'mode' => 'stale-preview',
+            'staleResult' => $staleResult,
+        ] + $this->selectionData());
+    }
+
+    public function staleDelete(Request $request, AirtelGiftingPlanImportService $importer): View
+    {
+        $payload = $this->validatedPayload($request);
+
+        $request->validate([
+            'confirm_delete' => ['accepted'],
+            'stale_plan_ids' => ['nullable', 'array'],
+            'stale_plan_ids.*' => ['string'],
+        ]);
+
+        $deleteResult = $importer->deleteStaleAirtelPlans($request->input('stale_plan_ids', []), $payload);
+        $staleResult = $importer->staleAirtelPlans($payload);
+
+        return view('admin.product_plans.airtel-gifting-import', [
+            'plansText' => (string) $request->input('plans_text', $importer->defaultText()),
+            'options' => $payload,
+            'result' => null,
+            'mode' => 'stale-delete',
+            'staleResult' => $staleResult,
+            'deleteResult' => $deleteResult,
+        ] + $this->selectionData());
+    }
+
     /**
      * @return array<string, mixed>
      */
@@ -65,6 +102,13 @@ class AirtelGiftingPlanImportController extends Controller
             'rows.*.size' => ['nullable', 'string', 'max:50'],
             'rows.*.validity' => ['nullable', 'string', 'max:50'],
             'rows.*.price' => ['nullable', 'string', 'max:50'],
+            'rows.*.level_price_1' => ['nullable', 'numeric', 'min:0'],
+            'rows.*.level_price_2' => ['nullable', 'numeric', 'min:0'],
+            'rows.*.level_price_3' => ['nullable', 'numeric', 'min:0'],
+            'rows.*.level_price_4' => ['nullable', 'numeric', 'min:0'],
+            'rows.*.level_price_5' => ['nullable', 'numeric', 'min:0'],
+            'rows.*.level_price_6' => ['nullable', 'numeric', 'min:0'],
+            'rows.*.level_price_7' => ['nullable', 'numeric', 'min:0'],
             'network_id' => ['nullable', 'string'],
             'product_id' => ['nullable', 'string'],
             'category_id' => ['nullable', 'string'],

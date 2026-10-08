@@ -8,6 +8,7 @@ use App\Models\Network;
 use App\Models\Product;
 use App\Models\ProductPlan;
 use App\Models\ProductPlanCategory;
+use App\Models\Transaction;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
@@ -63,7 +64,7 @@ class AirtelGiftingPlanImportService
     {
         $lines = ['Public ID | Plan Name | Airtel API Code | Data Size | Validity | Original Price'];
 
-        foreach (self::DEFAULT_PLANS as $plan) {
+        foreach ($this->defaultImportPlans() as $plan) {
             $lines[] = implode(' | ', [
                 $plan['public_id'],
                 $plan['name'],
@@ -75,6 +76,31 @@ class AirtelGiftingPlanImportService
         }
 
         return implode(PHP_EOL, $lines);
+    }
+
+    /**
+     * @return array<int, string>
+     */
+    public function defaultPublicIds(): array
+    {
+        return collect($this->defaultImportPlans())
+            ->pluck('public_id')
+            ->map(fn ($value): string => (string) $value)
+            ->unique()
+            ->values()
+            ->all();
+    }
+
+    /**
+     * @return array<int, array<string, mixed>>
+     */
+    private function defaultImportPlans(): array
+    {
+        return collect(self::DEFAULT_PLANS)
+            ->reject(fn (array $plan): bool => $this->sizeToMb((string) $plan['size']) === 230)
+            ->unique(fn (array $plan): string => (string) $plan['public_id'])
+            ->values()
+            ->all();
     }
 
     /**
@@ -135,6 +161,108 @@ class AirtelGiftingPlanImportService
     }
 
     /**
+     * @return array<string, mixed>
+     */
+    public function staleAirtelPlans(array $options = []): array
+    {
+        $context = $this->resolveContext($options, false);
+
+        if ($context['errors']) {
+            return [
+                'errors' => $context['errors'],
+                'rows' => [],
+                'summary' => ['total' => 0],
+            ];
+        }
+
+        $cutoff = now()->subMonths(3);
+        $newPublicIds = $this->defaultPublicIds();
+
+        $query = ProductPlan::query()
+            ->with(['product_plan_category.product', 'product_plan_category.network', 'automationProductPlans'])
+            ->whereHas('product_plan_category', function ($categoryQuery) use ($context, $options): void {
+                if ($context['network']) {
+                    $categoryQuery->where('network_id', $context['network']->id);
+                }
+
+                if ($context['product']) {
+                    $categoryQuery->where('product_id', $context['product']->id);
+                }
+
+                if (filled($options['category_id'] ?? null)) {
+                    $categoryQuery->where('id', $options['category_id']);
+                }
+            })
+            ->whereNotIn('automation_product_plan_id', $newPublicIds)
+            ->whereDoesntHave('automationProductPlans', fn ($providerQuery) => $providerQuery->whereIn('provider_plan_id', $newPublicIds))
+            ->whereNotExists(function ($transactions) use ($cutoff): void {
+                $transactions->selectRaw('1')
+                    ->from('transactions')
+                    ->whereColumn('transactions.product_plan_id', 'product_plans.id')
+                    ->where('transactions.status', '1')
+                    ->where('transactions.created_at', '>=', $cutoff);
+            })
+            ->select('product_plans.*')
+            ->selectSub(function ($transactions): void {
+                $transactions->from('transactions')
+                    ->selectRaw('MAX(created_at)')
+                    ->whereColumn('transactions.product_plan_id', 'product_plans.id')
+                    ->where('transactions.status', '1');
+            }, 'last_successful_purchase_at')
+            ->selectSub(function ($transactions): void {
+                $transactions->from('transactions')
+                    ->selectRaw('COUNT(*)')
+                    ->whereColumn('transactions.product_plan_id', 'product_plans.id')
+                    ->where('transactions.status', '1');
+            }, 'successful_purchase_count')
+            ->orderBy('product_plan_name');
+
+        $rows = $query->get()->map(fn (ProductPlan $plan): array => [
+            'id' => $plan->id,
+            'name' => $plan->product_plan_name,
+            'category' => $plan->product_plan_category?->product_plan_category_name,
+            'network' => $plan->product_plan_category?->network?->network_name,
+            'product' => $plan->product_plan_category?->product?->product_name,
+            'automation_product_plan_id' => $plan->automation_product_plan_id,
+            'size_mb' => $plan->data_size_in_mb,
+            'validity_days' => $plan->validity_in_days,
+            'visibility' => $plan->visibility,
+            'last_successful_purchase_at' => $plan->last_successful_purchase_at,
+            'successful_purchase_count' => (int) $plan->successful_purchase_count,
+        ])->values()->all();
+
+        return [
+            'errors' => [],
+            'rows' => $rows,
+            'summary' => [
+                'total' => count($rows),
+                'cutoff' => $cutoff->toDateString(),
+            ],
+        ];
+    }
+
+    /**
+     * @param array<int, string> $planIds
+     * @return array<string, mixed>
+     */
+    public function deleteStaleAirtelPlans(array $planIds, array $options = []): array
+    {
+        $safeIds = collect($this->staleAirtelPlans($options)['rows'] ?? [])
+            ->pluck('id')
+            ->intersect($planIds)
+            ->values();
+
+        $deleted = ProductPlan::query()
+            ->whereIn('id', $safeIds)
+            ->delete();
+
+        return [
+            'deleted' => $deleted,
+            'eligible_ids' => $safeIds->all(),
+        ];
+    }
+
+    /**
      * @return array<int, array<string, mixed>>
      */
     public function parseText(string $text): array
@@ -154,7 +282,7 @@ class AirtelGiftingPlanImportService
                 continue;
             }
 
-            $plans[] = [
+            $plan = [
                 'public_id' => $parts[0],
                 'name' => $parts[1],
                 'code' => $parts[2],
@@ -162,6 +290,15 @@ class AirtelGiftingPlanImportService
                 'validity' => $this->parseValidity($parts[4]),
                 'price' => $this->parseMoney($parts[5]),
             ];
+
+            foreach (range(1, 7) as $level) {
+                $partIndex = 5 + $level;
+                if (isset($parts[$partIndex]) && $parts[$partIndex] !== '') {
+                    $plan["level_price_{$level}"] = $this->parseMoney($parts[$partIndex]);
+                }
+            }
+
+            $plans[] = $plan;
         }
 
         return $plans;
@@ -172,7 +309,7 @@ class AirtelGiftingPlanImportService
      */
     public function rowsToText(array $rows): string
     {
-        $lines = ['Public ID | Plan Name | Airtel API Code | Data Size | Validity | Original Price'];
+        $lines = ['Public ID | Plan Name | Airtel API Code | Data Size MB | Validity | Original Price | L1 | L2 | L3 | L4 | L5 | L6 | L7'];
 
         foreach ($rows as $row) {
             $lines[] = implode(' | ', [
@@ -182,6 +319,13 @@ class AirtelGiftingPlanImportService
                 trim((string) ($row['size'] ?? '')),
                 trim((string) ($row['validity'] ?? '')).' days',
                 trim((string) ($row['price'] ?? '')),
+                trim((string) ($row['level_price_1'] ?? $row['level_prices'][1] ?? '')),
+                trim((string) ($row['level_price_2'] ?? $row['level_prices'][2] ?? '')),
+                trim((string) ($row['level_price_3'] ?? $row['level_prices'][3] ?? '')),
+                trim((string) ($row['level_price_4'] ?? $row['level_prices'][4] ?? '')),
+                trim((string) ($row['level_price_5'] ?? $row['level_prices'][5] ?? '')),
+                trim((string) ($row['level_price_6'] ?? $row['level_prices'][6] ?? '')),
+                trim((string) ($row['level_price_7'] ?? $row['level_prices'][7] ?? '')),
             ]);
         }
 
@@ -292,7 +436,8 @@ class AirtelGiftingPlanImportService
         $airtimePurchaseRate = $this->boundedPercent($options['airtime_purchase_rate_per_100'] ?? 94, 0, 100);
 
         return array_map(function (array $plan) use ($context, $options, $updateExisting, $airtimePurchaseRate): array {
-            $levelPrices = $this->levelPrices((float) $plan['price'], $options);
+            $sizeMb = $this->sizeToMb((string) $plan['size']);
+            $levelPrices = $this->levelPrices((float) $plan['price'], $options, $plan);
             $effectiveAirtimeCost = round((float) $plan['price'] * ($airtimePurchaseRate / 100), 2);
             $existing = $context['category'] && $context['automation']
                 ? $this->matchingPlan($context['category'], $context['automation'], (string) $plan['public_id'])
@@ -300,7 +445,10 @@ class AirtelGiftingPlanImportService
             $invalidReason = $this->invalidReason($plan);
 
             return array_merge($plan, [
-                'size_mb' => $this->sizeToMb((string) $plan['size']),
+                'name' => $this->formattedPlanName($sizeMb, (int) $plan['validity']),
+                'size' => (string) $sizeMb,
+                'size_mb' => $sizeMb,
+                'is_editable' => (string) $plan['public_id'] !== '239',
                 'level_prices' => $levelPrices,
                 'airtime_purchase_rate_per_100' => $airtimePurchaseRate,
                 'effective_airtime_cost' => $effectiveAirtimeCost,
@@ -433,20 +581,24 @@ class AirtelGiftingPlanImportService
     /**
      * @return array<int, float>
      */
-    private function levelPrices(float $price, array $options = []): array
+    private function levelPrices(float $price, array $options = [], array $plan = []): array
     {
         $prices = [];
 
         foreach (range(1, 7) as $level) {
-            $discount = $this->boundedPercent(
-                $options["level_discount_percent_{$level}"]
-                    ?? $options['all_levels_discount_percent']
-                    ?? $options['level_1_to_3_discount_percent']
-                    ?? 0.5,
-                0,
-                100
-            );
-            $prices[$level] = round($price * ((100 - $discount) / 100), 2);
+            if (isset($plan["level_price_{$level}"]) && $plan["level_price_{$level}"] !== '') {
+                $prices[$level] = round((float) $plan["level_price_{$level}"], 2);
+            } else {
+                $discount = $this->boundedPercent(
+                    $options["level_discount_percent_{$level}"]
+                        ?? $options['all_levels_discount_percent']
+                        ?? $options['level_1_to_3_discount_percent']
+                        ?? 0.5,
+                    0,
+                    100
+                );
+                $prices[$level] = round($price * ((100 - $discount) / 100), 0);
+            }
         }
 
         return $prices;
@@ -502,6 +654,10 @@ class AirtelGiftingPlanImportService
 
     private function sizeToMb(string $size): int
     {
+        if (preg_match('/^\s*\d+\s*$/', $size)) {
+            return (int) trim($size);
+        }
+
         if (! preg_match('/([\d.]+)\s*(GB|MB)/i', $size, $matches)) {
             return 0;
         }
@@ -510,6 +666,16 @@ class AirtelGiftingPlanImportService
         $unit = Str::upper($matches[2]);
 
         return (int) round($unit === 'GB' ? $amount * 1000 : $amount);
+    }
+
+    private function formattedPlanName(int $sizeMb, int $validityDays): string
+    {
+        $sizeLabel = $sizeMb >= 1000
+            ? rtrim(rtrim(number_format($sizeMb / 1000, 2, '.', ''), '0'), '.').'GB'
+            : $sizeMb.'MB';
+        $dayLabel = $validityDays === 1 ? '1 DAY' : $validityDays.' DAYS';
+
+        return "{$sizeLabel} AIRTEL CG ({$dayLabel})";
     }
 
     /**
@@ -525,6 +691,10 @@ class AirtelGiftingPlanImportService
 
         if ($this->sizeToMb((string) $plan['size']) <= 0) {
             return 'invalid data size';
+        }
+
+        if ($this->sizeToMb((string) $plan['size']) === 230) {
+            return 'excluded size: 230MB';
         }
 
         if ((int) $plan['validity'] <= 0) {
