@@ -5,7 +5,11 @@ use App\Models\Network;
 use App\Models\Product;
 use App\Models\ProductPlan;
 use App\Models\ProductPlanCategory;
+use App\Models\Role;
+use App\Models\User;
 use Illuminate\Validation\ValidationException;
+use function Pest\Laravel\actingAs;
+use function Pest\Laravel\putJson;
 
 function productPlanApiIdFixture(string|null $apiId = null): ProductPlan
 {
@@ -62,4 +66,27 @@ it('still allows multiple product plans without API IDs', function () {
     productPlanApiIdFixture();
 
     expect(ProductPlan::query()->whereNull('api_id')->count())->toBe(2);
+});
+
+it('allows pricing-only updates on legacy product plans that already have duplicate API IDs', function () {
+    $role = Role::firstOrCreate(['role_name' => 'Admin']);
+    actingAs(User::factory()->create(['role_id' => $role->id]));
+
+    $first = productPlanApiIdFixture('1');
+    $second = productPlanApiIdFixture();
+
+    ProductPlan::withoutEvents(fn () => $second->forceFill(['api_id' => '1'])->save());
+
+    putJson(route('admin.product_plans.update_selling_prices', $first->id), [
+        'user_level_1_selling_price' => 101,
+        'user_level_2_selling_price' => 102,
+        'user_level_3_selling_price' => 103,
+        'user_level_4_selling_price' => 104,
+        'user_level_5_selling_price' => 105,
+        'user_level_6_selling_price' => 106,
+        'user_level_7_selling_price' => 107,
+    ])->assertOk()
+        ->assertJsonPath('success', true);
+
+    expect($first->fresh()->user_level_1_selling_price)->toBe('101');
 });

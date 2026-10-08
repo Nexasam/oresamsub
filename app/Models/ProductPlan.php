@@ -18,6 +18,10 @@ class ProductPlan extends Model
     protected static function booted(): void
     {
         static::saving(function (ProductPlan $productPlan): void {
+            if ($productPlan->exists && ! $productPlan->isDirty('api_id')) {
+                return;
+            }
+
             if ($productPlan->api_id === null || $productPlan->api_id === '') {
                 return;
             }
