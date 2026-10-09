@@ -94,11 +94,13 @@ class AnnouncementsController extends Controller
             'priority' => ['nullable', 'integer', 'min:1', 'max:999'],
         ]);
 
+        $network = Network::findOrFail($validated['network_id']);
+
         NetworkIssueAlert::updateOrCreate(
             ['network_id' => $validated['network_id']],
             [
-                'title' => $validated['title'] ?: null,
-                'message' => $validated['message'] ?: null,
+                'title' => ($validated['title'] ?? null) ?: NetworkIssueAlert::defaultTitleFor($network->network_name),
+                'message' => ($validated['message'] ?? null) ?: NetworkIssueAlert::defaultMessageFor($network->network_name),
                 'is_active' => $validated['is_active'] === '1',
                 'priority' => $validated['priority'] ?? 1,
             ]

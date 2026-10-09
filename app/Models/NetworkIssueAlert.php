@@ -24,15 +24,32 @@ class NetworkIssueAlert extends Model
 
     public function displayTitle(): string
     {
-        $network = $this->network?->network_name ?? 'Network';
-
-        return $this->title ?: "{$network} service update";
+        return $this->title ?: self::defaultTitleFor($this->network?->network_name);
     }
 
     public function displayMessage(): string
     {
-        $network = $this->network?->network_name ?? 'this network';
+        return $this->message ?: self::defaultMessageFor($this->network?->network_name);
+    }
 
-        return $this->message ?: "{$network} is currently experiencing service issues from the telco. Some transactions may delay or fail. Please try again shortly while the provider resolves it.";
+    public static function defaultTitleFor(?string $networkName): string
+    {
+        $network = self::normalizedNetworkName($networkName);
+
+        return "{$network} service update";
+    }
+
+    public static function defaultMessageFor(?string $networkName): string
+    {
+        $network = self::normalizedNetworkName($networkName);
+
+        return "{$network} is currently experiencing a temporary service issue from the telco. Some transactions may delay or fail. Please hold on or try again shortly while the provider resolves it.";
+    }
+
+    private static function normalizedNetworkName(?string $networkName): string
+    {
+        $network = trim((string) $networkName);
+
+        return $network !== '' ? $network : 'Network';
     }
 }
