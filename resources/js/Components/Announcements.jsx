@@ -11,6 +11,7 @@ export default function Announcements({ announcements = [], networkNotices = {} 
   const [open, setOpen] = useState(false);
   const [snooze, setSnooze] = useState(false);
   const [restoredSeenVersion, setRestoredSeenVersion] = useState(0);
+  const [dismissedSignature, setDismissedSignature] = useState(null);
 
   const activeNetworkNotices = Array.isArray(networkNotices.active) ? networkNotices.active : [];
   const restoredNetworkNotices = Array.isArray(networkNotices.restored) ? networkNotices.restored : [];
@@ -38,9 +39,13 @@ export default function Announcements({ announcements = [], networkNotices = {} 
       isHtml: true,
     })),
   ];
+  const noticeSignature = items
+    .map((item) => `${item.modalType}:${item.id}:${item.updated_at || item.restored_at || item.created_at || ""}`)
+    .join("|");
 
   useEffect(() => {
     if (items.length === 0) return;
+    if (noticeSignature && dismissedSignature === noticeSignature) return;
 
     if (index >= items.length) {
       setIndex(0);
@@ -53,7 +58,7 @@ export default function Announcements({ announcements = [], networkNotices = {} 
       localStorage.removeItem(SNOOZE_KEY);
       setOpen(true);
     }
-  }, [items.length, restoredSeenVersion]);
+  }, [items.length, noticeSignature, dismissedSignature, restoredSeenVersion]);
 
   if (items.length === 0) return null;
 
@@ -68,6 +73,7 @@ export default function Announcements({ announcements = [], networkNotices = {} 
   const close = () => {
     const restoredNoticeKeys = visibleRestoredNotices.map((notice) => notice.once_key);
 
+    setDismissedSignature(noticeSignature);
     setOpen(false);
     setSnooze(false);
     setRestoredSeenVersion((version) => version + 1);
