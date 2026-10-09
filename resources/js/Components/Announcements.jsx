@@ -68,23 +68,31 @@ export default function Announcements({ announcements = [], networkNotices = {} 
   const close = () => {
     const restoredNoticeKeys = visibleRestoredNotices.map((notice) => notice.once_key);
 
+    setOpen(false);
+    setSnooze(false);
+    setRestoredSeenVersion((version) => version + 1);
+
     visibleRestoredNotices.forEach((notice) => {
       localStorage.setItem(`${RESTORED_SEEN_PREFIX}${notice.once_key}`, "1");
     });
-
-    if (restoredNoticeKeys.length > 0) {
-      axios.post(route("dashboard.network_restored_notices.seen"), {
-        notice_keys: restoredNoticeKeys,
-      }).catch(() => {});
-    }
 
     if (snooze) {
       localStorage.setItem(SNOOZE_KEY, String(Date.now() + SNOOZE_DURATION));
     }
 
-    setOpen(false);
-    setSnooze(false);
-    setRestoredSeenVersion((version) => version + 1);
+    if (restoredNoticeKeys.length > 0) {
+      try {
+        const markSeenUrl = typeof route === "function"
+          ? route("dashboard.network_restored_notices.seen")
+          : "/dashboard/network-restored-notices/seen";
+
+        axios.post(markSeenUrl, {
+          notice_keys: restoredNoticeKeys,
+        }).catch(() => {});
+      } catch (error) {
+        // The modal has already closed; do not let a route/ajax issue block the customer.
+      }
+    }
   };
 
   const headerClass = isNetworkIssue
