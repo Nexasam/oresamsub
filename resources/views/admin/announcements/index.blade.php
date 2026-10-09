@@ -132,6 +132,64 @@
                             Ops! {{ Session::get('failure') }}
                             </div>
                           @endif
+
+                          <div class="mb-5 rounded-xl border border-orange-200 bg-orange-50 p-4">
+                            <div class="flex flex-col gap-1 md:flex-row md:items-center md:justify-between">
+                              <div>
+                                <h6 class="font-bold text-orange-900">Network issue alert</h6>
+                                <p class="text-xs text-orange-700">
+                                  Turn this on when MTN, Glo, Airtel, or 9mobile has a telco issue. Customers will see it before normal announcements.
+                                </p>
+                              </div>
+                            </div>
+
+                            <form method="POST" action="{{ route('admin.announcements.network_issue_alert.update') }}" class="mt-3 grid grid-cols-1 gap-3 lg:grid-cols-6">
+                              @csrf
+                              <div>
+                                <label class="ti-form-label mb-0 text-xs">Network</label>
+                                <select name="network_id" required class="ti-form-select text-xs">
+	                                  <option value="">Select network</option>
+	                                  @foreach($networks as $network)
+	                                    @php
+	                                      $existingAlert = $networkIssueAlerts->get($network->id);
+	                                    @endphp
+	                                    <option value="{{ $network->id }}">
+	                                      {{ $network->network_name }} {{ $existingAlert?->is_active ? '(ON)' : '' }}
+	                                    </option>
+	                                  @endforeach
+                                </select>
+                              </div>
+                              <div class="lg:col-span-2">
+                                <label class="ti-form-label mb-0 text-xs">Title</label>
+                                <input name="title" class="ti-form-input text-xs" placeholder="e.g MTN service update">
+                              </div>
+                              <div class="lg:col-span-2">
+                                <label class="ti-form-label mb-0 text-xs">Friendly message</label>
+                                <input name="message" class="ti-form-input text-xs" placeholder="Some transactions may delay. Please try again shortly.">
+                              </div>
+                              <div class="grid grid-cols-2 gap-2">
+                                <div>
+                                  <label class="ti-form-label mb-0 text-xs">Status</label>
+                                  <select name="is_active" class="ti-form-select text-xs">
+                                    <option value="1">ON</option>
+                                    <option value="0">OFF</option>
+                                  </select>
+                                </div>
+                                <div>
+                                  <label class="ti-form-label mb-0 text-xs">Priority</label>
+                                  <input name="priority" type="number" min="1" max="999" value="1" class="ti-form-input text-xs">
+                                </div>
+                              </div>
+                              <div class="lg:col-span-6 flex flex-wrap gap-2">
+                                <button type="submit" class="ti-btn ti-btn-warning ti-btn-sm">Save network alert</button>
+                                @foreach($networkIssueAlerts as $alert)
+                                  <span class="rounded px-2 py-1 text-[11px] {{ $alert->is_active ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-600' }}">
+                                    {{ $alert->network?->network_name }}: {{ $alert->is_active ? 'ON' : 'OFF' }}
+                                  </span>
+                                @endforeach
+                              </div>
+                            </form>
+                          </div>
                             
                         <table  class="ti-custom-table ti-custom-table-head ti-striped-table ti-custom-table-hover ">
                             <thead>
@@ -421,4 +479,3 @@
 
        
 @endsection
-

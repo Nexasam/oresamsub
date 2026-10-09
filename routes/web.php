@@ -811,6 +811,7 @@ Route::middleware(['set_locale'])->group(function () {
             Route::middleware(['auth','verified','admin'])->get('announcements/index', [AnnouncementsController::class, 'index'])->name('admin.announcements.index');
             Route::middleware(['auth','verified','admin'])->post('announcements/store', [AnnouncementsController::class, 'store'])->name('admin.announcements.store');
             Route::middleware(['auth','verified','admin'])->post('announcements/update/{id}', [AnnouncementsController::class, 'update'])->name('admin.announcements.update');
+            Route::middleware(['auth','verified','admin'])->post('announcements/network-issue-alert', [AnnouncementsController::class, 'updateNetworkIssueAlert'])->name('admin.announcements.network_issue_alert.update');
             
 
 

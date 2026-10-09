@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Network;
 use App\Models\CouponCode;
 use App\Models\Announcement;
+use App\Models\NetworkIssueAlert;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use App\Models\ProductPlanCategory;
@@ -17,7 +18,13 @@ class AnnouncementsController extends Controller
        
         // dd('asdfsdfsss');
         $ann = Announcement::get();
-        $data['announcements'] = $ann;   
+        $data['announcements'] = $ann;
+        $data['networks'] = Network::orderBy('network_name')->get();
+        $data['networkIssueAlerts'] = NetworkIssueAlert::with('network')
+            ->orderBy('priority')
+            ->orderByDesc('is_active')
+            ->get()
+            ->keyBy('network_id');
         return view('admin.announcements.index')->with($data);
     }
 
@@ -76,4 +83,29 @@ class AnnouncementsController extends Controller
         Session::flash('success','Customer announcement was successfully added');
         return redirect()->back();
   }
+
+    public function updateNetworkIssueAlert(Request $request)
+    {
+        $validated = $request->validate([
+            'network_id' => ['required', 'exists:networks,id'],
+            'title' => ['nullable', 'string', 'max:255'],
+            'message' => ['nullable', 'string', 'max:1000'],
+            'is_active' => ['required', Rule::in(['1', '0'])],
+            'priority' => ['nullable', 'integer', 'min:1', 'max:999'],
+        ]);
+
+        NetworkIssueAlert::updateOrCreate(
+            ['network_id' => $validated['network_id']],
+            [
+                'title' => $validated['title'] ?: null,
+                'message' => $validated['message'] ?: null,
+                'is_active' => $validated['is_active'] === '1',
+                'priority' => $validated['priority'] ?? 1,
+            ]
+        );
+
+        Session::flash('success', 'Network issue alert updated successfully');
+
+        return redirect()->back();
+    }
 }
