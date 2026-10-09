@@ -90,18 +90,30 @@ class AnnouncementsController extends Controller
             'network_id' => ['required', 'exists:networks,id'],
             'title' => ['nullable', 'string', 'max:255'],
             'message' => ['nullable', 'string', 'max:1000'],
+            'restored_title' => ['nullable', 'string', 'max:255'],
+            'restored_message' => ['nullable', 'string', 'max:1000'],
             'is_active' => ['required', Rule::in(['1', '0'])],
             'priority' => ['nullable', 'integer', 'min:1', 'max:999'],
         ]);
 
         $network = Network::findOrFail($validated['network_id']);
+        $existingAlert = NetworkIssueAlert::where('network_id', $validated['network_id'])->first();
+        $isActive = $validated['is_active'] === '1';
+        $lastRestoredAt = $existingAlert?->last_restored_at;
+
+        if ($existingAlert?->is_active && ! $isActive) {
+            $lastRestoredAt = now();
+        }
 
         NetworkIssueAlert::updateOrCreate(
             ['network_id' => $validated['network_id']],
             [
                 'title' => ($validated['title'] ?? null) ?: NetworkIssueAlert::defaultTitleFor($network->network_name),
                 'message' => ($validated['message'] ?? null) ?: NetworkIssueAlert::defaultMessageFor($network->network_name),
-                'is_active' => $validated['is_active'] === '1',
+                'restored_title' => ($validated['restored_title'] ?? null) ?: NetworkIssueAlert::defaultRestoredTitleFor($network->network_name),
+                'restored_message' => ($validated['restored_message'] ?? null) ?: NetworkIssueAlert::defaultRestoredMessageFor($network->network_name),
+                'last_restored_at' => $lastRestoredAt,
+                'is_active' => $isActive,
                 'priority' => $validated['priority'] ?? 1,
             ]
         );

@@ -26,6 +26,7 @@ use App\Http\Controllers\DynamicAccountsController;
 use App\Http\Controllers\ElectricitySubscriptionController;
 use App\Http\Controllers\InertiaDashboardController;
 use App\Http\Controllers\InertiaLoginController;
+use App\Http\Controllers\MarkNetworkRestoredNoticeSeenController;
 use App\Http\Controllers\MarketersController;
 use App\Http\Controllers\MarketingGuideController;
 use App\Http\Controllers\MobileEmailVerificationController;
@@ -173,6 +174,10 @@ Route::middleware(['set_locale'])->group(function () {
             Route::get('/dashboard', [UserDashboardController::class, 'index'])
             ->middleware('auth')
             ->name('dashboard');  #checked
+
+            Route::post('/dashboard/network-restored-notices/seen', MarkNetworkRestoredNoticeSeenController::class)
+            ->middleware('auth')
+            ->name('dashboard.network_restored_notices.seen');
 
             Route::post('/bonuses/transfer-to-main-wallet', [BonusController::class, 'convertWallet'])
                 ->middleware(['auth', 'verified'])

@@ -149,6 +149,8 @@
                                   $existingAlert = $networkIssueAlerts->get($network->id);
                                   $defaultTitle = \App\Models\NetworkIssueAlert::defaultTitleFor($network->network_name);
                                   $defaultMessage = \App\Models\NetworkIssueAlert::defaultMessageFor($network->network_name);
+                                  $defaultRestoredTitle = \App\Models\NetworkIssueAlert::defaultRestoredTitleFor($network->network_name);
+                                  $defaultRestoredMessage = \App\Models\NetworkIssueAlert::defaultRestoredMessageFor($network->network_name);
                                   $isActive = (bool) ($existingAlert?->is_active);
                                 @endphp
                                 <form method="POST" action="{{ route('admin.announcements.network_issue_alert.update') }}" class="rounded-lg border {{ $isActive ? 'border-green-300 bg-white' : 'border-orange-100 bg-white/80' }} p-3">
@@ -175,6 +177,14 @@
                                     <div>
                                       <label class="ti-form-label mb-0 text-xs">Friendly message</label>
                                       <textarea name="message" rows="2" class="ti-form-input text-xs">{{ old('message', $existingAlert?->message ?? $defaultMessage) }}</textarea>
+                                    </div>
+                                    <div>
+                                      <label class="ti-form-label mb-0 text-xs">Restored title</label>
+                                      <input name="restored_title" class="ti-form-input text-xs" value="{{ old('restored_title', $existingAlert?->restored_title ?? $defaultRestoredTitle) }}">
+                                    </div>
+                                    <div>
+                                      <label class="ti-form-label mb-0 text-xs">Restored message shown once</label>
+                                      <textarea name="restored_message" rows="2" class="ti-form-input text-xs">{{ old('restored_message', $existingAlert?->restored_message ?? $defaultRestoredMessage) }}</textarea>
                                     </div>
                                     <div class="grid grid-cols-2 items-end gap-2">
                                       <div>

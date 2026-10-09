@@ -13,6 +13,9 @@ return new class extends Migration
             $table->foreignUuid('network_id')->unique()->constrained('networks')->cascadeOnDelete();
             $table->string('title')->nullable();
             $table->text('message')->nullable();
+            $table->string('restored_title')->nullable();
+            $table->text('restored_message')->nullable();
+            $table->timestamp('last_restored_at')->nullable();
             $table->boolean('is_active')->default(false);
             $table->unsignedInteger('priority')->default(1);
             $table->timestamps();

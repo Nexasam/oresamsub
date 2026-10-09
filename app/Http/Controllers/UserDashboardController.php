@@ -12,6 +12,8 @@ use App\Models\Commissions;
 use App\Models\FundingOptionBankCodes;
 use App\Models\FundingWebhookPayload;
 use App\Models\LandingPagesSetting;
+use App\Models\NetworkIssueAlert;
+use App\Models\NetworkIssueAlertRead;
 use App\Models\ProductPlan;
 use App\Models\ProductPlanCategory;
 use App\Models\SiteTemplate;
@@ -185,6 +187,27 @@ class UserDashboardController extends Controller
 
         $data['transactions'] = Transaction::with(relations: 'product_plan')->where('user_id',auth()->id())->limit(100)->latest()->get();
         $data['announcements'] = Announcement::where('status',1)->latest()->get();
+        $networkIssueAlerts = NetworkIssueAlert::with('network')
+          ->orderBy('priority')
+          ->orderBy('created_at')
+          ->get();
+        $seenRestoredNetworkNoticeKeys = NetworkIssueAlertRead::where('user_id', $user->id)
+          ->pluck('notice_key')
+          ->all();
+        $data['networkNotices'] = [
+          'active' => $networkIssueAlerts
+            ->where('is_active', true)
+            ->values()
+            ->map(fn (NetworkIssueAlert $alert): array => $alert->activePayload())
+            ->all(),
+          'restored' => $networkIssueAlerts
+            ->where('is_active', false)
+            ->filter(fn (NetworkIssueAlert $alert): bool => $alert->last_restored_at !== null)
+            ->reject(fn (NetworkIssueAlert $alert): bool => in_array($alert->restoredPayload()['once_key'], $seenRestoredNetworkNoticeKeys, true))
+            ->values()
+            ->map(fn (NetworkIssueAlert $alert): array => $alert->restoredPayload())
+            ->all(),
+        ];
         // return $data;
         // logger('thiss ran for inertia dashboard'.json_encode($data));
       
@@ -192,11 +215,8 @@ class UserDashboardController extends Controller
           // dd($data);
         return Inertia::render('Dashboard')->with($data);
         // return view('oresamsub.pages.dashboard')->with($data);
-    }
+  }
 
-    
-
-  
     $hot_sales = ProductPlanCategory::with('product')->where('is_hot_sales',1)->get();
     $user_virtual_accounts = UserVirtualAccount::where('user_id',auth()->id())->latest()->get();
 
@@ -444,5 +464,6 @@ class UserDashboardController extends Controller
       //no need here
       return view('admin_dashboard')->with($data);
     }
+
   }
 }

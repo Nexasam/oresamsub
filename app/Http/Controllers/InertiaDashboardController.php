@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Services\VirtualAccountService;
 use App\Models\Announcement;
 use App\Models\Network;
+use App\Models\NetworkIssueAlert;
 use App\Models\Product;
 use App\Models\ProductPlanCategory;
 use App\Models\Transaction;
@@ -32,8 +33,25 @@ class InertiaDashboardController extends Controller
                 'name',
                 'product_plan_id',
                 'network_id',
-            ]);
+        ]);
         $data['contacts'] = $contacts;
+        $networkIssueAlerts = NetworkIssueAlert::with('network')
+            ->orderBy('priority')
+            ->orderBy('created_at')
+            ->get();
+        $data['networkNotices'] = [
+            'active' => $networkIssueAlerts
+                ->where('is_active', true)
+                ->values()
+                ->map(fn (NetworkIssueAlert $alert): array => $alert->activePayload())
+                ->all(),
+            'restored' => $networkIssueAlerts
+                ->where('is_active', false)
+                ->filter(fn (NetworkIssueAlert $alert): bool => $alert->last_restored_at !== null)
+                ->values()
+                ->map(fn (NetworkIssueAlert $alert): array => $alert->restoredPayload())
+                ->all(),
+        ];
 
        return $data;
         return Inertia::render('Dashboard')->with($data);

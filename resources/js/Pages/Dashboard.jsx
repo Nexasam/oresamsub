@@ -15,7 +15,7 @@ import Swal from "sweetalert2";
 export default function Dashboard({ transactions: initialTransactions }) {
 
   const { props } = usePage();
-  const { auth, announcements, contacts, commissionData = {}, bonus = {} } = props;
+  const { auth, announcements, networkNotices = {}, contacts, commissionData = {}, bonus = {} } = props;
 
   const { available = 0, pending = 0, total_earned = 0 } = commissionData;
   const user = auth.user;
@@ -154,7 +154,7 @@ export default function Dashboard({ transactions: initialTransactions }) {
       )}
 
       {/* Announcements */}
-      <Announcements announcements={announcements} />
+      <Announcements announcements={announcements} networkNotices={networkNotices} />
 
 
       {/* <button
