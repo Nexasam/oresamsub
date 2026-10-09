@@ -448,11 +448,14 @@
                                         </td>
                                         {{-- USER --}}
                                         <td class="p-2">
-                                            <div>
-                                                {{ $first_name }} {{ $last_name }} <br>
-                                                <small>{{ $username }}</small><br>
-                                                <small><b>{{ $user_plan_name }}</b></small><br>
-                                                <small>{{ $usercategory }}</small><br>
+	                                            <div>
+	                                                {{ $first_name }} {{ $last_name }} <br>
+	                                                <small>{{ $username }}</small><br>
+	                                                @if($phone_number)
+	                                                    <small class="text-gray-500">({{ $phone_number }})</small><br>
+	                                                @endif
+	                                                <small><b>{{ $user_plan_name }}</b></small><br>
+	                                                <small>{{ $usercategory }}</small><br>
                                 
                                                 <div class="relative inline-block">
                                                     <details>
