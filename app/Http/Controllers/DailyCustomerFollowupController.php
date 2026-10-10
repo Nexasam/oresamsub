@@ -16,12 +16,16 @@ class DailyCustomerFollowupController extends Controller
     private const DEFAULT_INACTIVE_DAYS = 30;
     private const DEFAULT_PURCHASE_COUNT = 3;
     private const DEFAULT_ACTIVITY_DAYS = 30;
+    private const ACTIVE_SILENT_SEGMENT = 'active_silent_24h';
+    private const ACTIVE_SILENT_INACTIVE_DAYS = 1;
+    private const ACTIVE_SILENT_PURCHASE_COUNT = 4;
+    private const ACTIVE_SILENT_ACTIVITY_DAYS = 7;
 
     public function index(Request $request)
     {
         $validated = $request->validate([
             'customer_type' => ['nullable', Rule::in(['all', 'generic', 'pos'])],
-            'segment' => ['nullable', Rule::in(['all', 'stale', 'suddenly_inactive', 'never_purchased'])],
+            'segment' => ['nullable', Rule::in(['all', 'stale', 'suddenly_inactive', self::ACTIVE_SILENT_SEGMENT, 'never_purchased'])],
             'inactivity_mode' => ['nullable', Rule::in(['days', 'period'])],
             'inactive_days' => ['nullable', 'integer', 'min:1', 'max:3650'],
             'last_purchase_from' => ['nullable', 'date'],
@@ -50,6 +54,8 @@ class DailyCustomerFollowupController extends Controller
             'performance_from' => now()->startOfMonth()->toDateString(),
             'performance_to' => now()->toDateString(),
         ], $validated);
+
+        $filters = $this->applyActiveSilentPreset($filters);
 
         $customers = $this->retentionQuery($filters)
             ->paginate((int) $filters['per_page'])
@@ -144,7 +150,7 @@ class DailyCustomerFollowupController extends Controller
 
         if ($filters['segment'] === 'never_purchased') {
             $query->whereDoesntHave('transactions', $successful);
-        } elseif ($filters['segment'] === 'suddenly_inactive') {
+        } elseif (in_array($filters['segment'], ['suddenly_inactive', self::ACTIVE_SILENT_SEGMENT], true)) {
             $this->applySuddenlyInactive($query, $filters);
         } elseif ($filters['inactivity_mode'] === 'period') {
             $this->applyLastPurchasePeriod($query, $filters);
@@ -160,6 +166,20 @@ class DailyCustomerFollowupController extends Controller
             ->orderByRaw('last_successful_purchase_at IS NOT NULL')
             ->orderBy('last_successful_purchase_at')
             ->orderBy('users.created_at');
+    }
+
+    private function applyActiveSilentPreset(array $filters): array
+    {
+        if (($filters['segment'] ?? null) !== self::ACTIVE_SILENT_SEGMENT) {
+            return $filters;
+        }
+
+        return array_merge($filters, [
+            'inactivity_mode' => 'days',
+            'inactive_days' => self::ACTIVE_SILENT_INACTIVE_DAYS,
+            'purchase_count' => self::ACTIVE_SILENT_PURCHASE_COUNT,
+            'activity_days' => self::ACTIVE_SILENT_ACTIVITY_DAYS,
+        ]);
     }
 
     private function performance(array $filters): array

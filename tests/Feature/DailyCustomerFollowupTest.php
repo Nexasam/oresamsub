@@ -139,6 +139,37 @@ it('finds suddenly inactive customers using the x y z rule', function () {
         ->assertDontSee('still-active');
 });
 
+it('finds active customers who have not transacted for a full day', function () {
+    $admin = followupAdmin();
+    $quietActive = followupCustomer('quiet-active-buyer');
+    $stillBuying = followupCustomer('still-buying-today');
+    $notActiveEnough = followupCustomer('not-active-enough');
+
+    foreach ([2, 3, 4, 6] as $daysAgo) {
+        successfulPurchase($quietActive, now()->subDays($daysAgo));
+        successfulPurchase($stillBuying, now()->subDays($daysAgo));
+    }
+
+    successfulPurchase($stillBuying, now()->subHours(6));
+
+    foreach ([2, 3, 4] as $daysAgo) {
+        successfulPurchase($notActiveEnough, now()->subDays($daysAgo));
+    }
+
+    $this->actingAs($admin)
+        ->get(route('admin.daily_customer_followup.index', [
+            'segment' => 'active_silent_24h',
+            'inactive_days' => 30,
+            'purchase_count' => 1,
+            'activity_days' => 30,
+        ]))
+        ->assertOk()
+        ->assertSee('quiet-active-buyer')
+        ->assertSee('Active buyer quiet 24h')
+        ->assertDontSee('still-buying-today')
+        ->assertDontSee('not-active-enough');
+});
+
 it('records an admin attributed customer call with feedback and next action', function () {
     $admin = followupAdmin();
     $customer = followupCustomer('called-customer');

@@ -62,6 +62,7 @@
                         <option value="all" @selected($filters['segment'] === 'all')>All</option>
                         <option value="stale" @selected($filters['segment'] === 'stale')>Stale customers</option>
                         <option value="suddenly_inactive" @selected($filters['segment'] === 'suddenly_inactive')>Suddenly inactive</option>
+                        <option value="active_silent_24h" @selected($filters['segment'] === 'active_silent_24h')>Active buyers quiet 24h</option>
                         <option value="never_purchased" @selected($filters['segment'] === 'never_purchased')>Never purchased</option>
                     </select>
                 </div>
@@ -103,12 +104,14 @@
                 </div>
                 <div class="flex items-end gap-2">
                     <button type="submit" class="ti-btn ti-btn-primary">Apply filters</button>
+                    <a href="{{ route('admin.daily_customer_followup.index', ['segment' => 'active_silent_24h']) }}" class="ti-btn ti-btn-warning">Active quiet 24h</a>
                     <a href="{{ route('admin.daily_customer_followup.index') }}" class="ti-btn ti-btn-light">Reset</a>
                 </div>
             </form>
-            <p class="mt-4 text-xs text-gray-500 dark:text-white/60">
-                Suddenly inactive = at least X successful purchases during the Y days immediately before Z inactive days.
-            </p>
+            <div class="mt-4 space-y-1 text-xs text-gray-500 dark:text-white/60">
+                <p>Active buyers quiet 24h = at least 4 successful purchases in the 7 days before the last 24 hours, with no successful purchase in the last 24 hours.</p>
+                <p>Suddenly inactive = at least X successful purchases during the Y days immediately before Z inactive days.</p>
+            </div>
         </div>
     </div>
 
@@ -140,6 +143,7 @@
                                 $latestCall = $customer->latestFollowupCall;
                                 $isOverdue = $latestCall && $latestCall->followup_status === 'follow_up_again' && $latestCall->next_followup_at && $latestCall->next_followup_at->isPast();
                                 $isSudden = $lastPurchase && $inactiveDays >= (int) $filters['inactive_days'] && (int) $customer->activity_window_purchase_count >= (int) $filters['purchase_count'];
+                                $isActiveSilent = $filters['segment'] === 'active_silent_24h' && $isSudden;
                                 $isReactivated = $latestCall && $lastPurchase && $lastPurchase->greaterThan($latestCall->created_at);
                                 $phoneDigits = preg_replace('/\D+/', '', (string) $customer->phone_number);
                                 $whatsappPhone = str_starts_with($phoneDigits, '0') ? '234'.substr($phoneDigits, 1) : $phoneDigits;
@@ -159,6 +163,8 @@
                                             <span class="badge bg-success/10 text-success">Reactivated</span>
                                         @elseif (! $lastPurchase)
                                             <span class="badge bg-warning/10 text-warning">Never purchased</span>
+                                        @elseif ($isActiveSilent)
+                                            <span class="badge bg-danger/10 text-danger">Active buyer quiet 24h</span>
                                         @elseif ($isSudden)
                                             <span class="badge bg-danger/10 text-danger">Suddenly inactive</span>
                                         @elseif ($inactiveDays >= (int) $filters['inactive_days'])
