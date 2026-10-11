@@ -97,6 +97,40 @@ class Whatsappsender
             ->json();
     }
 
+    public function sendRecentCommandList(
+        string $phone,
+        string $message,
+        array $rows
+    ) {
+        $wconfig = $this->config();
+
+        $url = "https://graph.facebook.com/v23.0/{$wconfig->phone_number_id}/messages";
+
+        return Http::withToken($wconfig->token)
+            ->post($url, [
+                'messaging_product' => 'whatsapp',
+                'recipient_type' => 'individual',
+                'to' => $phone,
+                'type' => 'interactive',
+                'interactive' => [
+                    'type' => 'list',
+                    'body' => [
+                        'text' => $message,
+                    ],
+                    'action' => [
+                        'button' => 'Run Command',
+                        'sections' => [
+                            [
+                                'title' => 'Previous Commands',
+                                'rows' => $rows,
+                            ],
+                        ],
+                    ],
+                ],
+            ])
+            ->json();
+    }
+
     public function sendConfirmationButtons(
         string $phone,
         string $message

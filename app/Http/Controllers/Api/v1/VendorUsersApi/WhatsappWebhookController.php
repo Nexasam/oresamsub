@@ -16,6 +16,7 @@ use App\Services\Whatsapp\WhatsappConversationService;
 use App\Services\Whatsapp\WhatsappIntentParser;
 use App\Services\Whatsapp\WhatsappIntentResolver;
 use App\Services\Whatsapp\WhatsappInteractiveService;
+use App\Services\Whatsapp\WhatsappQuickCommandService;
 use App\Services\Whatsapp\Whatsappsender;
 use App\Services\Whatsapp\WhatsappUserResolver;
 use App\Traits\JsonResponseWrapper;
@@ -453,6 +454,35 @@ class WhatsappWebhookController extends Controller
             }
         }
 
+        if ($this->isRecentCommandRequest($text)) {
+            return $this->sendRecentCommands($phone, $user);
+        }
+
+        $replayCommandId = app(WhatsappQuickCommandService::class)->idFromReplayText($text);
+
+        if ($replayCommandId) {
+            $quickCommand = app(WhatsappQuickCommandService::class)
+                ->findForReplay($replayCommandId, $user, $phone);
+
+            if (! $quickCommand) {
+                app(Whatsappsender::class)->send(
+                    $phone,
+                    "❌ I couldn't find that saved command anymore.\n\nType *recent commands* to view your latest options."
+                );
+
+                return response()->json(['ok' => true]);
+            }
+
+            app(Whatsappsender::class)->send(
+                $phone,
+                "🔁 Running previous command:\n{$quickCommand->command}"
+            );
+
+            $text = strtolower($quickCommand->command);
+            $session = null;
+            cache()->forget("wa_session:$phone");
+        }
+
 
 
 
@@ -853,11 +883,65 @@ class WhatsappWebhookController extends Controller
             . "• Ikeja Electric 5000 12345678901 Prepaid\n"
             . "• Eko Electric 3000 12345678901 Postpaid\n\n"
             . "⭐ RECENT PURCHASES\n"
-            . "• Recent • Buy Again • Favourites\n\n"
+            . "• Recent Commands • Buy Again • Favourites\n\n"
             . "💰 ACCOUNT\n"
             . "• Balance • Wallet • Fund\n\n"
             . "🆘 HELP\n"
             . "• Support • Help";
+    }
+
+    private function isRecentCommandRequest(string $text): bool
+    {
+        return in_array(strtolower(trim($text)), [
+            'recent',
+            'recent command',
+            'recent commands',
+            'previous command',
+            'previous commands',
+            'buy again',
+            'repeat',
+            'repeat purchase',
+            'commands',
+        ], true);
+    }
+
+    private function sendRecentCommands(string $phone, ?User $user)
+    {
+        $service = app(WhatsappQuickCommandService::class);
+        $commands = $service->recent($user, $phone, 8);
+
+        if ($commands->isEmpty()) {
+            app(Whatsappsender::class)->send(
+                $phone,
+                "📋 No previous quick commands yet.\n\nTry something like:\nMTN 1GB Weekly 08168509044"
+            );
+
+            return response()->json(['ok' => true]);
+        }
+
+        $message = "📋 *Previous Commands*\n\n"
+            . "Tap one below to run it again.\n\n"
+            . "You can also copy and send any command manually:\n\n";
+
+        $rows = [];
+
+        foreach ($commands as $index => $command) {
+            $message .= ($index + 1).". {$command->command}\n";
+
+            $rows[] = [
+                'id' => $service->replayId($command->id),
+                'title' => str($command->label)->limit(24, '')->toString(),
+                'description' => str($command->command)->limit(72, '')->toString(),
+            ];
+        }
+
+        app(Whatsappsender::class)->sendRecentCommandList(
+            $phone,
+            $message,
+            $rows
+        );
+
+        return response()->json(['ok' => true]);
     }
 
     private function handleWhatsappLinking(

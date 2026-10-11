@@ -5,6 +5,7 @@ use App\Http\Services\DataPlansService;
 use App\Models\ProductPlan;
 use App\Models\UserContact;
 use App\Services\Whatsapp\WhatsappIntentResolver;
+use App\Services\Whatsapp\WhatsappQuickCommandService;
 use App\Services\Whatsapp\WhatsappUserResolver;
 use Illuminate\Http\Request;
 
@@ -279,6 +280,12 @@ class WhatsappConversationService{
               
         
                 if ($payload['status']  == 1) {
+                    app(WhatsappQuickCommandService::class)->record(
+                        $user,
+                        $session['whatsapp_phone'],
+                        $this->airtimeCommandFromSession($session),
+                        'airtime'
+                    );
         
                     app(Whatsappsender::class)->sendStartButton(
                         $session['whatsapp_phone'],
@@ -1499,6 +1506,12 @@ class WhatsappConversationService{
             SUCCESS
             */
             if ($status === 1) {
+                app(WhatsappQuickCommandService::class)->record(
+                    $user,
+                    $chatPhone,
+                    $this->dataCommandFromSession($session),
+                    'data'
+                );
 
                 cache()->put(
                     "wa_session:$chatPhone",
@@ -1580,5 +1593,55 @@ class WhatsappConversationService{
 
        
     }
-}
 
+    private function dataCommandFromSession(array $session): ?string
+    {
+        $raw = $session['intent']['raw_message'] ?? null;
+
+        if (is_string($raw) && preg_match('/\d{10,14}/', $raw)) {
+            return $raw;
+        }
+
+        $plan = ProductPlan::with('product_plan_category.network')
+            ->find($session['product_plan_id'] ?? null);
+
+        if (! $plan || empty($session['phone'])) {
+            return is_string($raw) ? $raw : null;
+        }
+
+        $network = strtoupper((string) ($plan->product_plan_category?->network?->network_name ?? ''));
+        $phone = $this->localDisplayPhone((string) $session['phone']);
+
+        return trim("{$network} {$plan->product_plan_name} {$phone}");
+    }
+
+    private function airtimeCommandFromSession(array $session): ?string
+    {
+        $raw = $session['intent']['raw_message'] ?? null;
+
+        if (is_string($raw) && preg_match('/\d{10,14}/', $raw)) {
+            return $raw;
+        }
+
+        $network = $session['intent']['network'] ?? null;
+        $amount = $session['amount'] ?? null;
+        $phone = $session['phone'] ?? null;
+
+        if (! $network || ! $amount || ! $phone) {
+            return is_string($raw) ? $raw : null;
+        }
+
+        return trim(strtoupper((string) $network).' Airtime '.$amount.' '.$this->localDisplayPhone((string) $phone));
+    }
+
+    private function localDisplayPhone(string $phone): string
+    {
+        $phone = preg_replace('/\D/', '', $phone);
+
+        if (str_starts_with($phone, '234')) {
+            return '0'.substr($phone, 3);
+        }
+
+        return $phone;
+    }
+}
