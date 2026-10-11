@@ -458,11 +458,33 @@ class WhatsappWebhookController extends Controller
             return $this->sendRecentCommands($phone, $user);
         }
 
-        $replayCommandId = app(WhatsappQuickCommandService::class)->idFromReplayText($text);
+        $quickCommandService = app(WhatsappQuickCommandService::class);
+        $copyCommandId = $quickCommandService->idFromCopyText($text);
+
+        if ($copyCommandId) {
+            $quickCommand = $quickCommandService->findForReplay($copyCommandId, $user, $phone);
+
+            if (! $quickCommand) {
+                app(Whatsappsender::class)->send(
+                    $phone,
+                    "❌ I couldn't find that saved command anymore.\n\nType *recent commands* to view your latest options."
+                );
+
+                return response()->json(['ok' => true]);
+            }
+
+            app(Whatsappsender::class)->send(
+                $phone,
+                "📋 Copy this command:\n\n`{$quickCommand->command}`\n\nLong-press the command above to copy it, or tap *Recent Commands* again and choose *Run* to execute it directly."
+            );
+
+            return response()->json(['ok' => true]);
+        }
+
+        $replayCommandId = $quickCommandService->idFromReplayText($text);
 
         if ($replayCommandId) {
-            $quickCommand = app(WhatsappQuickCommandService::class)
-                ->findForReplay($replayCommandId, $user, $phone);
+            $quickCommand = $quickCommandService->findForReplay($replayCommandId, $user, $phone);
 
             if (! $quickCommand) {
                 app(Whatsappsender::class)->send(
@@ -908,7 +930,7 @@ class WhatsappWebhookController extends Controller
     private function sendRecentCommands(string $phone, ?User $user)
     {
         $service = app(WhatsappQuickCommandService::class);
-        $commands = $service->recent($user, $phone, 8);
+        $commands = $service->recent($user, $phone, 5);
 
         if ($commands->isEmpty()) {
             app(Whatsappsender::class)->send(
@@ -930,8 +952,14 @@ class WhatsappWebhookController extends Controller
 
             $rows[] = [
                 'id' => $service->replayId($command->id),
-                'title' => str($command->label)->limit(24, '')->toString(),
+                'title' => str('▶ '.$command->label)->limit(24, '')->toString(),
                 'description' => str($command->command)->limit(72, '')->toString(),
+            ];
+
+            $rows[] = [
+                'id' => $service->copyId($command->id),
+                'title' => str('📋 Copy '.$command->label)->limit(24, '')->toString(),
+                'description' => 'Send command text only for easy copy',
             ];
         }
 

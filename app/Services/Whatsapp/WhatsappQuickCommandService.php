@@ -81,10 +81,22 @@ class WhatsappQuickCommandService
         return "repeat_cmd_{$id}";
     }
 
+    public function copyId(string $id): string
+    {
+        return "copy_cmd_{$id}";
+    }
+
     public function idFromReplayText(string $text): ?string
     {
         return Str::startsWith($text, 'repeat_cmd_')
             ? Str::after($text, 'repeat_cmd_')
+            : null;
+    }
+
+    public function idFromCopyText(string $text): ?string
+    {
+        return Str::startsWith($text, 'copy_cmd_')
+            ? Str::after($text, 'copy_cmd_')
             : null;
     }
 
