@@ -202,29 +202,32 @@
                                             <span class="badge bg-info/10 text-info">{{ $lead->developer_source }}</span>
                                         @endif
                                     </td>
+                                    @php
+                                        $leadModalData = [
+                                            'name' => $lead->company_name ?: $lead->app_name ?: $lead->domain,
+                                            'domain' => $lead->domain,
+                                            'website' => $lead->website ?: ('https://'.$lead->domain),
+                                            'app_name' => $lead->app_name,
+                                            'phones' => $lead->phones,
+                                            'emails' => $lead->emails,
+                                            'whatsapp_links' => $lead->whatsapp_links,
+                                            'source' => $lead->source,
+                                            'developer_source' => $lead->developer_source,
+                                            'confidence' => $lead->confidence,
+                                            'confidence_score' => $lead->confidence_score,
+                                            'signals' => $lead->signals,
+                                            'play_app_url' => $lead->play_app_url,
+                                            'package' => $lead->package,
+                                            'notes' => $lead->notes,
+                                            'last_imported_at' => optional($lead->last_imported_at)->format('Y-m-d H:i'),
+                                            'updated_at' => optional($lead->updated_at)->format('Y-m-d H:i'),
+                                        ];
+                                    @endphp
                                     <td class="align-top">
                                         <button
                                             type="button"
                                             class="ti-btn ti-btn-sm ti-btn-light marketing-lead-view"
-                                            data-lead='@json([
-                                                'name' => $lead->company_name ?: $lead->app_name ?: $lead->domain,
-                                                'domain' => $lead->domain,
-                                                'website' => $lead->website ?: ('https://'.$lead->domain),
-                                                'app_name' => $lead->app_name,
-                                                'phones' => $lead->phones,
-                                                'emails' => $lead->emails,
-                                                'whatsapp_links' => $lead->whatsapp_links,
-                                                'source' => $lead->source,
-                                                'developer_source' => $lead->developer_source,
-                                                'confidence' => $lead->confidence,
-                                                'confidence_score' => $lead->confidence_score,
-                                                'signals' => $lead->signals,
-                                                'play_app_url' => $lead->play_app_url,
-                                                'package' => $lead->package,
-                                                'notes' => $lead->notes,
-                                                'last_imported_at' => optional($lead->last_imported_at)->format('Y-m-d H:i'),
-                                                'updated_at' => optional($lead->updated_at)->format('Y-m-d H:i'),
-                                            ])'
+                                            data-lead='@json($leadModalData)'
                                         >
                                             View
                                         </button>
