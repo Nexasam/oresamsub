@@ -83,16 +83,16 @@ class MergeVtuMarketingLeads extends Command
                 'domain' => $domain,
                 'company_name' => $existing['company_name'] ?? ($row['app_name'] ?? ''),
                 'app_name' => $row['app_name'] ?? '',
-                'website' => $existing['website'] ?? ($row['website'] ?? ''),
+                'website' => $existing['website'] ?? ($row['website'] ?? $row['url'] ?? ''),
                 'phones' => $this->mergeList($existing['phones'] ?? '', $row['phones'] ?? ''),
-                'emails' => $this->mergeList($existing['emails'] ?? '', $row['support_email'] ?? ''),
+                'emails' => $this->mergeList($existing['emails'] ?? '', $row['support_email'] ?? $row['emails'] ?? ''),
                 'whatsapp_links' => $existing['whatsapp_links'] ?? '',
-                'confidence' => $existing['confidence'] ?? 'play',
-                'confidence_score' => $existing['confidence_score'] ?? '',
-                'signals' => $existing['signals'] ?? '',
+                'confidence' => $this->strongerConfidence($existing['confidence'] ?? '', $row['confidence'] ?? 'play'),
+                'confidence_score' => $this->strongerScore($existing['confidence_score'] ?? '', $row['confidence_score'] ?? ''),
+                'signals' => $this->mergeList($existing['signals'] ?? '', $row['signals'] ?? ''),
                 'play_app_url' => $row['app_url'] ?? '',
                 'package' => $row['package'] ?? '',
-                'notes' => trim(($existing['notes'] ?? '').' '.($row['notes'] ?? '')),
+                'notes' => $this->mergeNotes($existing['notes'] ?? '', $row['notes'] ?? ''),
             ];
         }
         }
@@ -158,6 +158,39 @@ class MergeVtuMarketingLeads extends Command
         }
 
         return implode(' | ', array_values($items));
+    }
+
+    private function mergeNotes(string $left, string $right): string
+    {
+        $notes = trim($left.' '.$right);
+
+        if (
+            str_contains($notes, 'vtu_app')
+            && ! str_contains($notes, 'trusted_developer:')
+        ) {
+            $notes = trim('trusted_developer:msorg '.$notes);
+        }
+
+        return $notes;
+    }
+
+    private function strongerConfidence(string $left, string $right): string
+    {
+        $rank = [
+            '' => 0,
+            'seed' => 1,
+            'play' => 2,
+            'low' => 3,
+            'medium' => 4,
+            'high' => 5,
+        ];
+
+        return ($rank[$right] ?? 0) > ($rank[$left] ?? 0) ? $right : $left;
+    }
+
+    private function strongerScore(string $left, string $right): string
+    {
+        return (string) max((int) $left, (int) $right);
     }
 
     private function writeCsv(string $path, array $rows): void

@@ -9,10 +9,16 @@ class VtuLeadExtractorService
 {
     private const DEFAULT_PATHS = [
         '',
+        '/index.php',
         '/contact',
         '/contact-us',
+        '/contact.php',
         '/about',
         '/about-us',
+        '/pricing',
+        '/pricing-plan',
+        '/pricing.php',
+        '/services',
     ];
 
     private const SIGNALS = [
@@ -163,7 +169,7 @@ class VtuLeadExtractorService
         foreach ($matches[1] ?? [] as $href) {
             $href = html_entity_decode((string) $href);
 
-            if (! preg_match('/(contact|about|partner|api|developer)/i', $href)) {
+            if (! preg_match('/(contact|about|partner|api|developer|pricing|plan|service|data)/i', $href)) {
                 continue;
             }
 

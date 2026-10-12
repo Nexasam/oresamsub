@@ -224,7 +224,7 @@ class MarketingLeadController extends Controller
 
         $confidenceScore = $row['confidence_score'] ?? null;
 
-        $inferredDeveloperSource = $this->developerSourceFromNotes((string) ($row['notes'] ?? ''));
+        $inferredDeveloperSource = $this->inferDeveloperSource($row);
 
         return [
             'source' => $row['source'] ?? ($row['app_url'] ?? null ? 'play' : 'csv'),
@@ -268,10 +268,60 @@ class MarketingLeadController extends Controller
         return strtoupper($developerSource);
     }
 
+    private function inferDeveloperSource(array $row): ?string
+    {
+        $notes = (string) ($row['notes'] ?? '');
+        $noteSource = $this->developerSourceFromNotes($notes);
+
+        if ($noteSource) {
+            return $noteSource;
+        }
+
+        $haystack = strtolower(implode(' ', array_filter([
+            $notes,
+            $row['source'] ?? '',
+            $row['app_name'] ?? '',
+            $row['company_name'] ?? '',
+            $row['domain'] ?? '',
+            $row['website_domain'] ?? '',
+            $row['website'] ?? '',
+            $row['play_app_url'] ?? '',
+            $row['app_url'] ?? '',
+            $row['package'] ?? '',
+            $row['emails'] ?? '',
+            $row['support_email'] ?? '',
+        ])));
+
+        if (str_contains($haystack, 'autobiz') || str_contains($haystack, 'cdlp')) {
+            return 'AUTOBIZ-CDLP';
+        }
+
+        if (str_contains($haystack, 'adex') || str_contains($haystack, 'a d e developers')) {
+            return 'ADEX';
+        }
+
+        if (str_contains($haystack, 'msorg')) {
+            return 'MSORG';
+        }
+
+        if (preg_match('/\bvtu_app\b/', $notes)) {
+            return 'MSORG';
+        }
+
+        return null;
+    }
+
     private function developerSourceFromNotes(string $notes): ?string
     {
         if (preg_match('/trusted_developer:([a-z0-9\-]+)/', $notes, $match)) {
-            return strtoupper(str_replace('-', ' ', $match[1]));
+            $source = strtolower($match[1]);
+
+            return match ($source) {
+                'adex' => 'ADEX',
+                'autobiz-cdlp' => 'AUTOBIZ-CDLP',
+                'msorg', 'msorg-developers' => 'MSORG',
+                default => strtoupper(str_replace('-', ' ', $source)),
+            };
         }
 
         if (str_contains($notes, 'msorg_app')) {
