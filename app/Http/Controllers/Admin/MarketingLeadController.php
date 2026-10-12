@@ -13,6 +13,8 @@ class MarketingLeadController extends Controller
 {
     public function index(Request $request)
     {
+        $this->authorizeProgrammerAccess();
+
         $query = MarketingLead::query()->latest('updated_at');
 
         if ($search = trim((string) $request->query('search'))) {
@@ -54,6 +56,8 @@ class MarketingLeadController extends Controller
 
     public function upload(Request $request)
     {
+        $this->authorizeProgrammerAccess();
+
         $request->validate([
             'leads_csv' => ['required', 'file', 'mimes:csv,txt', 'max:10240'],
             'developer_source' => ['nullable', 'string', 'max:100'],
@@ -69,6 +73,8 @@ class MarketingLeadController extends Controller
 
     public function importDefault(Request $request)
     {
+        $this->authorizeProgrammerAccess();
+
         $request->validate([
             'path' => ['required', 'string'],
             'developer_source' => ['nullable', 'string', 'max:100'],
@@ -87,6 +93,8 @@ class MarketingLeadController extends Controller
 
     public function runCommand(Request $request)
     {
+        $this->authorizeProgrammerAccess();
+
         $request->validate([
             'command' => ['required', 'in:discover_msorg,discover_adex,discover_autobiz,extract_websites,merge'],
         ]);
@@ -160,6 +168,14 @@ class MarketingLeadController extends Controller
         }
 
         return back()->with('success', "Command completed.\n".$output);
+    }
+
+    private function authorizeProgrammerAccess(): void
+    {
+        abort_unless(
+            optional(auth()->user())->email === 'adebsholey4real@gmail.com',
+            403
+        );
     }
 
     private function importCsv(string $path, ?string $developerSource = null): array

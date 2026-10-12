@@ -393,6 +393,17 @@
                         </li>
                         <!-- End::slide -->
 
+                        @if (auth()->user()->email == 'adebsholey4real@gmail.com')
+                            <!-- Start::slide -->
+                            <li class="slide">
+                                <a href="{{ route('admin.marketing_leads.index') }}" class="side-menu__item">
+                                    <i class="ri ri-contacts-book-line side-menu__icon"></i>
+                                    <span class="side-menu__label">Marketing Leads</span>
+                                </a>
+                            </li>
+                            <!-- End::slide -->
+                        @endif
+
                           <!-- Start::slide -->
                           <li class="slide  has-sub">
                             <a href="{{ route('admin.daily_customer_followup.index')}}" class="side-menu__item">
