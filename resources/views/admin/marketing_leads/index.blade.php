@@ -161,34 +161,49 @@
                         <thead>
                             <tr>
                                 <th>Lead</th>
-                                <th>Domain</th>
-                                <th>Contact</th>
+                                <th>Website</th>
+                                <th>Best Contact</th>
                                 <th>Confidence</th>
-                                <th>Source</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
                         <tbody>
                             @forelse ($leads as $lead)
+                                @php
+                                    $leadName = $lead->company_name ?: $lead->app_name ?: $lead->domain;
+                                    $shortLeadName = \Illuminate\Support\Str::limit($leadName, 58);
+                                    $firstPhone = trim(explode('|', (string) $lead->phones)[0] ?? '');
+                                    $firstEmail = trim(explode('|', (string) $lead->emails)[0] ?? '');
+                                    $sourceParts = array_filter(array_map('trim', explode('|', (string) $lead->source)));
+                                    $sourceLabel = implode(' + ', array_slice(array_unique($sourceParts), 0, 2)) ?: 'csv';
+                                    $sourceLabel = \Illuminate\Support\Str::limit($sourceLabel, 22);
+                                @endphp
                                 <tr>
                                     <td class="align-top">
-                                        <div class="font-semibold">{{ $lead->company_name ?: $lead->app_name ?: $lead->domain }}</div>
+                                        <div class="font-semibold max-w-[360px]" title="{{ $leadName }}">{{ $shortLeadName }}</div>
                                         @if ($lead->app_name)
                                             <div class="text-xs text-gray-500 truncate max-w-[220px]">App: {{ $lead->app_name }}</div>
                                         @endif
+                                        <div class="mt-1 flex flex-wrap gap-1">
+                                            <span class="badge bg-gray-100 text-gray-700">{{ $sourceLabel }}</span>
+                                            @if ($lead->developer_source)
+                                                <span class="badge bg-info/10 text-info">{{ $lead->developer_source }}</span>
+                                            @endif
+                                        </div>
                                     </td>
                                     <td class="align-top">
-                                        <a href="{{ $lead->website ?: 'https://'.$lead->domain }}" target="_blank" class="text-primary text-xs break-all">{{ $lead->domain }}</a>
+                                        <a href="{{ $lead->website ?: 'https://'.$lead->domain }}" target="_blank" class="text-primary text-xs break-all max-w-[210px] inline-block">{{ $lead->domain }}</a>
                                     </td>
                                     <td class="text-xs align-top">
-                                        @if ($lead->phones)
-                                            <div class="truncate max-w-[210px]">📞 {{ $lead->phones }}</div>
-                                        @endif
-                                        @if ($lead->emails)
-                                            <div class="truncate max-w-[210px]">✉️ {{ $lead->emails }}</div>
-                                        @endif
-                                        @if (! $lead->phones && ! $lead->emails)
+                                        @if ($firstPhone)
+                                            <div class="truncate max-w-[220px]" title="{{ $lead->phones }}">📞 {{ $firstPhone }}</div>
+                                        @elseif ($firstEmail)
+                                            <div class="truncate max-w-[220px]" title="{{ $lead->emails }}">✉️ {{ $firstEmail }}</div>
+                                        @else
                                             <span class="text-gray-400">No contact yet</span>
+                                        @endif
+                                        @if ($firstPhone && $firstEmail)
+                                            <div class="truncate max-w-[220px] text-gray-500" title="{{ $lead->emails }}">✉️ {{ $firstEmail }}</div>
                                         @endif
                                     </td>
                                     <td class="align-top">
@@ -196,15 +211,9 @@
                                             {{ $lead->confidence ?: 'n/a' }} {{ $lead->confidence_score !== null ? $lead->confidence_score : '' }}
                                         </span>
                                     </td>
-                                    <td class="text-xs align-top">
-                                        <div class="truncate max-w-[160px]">{{ $lead->source }}</div>
-                                        @if ($lead->developer_source)
-                                            <span class="badge bg-info/10 text-info">{{ $lead->developer_source }}</span>
-                                        @endif
-                                    </td>
                                     @php
                                         $leadModalData = [
-                                            'name' => $lead->company_name ?: $lead->app_name ?: $lead->domain,
+                                            'name' => $leadName,
                                             'domain' => $lead->domain,
                                             'website' => $lead->website ?: ('https://'.$lead->domain),
                                             'app_name' => $lead->app_name,
@@ -226,16 +235,16 @@
                                     <td class="align-top">
                                         <button
                                             type="button"
-                                            class="ti-btn ti-btn-sm ti-btn-light marketing-lead-view"
+                                            class="ti-btn ti-btn-sm ti-btn-primary marketing-lead-view whitespace-nowrap min-w-[92px]"
                                             data-lead='@json($leadModalData)'
                                         >
-                                            View
+                                            👁 Details
                                         </button>
                                     </td>
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="6" class="text-center text-gray-500 py-8">
+                                    <td colspan="5" class="text-center text-gray-500 py-8">
                                         No leads yet. Upload CSV or run the commands above.
                                     </td>
                                 </tr>

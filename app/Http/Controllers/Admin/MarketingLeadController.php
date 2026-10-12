@@ -224,9 +224,11 @@ class MarketingLeadController extends Controller
 
         $confidenceScore = $row['confidence_score'] ?? null;
 
+        $inferredDeveloperSource = $this->developerSourceFromNotes((string) ($row['notes'] ?? ''));
+
         return [
             'source' => $row['source'] ?? ($row['app_url'] ?? null ? 'play' : 'csv'),
-            'developer_source' => $developerSource ?: $this->developerSourceFromNotes((string) ($row['notes'] ?? '')),
+            'developer_source' => $this->normalizeDeveloperSource($developerSource, $inferredDeveloperSource),
             'domain' => $domain,
             'company_name' => $row['company_name'] ?? '',
             'app_name' => $row['app_name'] ?? '',
@@ -242,6 +244,28 @@ class MarketingLeadController extends Controller
             'notes' => $row['notes'] ?? '',
             'last_imported_at' => now(),
         ];
+    }
+
+    private function normalizeDeveloperSource(?string $developerSource, ?string $inferredDeveloperSource): ?string
+    {
+        $developerSource = trim((string) $developerSource);
+
+        if ($developerSource === '') {
+            return $inferredDeveloperSource;
+        }
+
+        $lowerDeveloperSource = strtolower($developerSource);
+        $looksLikeCombinedMasterLabel = str_contains($lowerDeveloperSource, ',')
+            || str_contains($lowerDeveloperSource, 'msorg') && str_contains($lowerDeveloperSource, 'adex')
+            || str_contains($lowerDeveloperSource, 'msorg') && str_contains($lowerDeveloperSource, 'autobiz')
+            || str_contains($lowerDeveloperSource, 'adex') && str_contains($lowerDeveloperSource, 'autobiz')
+            || str_contains($lowerDeveloperSource, 'master');
+
+        if ($looksLikeCombinedMasterLabel) {
+            return $inferredDeveloperSource;
+        }
+
+        return strtoupper($developerSource);
     }
 
     private function developerSourceFromNotes(string $notes): ?string
