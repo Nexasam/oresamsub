@@ -824,6 +824,7 @@ Route::middleware(['set_locale'])->group(function () {
                 Route::post('/upload', [MarketingLeadController::class, 'upload'])->name('upload');
                 Route::post('/import-default', [MarketingLeadController::class, 'importDefault'])->name('import_default');
                 Route::post('/run-command', [MarketingLeadController::class, 'runCommand'])->name('run_command');
+                Route::post('/{marketingLead}/call-logs', [MarketingLeadController::class, 'logCall'])->name('call_logs.store');
             });
             
 

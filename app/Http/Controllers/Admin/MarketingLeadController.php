@@ -7,6 +7,7 @@ use App\Models\MarketingLead;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
 
 class MarketingLeadController extends Controller
@@ -15,7 +16,14 @@ class MarketingLeadController extends Controller
     {
         $this->authorizeProgrammerAccess();
 
+        $callLogsAvailable = Schema::hasTable('marketing_lead_call_logs');
+
         $query = MarketingLead::query()->latest('updated_at');
+
+        if ($callLogsAvailable) {
+            $query->with(['callLogs' => fn ($callLogs) => $callLogs->latest('called_at')])
+                ->withCount('callLogs');
+        }
 
         if ($search = trim((string) $request->query('search'))) {
             $query->where(function ($q) use ($search) {
@@ -42,7 +50,9 @@ class MarketingLeadController extends Controller
                 'with_phone' => MarketingLead::whereNotNull('phones')->where('phones', '<>', '')->count(),
                 'with_email' => MarketingLead::whereNotNull('emails')->where('emails', '<>', '')->count(),
                 'high' => MarketingLead::where('confidence', 'high')->count(),
+                'called' => $callLogsAvailable ? MarketingLead::whereHas('callLogs')->count() : 0,
             ],
+            'callLogsAvailable' => $callLogsAvailable,
             'defaultFiles' => [
                 'master' => 'storage/app/private/marketing/vtu-master-outreach-leads.csv',
                 'website' => 'storage/app/private/marketing/vtu-leads.csv',
@@ -170,12 +180,54 @@ class MarketingLeadController extends Controller
         return back()->with('success', "Command completed.\n".$output);
     }
 
+    public function logCall(Request $request, MarketingLead $marketingLead)
+    {
+        $this->authorizeProgrammerAccess();
+
+        abort_unless(Schema::hasTable('marketing_lead_call_logs'), 503, 'Call logging table has not been migrated yet.');
+
+        $data = $request->validate([
+            'phone' => ['nullable', 'string', 'max:40'],
+            'note' => ['nullable', 'string', 'max:1000'],
+        ]);
+
+        $phone = $this->cleanPhoneForDial($data['phone'] ?? '')
+            ?: $this->firstLeadPhone($marketingLead);
+
+        $marketingLead->callLogs()->create([
+            'user_id' => optional($request->user())->id,
+            'phone' => $phone,
+            'note' => $data['note'] ?? null,
+            'called_at' => now(),
+        ]);
+
+        $marketingLead->update(['status' => 'called']);
+
+        $leadName = $marketingLead->company_name ?: $marketingLead->app_name ?: $marketingLead->domain;
+
+        return back()->with('success', "Call logged for {$leadName}.");
+    }
+
     private function authorizeProgrammerAccess(): void
     {
         abort_unless(
             optional(auth()->user())->email === 'adebsholey4real@gmail.com',
             403
         );
+    }
+
+    private function firstLeadPhone(MarketingLead $marketingLead): ?string
+    {
+        $phone = trim(explode('|', (string) $marketingLead->phones)[0] ?? '');
+
+        return $this->cleanPhoneForDial($phone) ?: null;
+    }
+
+    private function cleanPhoneForDial(?string $phone): ?string
+    {
+        $phone = preg_replace('/(?!^\+)[^\d]/', '', trim((string) $phone));
+
+        return $phone !== '' ? $phone : null;
     }
 
     private function importCsv(string $path, ?string $developerSource = null): array

@@ -19,48 +19,69 @@ class MsorgDataProviderExecutor
             ->where('product_plan_id', $plan->id)
             ->where('status', 1)
             ->first();
-        $mappedPlan = AutomationProductPlan::query()
+        $candidateRoutes = [];
+
+        if ($userPlan?->userAutomation?->automation && $userPlan->automation_product_plan_id) {
+            $candidateRoutes[] = [$userPlan, $userPlan->automation_product_plan_id];
+        }
+
+        AutomationProductPlan::query()
             ->with('automation')
             ->where('product_plan_id', $plan->id)
             ->where('is_active', 1)
             ->orderBy('priority')
-            ->first();
+            ->get()
+            ->each(function (AutomationProductPlan $automationProductPlan) use (&$candidateRoutes): void {
+                if ($automationProductPlan->automation && $automationProductPlan->provider_plan_id) {
+                    $candidateRoutes[] = [$automationProductPlan->automation, $automationProductPlan->provider_plan_id];
+                }
+            });
 
-        if ($userPlan?->userAutomation?->automation && $userPlan->automation_product_plan_id) {
-            $automation = $userPlan;
-            $providerPlanId = $userPlan->automation_product_plan_id;
-        } elseif ($mappedPlan?->automation && $mappedPlan->provider_plan_id) {
-            $automation = $mappedPlan->automation;
-            $providerPlanId = $mappedPlan->provider_plan_id;
-        } elseif ($plan->automation && $plan->automation_product_plan_id) {
-            $automation = $plan->automation;
-            $providerPlanId = $plan->automation_product_plan_id;
-        } else {
+        if ($plan->automation && $plan->automation_product_plan_id) {
+            $candidateRoutes[] = [$plan->automation, $plan->automation_product_plan_id];
+        }
+
+        if ($candidateRoutes === []) {
             throw new RuntimeException('No active provider is configured for this plan.');
         }
 
-        $provider = $automation instanceof UserProductPlanAutomation
-            ? $automation->userAutomation->automation
-            : $automation;
-        if ((string) $provider->activation_status !== '1') {
+        $lastResult = null;
+
+        foreach ($candidateRoutes as [$automation, $providerPlanId]) {
+            $provider = $automation instanceof UserProductPlanAutomation
+                ? $automation->userAutomation->automation
+                : $automation;
+
+            if (! $provider || (string) $provider->activation_status !== '1') {
+                continue;
+            }
+
+            $result = AutomationLogic::initiateDataPurchase([
+                'phone_number' => $payload['mobile_number'],
+                'automation_details' => $automation,
+                'provider_plan_id' => $providerPlanId,
+                'network_id' => $plan->product_plan_category->network_id,
+                'plan_id' => $plan->id,
+                'Ported_number' => $payload['Ported_number'],
+                'validatephonenetwork' => $payload['validatephonenetwork'] ? 1 : 0,
+            ]);
+
+            $lastResult = array_merge($result, [
+                'provider_id' => $provider->id,
+                'provider_name' => $provider->automation_name,
+                'provider_slug' => $provider->slug,
+                'provider_plan_id' => (string) $providerPlanId,
+            ]);
+
+            if ((int) ($result['status'] ?? -1) === 1) {
+                return $lastResult;
+            }
+        }
+
+        if (! $lastResult) {
             throw new RuntimeException('No active provider is configured for this plan.');
         }
 
-        $result = AutomationLogic::initiateDataPurchase([
-            'phone_number' => $payload['mobile_number'],
-            'automation_details' => $automation,
-            'provider_plan_id' => $providerPlanId,
-            'network_id' => $plan->product_plan_category->network_id,
-            'plan_id' => $plan->id,
-            'Ported_number' => $payload['Ported_number'],
-            'validatephonenetwork' => $payload['validatephonenetwork'] ? 1 : 0,
-        ]);
-
-        return array_merge($result, [
-            'provider_id' => $provider->id,
-            'provider_name' => $provider->automation_name,
-            'provider_slug' => $provider->slug,
-            'provider_plan_id' => (string) $providerPlanId,
-        ]);
+        return $lastResult;
     }
 }

@@ -84,8 +84,14 @@ class MergeVtuMarketingLeads extends Command
                 'company_name' => $existing['company_name'] ?? ($row['app_name'] ?? ''),
                 'app_name' => $row['app_name'] ?? '',
                 'website' => $existing['website'] ?? ($row['website'] ?? $row['url'] ?? ''),
-                'phones' => $this->mergeList($existing['phones'] ?? '', $row['phones'] ?? ''),
-                'emails' => $this->mergeList($existing['emails'] ?? '', $row['support_email'] ?? $row['emails'] ?? ''),
+                'phones' => $this->mergeList(
+                    $existing['phones'] ?? '',
+                    $this->mergeList($row['phones'] ?? '', $row['developer_phone'] ?? '')
+                ),
+                'emails' => $this->mergeList(
+                    $existing['emails'] ?? '',
+                    $this->mergeList($row['support_email'] ?? $row['emails'] ?? '', $row['developer_email'] ?? '')
+                ),
                 'whatsapp_links' => $existing['whatsapp_links'] ?? '',
                 'confidence' => $this->strongerConfidence($existing['confidence'] ?? '', $row['confidence'] ?? 'play'),
                 'confidence_score' => $this->strongerScore($existing['confidence_score'] ?? '', $row['confidence_score'] ?? ''),

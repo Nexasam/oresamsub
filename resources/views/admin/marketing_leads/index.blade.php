@@ -60,6 +60,14 @@
                 </div>
             </div>
         </div>
+        <div class="col-span-12 md:col-span-3">
+            <div class="box">
+                <div class="box-body">
+                    <p class="text-xs uppercase text-gray-500">Called Leads</p>
+                    <h4 class="text-2xl font-bold">{{ number_format($stats['called'] ?? 0) }}</h4>
+                </div>
+            </div>
+        </div>
 
         <div class="col-span-12 lg:col-span-5">
             <div class="box">
@@ -173,10 +181,18 @@
                                     $leadName = $lead->company_name ?: $lead->app_name ?: $lead->domain;
                                     $shortLeadName = \Illuminate\Support\Str::limit($leadName, 58);
                                     $firstPhone = trim(explode('|', (string) $lead->phones)[0] ?? '');
+                                    $callPhone = preg_replace('/(?!^\+)[^\d]/', '', $firstPhone);
                                     $firstEmail = trim(explode('|', (string) $lead->emails)[0] ?? '');
                                     $sourceParts = array_filter(array_map('trim', explode('|', (string) $lead->source)));
                                     $sourceLabel = implode(' + ', array_slice(array_unique($sourceParts), 0, 2)) ?: 'csv';
                                     $sourceLabel = \Illuminate\Support\Str::limit($sourceLabel, 22);
+                                    $leadCallLogs = ($callLogsAvailable ?? false) ? $lead->callLogs : collect();
+                                    $leadCallCount = ($callLogsAvailable ?? false) ? ($lead->call_logs_count ?? 0) : 0;
+                                    $recentCallTimes = $leadCallLogs
+                                        ->take(3)
+                                        ->map(fn ($callLog) => optional($callLog->called_at)->diffForHumans())
+                                        ->filter()
+                                        ->values();
                                 @endphp
                                 <tr>
                                     <td class="align-top">
@@ -190,6 +206,18 @@
                                                 <span class="badge bg-info/10 text-info">{{ $lead->developer_source }}</span>
                                             @endif
                                         </div>
+                                        <div class="mt-2 text-xs">
+                                            @if ($leadCallCount > 0)
+                                                <span class="text-success font-semibold">Called {{ $leadCallCount }}x</span>
+                                                @if ($recentCallTimes->isNotEmpty())
+                                                    <span class="text-gray-500">— {{ $recentCallTimes->join(', ') }}</span>
+                                                @endif
+                                            @elseif (! ($callLogsAvailable ?? false))
+                                                <span class="text-warning">Run migration to enable call logs</span>
+                                            @else
+                                                <span class="text-gray-400">Not called yet</span>
+                                            @endif
+                                        </div>
                                     </td>
                                     <td class="align-top">
                                         <a href="{{ $lead->website ?: 'https://'.$lead->domain }}" target="_blank" class="text-primary text-xs break-all max-w-[210px] inline-block">{{ $lead->domain }}</a>
@@ -197,6 +225,9 @@
                                     <td class="text-xs align-top">
                                         @if ($firstPhone)
                                             <div class="truncate max-w-[220px]" title="{{ $lead->phones }}">📞 {{ $firstPhone }}</div>
+                                            @if ($callPhone)
+                                                <a href="tel:{{ $callPhone }}" class="ti-btn ti-btn-xs ti-btn-success mt-2">☎ Call now</a>
+                                            @endif
                                         @elseif ($firstEmail)
                                             <div class="truncate max-w-[220px]" title="{{ $lead->emails }}">✉️ {{ $firstEmail }}</div>
                                         @else
@@ -228,6 +259,13 @@
                                             'play_app_url' => $lead->play_app_url,
                                             'package' => $lead->package,
                                             'notes' => $lead->notes,
+                                            'call_count' => $leadCallCount,
+                                            'call_logs' => $leadCallLogs->take(10)->map(fn ($callLog) => [
+                                                'phone' => $callLog->phone,
+                                                'note' => $callLog->note,
+                                                'called_at' => optional($callLog->called_at)->format('Y-m-d H:i'),
+                                                'called_at_human' => optional($callLog->called_at)->diffForHumans(),
+                                            ])->values(),
                                             'last_imported_at' => optional($lead->last_imported_at)->format('Y-m-d H:i'),
                                             'updated_at' => optional($lead->updated_at)->format('Y-m-d H:i'),
                                         ];
@@ -240,6 +278,20 @@
                                         >
                                             👁 Details
                                         </button>
+                                        @if ($callPhone)
+                                            <a href="tel:{{ $callPhone }}" class="ti-btn ti-btn-sm ti-btn-success whitespace-nowrap min-w-[92px] mt-1">
+                                                ☎ Call
+                                            </a>
+                                        @endif
+                                        @if ($callPhone && ($callLogsAvailable ?? false))
+                                            <form method="POST" action="{{ route('admin.marketing_leads.call_logs.store', $lead) }}" class="mt-1">
+                                                @csrf
+                                                <input type="hidden" name="phone" value="{{ $callPhone }}">
+                                                <button class="ti-btn ti-btn-sm ti-btn-warning whitespace-nowrap min-w-[92px]">
+                                                    ✓ Log call
+                                                </button>
+                                            </form>
+                                        @endif
                                     </td>
                                 </tr>
                             @empty
@@ -294,6 +346,7 @@
             developer_source: 'Developer source',
             confidence: 'Confidence',
             confidence_score: 'Confidence score',
+            call_count: 'Call count',
             signals: 'Signals',
             play_app_url: 'Play app URL',
             package: 'Package',
@@ -326,7 +379,7 @@
             domain.textContent = lead.domain || '';
             domain.href = lead.website || '#';
 
-            content.innerHTML = Object.entries(labels).map(([key, label]) => {
+            const detailHtml = Object.entries(labels).map(([key, label]) => {
                 const value = lead[key];
                 const rendered = key === 'play_app_url'
                     ? linkValue(value)
@@ -339,6 +392,30 @@
                     </div>
                 `;
             }).join('');
+
+            const callLogs = Array.isArray(lead.call_logs) ? lead.call_logs : [];
+            const callHistoryHtml = `
+                <div class="md:col-span-2">
+                    <dt class="text-xs uppercase tracking-wide text-gray-500">Call history</dt>
+                    <dd class="mt-2">
+                        ${callLogs.length
+                            ? `<div class="space-y-2">${callLogs.map((callLog) => `
+                                <div class="rounded-lg border border-gray-200 dark:border-white/10 p-3">
+                                    <div class="font-semibold text-gray-800 dark:text-white">
+                                        ${escapeHtml(callLog.called_at_human || callLog.called_at || 'Logged call')}
+                                    </div>
+                                    <div class="text-xs text-gray-500">
+                                        ${escapeHtml(callLog.called_at || '')}${callLog.phone ? ` · ${escapeHtml(callLog.phone)}` : ''}
+                                    </div>
+                                    ${callLog.note ? `<div class="mt-2 whitespace-pre-wrap">${escapeHtml(callLog.note)}</div>` : ''}
+                                </div>
+                            `).join('')}</div>`
+                            : '<span class="text-gray-400">No calls logged yet.</span>'}
+                    </dd>
+                </div>
+            `;
+
+            content.innerHTML = detailHtml + callHistoryHtml;
 
             modal.classList.remove('hidden');
             modal.classList.add('flex');

@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class MarketingLead extends Model
 {
@@ -30,4 +31,9 @@ class MarketingLead extends Model
         'confidence_score' => 'integer',
         'last_imported_at' => 'datetime',
     ];
+
+    public function callLogs(): HasMany
+    {
+        return $this->hasMany(MarketingLeadCallLog::class)->latest('called_at');
+    }
 }

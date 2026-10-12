@@ -1254,13 +1254,16 @@ class ProductsService{
                             for($i = 0; $i < count($phone_numbers_array); $i++ ){
                                 
                                 $dataa['coupon'] = $coupon ?? 0;
-                                $dataa['phone_number'] = $phone_number;
+                                $dataa['phone_number'] = $phone_numbers_array[$i];
                                 $dataa['automation_details'] = $automation_details;
                                 $dataa['provider_plan_id'] = $provider_plan_id;
                                 $dataa['network_id'] = $network_id;
+                                $dataa['product_id'] = $plan_details->product_plan_category->product->id;
+                                $dataa['plan_details'] = $plan_details;
                                 $dataa['plan_id'] = $product_plan_id;
+                                $dataa['amount'] = $service_charge;
                                 $dataa['validatephonenetwork'] = $validatephonenetwork;
-                                $sell_data = AutomationLogic::initiateDataPurchase($dataa);
+                                $sell_data = $this->processDataViaAutomationsForApi($dataa, (float) $service_charge);
                                 $set_for_manual = $sell_data['set_for_manual'] ?? 0;
                                 $upline_commission = $sell_data['upline_commission'] ?? 0;
 
@@ -1277,7 +1280,7 @@ class ProductsService{
                                     //it might be processing or it failed
                                     $coupon_count  = 0;
 
-                                    $status = -1;
+                                    $status = (int) ($sell_data['status'] ?? -1) === 2 ? 2 : -1;
                                     $failure++;
                                     $wallet_before = User::where('id',$user_id)->first()->main_wallet;
                                     $wallet_after = $wallet_before;
@@ -1346,6 +1349,10 @@ class ProductsService{
 
                                 $transaction->update([
                                     'status'               => $status,
+                                    'automation_id'         => $sell_data['automation_id'] ?? null,
+                                    'product_plan_id'       => $sell_data['plan_id'] ?? $product_plan_id,
+                                    'retry_count'           => $sell_data['retry_count'] ?? 0,
+                                    'set_for_manual'        => $set_for_manual,
                                     'balance_before'        => $wallet_before,
                                     'balance_after'         => $wallet_after,
                                     'user_screen_message'  =>$user_message,
@@ -1660,6 +1667,125 @@ class ProductsService{
 
         }
 
+    }
+
+    private function processDataViaAutomationsForApi(array $data, float $amountPaid): array
+    {
+        $planDetails = $data['plan_details'];
+        $retryCount = 0;
+        $lastResponse = null;
+        $lastPlanId = $data['plan_id'] ?? null;
+        $lastAutomationId = null;
+
+        $automationPlans = AutomationProductPlan::with('automation')
+            ->where('product_plan_id', $data['plan_id'])
+            ->where('is_active', 1)
+            ->orderByRaw('CAST(cost_price AS DECIMAL(12,2)) ASC')
+            ->orderByRaw('CAST(priority AS UNSIGNED) ASC')
+            ->get();
+
+        if ($automationPlans->isEmpty()) {
+            $networkPlanCategoryIds = ProductPlanCategory::where('network_id', $data['network_id'])
+                ->where('product_id', $data['product_id'])
+                ->pluck('id')
+                ->toArray();
+
+            $associatedPlans = ProductPlan::with([
+                'automation',
+                'product_plan_category.product',
+                'product_plan_category.network',
+            ])
+                ->where('data_size_in_mb', $planDetails->data_size_in_mb)
+                ->where('validity_in_days', $planDetails->validity_in_days)
+                ->whereIn('product_plan_category_id', $networkPlanCategoryIds)
+                ->where('visibility', 1)
+                ->orderByRaw('CAST(cost_price AS DECIMAL(12,2)) ASC')
+                ->get();
+
+            foreach ($associatedPlans as $associatedPlan) {
+                $lastPlanId = $associatedPlan->id;
+                $lastAutomationId = $associatedPlan->automation?->id;
+
+                if (! $associatedPlan->automation || ! $associatedPlan->automation_product_plan_id) {
+                    logger('API data fallback skipped associated plan with missing automation/provider plan id. plan_id: '.$associatedPlan->id);
+                    continue;
+                }
+
+                if ((float) $associatedPlan->cost_price - $amountPaid > 5) {
+                    logger('API data fallback skipped provider due to excessive loss. provider_price: '.$associatedPlan->cost_price.' customer_paid: '.$amountPaid);
+                    continue;
+                }
+
+                $attempt = $data;
+                $attempt['automation_details'] = $associatedPlan->automation;
+                $attempt['plan_id'] = $associatedPlan->id;
+                $attempt['provider_plan_id'] = $associatedPlan->automation_product_plan_id;
+
+                $lastResponse = AutomationLogic::initiateDataPurchase($attempt);
+
+                if ((int) ($lastResponse['status'] ?? -1) === 1 && (int) ($lastResponse['set_for_manual'] ?? 0) === 0) {
+                    return [
+                        'status' => 1,
+                        'automation_id' => $associatedPlan->automation?->id,
+                        'set_for_manual' => 0,
+                        'retry_count' => $retryCount,
+                        'user_message' => $lastResponse['user_message'] ?? 'Transaction processed successfully.',
+                        'admin_message' => $lastResponse['admin_message'] ?? 'Transaction processed successfully.',
+                        'plan_id' => $associatedPlan->id,
+                    ];
+                }
+
+                logger('API data fallback associated plan failed. automation: '.($associatedPlan->automation?->automation_name ?? 'unknown').' message: '.($lastResponse['user_message'] ?? 'failed'));
+                $retryCount++;
+            }
+        } else {
+            foreach ($automationPlans as $automationPlan) {
+                $lastPlanId = $automationPlan->product_plan_id;
+                $lastAutomationId = $automationPlan->automation?->id;
+
+                if (! $automationPlan->automation || ! $automationPlan->provider_plan_id) {
+                    logger('API data fallback skipped automation mapping with missing automation/provider plan id. mapping_id: '.$automationPlan->id);
+                    continue;
+                }
+
+                if ((float) $automationPlan->cost_price - $amountPaid > 5) {
+                    logger('API data fallback skipped automation provider due to excessive loss. provider_price: '.$automationPlan->cost_price.' customer_paid: '.$amountPaid);
+                    continue;
+                }
+
+                $attempt = $data;
+                $attempt['automation_details'] = $automationPlan->automation;
+                $attempt['provider_plan_id'] = $automationPlan->provider_plan_id;
+                $attempt['plan_id'] = $automationPlan->product_plan_id;
+
+                $lastResponse = AutomationLogic::initiateDataPurchase($attempt);
+
+                if ((int) ($lastResponse['status'] ?? -1) === 1 && (int) ($lastResponse['set_for_manual'] ?? 0) === 0) {
+                    return [
+                        'status' => 1,
+                        'automation_id' => $automationPlan->automation?->id,
+                        'set_for_manual' => 0,
+                        'retry_count' => $retryCount,
+                        'user_message' => $lastResponse['user_message'] ?? 'Transaction processed successfully.',
+                        'admin_message' => $lastResponse['admin_message'] ?? 'Transaction processed successfully.',
+                        'plan_id' => $automationPlan->product_plan_id,
+                    ];
+                }
+
+                logger('API data fallback automation provider failed. automation: '.($automationPlan->automation?->automation_name ?? 'unknown').' message: '.($lastResponse['user_message'] ?? 'failed'));
+                $retryCount++;
+            }
+        }
+
+        return [
+            'status' => 2,
+            'automation_id' => $lastAutomationId,
+            'set_for_manual' => 0,
+            'retry_count' => max($retryCount, 1),
+            'user_message' => 'We were unable to process your transaction at this time. Your wallet has been refunded.',
+            'admin_message' => $lastResponse['admin_message'] ?? $lastResponse['user_message'] ?? 'All API data providers failed for this plan.',
+            'plan_id' => $lastPlanId,
+        ];
     }
 
     private function res(array $data = [])
