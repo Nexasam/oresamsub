@@ -49,6 +49,7 @@ use App\Http\Controllers\AccountOfficerController;
 use App\Http\Controllers\Admin\StandaloneWebsiteController;
 use App\Http\Controllers\Admin\StandaloneFeatureController;
 use App\Http\Controllers\Admin\AirtelGiftingPlanImportController;
+use App\Http\Controllers\Admin\MarketingLeadController;
 use App\Http\Controllers\Template2Controller;
 use App\Http\Controllers\TelecomAbodePlansController;
 use App\Http\Controllers\TransactionController;
@@ -817,6 +818,13 @@ Route::middleware(['set_locale'])->group(function () {
             Route::middleware(['auth','verified','admin'])->post('announcements/store', [AnnouncementsController::class, 'store'])->name('admin.announcements.store');
             Route::middleware(['auth','verified','admin'])->post('announcements/update/{id}', [AnnouncementsController::class, 'update'])->name('admin.announcements.update');
             Route::middleware(['auth','verified','admin'])->post('announcements/network-issue-alert', [AnnouncementsController::class, 'updateNetworkIssueAlert'])->name('admin.announcements.network_issue_alert.update');
+
+            Route::middleware(['auth','verified','admin'])->prefix('admin/marketing-leads')->name('admin.marketing_leads.')->group(function () {
+                Route::get('/', [MarketingLeadController::class, 'index'])->name('index');
+                Route::post('/upload', [MarketingLeadController::class, 'upload'])->name('upload');
+                Route::post('/import-default', [MarketingLeadController::class, 'importDefault'])->name('import_default');
+                Route::post('/run-command', [MarketingLeadController::class, 'runCommand'])->name('run_command');
+            });
             
 
 
