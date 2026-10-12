@@ -115,24 +115,16 @@ class WhatsappConversationService{
         )
         {
             $intent = $session['intent'];
-        
-            /*
-            Saved contact selected
-            */
-            $option = (int) trim($text);
-        
-            if (
-                isset($session['options']) &&
-                isset($session['options'][$option])
-            ) {
-        
-                $intent['phone']
-                    = $session['options'][$option];
-        
-            } else {
-        
-                $intent['phone']
-                    = $this->normalizeWhatsappNumber($text);
+
+            $intent['phone'] = $this->resolveSelectedPhone($text, $session);
+
+            if (empty($intent['phone'])) {
+                app(Whatsappsender::class)->send(
+                    $session['whatsapp_phone'],
+                    "🤔 I couldn't match that contact.\n\nReply with a saved contact number, type the contact name, enter a phone number, or share a WhatsApp contact."
+                );
+
+                return response()->json(['ok' => true]);
             }
         
             return $this->updateSessionAndResolve(
@@ -152,7 +144,7 @@ class WhatsappConversationService{
             $contacts = UserContact::query()
                 ->where('user_id', $user->id)
                 ->latest('last_used_at')
-                ->take(5)
+                ->take(10)
                 ->get();
         
             $cachePayload = [
@@ -183,11 +175,14 @@ class WhatsappConversationService{
                 $message .=
                     "\nYou can:\n"
                     . "• Reply with a contact number above\n"
+                    . "• Type a saved contact name, e.g. Mom\n"
                     . "• Type a phone number\n"
                     . "• Share a WhatsApp contact";
         
                 $cachePayload['options']
                     = $options;
+                $cachePayload['contact_names']
+                    = $this->contactNameOptions($contacts);
         
                 cache()->put(
                     "wa_session:$whatsappPhone",
@@ -287,14 +282,24 @@ class WhatsappConversationService{
                         'airtime'
                     );
         
-                    app(Whatsappsender::class)->sendStartButton(
+                    cache()->put(
+                        "wa_session:{$session['whatsapp_phone']}",
+                        [
+                            'status' => 'contact_save_prompt',
+                            'phone' => $session['phone'],
+                            'network_id' => $session['network_id'] ?? null,
+                            'product_plan_id' => $session['product_plan_id'] ?? null,
+                            'contact_product' => 'airtime',
+                            'whatsapp_phone' => $session['whatsapp_phone'],
+                        ],
+                        now()->addMinutes(10)
+                    );
+
+                    app(Whatsappsender::class)->sendSaveContactButtons(
                         $session['whatsapp_phone'],
                         "✅ Airtime purchase successful.\n\n"
                         . ($payload['message'] ?? '')
-                    );
-
-                    cache()->forget(
-                        "wa_session:" . $session['whatsapp_phone']
+                        . "\n\nWould you like to save this number for future purchases?"
                     );
         
                 } else {
@@ -440,6 +445,20 @@ class WhatsappConversationService{
                 isset($session['options'][$option])
             ) {
                 return $session['options'][$option];
+            }
+
+            if (! empty($session['contact_names'])) {
+                $name = $this->normalizeContactName($text);
+
+                if (isset($session['contact_names'][$name])) {
+                    return $session['contact_names'][$name];
+                }
+
+                $compactName = str_replace(' ', '', $name);
+
+                if (isset($session['contact_names'][$compactName])) {
+                    return $session['contact_names'][$compactName];
+                }
             }
         
             /*
@@ -601,19 +620,15 @@ class WhatsappConversationService{
             )
             {
                 $intent = $session['intent'] ?? [];
-            
-                $option = (int) trim($text);
-            
-                if (
-                    isset($session['options']) &&
-                    isset($session['options'][$option])
-                ) {
-                    $intent['phone']
-                        = $session['options'][$option];
-                } else {
-            
-                    $intent['phone']
-                        = $this->normalizeWhatsappNumber($text);
+                $intent['phone'] = $this->resolveSelectedPhone($text, $session);
+
+                if (empty($intent['phone'])) {
+                    app(Whatsappsender::class)->send(
+                        $session['whatsapp_phone'],
+                        "🤔 I couldn't match that contact.\n\nReply with a saved contact number, type the contact name, enter a phone number, or share a WhatsApp contact."
+                    );
+
+                    return response()->json(['ok' => true]);
                 }
             
                 $planId =
@@ -805,7 +820,7 @@ class WhatsappConversationService{
                     $contacts = UserContact::query()
                         ->where('user_id', $user->id)
                         ->latest('last_used_at')
-                        ->take(5)
+                        ->take(10)
                         ->get();
                 
                     $cachePayload = array_merge(
@@ -837,10 +852,12 @@ class WhatsappConversationService{
                         $message .=
                             "\nYou can:\n"
                             . "• Reply with a contact number above\n"
+                            . "• Type a saved contact name, e.g. Mom\n"
                             . "• Type a phone number\n"
                             . "• Share a WhatsApp contact";
                 
                         $cachePayload['options'] = $options;
+                        $cachePayload['contact_names'] = $this->contactNameOptions($contacts);
                 
                         cache()->put(
                             "wa_session:$whatsappPhone",
@@ -1359,7 +1376,7 @@ class WhatsappConversationService{
             [
                 'name' => $name,
                 'network_id' => $session['network_id'] ?? null,
-                'product' => 'data',
+                'product' => $session['contact_product'] ?? 'data',
                 'product_plan_id' => $session['product_plan_id'] ?? null,
                 'last_used_at' => now(),
             ]
@@ -1643,5 +1660,37 @@ class WhatsappConversationService{
         }
 
         return $phone;
+    }
+
+    private function contactNameOptions($contacts): array
+    {
+        $options = [];
+
+        foreach ($contacts as $contact) {
+            $phone = (string) $contact->phone_number;
+            $name = $this->normalizeContactName((string) $contact->name);
+
+            if ($name === '') {
+                continue;
+            }
+
+            $options[$name] = $phone;
+
+            $compactName = str_replace(' ', '', $name);
+
+            if ($compactName !== $name) {
+                $options[$compactName] = $phone;
+            }
+        }
+
+        return $options;
+    }
+
+    private function normalizeContactName(string $name): string
+    {
+        $name = strtolower(trim($name));
+        $name = preg_replace('/\s+/', ' ', $name);
+
+        return (string) $name;
     }
 }

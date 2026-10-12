@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\v1\VendorUsersApi;
 use App\Http\Controllers\Controller;
 use App\Mail\WhatsappLinkOtpMail;
 use App\Models\OreWhatsappConfig;
+use App\Models\UserContact;
 use App\Models\User;
 use App\Models\WhatsappConfig;
 use App\Services\Whatsapp\MegaWhatsappConversationService;
@@ -458,11 +459,15 @@ class WhatsappWebhookController extends Controller
             return $this->sendRecentCommands($phone, $user);
         }
 
-        $quickCommandService = app(WhatsappQuickCommandService::class);
-        $copyCommandId = $quickCommandService->idFromCopyText($text);
+        if ($this->isSavedContactsRequest($text)) {
+            return $this->sendSavedContacts($phone, $user);
+        }
 
-        if ($copyCommandId) {
-            $quickCommand = $quickCommandService->findForReplay($copyCommandId, $user, $phone);
+        $quickCommandService = app(WhatsappQuickCommandService::class);
+        $anotherNumberCommandId = $quickCommandService->idFromAnotherNumberText($text);
+
+        if ($anotherNumberCommandId) {
+            $quickCommand = $quickCommandService->findForReplay($anotherNumberCommandId, $user, $phone);
 
             if (! $quickCommand) {
                 app(Whatsappsender::class)->send(
@@ -473,17 +478,23 @@ class WhatsappWebhookController extends Controller
                 return response()->json(['ok' => true]);
             }
 
+            $commandWithoutPhone = $this->removeRecipientPhoneFromCommand($quickCommand->command);
+
             app(Whatsappsender::class)->send(
                 $phone,
-                "📋 Copy this command:\n\n`{$quickCommand->command}`\n\nLong-press the command above to copy it, or tap *Recent Commands* again and choose *Run* to execute it directly."
+                "📱 Okay — let's buy it for another number.\n\n"
+                . "Using:\n{$commandWithoutPhone}\n\n"
+                . "I'll ask for the new recipient number next."
             );
 
-            return response()->json(['ok' => true]);
+            $text = strtolower($commandWithoutPhone);
+            $session = null;
+            cache()->forget("wa_session:$phone");
         }
 
         $replayCommandId = $quickCommandService->idFromReplayText($text);
 
-        if ($replayCommandId) {
+        if ($replayCommandId && ! $anotherNumberCommandId) {
             $quickCommand = $quickCommandService->findForReplay($replayCommandId, $user, $phone);
 
             if (! $quickCommand) {
@@ -942,8 +953,7 @@ class WhatsappWebhookController extends Controller
         }
 
         $message = "📋 *Previous Commands*\n\n"
-            . "Tap one below to run it again.\n\n"
-            . "You can also copy and send any command manually:\n\n";
+            . "Choose *Run* to repeat exactly, or *Another No.* to use the same plan/amount for a new number.\n\n";
 
         $rows = [];
 
@@ -952,14 +962,14 @@ class WhatsappWebhookController extends Controller
 
             $rows[] = [
                 'id' => $service->replayId($command->id),
-                'title' => str('▶ '.$command->label)->limit(24, '')->toString(),
+                'title' => str('▶ Run '.$command->label)->limit(24, '')->toString(),
                 'description' => str($command->command)->limit(72, '')->toString(),
             ];
 
             $rows[] = [
-                'id' => $service->copyId($command->id),
-                'title' => str('📋 Copy '.$command->label)->limit(24, '')->toString(),
-                'description' => 'Send command text only for easy copy',
+                'id' => $service->anotherNumberId($command->id),
+                'title' => str('📱 Another No.')->limit(24, '')->toString(),
+                'description' => str($command->command)->limit(72, '')->toString(),
             ];
         }
 
@@ -970,6 +980,72 @@ class WhatsappWebhookController extends Controller
         );
 
         return response()->json(['ok' => true]);
+    }
+
+    private function isSavedContactsRequest(string $text): bool
+    {
+        return in_array(strtolower(trim($text)), [
+            'contact',
+            'contacts',
+            'saved contact',
+            'saved contacts',
+            'my contacts',
+            'beneficiaries',
+            'beneficiary',
+        ], true);
+    }
+
+    private function sendSavedContacts(string $phone, ?User $user)
+    {
+        if (! $user) {
+            app(Whatsappsender::class)->send(
+                $phone,
+                "Please link your WhatsApp number first, then you can view saved contacts."
+            );
+
+            return response()->json(['ok' => true]);
+        }
+
+        $contacts = UserContact::query()
+            ->where('user_id', $user->id)
+            ->latest('last_used_at')
+            ->take(10)
+            ->get();
+
+        if ($contacts->isEmpty()) {
+            app(Whatsappsender::class)->send(
+                $phone,
+                "📇 You don't have saved contacts yet.\n\nAfter a successful purchase, choose *Save Contact* so you can use names like *mum*, *dad*, or *office* next time."
+            );
+
+            return response()->json(['ok' => true]);
+        }
+
+        $message = "📇 *Saved Contacts*\n\n";
+
+        foreach ($contacts as $index => $contact) {
+            $message .= ($index + 1).". {$contact->name} - {$contact->phone_number}\n";
+        }
+
+        $message .= "\nWhen buying data or airtime, you can reply with the number above, type the saved name, type a phone number, or share a WhatsApp contact.";
+
+        app(Whatsappsender::class)->send($phone, $message);
+
+        return response()->json(['ok' => true]);
+    }
+
+    private function removeRecipientPhoneFromCommand(string $command): string
+    {
+        $withoutPhone = preg_replace(
+            '/(?:\\+?234|0)[789]\\d{9}\\b/',
+            '',
+            $command,
+            1
+        );
+
+        $withoutPhone = preg_replace('/\\s+/', ' ', trim((string) $withoutPhone));
+
+        return $withoutPhone !== '' ? $withoutPhone : $command;
     }
 
     private function handleWhatsappLinking(
