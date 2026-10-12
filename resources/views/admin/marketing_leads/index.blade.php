@@ -156,55 +156,79 @@
                         <button class="ti-btn ti-btn-primary">Filter</button>
                     </form>
                 </div>
-                <div class="box-body overflow-auto">
+                <div class="box-body">
                     <table class="ti-custom-table ti-custom-table-head w-full">
                         <thead>
                             <tr>
                                 <th>Lead</th>
+                                <th>Domain</th>
                                 <th>Contact</th>
-                                <th>Source</th>
                                 <th>Confidence</th>
-                                <th>Signals / Notes</th>
-                                <th>Imported</th>
+                                <th>Source</th>
+                                <th>Action</th>
                             </tr>
                         </thead>
                         <tbody>
                             @forelse ($leads as $lead)
                                 <tr>
-                                    <td>
+                                    <td class="align-top">
                                         <div class="font-semibold">{{ $lead->company_name ?: $lead->app_name ?: $lead->domain }}</div>
-                                        <a href="{{ $lead->website ?: 'https://'.$lead->domain }}" target="_blank" class="text-primary text-xs">{{ $lead->domain }}</a>
                                         @if ($lead->app_name)
-                                            <div class="text-xs text-gray-500">App: {{ $lead->app_name }}</div>
+                                            <div class="text-xs text-gray-500 truncate max-w-[220px]">App: {{ $lead->app_name }}</div>
                                         @endif
                                     </td>
-                                    <td class="text-xs">
+                                    <td class="align-top">
+                                        <a href="{{ $lead->website ?: 'https://'.$lead->domain }}" target="_blank" class="text-primary text-xs break-all">{{ $lead->domain }}</a>
+                                    </td>
+                                    <td class="text-xs align-top">
                                         @if ($lead->phones)
-                                            <div>📞 {{ $lead->phones }}</div>
+                                            <div class="truncate max-w-[210px]">📞 {{ $lead->phones }}</div>
                                         @endif
                                         @if ($lead->emails)
-                                            <div>✉️ {{ $lead->emails }}</div>
+                                            <div class="truncate max-w-[210px]">✉️ {{ $lead->emails }}</div>
                                         @endif
-                                        @if ($lead->whatsapp_links)
-                                            <div>💬 {{ $lead->whatsapp_links }}</div>
-                                        @endif
-                                    </td>
-                                    <td class="text-xs">
-                                        <div>{{ $lead->source }}</div>
-                                        @if ($lead->developer_source)
-                                            <span class="badge bg-info/10 text-info">{{ $lead->developer_source }}</span>
+                                        @if (! $lead->phones && ! $lead->emails)
+                                            <span class="text-gray-400">No contact yet</span>
                                         @endif
                                     </td>
-                                    <td>
+                                    <td class="align-top">
                                         <span class="badge {{ $lead->confidence === 'high' ? 'bg-success/10 text-success' : 'bg-warning/10 text-warning' }}">
                                             {{ $lead->confidence ?: 'n/a' }} {{ $lead->confidence_score !== null ? $lead->confidence_score : '' }}
                                         </span>
                                     </td>
-                                    <td class="text-xs max-w-md">
-                                        <div>{{ $lead->signals }}</div>
-                                        <div class="text-gray-500">{{ $lead->notes }}</div>
+                                    <td class="text-xs align-top">
+                                        <div class="truncate max-w-[160px]">{{ $lead->source }}</div>
+                                        @if ($lead->developer_source)
+                                            <span class="badge bg-info/10 text-info">{{ $lead->developer_source }}</span>
+                                        @endif
                                     </td>
-                                    <td class="text-xs">{{ optional($lead->last_imported_at)->format('Y-m-d H:i') }}</td>
+                                    <td class="align-top">
+                                        <button
+                                            type="button"
+                                            class="ti-btn ti-btn-sm ti-btn-light marketing-lead-view"
+                                            data-lead='@json([
+                                                'name' => $lead->company_name ?: $lead->app_name ?: $lead->domain,
+                                                'domain' => $lead->domain,
+                                                'website' => $lead->website ?: ('https://'.$lead->domain),
+                                                'app_name' => $lead->app_name,
+                                                'phones' => $lead->phones,
+                                                'emails' => $lead->emails,
+                                                'whatsapp_links' => $lead->whatsapp_links,
+                                                'source' => $lead->source,
+                                                'developer_source' => $lead->developer_source,
+                                                'confidence' => $lead->confidence,
+                                                'confidence_score' => $lead->confidence_score,
+                                                'signals' => $lead->signals,
+                                                'play_app_url' => $lead->play_app_url,
+                                                'package' => $lead->package,
+                                                'notes' => $lead->notes,
+                                                'last_imported_at' => optional($lead->last_imported_at)->format('Y-m-d H:i'),
+                                                'updated_at' => optional($lead->updated_at)->format('Y-m-d H:i'),
+                                            ])'
+                                        >
+                                            View
+                                        </button>
+                                    </td>
                                 </tr>
                             @empty
                                 <tr>
@@ -224,4 +248,112 @@
         </div>
     </div>
 </div>
+
+<div id="marketingLeadModal" class="fixed inset-0 z-[9999] hidden items-center justify-center bg-black/60 px-4">
+    <div class="bg-white dark:bg-bgdark rounded-xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-hidden">
+        <div class="flex items-center justify-between border-b border-gray-200 dark:border-white/10 px-5 py-4">
+            <div>
+                <h4 id="marketingLeadModalTitle" class="text-lg font-semibold text-gray-800 dark:text-white">Lead details</h4>
+                <a id="marketingLeadModalDomain" href="#" target="_blank" class="text-xs text-primary break-all"></a>
+            </div>
+            <button type="button" id="marketingLeadModalClose" class="text-gray-500 hover:text-danger text-2xl leading-none">&times;</button>
+        </div>
+
+        <div class="p-5 overflow-y-auto max-h-[75vh]">
+            <dl id="marketingLeadModalContent" class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm"></dl>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const modal = document.getElementById('marketingLeadModal');
+        const title = document.getElementById('marketingLeadModalTitle');
+        const domain = document.getElementById('marketingLeadModalDomain');
+        const content = document.getElementById('marketingLeadModalContent');
+        const close = document.getElementById('marketingLeadModalClose');
+
+        const labels = {
+            app_name: 'App name',
+            phones: 'Phones',
+            emails: 'Emails',
+            whatsapp_links: 'WhatsApp links',
+            source: 'Source',
+            developer_source: 'Developer source',
+            confidence: 'Confidence',
+            confidence_score: 'Confidence score',
+            signals: 'Signals',
+            play_app_url: 'Play app URL',
+            package: 'Package',
+            notes: 'Notes',
+            last_imported_at: 'Last imported',
+            updated_at: 'Updated',
+        };
+
+        const escapeHtml = (value) => String(value ?? '').replace(/[&<>"']/g, function (char) {
+            return ({
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                '"': '&quot;',
+                "'": '&#039;',
+            })[char];
+        });
+
+        const linkValue = (value) => {
+            const text = escapeHtml(value);
+            if (! value || ! /^https?:\/\//i.test(value)) {
+                return text || '<span class="text-gray-400">—</span>';
+            }
+
+            return `<a href="${text}" target="_blank" class="text-primary break-all">${text}</a>`;
+        };
+
+        const openModal = (lead) => {
+            title.textContent = lead.name || 'Lead details';
+            domain.textContent = lead.domain || '';
+            domain.href = lead.website || '#';
+
+            content.innerHTML = Object.entries(labels).map(([key, label]) => {
+                const value = lead[key];
+                const rendered = key === 'play_app_url'
+                    ? linkValue(value)
+                    : (escapeHtml(value) || '<span class="text-gray-400">—</span>');
+
+                return `
+                    <div class="${['signals', 'notes', 'whatsapp_links', 'emails', 'phones', 'play_app_url'].includes(key) ? 'md:col-span-2' : ''}">
+                        <dt class="text-xs uppercase tracking-wide text-gray-500">${label}</dt>
+                        <dd class="mt-1 text-gray-800 dark:text-white break-words whitespace-pre-wrap">${rendered}</dd>
+                    </div>
+                `;
+            }).join('');
+
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        };
+
+        const closeModal = () => {
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        };
+
+        document.querySelectorAll('.marketing-lead-view').forEach((button) => {
+            button.addEventListener('click', function () {
+                openModal(JSON.parse(this.dataset.lead || '{}'));
+            });
+        });
+
+        close.addEventListener('click', closeModal);
+        modal.addEventListener('click', function (event) {
+            if (event.target === modal) {
+                closeModal();
+            }
+        });
+        document.addEventListener('keydown', function (event) {
+            if (event.key === 'Escape') {
+                closeModal();
+            }
+        });
+    });
+</script>
 @endsection
