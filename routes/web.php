@@ -50,6 +50,7 @@ use App\Http\Controllers\Admin\StandaloneWebsiteController;
 use App\Http\Controllers\Admin\StandaloneFeatureController;
 use App\Http\Controllers\Admin\AirtelGiftingPlanImportController;
 use App\Http\Controllers\Admin\MarketingLeadController;
+use App\Http\Controllers\Admin\SalesReportController;
 use App\Http\Controllers\Template2Controller;
 use App\Http\Controllers\TelecomAbodePlansController;
 use App\Http\Controllers\TransactionController;
@@ -978,6 +979,8 @@ Route::middleware(['set_locale'])->group(function () {
             Route::middleware(['auth','verified','admin'])->post('transactions/manually_mark_transaction_as_successful', [TransactionController::class, 'manually_mark_transaction_as_successful'])->name('transactions.manually_mark_transaction_as_successful');
             Route::middleware(['auth','verified','admin'])->get('admin/transactions/admin_fetch_transactions', [TransactionController::class, 'admin_fetch_transactions'])->name('admin.transactions.admin_fetch_transactions');
             Route::middleware(['auth','verified','admin'])->get('admin/transactions/index', [TransactionController::class, 'admin_all_transactions'])->name('admin.transactions.index');
+            Route::middleware(['auth','verified','admin'])->get('admin/reports/sales', SalesReportController::class)->name('admin.reports.sales');
+            Route::middleware(['auth','verified','admin'])->get('admin/reports/sales/v2', SalesReportController::class)->name('admin.reports.sales.v2');
             Route::middleware(['auth','verified','admin'])->get('admin/airtime-to-cash', [AirtimeToCashController::class, 'adminIndex'])->name('admin.airtime-to-cash.index');
             Route::middleware(['auth','verified','admin'])->put('admin/airtime-to-cash/{airtimeToCashRequest}', [AirtimeToCashController::class, 'adminUpdate'])->name('admin.airtime-to-cash.update');
             Route::middleware(['auth','verified','admin'])->post('admin/airtime-to-cash/settings', [AirtimeToCashController::class, 'adminSettings'])->name('admin.airtime-to-cash.settings');

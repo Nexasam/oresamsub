@@ -216,6 +216,19 @@
                   </li>
                 <!-- End::slide -->
 
+                 <!-- Start::slide -->
+                 <li class="slide  has-sub">
+                    <a href="{{ route('admin.reports.sales.v2')}}" class="side-menu__item">
+                        <i class="ti ti-chart-bar side-menu__icon"></i>
+                        <span class="side-menu__label">Sales Calculator</span>
+                        <i class="ri ri-arrow-right-s-line side-menu__angle"></i>
+                    </a>
+                    <ul class="slide-menu child1">
+                        {{-- Sales performance, plan counts, and top customers --}}
+                    </ul>
+                  </li>
+                <!-- End::slide -->
+
                 <!-- Start::slide -->
                 <li class="slide  has-sub">
                     <a href="{{ route('admin.airtime-to-cash.index')}}" class="side-menu__item">
