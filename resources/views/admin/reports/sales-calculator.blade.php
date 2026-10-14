@@ -19,11 +19,12 @@
         min-width: 0;
     }
 
-    .sales-report-page .sales-filter-card .card-body {
+    .sales-report-page .sales-filter-card .box-body {
         padding: 1.25rem;
     }
 
-    .sales-report-page .sales-filter-card .form-label {
+    .sales-report-page .sales-filter-card .ti-form-label {
+        display: block;
         margin-bottom: .4rem;
         font-size: .78rem;
         font-weight: 700;
@@ -31,9 +32,9 @@
         color: #475569;
     }
 
-    .sales-report-page .sales-filter-card .form-control,
-    .sales-report-page .sales-filter-card .form-select,
-    .sales-report-page .select2-container .select2-selection--single {
+    .sales-report-page .sales-filter-card .ti-form-input,
+    .sales-report-page .sales-filter-card .ti-form-select {
+        width: 100%;
         min-height: 42px;
     }
 
@@ -155,6 +156,9 @@
 
     .sales-report-page .sales-table th {
         white-space: nowrap;
+        padding: .8rem 1rem;
+        background: #f8fafc;
+        border-bottom: 1px solid var(--sales-border);
         font-size: .76rem;
         text-transform: uppercase;
         letter-spacing: .025em;
@@ -162,7 +166,19 @@
     }
 
     .sales-report-page .sales-table td {
+        padding: .85rem 1rem;
+        border-bottom: 1px solid var(--sales-border);
+        color: #334155;
+        font-size: .84rem;
         vertical-align: middle;
+    }
+
+    .sales-report-page .sales-table tbody tr:last-child td {
+        border-bottom: 0;
+    }
+
+    .sales-report-page .sales-table tbody tr:hover td {
+        background: #f8fafc;
     }
 
     .sales-report-page .plan-cell {
@@ -175,13 +191,8 @@
     }
 
     @media (max-width: 767.98px) {
-        .sales-report-page .sales-filter-card .card-body {
+        .sales-report-page .sales-filter-card .box-body {
             padding: 1rem;
-        }
-
-        .sales-report-page .sales-page-actions,
-        .sales-report-page .sales-page-actions .btn {
-            width: 100%;
         }
 
         .sales-report-page .sales-highlight-row {
@@ -193,47 +204,70 @@
             text-align: left !important;
         }
     }
+
+    .dark .sales-report-page .plan-picker-toggle,
+    .dark .sales-report-page .plan-picker-menu {
+        background: rgb(25 33 50);
+        border-color: rgb(255 255 255 / .1);
+        color: rgb(255 255 255 / .8);
+    }
+
+    .dark .sales-report-page .sales-table th,
+    .dark .sales-report-page .sales-table tbody tr:hover td {
+        background: rgb(255 255 255 / .03);
+    }
+
+    .dark .sales-report-page .sales-table th,
+    .dark .sales-report-page .sales-table td {
+        border-color: rgb(255 255 255 / .08);
+        color: rgb(255 255 255 / .75);
+    }
 </style>
 
-<div class="main-content app-content sales-report-page">
-    <div class="container-fluid">
-        <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-4">
+<div class="main-content sales-report-page">
+        <div class="block justify-between page-header md:flex">
             <div class="sales-page-heading">
-                <h1 class="h3 mb-1">Sales Calculator</h1>
-                <p class="text-muted mb-0">Track daily sales, plan count, averages, and your highest buying customers.</p>
+                <h1 class="text-2xl font-semibold text-gray-800 dark:text-white">Sales Calculator</h1>
+                <p class="mt-1 text-sm text-gray-500 dark:text-white/60">Track daily sales, plan count, averages, and your highest buying customers.</p>
             </div>
-            <div class="sales-page-actions">
-                <a href="{{ route('admin.transactions.index') }}" class="btn btn-outline-secondary">
+            <div class="sales-page-actions mt-3 md:mt-0">
+                <a href="{{ route('admin.transactions.index') }}" class="ti-btn ti-btn-light">
                     View Transactions
                 </a>
             </div>
         </div>
 
-        <div class="card custom-card sales-filter-card mb-4">
-            <div class="card-body">
-                <form method="GET" action="{{ route('admin.reports.sales.v2') }}" class="row g-3 align-items-end">
-                    <div class="col-sm-6 col-xl-2">
-                        <label class="form-label">Period</label>
-                        <select name="period" class="form-select">
+        <div class="box sales-filter-card mb-4">
+            <div class="box-header">
+                <div>
+                    <h5 class="box-title">Report filters</h5>
+                    <p class="mt-1 text-xs text-gray-500">Choose a period and optionally narrow the results.</p>
+                </div>
+            </div>
+            <div class="box-body">
+                <form method="GET" action="{{ route('admin.reports.sales.v2') }}" class="grid grid-cols-12 gap-4 items-end">
+                    <div class="col-span-12 sm:col-span-6 xl:col-span-2">
+                        <label class="ti-form-label">Period</label>
+                        <select name="period" class="ti-form-select">
                             @foreach($periods as $value => $label)
                                 <option value="{{ $value }}" @selected($filters['period'] === $value)>{{ $label }}</option>
                             @endforeach
                         </select>
                     </div>
 
-                    <div class="col-sm-6 col-xl-2">
-                        <label class="form-label">From</label>
-                        <input type="date" name="date_from" value="{{ old('date_from', $dateValue($filters['date_from'])) }}" class="form-control">
+                    <div class="col-span-12 sm:col-span-6 xl:col-span-2">
+                        <label class="ti-form-label">From</label>
+                        <input type="date" name="date_from" value="{{ old('date_from', $dateValue($filters['date_from'])) }}" class="ti-form-input">
                     </div>
 
-                    <div class="col-sm-6 col-xl-2">
-                        <label class="form-label">To</label>
-                        <input type="date" name="date_to" value="{{ old('date_to', $dateValue($filters['date_to'])) }}" class="form-control">
+                    <div class="col-span-12 sm:col-span-6 xl:col-span-2">
+                        <label class="ti-form-label">To</label>
+                        <input type="date" name="date_to" value="{{ old('date_to', $dateValue($filters['date_to'])) }}" class="ti-form-input">
                     </div>
 
-                    <div class="col-sm-6 col-xl-3">
-                        <label class="form-label">Customer</label>
-                        <select name="user_id" class="form-select">
+                    <div class="col-span-12 sm:col-span-6 xl:col-span-3">
+                        <label class="ti-form-label">Customer</label>
+                        <select name="user_id" class="ti-form-select">
                             <option value="">All customers</option>
                             @foreach($users as $user)
                                 @php($fullName = trim($user->first_name.' '.$user->last_name))
@@ -244,9 +278,9 @@
                         </select>
                     </div>
 
-                    <div class="col-sm-6 col-xl-3">
-                        <label class="form-label">Product type</label>
-                        <select name="product_type" class="form-select">
+                    <div class="col-span-12 sm:col-span-6 xl:col-span-3">
+                        <label class="ti-form-label">Product type</label>
+                        <select name="product_type" class="ti-form-select">
                             <option value="">All product types</option>
                             @foreach($productTypes as $value => $label)
                                 <option value="{{ $value }}" @selected(($filters['product_type'] ?? '') === $value)>{{ $label }}</option>
@@ -254,9 +288,9 @@
                         </select>
                     </div>
 
-                    <div class="col-sm-6 col-xl-3">
-                        <label class="form-label">Network</label>
-                        <select name="network_id" class="form-select">
+                    <div class="col-span-12 sm:col-span-6 xl:col-span-3">
+                        <label class="ti-form-label">Network</label>
+                        <select name="network_id" class="ti-form-select">
                             <option value="">All networks</option>
                             @foreach($networks as $network)
                                 <option value="{{ $network->id }}" @selected(($filters['network_id'] ?? '') === $network->id)>{{ $network->network_name }}</option>
@@ -264,9 +298,9 @@
                         </select>
                     </div>
 
-                    <div class="col-sm-6 col-xl-3">
-                        <label class="form-label">Category</label>
-                        <select name="category_id" class="form-select">
+                    <div class="col-span-12 sm:col-span-6 xl:col-span-3">
+                        <label class="ti-form-label">Category</label>
+                        <select name="category_id" class="ti-form-select">
                             <option value="">All categories</option>
                             @foreach($categories as $category)
                                 <option value="{{ $category->id }}" @selected(($filters['category_id'] ?? '') === $category->id)>
@@ -279,8 +313,8 @@
                         </select>
                     </div>
 
-                    <div class="col-xl-6">
-                        <label class="form-label">Specific plans</label>
+                    <div class="col-span-12 xl:col-span-6">
+                        <label class="ti-form-label">Specific plans</label>
                         <div class="plan-picker" id="sales-plan-picker">
                             <button type="button" class="plan-picker-toggle" aria-expanded="false" aria-controls="sales-plan-menu">
                                 <span class="plan-picker-label">{{ count($selectedPlanIds) ? count($selectedPlanIds).' plan(s) selected' : 'All plans' }}</span>
@@ -288,9 +322,9 @@
                             </button>
 
                             <div class="plan-picker-menu" id="sales-plan-menu" hidden>
-                                <div class="d-flex gap-2">
-                                    <input type="search" class="form-control form-control-sm plan-picker-search" placeholder="Search plan name or API ID..." autocomplete="off">
-                                    <button type="button" class="btn btn-sm btn-outline-secondary plan-picker-clear">Clear</button>
+                                <div class="flex gap-2">
+                                    <input type="search" class="ti-form-input plan-picker-search" placeholder="Search plan name or API ID..." autocomplete="off">
+                                    <button type="button" class="ti-btn ti-btn-light plan-picker-clear">Clear</button>
                                 </div>
 
                                 <div class="plan-picker-list">
@@ -311,64 +345,64 @@
                                 </div>
                             </div>
                         </div>
-                        <small class="text-muted">Search and select one or more plans, or leave empty for all plans.</small>
+                        <small class="mt-1 block text-xs text-gray-500">Search and select one or more plans, or leave empty for all plans.</small>
                     </div>
 
-                    <div class="col-sm-6 col-xl-3 d-grid">
-                        <button class="btn btn-primary">Calculate</button>
+                    <div class="col-span-12 sm:col-span-6 xl:col-span-3">
+                        <button class="ti-btn ti-btn-primary w-full">Calculate</button>
                     </div>
 
-                    <div class="col-sm-6 col-xl-3 d-grid">
-                        <a href="{{ route('admin.reports.sales.v2') }}" class="btn btn-light">Reset</a>
+                    <div class="col-span-12 sm:col-span-6 xl:col-span-3">
+                        <a href="{{ route('admin.reports.sales.v2') }}" class="ti-btn ti-btn-light w-full">Reset</a>
                     </div>
                 </form>
             </div>
         </div>
 
-        <div class="row g-3 mb-4">
-            <div class="col-6 col-lg-4 col-xl-2">
-                <div class="card custom-card sales-summary-card h-100">
-                    <div class="card-body">
+        <div class="grid grid-cols-12 gap-4 mb-4">
+            <div class="col-span-6 lg:col-span-4 xl:col-span-2">
+                <div class="box sales-summary-card h-full mb-0">
+                    <div class="box-body">
                         <span class="sales-summary-label">Sales Value</span>
                         <h3 class="sales-summary-value">{{ $currency($summary['total_sales']) }}</h3>
                     </div>
                 </div>
             </div>
-            <div class="col-6 col-lg-4 col-xl-2">
-                <div class="card custom-card sales-summary-card h-100">
-                    <div class="card-body">
+            <div class="col-span-6 lg:col-span-4 xl:col-span-2">
+                <div class="box sales-summary-card h-full mb-0">
+                    <div class="box-body">
                         <span class="sales-summary-label">Transactions</span>
                         <h3 class="sales-summary-value">{{ $number($summary['quantity_sold']) }}</h3>
                     </div>
                 </div>
             </div>
-            <div class="col-6 col-lg-4 col-xl-2">
-                <div class="card custom-card sales-summary-card h-100">
-                    <div class="card-body">
+            <div class="col-span-6 lg:col-span-4 xl:col-span-2">
+                <div class="box sales-summary-card h-full mb-0">
+                    <div class="box-body">
                         <span class="sales-summary-label">Data Volume</span>
                         <h3 class="sales-summary-value">{{ $number($summary['total_volume_gb'], 2) }}GB</h3>
                     </div>
                 </div>
             </div>
-            <div class="col-6 col-lg-4 col-xl-2">
-                <div class="card custom-card sales-summary-card h-100">
-                    <div class="card-body">
+            <div class="col-span-6 lg:col-span-4 xl:col-span-2">
+                <div class="box sales-summary-card h-full mb-0">
+                    <div class="box-body">
                         <span class="sales-summary-label">Avg Count/Day</span>
                         <h3 class="sales-summary-value">{{ $number($summary['average_count_per_day'], 1) }}</h3>
                     </div>
                 </div>
             </div>
-            <div class="col-6 col-lg-4 col-xl-2">
-                <div class="card custom-card sales-summary-card h-100">
-                    <div class="card-body">
+            <div class="col-span-6 lg:col-span-4 xl:col-span-2">
+                <div class="box sales-summary-card h-full mb-0">
+                    <div class="box-body">
                         <span class="sales-summary-label">Customers</span>
                         <h3 class="sales-summary-value">{{ $number($summary['customer_count']) }}</h3>
                     </div>
                 </div>
             </div>
-            <div class="col-6 col-lg-4 col-xl-2">
-                <div class="card custom-card sales-summary-card h-100">
-                    <div class="card-body">
+            <div class="col-span-6 lg:col-span-4 xl:col-span-2">
+                <div class="box sales-summary-card h-full mb-0">
+                    <div class="box-body">
                         <span class="sales-summary-label">Plans Sold</span>
                         <h3 class="sales-summary-value">{{ $number($summary['product_count']) }}</h3>
                     </div>
@@ -376,72 +410,72 @@
             </div>
         </div>
 
-        <div class="row g-3 mb-4">
-            <div class="col-lg-6">
-                <div class="card custom-card h-100">
-                    <div class="card-body">
-                        <h5 class="mb-3">Top Buyer</h5>
+        <div class="grid grid-cols-12 gap-4 mb-4">
+            <div class="col-span-12 lg:col-span-6">
+                <div class="box h-full mb-0">
+                    <div class="box-body">
+                        <h5 class="mb-3 font-semibold text-gray-800 dark:text-white">Top Buyer</h5>
                         @if($summary['top_customer'])
-                            <div class="d-flex justify-content-between gap-3 sales-highlight-row">
+                            <div class="flex justify-between gap-3 sales-highlight-row">
                                 <div class="sales-highlight-content">
-                                    <h4 class="mb-1">{{ $summary['top_customer']['username'] }}</h4>
-                                    <p class="text-muted mb-0">{{ $summary['top_customer']['name'] ?: $summary['top_customer']['email'] }}</p>
+                                    <h4 class="mb-1 text-lg font-semibold">{{ $summary['top_customer']['username'] }}</h4>
+                                    <p class="text-sm text-gray-500">{{ $summary['top_customer']['name'] ?: $summary['top_customer']['email'] }}</p>
                                 </div>
-                                <div class="text-end sales-highlight-stat">
-                                    <div class="fw-semibold">{{ $number($summary['top_customer']['quantity_sold']) }} txns</div>
+                                <div class="text-right sales-highlight-stat">
+                                    <div class="font-semibold">{{ $number($summary['top_customer']['quantity_sold']) }} txns</div>
                                     <div>{{ $currency($summary['top_customer']['total_sales']) }}</div>
                                 </div>
                             </div>
                         @else
-                            <p class="text-muted mb-0">No successful sales for this filter.</p>
+                            <p class="text-sm text-gray-500">No successful sales for this filter.</p>
                         @endif
                     </div>
                 </div>
             </div>
 
-            <div class="col-lg-6">
-                <div class="card custom-card h-100">
-                    <div class="card-body">
-                        <h5 class="mb-3">Best Selling Plan</h5>
+            <div class="col-span-12 lg:col-span-6">
+                <div class="box h-full mb-0">
+                    <div class="box-body">
+                        <h5 class="mb-3 font-semibold text-gray-800 dark:text-white">Best Selling Plan</h5>
                         @if($summary['top_product'])
-                            <div class="d-flex justify-content-between gap-3 sales-highlight-row">
+                            <div class="flex justify-between gap-3 sales-highlight-row">
                                 <div class="sales-highlight-content">
-                                    <h4 class="mb-1">{{ $summary['top_product']['plan_name'] }}</h4>
-                                    <p class="text-muted mb-0">
+                                    <h4 class="mb-1 text-lg font-semibold">{{ $summary['top_product']['plan_name'] }}</h4>
+                                    <p class="text-sm text-gray-500">
                                         {{ $summary['top_product']['network_name'] ?: 'No network' }}
                                         @if($summary['top_product']['category_name'])
                                             · {{ $summary['top_product']['category_name'] }}
                                         @endif
                                     </p>
                                 </div>
-                                <div class="text-end sales-highlight-stat">
-                                    <div class="fw-semibold">{{ $number($summary['top_product']['quantity_sold']) }} sold</div>
+                                <div class="text-right sales-highlight-stat">
+                                    <div class="font-semibold">{{ $number($summary['top_product']['quantity_sold']) }} sold</div>
                                     <div>{{ $currency($summary['top_product']['total_sales']) }}</div>
                                 </div>
                             </div>
                         @else
-                            <p class="text-muted mb-0">No successful sales for this filter.</p>
+                            <p class="text-sm text-gray-500">No successful sales for this filter.</p>
                         @endif
                     </div>
                 </div>
             </div>
         </div>
 
-        <div class="card custom-card mb-4">
-            <div class="card-header">
-                <h5 class="card-title mb-0">Plan Performance</h5>
+        <div class="box mb-4">
+            <div class="box-header">
+                <h5 class="box-title">Plan Performance</h5>
             </div>
-            <div class="card-body p-0">
-                <div class="table-responsive">
-                    <table class="table table-hover align-middle mb-0 sales-table">
+            <div class="box-body p-0">
+                <div class="overflow-x-auto">
+                    <table class="min-w-full sales-table">
                         <thead>
                             <tr>
                                 <th>Plan</th>
                                 <th>Network / Category</th>
-                                <th class="text-end">Sold</th>
-                                <th class="text-end">Avg/Day</th>
-                                <th class="text-end">Volume</th>
-                                <th class="text-end">Sales</th>
+                                <th class="text-right">Sold</th>
+                                <th class="text-right">Avg/Day</th>
+                                <th class="text-right">Volume</th>
+                                <th class="text-right">Sales</th>
                                 <th>Top Buyer</th>
                             </tr>
                         </thead>
@@ -449,8 +483,8 @@
                             @forelse($report['products'] as $product)
                                 <tr>
                                     <td class="plan-cell">
-                                        <div class="fw-semibold">{{ $product['plan_name'] }}</div>
-                                        <small class="text-muted">
+                                        <div class="font-semibold">{{ $product['plan_name'] }}</div>
+                                        <small class="text-gray-500">
                                             {{ ucfirst(str_replace('_', ' ', $product['product_type'])) }}
                                             @if($product['volume_mb'])
                                                 · {{ $product['volume_mb'] >= 1000 ? $number($product['volume_mb'] / 1000, 2).'GB' : $number($product['volume_mb']).'MB' }}
@@ -462,16 +496,16 @@
                                     </td>
                                     <td>
                                         <div>{{ $product['network_name'] ?: '—' }}</div>
-                                        <small class="text-muted">{{ $product['category_name'] ?: 'No category' }}</small>
+                                        <small class="text-gray-500">{{ $product['category_name'] ?: 'No category' }}</small>
                                     </td>
-                                    <td class="text-end fw-semibold">{{ $number($product['quantity_sold']) }}</td>
-                                    <td class="text-end">{{ $number($product['quantity_sold'] / max(1, $summary['days']), 1) }}</td>
-                                    <td class="text-end">{{ $number($product['total_volume_gb'], 2) }}GB</td>
-                                    <td class="text-end">{{ $currency($product['total_sales']) }}</td>
+                                    <td class="text-right font-semibold">{{ $number($product['quantity_sold']) }}</td>
+                                    <td class="text-right">{{ $number($product['quantity_sold'] / max(1, $summary['days']), 1) }}</td>
+                                    <td class="text-right">{{ $number($product['total_volume_gb'], 2) }}GB</td>
+                                    <td class="text-right">{{ $currency($product['total_sales']) }}</td>
                                     <td>
                                         @if($product['top_buyer'])
                                             <div>{{ $product['top_buyer']['username'] }}</div>
-                                            <small class="text-muted">{{ $number($product['top_buyer']['quantity_sold']) }} buys</small>
+                                            <small class="text-gray-500">{{ $number($product['top_buyer']['quantity_sold']) }} buys</small>
                                         @else
                                             —
                                         @endif
@@ -479,7 +513,7 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="7" class="text-center text-muted py-4">No plan sales found for this filter.</td>
+                                    <td colspan="7" class="text-center text-gray-500 py-8">No plan sales found for this filter.</td>
                                 </tr>
                             @endforelse
                         </tbody>
@@ -488,42 +522,42 @@
             </div>
         </div>
 
-        <div class="row g-4">
-            <div class="col-xl-7">
-                <div class="card custom-card h-100">
-                    <div class="card-header">
-                        <h5 class="card-title mb-0">Top Customers</h5>
+        <div class="grid grid-cols-12 gap-4">
+            <div class="col-span-12 xl:col-span-7">
+                <div class="box h-full mb-0">
+                    <div class="box-header">
+                        <h5 class="box-title">Top Customers</h5>
                     </div>
-                    <div class="card-body p-0">
-                        <div class="table-responsive">
-                            <table class="table table-hover align-middle mb-0 sales-table">
+                    <div class="box-body p-0">
+                        <div class="overflow-x-auto">
+                            <table class="min-w-full sales-table">
                                 <thead>
                                     <tr>
                                         <th>Customer</th>
-                                        <th class="text-end">Transactions</th>
-                                        <th class="text-end">Plans</th>
-                                        <th class="text-end">Sales</th>
+                                        <th class="text-right">Transactions</th>
+                                        <th class="text-right">Plans</th>
+                                        <th class="text-right">Sales</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @forelse($report['customers'] as $customer)
                                         <tr>
                                             <td class="customer-cell">
-                                                <div class="fw-semibold">{{ $customer['username'] }}</div>
-                                                <small class="text-muted">
+                                                <div class="font-semibold">{{ $customer['username'] }}</div>
+                                                <small class="text-gray-500">
                                                     {{ $customer['name'] ?: $customer['email'] }}
                                                     @if($customer['phone_number'])
                                                         · {{ $customer['phone_number'] }}
                                                     @endif
                                                 </small>
                                             </td>
-                                            <td class="text-end">{{ $number($customer['quantity_sold']) }}</td>
-                                            <td class="text-end">{{ $number($customer['distinct_plans']) }}</td>
-                                            <td class="text-end">{{ $currency($customer['total_sales']) }}</td>
+                                            <td class="text-right">{{ $number($customer['quantity_sold']) }}</td>
+                                            <td class="text-right">{{ $number($customer['distinct_plans']) }}</td>
+                                            <td class="text-right">{{ $currency($customer['total_sales']) }}</td>
                                         </tr>
                                     @empty
                                         <tr>
-                                            <td colspan="4" class="text-center text-muted py-4">No customer sales found.</td>
+                                            <td colspan="4" class="text-center text-gray-500 py-8">No customer sales found.</td>
                                         </tr>
                                     @endforelse
                                 </tbody>
@@ -533,20 +567,20 @@
                 </div>
             </div>
 
-            <div class="col-xl-5">
-                <div class="card custom-card h-100">
-                    <div class="card-header">
-                        <h5 class="card-title mb-0">Daily Trend</h5>
+            <div class="col-span-12 xl:col-span-5">
+                <div class="box h-full mb-0">
+                    <div class="box-header">
+                        <h5 class="box-title">Daily Trend</h5>
                     </div>
-                    <div class="card-body p-0">
-                        <div class="table-responsive">
-                            <table class="table table-sm align-middle mb-0 sales-table">
+                    <div class="box-body p-0">
+                        <div class="overflow-x-auto">
+                            <table class="min-w-full sales-table">
                                 <thead>
                                     <tr>
                                         <th>Day</th>
-                                        <th class="text-end">Txns</th>
-                                        <th class="text-end">Volume</th>
-                                        <th class="text-end">Sales</th>
+                                        <th class="text-right">Txns</th>
+                                        <th class="text-right">Volume</th>
+                                        <th class="text-right">Sales</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -554,11 +588,11 @@
                                         <tr>
                                             <td>
                                                 <div>{{ $day['label'] }}</div>
-                                                <small class="text-muted">{{ $day['date'] }}</small>
+                                                <small class="text-gray-500">{{ $day['date'] }}</small>
                                             </td>
-                                            <td class="text-end">{{ $number($day['quantity_sold']) }}</td>
-                                            <td class="text-end">{{ $number($day['total_volume_gb'], 2) }}GB</td>
-                                            <td class="text-end">{{ $currency($day['total_sales']) }}</td>
+                                            <td class="text-right">{{ $number($day['quantity_sold']) }}</td>
+                                            <td class="text-right">{{ $number($day['total_volume_gb'], 2) }}GB</td>
+                                            <td class="text-right">{{ $currency($day['total_sales']) }}</td>
                                         </tr>
                                     @endforeach
                                 </tbody>
@@ -568,7 +602,6 @@
                 </div>
             </div>
         </div>
-    </div>
 </div>
 @endsection
 
