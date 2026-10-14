@@ -37,29 +37,83 @@
         min-height: 42px;
     }
 
-    .sales-report-page .select2-container {
-        width: 100% !important;
+    .sales-report-page .plan-picker {
+        position: relative;
     }
 
-    .sales-report-page .select2-container--default .select2-selection--multiple {
-        min-height: 44px;
-        max-height: 108px;
-        overflow-y: auto;
-        border-color: #d9dde3;
+    .sales-report-page .plan-picker-toggle {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+        min-height: 42px;
+        gap: .75rem;
+        padding: .5rem .75rem;
+        overflow: hidden;
+        text-align: left;
+        background: var(--bs-body-bg, #fff);
+        border: 1px solid #d9dde3;
         border-radius: .375rem;
-        padding: .2rem .4rem;
+        color: var(--bs-body-color, #212529);
     }
 
-    .sales-report-page .select2-container--default.select2-container--focus .select2-selection--multiple {
+    .sales-report-page .plan-picker-toggle:hover,
+    .sales-report-page .plan-picker-toggle:focus {
         border-color: #86b7fe;
-        box-shadow: 0 0 0 .25rem rgba(13, 110, 253, .12);
     }
 
-    .sales-report-page .select2-container--default .select2-selection--multiple .select2-selection__choice {
-        max-width: calc(100% - .5rem);
+    .sales-report-page .plan-picker-label {
+        min-width: 0;
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
+    }
+
+    .sales-report-page .plan-picker-menu {
+        position: absolute;
+        z-index: 1055;
+        top: calc(100% + .35rem);
+        right: 0;
+        left: 0;
+        padding: .75rem;
+        background: var(--bs-body-bg, #fff);
+        border: 1px solid var(--sales-border);
+        border-radius: .5rem;
+        box-shadow: 0 .75rem 2rem rgba(15, 23, 42, .16);
+    }
+
+    .sales-report-page .plan-picker-list {
+        max-height: 280px;
+        margin-top: .65rem;
+        overflow-y: auto;
+        overscroll-behavior: contain;
+    }
+
+    .sales-report-page .plan-picker-option {
+        display: flex;
+        align-items: flex-start;
+        gap: .6rem;
+        margin: 0;
+        padding: .55rem .35rem;
+        border-bottom: 1px solid var(--sales-border);
+        cursor: pointer;
+        font-size: .85rem;
+        line-height: 1.3;
+    }
+
+    .sales-report-page .plan-picker-option:last-child {
+        border-bottom: 0;
+    }
+
+    .sales-report-page .plan-picker-option input {
+        flex: 0 0 auto;
+        margin-top: .15rem;
+    }
+
+    .sales-report-page .plan-picker-empty {
+        padding: 1rem;
+        color: var(--sales-muted);
+        text-align: center;
     }
 
     .sales-report-page .sales-summary-card {
@@ -227,13 +281,36 @@
 
                     <div class="col-xl-6">
                         <label class="form-label">Specific plans</label>
-                        <select name="plan_ids[]" id="sales-plan-filter" class="form-select" multiple data-placeholder="All plans">
-                            @foreach($plans as $plan)
-                                <option value="{{ $plan->id }}" @selected(in_array($plan->id, $selectedPlanIds, true))>
-                                    {{ $plan->product_plan_name }}{{ $plan->api_id ? ' · API '.$plan->api_id : '' }}
-                                </option>
-                            @endforeach
-                        </select>
+                        <div class="plan-picker" id="sales-plan-picker">
+                            <button type="button" class="plan-picker-toggle" aria-expanded="false" aria-controls="sales-plan-menu">
+                                <span class="plan-picker-label">{{ count($selectedPlanIds) ? count($selectedPlanIds).' plan(s) selected' : 'All plans' }}</span>
+                                <span aria-hidden="true">&#9662;</span>
+                            </button>
+
+                            <div class="plan-picker-menu" id="sales-plan-menu" hidden>
+                                <div class="d-flex gap-2">
+                                    <input type="search" class="form-control form-control-sm plan-picker-search" placeholder="Search plan name or API ID..." autocomplete="off">
+                                    <button type="button" class="btn btn-sm btn-outline-secondary plan-picker-clear">Clear</button>
+                                </div>
+
+                                <div class="plan-picker-list">
+                                    @foreach($plans as $plan)
+                                        @php($planLabel = $plan->product_plan_name.($plan->api_id ? ' · API '.$plan->api_id : ''))
+                                        <label class="plan-picker-option" data-search="{{ Str::lower($planLabel) }}">
+                                            <input
+                                                type="checkbox"
+                                                class="form-check-input plan-picker-checkbox"
+                                                name="plan_ids[]"
+                                                value="{{ $plan->id }}"
+                                                @checked(in_array($plan->id, $selectedPlanIds, true))
+                                            >
+                                            <span>{{ $planLabel }}</span>
+                                        </label>
+                                    @endforeach
+                                    <div class="plan-picker-empty" hidden>No matching plans found.</div>
+                                </div>
+                            </div>
+                        </div>
                         <small class="text-muted">Search and select one or more plans, or leave empty for all plans.</small>
                     </div>
 
@@ -498,15 +575,77 @@
 @push('scripts')
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-        const planFilter = $('#sales-plan-filter');
+        const picker = document.getElementById('sales-plan-picker');
 
-        if (planFilter.length && !planFilter.hasClass('select2-hidden-accessible')) {
-            planFilter.select2({
-                placeholder: planFilter.data('placeholder'),
-                closeOnSelect: false,
-                width: '100%'
-            });
+        if (!picker) {
+            return;
         }
+
+        const toggle = picker.querySelector('.plan-picker-toggle');
+        const menu = picker.querySelector('.plan-picker-menu');
+        const search = picker.querySelector('.plan-picker-search');
+        const clear = picker.querySelector('.plan-picker-clear');
+        const label = picker.querySelector('.plan-picker-label');
+        const checkboxes = Array.from(picker.querySelectorAll('.plan-picker-checkbox'));
+        const options = Array.from(picker.querySelectorAll('.plan-picker-option'));
+        const empty = picker.querySelector('.plan-picker-empty');
+
+        const updateLabel = () => {
+            const selected = checkboxes.filter((checkbox) => checkbox.checked);
+            label.textContent = selected.length ? `${selected.length} plan(s) selected` : 'All plans';
+        };
+
+        const closeMenu = () => {
+            menu.hidden = true;
+            toggle.setAttribute('aria-expanded', 'false');
+        };
+
+        toggle.addEventListener('click', function () {
+            const willOpen = menu.hidden;
+            menu.hidden = !willOpen;
+            toggle.setAttribute('aria-expanded', String(willOpen));
+
+            if (willOpen) {
+                search.focus();
+            }
+        });
+
+        search.addEventListener('input', function () {
+            const term = search.value.trim().toLowerCase();
+            let visibleCount = 0;
+
+            options.forEach((option) => {
+                const visible = option.dataset.search.includes(term);
+                option.hidden = !visible;
+                visibleCount += visible ? 1 : 0;
+            });
+
+            empty.hidden = visibleCount !== 0;
+        });
+
+        clear.addEventListener('click', function () {
+            checkboxes.forEach((checkbox) => {
+                checkbox.checked = false;
+            });
+            updateLabel();
+        });
+
+        checkboxes.forEach((checkbox) => checkbox.addEventListener('change', updateLabel));
+
+        document.addEventListener('click', function (event) {
+            if (!picker.contains(event.target)) {
+                closeMenu();
+            }
+        });
+
+        document.addEventListener('keydown', function (event) {
+            if (event.key === 'Escape') {
+                closeMenu();
+                toggle.focus();
+            }
+        });
+
+        updateLabel();
     });
 </script>
 @endpush
