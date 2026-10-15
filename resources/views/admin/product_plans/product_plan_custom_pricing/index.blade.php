@@ -4,9 +4,9 @@
 <div class="main-content">
     <div class="page-header md:flex md:items-center md:justify-between">
         <div>
-            <h1 class="text-2xl font-semibold text-gray-800 dark:text-white">Salesperson Pricing</h1>
+            <h1 class="text-2xl font-semibold text-gray-800 dark:text-white">Customer Plan Pricing</h1>
             <p class="mt-1 text-sm text-gray-500 dark:text-white/60">
-                Give a salesperson an exact selling price for a specific plan. An active price overrides their normal customer-level price on plan lists and at checkout.
+                Give any customer an exact selling price for a specific plan. You can also apply a price to several marked salespeople at once. An active price overrides the account's normal level price on plan lists and at checkout.
             </p>
         </div>
     </div>
@@ -39,8 +39,8 @@
             <div class="box">
                 <div class="box-header">
                     <div>
-                        <h2 class="box-title">Set a salesperson price</h2>
-                        <p class="mt-1 text-xs text-gray-500 dark:text-white/60">Saving the same salesperson and plan again updates the existing price.</p>
+                        <h2 class="box-title">Set a customer price</h2>
+                        <p class="mt-1 text-xs text-gray-500 dark:text-white/60">Saving the same customer and plan again updates the existing price.</p>
                     </div>
                 </div>
                 <div class="box-body">
@@ -48,11 +48,11 @@
                         @csrf
 
                         <div>
-                            <label for="username" class="ti-form-label">Salesperson username</label>
+                            <label for="username" class="ti-form-label">Customer username</label>
                             <input id="username" name="username" type="text" autocomplete="off"
                                 value="{{ old('username') }}" class="ti-form-input"
                                 placeholder="e.g. salesagent01">
-                            <p class="mt-1 text-xs text-gray-500">Use one exact username, or select several marked salespeople below.</p>
+                            <p class="mt-1 text-xs text-gray-500">Enter any exact customer username, or select several marked salespeople below.</p>
                         </div>
 
                         <div>
@@ -123,7 +123,7 @@
                             </select>
                         </div>
 
-                        <button type="submit" class="ti-btn ti-btn-primary w-full">Save salesperson price</button>
+                        <button type="submit" class="ti-btn ti-btn-primary w-full">Save customer price</button>
                     </form>
                 </div>
             </div>
@@ -134,7 +134,7 @@
                 <div class="box-header">
                     <div>
                         <h2 class="box-title">Configured prices</h2>
-                        <p class="mt-1 text-xs text-gray-500 dark:text-white/60">{{ $product_plan_custom_pricings->total() }} salesperson-plan price(s)</p>
+                        <p class="mt-1 text-xs text-gray-500 dark:text-white/60">{{ $product_plan_custom_pricings->total() }} customer-plan price(s)</p>
                     </div>
                 </div>
                 <div class="box-body">
@@ -196,7 +196,7 @@
                                         @method('PUT')
 
                                         <div>
-                                            <label class="ti-form-label">Salesperson username</label>
+                                            <label class="ti-form-label">Customer username</label>
                                             <input name="username" type="text" required class="ti-form-input" value="{{ $user?->username }}">
                                         </div>
                                         <div>
@@ -223,14 +223,14 @@
                                             </select>
                                         </div>
                                         <div class="md:col-span-2">
-                                            <button type="submit" class="ti-btn ti-btn-primary">Update salesperson price</button>
+                                            <button type="submit" class="ti-btn ti-btn-primary">Update customer price</button>
                                         </div>
                                     </form>
                                 </details>
                             </div>
                         @empty
                             <div class="rounded-lg border border-dashed border-gray-300 px-6 py-10 text-center text-gray-500 dark:border-white/10">
-                                No salesperson pricing matches this filter.
+                                No customer pricing matches this filter.
                             </div>
                         @endforelse
                     </div>

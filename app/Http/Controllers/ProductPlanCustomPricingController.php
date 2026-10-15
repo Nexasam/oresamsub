@@ -76,7 +76,7 @@ class ProductPlanCustomPricingController extends Controller
 
         foreach ($usernames as $username) {
             if ((int) $validated['status'] === 1 && ($failure = $this->validateMinimumCustomPrice($validated['product_plan_id'], $validated['price'], $username))) {
-                return back()->with('failure', $failure.' Salesperson: '.$username.'.')->withInput();
+                return back()->with('failure', $failure.' Customer: '.$username.'.')->withInput();
             }
         }
 
@@ -99,7 +99,7 @@ class ProductPlanCustomPricingController extends Controller
                 });
         });
 
-        return back()->with('success', 'Salesperson pricing was saved for '.$usernames->count().' account(s).');
+        return back()->with('success', 'Customer plan pricing was saved for '.$usernames->count().' account(s).');
     }
 
     public function update(Request $request, string $id)
@@ -125,7 +125,7 @@ class ProductPlanCustomPricingController extends Controller
             ->exists();
 
         if ($duplicateExists) {
-            return back()->with('failure', 'This salesperson already has pricing for the selected plan. Edit that existing row instead.');
+            return back()->with('failure', 'This customer already has pricing for the selected plan. Edit that existing row instead.');
         }
 
         $pricing->update([
@@ -135,7 +135,7 @@ class ProductPlanCustomPricingController extends Controller
             'status' => (int) $validated['status'],
         ]);
 
-        return back()->with('success', "Salesperson pricing for {$user->username} was successfully updated.");
+        return back()->with('success', "Customer plan pricing for {$user->username} was successfully updated.");
     }
 
     private function validateMinimumCustomPrice(string $productPlanId, mixed $price, ?string $username = null): ?string
@@ -163,7 +163,7 @@ class ProductPlanCustomPricingController extends Controller
                 ? 'cost plus ₦'.DataPlansService::DEFAULT_MINIMUM_DATA_PROFIT.' minimum margin'
                 : 'cost price';
 
-            return 'Salesperson price cannot be below ₦'.number_format($minimumSellingPrice, 2).' for this plan. Current cost is ₦'.number_format($costPrice, 2).' and the active minimum rule is '.$rule.'.';
+            return 'Customer price cannot be below ₦'.number_format($minimumSellingPrice, 2).' for this plan. Current cost is ₦'.number_format($costPrice, 2).' and the active minimum rule is '.$rule.'.';
         }
 
         return null;
