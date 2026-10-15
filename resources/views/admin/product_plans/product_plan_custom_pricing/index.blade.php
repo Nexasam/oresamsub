@@ -155,7 +155,12 @@
                     </form>
 
                     <div class="space-y-3">
-                        @forelse ($product_plan_custom_pricings as $pricing)
+                        @if ($product_plan_custom_pricings->isEmpty())
+                            <div class="rounded-lg border border-dashed border-gray-300 px-6 py-10 text-center text-gray-500 dark:border-white/10">
+                                No customer pricing matches this filter.
+                            </div>
+                        @else
+                            @foreach ($product_plan_custom_pricings as $pricing)
                             @php
                                 $plan = $pricing->product_plan;
                                 $user = $pricing->user;
@@ -228,11 +233,8 @@
                                     </form>
                                 </details>
                             </div>
-                        @empty
-                            <div class="rounded-lg border border-dashed border-gray-300 px-6 py-10 text-center text-gray-500 dark:border-white/10">
-                                No customer pricing matches this filter.
-                            </div>
-                        @endforelse
+                            @endforeach
+                        @endif
                     </div>
 
                     @if ($product_plan_custom_pricings->hasPages())
