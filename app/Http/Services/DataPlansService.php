@@ -266,10 +266,8 @@ class DataPlansService{
             $selling_price = $base_selling_price;
 
                //HERE SELLING PRICE CHANGES IF THEHRE IS A CUSTOM SETTING: put in a service later::::WATCH THIS IN PROD.
-               $check_custom_setting = ProductPlanCustomPricing::where('product_plan_id', $product_plan->id)
-               ->where('user_id',$user_details->id)
-               ->first();
-               $selling_price = $check_custom_setting == NULL ? $selling_price : $check_custom_setting->price;  
+               $priceOverride = $product_plan->activePriceOverrideFor($user_details);
+               $selling_price = $priceOverride ?? $selling_price;
                $selling_price = $this->applyMinimumDataSellingPrice($selling_price, $product_plan, $base_selling_price);
 
             
@@ -317,11 +315,9 @@ class DataPlansService{
         // $selling_price = $check_custom_setting == NULL ? $selling_price : $check_custom_setting->price; 
 
            //HERE SELLING PRICE CHANGES IF THEHRE IS A CUSTOM SETTING: put in a service later::::WATCH THIS IN PROD.
-           $check_custom_setting = ProductPlanCustomPricing::where('product_plan_id', $product_plan->id)
-           ->where('user_id',$user_details->id)
-           ->first();
            $base_selling_price = $selling_price;
-           $selling_price = $check_custom_setting == NULL ? $selling_price : $check_custom_setting->price;  
+           $priceOverride = $product_plan->activePriceOverrideFor($user_details);
+           $selling_price = $priceOverride ?? $selling_price;
            $selling_price = $this->applyMinimumDataSellingPrice($selling_price, $product_plan, $base_selling_price);
 
         $augmentsp = $cost_price + 50;

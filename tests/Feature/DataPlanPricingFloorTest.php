@@ -11,7 +11,7 @@ use App\Models\ProductPlanCustomPricing;
 use App\Models\User;
 use App\Models\UserPlan;
 
-function dataPricingFixture(float $customPrice, int $seed): array
+function dataPricingFixture(float $customPrice, int $seed, int $status = 1): array
 {
     $userPlan = UserPlan::create([
         'user_plan_name' => 'Elite '.$seed,
@@ -71,7 +71,7 @@ function dataPricingFixture(float $customPrice, int $seed): array
         'product_plan_id' => $plan->id,
         'user_id' => $user->id,
         'price' => $customPrice,
-        'status' => 1,
+        'status' => $status,
         'added_by' => $user->id,
     ]);
 
@@ -102,6 +102,76 @@ it('keeps a safe custom data price when it is above the minimum floor', function
     ])['message'];
 
     expect((float) $price)->toBe(365.0);
+});
+
+it('uses the normal customer level price when salesperson pricing is inactive', function () {
+    ['user' => $user, 'network' => $network, 'product' => $product, 'plan' => $plan] = dataPricingFixture(550, 4, 0);
+
+    $price = (new DataPlansService())->get_customer_price_per_plan([
+        'product_id' => $product->id,
+        'network_id' => $network->id,
+        'user' => $user,
+        'plan_details' => $plan,
+    ])['message'];
+
+    expect((float) $price)->toBe(360.0);
+});
+
+it('uses the exact active salesperson price during final data price resolution', function () {
+    ['user' => $user, 'network' => $network, 'product' => $product, 'plan' => $plan] = dataPricingFixture(550, 5);
+
+    $price = (new DataPlansService())->get_customer_price_per_plan([
+        'product_id' => $product->id,
+        'network_id' => $network->id,
+        'user' => $user,
+        'plan_details' => $plan,
+    ])['message'];
+
+    expect((float) $price)->toBe(550.0);
+});
+
+it('uses the plan-wide salesperson price for accounts marked as salespeople', function () {
+    ['user' => $user, 'network' => $network, 'product' => $product, 'plan' => $plan] = dataPricingFixture(550, 6, 0);
+    $user->update(['is_salesperson' => true]);
+    $plan->update(['salesperson_price' => 490]);
+
+    $price = (new DataPlansService())->get_customer_price_per_plan([
+        'product_id' => $product->id,
+        'network_id' => $network->id,
+        'user' => $user->fresh(),
+        'plan_details' => $plan->fresh(),
+    ])['message'];
+
+    expect((float) $price)->toBe(490.0);
+});
+
+it('does not give the plan-wide salesperson price to an ordinary customer', function () {
+    ['user' => $user, 'network' => $network, 'product' => $product, 'plan' => $plan] = dataPricingFixture(550, 7, 0);
+    $plan->update(['salesperson_price' => 490]);
+
+    $price = (new DataPlansService())->get_customer_price_per_plan([
+        'product_id' => $product->id,
+        'network_id' => $network->id,
+        'user' => $user,
+        'plan_details' => $plan->fresh(),
+    ])['message'];
+
+    expect((float) $price)->toBe(360.0);
+});
+
+it('gives a personal override priority over the plan-wide salesperson price', function () {
+    ['user' => $user, 'network' => $network, 'product' => $product, 'plan' => $plan] = dataPricingFixture(550, 8);
+    $user->update(['is_salesperson' => true]);
+    $plan->update(['salesperson_price' => 490]);
+
+    $price = (new DataPlansService())->get_customer_price_per_plan([
+        'product_id' => $product->id,
+        'network_id' => $network->id,
+        'user' => $user->fresh(),
+        'plan_details' => $plan->fresh(),
+    ])['message'];
+
+    expect((float) $price)->toBe(550.0);
 });
 
 it('never allows a custom data price below cost even when the normal selling price is not profitable', function () {

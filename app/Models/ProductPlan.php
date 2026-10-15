@@ -15,6 +15,29 @@ class ProductPlan extends Model
 
     protected $guarded = [];
 
+    protected $casts = [
+        'salesperson_price' => 'decimal:2',
+    ];
+
+    public function activePriceOverrideFor(User $user): ?float
+    {
+        $personalPrice = ProductPlanCustomPricing::query()
+            ->where('product_plan_id', $this->getKey())
+            ->where('user_id', $user->getKey())
+            ->where('status', 1)
+            ->value('price');
+
+        if ($personalPrice !== null && $personalPrice !== '') {
+            return round((float) $personalPrice, 2);
+        }
+
+        if ($user->is_salesperson && $this->salesperson_price !== null && $this->salesperson_price !== '') {
+            return round((float) $this->salesperson_price, 2);
+        }
+
+        return null;
+    }
+
     protected static function booted(): void
     {
         static::saving(function (ProductPlan $productPlan): void {

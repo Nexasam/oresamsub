@@ -140,6 +140,18 @@
                                 <input type="text" @readonly(! $canEditSensitiveUserFields) class="my-auto ti-form-input" id="username" name="username" value="{{ old('username', $user->username) }}" placeholder="Username">
                             </div>
                             <div class="space-y-2">
+                              <label class="ti-form-label mb-0">Salesperson pricing access</label>
+                              <input type="hidden" name="is_salesperson" value="0">
+                              <label class="flex items-center gap-3 rounded-lg border border-gray-200 p-3 dark:border-white/10">
+                                <input type="checkbox" name="is_salesperson" value="1" class="ti-form-checkbox"
+                                  @checked(old('is_salesperson', $user->is_salesperson))>
+                                <span>
+                                  <span class="block font-semibold">Mark this account as a salesperson</span>
+                                  <span class="block text-xs text-gray-500">The account will receive each plan's salesperson price unless a personal override exists.</span>
+                                </span>
+                              </label>
+                            </div>
+                            <div class="space-y-2">
                                 <input type="hidden" id="user_id" name="user_id" value="{{$user->id}}">
 
                                 <label class="ti-form-label mb-0">First Name</label>

@@ -12,6 +12,11 @@ class ProductPlanCustomPricing extends Model
 
     protected $guarded = [];
 
+    protected $casts = [
+        'price' => 'decimal:2',
+        'status' => 'boolean',
+    ];
+
      /**
     * each funding belongs to a user 
     **/

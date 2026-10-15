@@ -108,6 +108,7 @@ class ProductPlanService{
 
     public function fetch_all_data_plans($data,$user_id){
             $product_planss = [];
+            $userDetails = User::findOrFail($user_id);
             // $user_id = $user ?? null;
 
             foreach ($data as $key => $product_plan) {
@@ -153,14 +154,9 @@ class ProductPlanService{
 
                                 $selling_price = $product_plan->$spp ?? $product_plan->$sppDefault;
 
-                                $customPricing = ProductPlanCustomPricing::where('product_plan_id', $product_plan->id)
-                                    ->where('user_id', $user_id)
-                                    ->first();
-
                                 $base_selling_price = $selling_price;
-                                $selling_price = $customPricing
-                                    ? $customPricing->price
-                                    : $selling_price;
+                                $priceOverride = $product_plan->activePriceOverrideFor($userDetails);
+                                $selling_price = $priceOverride ?? $selling_price;
 
                                 $selling_price = (new DataPlansService())->applyMinimumDataSellingPrice($selling_price, $product_plan, $base_selling_price);
 
@@ -176,7 +172,10 @@ class ProductPlanService{
                                 $profit_value = $get_planprofit?->$profitlevel_for_user ?? 50;
 
                                 $selling_price = $cost_price + abs($profit_value);
-                                $selling_price = (new DataPlansService())->applyMinimumDataSellingPrice($selling_price, $product_plan, $selling_price);
+                                $base_selling_price = $selling_price;
+                                $priceOverride = $product_plan->activePriceOverrideFor($userDetails);
+                                $selling_price = $priceOverride ?? $selling_price;
+                                $selling_price = (new DataPlansService())->applyMinimumDataSellingPrice($selling_price, $product_plan, $base_selling_price);
                             }
 
 

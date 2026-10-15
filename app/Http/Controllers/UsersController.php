@@ -379,6 +379,7 @@ class UsersController extends Controller
         'customer_landmark' => 'nullable',
         'pin' => ['nullable'],
         'user_plan_id' => ['required','string','exists:user_plans,id'],
+        'is_salesperson' => ['sometimes', 'boolean'],
       ];
 
       if ($canEditSensitiveUserFields) {
@@ -422,6 +423,9 @@ class UsersController extends Controller
       }
       
       $dat['user_plan_id'] = $request->user_plan_id;
+      if ($request->has('is_salesperson')) {
+        $dat['is_salesperson'] = $request->boolean('is_salesperson');
+      }
 
       // dd($dat);
 

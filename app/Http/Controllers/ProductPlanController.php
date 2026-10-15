@@ -19,6 +19,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
 use Inertia\Inertia;
 use Yajra\DataTables\DataTables;
@@ -241,7 +242,20 @@ class ProductPlanController extends Controller
             'user_level_5_selling_price' => 'required|numeric|min:0',
             'user_level_6_selling_price' => 'required|numeric|min:0',
             'user_level_7_selling_price' => 'required|numeric|min:0',
+            'salesperson_price' => 'nullable|numeric|min:0|max:99999999.99',
         ]);
+
+        if ($validated['salesperson_price'] !== null) {
+            $plan->loadMissing('product_plan_category.product');
+            if ($plan->product_plan_category?->product?->slug === 'data') {
+                $minimum = DataPlansService::minimumDataSellingPrice($plan);
+                if ((float) $validated['salesperson_price'] < $minimum) {
+                    throw ValidationException::withMessages([
+                        'salesperson_price' => 'Salesperson price cannot be below ₦'.number_format($minimum, 2).' (cost plus protected margin).',
+                    ]);
+                }
+            }
+        }
 
         $plan->update($validated);
 

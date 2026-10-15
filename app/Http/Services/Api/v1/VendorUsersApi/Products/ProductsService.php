@@ -137,14 +137,14 @@ class ProductsService{
                 foreach($product_plans as $product_plan){
 
                     //HERE SELLING PRICE CHANGES IF THEHRE IS A CUSTOM SETTING: put in a service later
-                    $check_custom_setting = ProductPlanCustomPricing::where('product_plan_id','=', $product_plan->id)->where('user_id',$user_id)->first();
-                    $amount = $check_custom_setting == NULL ? $amount : $check_custom_setting->price; 
+                    $priceOverride = $product_plan->activePriceOverrideFor($user_details);
+                    $amount = $priceOverride ?? $amount;
 
                     $user_level_selling = "user_level_".$plan_level."_selling_price";
                     // $user_level_selling = "{user_level_$user_level_selling_price}";
                     $selling_price = $product_plan->$user_level_selling;
                     
-                    $selling_price = $check_custom_setting == NULL ? $selling_price : $check_custom_setting->price; 
+                    $selling_price = $priceOverride ?? $selling_price;
 
 
                     if( ( $product_slug == 'airtime' || $product_slug == 'utility_bills' ) && $amount != ''){

@@ -235,6 +235,22 @@
 
         <div class="grid md:grid-cols-2 gap-3">
 
+            <div class="md:col-span-2 rounded-lg border border-primary/20 bg-primary/5 p-3">
+                <label class="block text-xs font-semibold text-gray-700 dark:text-gray-200 mb-1">
+                    Salesperson Price (₦)
+                </label>
+                <input type="number"
+                       step="0.01"
+                       min="0"
+                       name="salesperson_price"
+                       value="{{ old('salesperson_price', $plan->salesperson_price) }}"
+                       class="ti-form-input"
+                       placeholder="Leave blank to use each salesperson's normal level price">
+                <p class="mt-1 text-xs text-gray-500">
+                    Applies to every account marked as a salesperson. A personal salesperson override takes priority. Clear this field to disable the plan-wide salesperson price.
+                </p>
+            </div>
+
             @for($i = 1; $i <= 7; $i++)
                 @php
                     $label = $labels[$i] ?? 'LEVEL '.$i;

@@ -4,7 +4,6 @@ namespace App\Services\Pricing;
 
 use App\Http\Services\DataPlansService;
 use App\Models\ProductPlan;
-use App\Models\ProductPlanCustomPricing;
 use App\Models\User;
 
 class CustomerProductPricingService
@@ -34,13 +33,10 @@ class CustomerProductPricingService
 
         $priceField = "user_level_{$level}_selling_price";
         $levelPrice = $plan->{$priceField} ?? $plan->user_level_1_selling_price ?? $plan->default_selling_price;
-        $customPrice = ProductPlanCustomPricing::query()
-            ->where('product_plan_id', $plan->id)
-            ->where('user_id', $user->id)
-            ->first();
+        $priceOverride = $plan->activePriceOverrideFor($user);
 
         return [
-            'price' => round((float) ($customPrice?->price ?? $levelPrice), 2),
+            'price' => round((float) ($priceOverride ?? $levelPrice), 2),
             'pricing_type' => in_array($slug, ['airtime', 'utility_bills'], true)
                 ? 'percentage_discount'
                 : 'fixed',

@@ -50,6 +50,7 @@ class User extends Authenticatable implements MustVerifyEmail
             'main_wallet' => 'decimal:2',
             'bonus_wallet' => 'decimal:2',
             'api_token_rotated_at' => 'datetime',
+            'is_salesperson' => 'boolean',
         ];
     }
 

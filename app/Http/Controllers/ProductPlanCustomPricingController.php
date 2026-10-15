@@ -3,231 +3,169 @@
 namespace App\Http\Controllers;
 
 use App\Http\Services\DataPlansService;
-use App\Models\User;
 use App\Models\Network;
-use App\Models\CouponCode;
 use App\Models\ProductPlan;
-use Illuminate\Http\Request;
-use App\Models\FundingOption;
-use Illuminate\Validation\Rule;
-use App\Models\WalletFundingPromo;
-use App\Models\ProductPlanCategory;
-use App\Models\UserWalletFundingPromo;
-use Illuminate\Support\Facades\Session;
 use App\Models\ProductPlanCustomPricing;
-use Illuminate\Support\Facades\Validator;
+use App\Models\User;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\Rule;
 
 class ProductPlanCustomPricingController extends Controller
 {
-    // public function index(){
-       
-    //     // dd('asdfsdfsssppppp');
-    //     $networks = Network::get();
-    //     // $userrs = User::select('id','username')->get();
-  
-    //     $product_plans = ProductPlan::with(['automation'])->latest()->get();
-    //     $product_plan_custom_pricings = ProductPlanCustomPricing::with(['user','product_plan'])->latest()->get();
-    //     $networks = Network::get();
-    //     $data['product_plans'] = $product_plans;
-    //     $data['product_plan_custom_pricings'] = $product_plan_custom_pricings;
-    //     $data['networks'] = $networks;
-      
-
-    //     return view('admin.product_plans.product_plan_custom_pricing.index')->with($data);
-    // }
-
-
     public function index(Request $request)
     {
-        $search = $request->search;
+        $search = trim((string) $request->search);
 
         $product_plan_custom_pricings = ProductPlanCustomPricing::query()
-            ->with(['user', 'product_plan'])
-            ->when($search, function ($query) use ($search) {
-
-                $query->whereHas('user', function ($q) use ($search) {
-                    $q->where('username', 'like', "%{$search}%");
-                })
-                ->orWhereHas('product_plan', function ($q) use ($search) {
-                    $q->where('product_plan_name', 'like', "%{$search}%");
+            ->with(['user.user_plan', 'product_plan.product_plan_category.network'])
+            ->when($search !== '', function ($query) use ($search) {
+                $query->where(function ($searchQuery) use ($search): void {
+                    $searchQuery->whereHas('user', function ($userQuery) use ($search): void {
+                        $userQuery->where('username', 'like', "%{$search}%")
+                            ->orWhere('first_name', 'like', "%{$search}%")
+                            ->orWhere('last_name', 'like', "%{$search}%")
+                            ->orWhere('phone_number', 'like', "%{$search}%");
+                    })->orWhereHas('product_plan', function ($planQuery) use ($search): void {
+                        $planQuery->where('product_plan_name', 'like', "%{$search}%")
+                            ->orWhere('api_id', 'like', "%{$search}%");
+                    });
                 });
-
             })
+            ->when($request->filled('status'), fn ($query) => $query->where('status', $request->integer('status')))
             ->latest()
             ->paginate(20)
             ->withQueryString();
-         
-            $networks = Network::get();
 
-        $product_plans = ProductPlan::with(['automation'])->latest()->get();
-
-
-        // $product_plan_custom_pricings = ProductPlanCustomPricing::with(['user','product_plan'])->latest()->get();
-
+        $networks = Network::orderBy('network_name')->get();
+        $product_plans = ProductPlan::query()
+            ->with(['product_plan_category.network'])
+            ->where('visibility', 1)
+            ->orderBy('product_plan_name')
+            ->get();
+        $salespeople = User::query()
+            ->where('is_salesperson', true)
+            ->orderBy('username')
+            ->get(['id', 'username', 'first_name', 'last_name', 'phone_number']);
 
         return view('admin.product_plans.product_plan_custom_pricing.index', compact(
-            // 'customPricings',
             'networks',
             'product_plan_custom_pricings',
             'product_plans',
+            'salespeople',
             'search'
         ));
     }
 
-    public function store(Request $request){
-                  
-        $validator = Validator::make($request->all(), [
-          'username' => 'required|exists:users,username',
-          'product_plan_id' => 'required|exists:product_plans,id',
-          'status' => 'required|integer',
-          'price' => 'required|integer',
+    public function store(Request $request)
+    {
+        $validated = $request->validate([
+            'username' => ['nullable', 'string', 'required_without:usernames', 'exists:users,username'],
+            'usernames' => ['nullable', 'array', 'required_without:username'],
+            'usernames.*' => ['string', 'distinct', 'exists:users,username'],
+            'product_plan_id' => ['required', 'exists:product_plans,id'],
+            'status' => ['required', Rule::in([0, 1])],
+            'price' => ['required', 'numeric', 'min:0', 'max:99999999.99'],
         ]);
 
-        $validator->stopOnFirstFailure(); // set the behavior before checking
+        $usernames = collect($validated['usernames'] ?? [])
+            ->push($validated['username'] ?? null)
+            ->filter()
+            ->unique()
+            ->values();
 
-        if ($validator->fails()) {
-          Session::flash('failure', $validator->errors()->first());
-          return redirect()->back();
+        foreach ($usernames as $username) {
+            if ((int) $validated['status'] === 1 && ($failure = $this->validateMinimumCustomPrice($validated['product_plan_id'], $validated['price'], $username))) {
+                return back()->with('failure', $failure.' Salesperson: '.$username.'.')->withInput();
+            }
         }
 
-        if ($failure = $this->validateMinimumCustomPrice($request->product_plan_id, $request->price, $request->username)) {
-          Session::flash('failure', $failure);
-          return redirect()->back();
+        DB::transaction(function () use ($usernames, $validated): void {
+            User::query()
+                ->whereIn('username', $usernames)
+                ->get()
+                ->each(function (User $user) use ($validated): void {
+                    ProductPlanCustomPricing::updateOrCreate(
+                        [
+                            'user_id' => $user->id,
+                            'product_plan_id' => $validated['product_plan_id'],
+                        ],
+                        [
+                            'price' => round((float) $validated['price'], 2),
+                            'status' => (int) $validated['status'],
+                            'added_by' => auth()->id(),
+                        ]
+                    );
+                });
+        });
+
+        return back()->with('success', 'Salesperson pricing was saved for '.$usernames->count().' account(s).');
+    }
+
+    public function update(Request $request, string $id)
+    {
+        $validated = $request->validate([
+            'username' => ['required', 'string', 'exists:users,username'],
+            'product_plan_id' => ['required', 'exists:product_plans,id'],
+            'status' => ['required', Rule::in([0, 1])],
+            'price' => ['required', 'numeric', 'min:0', 'max:99999999.99'],
+        ]);
+
+        if ((int) $validated['status'] === 1 && ($failure = $this->validateMinimumCustomPrice($validated['product_plan_id'], $validated['price'], $validated['username']))) {
+            return back()->with('failure', $failure)->withInput();
         }
 
-       $user = User::where('username',$request->username)->first();
+        $pricing = ProductPlanCustomPricing::findOrFail($id);
+        $user = User::where('username', $validated['username'])->firstOrFail();
 
-         // Prevent duplicate custom pricing
-          $existingPricing = ProductPlanCustomPricing::where('user_id', $user->id)
-            ->where('product_plan_id', $request->product_plan_id)
-            ->first();
+        $duplicateExists = ProductPlanCustomPricing::query()
+            ->where('user_id', $user->id)
+            ->where('product_plan_id', $validated['product_plan_id'])
+            ->whereKeyNot($pricing->id)
+            ->exists();
 
-        if ($existingPricing) {
-            Session::flash(
-                'failure',
-                'Custom pricing already exists for this user and product plan.'
-            );
-
-            return redirect()->back();
+        if ($duplicateExists) {
+            return back()->with('failure', 'This salesperson already has pricing for the selected plan. Edit that existing row instead.');
         }
 
-        $data['product_plan_id'] = $request->product_plan_id;
-        $data['user_id'] = $user->id;
-        $data['price'] = $request->price;
-        $data['status'] = 1;
-        $data['added_by'] = auth()->id();
-        $newpricing = ProductPlanCustomPricing::create($data);
+        $pricing->update([
+            'product_plan_id' => $validated['product_plan_id'],
+            'user_id' => $user->id,
+            'price' => round((float) $validated['price'], 2),
+            'status' => (int) $validated['status'],
+        ]);
 
-        Session::flash('success','Custom Pricing for '.$request->username.' was successfully added');
-        return redirect()->back();
+        return back()->with('success', "Salesperson pricing for {$user->username} was successfully updated.");
     }
 
-    public function update(Request $request, $id)
-{
-    $validator = Validator::make($request->all(), [
-        'username' => 'required|exists:users,username',
-        'product_plan_id' => 'required|exists:product_plans,id',
-        'status' => 'required|integer',
-        'price' => 'required|integer',
-    ]);
+    private function validateMinimumCustomPrice(string $productPlanId, mixed $price, ?string $username = null): ?string
+    {
+        $productPlan = ProductPlan::with('product_plan_category.product')->find($productPlanId);
 
-    $validator->stopOnFirstFailure();
+        if (! $productPlan) {
+            return 'Product plan not found.';
+        }
 
-    if ($validator->fails()) {
-        Session::flash('failure', $validator->errors()->first());
-        return redirect()->back();
+        if (($productPlan->product_plan_category?->product?->slug ?? null) !== 'data') {
+            return null;
+        }
+
+        $user = $username ? User::with('user_plan')->where('username', $username)->first() : null;
+        $planLevel = max(1, min(12, (int) ($user?->user_plan?->plan_level ?? 1)));
+        $normalPriceColumn = 'user_level_'.$planLevel.'_selling_price';
+        $normalSellingPrice = (float) ($productPlan->{$normalPriceColumn} ?? $productPlan->user_level_1_selling_price ?? $productPlan->default_selling_price ?? 0);
+        $costPrice = (float) $productPlan->cost_price;
+
+        $minimumSellingPrice = DataPlansService::minimumDataSellingPriceForNormalPrice($productPlan, $normalSellingPrice);
+
+        if ((float) $price < $minimumSellingPrice) {
+            $rule = $normalSellingPrice > $costPrice
+                ? 'cost plus ₦'.DataPlansService::DEFAULT_MINIMUM_DATA_PROFIT.' minimum margin'
+                : 'cost price';
+
+            return 'Salesperson price cannot be below ₦'.number_format($minimumSellingPrice, 2).' for this plan. Current cost is ₦'.number_format($costPrice, 2).' and the active minimum rule is '.$rule.'.';
+        }
+
+        return null;
     }
-
-    if ($failure = $this->validateMinimumCustomPrice($request->product_plan_id, $request->price, $request->username)) {
-        Session::flash('failure', $failure);
-        return redirect()->back();
-    }
-
-    $pricing = ProductPlanCustomPricing::find($id);
-
-    if (!$pricing) {
-        Session::flash('failure', 'Custom pricing record not found');
-        return redirect()->back();
-    }
-
-    $user = User::where('username', $request->username)->first();
-
-    $pricing->update([
-        'product_plan_id' => $request->product_plan_id,
-        'user_id'         => $user->id,
-        'price'           => $request->price,
-        'status'          => $request->status,
-    ]);
-
-    Session::flash(
-        'success',
-        'Custom Pricing for '.$request->username.' was successfully updated'
-    );
-
-    return redirect()->back();
-}
-
-    public function update_user($id,Request $request){
-         
-        $validator = Validator::make($request->all(), [
-            'user_id' => 'required|exists:users,id',
-            'product_plan_id' => 'required|exists:product_plans,id',
-            'status' => 'required|integer',
-            'price' => 'required|integer',
-          ]);
-  
-          $validator->stopOnFirstFailure(); // set the behavior before checking
-  
-          if ($validator->fails()) {
-            Session::flash('failure', $validator->errors()->first());
-            return redirect()->back();
-          }
-
-          if ($failure = $this->validateMinimumCustomPrice($request->product_plan_id, $request->price, User::find($request->user_id)?->username)) {
-            Session::flash('failure', $failure);
-            return redirect()->back();
-          }
-  
-          $data['product_plan_id'] = $request->product_plan_id;
-          $data['user_id'] = $request->promo_metric;
-          $data['price'] = $request->price;
-          $data['status'] = 1;
-          $data['added_by'] = auth()->id();
-          $newpricing = ProductPlanCustomPricing::where('id',$id)->update($data);
-  
-          Session::flash('success','User Wallet Funding Promo was successfully updated');
-          return redirect()->back();  
-      }
-
-      private function validateMinimumCustomPrice(string $productPlanId, $price, ?string $username = null): ?string
-      {
-          $productPlan = ProductPlan::with('product_plan_category.product')->find($productPlanId);
-
-          if (! $productPlan) {
-              return 'Product plan not found.';
-          }
-
-          if (($productPlan->product_plan_category?->product?->slug ?? null) !== 'data') {
-              return null;
-          }
-
-          $user = $username ? User::where('username', $username)->first() : null;
-          $planLevel = max(1, min(12, (int) ($user?->user_plan?->plan_level ?? 1)));
-          $normalPriceColumn = 'user_level_'.$planLevel.'_selling_price';
-          $normalSellingPrice = (float) ($productPlan->{$normalPriceColumn} ?? $productPlan->user_level_1_selling_price ?? $productPlan->default_selling_price ?? 0);
-          $costPrice = (float) $productPlan->cost_price;
-
-          $minimumSellingPrice = DataPlansService::minimumDataSellingPriceForNormalPrice($productPlan, $normalSellingPrice);
-
-          if ((float) $price < $minimumSellingPrice) {
-              $rule = $normalSellingPrice > $costPrice
-                  ? 'cost plus ₦'.DataPlansService::DEFAULT_MINIMUM_DATA_PROFIT.' minimum margin'
-                  : 'cost price';
-
-              return 'Custom data price cannot be below ₦'.number_format($minimumSellingPrice, 2).' for this plan. Current cost is ₦'.number_format($costPrice, 2).' and the active minimum rule is '.$rule.'.';
-          }
-
-          return null;
-      }
-
 }
