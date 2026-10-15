@@ -95,7 +95,9 @@
                             <select id="product-plan" name="product_plan_id" required class="ti-form-select">
                                 <option value="">Select a plan</option>
                                 @foreach ($product_plans as $plan)
-                                    @php($network = $plan->product_plan_category?->network)
+                                    @php
+                                        $network = $plan->product_plan_category?->network;
+                                    @endphp
                                     <option value="{{ $plan->id }}"
                                         data-network-id="{{ $network?->id }}"
                                         @selected(old('product_plan_id') === $plan->id)>
@@ -206,9 +208,11 @@
                                         </div>
                                         <div>
                                             <label class="ti-form-label">Product plan</label>
-                                            <select name="product_plan_id" required class="ti-form-select">
+                                                <select name="product_plan_id" required class="ti-form-select">
                                                 @foreach ($product_plans as $editablePlan)
-                                                    @php($editableNetwork = $editablePlan->product_plan_category?->network)
+                                                    @php
+                                                        $editableNetwork = $editablePlan->product_plan_category?->network;
+                                                    @endphp
                                                     <option value="{{ $editablePlan->id }}" @selected($pricing->product_plan_id === $editablePlan->id)>
                                                         {{ $editableNetwork?->network_name ? $editableNetwork->network_name.' — ' : '' }}{{ $editablePlan->product_plan_name }}
                                                     </option>
