@@ -18,6 +18,50 @@ class Transaction extends Model
         'balance_before' => 'float',
         'balance_after' => 'float',
     ];
+
+    public function setUserScreenMessageAttribute($value): void
+    {
+        $this->attributes['user_screen_message'] = $this->publicMessage($value);
+    }
+
+    public function setAdminScreenMessageAttribute($value): void
+    {
+        if (is_array($value) || is_object($value)) {
+            $encoded = json_encode($value, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+            $this->attributes['admin_screen_message'] = $encoded !== false
+                ? $encoded
+                : 'Provider response could not be encoded.';
+
+            return;
+        }
+
+        $this->attributes['admin_screen_message'] = $value === null ? null : (string) $value;
+    }
+
+    private function publicMessage($value): ?string
+    {
+        if ($value === null) {
+            return null;
+        }
+
+        if (is_string($value)) {
+            return $value;
+        }
+
+        if (is_scalar($value)) {
+            return (string) $value;
+        }
+
+        if (is_array($value)) {
+            foreach (['message', 'user_message', 'detail', 'error_description', 'error'] as $key) {
+                if (array_key_exists($key, $value)) {
+                    return $this->publicMessage($value[$key]);
+                }
+            }
+        }
+
+        return 'Your transaction response has been received.';
+    }
     
 
     public function user(){

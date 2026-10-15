@@ -421,14 +421,23 @@ class BonusService
         }
 
         if ($bonus->group === Bonus::GROUP_NEW_REGISTRATION) {
+            $registeredAt = $user->created_at;
             $registrationStart = $bonus->starts_at ?? $bonus->created_at;
-            $withinCampaign = $user->created_at->greaterThanOrEqualTo($registrationStart)
-                && $user->created_at->lessThanOrEqualTo($bonus->ends_at);
+
+            // Some legacy accounts and imported campaigns do not have complete
+            // timestamp data. They cannot safely qualify for a registration
+            // reward, but evaluating them must never break another operation.
+            if (! $registeredAt || ! $registrationStart) {
+                return false;
+            }
+
+            $withinCampaign = $registeredAt->greaterThanOrEqualTo($registrationStart)
+                && (! $bonus->ends_at || $registeredAt->lessThanOrEqualTo($bonus->ends_at));
             $maximumAge = $bonus->conditions['registration_max_age_days'] ?? null;
 
             return $withinCampaign && (
                 ! $maximumAge
-                || $user->created_at->greaterThanOrEqualTo(now()->subDays((int) $maximumAge))
+                || $registeredAt->greaterThanOrEqualTo(now()->subDays((int) $maximumAge))
             );
         }
 

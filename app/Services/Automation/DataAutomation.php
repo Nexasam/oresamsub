@@ -45,6 +45,27 @@ class DataAutomation{
         return is_array($value) ? $value : json_decode($value, true);
     }
 
+    private function responseMessage($value, string $fallback): string
+    {
+        if (is_string($value)) {
+            return trim($value) !== '' ? $value : $fallback;
+        }
+
+        if (is_scalar($value)) {
+            return (string) $value;
+        }
+
+        if (is_array($value)) {
+            foreach (['message', 'user_message', 'detail', 'error_description', 'error'] as $key) {
+                if (array_key_exists($key, $value)) {
+                    return $this->responseMessage($value[$key], $fallback);
+                }
+            }
+        }
+
+        return $fallback;
+    }
+
     public function buildRequestParameters(
         $vendor_record,
         string $input_phone_number,
@@ -264,6 +285,9 @@ class DataAutomation{
             3 => $response_dec[$steps[0]][$steps[1]][$steps[2]] ?? 'Transaction failed',
             default => 'Transaction failed',
         };
+
+        $success_message = $this->responseMessage($success_message, 'Transaction was successful');
+        $failed_message = $this->responseMessage($failed_message, 'Transaction failed');
         
         return $allPassed
             ? [
