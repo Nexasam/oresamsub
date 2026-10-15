@@ -8,12 +8,14 @@ use App\Models\Announcement;
 use App\Models\Network;
 use App\Models\NetworkIssueAlert;
 use App\Models\Product;
+use App\Models\ProductPlan;
 use App\Models\ProductPlanCategory;
 use App\Models\Transaction;
 use App\Models\UserContact;
 use App\Models\UserVirtualAccount;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Services\Pricing\CustomerProductPricingService;
 use Inertia\Inertia;
 
 class InertiaDashboardController extends Controller
@@ -83,6 +85,57 @@ class InertiaDashboardController extends Controller
         $data['networks'] = Network::get();
         // dd('test');
         return Inertia::render('BuyAirtime')->with($data);
+    }
+
+    public function pricing(CustomerProductPricingService $pricingService)
+    {
+        $user = Auth::user()->loadMissing('user_plan');
+
+        $plans = ProductPlan::query()
+            ->with([
+                'product_plan_category.network',
+                'product_plan_category.product',
+                'customPricings' => fn ($query) => $query
+                    ->where('user_id', $user->id)
+                    ->where('status', 1),
+            ])
+            ->where('visibility', 1)
+            ->whereHas('product_plan_category.product', fn ($query) => $query->where('slug', 'data'))
+            ->orderByRaw('CAST(data_size_in_mb AS DECIMAL(12, 2))')
+            ->orderByRaw('CAST(validity_in_days AS UNSIGNED) DESC')
+            ->get()
+            ->map(function (ProductPlan $plan) use ($pricingService, $user): array {
+                $resolved = $pricingService->resolve($user, $plan);
+                $hasPersonalOverride = $plan->customPricings->isNotEmpty();
+                $usesSalespersonPrice = ! $hasPersonalOverride
+                    && $user->is_salesperson
+                    && $plan->salesperson_price !== null;
+
+                return [
+                    'id' => $plan->id,
+                    'name' => $plan->product_plan_name,
+                    'network_id' => $plan->product_plan_category?->network?->id,
+                    'network' => $plan->product_plan_category?->network?->network_name,
+                    'size_mb' => (float) $plan->data_size_in_mb,
+                    'validity_days' => (int) $plan->validity_in_days,
+                    'price' => $resolved['price'],
+                    'price_source' => $hasPersonalOverride
+                        ? 'personal_override'
+                        : ($usesSalespersonPrice ? 'salesperson' : 'customer_level'),
+                ];
+            })
+            ->values();
+
+        return Inertia::render('Pricing', [
+            'plans' => $plans,
+            'pricingProfile' => [
+                'plan_name' => $user->user_plan?->updated_user_plan_name
+                    ?? $user->user_plan?->user_plan_name
+                    ?? 'Standard',
+                'plan_level' => (int) ($user->user_plan?->plan_level ?? 1),
+                'is_salesperson' => (bool) $user->is_salesperson,
+            ],
+        ]);
     }
 
     public function cable()

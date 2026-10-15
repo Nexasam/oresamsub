@@ -21,11 +21,13 @@ class ProductPlan extends Model
 
     public function activePriceOverrideFor(User $user): ?float
     {
-        $personalPrice = ProductPlanCustomPricing::query()
-            ->where('product_plan_id', $this->getKey())
-            ->where('user_id', $user->getKey())
-            ->where('status', 1)
-            ->value('price');
+        $personalPrice = $this->relationLoaded('customPricings')
+            ? $this->customPricings->firstWhere('user_id', $user->getKey())?->price
+            : ProductPlanCustomPricing::query()
+                ->where('product_plan_id', $this->getKey())
+                ->where('user_id', $user->getKey())
+                ->where('status', 1)
+                ->value('price');
 
         if ($personalPrice !== null && $personalPrice !== '') {
             return round((float) $personalPrice, 2);
@@ -101,6 +103,11 @@ class ProductPlan extends Model
     public function automationProductPlans()
     {
         return $this->hasMany(AutomationProductPlan::class);
+    }
+
+    public function customPricings()
+    {
+        return $this->hasMany(ProductPlanCustomPricing::class);
     }
     
 

@@ -26,6 +26,11 @@ export default function ProductButtons({ loggingOut, setLoggingOut }) {
           href: route("airtime-to-cash.index"),
         },
         {
+          label: "My Prices",
+          icon: "🏷️",
+          href: route("inertia.pricing.index"),
+        },
+        {
           label: "Power",
           icon: "⚡",
           href: route("ore.electricity"),

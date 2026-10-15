@@ -185,6 +185,10 @@ Route::middleware(['set_locale'])->group(function () {
                 ->middleware(['auth', 'verified'])
                 ->name('bonuses.convert');
 
+            Route::get('/pricing', [InertiaDashboardController::class, 'pricing'])
+                ->middleware(['auth', 'verified'])
+                ->name('inertia.pricing.index');
+
             Route::get('set_pin', fn () => Inertia::render('SetPin'))
                 ->middleware(['auth', 'verified'])
                 ->name('ore.set_pin');

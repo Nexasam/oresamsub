@@ -10,6 +10,9 @@ use App\Models\ProductPlanCategory;
 use App\Models\ProductPlanCustomPricing;
 use App\Models\User;
 use App\Models\UserPlan;
+use Inertia\Testing\AssertableInertia as Assert;
+
+use function Pest\Laravel\actingAs;
 
 function dataPricingFixture(float $customPrice, int $seed, int $status = 1): array
 {
@@ -172,6 +175,22 @@ it('gives a personal override priority over the plan-wide salesperson price', fu
     ])['message'];
 
     expect((float) $price)->toBe(550.0);
+});
+
+it('shows a salesperson the same effective price on the React pricing page', function () {
+    ['user' => $user, 'plan' => $plan] = dataPricingFixture(550, 9, 0);
+    $user->update(['is_salesperson' => true]);
+    $plan->update(['salesperson_price' => 490, 'visibility' => 1]);
+
+    actingAs($user)
+        ->get(route('inertia.pricing.index'))
+        ->assertOk()
+        ->assertInertia(fn (Assert $page) => $page
+            ->component('Pricing')
+            ->where('pricingProfile.is_salesperson', true)
+            ->where('plans.0.id', $plan->id)
+            ->where('plans.0.price', 490)
+            ->where('plans.0.price_source', 'salesperson'));
 });
 
 it('never allows a custom data price below cost even when the normal selling price is not profitable', function () {
