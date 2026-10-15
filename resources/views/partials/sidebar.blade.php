@@ -158,7 +158,7 @@
 
                     @endif
 
-                    @if (auth()->user()->email == 'adebsholey4real@gmail.com')
+                    @if (auth()->user()->canManageStandalones())
                     <!-- Standalone websites -->
                     <li class="slide has-sub">
                         <a href="{{ route('admin.standalones.index') }}" class="side-menu__item">

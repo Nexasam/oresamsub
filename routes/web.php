@@ -87,7 +87,7 @@ use App\Http\Controllers\Api\v1\VendorUsersApi\MegaWhatsappWebhookController;
 use App\Http\Controllers\AirtelPaymentOptionsResearchController;
 use App\Http\Controllers\GloAuthResearchController;
 
-Route::middleware(['auth', 'verified', 'super_admin'])->prefix('admin/standalones')->name('admin.standalones.')->group(function () {
+Route::middleware(['auth', 'verified', 'standalone_admin'])->prefix('admin/standalones')->name('admin.standalones.')->group(function () {
     Route::get('/', [StandaloneWebsiteController::class, 'index'])->name('index');
     Route::get('/create', [StandaloneWebsiteController::class, 'create'])->name('create');
     Route::post('/', [StandaloneWebsiteController::class, 'store'])->name('store');

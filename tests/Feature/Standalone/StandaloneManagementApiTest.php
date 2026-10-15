@@ -141,3 +141,20 @@ it('lets only the protected owner manage features and a standalone global price 
     $feature = StandaloneFeature::where('slug', 'whatsapp-bot')->sole();
     expect($feature->billing_type)->toBe('one_time')->and($feature->level_3_price)->toBe('4000.00');
 });
+
+it('lets a programmer manage standalone features without granting the route to ordinary admins', function (): void {
+    $programmerRole = Role::firstOrCreate(['role_name' => 'Programmer']);
+    $programmer = User::factory()->create([
+        'role_id' => $programmerRole->id,
+        'email' => 'developer@example.com',
+    ]);
+    $ordinaryAdmin = standaloneAdminUser('ordinary-standalone-admin@example.com');
+
+    $this->actingAs($ordinaryAdmin)
+        ->get(route('admin.standalones.features.index'))
+        ->assertForbidden();
+
+    $this->actingAs($programmer)
+        ->get(route('admin.standalones.features.index'))
+        ->assertOk();
+});

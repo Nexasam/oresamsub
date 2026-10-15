@@ -61,6 +61,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'permission' => RequirePermission::class,
             'permission.any' => RequireAnyPermission::class,
             'super_admin' => ProtectedSuperAdmin::class,
+            'standalone_admin' => \App\Http\Middleware\ManageStandalones::class,
             'validate_user' => ValidateSanctumUser::class,
             'api_token' => ValidateApiToken::class,
             'msorg.api_token' => AuthenticateMsorgApiToken::class,
