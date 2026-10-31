@@ -13,6 +13,8 @@ export default function ResetPasswordScreen() {
   const [otp, setOtp] = useState('');
   const [password, setPassword] = useState('');
   const [confirmation, setConfirmation] = useState('');
+  const [passwordVisible, setPasswordVisible] = useState(false);
+  const [confirmationVisible, setConfirmationVisible] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
 
@@ -31,8 +33,8 @@ export default function ResetPasswordScreen() {
     <Text style={styles.subtitle}>Sent to {email}</Text>
     <View style={styles.card}>
       <PinInput autoFocus label="Password reset code" length={6} onChangeText={setOtp} secure={false} value={otp} />
-      <View style={styles.field}><AuthField autoCapitalize="none" autoComplete="new-password" icon="lock" label="New password" onChangeText={setPassword} secureTextEntry value={password} /></View>
-      <AuthField autoCapitalize="none" autoComplete="new-password" icon="lock" label="Confirm new password" onChangeText={setConfirmation} secureTextEntry value={confirmation} />
+      <View style={styles.field}><AuthField autoCapitalize="none" autoComplete="new-password" icon="lock" label="New password" onChangeText={setPassword} onToggleSecure={() => setPasswordVisible((visible) => !visible)} secureTextEntry={!passwordVisible} value={password} /></View>
+      <AuthField autoCapitalize="none" autoComplete="new-password" icon="lock" label="Confirm new password" onChangeText={setConfirmation} onToggleSecure={() => setConfirmationVisible((visible) => !visible)} secureTextEntry={!confirmationVisible} value={confirmation} />
       <Text style={styles.hint}>Use at least 8 characters with uppercase, lowercase, number and symbol.</Text>
       {error ? <Text style={styles.error}>{error}</Text> : null}
       <Pressable disabled={busy} onPress={() => void submit()} style={styles.button}>{busy ? <ActivityIndicator color={colors.white} /> : <Text style={styles.buttonText}>Reset password</Text>}</Pressable>
