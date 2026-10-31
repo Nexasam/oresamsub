@@ -17,19 +17,17 @@ class MobilePreviewDownloadController extends Controller
             $privateRoot = realpath(storage_path('app/private'));
             $apkPath = realpath(storage_path('app/private/'.ltrim($relativePath, '/')));
 
-            abort_unless(
-                $privateRoot !== false
+            $hasPrivateApk = $privateRoot !== false
                 && $apkPath !== false
                 && str_starts_with($apkPath, $privateRoot.DIRECTORY_SEPARATOR)
-                && is_file($apkPath),
-                404,
-                'The mobile preview build is not available yet.'
-            );
+                && is_file($apkPath);
 
-            return response()->download($apkPath, 'OresamSub-preview.apk', [
-                'Content-Type' => 'application/vnd.android.package-archive',
-                'Cache-Control' => 'private, no-store, max-age=0',
-            ]);
+            if ($hasPrivateApk) {
+                return response()->download($apkPath, 'OresamSub-preview.apk', [
+                    'Content-Type' => 'application/vnd.android.package-archive',
+                    'Cache-Control' => 'private, no-store, max-age=0',
+                ]);
+            }
         }
 
         $downloadUrl = trim((string) config('mobile.preview.android_download_url'));

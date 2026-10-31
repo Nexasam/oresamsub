@@ -33,3 +33,15 @@ it('does not expose the preview download to guests or unverified testers', funct
         ->get(route('mobile.preview.android.download'))
         ->assertRedirect(route('verification.notice'));
 });
+
+it('falls back to the remote build when the configured private apk is absent', function () {
+    config()->set('mobile.preview.android_apk_path', 'mobile/missing-preview.apk');
+    config()->set('mobile.preview.android_download_url', 'https://example.com/oresamsub-preview.apk');
+    config()->set('mobile.preview.tester_emails', ['oreofe@gmail.com']);
+
+    $tester = User::factory()->create(['email' => 'oreofe@gmail.com']);
+
+    $this->actingAs($tester)
+        ->get(route('mobile.preview.android.download'))
+        ->assertRedirect('https://example.com/oresamsub-preview.apk');
+});
