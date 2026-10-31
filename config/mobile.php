@@ -26,7 +26,7 @@ return [
             'mb_strtolower',
             array_map('trim', explode(',', (string) env(
                 'MOBILE_PREVIEW_TESTER_EMAILS',
-                'adebsholey4real@gmail.com,oreofe@gmail.com'
+                'adebsholey4real@gmail.com,oreofe@gmail.com,oluwadarasimimakanjuola215@gmail.com'
             )))
         ))),
     ],
