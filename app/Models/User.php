@@ -103,6 +103,13 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasPermission('standalones.manage');
     }
 
+    public function canTestMobilePreview(): bool
+    {
+        $email = mb_strtolower(trim((string) $this->email));
+
+        return $email !== '' && in_array($email, config('mobile.preview.tester_emails', []), true);
+    }
+
     public function upline()
     {
         return $this->belongsTo(User::class, 'upline_id', 'id');

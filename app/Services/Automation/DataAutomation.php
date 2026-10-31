@@ -184,7 +184,6 @@ class DataAutomation{
             'provider_host' => parse_url((string) $request_url, PHP_URL_HOST),
             'fields' => array_keys($new_request_params),
             'ported_number' => $new_request_params['Ported_number'] ?? null,
-            'encoded'=>$encoded_array
         ]);
 
         
@@ -201,7 +200,8 @@ class DataAutomation{
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_ENCODING => '',
             CURLOPT_MAXREDIRS => 10,
-            CURLOPT_TIMEOUT => 0,
+            CURLOPT_CONNECTTIMEOUT => 10,
+            CURLOPT_TIMEOUT => 45,
             CURLOPT_FOLLOWLOCATION => true,
             CURLOPT_POSTREDIR => self::redirectPostMode(),
             CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
@@ -212,14 +212,43 @@ class DataAutomation{
         );
         $response = curl_exec($curl);
         $curl_error = curl_error($curl);
+        $curl_errno = curl_errno($curl);
         $httpcode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+        $contentType = curl_getinfo($curl, CURLINFO_CONTENT_TYPE);
 
-        // logger('curl http code: '.$httpcode);
-        // logger('curl error: '.$curl_error);
-        logger('dataaaaaresponse: '.$response);
         curl_close($curl);
 
-        $response_dec = json_decode($response,true);
+        logger('data automation provider response', [
+            'provider_slug' => $vendor_record->slug ?? null,
+            'provider_host' => parse_url((string) $request_url, PHP_URL_HOST),
+            'http_status' => $httpcode,
+            'content_type' => $contentType,
+            'curl_errno' => $curl_errno,
+            'curl_error' => $curl_error !== '' ? $curl_error : null,
+            'response_bytes' => is_string($response) ? strlen($response) : 0,
+        ]);
+
+        if ($response === false || trim((string) $response) === '') {
+            $diagnostic = $curl_error !== ''
+                ? "cURL error {$curl_errno}: {$curl_error}"
+                : "Provider returned an empty response body with HTTP status {$httpcode}";
+
+            return [
+                'status' => -1,
+                'user_message' => 'The provider could not return a valid response. Please try again later.',
+                'admin_message' => $diagnostic,
+            ];
+        }
+
+        $response_dec = json_decode((string) $response, true);
+
+        if (! is_array($response_dec)) {
+            return [
+                'status' => -1,
+                'user_message' => 'The provider could not return a valid response. Please try again later.',
+                'admin_message' => 'Provider returned invalid JSON (HTTP '.$httpcode.'): '.json_last_error_msg(),
+            ];
+        }
      
      
      

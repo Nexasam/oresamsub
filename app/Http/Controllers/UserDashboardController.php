@@ -208,6 +208,18 @@ class UserDashboardController extends Controller
             ->map(fn (NetworkIssueAlert $alert): array => $alert->restoredPayload())
             ->all(),
         ];
+        $previewApkPath = trim((string) config('mobile.preview.android_apk_path'));
+        $hasPrivatePreviewBuild = $previewApkPath !== ''
+          && is_file(storage_path('app/private/'.ltrim($previewApkPath, '/')));
+        $hasPreviewBuild = $hasPrivatePreviewBuild
+          || filled(config('mobile.preview.android_download_url'));
+        $data['mobileAppPreview'] = [
+          'available' => $hasPreviewBuild && $user->canTestMobilePreview(),
+          'version' => (string) config('mobile.preview.version', '1.0.0'),
+          'download_url' => $hasPreviewBuild && $user->canTestMobilePreview()
+            ? route('mobile.preview.android.download')
+            : null,
+        ];
         // return $data;
         // logger('thiss ran for inertia dashboard'.json_encode($data));
       

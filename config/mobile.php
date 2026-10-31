@@ -15,6 +15,21 @@ return [
     'support_email' => env('MOBILE_SUPPORT_EMAIL', 'info@oresamsub.com'),
     'support_phone' => env('MOBILE_SUPPORT_PHONE', '08168509044'),
     'support_whatsapp' => env('MOBILE_SUPPORT_WHATSAPP'),
+    'preview' => [
+        'version' => env('MOBILE_PREVIEW_VERSION', '1.0.0'),
+        'android_apk_path' => env(
+            'MOBILE_PREVIEW_ANDROID_APK_PATH',
+            'mobile/oresamsub-preview-v1.0.0-build3.apk'
+        ),
+        'android_download_url' => env('MOBILE_PREVIEW_ANDROID_DOWNLOAD_URL'),
+        'tester_emails' => array_values(array_filter(array_map(
+            'mb_strtolower',
+            array_map('trim', explode(',', (string) env(
+                'MOBILE_PREVIEW_TESTER_EMAILS',
+                'adebsholey4real@gmail.com,oreofe@gmail.com'
+            )))
+        ))),
+    ],
     'access_token_minutes' => (int) env('MOBILE_ACCESS_TOKEN_MINUTES', 15),
     'refresh_token_days' => (int) env('MOBILE_REFRESH_TOKEN_DAYS', 30),
     'hidden_product_slugs' => array_values(array_filter(array_map(

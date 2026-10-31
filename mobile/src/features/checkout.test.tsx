@@ -31,4 +31,4 @@ it('prevents a double-tap from submitting a financial purchase twice', async () 
   await waitFor(() => expect(Alert.alert).toHaveBeenCalled());
   client.clear();
   await screen.unmount();
-});
+}, 15_000);

@@ -29,7 +29,7 @@ use App\Http\Controllers\InertiaLoginController;
 use App\Http\Controllers\MarkNetworkRestoredNoticeSeenController;
 use App\Http\Controllers\MarketersController;
 use App\Http\Controllers\MarketingGuideController;
-use App\Http\Controllers\MobileEmailVerificationController;
+use App\Http\Controllers\MobilePreviewDownloadController;
 use App\Http\Controllers\MultilanguageController;
 use App\Http\Controllers\NetworkController;
 use App\Http\Controllers\PlanProfitSettingsController;
@@ -131,10 +131,6 @@ Route::view('/privacy-policy', 'legal.privacy')->name('privacy.policy');
 Route::view('/terms', 'legal.terms')->name('terms');
 Route::view('/account-deletion', 'legal.account-deletion')->name('account.deletion');
 Route::view('/developers', 'developers.index')->name('developers.index');
-Route::get('/mobile/verify-email/{id}/{hash}', MobileEmailVerificationController::class)
-    ->middleware(['signed', 'throttle:6,1'])
-    ->name('mobile.email.verify');
-
 Route::get('/whatsapp/update-config/{phone_number_id}/{token}', [WhatsappWebhookController::class, 'updateConfig'])
     ->name('whatsapp.config');
 Route::get('/whatsapp/ore/update-config/{phone_number_id}/{token}', [WhatsappWebhookController::class, 'updateOreConfig'])
@@ -180,6 +176,10 @@ Route::middleware(['set_locale'])->group(function () {
             Route::post('/dashboard/network-restored-notices/seen', MarkNetworkRestoredNoticeSeenController::class)
             ->middleware('auth')
             ->name('dashboard.network_restored_notices.seen');
+
+            Route::get('/mobile-preview/android/download', MobilePreviewDownloadController::class)
+                ->middleware(['auth', 'verified', 'throttle:10,1'])
+                ->name('mobile.preview.android.download');
 
             Route::post('/bonuses/transfer-to-main-wallet', [BonusController::class, 'convertWallet'])
                 ->middleware(['auth', 'verified'])

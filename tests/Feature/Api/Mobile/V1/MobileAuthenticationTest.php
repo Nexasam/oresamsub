@@ -10,7 +10,6 @@ use App\Notifications\MobileVerifyEmailNotification;
 use App\Notifications\MobilePasswordResetOtpNotification;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Notification;
-use Illuminate\Support\Facades\URL;
 
 use function Pest\Laravel\getJson;
 use function Pest\Laravel\deleteJson;
@@ -83,21 +82,6 @@ it('verifies a mobile email with an otp and starts the device session', function
 
     expect($user->fresh()->hasVerifiedEmail())->toBeTrue()
         ->and(MobileRefreshToken::where('user_id', $user->id)->count())->toBe(1);
-});
-
-it('verifies a mobile email through its temporary signed browser link', function () {
-    $user = User::factory()->unverified()->create();
-    $url = URL::temporarySignedRoute('mobile.email.verify', now()->addMinutes(10), [
-        'id' => $user->id,
-        'hash' => sha1($user->getEmailForVerification()),
-    ]);
-
-    $this->get($url)
-        ->assertOk()
-        ->assertSee('Email verified')
-        ->assertSee($user->email);
-
-    expect($user->fresh()->hasVerifiedEmail())->toBeTrue();
 });
 
 it('resends mobile email verification without exposing unknown accounts', function () {
