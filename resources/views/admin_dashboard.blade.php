@@ -1,6 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
+@include('partials.mobile-preview-popup')
 <div class="main-content">
 
     @php

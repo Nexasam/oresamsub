@@ -21,7 +21,10 @@ return [
             'MOBILE_PREVIEW_ANDROID_APK_PATH',
             'mobile/oresamsub-preview-v1.0.0-build3.apk'
         ),
-        'android_download_url' => env('MOBILE_PREVIEW_ANDROID_DOWNLOAD_URL'),
+        'android_download_url' => env(
+            'MOBILE_PREVIEW_ANDROID_DOWNLOAD_URL',
+            'https://expo.dev/artifacts/eas/uvZxMlbCjYkmW1NsqqLOPztG7hPTirTyZbq1jJsM9hc.apk'
+        ),
         'tester_emails' => array_values(array_filter(array_map(
             'mb_strtolower',
             array_map('trim', explode(',', (string) env(
