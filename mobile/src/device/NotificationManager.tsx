@@ -51,7 +51,13 @@ export async function registerForPushNotifications() {
     ?? (typeof configuredProjectId === 'string' ? configuredProjectId : undefined)
     ?? Constants.easConfig?.projectId;
   if (!projectId) throw new Error('The EAS project ID is missing from this build.');
-  const token = await Notifications.getExpoPushTokenAsync({ projectId });
+  let token: Notifications.ExpoPushToken;
+  try {
+    token = await Notifications.getExpoPushTokenAsync({ projectId });
+  } catch (error) {
+    console.warn('Unable to obtain an Expo push token', error);
+    throw new Error('Push notifications are not available in this installed version yet. Please install the latest OresamSub app update and try again.');
+  }
   const response = await deviceApi.register({
     device_uuid: await getDeviceUuid(),
     expo_push_token: token.data,

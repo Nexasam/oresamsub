@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "410979715778",
+    "project_id": "oresamsub-58324",
+    "storage_bucket": "oresamsub-58324.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:410979715778:android:54a702203fd28355b9495b",
+        "android_client_info": {
+          "package_name": "com.oresamsub.mobile"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBZZr6daqo98IIeBz8RDEI-OVaB16jiaQk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

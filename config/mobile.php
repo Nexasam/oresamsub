@@ -16,14 +16,14 @@ return [
     'support_phone' => env('MOBILE_SUPPORT_PHONE', '08168509044'),
     'support_whatsapp' => env('MOBILE_SUPPORT_WHATSAPP'),
     'preview' => [
-        'version' => env('MOBILE_PREVIEW_VERSION', '1.0.0'),
+        'version' => env('MOBILE_PREVIEW_VERSION', '1.0.0-build4'),
         'android_apk_path' => env(
             'MOBILE_PREVIEW_ANDROID_APK_PATH',
-            'mobile/oresamsub-preview-v1.0.0-build3.apk'
+            'mobile/oresamsub-preview-v1.0.0-build4.apk'
         ),
         'android_download_url' => env(
             'MOBILE_PREVIEW_ANDROID_DOWNLOAD_URL',
-            'https://expo.dev/artifacts/eas/uvZxMlbCjYkmW1NsqqLOPztG7hPTirTyZbq1jJsM9hc.apk'
+            'https://expo.dev/artifacts/eas/lEEfeji4myVOYk09Ny27s4GrmX8mNi10QY4Bh463Bv4.apk'
         ),
         'tester_emails' => array_values(array_filter(array_map(
             'mb_strtolower',
