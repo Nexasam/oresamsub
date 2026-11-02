@@ -9,7 +9,13 @@ return [
     'force_update' => (bool) env('MOBILE_FORCE_UPDATE', false),
     'maintenance_mode' => (bool) env('MOBILE_MAINTENANCE_MODE', false),
     'maintenance_message' => env('MOBILE_MAINTENANCE_MESSAGE', 'OresamSub Mobile is undergoing brief maintenance. Please try again shortly.'),
-    'android_store_url' => env('MOBILE_ANDROID_STORE_URL', rtrim((string) env('APP_URL'), '/').'/dashboard'),
+    'android_store_url' => env(
+        'MOBILE_ANDROID_STORE_URL',
+        env(
+            'MOBILE_PREVIEW_ANDROID_DOWNLOAD_URL',
+            'https://expo.dev/artifacts/eas/lEEfeji4myVOYk09Ny27s4GrmX8mNi10QY4Bh463Bv4.apk'
+        )
+    ),
     'ios_store_url' => env('MOBILE_IOS_STORE_URL', rtrim((string) env('APP_URL'), '/').'/dashboard'),
     'privacy_url' => env('MOBILE_PRIVACY_URL', rtrim((string) env('APP_URL'), '/').'/privacy-policy'),
     'terms_url' => env('MOBILE_TERMS_URL', rtrim((string) env('APP_URL'), '/').'/terms'),

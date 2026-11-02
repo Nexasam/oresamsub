@@ -3,11 +3,13 @@ import * as Application from 'expo-application';
 import Constants from 'expo-constants';
 import * as Updates from 'expo-updates';
 import { useEffect, useState } from 'react';
-import { Linking, Modal, Platform, Pressable, StyleSheet, Text, View } from 'react-native';
+import { Alert, Linking, Modal, Platform, Pressable, StyleSheet, Text, View } from 'react-native';
 import { apiRequest } from '../api/client';
 import { colors } from '../theme/colors';
 
 type MobileConfig = { minimum_app_version: string; latest_app_version: string; minimum_native_build?: number; latest_native_build?: number; force_update: boolean; maintenance_mode: boolean; maintenance_message: string; store_urls: { android: string | null; ios: string | null } };
+
+const latestAndroidApkUrl = 'https://expo.dev/artifacts/eas/lEEfeji4myVOYk09Ny27s4GrmX8mNi10QY4Bh463Bv4.apk';
 
 export function BootstrapGate({ children }: { children: React.ReactNode }) {
   const [installingUpdate, setInstallingUpdate] = useState(false);
@@ -18,7 +20,9 @@ export function BootstrapGate({ children }: { children: React.ReactNode }) {
   const currentNativeBuild = Number.parseInt(Application.nativeBuildVersion ?? '0', 10) || 0;
   const belowMinimumVersion = !!config && compareVersions(current, config.minimum_app_version) < 0;
   const belowMinimumBuild = !!config?.minimum_native_build && currentNativeBuild < config.minimum_native_build;
-  const mustUpdate = !!config && config.force_update && (belowMinimumVersion || belowMinimumBuild);
+  // Native builds below the supported minimum can lack required SDKs or
+  // security configuration, so their update screen must never be dismissible.
+  const mustUpdate = !!config && (belowMinimumBuild || (config.force_update && belowMinimumVersion));
 
   useEffect(() => {
     if (!Updates.isEnabled) return;
@@ -38,7 +42,13 @@ export function BootstrapGate({ children }: { children: React.ReactNode }) {
     return () => { active = false; };
   }, []);
 
-  const updateUrl = config ? (Platform.OS === 'ios' ? config.store_urls.ios : config.store_urls.android) : null;
+  const configuredUpdateUrl = config ? (Platform.OS === 'ios' ? config.store_urls.ios : config.store_urls.android) : null;
+  const updateUrl = configuredUpdateUrl || (Platform.OS === 'android' ? latestAndroidApkUrl : 'https://oresamsub.com/dashboard');
+  const openUpdatePage = () => {
+    void Linking.openURL(updateUrl).catch(() => {
+      Alert.alert('Unable to open browser', `Visit ${updateUrl} to download the latest app.`);
+    });
+  };
   const hasNewNativeVersion = !!config && (
     compareVersions(current, config.latest_app_version) < 0
     || (!!config.latest_native_build && currentNativeBuild < config.latest_native_build)
@@ -47,7 +57,7 @@ export function BootstrapGate({ children }: { children: React.ReactNode }) {
   if (installingUpdate) return <Block title="Updating OresamSub" message="Installing the latest improvements. The app will reopen automatically." />;
   if (config?.maintenance_mode) return <Block title="We’ll be back shortly" message={config.maintenance_message} action="Try again" onPress={() => void query.refetch()} />;
   if (mustUpdate) {
-    return <Block title="Update required" message="Install the latest OresamSub version to continue securely." action="Get latest app" onPress={() => updateUrl && void Linking.openURL(updateUrl)} />;
+    return <Block title="Update required" message="Install the latest OresamSub version to continue securely." action="Get latest app" onPress={openUpdatePage} />;
   }
   return <>
     {children}
@@ -57,7 +67,7 @@ export function BootstrapGate({ children }: { children: React.ReactNode }) {
           <View style={styles.mark}><Text style={styles.markText}>O</Text></View>
           <Text style={styles.title}>A new version is ready</Text>
           <Text style={styles.message}>Your installed build {currentNativeBuild || 'unknown'} is outdated. Update OresamSub for the latest features, push notifications and security improvements.</Text>
-          <Pressable disabled={!updateUrl} onPress={() => updateUrl && void Linking.openURL(updateUrl)} style={[styles.button, !updateUrl && styles.buttonDisabled]}><Text style={styles.buttonText}>Get latest app</Text></Pressable>
+          <Pressable onPress={openUpdatePage} style={styles.button}><Text style={styles.buttonText}>Get latest app</Text></Pressable>
           <Pressable onPress={() => setOptionalUpdateDismissed(true)} style={styles.laterButton}><Text style={styles.laterText}>Maybe later</Text></Pressable>
         </View>
       </View>

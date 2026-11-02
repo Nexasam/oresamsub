@@ -12,6 +12,8 @@ import { registerForPushNotifications } from '../../src/device/NotificationManag
 import { ApiError } from '../../src/api/client';
 import { colors, fonts } from '../../src/theme/colors';
 
+const latestAndroidApkUrl = 'https://expo.dev/artifacts/eas/lEEfeji4myVOYk09Ny27s4GrmX8mNi10QY4Bh463Bv4.apk';
+
 export default function AccountScreen() {
   const user = useAuthStore((state) => state.user);
   const signOut = useAuthStore((state) => state.signOut);
@@ -40,7 +42,12 @@ export default function AccountScreen() {
         requiresNewBuild
           ? [
               { text: 'Not now', style: 'cancel' },
-              { text: 'Get latest app', onPress: () => void Linking.openURL('https://oresamsub.com/dashboard') },
+              {
+                text: 'Get latest app',
+                onPress: () => void Linking.openURL(latestAndroidApkUrl).catch(() => {
+                  Alert.alert('Unable to open browser', `Visit ${latestAndroidApkUrl} to download the latest app.`);
+                }),
+              },
             ]
           : [{ text: 'OK' }],
       );
