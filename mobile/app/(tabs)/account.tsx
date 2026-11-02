@@ -1,4 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import * as Application from 'expo-application';
 import { router } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { Alert, Pressable, StyleSheet, Switch, Text, View } from 'react-native';
@@ -87,6 +88,7 @@ export default function AccountScreen() {
         <Detail label="Username" value={`@${user?.username}`} />
         <Detail label="Phone" value={user?.phone_number ?? 'Not added'} />
         <Detail label="Phone verified" value={user?.phone_verified ? 'Yes' : 'No'} />
+        <Detail label="App version" value={`${Application.nativeApplicationVersion ?? 'Unknown'} (build ${Application.nativeBuildVersion ?? 'Unknown'})`} />
       </View>
       <Text style={styles.section}>Security & notifications</Text>
       <Pressable onPress={() => router.push('/security-settings')} style={styles.navigation}>

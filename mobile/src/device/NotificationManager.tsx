@@ -1,4 +1,5 @@
 import Constants from 'expo-constants';
+import * as Application from 'expo-application';
 import * as Device from 'expo-device';
 import * as Notifications from 'expo-notifications';
 import { router } from 'expo-router';
@@ -56,7 +57,8 @@ export async function registerForPushNotifications() {
     token = await Notifications.getExpoPushTokenAsync({ projectId });
   } catch (error) {
     console.warn('Unable to obtain an Expo push token', error);
-    throw new Error('Push notifications are not available in this installed version yet. Please install the latest OresamSub app update and try again.');
+    const build = Application.nativeBuildVersion ?? 'unknown';
+    throw new Error(`Push notifications are unavailable in installed build ${build}. Build 4 or newer is required.`);
   }
   const response = await deviceApi.register({
     device_uuid: await getDeviceUuid(),
