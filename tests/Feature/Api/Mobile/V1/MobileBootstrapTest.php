@@ -27,6 +27,8 @@ it('returns the public mobile feature configuration', function () {
                 'api_version',
                 'minimum_app_version',
                 'latest_app_version',
+                'minimum_native_build',
+                'latest_native_build',
                 'force_update',
                 'maintenance_mode',
                 'features',

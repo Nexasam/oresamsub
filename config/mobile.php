@@ -4,6 +4,8 @@ return [
     'api_version' => 'v1',
     'minimum_app_version' => env('MOBILE_MINIMUM_APP_VERSION', '1.0.0'),
     'latest_app_version' => env('MOBILE_LATEST_APP_VERSION', '1.0.0'),
+    'minimum_native_build' => (int) env('MOBILE_MINIMUM_NATIVE_BUILD', 4),
+    'latest_native_build' => (int) env('MOBILE_LATEST_NATIVE_BUILD', 4),
     'force_update' => (bool) env('MOBILE_FORCE_UPDATE', false),
     'maintenance_mode' => (bool) env('MOBILE_MAINTENANCE_MODE', false),
     'maintenance_message' => env('MOBILE_MAINTENANCE_MESSAGE', 'OresamSub Mobile is undergoing brief maintenance. Please try again shortly.'),

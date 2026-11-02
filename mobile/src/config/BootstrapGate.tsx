@@ -1,4 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
+import * as Application from 'expo-application';
 import Constants from 'expo-constants';
 import * as Updates from 'expo-updates';
 import { useEffect, useState } from 'react';
@@ -6,7 +7,7 @@ import { Linking, Modal, Platform, Pressable, StyleSheet, Text, View } from 'rea
 import { apiRequest } from '../api/client';
 import { colors } from '../theme/colors';
 
-type MobileConfig = { minimum_app_version: string; latest_app_version: string; force_update: boolean; maintenance_mode: boolean; maintenance_message: string; store_urls: { android: string | null; ios: string | null } };
+type MobileConfig = { minimum_app_version: string; latest_app_version: string; minimum_native_build?: number; latest_native_build?: number; force_update: boolean; maintenance_mode: boolean; maintenance_message: string; store_urls: { android: string | null; ios: string | null } };
 
 export function BootstrapGate({ children }: { children: React.ReactNode }) {
   const [installingUpdate, setInstallingUpdate] = useState(false);
@@ -14,7 +15,10 @@ export function BootstrapGate({ children }: { children: React.ReactNode }) {
   const query = useQuery({ queryKey: ['mobile-config'], queryFn: async () => (await apiRequest<MobileConfig>('/config')).data, staleTime: 5 * 60_000 });
   const config = query.data;
   const current = Constants.expoConfig?.version ?? '0.0.0';
-  const mustUpdate = !!config && config.force_update && compareVersions(current, config.minimum_app_version) < 0;
+  const currentNativeBuild = Number.parseInt(Application.nativeBuildVersion ?? '0', 10) || 0;
+  const belowMinimumVersion = !!config && compareVersions(current, config.minimum_app_version) < 0;
+  const belowMinimumBuild = !!config?.minimum_native_build && currentNativeBuild < config.minimum_native_build;
+  const mustUpdate = !!config && config.force_update && (belowMinimumVersion || belowMinimumBuild);
 
   useEffect(() => {
     if (!Updates.isEnabled) return;
@@ -35,7 +39,10 @@ export function BootstrapGate({ children }: { children: React.ReactNode }) {
   }, []);
 
   const updateUrl = config ? (Platform.OS === 'ios' ? config.store_urls.ios : config.store_urls.android) : null;
-  const hasNewNativeVersion = !!config && compareVersions(current, config.latest_app_version) < 0;
+  const hasNewNativeVersion = !!config && (
+    compareVersions(current, config.latest_app_version) < 0
+    || (!!config.latest_native_build && currentNativeBuild < config.latest_native_build)
+  );
 
   if (installingUpdate) return <Block title="Updating OresamSub" message="Installing the latest improvements. The app will reopen automatically." />;
   if (config?.maintenance_mode) return <Block title="We’ll be back shortly" message={config.maintenance_message} action="Try again" onPress={() => void query.refetch()} />;
@@ -49,7 +56,7 @@ export function BootstrapGate({ children }: { children: React.ReactNode }) {
         <View style={styles.modalCard}>
           <View style={styles.mark}><Text style={styles.markText}>O</Text></View>
           <Text style={styles.title}>A new version is ready</Text>
-          <Text style={styles.message}>Update OresamSub for the latest features, fixes and security improvements.</Text>
+          <Text style={styles.message}>Your installed build {currentNativeBuild || 'unknown'} is outdated. Update OresamSub for the latest features, push notifications and security improvements.</Text>
           <Pressable disabled={!updateUrl} onPress={() => updateUrl && void Linking.openURL(updateUrl)} style={[styles.button, !updateUrl && styles.buttonDisabled]}><Text style={styles.buttonText}>Get latest app</Text></Pressable>
           <Pressable onPress={() => setOptionalUpdateDismissed(true)} style={styles.laterButton}><Text style={styles.laterText}>Maybe later</Text></Pressable>
         </View>

@@ -2,7 +2,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import * as Application from 'expo-application';
 import { router } from 'expo-router';
 import { useEffect, useState } from 'react';
-import { Alert, Pressable, StyleSheet, Switch, Text, View } from 'react-native';
+import { Alert, Linking, Pressable, StyleSheet, Switch, Text, View } from 'react-native';
 import { useAuthStore } from '../../src/auth/authStore';
 import { biometricLock } from '../../src/auth/biometricLock';
 import { Screen } from '../../src/components/Screen';
@@ -31,10 +31,20 @@ export default function AccountScreen() {
       return deviceApi.sendTest();
     },
     onSuccess: (response) => Alert.alert('Test notification queued', response.message),
-    onError: (error) => Alert.alert(
-      'Push notification setup needs attention',
-      error instanceof ApiError || error instanceof Error ? error.message : 'Please try again.',
-    ),
+    onError: (error) => {
+      const message = error instanceof ApiError || error instanceof Error ? error.message : 'Please try again.';
+      const requiresNewBuild = message.includes('Build 4 or newer');
+      Alert.alert(
+        'Push notification setup needs attention',
+        message,
+        requiresNewBuild
+          ? [
+              { text: 'Not now', style: 'cancel' },
+              { text: 'Get latest app', onPress: () => void Linking.openURL('https://oresamsub.com/dashboard') },
+            ]
+          : [{ text: 'OK' }],
+      );
+    },
   });
 
   useEffect(() => {

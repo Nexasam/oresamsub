@@ -29,6 +29,8 @@ class MobileBootstrapController extends Controller
                 'api_version' => config('mobile.api_version'),
                 'minimum_app_version' => config('mobile.minimum_app_version'),
                 'latest_app_version' => config('mobile.latest_app_version'),
+                'minimum_native_build' => config('mobile.minimum_native_build'),
+                'latest_native_build' => config('mobile.latest_native_build'),
                 'force_update' => config('mobile.force_update'),
                 'maintenance_mode' => config('mobile.maintenance_mode'),
                 'maintenance_message' => config('mobile.maintenance_message'),
