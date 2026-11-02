@@ -1,24 +1,5 @@
 <?php
 
-use App\Console\Commands\BackfillProductPlanNetworks;
-use App\Console\Commands\CheckAffiliateLowBalances;
-use App\Console\Commands\ClearErrorLogs;
-use App\Console\Commands\ComputeReferralCommission;
-use App\Console\Commands\FinalizeDailyCommission;
-use App\Console\Commands\GeneralRepetitiveTasks;
-use App\Console\Commands\ProcessPendingAirtimeTransactions;
-use App\Console\Commands\ReprocessPendingTransaction;
-use App\Console\Commands\RenewStandaloneFeatures;
-use App\Console\Commands\RunWalletAutoFunding;
-use App\Console\Commands\NotifyAutomationLowBalances;
-use App\Console\Commands\SendFailedTransactionEmail;
-use App\Console\Commands\SendNewRegistrationEmail;
-use App\Console\Commands\SendPendingTransactionEmail;
-use App\Console\Commands\SyncAddons;
-use App\Console\Commands\SyncUserContactsFromTransactions;
-use App\Console\Commands\ProcessWeeklyTransactionBonuses;
-use App\Console\Commands\ZerorizeNegativeBalances;
-use Illuminate\Foundation\Inspiring;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Schedule;
 
@@ -28,43 +9,83 @@ use Illuminate\Support\Facades\Schedule;
 // })->purpose('Display an inspiring quote')->hourly();
 
 
-Schedule::command(ProcessPendingAirtimeTransactions::class)->everyThirtySeconds();
-Schedule::command(ZerorizeNegativeBalances::class)->everyTwoMinutes()->withoutOverlapping();
+// Hostinger disables proc_open, which Schedule::command() requires. Run
+// Artisan commands inside scheduler callbacks so the existing schedule:run
+// cron works without creating child processes.
+$scheduleArtisan = static function (string $command, array $parameters, string $name) {
+    return Schedule::call(static function () use ($command, $parameters): void {
+        Artisan::call($command, $parameters);
+    })->name($name);
+};
+
+$scheduleArtisan('app:process-pending-airtime-transactions', [], 'process-pending-airtime-transactions')
+    ->everyThirtySeconds();
+
+// This installation uses the cron-driven Laravel scheduler instead of a
+// permanent queue worker. Drain all currently available database queue jobs
+// on every scheduler run, then exit cleanly. Delayed push-receipt checks will
+// be picked up by the next cron run after their delay expires.
+$scheduleArtisan('queue:work', [
+        '--stop-when-empty' => true,
+        '--queue' => 'default',
+        '--tries' => 3,
+        '--timeout' => 60,
+    ], 'process-default-queue-without-proc-open')
+    ->everyMinute()
+    ->withoutOverlapping();
+
+$scheduleArtisan('app:zerorize-negative-balances', [], 'zerorize-negative-balances')
+    ->everyTwoMinutes()
+    ->withoutOverlapping();
 // Schedule::command(BackfillProductPlanNetworks::class)->everyFiveMinutes(); //temp use
-Schedule::command(ComputeReferralCommission::class)->everyFiveMinutes(); 
+$scheduleArtisan('compute-referral-commission', [], 'compute-referral-commission')
+    ->everyFiveMinutes();
 // Schedule::command(FinalizeDailyCommission::class)->everyMinute(); 
-Schedule::command(FinalizeDailyCommission::class)
+$scheduleArtisan('finalize-referral-daily-commission', [], 'finalize-referral-daily-commission')
     ->dailyAt('02:00')
     ->timezone('Africa/Lagos')
-    ->withoutOverlapping()
-    ->runInBackground();
+    ->withoutOverlapping();
 
 // Schedule::command(ComputeReferralCommission::class)->everySixHours();
 // Schedule::command(ComputeReferralCommission::class)->hourly();
 
 
-Schedule::command(SendNewRegistrationEmail::class)->everyTwoMinutes()->withoutOverlapping();
-Schedule::command(SendFailedTransactionEmail::class)->everyThirtySeconds()->withoutOverlapping();
-Schedule::command(SendPendingTransactionEmail::class)->everyTwoMinutes()->withoutOverlapping();
+$scheduleArtisan('app:send-new-registration-email', [], 'send-new-registration-email')
+    ->everyTwoMinutes()
+    ->withoutOverlapping();
+$scheduleArtisan('app:send-failed-transaction-email', [], 'send-failed-transaction-email')
+    ->everyThirtySeconds()
+    ->withoutOverlapping();
+$scheduleArtisan('app:send-pending-transaction-email', [], 'send-pending-transaction-email')
+    ->everyTwoMinutes()
+    ->withoutOverlapping();
 
-Schedule::command(ReprocessPendingTransaction::class)->everyMinute()->withoutOverlapping();
+$scheduleArtisan('app:reprocess-pending-transaction', [], 'reprocess-pending-transaction')
+    ->everyMinute()
+    ->withoutOverlapping();
 
 // Schedule::command(SyncUserContactsFromTransactions::class)->everyTwoMinutes()->withoutOverlapping();
 
 // Schedule::command(ClearErrorLogs::class)->everyThirtyMinutes()->withoutOverlapping();
 
-Schedule::command(RunWalletAutoFunding::class)->everyFiveMinutes()->withoutOverlapping();
-Schedule::command(NotifyAutomationLowBalances::class, [1])->cron('0 */3 * * *')->timezone('Africa/Lagos')->withoutOverlapping();
-Schedule::command(NotifyAutomationLowBalances::class, [2])->cron('2 */3 * * *')->timezone('Africa/Lagos')->withoutOverlapping();
-Schedule::command(NotifyAutomationLowBalances::class, [3])->cron('4 */3 * * *')->timezone('Africa/Lagos')->withoutOverlapping();
-Schedule::command(RenewStandaloneFeatures::class)->hourly()->withoutOverlapping();
-Schedule::command(CheckAffiliateLowBalances::class)
+$scheduleArtisan('automation:wallet-funding', [], 'automation-wallet-funding')
+    ->everyFiveMinutes()
+    ->withoutOverlapping();
+$scheduleArtisan('automation:notify-low-balances', ['position' => 1], 'notify-automation-low-balances-1')
+    ->cron('0 */3 * * *')->timezone('Africa/Lagos')->withoutOverlapping();
+$scheduleArtisan('automation:notify-low-balances', ['position' => 2], 'notify-automation-low-balances-2')
+    ->cron('2 */3 * * *')->timezone('Africa/Lagos')->withoutOverlapping();
+$scheduleArtisan('automation:notify-low-balances', ['position' => 3], 'notify-automation-low-balances-3')
+    ->cron('4 */3 * * *')->timezone('Africa/Lagos')->withoutOverlapping();
+$scheduleArtisan('standalones:renew-features', [], 'renew-standalone-features')
+    ->hourly()
+    ->withoutOverlapping();
+$scheduleArtisan('affiliate:check-low-balances', [], 'check-affiliate-low-balances')
     ->hourly()
     ->timezone('Africa/Lagos')
     ->withoutOverlapping();
 
-Schedule::command(ProcessWeeklyTransactionBonuses::class)
+$scheduleArtisan('bonuses:process-weekly-transactions', [], 'process-weekly-transaction-bonuses')
     ->weeklyOn(1, '00:15')
     ->timezone('Africa/Lagos')
-    ->withoutOverlapping()
-    ->runInBackground();
+    ->withoutOverlapping();
