@@ -3,6 +3,7 @@
 use App\Jobs\CheckExpoPushReceipt;
 use App\Jobs\SendMobilePushNotification;
 use App\Models\MobileDeviceInstallation;
+use App\Models\MobileNotificationPreference;
 use App\Models\MobilePushDelivery;
 use App\Models\User;
 use Illuminate\Support\Facades\Http;
@@ -61,4 +62,35 @@ it('checks Expo receipts and records confirmed delivery', function () {
 
     expect($delivery->fresh()->status)->toBe('delivered')
         ->and($delivery->fresh()->delivered_at)->not->toBeNull();
+});
+
+it('delivers an admin broadcast to an enabled app installation independently of ordinary preferences', function () {
+    Queue::fake([CheckExpoPushReceipt::class]);
+    Http::fake(['exp.host/*' => Http::response(['data' => ['status' => 'ok', 'id' => 'ticket-broadcast']])]);
+    $user = User::factory()->create();
+    MobileNotificationPreference::create([
+        'user_id' => $user->id,
+        'transactional_enabled' => false,
+        'promotional_enabled' => false,
+    ]);
+    MobileDeviceInstallation::create([
+        'user_id' => $user->id,
+        'device_uuid' => fake()->uuid(),
+        'expo_push_token' => 'ExponentPushToken[broadcast_delivery_test]',
+        'platform' => 'android',
+        'enabled' => true,
+    ]);
+
+    (new SendMobilePushNotification(
+        $user->id,
+        'campaign:test',
+        'Campaign title',
+        'Campaign message',
+        ['screen' => 'dashboard'],
+        false,
+        'broadcast',
+    ))->handle();
+
+    Http::assertSentCount(1);
+    expect(MobilePushDelivery::first()->category)->toBe('broadcast');
 });

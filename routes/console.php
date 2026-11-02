@@ -30,6 +30,7 @@ $scheduleArtisan('queue:work', [
         '--queue' => 'default',
         '--tries' => 3,
         '--timeout' => 60,
+        '--max-time' => 50,
     ], 'process-default-queue-without-proc-open')
     ->everyMinute()
     ->withoutOverlapping();

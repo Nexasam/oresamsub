@@ -190,6 +190,15 @@
                   </li>
                 <!-- End::slide -->
 
+                @if(auth()->user()->canManageStandalones())
+                <li class="slide">
+                    <a href="{{ route('admin.mobile_push_campaigns.index') }}" class="side-menu__item">
+                        <i class="ri ri-notification-3-line side-menu__icon"></i>
+                        <span class="side-menu__label">Mobile Push Campaigns</span>
+                    </a>
+                </li>
+                @endif
+
                   <!-- Start::slide -->
                   <li class="slide  has-sub">
                     <a href="{{ route('admin.networks.index')}}" class="side-menu__item">

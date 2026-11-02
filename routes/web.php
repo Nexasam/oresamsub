@@ -50,6 +50,7 @@ use App\Http\Controllers\Admin\StandaloneWebsiteController;
 use App\Http\Controllers\Admin\StandaloneFeatureController;
 use App\Http\Controllers\Admin\AirtelGiftingPlanImportController;
 use App\Http\Controllers\Admin\MarketingLeadController;
+use App\Http\Controllers\Admin\MobilePushCampaignController;
 use App\Http\Controllers\Admin\SalesReportController;
 use App\Http\Controllers\Template2Controller;
 use App\Http\Controllers\TelecomAbodePlansController;
@@ -823,6 +824,11 @@ Route::middleware(['set_locale'])->group(function () {
             Route::middleware(['auth','verified','admin'])->post('announcements/store', [AnnouncementsController::class, 'store'])->name('admin.announcements.store');
             Route::middleware(['auth','verified','admin'])->post('announcements/update/{id}', [AnnouncementsController::class, 'update'])->name('admin.announcements.update');
             Route::middleware(['auth','verified','admin'])->post('announcements/network-issue-alert', [AnnouncementsController::class, 'updateNetworkIssueAlert'])->name('admin.announcements.network_issue_alert.update');
+
+            Route::middleware(['auth','verified','admin'])->prefix('admin/mobile-push-campaigns')->name('admin.mobile_push_campaigns.')->group(function () {
+                Route::get('/', [MobilePushCampaignController::class, 'index'])->name('index');
+                Route::post('/', [MobilePushCampaignController::class, 'store'])->name('store');
+            });
 
             Route::middleware(['auth','verified','admin'])->prefix('admin/marketing-leads')->name('admin.marketing_leads.')->group(function () {
                 Route::get('/', [MarketingLeadController::class, 'index'])->name('index');

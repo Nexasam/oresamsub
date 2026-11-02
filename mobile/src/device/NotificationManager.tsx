@@ -31,7 +31,15 @@ export function NotificationManager() {
 export function routeNotificationData(data: Record<string, unknown> | undefined) {
   const transactionId = data?.transaction_id;
   if (typeof transactionId === 'string') router.push({ pathname: '/transaction/[id]', params: { id: transactionId } });
+  else if (data?.screen === 'dashboard') router.push('/(tabs)');
+  else if (data?.screen === 'services') router.push('/services');
+  else if (data?.screen === 'data') router.push({ pathname: '/service/[slug]', params: { slug: 'data', name: 'Data' } });
+  else if (data?.screen === 'airtime') router.push({ pathname: '/service/[slug]', params: { slug: 'airtime', name: 'Airtime' } });
+  else if (data?.screen === 'cable') router.push({ pathname: '/service/[slug]', params: { slug: 'cable_subscription', name: 'Cable TV' } });
+  else if (data?.screen === 'electricity') router.push({ pathname: '/service/[slug]', params: { slug: 'utility_bills', name: 'Electricity' } });
   else if (data?.screen === 'wallet') router.push('/wallet');
+  else if (data?.screen === 'transactions') router.push('/transactions');
+  else if (data?.screen === 'profile') router.push('/account');
 }
 
 export async function registerForPushNotifications() {

@@ -17,19 +17,20 @@ class SendMobilePushNotification implements ShouldQueue
 
     public array $backoff = [30, 120, 600];
 
-    public function __construct(public string $userId, public string $eventKey, public string $title, public string $body, public array $data = [], public bool $promotional = false) {}
+    public function __construct(public string $userId, public string $eventKey, public string $title, public string $body, public array $data = [], public bool $promotional = false, public ?string $category = null) {}
 
     public function handle(): void
     {
         $preferences = MobileNotificationPreference::where('user_id', $this->userId)->first();
-        if ($this->promotional ? ! ($preferences?->promotional_enabled ?? false) : ! ($preferences?->transactional_enabled ?? true)) {
+        $isAdminBroadcast = $this->category === 'broadcast';
+        if (! $isAdminBroadcast && ($this->promotional ? ! ($preferences?->promotional_enabled ?? false) : ! ($preferences?->transactional_enabled ?? true))) {
             return;
         }
 
         MobileDeviceInstallation::where('user_id', $this->userId)->where('enabled', true)->whereNull('revoked_at')->get()->each(function ($device) {
             $delivery = MobilePushDelivery::firstOrCreate(
                 ['mobile_device_installation_id' => $device->id, 'event_key' => $this->eventKey],
-                ['category' => $this->promotional ? 'promotional' : 'transactional']
+                ['category' => $this->category ?? ($this->promotional ? 'promotional' : 'transactional')]
             );
             if (! $delivery->wasRecentlyCreated && in_array($delivery->status, ['queued', 'sent'], true)) {
                 return;

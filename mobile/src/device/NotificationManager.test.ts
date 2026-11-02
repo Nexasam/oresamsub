@@ -14,3 +14,18 @@ it('deep-links wallet funding notifications to the wallet tab', () => {
   routeNotificationData({ screen: 'wallet' });
   expect(router.push).toHaveBeenCalledWith('/wallet');
 });
+
+it.each([
+  ['dashboard', '/(tabs)'],
+  ['services', '/services'],
+  ['transactions', '/transactions'],
+  ['profile', '/account'],
+])('deep-links %s campaigns to the selected tab', (screen, path) => {
+  routeNotificationData({ screen });
+  expect(router.push).toHaveBeenCalledWith(path);
+});
+
+it('deep-links data campaigns to the data purchase page', () => {
+  routeNotificationData({ screen: 'data' });
+  expect(router.push).toHaveBeenCalledWith({ pathname: '/service/[slug]', params: { slug: 'data', name: 'Data' } });
+});
