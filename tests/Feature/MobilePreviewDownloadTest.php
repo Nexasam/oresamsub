@@ -1,6 +1,20 @@
 <?php
 
 use App\Models\User;
+
+it('keeps permanent mobile preview testers available without environment configuration', function () {
+    expect(config('mobile.preview.tester_emails'))->toContain(
+        'adebsholey4real@gmail.com',
+        'oreofe@gmail.com',
+        'oluwadarasimimakanjuola215@gmail.com',
+        'mike.e.emmanuel@gmail.com',
+    );
+
+    $tester = User::factory()->make(['email' => 'MIKE.E.EMMANUEL@GMAIL.COM']);
+
+    expect($tester->canTestMobilePreview())->toBeTrue();
+});
+
 it('allows only configured verified testers to download the mobile preview', function () {
     config()->set('mobile.preview.android_apk_path', null);
     config()->set('mobile.preview.android_download_url', 'https://example.com/oresamsub-preview.apk');

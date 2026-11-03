@@ -33,13 +33,18 @@ return [
             'MOBILE_PREVIEW_ANDROID_DOWNLOAD_URL',
             'https://expo.dev/artifacts/eas/lEEfeji4myVOYk09Ny27s4GrmX8mNi10QY4Bh463Bv4.apk'
         ),
-        'tester_emails' => array_values(array_filter(array_map(
-            'mb_strtolower',
-            array_map('trim', explode(',', (string) env(
-                'MOBILE_PREVIEW_TESTER_EMAILS',
-                'adebsholey4real@gmail.com,oreofe@gmail.com,oluwadarasimimakanjuola215@gmail.com,mike.e.emmanuel@gmail.com'
-            )))
-        ))),
+        // Permanent preview testers live in code so deploying a tester addition
+        // does not require editing production environment variables. The env
+        // value remains available only for temporary/additional testers.
+        'tester_emails' => array_values(array_unique(array_filter(array_map(
+            fn ($email) => mb_strtolower(trim((string) $email)),
+            array_merge([
+                'adebsholey4real@gmail.com',
+                'oreofe@gmail.com',
+                'oluwadarasimimakanjuola215@gmail.com',
+                'mike.e.emmanuel@gmail.com',
+            ], explode(',', (string) env('MOBILE_PREVIEW_TESTER_EMAILS', '')))
+        )))),
     ],
     'access_token_minutes' => (int) env('MOBILE_ACCESS_TOKEN_MINUTES', 15),
     'refresh_token_days' => (int) env('MOBILE_REFRESH_TOKEN_DAYS', 30),
