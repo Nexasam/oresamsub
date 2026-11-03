@@ -12,7 +12,7 @@
 @if ($showMobilePreview)
     <div
         id="mobile-preview-popup"
-        class="fixed inset-0 z-[9999] flex items-center justify-center bg-slate-950/70 px-4 py-8 backdrop-blur-sm"
+        class="fixed inset-0 z-[9999] hidden items-center justify-center bg-slate-950/70 px-4 py-8 backdrop-blur-sm"
         role="dialog"
         aria-modal="true"
         aria-labelledby="mobile-preview-title"
@@ -52,6 +52,9 @@
                     popup.remove();
                     return;
                 }
+
+                popup.classList.remove('hidden');
+                popup.classList.add('flex');
 
                 popup.querySelectorAll('[data-mobile-preview-close]').forEach(function (button) {
                     button.addEventListener('click', function () {
