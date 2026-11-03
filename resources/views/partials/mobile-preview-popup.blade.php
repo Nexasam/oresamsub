@@ -10,6 +10,15 @@
 @endphp
 
 @if ($showMobilePreview)
+    <button
+        type="button"
+        id="mobile-preview-open"
+        class="fixed bottom-6 right-6 z-[9998] hidden items-center gap-2 rounded-full bg-emerald-700 px-4 py-3 text-xs font-extrabold text-white shadow-xl hover:bg-emerald-800 focus:outline-none focus:ring-4 focus:ring-emerald-300"
+        aria-label="Open mobile app preview"
+    >
+        <span aria-hidden="true">📱</span> Mobile App Preview
+    </button>
+
     <div
         id="mobile-preview-popup"
         class="fixed inset-0 z-[9999] hidden items-center justify-center bg-slate-950/70 px-4 py-8 backdrop-blur-sm"
@@ -45,21 +54,48 @@
         <script>
             document.addEventListener('DOMContentLoaded', function () {
                 const popup = document.getElementById('mobile-preview-popup');
-                if (!popup) return;
+                const openButton = document.getElementById('mobile-preview-open');
+                if (!popup || !openButton) return;
 
                 const dismissalKey = 'oresamsub-mobile-preview-dismissed:' + popup.dataset.version;
-                if (localStorage.getItem(dismissalKey) === '1') {
-                    popup.remove();
-                    return;
+
+                const showPopup = function () {
+                    openButton.classList.add('hidden');
+                    openButton.classList.remove('flex');
+                    popup.classList.remove('hidden');
+                    popup.classList.add('flex');
+                };
+
+                const hidePopup = function () {
+                    popup.classList.add('hidden');
+                    popup.classList.remove('flex');
+                    openButton.classList.remove('hidden');
+                    openButton.classList.add('flex');
+                };
+
+                let wasDismissed = false;
+                try {
+                    wasDismissed = localStorage.getItem(dismissalKey) === '1';
+                } catch (error) {
+                    wasDismissed = false;
                 }
 
-                popup.classList.remove('hidden');
-                popup.classList.add('flex');
+                if (wasDismissed) {
+                    hidePopup();
+                } else {
+                    showPopup();
+                }
+
+                openButton.addEventListener('click', showPopup);
 
                 popup.querySelectorAll('[data-mobile-preview-close]').forEach(function (button) {
                     button.addEventListener('click', function () {
-                        localStorage.setItem(dismissalKey, '1');
-                        popup.remove();
+                        try {
+                            localStorage.setItem(dismissalKey, '1');
+                        } catch (error) {
+                            // The launcher remains available when storage is blocked.
+                        }
+                        hidePopup();
                     });
                 });
             });

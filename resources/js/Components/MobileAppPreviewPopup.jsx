@@ -5,18 +5,46 @@ const dismissedKey = (version) => `oresamsub-mobile-preview-dismissed:${version}
 
 export default function MobileAppPreviewPopup({ preview }) {
   const [open, setOpen] = useState(false);
+  const [ready, setReady] = useState(false);
 
   useEffect(() => {
-    if (!preview?.available || !preview?.download_url) return;
-    setOpen(localStorage.getItem(dismissedKey(preview.version)) !== "1");
+    if (!preview?.available || !preview?.download_url) {
+      setOpen(false);
+      setReady(true);
+      return;
+    }
+
+    try {
+      setOpen(localStorage.getItem(dismissedKey(preview.version)) !== "1");
+    } catch {
+      setOpen(true);
+    }
+    setReady(true);
   }, [preview?.available, preview?.download_url, preview?.version]);
 
-  if (!open) return null;
+  if (!ready || !preview?.available || !preview?.download_url) return null;
 
   const close = () => {
-    localStorage.setItem(dismissedKey(preview.version), "1");
+    try {
+      localStorage.setItem(dismissedKey(preview.version), "1");
+    } catch {
+      // The launcher button still allows reopening when storage is unavailable.
+    }
     setOpen(false);
   };
+
+  if (!open) {
+    return (
+      <button
+        type="button"
+        onClick={() => setOpen(true)}
+        className="fixed bottom-20 right-4 z-[100] flex items-center gap-2 rounded-full bg-emerald-700 px-4 py-3 text-xs font-extrabold text-white shadow-xl transition hover:bg-emerald-800 focus:outline-none focus:ring-4 focus:ring-emerald-300 dark:focus:ring-emerald-900"
+        aria-label="Open mobile app preview"
+      >
+        <Smartphone className="h-4 w-4" /> Mobile App Preview
+      </button>
+    );
+  }
 
   return (
     <div className="fixed inset-0 z-[110] flex items-center justify-center bg-slate-950/70 px-4 py-8 backdrop-blur-sm" role="dialog" aria-modal="true" aria-labelledby="mobile-preview-title">
