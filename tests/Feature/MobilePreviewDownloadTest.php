@@ -8,16 +8,19 @@ it('allows only configured verified testers to download the mobile preview', fun
         'adebsholey4real@gmail.com',
         'oreofe@gmail.com',
         'oluwadarasimimakanjuola215@gmail.com',
+        'mike.e.emmanuel@gmail.com',
     ]);
 
     $tester = User::factory()->create(['email' => 'adebsholey4real@gmail.com']);
     $secondTester = User::factory()->create(['email' => 'oreofe@gmail.com']);
     $thirdTester = User::factory()->create(['email' => 'oluwadarasimimakanjuola215@gmail.com']);
+    $fourthTester = User::factory()->create(['email' => 'mike.e.emmanuel@gmail.com']);
     $customer = User::factory()->create(['email' => 'customer@example.com']);
 
     $this->actingAs($tester)->get(route('mobile.preview.android.download'))->assertRedirect('https://example.com/oresamsub-preview.apk');
     $this->actingAs($secondTester)->get(route('mobile.preview.android.download'))->assertRedirect('https://example.com/oresamsub-preview.apk');
     $this->actingAs($thirdTester)->get(route('mobile.preview.android.download'))->assertRedirect('https://example.com/oresamsub-preview.apk');
+    $this->actingAs($fourthTester)->get(route('mobile.preview.android.download'))->assertRedirect('https://example.com/oresamsub-preview.apk');
     $this->actingAs($customer)->get(route('mobile.preview.android.download'))->assertForbidden();
 });
 
