@@ -1,4 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { router } from 'expo-router';
 import { ActivityIndicator, Alert, Pressable, StyleSheet, Text, View } from 'react-native';
 import { mobileApi } from '../../src/api/mobileApi';
 import { Screen } from '../../src/components/Screen';
@@ -72,7 +73,15 @@ export default function WalletScreen() {
           </Pressable>
         ))
       ) : (
-        <View style={styles.emptyCard}><Text style={styles.empty}>No bank account is available yet.</Text></View>
+        <View style={styles.emptyCard}>
+          <Text style={styles.empty}>You do not have a Xixapay bank account yet.</Text>
+          <Pressable
+            onPress={() => router.push('/wallet-account')}
+            style={({ pressed }) => [styles.generateButton, pressed && styles.generateButtonPressed]}
+          >
+            <Text style={styles.generateButtonText}>Generate Xixapay account</Text>
+          </Pressable>
+        </View>
       )}
       <Text style={styles.section}>Recent funding</Text>
       <View style={styles.historyCard}>
@@ -111,8 +120,11 @@ const styles = StyleSheet.create({
   bank: { color: colors.text, fontFamily: fonts.extraBold, fontSize: 13 },
   accountName: { color: colors.muted, fontFamily: fonts.regular, fontSize: 10, marginTop: 4, textTransform: 'capitalize' },
   number: { color: colors.primaryDark, fontFamily: fonts.extraBold, fontSize: 15 },
-  emptyCard: { backgroundColor: colors.surface, borderRadius: 18, padding: 20 },
+  emptyCard: { alignItems: 'center', backgroundColor: colors.surface, borderRadius: 18, padding: 20 },
   empty: { color: colors.muted, fontFamily: fonts.regular, paddingVertical: 12, textAlign: 'center' },
+  generateButton: { alignItems: 'center', backgroundColor: colors.primary, borderRadius: 13, marginTop: 4, paddingHorizontal: 18, paddingVertical: 13, width: '100%' },
+  generateButtonPressed: { opacity: 0.78 },
+  generateButtonText: { color: colors.white, fontFamily: fonts.extraBold, fontSize: 12 },
   historyCard: { backgroundColor: colors.surface, borderRadius: 18, overflow: 'hidden', paddingHorizontal: 15 },
   history: { alignItems: 'center', borderBottomColor: colors.border, borderBottomWidth: 1, flexDirection: 'row', justifyContent: 'space-between', paddingVertical: 14 },
   credit: { color: colors.success, fontFamily: fonts.extraBold, fontSize: 12 },

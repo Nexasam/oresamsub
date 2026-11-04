@@ -77,6 +77,14 @@ class InertiaLoginController extends Controller
         Auth::login($user, $request->boolean('remember'));
         $request->session()->regenerate();
 
+        // The customer dashboard is an Inertia page, while the admin dashboard
+        // is rendered by Blade. A normal redirect from an Inertia login request
+        // makes the Blade response appear inside Inertia's error modal. Force a
+        // full browser visit for admins so the admin layout loads normally.
+        if (strcasecmp(trim((string) $user->role?->role_name), 'Admin') === 0) {
+            return Inertia::location(route('dashboard'));
+        }
+
         return redirect()->intended('/dashboard');
     }
 
