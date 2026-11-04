@@ -9,6 +9,7 @@ use App\Models\AdminColorSetting;
 use App\Models\Announcement;
 use App\Models\BulkDataProductPlans;
 use App\Models\Commissions;
+use App\Models\FundingOption;
 use App\Models\FundingOptionBankCodes;
 use App\Models\FundingWebhookPayload;
 use App\Models\LandingPagesSetting;
@@ -230,10 +231,16 @@ class UserDashboardController extends Controller
   }
 
     $hot_sales = ProductPlanCategory::with('product')->where('is_hot_sales',1)->get();
-    $user_virtual_accounts = UserVirtualAccount::where('user_id',auth()->id())->latest()->get();
+    $xixapay = FundingOption::where('slug', 'xixapay')->first();
+    $user_virtual_accounts = UserVirtualAccount::xixapay()->where('user_id',auth()->id())->latest()->get();
 
-    $active_bankcodes = FundingOptionBankCodes::where('visibility_status',1)->pluck('bank_code')->toArray();
-    $total_expected_bankcodes = FundingOptionBankCodes::count();
+    $active_bankcodes = FundingOptionBankCodes::where('funding_option_id', $xixapay?->id)
+        ->where('visibility_status',1)
+        ->pluck('bank_code')
+        ->toArray();
+    $total_expected_bankcodes = FundingOptionBankCodes::where('funding_option_id', $xixapay?->id)
+        ->where('visibility_status', 1)
+        ->count();
 
     // dd($user_virtual_accounts);
     $new_hot_sales_array = [];

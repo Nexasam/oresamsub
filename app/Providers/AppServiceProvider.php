@@ -5,8 +5,9 @@ namespace App\Providers;
 use App\Models\FundingWebhookPayload;
 use App\Models\Transaction;
 use App\Models\User;
-use App\Observers\TransactionMobilePushObserver;
 use App\Observers\AutomationBalanceTransactionObserver;
+use App\Observers\TransactionMobilePushObserver;
+use App\Observers\TransactionWhatsappNotificationObserver;
 use App\Observers\UserObserver;
 use App\Observers\WalletFundingMobilePushObserver;
 use Illuminate\Support\ServiceProvider;
@@ -59,6 +60,7 @@ class AppServiceProvider extends ServiceProvider
 
         User::observe(UserObserver::class);
         Transaction::observe(TransactionMobilePushObserver::class);
+        Transaction::observe(TransactionWhatsappNotificationObserver::class);
         Transaction::observe(AutomationBalanceTransactionObserver::class);
         FundingWebhookPayload::observe(WalletFundingMobilePushObserver::class);
     }

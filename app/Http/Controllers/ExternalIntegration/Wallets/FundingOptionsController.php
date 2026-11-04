@@ -2,207 +2,142 @@
 
 namespace App\Http\Controllers\ExternalIntegration\Wallets;
 
-use Exception;
-use Carbon\Carbon;
-use App\Models\Role;
-use App\Models\User;
-use Illuminate\Http\Request;
-use App\Models\FundingOption;
-use App\Models\UserVirtualAccount;
 use App\Http\Controllers\Controller;
-use App\Models\FundingWebhookPayload;
+use App\Http\Services\XixaPayService;
+use App\Models\FundingOption;
 use App\Models\FundingOptionBankCodes;
-use App\Models\NairaWalletTransaction;
-use App\Models\DollarWalletTransaction;
-use App\Http\Traits\JsonResponseWrapper;
+use App\Models\FundingWebhookPayload;
+use App\Models\User;
+use App\Models\UserVirtualAccount;
 use App\Traits\JsonResponseWrapperMobile;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
-
+use Throwable;
 
 class FundingOptionsController extends Controller
 {
- 
     use JsonResponseWrapperMobile;
 
-     //  TODO: modify these later to take other currencies
-    public function fetch_naira_funding_options(Request $request){
-        $funding_options = FundingOption::with(['bank_codes' => function($query){
-            $query->where('visibility_status',1);
-        }])
-        ->where('activation_status',1)
-        ->get();
-        return $this->success('Wallet funding options fetched',data: $funding_options);   
+    public function fetch_naira_funding_options(Request $request)
+    {
+        $fundingOptions = FundingOption::with([
+            'bank_codes' => fn ($query) => $query->where('visibility_status', 1),
+        ])
+            ->where('slug', 'xixapay')
+            ->where('activation_status', 1)
+            ->get();
+
+        return $this->success('Wallet funding options fetched', data: $fundingOptions);
     }
 
-    public function fetch_user_naira_funding_transactions(Request $request){
-  
-          $user_details = User::select('id','pin')->where('id',$request->user_id)->first();
-          // if($user_details->pin != $request->pin){
-          //     return $this->error('Incorrect PIN', data: $request->all(), code: 403 );   
-          // }
-
-          $funding_txns = FundingWebhookPayload::where('user_id',$request->user_id)->latest()->get();
-          
-          return $this->success('Naira wallet fundings fetched',data: $funding_txns);   
-    }
-
-    public function fetch_naira_virtual_accounts(Request $request){
-        $user_details = User::select('id','pin')->where('id',$request->user_id)->first();
-    
-        if($user_details->pin != $request->pin){
-            return $this->error('Incorrect PIN', data: $request->all(), code: 403 );   
+    public function fetch_user_naira_funding_transactions(Request $request)
+    {
+        if (! $this->ownsRequestedUser($request)) {
+            return $this->error('You cannot access another customer account.', code: 403);
         }
 
-        $funding_options = UserVirtualAccount::with('funding_option:id,funding_option_name')
-        ->where('user_id',$request->user_id)
-        ->get();
+        $fundingTransactions = FundingWebhookPayload::where('user_id', $request->user_id)->latest()->get();
 
-        return $this->success('Naira virtual accounts fetched',data: $funding_options);   
-    
-      }
-    
+        return $this->success('Naira wallet fundings fetched', data: $fundingTransactions);
+    }
 
-    public function generate_naira_virtual_accounts(Request $request){
+    public function fetch_naira_virtual_accounts(Request $request)
+    {
+        if (! $this->ownsRequestedUser($request)) {
+            return $this->error('You cannot access another customer account.', code: 403);
+        }
 
-        // return ['ss'];
+        $user = User::select('id', 'pin')->find($request->user_id);
+        if (! $user || ! hash_equals((string) $user->pin, (string) $request->pin)) {
+            return $this->error('Incorrect PIN', code: 403);
+        }
+
+        $accounts = UserVirtualAccount::with('funding_option:id,funding_option_name')
+            ->xixapay()
+            ->where('user_id', $request->user_id)
+            ->get();
+
+        return $this->success('Naira virtual accounts fetched', data: $accounts);
+    }
+
+    public function generate_naira_virtual_accounts(Request $request, XixaPayService $xixapay)
+    {
         $validator = Validator::make($request->all(), [
-            'user_id' => 'required|exists:users,id',
-            // 'pin' => ['required','string','regex:/^\d{4,5}$/'],
-            'bank_code' => 'required|max:255|exists:funding_option_bank_codes,bank_code',
-            'funding_option_id' => 'required|exists:funding_options,id',
-          ]);
-          
-          try{
+            'user_id' => ['required', 'exists:users,id'],
+            'bank_code' => ['required', 'string', 'max:255'],
+            'funding_option_id' => ['required', 'exists:funding_options,id'],
+        ]);
 
-            if ($validator->stopOnFirstFailure()->fails()) {
-              return $this->error($validator->errors()->first(), data: $request->all(), code: 403 );    
-            }
-  
-            $user_details = User::select('id','pin')->where('id',$request->user_id)->first();
-      
-            //   if($user_details->pin != $request->pin){
-            //       return $this->error('Incorrect PIN', data: $request->all(), code: 403 );   
-            //   }
-  
-  
-           $fetch_user_acct = UserVirtualAccount::where('user_id',$request->user_id)
-           ->where('funding_option_id',$request->funding_option_id)
-           ->where('bank_code',$request->bank_code)
-           ->first();
-         
-           if($fetch_user_acct){
-             return $this->error('Sorry you already have an account generated: Account number is '.$fetch_user_acct->account_number, data: $request->all(), code: 403 );    
-           }
-  
-  
-           $check_bank_code_of_funding = FundingOptionBankCodes::where('funding_option_id',$request->funding_option_id)
-           ->where('bank_code',$request->bank_code)
-           ->first();
-         
-           if(! $check_bank_code_of_funding){
-             return $this->error('This bank code does not exist', data: $request->all(), code: 403 );    
-           }
-  
-            $user_details = User::where('id',$request->user_id)->first();
-            $pin = $request->pin;
-  
-            // if($user_details->pin != $pin){
-            //     return $this->error('Incorrect PIN', data: $request->all(), code: 403 );          
-            // }
-  
-  
-            $first_name = $user_details->first_name;
-            $last_name = $user_details->last_name;
-            $email = $user_details->email;
-            $phone_number = $user_details->phone_number;
-            $bvn = $user_details->bvn ?? NULL;
-            // $bvn = $request->bvn;
-            $bank_code = $request->bank_code;
-            $funding_option_id = $request->funding_option_id;      
-  
-  
-            //call crystalpay generate endpoint: revamp later
-            $wallet_funding = FundingOption::where('id',$funding_option_id)->first();
-            $api_key = $wallet_funding->api_secret_key;
-            // $api_key = '1417307778664652904fd25';
-            $biz_bvn = $wallet_funding->biz_bvn ?? $phone_number;
+        if ($validator->stopOnFirstFailure()->fails()) {
+            return $this->error($validator->errors()->first(), code: 422);
+        }
 
-        
-  
-            if($wallet_funding->slug != 'crystal_pay'){
-                return $this->error('Only Crystal pay is currently being activated', data: $request->all(), code: 403 );    
-            }
-  
-            //  if($bvn == NULL){
-            //   return $this->error('BVN record not found', data: $request->all(), code: 403 );    
-            //  }
-  
-            $curl = curl_init();
-            curl_setopt_array($curl, array(
-            CURLOPT_URL => 'https://api.crystalpay.finance/business/v1/virtual-account',
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_ENCODING => '',
-            CURLOPT_MAXREDIRS => 10,
-            CURLOPT_TIMEOUT => 0,
-            CURLOPT_FOLLOWLOCATION => true,
-            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-            CURLOPT_CUSTOMREQUEST => 'POST',
-            CURLOPT_POSTFIELDS =>'{
-            "firstname": "'.$first_name.'",
-            "lastname": "'.$last_name.'",
-            "email": "'.$email.'",
-            "virtual_account_package": "'.$bank_code.'",  
-            "bvn": "'.$phone_number.'"
-            }',
-            CURLOPT_HTTPHEADER => array(
-                'secret_key: '.$api_key,
-                'Content-Type: application/json',
-                'Accept: application/json'
-            ),
-            ));
-  
-            $response = curl_exec($curl);
-            // logger('Wallet generation');
-            // logger($response);
-            // logger('Wallet generation');
-  
-            $response_dec = json_decode($response,true);
-  
-            //   return $response;
-            if(  isset($response_dec['success']) 
-                && $response_dec['success'] == true
-                &&  isset($response_dec['status']) 
-                &&  $response_dec['status'] == 'Success' 
-                && isset($response_dec['data']['account_number'])
-                &&  $response_dec['data']['account_number'] != ''
-                  ){
-                //success
-              
-                UserVirtualAccount::create([
-                    'user_id' => $user_details->id,
-                    'funding_option_id' => $funding_option_id,
-                    'funding_slug' => $wallet_funding->slug,
-                    'response_status' =>$response_dec['status'],
-                    'bank_name' =>$response_dec['data']['bank_name'],
-                    'bank_code' =>$bank_code,
-                    'account_name' =>$response_dec['data']['account_name'],
-                    'account_email' =>$response_dec['data']['account_email'],
-                    'account_number' =>$response_dec['data']['account_number'],
-                    'account_reference' => $response_dec['data']['account_reference'],
-                    'bvn' => $biz_bvn
-                ]);
-  
-                return $this->success('Wallet virtual accounts generated',data: $response_dec); 
-            }
+        if (! $this->ownsRequestedUser($request)) {
+            return $this->error('You cannot generate an account for another customer.', code: 403);
+        }
 
-          }catch(Exception $exception){
-             logger('Exception:' . $exception->getMessage().' on line '.$exception->getLine());  
-             return $this->error('Issues generating virtual accounts');   
-          }
+        $option = FundingOption::whereKey($request->funding_option_id)
+            ->where('slug', 'xixapay')
+            ->where('activation_status', 1)
+            ->first();
+        $bank = $option
+            ? FundingOptionBankCodes::where('funding_option_id', $option->id)
+                ->where('bank_code', $request->bank_code)
+                ->where('visibility_status', 1)
+                ->first()
+            : null;
 
+        if (! $option || ! $bank) {
+            return $this->error('This Xixapay virtual account option is unavailable.', code: 422);
+        }
 
-          //    return $response_dec;
-          return $this->success('Wallet virtual accounts generated.',data: $response_dec); 
+        $user = User::findOrFail($request->user_id);
+        $existing = UserVirtualAccount::xixapay()
+            ->where('user_id', $user->id)
+            ->where('funding_option_id', $option->id)
+            ->where('bank_code', $bank->bank_code)
+            ->first();
 
+        if ($existing) {
+            return $this->success('Your virtual account already exists.', data: $this->accountData($existing));
+        }
+
+        try {
+            $result = $xixapay->generate_accounts([
+                'user' => $user,
+                'bank_code' => $bank->bank_code,
+            ]);
+        } catch (Throwable $exception) {
+            report($exception);
+
+            return $this->error('The bank could not generate an account right now.', code: 502);
+        }
+
+        $account = UserVirtualAccount::xixapay()
+            ->where('user_id', $user->id)
+            ->where('funding_option_id', $option->id)
+            ->where('bank_code', $bank->bank_code)
+            ->first();
+
+        if (($result['status'] ?? -1) !== 1 || ! $account) {
+            return $this->error('The bank could not generate an account right now.', code: 502);
+        }
+
+        return $this->success('Wallet virtual account generated.', data: $this->accountData($account));
+    }
+
+    private function ownsRequestedUser(Request $request): bool
+    {
+        return $request->user() && hash_equals((string) $request->user()->id, (string) $request->user_id);
+    }
+
+    private function accountData(UserVirtualAccount $account): array
+    {
+        return [
+            'id' => $account->id,
+            'bank_name' => $account->bank_name,
+            'account_name' => $account->account_name,
+            'account_number' => $account->account_number,
+        ];
     }
 }

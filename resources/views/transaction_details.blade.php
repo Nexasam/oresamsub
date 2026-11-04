@@ -58,6 +58,37 @@
                     </div>
                   @endif
                 </div>
+
+                @if (in_array((string) $data->status, ['-1', '2'], true))
+                  @php
+                    $whatsappPreference = $data->user?->whatsappNotificationPreference;
+                    $whatsappEnabled = (bool) ($whatsappPreference?->transactional_enabled ?? false);
+                    $whatsappLinked = filled($data->user?->whatsapp_number);
+                  @endphp
+                  <div class="mb-4 rounded-xl border border-emerald-200 bg-emerald-50 p-5 text-emerald-950">
+                    <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+                      <div>
+                        <h4 class="font-bold">WhatsApp customer alert</h4>
+                        <p class="mt-1 text-sm">
+                          Linked number: {{ $whatsappLinked ? '***'.substr((string) $data->user->whatsapp_number, -4) : 'Not linked' }} ·
+                          Transaction alerts: {{ $whatsappEnabled ? 'Enabled' : 'Not enabled' }}
+                        </p>
+                        @unless($whatsappEnabled)
+                          <p class="mt-1 text-xs text-amber-800">The customer must send <strong>NOTIFICATIONS ON</strong> to the OresamSub WhatsApp bot first.</p>
+                        @endunless
+                      </div>
+                      <div class="flex flex-wrap gap-2">
+                        <form method="POST" action="{{ route('admin.whatsapp_messages.transactions.alert', $data) }}">
+                          @csrf
+                          <button type="submit" class="ti-btn ti-btn-success" @disabled(!$whatsappLinked || !$whatsappEnabled) onclick="return confirm('Queue this protected WhatsApp transaction alert?')">
+                            Send {{ (string) $data->status === '2' ? 'refund' : 'failure' }} alert
+                          </button>
+                        </form>
+                        <a href="{{ route('admin.whatsapp_messages.index') }}" class="ti-btn ti-btn-light">Open message centre</a>
+                      </div>
+                    </div>
+                  </div>
+                @endif
       
                   <div class="bg-gray-100 border border-gray-300 text-gray-600 alert" role="alert">
                     <span class="font-bold">Admin Screen Message</span> {{  $data->admin_screen_message  }} 

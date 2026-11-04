@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Api\v1\VendorUsersApi;
 
 use App\Http\Controllers\Controller;
 use App\Services\Whatsapp\MegaWhatsappConversationService;
+use App\Services\Whatsapp\MegaWhatsappService;
+use App\Services\Whatsapp\WhatsappNotificationWebhookHandler;
 use Illuminate\Http\Request;
 use Throwable;
 
@@ -11,11 +13,15 @@ class MegaWhatsappWebhookController extends Controller
 {
     public function webhook(
         Request $request,
-        MegaWhatsappConversationService $conversationService
+        MegaWhatsappConversationService $conversationService,
+        MegaWhatsappService $whatsapp,
+        WhatsappNotificationWebhookHandler $notificationHandler,
     ) {
         try {
 
             $payload = $request->all();
+
+            $notificationHandler->recordDeliveryStatuses($payload);
 
             $phone = $this->extractPhone($payload);
 
@@ -24,8 +30,8 @@ class MegaWhatsappWebhookController extends Controller
             logger()->info(
                 'Mega WhatsApp Incoming',
                 [
-                    'phone' => $phone,
-                    'message' => $message,
+                    'phone_last_four' => substr((string) $phone, -4),
+                    'has_message' => filled($message),
                 ]
             );
 
@@ -39,6 +45,13 @@ class MegaWhatsappWebhookController extends Controller
                 return response()->json([
                     'success' => true,
                 ]);
+            }
+
+            $preference = $notificationHandler->handleInboundPreference($phone, $message);
+            if ($preference['handled']) {
+                $whatsapp->sendText($phone, $preference['reply']);
+
+                return response()->json(['success' => true]);
             }
 
             $conversationService->handle([
@@ -56,8 +69,7 @@ class MegaWhatsappWebhookController extends Controller
                 'Mega WhatsApp Webhook Error',
                 [
                     'message' => $exception->getMessage(),
-                    'trace' => $exception->getTraceAsString(),
-                    'payload' => $request->all(),
+                    'event_kind' => data_get($request->all(), 'entry.0.changes.0.field'),
                 ]
             );
 
@@ -85,7 +97,7 @@ class MegaWhatsappWebhookController extends Controller
             'entry.0.changes.0.value.messages.0.text.body'
         );
 
-        if (!empty($text)) {
+        if (! empty($text)) {
             return strtolower(
                 trim($text)
             );
@@ -99,7 +111,7 @@ class MegaWhatsappWebhookController extends Controller
             'entry.0.changes.0.value.messages.0.interactive.button_reply.id'
         );
 
-        if (!empty($buttonId)) {
+        if (! empty($buttonId)) {
             return strtolower(
                 trim($buttonId)
             );
@@ -113,7 +125,7 @@ class MegaWhatsappWebhookController extends Controller
             'entry.0.changes.0.value.messages.0.interactive.list_reply.id'
         );
 
-        if (!empty($listId)) {
+        if (! empty($listId)) {
             return strtolower(
                 trim($listId)
             );
@@ -127,7 +139,7 @@ class MegaWhatsappWebhookController extends Controller
             'entry.0.changes.0.value.messages.0.contacts.0.phones.0.phone'
         );
 
-        if (!empty($contactPhone)) {
+        if (! empty($contactPhone)) {
             return preg_replace(
                 '/\D/',
                 '',

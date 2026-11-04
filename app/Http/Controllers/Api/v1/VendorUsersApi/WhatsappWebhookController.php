@@ -17,6 +17,7 @@ use App\Services\Whatsapp\WhatsappConversationService;
 use App\Services\Whatsapp\WhatsappIntentParser;
 use App\Services\Whatsapp\WhatsappIntentResolver;
 use App\Services\Whatsapp\WhatsappInteractiveService;
+use App\Services\Whatsapp\WhatsappNotificationWebhookHandler;
 use App\Services\Whatsapp\WhatsappQuickCommandService;
 use App\Services\Whatsapp\Whatsappsender;
 use App\Services\Whatsapp\WhatsappUserResolver;
@@ -236,18 +237,19 @@ class WhatsappWebhookController extends Controller
         );
     }
 
-    public function receive(Request $request)
+    public function receive(Request $request, WhatsappNotificationWebhookHandler $notificationHandler)
     {
 
         $payload = $request->all();
+        $notificationHandler->recordDeliveryStatuses($payload);
         $phone = $this->extractPhone($payload);
         $text  = $this->extractText($payload);
     
-        logger(json_encode([
-            'phone' => $phone,
-            'text' => $text,
+        logger()->info('OresamSub WhatsApp webhook received.', [
+            'phone_last_four' => substr((string) $phone, -4),
+            'has_message' => filled($text),
             'status' => $this->whatsappStatus($payload),
-        ]));
+        ]);
     
         /*
         Ignore delivery/read/sent webhooks
@@ -257,6 +259,13 @@ class WhatsappWebhookController extends Controller
             return response()->json([
                 'ok' => true
             ]);
+        }
+
+        $preference = $notificationHandler->handleInboundPreference($phone, $text);
+        if ($preference['handled']) {
+            app(OreWhatsappService::class)->sendText($phone, $preference['reply']);
+
+            return response()->json(['ok' => true]);
         }
 
 

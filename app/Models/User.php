@@ -135,6 +135,16 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasMany(MobileDeviceInstallation::class);
     }
 
+    public function whatsappNotificationPreference(): HasOne
+    {
+        return $this->hasOne(WhatsappNotificationPreference::class);
+    }
+
+    public function whatsappNotificationDeliveries(): HasMany
+    {
+        return $this->hasMany(WhatsappNotificationDelivery::class);
+    }
+
     public function mobileAccountDeletionRequests(): HasMany
     {
         return $this->hasMany(MobileAccountDeletionRequest::class);

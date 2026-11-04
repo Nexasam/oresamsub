@@ -183,7 +183,7 @@ class InertiaDashboardController extends Controller
                 $join->on('user_virtual_accounts.funding_option_id', '=', 'funding_option_bank_codes.funding_option_id')
                     ->on('user_virtual_accounts.bank_code', '=', 'funding_option_bank_codes.bank_code');
             })
-            ->where('funding_slug','!=','crystal_pay')
+            ->where('user_virtual_accounts.funding_slug', 'xixapay')
             ->where('user_virtual_accounts.user_id', auth()->id())
             ->get();
 

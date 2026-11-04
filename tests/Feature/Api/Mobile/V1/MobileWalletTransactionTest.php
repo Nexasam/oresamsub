@@ -5,8 +5,10 @@ use App\Models\FundingOptionBankCodes;
 use App\Models\Transaction;
 use App\Models\User;
 use App\Models\UserVirtualAccount;
+use Illuminate\Support\Facades\Http;
 
 use function Pest\Laravel\getJson;
+use function Pest\Laravel\postJson;
 
 function authenticatedMobileHeaders(User $user): array
 {
@@ -60,13 +62,18 @@ it('prevents cross-user transaction detail and receipt access', function () {
 it('returns wallet accounts without sensitive gateway fields and scopes them to the user', function () {
     $user = User::factory()->create(['main_wallet' => '1234.56']);
     $other = User::factory()->create();
-    $fundingOption = FundingOption::create(['funding_option_name' => 'Test Funding', 'slug' => 'test-funding', 'activation_status' => '1']);
+    $fundingOption = FundingOption::create(['funding_option_name' => 'Xixapay', 'slug' => 'xixapay', 'activation_status' => '1']);
+    $hiddenOption = FundingOption::create(['funding_option_name' => 'Another provider', 'slug' => 'another-provider', 'activation_status' => '1']);
     UserVirtualAccount::create([
-        'user_id' => $user->id, 'funding_option_id' => $fundingOption->id, 'bank_name' => 'Test Bank',
+        'user_id' => $user->id, 'funding_option_id' => $fundingOption->id, 'funding_slug' => 'xixapay', 'bank_name' => 'Test Bank',
         'account_name' => 'Mobile Customer', 'account_number' => '1234567890', 'bvn' => 'sensitive',
     ]);
     UserVirtualAccount::create([
-        'user_id' => $other->id, 'funding_option_id' => $fundingOption->id, 'bank_name' => 'Other Bank',
+        'user_id' => $user->id, 'funding_option_id' => $hiddenOption->id, 'funding_slug' => 'another-provider', 'bank_name' => 'Hidden Bank',
+        'account_name' => 'Mobile Customer', 'account_number' => '1111111111',
+    ]);
+    UserVirtualAccount::create([
+        'user_id' => $other->id, 'funding_option_id' => $fundingOption->id, 'funding_slug' => 'xixapay', 'bank_name' => 'Other Bank',
         'account_name' => 'Other Customer', 'account_number' => '9999999999',
     ]);
 
@@ -76,14 +83,20 @@ it('returns wallet accounts without sensitive gateway fields and scopes them to 
     $accountsResponse = getJson('/api/mobile/v1/wallet/accounts', authenticatedMobileHeaders($user))
         ->assertOk()->assertJsonCount(1, 'data')->assertJsonPath('data.0.account_number', '1234567890')
         ->assertJsonMissingPath('data.0.bvn')->assertJsonMissingPath('data.0.provider')
+        ->assertJsonMissing(['account_number' => '1111111111'])
         ->assertJsonMissing(['account_number' => '9999999999']);
 
     expect(strtolower($accountsResponse->getContent()))->not->toContain('crystal');
 });
 
-it('removes payment gateway branding from mobile funding options', function () {
+it('returns only Xixapay as a mobile virtual account funding option', function () {
     $user = User::factory()->create();
     $option = FundingOption::create([
+        'funding_option_name' => 'Xixapay',
+        'slug' => 'xixapay',
+        'activation_status' => '1',
+    ]);
+    $hiddenOption = FundingOption::create([
         'funding_option_name' => 'Crystal Pay',
         'slug' => 'crystal_pay',
         'activation_status' => '1',
@@ -92,16 +105,83 @@ it('removes payment gateway branding from mobile funding options', function () {
         'funding_option_id' => $option->id,
         'bank_code' => 'wema',
         'visibility_status' => '1',
-        'short_description' => 'CrystalPay Wema account',
+        'short_description' => 'Xixapay Wema account',
+    ]);
+    FundingOptionBankCodes::create([
+        'funding_option_id' => $hiddenOption->id,
+        'bank_code' => 'hidden-bank',
+        'visibility_status' => '1',
+        'short_description' => 'CrystalPay hidden account',
     ]);
 
     $response = getJson('/api/mobile/v1/wallet/funding-options', authenticatedMobileHeaders($user))
         ->assertOk()
+        ->assertJsonCount(1, 'data')
+        ->assertJsonPath('data.0.id', $option->id)
         ->assertJsonPath('data.0.name', 'Bank transfer')
         ->assertJsonPath('data.0.banks.0.description', 'bank transfer Wema account')
         ->assertJsonMissingPath('data.0.slug');
 
-    expect(strtolower($response->getContent()))->not->toContain('crystal');
+    expect(strtolower($response->getContent()))
+        ->not->toContain('crystal')
+        ->not->toContain('xixapay')
+        ->not->toContain('hidden-bank');
+});
+
+it('creates mobile virtual accounts through Xixapay and rejects another provider', function () {
+    Http::fake([
+        'api.xixapay.com/api/v1/createVirtualAccount' => Http::response([
+            'status' => 'success',
+            'bankAccounts' => [[
+                'bankName' => 'Wema Bank',
+                'bankCode' => 'wema',
+                'accountName' => 'OresamSub - Mobile Customer',
+                'accountNumber' => '1234567890',
+                'Reserved_Account_Id' => 'xixa-reserved-1',
+            ]],
+        ]),
+    ]);
+    $user = User::factory()->create(['pin' => '1234', 'phone_number' => '08031234567']);
+    $xixapay = FundingOption::create([
+        'funding_option_name' => 'Xixapay',
+        'slug' => 'xixapay',
+        'activation_status' => '1',
+        'api_secret_key' => 'xixa-secret',
+        'api_public_key' => 'xixa-public',
+        'contract_code' => 'xixa-business',
+        'biz_bvn' => '12345678901',
+    ]);
+    $other = FundingOption::create([
+        'funding_option_name' => 'Other provider',
+        'slug' => 'other-provider',
+        'activation_status' => '1',
+    ]);
+    foreach ([$xixapay, $other] as $option) {
+        FundingOptionBankCodes::create([
+            'funding_option_id' => $option->id,
+            'bank_code' => 'wema',
+            'visibility_status' => '1',
+        ]);
+    }
+
+    postJson('/api/mobile/v1/wallet/accounts', [
+        'funding_option_id' => $other->id,
+        'bank_code' => 'wema',
+        'pin' => '1234',
+    ], authenticatedMobileHeaders($user))->assertUnprocessable();
+
+    postJson('/api/mobile/v1/wallet/accounts', [
+        'funding_option_id' => $xixapay->id,
+        'bank_code' => 'wema',
+        'pin' => '1234',
+    ], authenticatedMobileHeaders($user))
+        ->assertCreated()
+        ->assertJsonPath('data.account.account_number', '1234567890');
+
+    Http::assertSentCount(1);
+    expect(UserVirtualAccount::where('user_id', $user->id)->get())
+        ->toHaveCount(1)
+        ->first()->funding_slug->toBe('xixapay');
 });
 
 it('never exposes provider html pages in mobile transaction messages', function () {

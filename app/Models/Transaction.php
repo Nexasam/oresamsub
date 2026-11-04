@@ -80,6 +80,11 @@ class Transaction extends Model
         return $this->belongsTo(Automation::class,'automation_id','id');
     }
 
+    public function whatsappNotificationDeliveries()
+    {
+        return $this->hasMany(WhatsappNotificationDelivery::class);
+    }
+
     public function getCreatedAtAttribute($value)
     {
         return \Carbon\Carbon::parse($value)->timezone('Africa/Lagos')->toIso8601String();

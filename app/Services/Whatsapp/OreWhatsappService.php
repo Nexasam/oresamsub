@@ -45,15 +45,22 @@ class OreWhatsappService
             $payload
         );
 
-        Log::info(
-            'Ore WhatsApp Response',
-            [
-                'payload' => $payload,
-                'response' => $response->json(),
-            ]
-        );
+        $responseBody = $response->json();
+        $context = [
+            'message_type' => $payload['type'] ?? 'unknown',
+            'recipient_last_four' => substr((string) ($payload['to'] ?? ''), -4),
+            'http_status' => $response->status(),
+            'meta_message_id' => data_get($responseBody, 'messages.0.id'),
+            'error_code' => data_get($responseBody, 'error.code'),
+        ];
 
-        return $response->json();
+        if ($response->successful()) {
+            Log::info('OresamSub WhatsApp request accepted.', $context);
+        } else {
+            Log::warning('OresamSub WhatsApp request rejected.', $context);
+        }
+
+        return is_array($responseBody) ? $responseBody : [];
     }
 
     public function sendText(

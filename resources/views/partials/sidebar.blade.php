@@ -62,7 +62,6 @@
                     </ul>
                  </li>
                 @endif
-
                 <!-- Start::slide -->
                 <li class="slide  has-sub ">
                     <a href="{{ route('dashboard') }}" class="side-menu__item">
@@ -198,6 +197,13 @@
                     </a>
                 </li>
                 @endif
+
+                <li class="slide">
+                    <a href="{{ route('admin.whatsapp_messages.index') }}" class="side-menu__item">
+                        <i class="ri ri-whatsapp-line side-menu__icon"></i>
+                        <span class="side-menu__label">WhatsApp Messages</span>
+                    </a>
+                </li>
 
                   <!-- Start::slide -->
                   <li class="slide  has-sub">

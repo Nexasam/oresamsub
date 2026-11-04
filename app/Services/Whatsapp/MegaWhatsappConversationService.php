@@ -1559,6 +1559,8 @@ class MegaWhatsappConversationService
             "Login: https://oresamsub.com/login\n" .
             "Forgot password: https://oresamsub.com/forgot-password\n" .
             "For a forgotten transaction PIN, contact support.\n\n" .
+            "🔔 TRANSACTION ALERTS\n" .
+            "Send NOTIFICATIONS ON to receive WhatsApp alerts when a transaction fails or is refunded. Send STOP anytime to turn them off.\n\n" .
             "💬 WHATSAPP SUPPORT\n" .
             "https://wa.me/2349011988807\n" .
             "https://wa.me/2348168509044\n\n" .

@@ -51,6 +51,7 @@ use App\Http\Controllers\Admin\StandaloneFeatureController;
 use App\Http\Controllers\Admin\AirtelGiftingPlanImportController;
 use App\Http\Controllers\Admin\MarketingLeadController;
 use App\Http\Controllers\Admin\MobilePushCampaignController;
+use App\Http\Controllers\Admin\WhatsappMessageController;
 use App\Http\Controllers\Admin\SalesReportController;
 use App\Http\Controllers\Template2Controller;
 use App\Http\Controllers\TelecomAbodePlansController;
@@ -262,7 +263,10 @@ Route::middleware(['set_locale'])->group(function () {
                 })->name('ore.electricity');
 
                 Route::get('oresamsub/virtual-accts', function () {
-                    $virtualccts = App\Models\UserVirtualAccount::select('id','bank_name','account_name','account_number')->where('user_id',auth()->id())->get();
+                    $virtualccts = App\Models\UserVirtualAccount::select('id','bank_name','account_name','account_number')
+                        ->xixapay()
+                        ->where('user_id',auth()->id())
+                        ->get();
                     $data['virtualccts'] = $virtualccts;
                     // dd($data);
                     return view('oresamsub.pages.virtual_accounts')->with($data);
@@ -828,6 +832,14 @@ Route::middleware(['set_locale'])->group(function () {
             Route::middleware(['auth','verified','admin'])->prefix('admin/mobile-push-campaigns')->name('admin.mobile_push_campaigns.')->group(function () {
                 Route::get('/', [MobilePushCampaignController::class, 'index'])->name('index');
                 Route::post('/', [MobilePushCampaignController::class, 'store'])->name('store');
+            });
+
+            Route::middleware(['auth','verified','admin'])->prefix('admin/whatsapp-messages')->name('admin.whatsapp_messages.')->group(function () {
+                Route::get('/', [WhatsappMessageController::class, 'index'])->name('index');
+                Route::post('/', [WhatsappMessageController::class, 'store'])->middleware('throttle:20,1')->name('store');
+                Route::post('/transactions/{transaction}/alert', [WhatsappMessageController::class, 'sendTransactionAlert'])
+                    ->middleware('throttle:20,1')
+                    ->name('transactions.alert');
             });
 
             Route::middleware(['auth','verified','admin'])->prefix('admin/marketing-leads')->name('admin.marketing_leads.')->group(function () {

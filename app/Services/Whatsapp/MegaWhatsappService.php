@@ -2,15 +2,21 @@
 
 namespace App\Services\Whatsapp;
 
+use App\Models\OreWhatsappConfig;
 use App\Models\WhatsappConfig;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
 class MegaWhatsappService
 {
-    protected function config(): WhatsappConfig
+    protected function config(): object
     {
-        return WhatsappConfig::firstOrFail();
+        return WhatsappConfig::first()
+            ?? OreWhatsappConfig::first()
+            ?? (object) [
+                'token' => config('services.whatsapp.token'),
+                'phone_number_id' => config('services.whatsapp.phone_number_id'),
+            ];
     }
 
     protected function endpoint(): string
@@ -39,15 +45,22 @@ class MegaWhatsappService
             $payload
         );
 
-        Log::info(
-            'Mega WhatsApp Response',
-            [
-                'payload' => $payload,
-                'response' => $response->json(),
-            ]
-        );
+        $responseBody = $response->json();
+        $context = [
+            'message_type' => $payload['type'] ?? 'unknown',
+            'recipient_last_four' => substr((string) ($payload['to'] ?? ''), -4),
+            'http_status' => $response->status(),
+            'meta_message_id' => data_get($responseBody, 'messages.0.id'),
+            'error_code' => data_get($responseBody, 'error.code'),
+        ];
 
-        return $response->json();
+        if ($response->successful()) {
+            Log::info('Mega WhatsApp request accepted.', $context);
+        } else {
+            Log::warning('Mega WhatsApp request rejected.', $context);
+        }
+
+        return is_array($responseBody) ? $responseBody : [];
     }
 
     public function sendText(
@@ -137,6 +150,38 @@ class MegaWhatsappService
                             'title' => 'Available Options',
                             'rows' => $formattedRows,
                         ],
+                    ],
+                ],
+            ],
+        ]);
+    }
+
+    public function sendTemplate(
+        string $phone,
+        string $templateName,
+        array $bodyParameters,
+        string $language = 'en'
+    ): array {
+        return $this->sendPayload([
+            'messaging_product' => 'whatsapp',
+            'recipient_type' => 'individual',
+            'to' => $phone,
+            'type' => 'template',
+            'template' => [
+                'name' => $templateName,
+                'language' => [
+                    'code' => $language,
+                ],
+                'components' => [
+                    [
+                        'type' => 'body',
+                        'parameters' => array_map(
+                            fn ($value): array => [
+                                'type' => 'text',
+                                'text' => (string) $value,
+                            ],
+                            $bodyParameters
+                        ),
                     ],
                 ],
             ],
