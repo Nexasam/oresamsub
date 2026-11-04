@@ -5,6 +5,7 @@ namespace App\Services\Whatsapp;
 use App\Models\User;
 use App\Models\WhatsappNotificationDelivery;
 use App\Models\WhatsappNotificationPreference;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
 
 class WhatsappNotificationWebhookHandler
@@ -13,6 +14,12 @@ class WhatsappNotificationWebhookHandler
 
     public function recordDeliveryStatuses(array $payload): void
     {
+        // WhatsApp bot traffic must keep working while a deployment is between
+        // the code-release and migration steps. Delivery tracking is optional.
+        if (! Schema::hasTable('whatsapp_notification_deliveries')) {
+            return;
+        }
+
         foreach ((array) data_get($payload, 'entry', []) as $entry) {
             foreach ((array) data_get($entry, 'changes', []) as $change) {
                 foreach ((array) data_get($change, 'value.statuses', []) as $statusUpdate) {
@@ -57,6 +64,13 @@ class WhatsappNotificationWebhookHandler
     public function handleInboundPreference(?string $phone, ?string $message): array
     {
         if (blank($phone) || blank($message)) {
+            return ['handled' => false, 'reply' => null];
+        }
+
+        // Do not allow the optional notification-preference feature to take the
+        // main bot offline if its migration has not run yet. The message will
+        // continue through the normal WhatsApp conversation flow.
+        if (! Schema::hasTable('whatsapp_notification_preferences')) {
             return ['handled' => false, 'reply' => null];
         }
 

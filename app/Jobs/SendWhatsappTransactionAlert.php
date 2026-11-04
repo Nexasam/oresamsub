@@ -10,6 +10,7 @@ use App\Services\Whatsapp\TransactionWhatsappMessage;
 use App\Services\Whatsapp\WhatsappPhoneNumber;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
 use Throwable;
 
@@ -30,6 +31,13 @@ class SendWhatsappTransactionAlert implements ShouldQueue
         TransactionWhatsappMessage $messageBuilder,
     ): void {
         if (! in_array($this->notificationType, ['failed', 'refunded'], true)) {
+            return;
+        }
+
+        // Transaction processing must never fail merely because notification
+        // tables have not been migrated during a rolling deployment.
+        if (! Schema::hasTable('whatsapp_notification_preferences')
+            || ! Schema::hasTable('whatsapp_notification_deliveries')) {
             return;
         }
 
