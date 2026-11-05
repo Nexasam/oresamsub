@@ -1,0 +1,6 @@
+[
+    {
+        "merged": "com.oresamsub.gatewaymodule.ussd-gateway-release-2:/xml/ussd_accessibility_service.xml",
+        "source": "com.oresamsub.gatewaymodule.ussd-gateway-main-3:/xml/ussd_accessibility_service.xml"
+    }
+]

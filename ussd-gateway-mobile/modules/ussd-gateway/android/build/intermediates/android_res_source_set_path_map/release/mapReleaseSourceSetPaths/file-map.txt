@@ -1,0 +1,9 @@
+com.oresamsub.gatewaymodule.ussd-gateway-pngs-0 /Applications/XAMPP/xamppfiles/htdocs/pp_projects/oresamsub/ussd-gateway-mobile/modules/ussd-gateway/android/build/generated/res/pngs/release
+com.oresamsub.gatewaymodule.ussd-gateway-updated_navigation_xml-1 /Applications/XAMPP/xamppfiles/htdocs/pp_projects/oresamsub/ussd-gateway-mobile/modules/ussd-gateway/android/build/generated/updated_navigation_xml/release
+com.oresamsub.gatewaymodule.ussd-gateway-mergeReleaseResources-2 /Applications/XAMPP/xamppfiles/htdocs/pp_projects/oresamsub/ussd-gateway-mobile/modules/ussd-gateway/android/build/intermediates/incremental/release/mergeReleaseResources/merged.dir
+com.oresamsub.gatewaymodule.ussd-gateway-mergeReleaseResources-3 /Applications/XAMPP/xamppfiles/htdocs/pp_projects/oresamsub/ussd-gateway-mobile/modules/ussd-gateway/android/build/intermediates/incremental/release/mergeReleaseResources/stripped.dir
+com.oresamsub.gatewaymodule.ussd-gateway-release-4 /Applications/XAMPP/xamppfiles/htdocs/pp_projects/oresamsub/ussd-gateway-mobile/modules/ussd-gateway/android/build/intermediates/merged_res/release/mergeReleaseResources
+com.oresamsub.gatewaymodule.ussd-gateway-release-5 /Applications/XAMPP/xamppfiles/htdocs/pp_projects/oresamsub/ussd-gateway-mobile/modules/ussd-gateway/android/build/intermediates/packaged_res/release/packageReleaseResources
+com.oresamsub.gatewaymodule.ussd-gateway-main-6 /Applications/XAMPP/xamppfiles/htdocs/pp_projects/oresamsub/ussd-gateway-mobile/modules/ussd-gateway/android/src/main/res
+com.oresamsub.gatewaymodule.ussd-gateway-release-7 /Applications/XAMPP/xamppfiles/htdocs/pp_projects/oresamsub/ussd-gateway-mobile/modules/ussd-gateway/android/src/release/res
+gradleHome-0 /Applications/XAMPP/xamppfiles/htdocs/pp_projects/oresamsub/ussd-gateway-mobile/.gradle

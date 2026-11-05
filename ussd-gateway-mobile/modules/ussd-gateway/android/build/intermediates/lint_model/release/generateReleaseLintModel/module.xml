@@ -1,0 +1,19 @@
+<lint-module
+    format="1"
+    dir="/Applications/XAMPP/xamppfiles/htdocs/pp_projects/oresamsub/ussd-gateway-mobile/modules/ussd-gateway/android"
+    name=":ussd-gateway"
+    type="LIBRARY"
+    maven="com.oresamsub:ussd-gateway:0.1.0"
+    agpVersion="9.2.1"
+    buildFolder="build"
+    bootClassPath="/Users/mac/Library/Android/sdk/platforms/android-37.0/android.jar:/Users/mac/Library/Android/sdk/build-tools/36.0.0/core-lambda-stubs.jar"
+    javaSourceLevel="17"
+    compileTarget="android-37.0"
+    neverShrinking="true"
+    highlightGradualR8Api="false">
+  <lintOptions
+      absolutePaths="true"
+      checkReleaseBuilds="true"
+      explainIssues="true"/>
+  <variant name="release"/>
+</lint-module>

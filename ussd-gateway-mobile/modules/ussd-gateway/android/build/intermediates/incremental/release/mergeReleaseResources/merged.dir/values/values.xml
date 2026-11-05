@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="ussd_accessibility_description">Runs only the fixed MTN compatibility test and stops before any recipient number or purchase.</string>
+</resources>

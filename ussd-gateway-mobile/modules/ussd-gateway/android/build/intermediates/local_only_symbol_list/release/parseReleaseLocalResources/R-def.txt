@@ -1,0 +1,4 @@
+R_DEF: Internal format may change without notice
+local
+string ussd_accessibility_description
+xml ussd_accessibility_service

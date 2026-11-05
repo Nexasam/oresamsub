@@ -1,0 +1,46 @@
+1<?xml version="1.0" encoding="utf-8"?>
+2<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+3    package="com.oresamsub.gatewaymodule" >
+4
+5    <uses-sdk android:minSdkVersion="24" />
+5-->INJECTED
+5-->INJECTED
+6
+7    <uses-permission android:name="android.permission.CALL_PHONE" />
+7-->/Applications/XAMPP/xamppfiles/htdocs/pp_projects/oresamsub/ussd-gateway-mobile/modules/ussd-gateway/android/src/main/AndroidManifest.xml:2:3-67
+7-->/Applications/XAMPP/xamppfiles/htdocs/pp_projects/oresamsub/ussd-gateway-mobile/modules/ussd-gateway/android/src/main/AndroidManifest.xml:2:20-64
+8    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+8-->/Applications/XAMPP/xamppfiles/htdocs/pp_projects/oresamsub/ussd-gateway-mobile/modules/ussd-gateway/android/src/main/AndroidManifest.xml:3:3-73
+8-->/Applications/XAMPP/xamppfiles/htdocs/pp_projects/oresamsub/ussd-gateway-mobile/modules/ussd-gateway/android/src/main/AndroidManifest.xml:3:20-70
+9
+10    <application>
+10-->/Applications/XAMPP/xamppfiles/htdocs/pp_projects/oresamsub/ussd-gateway-mobile/modules/ussd-gateway/android/src/main/AndroidManifest.xml:5:3-19:17
+11        <service
+11-->/Applications/XAMPP/xamppfiles/htdocs/pp_projects/oresamsub/ussd-gateway-mobile/modules/ussd-gateway/android/src/main/AndroidManifest.xml:6:5-18:15
+12            android:name="com.oresamsub.gatewaymodule.UssdAccessibilityService"
+12-->/Applications/XAMPP/xamppfiles/htdocs/pp_projects/oresamsub/ussd-gateway-mobile/modules/ussd-gateway/android/src/main/AndroidManifest.xml:7:7-74
+13            android:description="@string/ussd_accessibility_description"
+13-->/Applications/XAMPP/xamppfiles/htdocs/pp_projects/oresamsub/ussd-gateway-mobile/modules/ussd-gateway/android/src/main/AndroidManifest.xml:8:7-67
+14            android:exported="false"
+14-->/Applications/XAMPP/xamppfiles/htdocs/pp_projects/oresamsub/ussd-gateway-mobile/modules/ussd-gateway/android/src/main/AndroidManifest.xml:9:7-31
+15            android:label="OresamSub Gateway Test"
+15-->/Applications/XAMPP/xamppfiles/htdocs/pp_projects/oresamsub/ussd-gateway-mobile/modules/ussd-gateway/android/src/main/AndroidManifest.xml:10:7-45
+16            android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE" >
+16-->/Applications/XAMPP/xamppfiles/htdocs/pp_projects/oresamsub/ussd-gateway-mobile/modules/ussd-gateway/android/src/main/AndroidManifest.xml:11:7-73
+17            <intent-filter>
+17-->/Applications/XAMPP/xamppfiles/htdocs/pp_projects/oresamsub/ussd-gateway-mobile/modules/ussd-gateway/android/src/main/AndroidManifest.xml:12:7-14:23
+18                <action android:name="android.accessibilityservice.AccessibilityService" />
+18-->/Applications/XAMPP/xamppfiles/htdocs/pp_projects/oresamsub/ussd-gateway-mobile/modules/ussd-gateway/android/src/main/AndroidManifest.xml:13:9-84
+18-->/Applications/XAMPP/xamppfiles/htdocs/pp_projects/oresamsub/ussd-gateway-mobile/modules/ussd-gateway/android/src/main/AndroidManifest.xml:13:17-81
+19            </intent-filter>
+20
+21            <meta-data
+21-->/Applications/XAMPP/xamppfiles/htdocs/pp_projects/oresamsub/ussd-gateway-mobile/modules/ussd-gateway/android/src/main/AndroidManifest.xml:15:7-17:62
+22                android:name="android.accessibilityservice"
+22-->/Applications/XAMPP/xamppfiles/htdocs/pp_projects/oresamsub/ussd-gateway-mobile/modules/ussd-gateway/android/src/main/AndroidManifest.xml:16:9-52
+23                android:resource="@xml/ussd_accessibility_service" />
+23-->/Applications/XAMPP/xamppfiles/htdocs/pp_projects/oresamsub/ussd-gateway-mobile/modules/ussd-gateway/android/src/main/AndroidManifest.xml:17:9-59
+24        </service>
+25    </application>
+26
+27</manifest>

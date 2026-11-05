@@ -1,0 +1,2 @@
+int string ussd_accessibility_description 0x0
+int xml ussd_accessibility_service 0x0

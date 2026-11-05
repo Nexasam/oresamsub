@@ -1,0 +1,48 @@
+{
+    "logs": [
+        {
+            "outputFile": "com.oresamsub.gatewaymodule.ussd-gateway-mergeReleaseResources-0:/values/values.xml",
+            "map": [
+                {
+                    "source": "/Applications/XAMPP/xamppfiles/htdocs/pp_projects/oresamsub/ussd-gateway-mobile/modules/ussd-gateway/android/src/main/res/values/strings.xml",
+                    "from": {
+                        "startLines": "1",
+                        "startColumns": "2",
+                        "startOffsets": "14",
+                        "endColumns": "150",
+                        "endOffsets": "162"
+                    },
+                    "to": {
+                        "startLines": "2",
+                        "startColumns": "4",
+                        "startOffsets": "55",
+                        "endColumns": "152",
+                        "endOffsets": "203"
+                    }
+                }
+            ]
+        },
+        {
+            "outputFile": "com.oresamsub.gatewaymodule.ussd-gateway-release-2:/values/values.xml",
+            "map": [
+                {
+                    "source": "/Applications/XAMPP/xamppfiles/htdocs/pp_projects/oresamsub/ussd-gateway-mobile/modules/ussd-gateway/android/src/main/res/values/strings.xml",
+                    "from": {
+                        "startLines": "1",
+                        "startColumns": "2",
+                        "startOffsets": "14",
+                        "endColumns": "150",
+                        "endOffsets": "162"
+                    },
+                    "to": {
+                        "startLines": "2",
+                        "startColumns": "4",
+                        "startOffsets": "55",
+                        "endColumns": "152",
+                        "endOffsets": "203"
+                    }
+                }
+            ]
+        }
+    ]
+}

@@ -1,0 +1,3 @@
+com.oresamsub.gatewaymodule
+string ussd_accessibility_description
+xml ussd_accessibility_service
