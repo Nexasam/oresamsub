@@ -1,8 +1,49 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container-fluid py-4">
-    <div class="d-flex flex-wrap justify-content-between align-items-start gap-3 mb-4">
+<style>
+    .ussd-page { max-width: 1480px; margin: 0 auto; padding: 28px 24px 56px; color: #172b24; }
+    .ussd-page .ussd-titlebar { display:flex; justify-content:space-between; align-items:flex-start; gap:20px; margin-bottom:26px; }
+    .ussd-page .ussd-titlebar h1 { margin:0; font-size:26px; font-weight:800; letter-spacing:-.02em; }
+    .ussd-page .ussd-titlebar p { margin:6px 0 0; color:#71827c; font-size:14px; }
+    .ussd-page .card { border:1px solid #e3ece8; border-radius:18px; background:#fff; box-shadow:0 7px 24px rgba(24,65,51,.06); overflow:hidden; }
+    .ussd-page .card-header { padding:16px 20px; border-bottom:1px solid #edf2ef; background:#fbfdfc; color:#17372a; font-weight:800; }
+    .ussd-page .card-body { padding:20px; }
+    .ussd-page .form-label { display:block; margin:0 0 6px; color:#52685f; font-size:12px; font-weight:700; }
+    .ussd-page .form-control, .ussd-page .form-select { display:block; width:100%; min-height:42px; padding:9px 12px; border:1px solid #cfddd7; border-radius:10px; background:#fff; color:#20382e; font-size:14px; outline:none; box-shadow:none; }
+    .ussd-page textarea.form-control { min-height:120px; resize:vertical; }
+    .ussd-page .form-control:focus, .ussd-page .form-select:focus { border-color:#15966f; box-shadow:0 0 0 3px rgba(21,150,111,.12); }
+    .ussd-page .btn { border:0; border-radius:10px; padding:10px 15px; font-weight:700; cursor:pointer; line-height:1.2; }
+    .ussd-page .btn-primary { background:#087a56; color:#fff; }
+    .ussd-page .btn-primary:hover { background:#066646; }
+    .ussd-page .btn-outline-primary, .ussd-page .btn-outline-secondary, .ussd-page .btn-outline-dark, .ussd-page .btn-outline-warning, .ussd-page .btn-outline-danger, .ussd-page .btn-outline-success { background:#fff; border:1px solid #cbdcd5; color:#356052; }
+    .ussd-page .btn-outline-primary:hover { border-color:#087a56; color:#087a56; }
+    .ussd-page .table { width:100%; border-collapse:collapse; font-size:13px; }
+    .ussd-page .table th { padding:13px 16px; color:#71827c; background:#f8fbfa; font-size:11px; text-transform:uppercase; letter-spacing:.06em; text-align:left; white-space:nowrap; }
+    .ussd-page .table td { padding:14px 16px; border-top:1px solid #edf2ef; vertical-align:top; }
+    .ussd-page .badge { display:inline-flex; align-items:center; border-radius:999px; padding:5px 9px; font-size:11px; font-weight:800; white-space:nowrap; }
+    .ussd-page .bg-success { background:#def7e9; color:#146b47; } .ussd-page .bg-secondary { background:#edf1ef; color:#53665e; }
+    .ussd-page .bg-warning { background:#fff1c9; color:#765600; } .ussd-page .bg-info { background:#e0f3f8; color:#176477; }
+    .ussd-page .bg-primary { background:#e3efff; color:#1d5c9d; }
+    .ussd-page .text-primary { color:#1d5c9d!important; } .ussd-page .text-warning { color:#9a6b00!important; } .ussd-page .text-info { color:#176477!important; } .ussd-page .text-success { color:#146b47!important; }
+    .ussd-page .alert { border-radius:12px; padding:13px 16px; margin-bottom:16px; }
+    .ussd-page .alert-success { background:#e5f8ed; color:#176b49; } .ussd-page .alert-danger { background:#fff0f0; color:#a83232; } .ussd-page .alert-warning { background:#fff8df; color:#765600; }
+    .ussd-page .text-muted, .ussd-page .form-text { color:#71827c!important; }
+    .ussd-page .row { display:flex; flex-wrap:wrap; margin:0 -8px; } .ussd-page [class*="col-"] { padding:0 8px; }
+    .ussd-page .g-3 { row-gap:16px; } .ussd-page .g-4 { row-gap:20px; } .ussd-page .col-12 { width:100%; } .ussd-page .col-6 { width:50%; }
+    .ussd-page .col-md-3 { width:25%; } .ussd-page .col-md-4 { width:33.333%; } .ussd-page .col-md-5 { width:41.666%; } .ussd-page .col-md-6 { width:50%; } .ussd-page .col-md-7 { width:58.333%; }
+    .ussd-page .col-xl-3 { width:25%; } .ussd-page .col-xl-5 { width:41.666%; } .ussd-page .col-xl-6 { width:50%; } .ussd-page .col-xl-7 { width:58.333%; }
+    .ussd-page .d-flex { display:flex; } .ussd-page .flex-wrap { flex-wrap:wrap; } .ussd-page .gap-2 { gap:8px; } .ussd-page .gap-3 { gap:12px; }
+    .ussd-page .justify-content-between { justify-content:space-between; } .ussd-page .align-items-center { align-items:center; } .ussd-page .align-items-start { align-items:flex-start; }
+    .ussd-page .h-100 { height:100%; } .ussd-page .mb-4 { margin-bottom:24px; } .ussd-page .mb-3 { margin-bottom:16px; } .ussd-page .mt-3 { margin-top:16px; }
+    .ussd-page .shadow-sm { box-shadow:0 7px 24px rgba(24,65,51,.06); } .ussd-page .border { border:1px solid #e3ece8!important; } .ussd-page .rounded { border-radius:12px!important; }
+    .ussd-page .bg-light { background:#f7faf8!important; } .ussd-page .opacity-75 { opacity:.75; } .ussd-page .p-3 { padding:16px; }
+    .ussd-page .overflow-x-auto { overflow-x:auto; } .ussd-page .w-100 { width:100%; }
+    @media (max-width: 1199px) { .ussd-page .col-xl-3,.ussd-page .col-xl-5,.ussd-page .col-xl-6,.ussd-page .col-xl-7 { width:100%; } }
+    @media (max-width: 767px) { .ussd-page { padding:20px 14px 40px; } .ussd-page .ussd-titlebar { display:block; } .ussd-page .ussd-titlebar .badge { margin-top:12px; } .ussd-page .col-6,.ussd-page .col-md-3,.ussd-page .col-md-4,.ussd-page .col-md-5,.ussd-page .col-md-6,.ussd-page .col-md-7 { width:100%; } .ussd-page .card-body { padding:16px; } }
+</style>
+<div class="main-content ussd-page">
+    <div class="ussd-titlebar">
         <div>
             <h1 class="h3 mb-1">USSD Recharge Gateway</h1>
             <p class="text-muted mb-0">Pair each phone with one SIM, release one recipient at a time, and manually review every result.</p>
