@@ -199,6 +199,13 @@
                 @endif
 
                 <li class="slide">
+                    <a href="{{ route('admin.ussd_gateway.index') }}" class="side-menu__item">
+                        <i class="ri ri-smartphone-line side-menu__icon"></i>
+                        <span class="side-menu__label">USSD Gateway</span>
+                    </a>
+                </li>
+
+                <li class="slide">
                     <a href="{{ route('admin.whatsapp_messages.index') }}" class="side-menu__item">
                         <i class="ri ri-whatsapp-line side-menu__icon"></i>
                         <span class="side-menu__label">WhatsApp Messages</span>

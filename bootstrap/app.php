@@ -20,6 +20,7 @@ use App\Http\Middleware\TemplateSetting;
 use App\Http\Middleware\ValidateApiToken;
 use App\Http\Middleware\ValidateSanctumUser;
 use App\Http\Middleware\ValidateWhatsappApiToken;
+use App\Http\Middleware\AuthenticateUssdGatewayDevice;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Foundation\Application;
@@ -49,6 +50,11 @@ return Application::configure(basePath: dirname(__DIR__))
                 ->prefix('api/mobile/v1')
                 ->name('mobile.v1.')
                 ->group(base_path('routes/mobile.php'));
+
+            Route::middleware('api')
+                ->prefix('api/ussd-gateway/v1')
+                ->name('ussd-gateway.v1.')
+                ->group(base_path('routes/ussd_gateway.php'));
         },
     )
     ->withMiddleware(function (Middleware $middleware) {
@@ -72,6 +78,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'set_transaction_pin' => SetTransactionPin::class,
             'set_locale' => SetLocale::class,
             'mobile.user.active' => EnsureMobileUserIsActive::class,
+            'ussd.gateway' => AuthenticateUssdGatewayDevice::class,
         ]);
 
         $middleware->web(append: [
@@ -124,6 +131,10 @@ return Application::configure(basePath: dirname(__DIR__))
         RateLimiter::for('business-api', fn (Request $request) => [
             Limit::perMinute(60)->by((string) ($request->attributes->get('api_user')?->id ?? $request->ip())),
             Limit::perDay(5000)->by((string) ($request->attributes->get('api_user')?->id ?? $request->ip())),
+        ]);
+
+        RateLimiter::for('ussd-gateway', fn (Request $request) => [
+            Limit::perMinute(30)->by((string) ($request->attributes->get('ussd_gateway_device')?->id ?? $request->ip())),
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {

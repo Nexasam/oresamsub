@@ -51,6 +51,7 @@ use App\Http\Controllers\Admin\StandaloneFeatureController;
 use App\Http\Controllers\Admin\AirtelGiftingPlanImportController;
 use App\Http\Controllers\Admin\MarketingLeadController;
 use App\Http\Controllers\Admin\MobilePushCampaignController;
+use App\Http\Controllers\Admin\UssdGatewayController;
 use App\Http\Controllers\Admin\WhatsappMessageController;
 use App\Http\Controllers\Admin\SalesReportController;
 use App\Http\Controllers\Template2Controller;
@@ -832,6 +833,18 @@ Route::middleware(['set_locale'])->group(function () {
             Route::middleware(['auth','verified','admin'])->prefix('admin/mobile-push-campaigns')->name('admin.mobile_push_campaigns.')->group(function () {
                 Route::get('/', [MobilePushCampaignController::class, 'index'])->name('index');
                 Route::post('/', [MobilePushCampaignController::class, 'store'])->name('store');
+            });
+
+            Route::middleware(['auth','verified','admin'])->prefix('admin/ussd-gateway')->name('admin.ussd_gateway.')->group(function () {
+                Route::get('/', [UssdGatewayController::class, 'index'])->name('index');
+                Route::post('/devices', [UssdGatewayController::class, 'storeDevice'])->name('devices.store');
+                Route::put('/devices/{device}', [UssdGatewayController::class, 'updateDevice'])->name('devices.update');
+                Route::post('/devices/{device}/rotate-token', [UssdGatewayController::class, 'rotateToken'])->name('devices.rotate_token');
+                Route::patch('/devices/{device}/toggle', [UssdGatewayController::class, 'toggleDevice'])->name('devices.toggle');
+                Route::post('/devices/{device}/reset-pairing', [UssdGatewayController::class, 'resetPairing'])->name('devices.reset_pairing');
+                Route::post('/batches', [UssdGatewayController::class, 'storeBatch'])->name('batches.store');
+                Route::patch('/batches/{batch}/toggle', [UssdGatewayController::class, 'toggleBatch'])->name('batches.toggle');
+                Route::post('/attempts/{attempt}/review', [UssdGatewayController::class, 'reviewAttempt'])->name('attempts.review');
             });
 
             Route::middleware(['auth','verified','admin'])->prefix('admin/whatsapp-messages')->name('admin.whatsapp_messages.')->group(function () {
