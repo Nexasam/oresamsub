@@ -117,6 +117,11 @@
                                 <option value="0">SIM 1</option>
                                 <option value="1">SIM 2</option>
                             </select>
+                            <label class="form-label mt-3">Processing mode</label>
+                            <select name="processing_mode" class="form-select" required>
+                                <option value="manual">Manual — review each recharge</option>
+                                <option value="automatic">Automatic — app may process sequentially</option>
+                            </select>
                         </div>
                         <div class="col-12">
                             <button class="btn btn-primary">Create gateway</button>
@@ -176,7 +181,7 @@
                             <div class="d-flex justify-content-between gap-2 mb-3">
                                 <div>
                                     <h5 class="mb-1">{{ $device->name }}</h5>
-                                    <div class="text-muted small">{{ $device->main_sim_number }} · SIM {{ $device->sim_slot + 1 }} · token {{ $device->token_hint }}…</div>
+                                    <div class="text-muted small">{{ $device->main_sim_number }} · SIM {{ $device->sim_slot + 1 }} · {{ ucfirst($device->processing_mode ?? 'manual') }} · token {{ $device->token_hint }}…</div>
                                 </div>
                                 <span class="badge {{ $device->installation_id ? 'bg-success' : 'bg-secondary' }} align-self-start">
                                     {{ $device->installation_id ? 'Paired' : 'Not paired' }}
@@ -199,10 +204,15 @@
                                 <div class="col-md-5"><input name="name" value="{{ $device->name }}" class="form-control form-control-sm" required></div>
                                 <div class="col-md-4"><input name="main_sim_number" value="{{ $device->main_sim_number }}" class="form-control form-control-sm" required></div>
                                 <div class="col-md-3">
-                                    <select name="sim_slot" class="form-select form-select-sm" required>
+                                <select name="sim_slot" class="form-select form-select-sm" required>
                                         <option value="0" @selected($device->sim_slot === 0)>SIM 1</option>
                                         <option value="1" @selected($device->sim_slot === 1)>SIM 2</option>
-                                    </select>
+                                </select>
+                                <label class="form-label small mt-2">Mode</label>
+                                <select name="processing_mode" class="form-select form-select-sm" required>
+                                    <option value="manual" @selected(($device->processing_mode ?? 'manual') === 'manual')>Manual</option>
+                                    <option value="automatic" @selected(($device->processing_mode ?? 'manual') === 'automatic')>Automatic</option>
+                                </select>
                                 </div>
                                 <div class="col-12"><button class="btn btn-sm btn-outline-primary">Save details</button></div>
                             </form>

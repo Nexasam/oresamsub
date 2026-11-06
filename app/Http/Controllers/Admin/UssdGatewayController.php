@@ -49,6 +49,7 @@ class UssdGatewayController extends Controller
             'name' => ['required', 'string', 'max:100'],
             'main_sim_number' => ['required', 'string', 'max:20'],
             'sim_slot' => ['required', 'integer', 'between:0,1'],
+            'processing_mode' => ['required', Rule::in(['manual', 'automatic'])],
         ]);
         $mainSim = $service->normalizeNigerianNumber($data['main_sim_number']);
 
@@ -60,6 +61,7 @@ class UssdGatewayController extends Controller
             'name' => $data['name'],
             'main_sim_number' => $mainSim,
             'sim_slot' => $data['sim_slot'],
+            'processing_mode' => $data['processing_mode'],
             'token_digest' => hash('sha256', Str::uuid()->toString()),
             'token_hint' => 'pending',
             'created_by' => $request->user()?->id,
@@ -77,6 +79,7 @@ class UssdGatewayController extends Controller
             'name' => ['required', 'string', 'max:100'],
             'main_sim_number' => ['required', 'string', 'max:20'],
             'sim_slot' => ['required', 'integer', 'between:0,1'],
+            'processing_mode' => ['required', Rule::in(['manual', 'automatic'])],
         ]);
         $mainSim = $service->normalizeNigerianNumber($data['main_sim_number']);
 
@@ -91,7 +94,7 @@ class UssdGatewayController extends Controller
             throw ValidationException::withMessages(['sim_slot' => 'Reset the phone pairing before changing the SIM slot.']);
         }
 
-        $device->update(['name' => $data['name'], 'main_sim_number' => $mainSim, 'sim_slot' => $data['sim_slot']]);
+        $device->update(['name' => $data['name'], 'main_sim_number' => $mainSim, 'sim_slot' => $data['sim_slot'], 'processing_mode' => $data['processing_mode']]);
 
         return back()->with('success', 'Gateway updated.');
     }

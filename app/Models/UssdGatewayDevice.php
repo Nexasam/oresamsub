@@ -18,6 +18,7 @@ class UssdGatewayDevice extends Model
     {
         return [
             'is_active' => 'boolean',
+            'processing_mode' => 'string',
             'sim_slot' => 'integer',
             'subscription_id' => 'integer',
             'bound_at' => 'datetime',

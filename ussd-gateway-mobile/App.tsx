@@ -31,7 +31,7 @@ type Claim = {
   sim_slot: number; subscription_id: number;
 };
 type GatewayServerStatus = {
-  device: { sim_slot: number; subscription_id: number };
+  device: { sim_slot: number; subscription_id: number; processing_mode: 'manual' | 'automatic' };
 };
 
 export default function App() {
@@ -40,6 +40,7 @@ export default function App() {
   const [baseUrl, setBaseUrl] = useState('https://oresamsub.com/api/ussd-gateway/v1');
   const [token, setToken] = useState('');
   const [configured, setConfigured] = useState(false);
+  const [serverMode, setServerMode] = useState<'manual' | 'automatic' | null>(null);
   const [busy, setBusy] = useState(false);
   const [lastMessage, setLastMessage] = useState('Configure and pair this phone before processing recipients.');
 
@@ -188,6 +189,7 @@ export default function App() {
       }
 
       const serverStatus = await request<GatewayServerStatus>(config, '/status');
+      setServerMode(serverStatus.data.device.processing_mode);
       const expectedSlot = serverStatus.data.device.sim_slot;
       const expectedSubscription = serverStatus.data.device.subscription_id;
       const activeMatch = UssdGateway.getDeviceIdentity().subscriptions.some(
@@ -284,6 +286,7 @@ export default function App() {
             <Text style={[styles.badge, status.accessibilityEnabled ? styles.good : styles.warn]}>{status.accessibilityEnabled ? 'READY' : 'SETUP'}</Text>
           </View>
           <Text style={styles.detail}>Accessibility: {status.accessibilityEnabled ? 'Enabled' : 'Not enabled'}</Text>
+          {serverMode && <Text style={styles.detail}>Server mode: {serverMode === 'automatic' ? 'Automatic' : 'Manual'}</Text>}
           {!status.accessibilityEnabled && <Pressable style={styles.secondaryButton} onPress={() => UssdGateway.openAccessibilitySettings()}><Text style={styles.secondaryButtonText}>Open accessibility settings</Text></Pressable>}
         </View>
 

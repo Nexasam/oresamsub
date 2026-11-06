@@ -148,6 +148,7 @@ class UssdGatewayJobController extends Controller
                 'name' => $device->name,
                 'main_sim_number' => $device->main_sim_number,
                 'sim_slot' => $device->sim_slot,
+                'processing_mode' => $device->processing_mode,
                 'subscription_id' => $device->subscription_id,
                 'device_model' => $device->device_model,
             ],
