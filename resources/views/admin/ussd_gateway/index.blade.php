@@ -59,6 +59,12 @@
     .ussd-compact details > summary::-webkit-details-marker { display:none; }
     .ussd-compact details > summary:before { content:'＋ '; }
     .ussd-compact details[open] > summary:before { content:'－ '; }
+    .ussd-modal-trigger { display:inline-flex; align-items:center; gap:7px; min-height:42px; }
+    .ussd-modal { border:0; border-radius:16px; padding:0; width:min(620px, calc(100vw - 28px)); max-height:90vh; box-shadow:0 20px 70px rgba(0,0,0,.25); }
+    .ussd-modal::backdrop { background:rgba(10,35,26,.55); }
+    .ussd-modal .modal-head { display:flex; justify-content:space-between; align-items:center; padding:15px 18px; border-bottom:1px solid #edf2ef; }
+    .ussd-modal .modal-body { padding:18px; max-height:calc(90vh - 62px); overflow:auto; }
+    .ussd-modal-close { border:0; background:transparent; font-size:22px; color:#71827c; cursor:pointer; }
     @media (max-width: 767px) { .ussd-compact .attempt-grid { grid-template-columns:1fr; } }
     @media (max-width: 1199px) { .ussd-page .col-xl-3,.ussd-page .col-xl-5,.ussd-page .col-xl-6,.ussd-page .col-xl-7 { width:100%; } }
     @media (max-width: 767px) { .ussd-page { padding:20px 14px 40px; } .ussd-page .ussd-titlebar { display:block; } .ussd-page .ussd-titlebar .badge { margin-top:12px; } .ussd-page .col-6,.ussd-page .col-md-3,.ussd-page .col-md-4,.ussd-page .col-md-5,.ussd-page .col-md-6,.ussd-page .col-md-7 { width:100%; } .ussd-page .card-body { padding:16px; } }
@@ -122,7 +128,10 @@
             <div class="card h-100 shadow-sm">
                 <div class="card-header"><strong>Add gateway phone and SIM</strong></div>
                 <div class="card-body">
-                    <form method="POST" action="{{ route('admin.ussd_gateway.devices.store') }}" class="row g-3">
+                    <button type="button" class="btn btn-primary ussd-modal-trigger" data-modal-open="gateway-create-modal">＋ Add gateway phone and SIM</button>
+                    <dialog id="gateway-create-modal" class="ussd-modal">
+                        <div class="modal-head"><strong>Add gateway phone and SIM</strong><button type="button" class="ussd-modal-close" data-modal-close>×</button></div>
+                        <div class="modal-body"><form method="POST" action="{{ route('admin.ussd_gateway.devices.store') }}" class="row g-3">
                         @csrf
                         <div class="col-12">
                             <label class="form-label">Gateway name</label>
@@ -147,7 +156,8 @@
                         <div class="col-12">
                             <button class="btn btn-primary">Create gateway</button>
                         </div>
-                    </form>
+                    </form></div>
+                    </dialog>
                 </div>
             </div>
         </div>
@@ -156,7 +166,10 @@
             <div class="card h-100 shadow-sm">
                 <div class="card-header"><strong>Create recipient batch</strong></div>
                 <div class="card-body">
-                    <form method="POST" action="{{ route('admin.ussd_gateway.batches.store') }}" class="row g-3">
+                    <button type="button" class="btn btn-primary ussd-modal-trigger" data-modal-open="batch-create-modal">＋ Create recipient batch</button>
+                    <dialog id="batch-create-modal" class="ussd-modal">
+                        <div class="modal-head"><strong>Create recipient batch</strong><button type="button" class="ussd-modal-close" data-modal-close>×</button></div>
+                        <div class="modal-body"><form method="POST" action="{{ route('admin.ussd_gateway.batches.store') }}" class="row g-3">
                         @csrf
                         <div class="col-md-6">
                             <label class="form-label">Gateway</label>
@@ -183,7 +196,8 @@
                         <div class="col-12">
                             <button class="btn btn-primary">Queue recipients</button>
                         </div>
-                    </form>
+                    </form></div>
+                    </dialog>
                 </div>
             </div>
         </div>
@@ -376,6 +390,20 @@
     </div>
 </div>
 <script>
+document.querySelectorAll('[data-modal-open]').forEach(function (button) {
+    button.addEventListener('click', function () {
+        const modal = document.getElementById(button.dataset.modalOpen);
+        if (modal && typeof modal.showModal === 'function') modal.showModal();
+    });
+});
+document.querySelectorAll('[data-modal-close]').forEach(function (button) {
+    button.addEventListener('click', function () { button.closest('dialog')?.close(); });
+});
+document.querySelectorAll('dialog.ussd-modal').forEach(function (modal) {
+    modal.addEventListener('click', function (event) {
+        if (event.target === modal) modal.close();
+    });
+});
 document.querySelectorAll('.ussd-review-form').forEach(function (form) {
     form.addEventListener('submit', async function (event) {
         event.preventDefault();
