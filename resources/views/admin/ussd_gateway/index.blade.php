@@ -39,10 +39,31 @@
     .ussd-page .shadow-sm { box-shadow:0 7px 24px rgba(24,65,51,.06); } .ussd-page .border { border:1px solid #e3ece8!important; } .ussd-page .rounded { border-radius:12px!important; }
     .ussd-page .bg-light { background:#f7faf8!important; } .ussd-page .opacity-75 { opacity:.75; } .ussd-page .p-3 { padding:16px; }
     .ussd-page .overflow-x-auto { overflow-x:auto; } .ussd-page .w-100 { width:100%; }
+    .ussd-page.ussd-compact { padding-top:18px; }
+    .ussd-compact .card { border-radius:12px; box-shadow:0 3px 12px rgba(24,65,51,.045); }
+    .ussd-compact .card-header { padding:11px 14px; font-size:13px; }
+    .ussd-compact .card-body { padding:14px; }
+    .ussd-compact .ussd-titlebar { margin-bottom:16px; }
+    .ussd-compact .ussd-titlebar h1 { font-size:21px; }
+    .ussd-compact .ussd-titlebar p { font-size:12px; }
+    .ussd-compact .form-control, .ussd-compact .form-select { min-height:36px; padding:7px 9px; font-size:13px; }
+    .ussd-compact textarea.form-control { min-height:82px; }
+    .ussd-compact .btn { padding:8px 11px; font-size:12px; }
+    .ussd-compact .table th { padding:9px 11px; font-size:10px; }
+    .ussd-compact .table td { padding:10px 11px; }
+    .ussd-compact .border.rounded { padding:12px!important; }
+    .ussd-compact .attempt-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; }
+    .ussd-compact .attempt-card { padding:12px!important; }
+    .ussd-compact .attempt-card .attempt-timeline { color:#71827c; font-size:11px; }
+    .ussd-compact details > summary { cursor:pointer; color:#087a56; font-size:12px; font-weight:800; list-style:none; }
+    .ussd-compact details > summary::-webkit-details-marker { display:none; }
+    .ussd-compact details > summary:before { content:'＋ '; }
+    .ussd-compact details[open] > summary:before { content:'－ '; }
+    @media (max-width: 767px) { .ussd-compact .attempt-grid { grid-template-columns:1fr; } }
     @media (max-width: 1199px) { .ussd-page .col-xl-3,.ussd-page .col-xl-5,.ussd-page .col-xl-6,.ussd-page .col-xl-7 { width:100%; } }
     @media (max-width: 767px) { .ussd-page { padding:20px 14px 40px; } .ussd-page .ussd-titlebar { display:block; } .ussd-page .ussd-titlebar .badge { margin-top:12px; } .ussd-page .col-6,.ussd-page .col-md-3,.ussd-page .col-md-4,.ussd-page .col-md-5,.ussd-page .col-md-6,.ussd-page .col-md-7 { width:100%; } .ussd-page .card-body { padding:16px; } }
 </style>
-<div class="main-content ussd-page">
+<div class="main-content ussd-page ussd-compact">
     <div class="ussd-titlebar">
         <div>
             <h1 class="h3 mb-1">USSD Recharge Gateway</h1>
@@ -198,7 +219,9 @@
                                 @endif
                             </div>
 
-                            <form method="POST" action="{{ route('admin.ussd_gateway.devices.update', $device) }}" class="row g-2 mb-3">
+                            <details class="mb-3">
+                                <summary>Edit gateway settings</summary>
+                            <form method="POST" action="{{ route('admin.ussd_gateway.devices.update', $device) }}" class="row g-2 mt-2">
                                 @csrf
                                 @method('PUT')
                                 <div class="col-md-5"><input name="name" value="{{ $device->name }}" class="form-control form-control-sm" required></div>
@@ -216,6 +239,7 @@
                                 </div>
                                 <div class="col-12"><button class="btn btn-sm btn-outline-primary">Save details</button></div>
                             </form>
+                            </details>
 
                             <div class="d-flex flex-wrap gap-2">
                                 <form method="POST" action="{{ route('admin.ussd_gateway.devices.toggle', $device) }}">
@@ -288,10 +312,10 @@
             </form>
         </div>
         <div class="card-body">
-            <div class="row g-3">
+            <div class="attempt-grid">
                 @forelse ($attempts as $attempt)
                     <div class="col-12">
-                        <div class="border rounded p-3">
+                        <div class="border rounded attempt-card">
                             <div class="d-flex flex-wrap justify-content-between gap-2 mb-2">
                                 <div>
                                     <strong>#{{ $attempt->sequence }} · {{ $attempt->recipient_number }}</strong>
@@ -302,17 +326,20 @@
                                 </span>
                             </div>
 
-                            <div class="small mb-2">
+                            <div class="attempt-timeline">
                                 Picked: {{ $attempt->picked_at?->toDayDateTimeString() ?? '—' }} ·
                                 Dial started: {{ $attempt->dial_started_at?->toDayDateTimeString() ?? '—' }} ·
                                 Result received: {{ $attempt->result_received_at?->toDayDateTimeString() ?? '—' }}
                             </div>
 
                             @if ($attempt->device_outcome || $attempt->response_text)
+                                <details class="mb-2">
+                                    <summary>View captured response</summary>
                                 <div class="bg-light rounded p-2 mb-3">
                                     <div class="small text-muted">Device outcome: {{ $attempt->device_outcome ?: '—' }}</div>
                                     <div class="mt-1" style="white-space: pre-wrap">{{ $attempt->response_text ?: 'No response text captured.' }}</div>
                                 </div>
+                                </details>
                             @elseif ($attempt->status === 'picked')
                                 <div class="alert alert-warning py-2 mb-3">This attempt is locked to the phone. Do not requeue it. Confirm its real outcome before resolving.</div>
                             @endif
