@@ -8,6 +8,7 @@ use App\Models\UssdRechargeAttempt;
 use App\Models\UssdRechargeBatch;
 use App\Services\UssdGateway\UssdGatewayService;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
@@ -186,7 +187,7 @@ class UssdGatewayController extends Controller
         return back()->with('success', $batch->status === 'paused' ? 'Batch paused.' : 'Batch resumed.');
     }
 
-    public function reviewAttempt(Request $request, UssdRechargeAttempt $attempt, UssdGatewayService $service): RedirectResponse
+    public function reviewAttempt(Request $request, UssdRechargeAttempt $attempt, UssdGatewayService $service): RedirectResponse|JsonResponse
     {
         $data = $request->validate([
             'decision' => ['required', Rule::in(['confirmed_success', 'confirmed_failed', 'cancelled'])],
@@ -204,6 +205,14 @@ class UssdGatewayController extends Controller
             'reviewed_at' => now(),
         ]);
         $service->refreshBatchStatus($attempt->batch);
+
+        if ($request->expectsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Attempt resolved. It will never be returned to the phone again.',
+                'data' => ['status' => $attempt->status],
+            ]);
+        }
 
         return back()->with('success', 'Attempt resolved. It will never be returned to the phone again.');
     }

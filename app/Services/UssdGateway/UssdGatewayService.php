@@ -11,6 +11,24 @@ use Illuminate\Validation\ValidationException;
 
 class UssdGatewayService
 {
+    public function classifyResponse(string $outcome, ?string $responseText): ?string
+    {
+        $text = strtolower(trim((string) $responseText));
+        if ($outcome !== 'response_captured' || $text === '') {
+            return null;
+        }
+
+        if (preg_match('/\b(successfully|successful|completed|recharge was successful|you have received)\b/', $text)) {
+            return 'confirmed_success';
+        }
+
+        if (preg_match('/\b(failed|failure|insufficient balance|invalid .*number|unable to complete|not enough balance|declined|unsuccessful)\b/', $text)) {
+            return 'confirmed_failed';
+        }
+
+        return null;
+    }
+
     public function issueDeviceToken(UssdGatewayDevice $device): string
     {
         $plainText = 'urg_'.Str::random(64);

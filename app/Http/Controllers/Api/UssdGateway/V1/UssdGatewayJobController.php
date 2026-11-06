@@ -120,11 +120,13 @@ class UssdGatewayJobController extends Controller
                 return response()->json(['success' => false, 'message' => 'Attempt is not awaiting a device result.'], 409);
             }
 
+            $responseText = trim((string) ($data['response_text'] ?? '')) ?: null;
+            $classifiedStatus = $service->classifyResponse($data['outcome'], $responseText);
             $lockedAttempt->update([
-                'status' => 'pending_review',
+                'status' => $classifiedStatus ?: 'pending_review',
                 'client_result_id' => $data['client_result_id'],
                 'device_outcome' => $data['outcome'],
-                'response_text' => trim((string) ($data['response_text'] ?? '')) ?: null,
+                'response_text' => $responseText,
                 'response_fingerprint' => $fingerprint,
                 'result_received_at' => now(),
             ]);
@@ -132,8 +134,10 @@ class UssdGatewayJobController extends Controller
 
             return response()->json([
                 'success' => true,
-                'message' => 'Result stored for manual review. The recipient will not be automatically retried.',
-                'data' => ['status' => 'pending_review'],
+                'message' => $classifiedStatus
+                    ? "Server validated the response as {$classifiedStatus}."
+                    : 'Result stored for manual review. The recipient will not be automatically retried.',
+                'data' => ['status' => $classifiedStatus ?: 'pending_review', 'auto_validated' => (bool) $classifiedStatus],
             ]);
         }, 3);
     }

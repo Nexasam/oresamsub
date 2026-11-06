@@ -84,6 +84,21 @@ class UssdAccessibilityService : AccessibilityService() {
     val replies = GatewayState.replies(this)
     val pendingJob = GatewayState.pendingJob(this)
 
+    // Some MTN menus show a failure and an alternative-plan selector instead of
+    // closing the dialog. Treat that as the terminal response; never guess a
+    // menu choice or accidentally purchase an alternative plan.
+    if (pendingJob != null) {
+      val visible = visibleText(root)
+      if (FAILURE_RESPONSE.containsMatchIn(visible)) {
+        // Dismiss MTN's alternative-plan dialog. Never choose an alternative
+        // bundle automatically; canceling leaves the failed attempt auditable.
+        findCancel(root)?.performAction(AccessibilityNodeInfo.ACTION_CLICK)
+        invalidatePendingWork()
+        GatewayState.saveResult(this, "response_captured", visible)
+        return
+      }
+    }
+
     if (GatewayState.state(this) == "awaiting_result" && pendingJob != null) {
       val response = visibleText(root)
       if (response.isNotBlank()) {
@@ -228,9 +243,24 @@ class UssdAccessibilityService : AccessibilityService() {
     return null
   }
 
+  private fun findCancel(node: AccessibilityNodeInfo): AccessibilityNodeInfo? {
+    val label = listOf(node.text, node.contentDescription)
+      .filterNotNull()
+      .joinToString(" ")
+      .trim()
+      .lowercase()
+    if (node.isClickable && CANCEL_LABELS.any { label == it || label.contains(it) }) return node
+    for (index in 0 until node.childCount) {
+      findCancel(node.getChild(index) ?: continue)?.let { return it }
+    }
+    return null
+  }
+
   companion object {
     private val ACTIVE_STATES = setOf("starting", "running", "awaiting_recipient_prompt", "awaiting_result")
     private val SUBMIT_LABELS = setOf("send", "ok", "next", "reply", "continue")
+    private val CANCEL_LABELS = setOf("cancel", "dismiss", "close")
+    private val FAILURE_RESPONSE = Regex("insufficient balance|failed due to|not enough balance|unable to complete", RegexOption.IGNORE_CASE)
     private const val PROMPT_STABILITY_MS = 900L
     private const val RESPONSE_TIMEOUT_MS = 30_000L
   }

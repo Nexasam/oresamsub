@@ -1,5 +1,5 @@
 import { StatusBar } from 'expo-status-bar';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import {
   Alert,
   PermissionsAndroid,
@@ -41,6 +41,10 @@ export default function App() {
   const [token, setToken] = useState('');
   const [configured, setConfigured] = useState(false);
   const [serverMode, setServerMode] = useState<'manual' | 'automatic' | null>(null);
+  const [automaticRunning, setAutomaticRunning] = useState(false);
+  const [automaticCycle, setAutomaticCycle] = useState(0);
+  const automaticTickInFlight = useRef(false);
+  const nextAutomaticAt = useRef(0);
   const [busy, setBusy] = useState(false);
   const [lastMessage, setLastMessage] = useState('Configure and pair this phone before processing recipients.');
 
@@ -98,6 +102,14 @@ export default function App() {
       clearTimeout(timeout);
     }
   };
+
+  useEffect(() => {
+    if (!configured || Platform.OS !== 'android') return;
+    const config = UssdGateway.getConfiguration();
+    request<GatewayServerStatus>(config, '/status')
+      .then((response) => setServerMode(response.data.device.processing_mode))
+      .catch(() => { /* Pairing/availability errors are shown when processing starts. */ });
+  }, [configured]);
 
   const pairPhone = async () => {
     setBusy(true);
@@ -159,6 +171,7 @@ export default function App() {
     });
     UssdGateway.clearPendingJob();
     setLastMessage(`${response.message} Admin review is required.`);
+    setAutomaticCycle((cycle) => cycle + 1);
     refresh();
   };
 
@@ -177,6 +190,8 @@ export default function App() {
 
       if (existing?.resultReady) {
         await uploadResult(config, existing);
+        // Give the carrier/USSD stack a moment to settle before dialing again.
+        nextAutomaticAt.current = Date.now() + 4000;
         return;
       }
       if (existing) {
@@ -239,6 +254,10 @@ export default function App() {
         throw error;
       }
     } catch (error) {
+      if (automaticRunning && /too many|rate.?limit|429/i.test(messageOf(error))) {
+        setAutomaticRunning(false);
+        setLastMessage('Automatic processing paused because the server or carrier rate-limited this device. Wait and resume manually.');
+      }
       Alert.alert('Processing stopped safely', messageOf(error));
       setLastMessage(messageOf(error));
     } finally {
@@ -246,6 +265,18 @@ export default function App() {
       refresh();
     }
   };
+
+  useEffect(() => {
+    if (!automaticRunning || serverMode !== 'automatic' || busy || !configured || !status.accessibilityEnabled) return;
+    if (status.hasPendingJob && !status.hasPendingResult && status.state !== 'prepared') return;
+    if (Date.now() < nextAutomaticAt.current || automaticTickInFlight.current) return;
+    automaticTickInFlight.current = true;
+    // The native service owns the active USSD session. We only advance after its
+    // result is present locally; uploadResult clears that result before the next claim.
+    processNext().finally(() => { automaticTickInFlight.current = false; });
+    // Polling status changes retrigger this effect and safely advance one job at a time.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [automaticRunning, automaticCycle, serverMode, busy, configured, status.accessibilityEnabled, status.state, status.hasPendingResult, status.hasPendingJob]);
 
   const pending = status.hasPendingJob;
   const currentSubscription = identity?.subscriptions.map((item) =>
@@ -286,7 +317,7 @@ export default function App() {
             <Text style={[styles.badge, status.accessibilityEnabled ? styles.good : styles.warn]}>{status.accessibilityEnabled ? 'READY' : 'SETUP'}</Text>
           </View>
           <Text style={styles.detail}>Accessibility: {status.accessibilityEnabled ? 'Enabled' : 'Not enabled'}</Text>
-          {serverMode && <Text style={styles.detail}>Server mode: {serverMode === 'automatic' ? 'Automatic' : 'Manual'}</Text>}
+          {serverMode && <Text style={styles.detail}>Server mode: {serverMode === 'automatic' ? 'Automatic' : 'Manual'}{serverMode === 'automatic' && automaticRunning ? ' · Running' : ''}</Text>}
           {!status.accessibilityEnabled && <Pressable style={styles.secondaryButton} onPress={() => UssdGateway.openAccessibilitySettings()}><Text style={styles.secondaryButtonText}>Open accessibility settings</Text></Pressable>}
         </View>
 
@@ -298,8 +329,14 @@ export default function App() {
           {pending && <Text style={styles.locked}>A recipient is stored on this phone. No new recipient can be claimed until its result is acknowledged.</Text>}
         </View>
 
-        <Pressable disabled={busy} onPress={processNext} style={({ pressed }) => [styles.primaryButton, busy && styles.disabled, pressed && styles.pressed]}>
-          <Text style={styles.primaryButtonText}>{busy ? 'Please wait…' : status.hasPendingResult ? 'Upload stored result' : pending ? 'Check current job' : 'Process next recipient'}</Text>
+        <Pressable disabled={busy} onPress={() => {
+          if (serverMode === 'automatic') {
+            setAutomaticRunning((running) => !running);
+            return;
+          }
+          processNext();
+        }} style={({ pressed }) => [styles.primaryButton, busy && styles.disabled, pressed && styles.pressed]}>
+          <Text style={styles.primaryButtonText}>{busy ? 'Please wait…' : serverMode === 'automatic' ? (automaticRunning ? 'Pause automatic processing' : 'Start automatic processing') : status.hasPendingResult ? 'Upload stored result' : pending ? 'Check current job' : 'Process next recipient'}</Text>
         </Pressable>
 
         <Text style={styles.footnote}>Never repeat an uncertain recipient. If the server or network fails, this app preserves the attempt locally and stops.</Text>

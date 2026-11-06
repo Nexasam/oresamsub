@@ -345,7 +345,7 @@
                             @endif
 
                             @if (in_array($attempt->status, ['picked', 'pending_review'], true))
-                                <form method="POST" action="{{ route('admin.ussd_gateway.attempts.review', $attempt) }}" class="row g-2 align-items-end">
+                                <form method="POST" action="{{ route('admin.ussd_gateway.attempts.review', $attempt) }}" class="row g-2 align-items-end ussd-review-form">
                                     @csrf
                                     <div class="col-md-7">
                                         <label class="form-label small">Admin notes</label>
@@ -360,7 +360,7 @@
                                             <option value="cancelled">Cancelled / not sent</option>
                                         </select>
                                     </div>
-                                    <div class="col-md-2"><button class="btn btn-sm btn-primary w-100" onclick="return confirm('Resolve this attempt permanently? It cannot be returned to the phone.')">Resolve</button></div>
+                                    <div class="col-md-2"><button class="btn btn-sm btn-primary w-100" type="submit">Resolve</button></div>
                                 </form>
                             @elseif ($attempt->admin_notes)
                                 <div class="small"><strong>Admin note:</strong> {{ $attempt->admin_notes }}</div>
@@ -375,4 +375,30 @@
         </div>
     </div>
 </div>
+<script>
+document.querySelectorAll('.ussd-review-form').forEach(function (form) {
+    form.addEventListener('submit', async function (event) {
+        event.preventDefault();
+        const button = form.querySelector('button[type="submit"]');
+        const original = button.textContent;
+        button.disabled = true;
+        button.textContent = 'Saving…';
+        try {
+            const response = await fetch(form.action, {
+                method: 'POST',
+                headers: { 'Accept': 'application/json', 'X-Requested-With': 'XMLHttpRequest' },
+                body: new FormData(form),
+            });
+            const body = await response.json();
+            if (!response.ok || !body.success) throw new Error(body.message || 'Unable to resolve attempt.');
+            form.closest('.attempt-card').querySelector('.badge').textContent = body.data.status.replaceAll('_', ' ');
+            form.outerHTML = '<div class="alert alert-success py-2 mb-0">' + body.message + '</div>';
+        } catch (error) {
+            button.disabled = false;
+            button.textContent = original;
+            window.alert(error.message || 'Unable to resolve attempt.');
+        }
+    });
+});
+</script>
 @endsection
